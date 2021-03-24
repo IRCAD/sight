@@ -42,7 +42,7 @@ namespace processing
  *
  * @code{.xml}
    <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram"
- * autoConnect="yes">
+ * autoConnect="true">
     <inout key="histogram" uid="..." />
     <in key="image" uid="..." />
     <binsWidth>5.0</binsWidth>

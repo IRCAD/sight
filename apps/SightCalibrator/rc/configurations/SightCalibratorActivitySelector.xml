@@ -59,7 +59,7 @@
             </filter>
         </service>
 
-        <service uid="seriesSignalSrv" type="sight::module::data::SSeriesSignal" autoConnect="yes">
+        <service uid="seriesSignalSrv" type="sight::module::data::SSeriesSignal" autoConnect="true">
             <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>

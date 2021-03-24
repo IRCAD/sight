@@ -29,6 +29,7 @@
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/Convert.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/Object.hpp>
@@ -275,82 +276,70 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
 //-----------------------------------------------------------------------------
 
-service::IService::Config Config::parseService(const core::runtime::ConfigurationElement::csptr& srvElem,
+service::IService::Config Config::parseService(const boost::property_tree::ptree& srvElem,
                                                const std::string& errMsgHead)
 {
 #ifndef _DEBUG
     SIGHT_NOT_USED(errMsgHead);
 #endif
-    SIGHT_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");
-
     // Get attributes
     service::IService::Config srvConfig;
 
-    // Uid
-    if (srvElem->hasAttribute("uid"))
-    {
-        srvConfig.m_uid = srvElem->getAttributeValue("uid");
-        SIGHT_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvConfig.m_uid.empty());
-    }
+    srvConfig.m_uid = srvElem.get<std::string>("<xmlattr>.uid");
+    SIGHT_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvConfig.m_uid.empty());
 
     std::string errMsgTail = " when parsing service '" + srvConfig.m_uid + "'.";
 
     // Config
-    std::string config;
-    if (srvElem->hasAttribute("config"))
-    {
-        config = srvElem->getAttributeValue("config");
-        SIGHT_ASSERT(errMsgHead + "\"config\" attribute is empty" + errMsgTail, !config.empty());
-    }
+    std::string config = srvElem.get<std::string>("<xmlattr>.config", "");
+    SIGHT_ASSERT(errMsgHead + "'config' attribute is empty.", !srvConfig.m_uid.empty());
 
     // Type
-    SIGHT_ASSERT(errMsgHead + "'type'' attribute is empty" + errMsgTail, srvElem->hasAttribute("type"));
-    srvConfig.m_type = srvElem->getAttributeValue("type");
+    srvConfig.m_type = srvElem.get<std::string>("<xmlattr>.type", "");
     SIGHT_ASSERT(errMsgHead + "Attribute \"type\" is required " + errMsgTail,
                  !srvConfig.m_type.empty());
 
     // AutoConnect
-    srvConfig.m_globalAutoConnect = false;
-    const core::runtime::ConfigurationElement::AttributePair attribAutoConnect =
-        srvElem->getSafeAttributeValue("autoConnect");
-    if(attribAutoConnect.first)
-    {
-        SIGHT_ASSERT("'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                     (!attribAutoConnect.first) || attribAutoConnect.second == "yes" ||
-                     attribAutoConnect.second == "no");
-        srvConfig.m_globalAutoConnect = (attribAutoConnect.second == "yes");
-    }
+    srvConfig.m_globalAutoConnect = srvElem.get<bool>("<xmlattr>.autoConnect", false);
 
     // Worker key
-    srvConfig.m_worker = srvElem->getAttributeValue("worker");
+    srvConfig.m_worker = srvElem.get<std::string>("<xmlattr>.worker", "");
 
+    boost::property_tree::ptree cfgElem = srvElem;
     // Get service configuration
-    core::runtime::ConfigurationElement::csptr cfgElem = srvElem;
     if (!config.empty())
     {
         const auto srvCfgFactory = service::extension::Config::getDefault();
-        cfgElem = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
+        srvConfig.m_config = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
+        cfgElem            = core::runtime::Convert::toPropertyTree(srvConfig.m_config);
     }
-    srvConfig.m_config = cfgElem;
+    else
+    {
+        boost::property_tree::ptree cfg;
+        cfg.add_child("service", srvElem);
+        srvConfig.m_config = core::runtime::Convert::fromPropertyTree(cfg);
+    }
 
     // Check if user did not bind a service to another service
-    for(core::runtime::ConfigurationElement::csptr elem :  cfgElem->getElements())
-    {
-        SIGHT_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
-                     elem->getName() != "service" &&
-                     elem->getName() != "serviceList");
-    }
+    auto serviceCfg = cfgElem.equal_range("service");
+    SIGHT_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
+                 serviceCfg.first == serviceCfg.second);
+    serviceCfg = cfgElem.equal_range("serviceList");
+    SIGHT_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
+                 serviceCfg.first == serviceCfg.second);
 
     // Check first if we can create this service
     // If there is a missing object in its data list, then it is not possible
-    auto cfgConstElem = core::runtime::ConfigurationElement::constCast(srvElem);
 
     // Collect all input/output configurations
-    std::vector< core::runtime::ConfigurationElement::sptr > objectCfgs;
+    std::vector< std::pair<std::string, boost::property_tree::ptree> > objectCfgs;
     for(const auto& dataKeyword : s_DATA_KEYWORDS)
     {
-        auto objCfgs = cfgConstElem->find(dataKeyword);
-        std::move(objCfgs.begin(), objCfgs.end(), std::back_inserter(objectCfgs));
+        auto objCfgs = cfgElem.equal_range(dataKeyword);
+        for (auto objCfg = objCfgs.first; objCfg != objCfgs.second; ++objCfg)
+        {
+            objectCfgs.push_back(std::make_pair(objCfg->first, objCfg->second));
+        }
     }
 
     // Parse input/output configurations
@@ -358,15 +347,15 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
     {
         // Access type
         service::IService::ObjectServiceConfig objConfig;
-        if(cfg->getName() == "in")
+        if(cfg.first == "in")
         {
             objConfig.m_access = service::IService::AccessType::INPUT;
         }
-        else if(cfg->getName() == "out")
+        else if(cfg.first == "out")
         {
             objConfig.m_access = service::IService::AccessType::OUTPUT;
         }
-        else if(cfg->getName() == "inout")
+        else if(cfg.first == "inout")
         {
             objConfig.m_access = service::IService::AccessType::INOUT;
         }
@@ -376,27 +365,12 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         }
 
         // AutoConnect
-        auto autoConnect = cfg->getSafeAttributeValue("autoConnect");
-        objConfig.m_autoConnect = false;
-        if(autoConnect.first)
-        {
-            SIGHT_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                         autoConnect.second == "yes" || autoConnect.second == "no" );
-            objConfig.m_autoConnect = (autoConnect.second == "yes");
-        }
+        objConfig.m_autoConnect = cfg.second.get<bool>("<xmlattr>.autoConnect", false);
 
         // Optional
         if(objConfig.m_access != service::IService::AccessType::OUTPUT)
         {
-            const std::string optionalStr = cfg->getAttributeValue("optional");
-
-            objConfig.m_optional = false;
-            if(!optionalStr.empty())
-            {
-                SIGHT_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                             optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
-                objConfig.m_optional = optionalStr == "yes" ? true : false;
-            }
+            objConfig.m_optional = cfg.second.get<bool>("<xmlattr>.optional", false);
         }
         else
         {
@@ -404,55 +378,43 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         }
 
         // Do we use groups ?
-        std::string group = cfg->getAttributeValue("group");
-        if(!group.empty())
+        const auto group = cfg.second.get_optional<std::string>("<xmlattr>.group");
+        if(group)
         {
-            std::vector< core::runtime::ConfigurationElement::sptr > keyCfgs = cfg->find("key");
+            auto keyCfgs = cfgElem.equal_range("key");
 
             size_t count = 0;
-            for(const auto& groupCfg : keyCfgs)
+            for (auto groupCfg = keyCfgs.first; groupCfg != keyCfgs.second; ++groupCfg)
             {
                 service::IService::ObjectServiceConfig grouObjConfig = objConfig;
 
                 // Identifier
-                grouObjConfig.m_uid = groupCfg->getAttributeValue("uid");
+                grouObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
 
-                grouObjConfig.m_key = KEY_GROUP_NAME(group, count++);
+                grouObjConfig.m_key = KEY_GROUP_NAME(group.value(), count++);
 
                 // AutoConnect
-                auto autoConnectPeyKey = groupCfg->getSafeAttributeValue("autoConnect");
-                if(autoConnectPeyKey.first)
-                {
-                    SIGHT_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                                 autoConnectPeyKey.second == "yes" || autoConnectPeyKey.second == "no" );
-                    grouObjConfig.m_autoConnect = (autoConnectPeyKey.second == "yes");
-                }
+                grouObjConfig.m_autoConnect = groupCfg->second.get<bool>("<xmlattr>.autoConnect", false);
+
                 // Optional
                 if(grouObjConfig.m_access != service::IService::AccessType::OUTPUT)
                 {
-                    const std::string optionalStr = groupCfg->getAttributeValue("optional");
-
-                    if(!optionalStr.empty())
-                    {
-                        SIGHT_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                                     optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
-                        grouObjConfig.m_optional = optionalStr == "yes" ? true : false;
-                    }
+                    grouObjConfig.m_optional = groupCfg->second.get<bool>("<xmlattr>.optional", false);
                 }
 
                 srvConfig.m_objects.emplace_back(grouObjConfig);
             }
-            srvConfig.m_groupSize[group] = count;
+            srvConfig.m_groupSize[group.value()] = count;
         }
         else
         {
             // Identifier
-            objConfig.m_uid = cfg->getAttributeValue("uid");
+            objConfig.m_uid = cfg.second.get<std::string>("<xmlattr>.uid", "");
             SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !objConfig.m_uid.empty());
 
             // Key inside the service
-            objConfig.m_key = cfg->getAttributeValue("key");
+            objConfig.m_key = cfg.second.get<std::string>("<xmlattr>.key", "");
             SIGHT_ASSERT(errMsgHead + "Missing object attribute 'key'" + errMsgTail, !objConfig.m_key.empty());
 
             srvConfig.m_objects.emplace_back(objConfig);

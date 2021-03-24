@@ -71,7 +71,7 @@ protected:
     /**
      * @brief Configure action.
      * @code{.xml}
-       <service type="ui::base::IAction" impl="::uiData::CrossTypeAction" autoConnect="no">
+       <service type="ui::base::IAction" impl="::uiData::CrossTypeAction" autoConnect="false">
         <crossType>hide</crossType>
        </service>
        @endcode

@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="viewportUpdater" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes">
+   <service uid="viewportUpdater" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true">
        <in key="viewport" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="7" />
    </service>

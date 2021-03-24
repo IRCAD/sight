@@ -173,7 +173,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-           <service uid="item" type="sight::module::ui::base::SDefaultAction" autoConnect="no" >
+           <service uid="item" type="sight::module::ui::base::SDefaultAction" autoConnect="false" >
               <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>

@@ -77,7 +77,7 @@ public:
      * Example of configuration
      * @code{.xml}
         <service uid="myMenu" type="ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
-     * autoConnect="no" >
+     * autoConnect="false" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />

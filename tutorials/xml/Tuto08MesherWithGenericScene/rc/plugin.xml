@@ -159,12 +159,12 @@
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
                 <in key="model" uid="modelSeries" />
                 <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -214,14 +214,14 @@
                 </config>
             </service>
 
-            <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
+            <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true" >
                 <inout key="modelSeries" uid="modelSeries" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
                 </columns>
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -263,7 +263,7 @@
             </service>
 
             <!-- This service converts a simple fwData::Image to medical Image -->
-            <service uid="medicaImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicaImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
                 <inout key="image" uid="image" />
             </service>
 
@@ -271,11 +271,11 @@
                 <out key="object" uid="reconstruction" />
             </service>
 
-            <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" autoConnect="yes" >
+            <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" autoConnect="true" >
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
-            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
+            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="true" >
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 

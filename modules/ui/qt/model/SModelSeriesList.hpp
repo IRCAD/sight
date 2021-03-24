@@ -71,7 +71,7 @@ class ValueView;
  * @section XML XML Configuration
  * @code{.xml}
    <service module::ui::qt::editor::SModelSeriesList">
-       <inout key="modelSeries" uid="..." autoConnect="yes" />
+       <inout key="modelSeries" uid="..." autoConnect="true" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
          <organ_name>@organ_name</organ_name>

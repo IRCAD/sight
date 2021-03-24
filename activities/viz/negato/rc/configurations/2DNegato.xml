@@ -87,7 +87,7 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" priority="0" orientation="${orientation}" />
         </service>
@@ -96,17 +96,17 @@
             <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
             <inout key="landmarks" uid="${landmarks}" />
             <config layer="defaultLayer" priority="4" />
         </service>
@@ -117,7 +117,7 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="slider_negato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="slider_negato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

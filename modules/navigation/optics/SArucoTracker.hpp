@@ -54,7 +54,7 @@ namespace sight::module::navigation::optics
  *
  * @code{.xml}
         <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
-            <in key="timeline" uid="..." autoConnect="yes"/>
+            <in key="timeline" uid="..." autoConnect="true"/>
             <in key="camera" uid="..." />
             <inout group="tagTL" >
                 <key uid="..." />
@@ -74,7 +74,7 @@ namespace sight::module::navigation::optics
 
         <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
             <in key="camera" uid="..." />
-            <inout key="frame" uid="..." autoConnect="yes" />
+            <inout key="frame" uid="..." autoConnect="true" />
             <inout group="markerMap">
                 <key uid="..." /> <!-- timeline of detected tag(s) -->
                 <key uid="..." /> <!-- timeline of detected tag(s) -->

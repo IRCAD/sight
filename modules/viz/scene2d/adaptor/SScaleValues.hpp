@@ -37,7 +37,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="scaleValues" class="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
+   <service uid="scaleValues" class="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
         <in key="viewport"  uid="..." />
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>

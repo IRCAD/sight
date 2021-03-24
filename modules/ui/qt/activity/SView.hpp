@@ -56,7 +56,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="sight::module::ui::qt::activity::SView" autoConnect="yes" >
+   <service type="sight::module::ui::qt::activity::SView" autoConnect="true" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />

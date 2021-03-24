@@ -130,7 +130,7 @@ public:
 
     /// Parse a service and return a service configuration
     SERVICE_API static service::IService::Config parseService(
-        const CSPTR(core::runtime::ConfigurationElement)& srvElem,
+        const boost::property_tree::ptree& srvElem,
         const std::string& errMsgHead);
 };
 

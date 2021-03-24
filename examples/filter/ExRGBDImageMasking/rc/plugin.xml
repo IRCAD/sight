@@ -242,23 +242,23 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
             <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
-                <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
+                <inout key="transform" uid="inverseMatrix" autoConnect="true" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
                 <in key="model" uid="modelSeries" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>
 
-            <service uid="videoARAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoARAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="foregroundImage" />
                 <config layer="ar" />
             </service>
@@ -277,13 +277,13 @@
                 </scene>
             </service>
 
-            <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
-                <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
+            <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
+                <inout key="transform" uid="inverseMatrix" autoConnect="true" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" shadingMode="ambient" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>
@@ -383,8 +383,8 @@
             <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
-                    <key uid="registrationMatrix" autoConnect="yes" inverse="true" />
-                    <key uid="extrinsic" autoConnect="yes" inverse="true" />
+                    <key uid="registrationMatrix" autoConnect="true" inverse="true" />
+                    <key uid="extrinsic" autoConnect="true" inverse="true" />
                 </in>
                 <inout key="output" uid="inverseMatrix" />
             </service>
@@ -393,7 +393,7 @@
             <service uid="maskerSrv" type="sight::module::filter::vision::SDepthImageMasking" worker="masker" >
                 <in key="maskImage" uid="offscreenImage" />
                 <in key="videoImage" uid="videoImage" />
-                <in key="depthImage" uid="depthImage" autoConnect="yes" />
+                <in key="depthImage" uid="depthImage" autoConnect="true" />
                 <inout key="foregroundImage" uid="foregroundImage" />
             </service>
 

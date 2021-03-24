@@ -40,9 +40,9 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="yes">
+   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
        <in key="histogram" uid="..." />
-       <inout key="point" uid="..." optional="yes" />
+       <inout key="point" uid="..." optional="true" />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
    </service>
    @endcode

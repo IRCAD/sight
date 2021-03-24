@@ -35,12 +35,12 @@
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${imageID}" />
             <config layer="default" priority="0" orientation="${orientation}" />
         </service>
 
-        <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes">
+        <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <inout key="image" uid="${imageID}" />
             <config layer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
         </service>
@@ -54,7 +54,7 @@
         <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
-        <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
             <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

@@ -1336,7 +1336,7 @@ core::runtime::ConfigurationElement::sptr AppConfigTest::buildConfig()
     std::shared_ptr< core::runtime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
     serviceA->setAttributeValue("type", "::sight::service::ut::TestServiceImplementationImage" );
-    serviceA->setAttributeValue( "autoConnect", "no" );
+    serviceA->setAttributeValue( "autoConnect", "false" );
 
     // Connections
     std::shared_ptr< core::runtime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");

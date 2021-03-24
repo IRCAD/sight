@@ -25,6 +25,7 @@
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
 #include "core/thread/ActiveWorkers.hpp"
+#include "core/runtime/Convert.hpp"
 #include "service/registry/Proxy.hpp"
 #include "service/extension/Config.hpp"
 #include "service/extension/Factory.hpp"
@@ -145,7 +146,8 @@ void AppConfigManager::create()
 
     this->createObjects(m_cfgElem);
     this->createConnections();
-    this->createServices(m_cfgElem);
+    const auto configTree = core::runtime::Convert::toPropertyTree(m_cfgElem);
+    this->createServices(configTree.get_child("config"));
 
     m_state = STATE_CREATED;
 }
@@ -563,71 +565,71 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::createServices(core::runtime::ConfigurationElement::csptr cfgElem)
+void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem)
 {
-    for(const auto& elem : cfgElem->getElements())
+    auto serviceCfg = cfgElem.equal_range("service");
+    for (auto itCfg = serviceCfg.first; itCfg != serviceCfg.second; ++itCfg)
     {
-        if (elem->getName() == "service")
+        // Parse the service configuration
+        Config srvConfig = service::helper::Config::parseService(itCfg->second, this->msgHead());
+
+        // Check if we can start the service now or if we must deferred its creation
+        bool createService = true;
+        std::vector<std::string> uids;
+
+        for(const auto& objectCfg : srvConfig.m_objects)
         {
-            // Parse the service configuration
-            Config srvConfig = service::helper::Config::parseService(elem, this->msgHead());
-
-            // Check if we can start the service now or if we must deferred its creation
-            bool createService = true;
-            std::vector<std::string> uids;
-
-            for(const auto& objectCfg : srvConfig.m_objects)
+            // If the current service uses an object that is marked as deferred, this means
+            // we will have to manage automatically the start/stop and the connections
+            auto it = m_deferredObjects.find(objectCfg.m_uid);
+            if(it != m_deferredObjects.end())
             {
-                // If the current service uses an object that is marked as deferred, this means
-                // we will have to manage automatically the start/stop and the connections
-                auto it = m_deferredObjects.find(objectCfg.m_uid);
-                if(it != m_deferredObjects.end())
-                {
-                    it->second.m_servicesCfg.emplace_back(srvConfig);
-                    uids.push_back(objectCfg.m_uid);
-                    m_deferredServices.insert(srvConfig.m_uid);
+                it->second.m_servicesCfg.emplace_back(srvConfig);
+                uids.push_back(objectCfg.m_uid);
+                m_deferredServices.insert(srvConfig.m_uid);
 
-                    if(!objectCfg.m_optional)
-                    {
-                        createService = false;
-                    }
-                }
-                else
+                if(!objectCfg.m_optional)
                 {
-                    SIGHT_ERROR_IF(
-                        this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
-                        "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
-                        "intended to use a deferred object instead ?", objectCfg.m_optional);
+                    createService = false;
                 }
-
-                // Extra check to warn the user that an object is used as output but not marked as deferred
-                if(objectCfg.m_access == service::IService::AccessType::OUTPUT)
-                {
-                    SIGHT_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
-                                   srvConfig.m_uid + "' but it not declared as 'deferred'.",
-                                   it == m_deferredObjects.end());
-                }
-            }
-
-            if(createService)
-            {
-                this->createService(srvConfig);
             }
             else
             {
-                // Check if a service hasn't been already created with this uid
-                SIGHT_ASSERT(this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
-                             !core::tools::fwID::exist(srvConfig.m_uid));
+                SIGHT_ERROR_IF(
+                    this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
+                    "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
+                    "intended to use a deferred object instead ?", objectCfg.m_optional);
+            }
 
-                const std::string msg = AppConfigManager::getUIDListAsString(uids);
-                SIGHT_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
-                            "' has not been created because the object" + msg + "not available.");
+            // Extra check to warn the user that an object is used as output but not marked as deferred
+            if(objectCfg.m_access == service::IService::AccessType::OUTPUT)
+            {
+                SIGHT_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
+                               srvConfig.m_uid + "' but it not declared as 'deferred'.",
+                               it == m_deferredObjects.end());
             }
         }
-        else if (elem->getName() == "serviceList")
+
+        if(createService)
         {
-            this->createServices(elem);
+            this->createService(srvConfig);
         }
+        else
+        {
+            // Check if a service hasn't been already created with this uid
+            SIGHT_ASSERT(this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
+                         !core::tools::fwID::exist(srvConfig.m_uid));
+
+            const std::string msg = AppConfigManager::getUIDListAsString(uids);
+            SIGHT_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
+                        "' has not been created because the object" + msg + "not available.");
+        }
+    }
+
+    serviceCfg = cfgElem.equal_range("serviceList");
+    for (auto itCfg = serviceCfg.first; itCfg != serviceCfg.second; ++itCfg)
+    {
+        this->createServices(itCfg->second);
     }
 }
 

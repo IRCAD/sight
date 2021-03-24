@@ -46,7 +46,7 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
-         <in group="markerTL" autoConnect="yes">
+         <in group="markerTL" autoConnect="true">
              <key uid="..." />
              <key uid="..." />
          </in>
@@ -63,7 +63,7 @@ namespace sight::module::geometry::vision
      or
 
      <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
-         <in group="markerMap" autoConnect="yes">
+         <in group="markerMap" autoConnect="true">
              <key uid="..." />
              <key uid="..." />
          </in>

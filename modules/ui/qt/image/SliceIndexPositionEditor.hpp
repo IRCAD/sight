@@ -44,7 +44,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+   <service uid="..." type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
       <inout key="image" uid="..."/>
       <sliceIndex>${orientationValue}</sliceIndex>
    </service>
@@ -94,7 +94,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="slider_negato1" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+       <service uid="slider_negato1" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
         <sliceIndex>axial</sliceIndex>
        </service>
        @endcode

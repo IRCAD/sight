@@ -45,7 +45,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::SMultipleTF">
-       <in key="currentTFPool" uid="..." optional="yes" />
+       <in key="currentTFPool" uid="..." optional="true" />
        <inout key="tfPools" uid="..." />
        <out key="tfPool" uid="..." />
        <config useDefaultPath="true" tfPerPath="false" >
@@ -60,7 +60,7 @@ namespace sight::module::ui::qt::image
  * - \b currentTFPool [sight::data::Composite](optional): current transfer function pool used to change editor
  * selection.
  *      It should be the same pool as the output.
- *      Don't forget to set 'optional="yes"' when you use this input, otherwise the service will not start if a
+ *      Don't forget to set 'optional="true"' when you use this input, otherwise the service will not start if a
  *      pool is not previously defined.
  *
  * @subsection In-Out In-Out

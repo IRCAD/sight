@@ -49,7 +49,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
-       <in key="currentTF" uid="..." optional="yes" />
+       <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="true">
@@ -65,7 +65,7 @@ namespace sight::module::ui::qt::image
  * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *      TF in another service. Don't forget to set 'optional="true"' when you use this input, otherwise the service will
  *
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out

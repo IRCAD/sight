@@ -137,7 +137,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
             </service>
@@ -151,12 +151,12 @@
             </service>
 
             <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="videoRecordingActWorker" >
-                <in key="data" uid="frameTL" autoConnect="yes" />
+                <in key="data" uid="frameTL" autoConnect="true" />
                 <format>.tiff</format>
             </service>
 
             <service uid="videoWriterSrv" type="sight::module::io::video::SVideoWriter" worker="videoRecordingActWorker" >
-                <in key="data" uid="frameTL" autoConnect="yes" />
+                <in key="data" uid="frameTL" autoConnect="true" />
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >

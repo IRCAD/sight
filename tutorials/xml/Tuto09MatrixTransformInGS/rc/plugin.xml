@@ -152,37 +152,37 @@
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="mesh0Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh0Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
-            <service uid="transform1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
                 <inout key="transform" uid="rotation1" />
                 <config layer="default" transform="rotationTransform1" />
             </service>
 
-            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform1" />
             </service>
 
-            <service uid="transform2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
                 <inout key="transform" uid="rotation2" />
                 <config layer="default" transform="rotationTransform2" />
             </service>
 
-            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform2" />
             </service>
 
-            <service uid="transform3Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform3Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
                 <inout key="transform" uid="rotation3" />
                 <config layer="default" transform="rotationTransform3" />
             </service>
 
-            <service uid="mesh3Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh3Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform3" />
             </service>
@@ -210,7 +210,7 @@
 
             <service uid="rotation1Srv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
-                    <key uid="matrixE" autoConnect="yes" />
+                    <key uid="matrixE" autoConnect="true" />
                     <key uid="matrixA" />
                     <key uid="matrixD" />
                 </in>
@@ -220,7 +220,7 @@
             <service uid="rotation2Srv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixB" />
-                    <key uid="matrixE" autoConnect="yes" />
+                    <key uid="matrixE" autoConnect="true" />
                     <key uid="matrixE" />
                     <key uid="matrixE" />
                     <key uid="matrixD" />
@@ -232,7 +232,7 @@
             <service uid="rotation3Srv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixC" />
-                    <key uid="matrixE" autoConnect="yes" />
+                    <key uid="matrixE" autoConnect="true" />
                     <key uid="matrixD" />
                     <key uid="matrixD" />
                     <key uid="matrixD" />

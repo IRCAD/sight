@@ -62,9 +62,9 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
+    <service uid="..." type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
         <inout key="image" uid="..."/>
-        <inout key="tf" uid="..." optional="yes" />
+        <inout key="tf" uid="..." optional="true" />
         <config autoWindowing="yes" enableSquareTF="no" />
     </service>
    @endcode

@@ -47,7 +47,7 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::filter::vision::SOpticalFlow" worker="ofWorker  >
-        <in key="timeline" uid="..." autoConnect="yes" />
+        <in key="timeline" uid="..." autoConnect="true" />
         <config latency="333" scaleFactor="3.6" />
      </service>
    @endcode

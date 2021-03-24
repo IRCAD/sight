@@ -39,7 +39,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="yes">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
         <in key="matrix" uid="..." />
         <config layer="default" resource="..." depth="-32.0" />
     </service>

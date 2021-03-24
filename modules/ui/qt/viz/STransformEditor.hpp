@@ -41,7 +41,7 @@ namespace sight::module::ui::qt::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::viz::STransformEditor" autoConnect="no">
+    <service uid="..." type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false">
         <inout key="matrix" uid="..."/>
         <translation enabled="no" min="-300"/>
         <rotation enabled="yes" min="-180" max="180" />

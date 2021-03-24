@@ -171,7 +171,7 @@
             </scene>
         </service>
 
-        <service uid="videoDMAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDMAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="imageDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -188,7 +188,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="imageVideo" />
             <config layer="default" />
         </service>
@@ -204,7 +204,7 @@
             </scene>
         </service>
 
-        <service uid="videoDAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="snapshotDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -221,7 +221,7 @@
             </scene>
         </service>
 
-        <service uid="videoCAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoCAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="snapshotColor" />
             <config layer="default" />
         </service>
@@ -237,7 +237,7 @@
             </scene>
         </service>
 
-        <service uid="videoIRAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoIRAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="snapshotIR" />
             <config layer="default" />
         </service>

@@ -50,7 +50,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="imageInfo" type="sight::module::ui::qt::image::ImageInfo" autoConnect="yes">
+    <service uid="imageInfo" type="sight::module::ui::qt::image::ImageInfo" autoConnect="true">
         <in key="image" uid="..." />
     </service>
    @endcode

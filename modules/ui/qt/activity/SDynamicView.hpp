@@ -80,7 +80,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="yes" >
+   <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="true" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />

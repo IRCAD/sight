@@ -812,7 +812,7 @@ void IService::autoConnect()
     service::IService::KeyConnectionsMap connectionMap = this->getAutoConnections();
 
     SIGHT_ERROR_IF("The service '" + this->getID() + "'(" + this->getClassname() +
-                   ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
+                   ") is set to 'autoConnect=\"true\"' but is has no object to connect",
                    m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
 
     for(const auto& objectCfg : m_serviceConfig.m_objects)
@@ -843,13 +843,13 @@ void IService::autoConnect()
                     }
                 }
                 SIGHT_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
-                               ") is set to 'autoConnect=\"yes\"' but there is no connection available.",
+                               ") is set to 'autoConnect=\"true\"' but there is no connection available.",
                                connections.empty() && objectCfg.m_autoConnect);
             }
             else
             {
                 SIGHT_ERROR("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
-                            ") is set to 'autoConnect=\"yes\"' but there is no connection available.");
+                            ") is set to 'autoConnect=\"true\"' but there is no connection available.");
             }
 
             data::Object::csptr obj;

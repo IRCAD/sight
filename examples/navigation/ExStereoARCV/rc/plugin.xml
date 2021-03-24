@@ -274,7 +274,7 @@
                 </scene>
             </service>
 
-            <service uid="LVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="LVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage1" />
                 <config layer="video" />
             </service>
@@ -283,7 +283,7 @@
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="LCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="LCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="camera1" />
                 <config layer="default" />
@@ -303,7 +303,7 @@
                 </scene>
             </service>
 
-            <service uid="RVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="RVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage2" />
                 <config layer="video" />
             </service>
@@ -312,7 +312,7 @@
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
                 <inout key="transform" uid="rightMat" />
                 <in key="calibration" uid="camera2" />
                 <config layer="default" />
@@ -341,7 +341,7 @@
 
             <!-- save poses matrices in a file -->
             <service uid="matricesWriterSrv" type="sight::module::io::matrix::SMatrixWriter" >
-                <in key="data" uid="matrixTL" autoConnect="no" />
+                <in key="data" uid="matrixTL" autoConnect="false" />
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
@@ -455,7 +455,7 @@
 
             <!-- Aruco tracker service -->
             <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking1" >
-                <in key="timeline" uid="frameTL1" autoConnect="yes" />
+                <in key="timeline" uid="frameTL1" autoConnect="true" />
                 <in key="camera" uid="camera1" />
                 <inout group="tagTL" >
                     <!-- timeline of detected tag(s) -->
@@ -469,7 +469,7 @@
             </service>
 
             <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
-                <in key="timeline" uid="frameTL2" autoConnect="yes" />
+                <in key="timeline" uid="frameTL2" autoConnect="true" />
                 <in key="camera" uid="camera2" />
                 <inout group="tagTL" >
                     <!-- timeline of detected tag(s) -->
@@ -484,7 +484,7 @@
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
             <service uid="registrationSrv" type="sight::module::geometry::vision::SPoseFrom2d" worker="registration" >
-                <in group="markerTL" autoConnect="yes" >
+                <in group="markerTL" autoConnect="true" >
                     <key uid="tagTL1" />
                     <key uid="tagTL2" />
                 </in>
@@ -500,7 +500,7 @@
 
             <!-- This will compute the reprojection error Left -->
             <service uid="leftReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error1" >
-                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="matrixTL" uid="matrixTL" autoConnect="true" />
                 <in key="camera" uid="camera1" />
                 <in key="markerTL" uid="tagTL1" />
                 <inout key="frameTL" uid="frameTL1" />
@@ -508,7 +508,7 @@
             </service>
 
             <service uid="rightReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error2" >
-                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="matrixTL" uid="matrixTL" autoConnect="true" />
                 <in key="extrinsic" uid="extrinsic" />
                 <in key="camera" uid="camera2" />
                 <in key="markerTL" uid="tagTL2" />
@@ -540,7 +540,7 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="matrixReverserSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
-                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                    <key uid="matrix" autoConnect="true" inverse="true" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
@@ -548,7 +548,7 @@
             <!-- to multiply matrices -->
             <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
-                    <key uid="inverseMat" autoConnect="yes" inverse="false" />
+                    <key uid="inverseMat" autoConnect="true" inverse="false" />
                     <key uid="extrinsic" inverse="true" />
                 </in>
                 <inout key="output" uid="rightMat" />

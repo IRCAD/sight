@@ -128,7 +128,7 @@
 
         <!-- PACS CONFIGURATION -->
         <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::SPacsConfigurationInitializer">
-            <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
+            <inout key="config" uid="pacsConfiguration" autoConnect="true" />
             <config
                 localApplicationTitle="${APP_NAME}"
                 pacsHostName="mypacs.mycompany.com"
@@ -142,7 +142,7 @@
         </service>
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
@@ -152,14 +152,14 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
+        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="true">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
-        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
@@ -170,12 +170,12 @@
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="seriesDB" uid="localSeriesDB" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>

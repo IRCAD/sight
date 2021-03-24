@@ -86,8 +86,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
 
         parameterCfg.add("<xmlattr>.replace", key);
 
-        const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
-        const bool optional           = strOptional == "yes" ? true : false;
+        const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
 
         auto obj = _service->getInOut< data::Object>(key);
         if(optional)

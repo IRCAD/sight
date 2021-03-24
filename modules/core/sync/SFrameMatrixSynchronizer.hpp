@@ -51,7 +51,7 @@ namespace sight::module::sync
  * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  *
  * @note
- * `autoConnect="yes"` is required in order to play nice with streams whose timelines might get reset, e.g. when
+ * `autoConnect="true"` is required in order to play nice with streams whose timelines might get reset, e.g. when
  * replaying a recorded video several times.
  *
  * @section Signals Signals
@@ -72,7 +72,7 @@ namespace sight::module::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
+        <service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="true">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />

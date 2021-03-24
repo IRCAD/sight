@@ -107,7 +107,7 @@ namespace sight::module::navigation::openvslam
  * @code{.xml}
         <service type="sight::module::navigation::openvslam::SOpenvslam" worker="trackerWorker" >
             <in key="camera" uid="..." />
-            <in key="timeline" uid="..." autoConnect="yes" />
+            <in key="timeline" uid="..." autoConnect="true" />
             <in key="timeline2" uid="..." />
             <inout key="cameraMatrixTL" uid="..." />
             <out key="pointCloud" uid="..." />

@@ -93,8 +93,8 @@
 
     <xs:simpleType name="AutoConnectType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="yes" />
-            <xs:enumeration value="no" />
+            <xs:enumeration value="true" />
+            <xs:enumeration value="false" />
         </xs:restriction>
     </xs:simpleType>
 

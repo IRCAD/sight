@@ -23,7 +23,7 @@ You can do this by two ways:
 1. in the xml configuration of the service by using the `preset` key. The name should be the _generated name_ aka **without** the "...Preset.json".
 
 ```xml
-   <service uid="videoGrabber" type ="::videoRealSense::SScan" autoConnect="no">
+   <service uid="videoGrabber" type ="::videoRealSense::SScan" autoConnect="false">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />

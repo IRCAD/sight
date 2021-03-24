@@ -67,7 +67,7 @@ namespace activity
  * @section XML XML Configuration
  * @code{.xml}
     <service  type="sight::module::ui::qt::activity::SSequencer">
-        <inout key="seriesDB" uid=""  autoConnect="yes" />
+        <inout key="seriesDB" uid=""  autoConnect="true" />
         <in    key="requirementOverrides" uid="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />

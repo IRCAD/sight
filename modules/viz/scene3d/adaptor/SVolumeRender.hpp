@@ -80,8 +80,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-        <inout key="image" uid="..." autoConnect="yes" />
-        <inout key="tf" uid="..." optional="yes" />
+        <inout key="image" uid="..." autoConnect="true" />
+        <inout key="tf" uid="..." optional="true" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
                 samples="1024" preintegration="yes" dynamic="false" ao="no" colorBleeding="no" shadows="no"

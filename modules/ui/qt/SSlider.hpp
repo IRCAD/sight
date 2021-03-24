@@ -48,7 +48,7 @@ namespace sight::module::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::SSlider" autoConnect="no"/>
+    <service uid="..." type="sight::module::ui::qt::SSlider" autoConnect="false"/>
         <editBox>false</editBox>
         <resetButton>false</resetButton>
         <defaultValue>200</defaultValue>

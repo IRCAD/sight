@@ -46,21 +46,21 @@
             <parameter replace="WID_PARENT" by="TFScene"/>
         </service>
 
-        <service uid="WindowLevel" type="sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
+        <service uid="WindowLevel" type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
             <inout key="image" uid="${IMAGE}" />
-            <inout key="tf" uid="${TF}" optional="yes" />
+            <inout key="tf" uid="${TF}" optional="true" />
         </service>
 
-        <service uid="TransparencyEditor" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
+        <service uid="TransparencyEditor" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="true" >
             <inout key="image" uid="${IMAGE}" />
         </service>
 
         <service uid="TransferFunctionEditor" type="sight::module::ui::qt::image::STransferFunction" >
-            <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
+            <inout key="tfPool" uid="TFPool" autoConnect="true"/>
             <out key="tf" uid="${TF}" />
         </service>
 
-        <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="true" worker="COMPUTING_THREAD">
             <in key="image" uid="${IMAGE}" />
             <inout key="histogram" uid="histogram" />
             <binsWidth>5.0</binsWidth>

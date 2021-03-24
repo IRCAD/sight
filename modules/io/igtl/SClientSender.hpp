@@ -35,7 +35,7 @@ namespace sight::module::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="sight::module::io::igtl::SClientSender" autoConnect="yes">
+ * <service uid="..." type="sight::module::io::igtl::SClientSender" autoConnect="true">
  *      <server>127.0.0.1:4242</server>
  *      <in group="objects">
  *           <key uid="..." deviceName="device01" />

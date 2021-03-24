@@ -74,7 +74,7 @@ protected:
     /**
      * @brief Configure action.
      * @code{.xml}
-       <service type="ui::base::IAction" impl="::uiData::SSnapshot" autoConnect="no" />
+       <service type="ui::base::IAction" impl="::uiData::SSnapshot" autoConnect="false" />
        @endcode
      */
     void configuring() override;

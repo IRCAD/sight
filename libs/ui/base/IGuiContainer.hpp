@@ -66,7 +66,7 @@ class ISlideViewBuilder;
  * @section XML Example of XML configuration
  *
  * @code{.xml}
-   <service uid="subView1" type="sight::module::ui::base::SView" autoConnect="no" >
+   <service uid="subView1" type="sight::module::ui::base::SView" autoConnect="false" >
        <gui>
            <layout type="ui::base::LineLayoutManager" >
                <orientation value="horizontal" />

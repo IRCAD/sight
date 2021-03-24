@@ -46,7 +46,7 @@ namespace sight::module::geometry::base
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>
-                <key uid="..." autoConnect="yes"/>
+                <key uid="..." autoConnect="true"/>
             </in>
             <inout key="output" uid="..." />
        </service>

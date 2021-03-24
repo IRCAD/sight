@@ -321,7 +321,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="Frame" />
                 <config layer="video" />
             </service>
@@ -338,22 +338,22 @@
                 <config layer="default" length="30" />
             </service>
 
-            <service uid="pointCloudAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+            <service uid="pointCloudAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="mesh" uid="openvslamPointCloud" />
                 <config layer="default" autoresetcamera="no" color="#ffffffff" radius="3.0f" textureName="circle.dds" />
             </service>
 
-            <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
                 <inout key="transform" uid="CameraPoseMatrix" />
                 <config layer="default" transform="cameraMatrixTrf" />
             </service>
 
-            <service uid="frustumAdp" type="sight::module::viz::scene3d::adaptor::SFrustum" autoConnect="yes" >
+            <service uid="frustumAdp" type="sight::module::viz::scene3d::adaptor::SFrustum" autoConnect="true" >
                 <in key="camera" uid="camera" />
                 <config layer="default" transform="cameraMatrixTrf" near="1" far="50" />
             </service>
 
-            <service uid="frustumListAdp" type="sight::module::viz::scene3d::adaptor::SFrustumList" autoConnect="yes" >
+            <service uid="frustumListAdp" type="sight::module::viz::scene3d::adaptor::SFrustumList" autoConnect="true" >
                 <in key="camera" uid="camera" />
                 <in key="transform" uid="CameraPoseMatrix" />
                 <config layer="default" nbMax="10000" near="1.f" far="20.f" />
@@ -467,7 +467,7 @@
 
             <service uid="openvslamSrv" type="sight::module::navigation::openvslam::SOpenvslam" worker="openvslamWorker" >
                 <in key="camera" uid="camera" />
-                <in key="timeline" uid="Timeline" autoConnect="yes" />
+                <in key="timeline" uid="Timeline" autoConnect="true" />
                 <inout key="cameraMatrixTL" uid="CamMatrixTimeline" />
                 <out key="pointCloud" uid="openvslamPointCloud" />
             </service>
@@ -604,4 +604,3 @@
         </config>
     </extension>
 </plugin>
-

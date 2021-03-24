@@ -47,7 +47,7 @@ namespace sight::module::filter::vision
     <service uid="..." type="sight::module::filter::vision::SDepthImageMasking" worker="...">
         <in key="maskImage" uid="..." />
         <in key="videoImage" uid="..." />
-        <in key="depthImage" uid="..." autoConnect="yes" />
+        <in key="depthImage" uid="..." autoConnect="true" />
         <inout key="foregroundImage" uid="..." />
     </service>
    @endcode

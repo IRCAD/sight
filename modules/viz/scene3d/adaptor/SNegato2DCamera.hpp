@@ -54,8 +54,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
-        <inout key="image" uid="..." autoConnect="yes" />
-        <inout key="tf" uid="..." optional="yes" />
+        <inout key="image" uid="..." autoConnect="true" />
+        <inout key="tf" uid="..." optional="true" />
         <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
    </service>
    @endcode
@@ -63,7 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
- *      autoConnect="yes".
+ *      autoConnect="true".
  * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *

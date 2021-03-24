@@ -44,7 +44,7 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
        <service type="sight::module::filter::image::SFlip">
-           <in key="source" uid="..." autoConnect="yes" />
+           <in key="source" uid="..." autoConnect="true" />
            <out key="target" uid="..." />
        </service>
    @endcode

@@ -53,7 +53,7 @@ namespace adaptor
  * @code{.xml}
    <service uid="..." type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
-       <in key="currentTF" uid="..." optional="yes" />
+       <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />

@@ -170,7 +170,7 @@
                 </scene>
             </service>
 
-            <service uid="negatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes" >
+            <service uid="negatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="true" >
                 <inout key="image" uid="backgroundImage" />
                 <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
             </service>
@@ -179,12 +179,12 @@
                 <config renderer="default" style="InteractorStyle2DForNegato" />
             </service>
 
-            <service uid="backgroundPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes" >
+            <service uid="backgroundPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="true" >
                 <inout key="image" uid="backgroundImage" />
                 <config renderer="default" picker="picker" />
             </service>
 
-            <service uid="foregroundPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes" >
+            <service uid="foregroundPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="true" >
                 <inout key="image" uid="frontImage" />
                 <config renderer="default" picker="picker" />
             </service>
@@ -195,7 +195,7 @@
 
             <!-- Adaptor to show background and front image merge in the same view. -->
             <service uid="imagesBlendAdp" type="visuVTKAdaptor::SImagesBlend" >
-                <inout group="image" autoConnect="yes" >
+                <inout group="image" autoConnect="true" >
                     <key uid="backgroundImage" opacity="1.0" tfalpha="no" />
                     <key uid="frontImage" opacity="1.0" tfalpha="yes" />
                 </inout>
@@ -204,7 +204,7 @@
 
             <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
             <service uid="imagesProbeCursorAdp" type="visuVTKAdaptor::SImagesProbeCursor" >
-                <inout group="image" autoConnect="yes" >
+                <inout group="image" autoConnect="true" >
                     <key uid="backgroundImage" name="background" />
                     <key uid="frontImage" name="front" />
                 </inout>
@@ -224,12 +224,12 @@
                 </scene>
             </service>
 
-            <service uid="BGNegatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes" >
+            <service uid="BGNegatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="true" >
                 <inout key="image" uid="backgroundImage" />
                 <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
             </service>
 
-            <service uid="BGPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes" >
+            <service uid="BGPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="true" >
                 <inout key="image" uid="backgroundImage" />
                 <config renderer="default" picker="picker" />
             </service>
@@ -251,12 +251,12 @@
                 </scene>
             </service>
 
-            <service uid="FGNegatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes" >
+            <service uid="FGNegatoAdp" type="visuVTKAdaptor::SNegatoMPR" autoConnect="true" >
                 <inout key="image" uid="frontImage" />
                 <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
             </service>
 
-            <service uid="FGPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes" >
+            <service uid="FGPickerAdp" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="true" >
                 <inout key="image" uid="frontImage" />
                 <config renderer="default" picker="picker" />
             </service>
@@ -284,18 +284,18 @@
                 <inout key="image" uid="backgroundImage" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="backgroundImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Editors of background image -->
             <service uid="imageInfoSrv" type="sight::module::ui::qt::image::ImageInfo" >
-                <in key="image" uid="backgroundImage" autoConnect="yes" />
+                <in key="image" uid="backgroundImage" autoConnect="true" />
             </service>
 
             <service uid="windowLevelSrv" type="sight::module::ui::qt::image::WindowLevel" >
-                <inout key="image" uid="backgroundImage" autoConnect="yes" />
+                <inout key="image" uid="backgroundImage" autoConnect="true" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
@@ -305,16 +305,16 @@
 
             <!-- Editors of front image -->
             <service uid="imageInfo2Srv" type="sight::module::ui::qt::image::ImageInfo" >
-                <in key="image" uid="frontImage" autoConnect="yes" />
+                <in key="image" uid="frontImage" autoConnect="true" />
             </service>
 
-            <service uid="imageTransparencySrv" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
-                <inout key="image" uid="frontImage" autoConnect="yes" />
+            <service uid="imageTransparencySrv" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="true" >
+                <inout key="image" uid="frontImage" autoConnect="true" />
                 <shortcut value="V" />
             </service>
 
             <service uid="windowLevel2Srv" type="sight::module::ui::qt::image::WindowLevel" >
-                <inout key="image" uid="frontImage" autoConnect="yes" />
+                <inout key="image" uid="frontImage" autoConnect="true" />
             </service>
 
             <!-- Service to forward signal from backgroundImage to front image -->

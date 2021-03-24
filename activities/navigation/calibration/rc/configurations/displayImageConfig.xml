@@ -39,7 +39,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
             <config layer="video" radius="0.75" color="#6997BB" fixedSize="true" textureName="circle.dds"/>

@@ -80,7 +80,7 @@ public:
      * @code{.xml}
            <service uid="toolbar2" type="ui::base::IToolBar"
      * impl="::sight::module::ui::base::SToolBar"
-     * autoConnect="no" >
+     * autoConnect="false" >
                <gui>
                    <layout>
                        <menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/>

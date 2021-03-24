@@ -48,7 +48,7 @@ namespace sight::module::sync
  *
  * @code{.xml}
         <service type="sight::module::sync::SFrameUpdater">
-            <in key="frameTL" uid="..." autoConnect="yes" />
+            <in key="frameTL" uid="..." autoConnect="true" />
             <inout key="frame" uid="..." />
        </service>
    @endcode

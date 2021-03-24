@@ -371,8 +371,8 @@
                 <inout key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <inout key="tfPools" uid="volumeTFPools" />
-                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="yes" />
-                <inout key="currentTF" uid="volumeCurrentTF" optional="yes" />
+                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
+                <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
                 <inout key="mergedTF" uid="volumeTF" />
                 <state executable="false" />
             </service>
@@ -429,7 +429,7 @@
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
@@ -493,7 +493,7 @@
             </service>
 
             <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+            <service uid="computeHistogramSrv" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="true" worker="COMPUTING_THREAD" >
                 <in key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
@@ -516,7 +516,7 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes" >
+            <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true" >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>

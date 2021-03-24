@@ -115,11 +115,11 @@
 
             <!--
                 3D visualization service of medical images:
-                Here, the service attribute 'autoConnect="yes"' allows the rendering to listen the modification of
+                Here, the service attribute 'autoConnect="true"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
             <service uid="imageRenderSrv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="image" autoConnect="yes" />
+                <in key="image" uid="image" autoConnect="true" />
             </service>
 
             <!-- ******************************* Start services ***************************************** -->

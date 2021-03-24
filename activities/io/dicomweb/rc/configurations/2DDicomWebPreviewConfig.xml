@@ -39,17 +39,17 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="true">
             <inout key="image" uid="image" />
             <config renderer="default" picker="picker" text="" color="#FFFFFF" />
         </service>
 
-        <service uid="seriesAdaptor" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="seriesAdaptor" type="visuVTKAdaptor::SNegatoMPR" autoConnect="true">
             <inout key="image" uid="image" />
             <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
         </service>
 
-        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="true">
             <in key="object" uid="${objectID}" />
             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
         </service>

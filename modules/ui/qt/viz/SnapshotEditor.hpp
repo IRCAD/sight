@@ -85,7 +85,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="snapshotEditor" type="sight::module::ui::qt::viz::SnapshotEditor" autoConnect="no" />
+       <service uid="snapshotEditor" type="sight::module::ui::qt::viz::SnapshotEditor" autoConnect="false" />
        @endcode
      */
     void configuring() override;

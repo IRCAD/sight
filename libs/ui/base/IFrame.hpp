@@ -51,7 +51,7 @@ namespace sight::ui::base
  * Example of configuration
  * @code{.xml}
    <service uid="mainFrame" type="ui::base::IFrame" impl="::sight::module::ui::base::SFrame"
- * autoConnect="no">
+ * autoConnect="false">
      <window onclose="notify" />
      <gui>
          <frame>

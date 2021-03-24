@@ -41,7 +41,7 @@ namespace com
  *
  *
  * @code{.xml}
-   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="no">
+   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="false">
         <slots>
             <slot>hasSlotsId/slotKey</slot>
             <slot>hasSlots2Id/slot2Key</slot>

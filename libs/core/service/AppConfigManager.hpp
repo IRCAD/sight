@@ -33,6 +33,8 @@
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
 
+#include <boost/property_tree/ptree.hpp>
+
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -169,7 +171,7 @@ private:
     void createObjects(core::runtime::ConfigurationElement::csptr cfgElem);
 
     /// Parses services and create all the services that can be instantiated.
-    void createServices(core::runtime::ConfigurationElement::csptr cfgElem);
+    void createServices(const boost::property_tree::ptree& cfgElem);
 
     /// Creates a single service from its configuration.
     service::IService::sptr createService(const Config& srvConfig);

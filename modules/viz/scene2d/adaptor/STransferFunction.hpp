@@ -48,7 +48,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="tf2" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="yes">
+   <service uid="tf2" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="true">
        <inout key="tf" uid="..." />
        <inout key="viewport" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
