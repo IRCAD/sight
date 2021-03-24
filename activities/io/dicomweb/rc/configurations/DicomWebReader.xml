@@ -140,7 +140,7 @@
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>

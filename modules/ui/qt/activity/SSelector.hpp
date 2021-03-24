@@ -58,7 +58,7 @@ namespace activity
    <service uid="editor_newActivity" type="sight::module::ui::qt::activity::SSelector" >
        <filter>
            <mode>include</mode>
-           <id>2DVisualizationActivity</id>
+           <id>activity_viz_negato</id>
            <id>3DVisualizationActivity</id>
            <id>VolumeRenderingActivity</id>
        </filter>

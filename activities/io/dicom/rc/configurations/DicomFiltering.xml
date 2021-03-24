@@ -145,7 +145,7 @@
         <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::base::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
-            <parameter replace="ICON_PATH" by="module_ui_icons/Preview.svg" />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Preview.svg" />
         </service>
 
         <service uid="action_convertSeries" type="sight::module::io::dicom::SDicomSeriesConverter">
@@ -163,7 +163,7 @@
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>

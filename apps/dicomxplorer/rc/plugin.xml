@@ -11,9 +11,9 @@
     <extension implements="::sight::service::extension::AppConfigParameters">
         <id>VRRenderAppBase</id>
         <parameters>
-            <param name="appName" value="DicomXplorer 0.9.7" />
+            <param name="appName" value="DicomXplorer" />
             <param name="appIconPath" value="dicomxplorer/vrrender.ico" />
-            <param name="appVersion" value="@PROJECT_VERSION@" />
+            <param name="appVersion" value="@SIGHT_VERSION@" />
         </parameters>
     </extension>
 

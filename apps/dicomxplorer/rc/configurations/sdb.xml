@@ -36,9 +36,6 @@
                     <menuItem name="Export" icon="sight::module::ui::icons/Export.svg" />
                     <separator />
                     <menuItem name="2D visualization" icon="sight::module::ui::icons/icon-2D.png" />
-                    <menuItem name="3D visualization" icon="sight::module::ui::icons/icon-3D.png" />
-                    <menuItem name="Volume rendering" icon="sight::module::ui::icons/icon-VR.png" />
-                    <menuItem name="Blend" icon="sight::module::ui::icons/icon-blend.png" />
                     <separator />
                     <menuItem name="DICOM PACS Reader" icon="sight::module::ui::icons/Pull.svg" />
                     <menuItem name="DICOM PACS Writer" icon="sight::module::ui::icons/Push.svg" />
@@ -51,9 +48,6 @@
                 <menuItem sid="action_import" start="yes" />
                 <menuItem sid="action_exportSeries" start="yes" />
                 <menuItem sid="action_2DVisualization" start="yes" />
-                <menuItem sid="action_3DVisualization" start="yes" />
-                <menuItem sid="action_volumeRendering" start="yes" />
-                <menuItem sid="action_blend" start="yes" />
                 <menuItem sid="action_dicomPacsReader" start="yes" />
                 <menuItem sid="action_dicomPacsWriter" start="yes" />
                 <menuItem sid="action_dicomFiltering" start="yes" />
@@ -75,7 +69,7 @@
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
                 <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
@@ -110,49 +104,6 @@
                 <filter>
                     <mode>include</mode>
                     <id>2DVisualization</id>
-                </filter>
-            </config>
-        </service>
-
-
-        <service uid="action_3DVisualization" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
-            <in key="series" uid="selections" />
-            <config>
-                <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
-                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                </parameters>
-                <filter>
-                    <mode>include</mode>
-                    <id>3DVisualization</id>
-                </filter>
-            </config>
-        </service>
-
-        <service uid="action_volumeRendering" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
-            <in key="series" uid="selections" />
-            <config>
-                <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
-                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                </parameters>
-                <filter>
-                    <mode>include</mode>
-                    <id>VolumeRendering</id>
-                </filter>
-            </config>
-        </service>
-
-        <service uid="action_blend" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
-            <in key="series" uid="selections" />
-            <config>
-                <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
-                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                </parameters>
-                <filter>
-                    <mode>include</mode>
-                    <id>Blend</id>
                 </filter>
             </config>
         </service>

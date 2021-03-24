@@ -81,7 +81,7 @@ namespace activity
                  Filter mode 'exclude' allows all activity id-s excepted given ones. -->
             <filter>
                 <mode>include</mode>
-                <id>2DVisualizationActivity</id>
+                <id>activity_viz_negato</id>
                 <id>3DVisualizationActivity</id>
                 <id>VolumeRenderingActivity</id>
             </filter>
@@ -89,7 +89,7 @@ namespace activity
             <!-- Definition of quick association between series type and an activity id.
                  This mapping is used by launchSeries slot (see the function to have few details ) -->
             <quickLaunch>
-                <association type="data::ImageSeries" id="2DVisualizationActivity" />
+                <association type="data::ImageSeries" id="activity_viz_negato" />
                 <association type="data::ModelSeries" id="3DVisualizationActivity" />
             </quickLaunch>
         </config>

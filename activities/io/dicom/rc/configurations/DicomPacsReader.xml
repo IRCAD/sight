@@ -108,7 +108,7 @@
         <service uid="action_editPacsConfiguration" type="sight::module::ui::base::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
-            <parameter replace="ICON_PATH" by="module_ui_icons/Settings.svg"  />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
         </service>
 
         <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
@@ -152,11 +152,11 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller">
+        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
+            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
         <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
@@ -179,7 +179,7 @@
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>

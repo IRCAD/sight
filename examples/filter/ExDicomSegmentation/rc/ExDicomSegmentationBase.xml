@@ -120,7 +120,7 @@
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
-                <config id="2DSimpleConfig2" type="sight::data::ImageSeries" >
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries" >
                     <extract path="@image" pattern="imageID" />
                 </config>
                 <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />

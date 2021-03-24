@@ -2,7 +2,7 @@ sight_add_target( config_viz_image TYPE MODULE )
 
 
 add_dependencies(config_viz_image 
-                 2DVisualizationActivity
+                 activity_viz_negato
                  config_viz_scene2d
                  data
                  module_service

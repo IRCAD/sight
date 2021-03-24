@@ -19,8 +19,7 @@ add_dependencies(ExDicomSegmentation
                  module_io_dicom
                  module_io_vtk
                  module_io_atoms
-                 3DVisualizationActivity
-                 2DVisualizationActivity
+                 activity_viz_negato
                  module_filter_image
                  module_data
                  module_filter_mesh
