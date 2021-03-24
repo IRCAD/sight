@@ -1,13 +1,13 @@
  # sight::modules::service
 
 Initializes service, serviceConfig, appConfig & appConfigParameters extension points registries.
-Contains also `.xsd` files to perform checks of each of the previously nammed configurations.
+Contains also `.xsd` files to perform checks of each of the previously named configurations.
 
 ## Classes
 
 - **Plugin**: initializes/cleans service, config, appConfig & appConfigParameters extension points.
 
-## Ressouces
+## Resources
 
 - **serviceFactory.xsd**: XML schema definition for service factory.
 - **serviceConfig.xsd**: XML schema definition for service config.
