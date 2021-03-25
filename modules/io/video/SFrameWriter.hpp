@@ -32,7 +32,7 @@ namespace sight::module::io::video
 {
 
 /**
- * @brief Thi service allows to save the timeline frames in files in a folder.
+ * @brief Allows to save the timeline frames in files, in a folder.
  *
  * @note The method 'updating' allows to save the timeline frame with the current timestamp. If you want to save all the
  *       frame when they are pushed in the timeline, you must use the slots 'startRecord' and 'stopRecord'
