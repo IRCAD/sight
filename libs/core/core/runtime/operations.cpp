@@ -175,7 +175,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
         if(module == nullptr)
         {
-            SIGHT_ERROR("Could not find module '" + moduleFolder + "'");
+            SIGHT_DEBUG("Could not find module '" + moduleFolder + "'");
             return std::filesystem::path();
         }
         return getModuleResourcePath(module, pathWithoutModule );
