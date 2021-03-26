@@ -10,4 +10,5 @@ add_dependencies(config_viz_scene3d
                  module_ui_qt
                  module_ui_viz
                  module_viz_scene2d
+                 viz_scene2d
 )

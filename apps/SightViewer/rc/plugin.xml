@@ -365,7 +365,7 @@
 
             <!-- TF manager -->
             <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
+                <appConfig id="TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
                 <inout key="image" uid="image" />
