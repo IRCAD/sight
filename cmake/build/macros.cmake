@@ -333,6 +333,13 @@ macro(fwCppunitTest FWPROJECT_NAME)
     set(multiValueArgs)
     cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
+    if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        endif()
+        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
+    endif()
+
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
@@ -347,7 +354,9 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_SOURCES}
         ${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp
         ${${FWPROJECT_NAME}_RC_FILES}
-        ${${FWPROJECT_NAME}_CMAKE_FILES})
+        ${${FWPROJECT_NAME}_CMAKE_FILES}
+        ${${FWPROJECT_NAME}_PCH_LIB}
+    )
 
     # Do it here because add ".bin" suffix change the ${FWPROJECT_NAME} (!!!)
     if(UNIX)
@@ -419,6 +428,22 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     # Adds project into folder test
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "test")
+
+    if(SIGHT_ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header(${FWPROJECT_NAME} pch.hpp)
+            if(SIGHT_VERBOSE_PCH)
+                message(STATUS "Use custom precompiled header")
+            endif()
+        else()
+            use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+            if(SIGHT_VERBOSE_PCH)
+                message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+            endif()
+        endif()
+        # CMAKE_POSITION_INDEPENDENT_CODE sets "-fPIE" but we also needs the "-fPIC" used in the PCH
+        target_compile_options (${FWPROJECT_NAME} PRIVATE "-fPIC")
+    endif()
 
     if(MSVC_IDE)
         # create the launch config for the current test

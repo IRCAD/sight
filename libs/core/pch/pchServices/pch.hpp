@@ -32,6 +32,9 @@
 #include <core/com/Slots.hxx>
 #endif // _WIN32
 
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
+
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
