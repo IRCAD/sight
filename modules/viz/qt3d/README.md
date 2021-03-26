@@ -1,16 +1,18 @@
 # sight::module::viz::qt3d
 
-Sight-to-Qt3d adaptor module.
+**EXPERIMENTAL**
+
+Module that allows to visualize a 3D scene using Qt3D. This module is not mature yet to build any real-world application and is a preview of what we could achieve with Qt3D. For now, please stick with `sight::module::viz::scene3d` which is stable and complete.
 
 ## Services
 
-- **SMaterial**: Convenience class that converts data::Material to Qt3D.
-- **SMesh**: Convenience class that converts data::Mesh to Qt3D.
-- **SRender**: Renders a generic scene with Qt3D API.
+- **SMaterial**: binds a `sight::data::Material` in a Qt3D scene.
+- **SMesh**: displays a `sight::data::Mesh` in a Qt3D scene.
+- **SRender**: renders a 3D scene using Qt3D.
 
 ## Classes
 
-- **WindowInteractor**: Convenience class to manage an interactive `Qt3DExtras::Qt3DWindow` from `ui::base::container::fwContainer::sptr `.
+- **WindowInteractor**: manages an interactive `Qt3DExtras::Qt3DWindow` from `ui::base::container::fwContainer::sptr `.
 
 ## How to use it
 
