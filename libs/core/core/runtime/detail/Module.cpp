@@ -263,7 +263,7 @@ const std::string& Module::getIdentifier() const
 
 const std::string Module::getLibraryName() const
 {
-    return m_library ? m_library->getName() : "";
+    return m_library ? m_library->getName().string() : "";
 }
 
 //------------------------------------------------------------------------------
@@ -315,7 +315,7 @@ void Module::loadLibraries()
             std::string message;
 
             message += "Unable to load module ";
-            message += m_library->getName();
+            message += m_library->getName().string();
             message += ". ";
             message += e.what();
 

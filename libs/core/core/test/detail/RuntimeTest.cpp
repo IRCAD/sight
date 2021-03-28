@@ -32,6 +32,7 @@
 #include <core/runtime/operations.hpp>
 
 #include <filesystem>
+#include <regex>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::detail::ut::RuntimeTest );
@@ -88,21 +89,18 @@ void RuntimeTest::testPosix()
 
 void RuntimeTest::testWin32()
 {
-    const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
+    const auto location = core::runtime::Runtime::get().getWorkingPath() / MODULE_RC_PREFIX;
     auto module         = std::make_shared<Module>(location / "utest-0.1", "utest", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Win32>("sight_utest");
+    auto nativeLibrary = std::make_unique<dl::Win32>("sight_module_utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
-    auto nativeName = nativeLibrary->getNativeName();
+    auto nativeName = nativeLibrary->getName();
 
-    CPPUNIT_ASSERT( std::regex_match("sight_module_utest.dll", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("sight_module_utest", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
+    CPPUNIT_ASSERT_EQUAL( std::string("sight_module_utest"), nativeName);
 
-    auto path = nativeLibrary->getPath();
-    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("utest.dll"), path );
+    auto path = nativeLibrary->getFullPath();
+    CPPUNIT_ASSERT_EQUAL( (core::runtime::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX /
+                           std::filesystem::path("sight_module_utest.dll")).string(), path.string() );
 }
 #endif
 
