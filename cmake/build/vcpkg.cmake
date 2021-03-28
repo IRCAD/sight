@@ -1,11 +1,16 @@
+cmake_minimum_required(VERSION 3.18)
 
 # Packages name and version
 set(SIGHT_DEPS_PACKAGE "sight-vcpkg")
 set(SIGHT_DEPS_PACKAGE_ARCHIVE "${SIGHT_DEPS_PACKAGE}.zip")
 set(SIGHT_DEPS_PACKAGE_URL "https://conan.ircad.fr/artifactory/data/sight-deps/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
 
+if(NOT OUTPUT)
+    set(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/..")
+endif()
+
 # Set sight deps root directory (where the sight deps packages will be installed ) 
-set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.." CACHE PATH "Sight deps root directory")
+set(SIGHT_DEPS_ROOT_DIRECTORY "${OUTPUT}" CACHE PATH "Sight deps root directory")
 mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
 
 # Todo

@@ -133,6 +133,72 @@ build:linux-release-clang:
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
+
+.windows_before:
+  dependencies: []
+  variables:
+    BUILD_TYPE: "Release"
+  before_script:
+    # Merge the branch into dev.
+    - set EXTRA_BRANCH=%CI_COMMIT_REF_NAME%
+    - >            
+      if "%CI_COMMIT_REF_NAME%" NEQ "dev" (
+        if "%CI_COMMIT_REF_NAME%" NEQ "master" (
+          if "%CI_COMMIT_TAG%" EQU "" (
+            git config user.name ${GITLAB_USER_ID}
+            git config user.email ${GITLAB_USER_EMAIL}
+            git fetch --all
+            git checkout dev
+            git reset --hard origin/dev
+            git merge "origin/"%CI_COMMIT_REF_NAME% --no-commit --no-ff
+            set EXTRA_BRANCH=dev
+          )
+        )
+      )
+    - if not exist "%CI_PROJECT_DIR%/install" md "%CI_PROJECT_DIR%/install"
+    - if not exist "%CI_PROJECT_DIR%/build" md "%CI_PROJECT_DIR%/build"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - chcp 1252
+  tags:
+    - shell
+    - windows
+
+.windows_build:
+  extends: .windows_before
+  dependencies: []
+  stage: build
+  script:
+    # Build the project on the merge result.
+    - cd "%CI_PROJECT_DIR%/build"
+    - dir "%CI_PROJECT_DIR%/cmake/build"
+    # Checkout vcpkg packages
+    - call "C:\Program Files\CMake\bin\cmake" -DOUTPUT="C:\Cache" -P "%CI_PROJECT_DIR%\cmake\build\vcpkg.cmake"
+    - >
+      call "C:\Program Files\CMake\bin\cmake" %CI_PROJECT_DIR%
+      -G Ninja
+      -DCMAKE_TOOLCHAIN_FILE=C:\Cache\sight-vcpkg\scripts\buildsystems\vcpkg.cmake
+      -DCMAKE_INSTALL_PREFIX=%CI_PROJECT_DIR%/install
+      -DCMAKE_BUILD_TYPE=Debug
+      -DSIGHT_BUILD_TESTS=ON
+      -DSIGHT_BUILD_DOC=OFF
+      -DSIGHT_ENABLE_PCH=OFF
+    - ninja
+    # Run unit tests.
+    #- git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b "%EXTRA_BRANCH%"
+    #- set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
+    #- ctest --timeout 480 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
+  artifacts:
+    when: always
+    name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
+    paths:
+      - build/ctest.log
+      - build/fwTest.log
+
+build:windows-debug:
+  extends: .windows_build
+  variables:
+    BUILD_TYPE: "Debug"
+
 deploy:pages:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   stage: deploy
