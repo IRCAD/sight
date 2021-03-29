@@ -69,7 +69,7 @@ Module::Module( const std::filesystem::path& location,
     // Post-condition.
     SIGHT_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
-    static const std::regex expr("share/.*");
+    static const std::regex expr("share(?!.*share)/.*");
     const auto strLocation = std::regex_replace(location.string(), expr, MODULE_LIB_PREFIX);
 
     // This may fail if the module does not contain any library, so we ignore the returned error
