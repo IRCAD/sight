@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2017 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,14 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::module::io::matrix supplies services related to read/writer from/to timelines.
+ * @brief       The namespace sight::module::io::matrix contains reader and writer services for basic data::Object
+ * which
+ * doesn't need
+ * external library.
  */
 #pragma once
 
 namespace sight::module::io::matrix
 {
+
 }
