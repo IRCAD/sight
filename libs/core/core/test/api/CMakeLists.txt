@@ -4,7 +4,7 @@ if(UNIX)
     target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="/lib/x86_64-linux-gnu")
     target_link_libraries(coreTest PUBLIC "dl")
 elseif(WIN32)
-    target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="${CAMP_DIR}../../lib")
+    target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="${CMAKE_BINARY_DIR}/bin")
 endif()
 
 target_compile_definitions(coreTest PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")

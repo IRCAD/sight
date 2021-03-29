@@ -69,8 +69,13 @@ Module::Module( const std::filesystem::path& location,
     // Post-condition.
     SIGHT_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
+#ifdef WIN32
+    static const std::regex expr("share(?!.*share)\\\\.*");
+#else
     static const std::regex expr("share(?!.*share)/.*");
-    const auto strLocation = std::regex_replace(location.string(), expr, MODULE_LIB_PREFIX);
+#endif
+    const auto locationNormalized = std::filesystem::weakly_canonical(location);
+    const auto strLocation        = std::regex_replace(locationNormalized.string(), expr, MODULE_LIB_PREFIX);
 
     // This may fail if the module does not contain any library, so we ignore the returned error
     m_libraryLocation = std::filesystem::weakly_canonical(std::filesystem::path(strLocation));

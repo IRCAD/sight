@@ -184,9 +184,9 @@ build:linux-release-clang:
       -DSIGHT_ENABLE_PCH=OFF
     - ninja
     # Run unit tests.
-    #- git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b "%EXTRA_BRANCH%"
-    #- set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
-    #- ctest --timeout 480 --output-on-failure -O ctest.log -E fwRenderOgreTest -j4
+    - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b "%EXTRA_BRANCH%"
+    - set FWTEST_DATA_DIR=%CI_PROJECT_DIR%\build\sight-data
+    - ctest --timeout 480 --output-on-failure -O ctest.log -j8
   artifacts:
     when: always
     name: "%CI_JOB_NAME%-%CI_COMMIT_REF_SLUG%"
