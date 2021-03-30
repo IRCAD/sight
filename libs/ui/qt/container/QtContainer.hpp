@@ -42,7 +42,7 @@ namespace container
 {
 
 /**
- * @brief   Defines the QWidget container for UI.
+ * @brief   Defines the QWidget container.
  *
  */
 

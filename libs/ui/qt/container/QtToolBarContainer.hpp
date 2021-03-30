@@ -41,7 +41,7 @@ namespace container
 {
 
 /**
- * @brief   Defines the Qt toolBar bar container for IHM.
+ * @brief   Defines the Qt toolBar bar container.
  *
  */
 class UI_QT_CLASS_API QtToolBarContainer : public ui::base::container::fwToolBar

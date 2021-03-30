@@ -37,7 +37,7 @@ namespace builder
 {
 
 /**
- * @brief   Defines the generic layout manager for IHM.
+ * @brief   Defines the generic layout manager.
  *
  */
 class UI_QT_CLASS_API MenuBarBuilder : public ui::base::builder::IMenuBarBuilder
