@@ -27,8 +27,6 @@
 #include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Module.hpp>
 #include <core/runtime/detail/Runtime.hpp>
-#include <core/runtime/Extension.hpp>
-#include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 
 #include <filesystem>
@@ -89,7 +87,7 @@ void RuntimeTest::testPosix()
 
 void RuntimeTest::testWin32()
 {
-    const auto location = core::runtime::Runtime::get().getWorkingPath() / MODULE_RC_PREFIX;
+    const auto location = core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_RC_PREFIX;
     auto module         = std::make_shared<Module>(location / "utest-0.1", "utest", "0.1");
 
     auto nativeLibrary = std::make_unique<dl::Win32>("sight_module_utest");
@@ -99,7 +97,7 @@ void RuntimeTest::testWin32()
     CPPUNIT_ASSERT_EQUAL( std::string("sight_module_utest"), nativeName);
 
     auto path = nativeLibrary->getFullPath();
-    CPPUNIT_ASSERT_EQUAL( (core::runtime::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX /
+    CPPUNIT_ASSERT_EQUAL( (core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX /
                            std::filesystem::path("sight_module_utest.dll")).string(), path.string() );
 }
 #endif

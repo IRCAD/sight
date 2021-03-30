@@ -317,7 +317,7 @@ function(use_precompiled_header _target _input)
 
     if(MSVC)
         get_target_property(INPUT_PROJECT_DIR ${_input} PROJECT_DIR)
-        target_include_directories(${_target} PRIVATE "${INPUT_PROJECT_DIR}${_input}" )
+        target_include_directories(${_target} PRIVATE "${INPUT_PROJECT_DIR}" )
 
         set(_pch_header "${INPUT_PROJECT_DIR}/pch.hpp")
         set(_cxx_path "${_pch_binary_dir}")

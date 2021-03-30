@@ -181,7 +181,7 @@ build:linux-release-clang:
       -DCMAKE_BUILD_TYPE=Debug
       -DSIGHT_BUILD_TESTS=ON
       -DSIGHT_BUILD_DOC=OFF
-      -DSIGHT_ENABLE_PCH=OFF
+      -DSIGHT_ENABLE_PCH=ON
     - ninja
     # Run unit tests.
     - git clone --depth 1 https://gitlab-ci-token:%CI_JOB_TOKEN%@git.ircad.fr/Sight/sight-data.git -b "%EXTRA_BRANCH%"
