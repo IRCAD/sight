@@ -1,6 +1,6 @@
 # sight::ui::qt
 
-Contains all needed interfaces, helper classes and ressources to build a Qt interface.
+Contains all needed interfaces, helper classes and resources to build a Qt interface.
 
 ## Files
 
