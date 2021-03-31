@@ -77,4 +77,11 @@ All concrete data classes implements this interface.
 
 - **ProcessObject**: 
 - **Tag**:
-  
+
+## How to use it
+
+### CMake
+
+```cmake
+target_link_libraries( myTarget <PUBLIC|PRIVATE> data)
+```
