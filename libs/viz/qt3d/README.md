@@ -1,6 +1,6 @@
 # sight::viz::qt3d
 
-Contains all needed interfaces, helper classes and ressources to render with the Qt3d API.
+Contains all needed interfaces, helper classes and resources to render with the Qt3d API.
 
 ## Files
 
@@ -10,7 +10,7 @@ Contains all needed interfaces, helper classes and ressources to render with the
 
 ### _CMake_
 
-Contains a template file configured by CMake that defining the location of ressources (GLSL shaders).
+Contains a template file configured by CMake that defining the location of resources (GLSL shaders).
 
 ### _core_
 
