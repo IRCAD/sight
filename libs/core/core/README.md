@@ -14,7 +14,7 @@ Here is the list of folders in this library:
 - **reflection**: core classes to provide type reflection in our data.
 - **runtime**: defines extensions mechanism, discovers and loads modules.
 - **thread**: defines worker threads, timers, and tasks.
-- **tools**: defines utility classes to manipulate types, unique identifiers
+- **tools**: defines utility classes to manipulate types, unique identifiers.
 
 ## How to use it
 

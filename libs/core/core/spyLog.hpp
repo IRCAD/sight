@@ -174,7 +174,7 @@ void SIGHT_TRACE_DEPRECATED();
 /** Trace message macros.  */
 # define SIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
 # define OSIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
-/** Conditionnal trace message macros.  */
+/** Conditional trace message macros.  */
 # define SIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
 # define OSIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
 /**  @} */
@@ -195,7 +195,7 @@ void SIGHT_TRACE_DEPRECATED();
 # define SIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SIGHT_INFO instead. */
 # define OSIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
-/** Conditionnal info message macros.  */
+/** Conditional info message macros.  */
 # define SIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SIGHT_INFO_IF instead. */
 # define OSIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
@@ -206,7 +206,7 @@ void SIGHT_TRACE_DEPRECATED();
 # define SIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SIGHT_WARN instead.  */
 # define OSIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
-/** Conditionnal warning message macros.  */
+/** Conditional warning message macros.  */
 # define SIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SIGHT_WARN_IF instead. */
 # define OSIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
@@ -217,7 +217,7 @@ void SIGHT_TRACE_DEPRECATED();
 # define SIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SIGHT_ERROR instead.  */
 # define OSIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
-/** Conditionnal error message macros.  */
+/** Conditional error message macros.  */
 # define SIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SIGHT_ERROR_IF instead.  */
 # define OSIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
@@ -228,7 +228,7 @@ void SIGHT_TRACE_DEPRECATED();
 # define SIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
 /** @deprecated @sight22, use SIGHT_FATAL instead.  */
 # define OSIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
-/** Conditionnal fatal message macros.  */
+/** Conditional fatal message macros.  */
 # define SIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** @deprecated @sight22, use SIGHT_FATAL_IF instead.  */
 # define OSIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
