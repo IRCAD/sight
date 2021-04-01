@@ -170,7 +170,7 @@ build:linux-release-clang:
   script:
     # Build the project on the merge result.
     - cd "%CI_PROJECT_DIR%/build"
-    - dir "%CI_PROJECT_DIR%/cmake/build"
+    - rmdir /S /Q C:\Cache
     # Checkout vcpkg packages
     - call "C:\Program Files\CMake\bin\cmake" -DOUTPUT="C:\Cache" -P "%CI_PROJECT_DIR%\cmake\build\vcpkg.cmake"
     - >
