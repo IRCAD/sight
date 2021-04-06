@@ -4,9 +4,9 @@ add_dependencies(module_ui_qt module_ui_base module_data)
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Help Multimedia MultimediaWidgets  Qml Quick Widgets QuickWidgets REQUIRED)
 
-target_link_libraries(module_ui_qt PRIVATE Qt5::Core Qt5::Gui Qt5::Help 
-                                                Qt5::Multimedia Qt5::MultimediaWidgets
-                                                Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::QuickWidgets )
+target_link_libraries(module_ui_qt PRIVATE  Qt5::Core Qt5::Gui Qt5::Help 
+                                            Qt5::Multimedia Qt5::MultimediaWidgets
+                                            Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::QuickWidgets )
 
 find_package(glm QUIET REQUIRED)
 target_include_directories(module_ui_qt SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})

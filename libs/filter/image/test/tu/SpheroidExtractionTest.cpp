@@ -19,14 +19,15 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+#ifndef WIN32
 
 #include "SpheroidExtractionTest.hpp"
-
-#include <utestData/generator/Image.hpp>
 
 #include <filter/image/SpheroidExtraction.hpp>
 
 #include <io/itk/itk.hpp>
+
+#include <utestData/generator/Image.hpp>
 
 #include <itkEllipseSpatialObject.h>
 #include <itkImage.h>
@@ -190,3 +191,5 @@ void SpheroidExtractionTest::extractionTest()
 
 } //namespace ut.
 } //namespace sight::filter::image.
+
+#endif

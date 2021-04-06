@@ -1,6 +1,4 @@
 add_subdirectory(eigen)
 add_subdirectory(data)
 add_subdirectory(glm)
-if(UNIX)
-    add_subdirectory(vision)
-endif()
+add_subdirectory(vision)

@@ -5,15 +5,11 @@ find_package(VTK QUIET COMPONENTS vtkFiltersCore REQUIRED)
 
 if(VCPKG_TARGET_TRIPLET)
     # VTK9
-    target_link_libraries(module_filter_mesh PRIVATE 
-        VTK::vtkFiltersCore
-    )
+    target_link_libraries(module_filter_mesh PRIVATE VTK::FiltersCore)
 
 else()
     include(${VTK_USE_FILE})
-    target_link_libraries(module_filter_mesh PRIVATE
-    vtkFiltersCore
-    )
+    target_link_libraries(module_filter_mesh PRIVATE vtkFiltersCore)
 endif()
 
 

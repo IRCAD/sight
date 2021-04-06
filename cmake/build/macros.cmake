@@ -851,7 +851,7 @@ macro(sight_add_target)
     endif()
     
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE")
-        fwExec(${NAME})
+        fwExec(${NAME} CONSOLE ${SIGHT_TARGET_CONSOLE})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "LIBRARY")
         fwLib(${NAME} ${SIGHT_TARGET_OBJECT_LIBRARY})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
