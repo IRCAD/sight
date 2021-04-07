@@ -216,7 +216,7 @@ void CameraTest::convertPixelToWorldSpace()
 
     camera->setProjectionType(::Ogre::ProjectionType::PT_PERSPECTIVE);
     {
-        // Manualy project a point
+        // Manually project a point
         const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
@@ -236,7 +236,7 @@ void CameraTest::convertPixelToWorldSpace()
 
     camera->setProjectionType(::Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
-        // Manualy project a point
+        // Manually project a point
         const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;

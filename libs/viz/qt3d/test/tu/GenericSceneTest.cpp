@@ -22,6 +22,8 @@
 
 #include "GenericSceneTest.hpp"
 
+#include "TestApplication.hpp"
+
 #include "viz/qt3d/core/GenericScene.hpp"
 
 // Registers the fixture into the 'registry'
@@ -62,6 +64,8 @@ void GenericSceneTest::tearDown()
 
 void GenericSceneTest::initializeEmptyScene()
 {
+    TestApplication app;
+
     auto scene    = new sight::viz::qt3d::core::GenericScene(false);
     auto sceneQml = new sight::viz::qt3d::core::GenericScene(true);
 
