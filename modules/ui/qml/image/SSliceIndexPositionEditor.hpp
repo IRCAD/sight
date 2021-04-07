@@ -87,7 +87,7 @@ class MODULE_UI_QML_CLASS_QT_API SSliceIndexPositionEditor : public sight::ui::q
                                                              public data::helper::MedicalImage
 {
 Q_OBJECT
-Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
+Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
 public:
 
     SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor)
@@ -160,7 +160,8 @@ private:
      */
 
     /// Define the slice type, it should only be called before starting from the qml interface
-    void configureSliceIndex(int sliceIndex);
+    void setSliceIndex(int sliceIndex);
+    int getSliceIndex() const;
 
     /// @brief The field IDs for the slice index.
     static const std::string* SLICE_INDEX_FIELDID[ 3 ];
