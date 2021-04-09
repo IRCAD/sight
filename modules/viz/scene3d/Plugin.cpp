@@ -42,7 +42,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     // Redirect Ogre Log to Sight Log.
-    m_logManager = ::Ogre::LogManager::getSingletonPtr();
+    m_logManager = new ::Ogre::LogManager();
     m_log        = m_logManager->createLog("Ogre.log", true, false, false);
     m_listener   = new SightOgreListener();
     m_log->addListener(m_listener);
