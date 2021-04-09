@@ -156,7 +156,8 @@ macro(add_precompiled_header_cpp _target)
     # This also help us to remove some unwanted compile definitions (see pch_msvc_hook function)
     add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
     set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY
-        "${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/${_target}.dir/")
+                          "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${_target}.dir/")
+
 endmacro()
 
 function(add_precompiled_header _target _input)
