@@ -32,7 +32,7 @@ namespace sight::module::geometry::base
 {
 
 /**
- * @brief  Return a pointList containing the position of a landmark on a CrossHair
+ * @brief  Returns a pointList containing the position of a landmark on a CrossHair
  *
  * @section Slots Slots
  * - \b updateSelectedPoint( std::string, size_t ): update selected landmark point position on the crosshair
