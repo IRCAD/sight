@@ -211,6 +211,11 @@ build:windows-debug:
   variables:
     BUILD_TYPE: "Debug"
 
+build:windows-release:
+  extends: .windows_build
+  variables:
+    BUILD_TYPE: "Release"
+
 deploy:pages:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   stage: deploy
