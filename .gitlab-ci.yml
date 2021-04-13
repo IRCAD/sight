@@ -1,5 +1,6 @@
 stages:
   - lint
+  - prebuild
   - build
   - deploy
 
@@ -166,9 +167,9 @@ build:linux-release-clang:
     - $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     - $vcvarspath = &$vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
     - Write-Output "vc tools located at $vcvarspath"
-    - cmd.exe /c "call `"$vcvarspath\VC\Auxiliary\Build\vcvars64.bat`" && set > %temp%\vcvars.txt"
+    - cmd.exe /c "call `"$vcvarspath\VC\Auxiliary\Build\vcvars64.bat`" && set > vcvars.txt"
     - |
-      Get-Content "$env:temp\vcvars.txt" | Foreach-Object {
+      Get-Content "vcvars.txt" | Foreach-Object {
         if ($_ -match "^(.*?)=(.*)$") {
           Set-Content "env:\$($matches[1])" $matches[2]
         }
@@ -177,6 +178,18 @@ build:linux-release-clang:
     - conan
     - windows
 
+prebuild:windows:
+  extends: .windows_before
+  dependencies: []
+  stage: prebuild
+  script:
+    # Checkout vcpkg packages
+    - |
+      if ( Test-Path -Path "$CACHE\sight-vcpkg" ) {
+        Remove-Item -R "$CACHE\sight-vcpkg"
+      }
+    - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake"
+
 .windows_build:
   extends: .windows_before
   dependencies: []
@@ -184,12 +197,6 @@ build:linux-release-clang:
   script:
     # Build the project on the merge result.
     - cd "${env:CI_PROJECT_DIR}/build"
-    - |
-      if ( Test-Path -Path "$CACHE\sight-vcpkg" ) {
-        Remove-Item -R "$CACHE\sight-vcpkg"
-      }
-    # Checkout vcpkg packages
-    - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake"
     - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=ON
     - $env:TMP="$CACHE\tmp"
     - $env:TEMP="$CACHE\tmp"

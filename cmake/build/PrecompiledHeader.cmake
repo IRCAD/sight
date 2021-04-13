@@ -101,6 +101,7 @@ function(pch_msvc_hook variable access value current_list_file stack)
 
 endfunction()
 
+# Only used on Linux
 function(export_all_flags _filename)
     set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
     set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
@@ -115,6 +116,7 @@ function(export_all_flags _filename)
     file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n")
 endfunction()
 
+# Only used on Linux
 function(assign_precompiled_header _target _pch _pch_header)
 
     # Iterate over all source files and request pch usage
