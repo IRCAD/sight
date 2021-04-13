@@ -140,7 +140,6 @@ build:linux-release-clang:
   variables:
     BUILD_TYPE: "Release"
     CACHE: "D:\\gitlab-cache"
-    TOOLCHAIN: "D:\\gitlab-cache\\sight-vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
   before_script:
     # Merge the branch into dev.
     - $EXTRA_BRANCH=${env:CI_COMMIT_REF_NAME}
@@ -158,11 +157,6 @@ build:linux-release-clang:
         }
       }
     - md "${env:CI_PROJECT_DIR}/install"
-    - |
-      if ( Test-Path -Path "${env:CI_PROJECT_DIR}/build" ) {
-        Remove-Item -R "${env:CI_PROJECT_DIR}/build"
-        Write-Output "Cleaned previous build"
-      }
     - md "${env:CI_PROJECT_DIR}/build"
     - $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     - $vcvarspath = &$vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
@@ -183,21 +177,21 @@ prebuild:windows:
   dependencies: []
   stage: prebuild
   script:
-    # Checkout vcpkg packages
-    - |
-      if ( Test-Path -Path "$CACHE\sight-vcpkg" ) {
-        Remove-Item -R "$CACHE\sight-vcpkg"
-      }
+    # Checkout vcpkg packages, the script only downloads if necessary
     - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake"
 
 .windows_build:
   extends: .windows_before
   dependencies: []
+  variables:
+    TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
   stage: build
   script:
+    # Get the archive name from our CMake script
+    - $ARCHIVE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake" '2>&1'
     # Build the project on the merge result.
     - cd "${env:CI_PROJECT_DIR}/build"
-    - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=ON
+    - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$ARCHIVE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=ON
     - $env:TMP="$CACHE\tmp"
     - $env:TEMP="$CACHE\tmp"
     - ninja
