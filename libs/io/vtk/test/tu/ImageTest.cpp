@@ -26,10 +26,6 @@
 
 #include <data/Image.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/File.hpp>
-#include <utestData/generator/Image.hpp>
-
 #include <io/vtk/ImageReader.hpp>
 #include <io/vtk/ImageWriter.hpp>
 #include <io/vtk/MetaImageReader.hpp>
@@ -37,6 +33,10 @@
 #include <io/vtk/VtiImageReader.hpp>
 #include <io/vtk/VtiImageWriter.hpp>
 #include <io/vtk/vtk.hpp>
+
+#include <utestData/Data.hpp>
+#include <utestData/File.hpp>
+#include <utestData/generator/Image.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -449,8 +449,15 @@ void ImageTest::mhdReaderTest()
 
 void ImageTest::mhdWriterTest()
 {
+#if VTK_MAJOR_VERSION >= 9
+    // VTK9 doesn't produce the same output, floats are not rounded in the header and the compressed buffer is
+    // surprisingly bigger
+    const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.mhd" );
+    const std::filesystem::path zRawPath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot-vtk9.zraw" );
+#else
     const std::filesystem::path imagePath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot.mhd" );
     const std::filesystem::path zRawPath( utestData::Data::dir() / "sight/image/mhd/BostonTeapot.zraw" );
+#endif
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
                            std::filesystem::exists(imagePath));
