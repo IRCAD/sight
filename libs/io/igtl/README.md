@@ -1,13 +1,11 @@
-# sight::io::zip
+# sight::io::igtl
 
 Library which implements OpenIGTLink network communication protocol.  
-Please refer to [OpenIGTLink official website](http://openigtlink.org/) for more detailed information about this network protocol
+Please refer to [OpenIGTLink official website](http://openigtlink.org/) for more detailed information about this network protocol.
 
-
-## Classes:
+## Classes
 
 ### Service interfaces
-
 
 The library proposes different base classes to implement services. They bring a semantic on top of `IService`, which allows to query services that match an interface.
 
@@ -18,15 +16,15 @@ The library proposes different base classes to implement services. They bring a 
 
 ## Archiver
 
-These classes are used for the lib internal mechanism
+These classes are used for the lib internal mechanism:
 
 - **MemoryReadArchive**: reads the data from an archive 
 - **MemoryWriteArchive**: write some data in an archive
 
-## Converter 
+## Converters
 
-The purpose of the library is to facilitate the transfer through igtl netwok protocol of sight native data formats. 
-The present converters transform (forward and backward) various sight native data toward igtl specific data format
+The purpose of the library is to facilitate the transfer through igtl network protocol of sight native data formats. 
+The present converters transform (forward and backward) various sight native data toward igtl specific data format.
 
 - **IConverter**: generic interface meant to convert `sight::data` to `::igtl::MessageBase`
 - **TrackingStartConverter**: starts the conversion between the sight data and the igtl message
@@ -54,7 +52,7 @@ The present converters transform (forward and backward) various sight native dat
 - **DataConverter**:  handles the conversion between igtl data and fwData
   Every converter should register to this class, as the DataConverter pattern is a singleton and needs to be called by DataConverter::getInstance()
 - **ImageTypeConverter**: handles image type conversion between igtl data and sight native data
-- **MessageFactory**: creates and registrates igtl messages in the factory.
+- **MessageFactory**: creates and registers igtl messages in the factory.
 - **RawMessage**: OpenIGTLink message in which raw data can be stored
 
 
@@ -62,10 +60,9 @@ The present converters transform (forward and backward) various sight native dat
 
 ## How to use it
 
-Please find a sample of data conversion forward and backward
+Here is a sample of forward and backward data conversion:
 
-```code
-
+```c++
     data::Mesh::sptr mesh  
     DataConverter::sptr converter = DataConverter::getInstance();
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
