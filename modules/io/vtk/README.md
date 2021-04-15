@@ -4,43 +4,37 @@ This module contains services for reading and writing VTK related data.
 
 ## Services
 
-- **SImageReader**
-Reads a VTK image into a sight::data::Image
+- **SImageReader**: reads a VTK image and converts it into a `sight::data::Image`.
 
-- **SImageWriter**
-Writes a VTK image from a sight::data::Image
+- **SImageWriter**: writes a VTK image from a `sight::data::Image`.
 
-- **SImageSeriesReader**
-Reads a VTK images into a sight::data::ImageSeries
+- **SImageSeriesReader**: reads a VTK image series and converts them into a `sight::data::ImageSeries`.
 
-- **SImageSeriesWriter**
-Writes a VTK images from a sight::data::ImageSeries
+- **SImageSeriesWriter**: writes a VTK image series file from a `sight::data::ImageSeries`.
 
-- **SMeshReader**
-Reads a VTK mesh into a sight::data::Mesh
+- **SMeshReader**: reads a VTK mesh and converts it into a `sight::data::Mesh`.
 
-- **SMeshWriter**
-Writes a VTK mesh from a sight::data::Mesh
+- **SMeshWriter**: writes a VTK mesh from a `sight::data::Mesh`.
 
-- **SModelSeriesReader**
-Reads VTK files into ReconstructionDB from a sight::data::ModelSeries
+- **SModelSeriesReader**: reads VTK files and converts them into `ReconstructionDB` from a `sight::data::ModelSeries`.
 
-- **SModelSeriesWriter**
-Writes VTK files from ReconstructionDB from a sight::data::ModelSeries
+- **SModelSeriesWriter**: writes VTK files from `ReconstructionDB` from a `sight::data::ModelSeries`.
 
-- **SModelSeriesObjWriter**
-Same as SModelSeriesWriter, but limited to obj format
+- **SModelSeriesObjWriter**: same as `SModelSeriesWriter`, but limited to `.obj` files.
 
-- **SSeriesDBReader**
-Reads VTK files into a sight::data::SeriesDB
+- **SSeriesDBReader**: reads VTK files and converts them into a `sight::data::SeriesDB`.
 
-## CMake
+## How to use it
+
+### CMake
 
 ```cmake
-
 add_dependencies(myTarget 
     ...
     module_io_vtk
 )
-
 ```
+
+### XML
+
+Please consult the [doxygen](https://sight.pages.ircad.fr/sight) of each service to learn more about its use in xml configurations.
