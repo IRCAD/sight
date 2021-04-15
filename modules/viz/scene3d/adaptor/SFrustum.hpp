@@ -36,7 +36,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor displays the frustum of an data::Camera.
+ * @brief This adaptor displays the frustum of a data::Camera.
  *
  * @section Slots Slots
  * - \b updateVisibility(bool): sets whether the frustum is shown or not.
