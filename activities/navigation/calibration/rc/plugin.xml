@@ -1,4 +1,4 @@
-<plugin id="::sight::activity::navigation::calibration" library="true" >
+<plugin id="sight::activity::navigation::calibration" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::base" />
@@ -110,4 +110,3 @@
     </extension>
 
 </plugin>
-
