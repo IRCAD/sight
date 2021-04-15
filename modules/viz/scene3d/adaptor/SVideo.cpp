@@ -470,17 +470,23 @@ void SVideo::setBilinearFiltering(bool bilinearFiltering)
 {
     m_bilinearFiltering = bilinearFiltering;
 
-    ::Ogre::Pass* ogrePass        = m_material->getTechnique(0)->getPass(0);
-    ::Ogre::TextureUnitState* tus = ogrePass->getTextureUnitState("image");
+    // Only allow updating when the texture has been initialized
+    // Otherwise, we might end up in cases where the slot is called before the
+    // initialization, thus crashing the app
+    if(m_isTextureInit)
+    {
+        ::Ogre::Pass* ogrePass        = m_material->getTechnique(0)->getPass(0);
+        ::Ogre::TextureUnitState* tus = ogrePass->getTextureUnitState("image");
 
-    // Set up texture filtering
-    if( m_bilinearFiltering )
-    {
-        tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
-    }
-    else
-    {
-        tus->setTextureFiltering(::Ogre::TFO_NONE);
+        // Set up texture filtering
+        if( m_bilinearFiltering )
+        {
+            tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        }
+        else
+        {
+            tus->setTextureFiltering(::Ogre::TFO_NONE);
+        }
     }
 }
 
@@ -491,7 +497,13 @@ void SVideo::scale(bool value)
     m_scaling          = value;
     m_forcePlaneUpdate = true;
 
-    this->updating();
+    // Only allow updating when the texture has been initialized
+    // Otherwise, we might end up in cases where the slot is called before the
+    // initialization, thus crashing the app
+    if(m_isTextureInit)
+    {
+        this->updating();
+    }
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.
