@@ -64,6 +64,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created SMaterial.
  * - \b textureName (optional, string, default=""): the name of the Ogre texture the mesh will use.
+ * - \b bilinearFiltering (optional, bool, default=false): whether to use or not bilinear filtering for the texture.
+ * - \b scaling (optional, bool, default=true): whether to scale or not the video to the viewport.
  * - \b radius (optional, float, default=1.f): billboard radius.
  * - \b displayLabel (optional, bool, default=false): display the label points (default = false).
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
@@ -128,6 +130,12 @@ private:
     /// SLOTS: updates 2D coordinates of the pointlist from image space (bottom left) to video space (center center).
     void updatePL();
 
+    /// SLOTS: whether to use or not bilinear filtering
+    void setBilinearFiltering(bool);
+
+    /// SLOTS: whether to scale or not the video to occupy the whole viewport
+    void scale(bool);
+
     /// Cleans scene entities and associated mesh.
     void clearEntity();
 
@@ -158,6 +166,12 @@ private:
     /// Defines the previous image spacing.
     size_t m_previousHeight { 0 };
 
+    /// Defines the previous image size.
+    int m_previousViewportWidth { 0 };
+
+    /// Defines the previous image spacing.
+    int m_previousViewportHeight { 0 };
+
     /// Defines the previous image type.
     core::tools::Type m_previousType;
 
@@ -172,6 +186,15 @@ private:
 
     /// Defines the attached texture adaptor UID used by the point list.
     std::string m_textureName { "" };
+
+    /// Defines whether of not the video texture will use bilinear filtering
+    bool m_bilinearFiltering { false };
+
+    /// Defines the filtering option of the attached texture.
+    bool m_scaling { true };
+
+    /// Whether an update to the current plane is required due to a scaling change or not
+    bool m_forcePlaneUpdate { false };
 
     /// Defines the billboards radius.
     std::string m_radius { "" };
