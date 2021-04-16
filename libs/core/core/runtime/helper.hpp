@@ -115,7 +115,7 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     }
     catch(const boost::property_tree::ptree_bad_path& e)
     {
-        // 2.
+        // 3.
         return defaultValue;
     }
 
@@ -125,7 +125,7 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
         return *value;
     }
 
-    // 3.
+    // 2.
     SIGHT_THROW_EXCEPTION(core::Exception("Wrong value set in path: " + path));
     return defaultValue;
 }
