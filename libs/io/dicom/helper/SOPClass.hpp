@@ -50,7 +50,7 @@ public:
     IO_DICOM_API static std::string getSOPClassName(const std::string& SOPClassUID);
 
     /**
-     * @brief Returns weither the SOP Class is hazardous or not
+     * @brief Returns whether the SOP Class is hazardous or not
      * @param SOPClassUID SOP Class UID
      * @return True if the SOP Class is hazardous
      * @note A hazardous SOP class may contain patient's information even after
