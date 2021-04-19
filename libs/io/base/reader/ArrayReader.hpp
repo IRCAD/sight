@@ -36,10 +36,10 @@ namespace reader
 {
 
 /**
- * @brief   Array Reader. Read file format .raw
+ * @brief   Array Reader. Reads '.raw' files.  
  *
  *
- * Ircad reader to read a data::Array on filesystem in a raw format.
+ * Reads '.raw' files and converts them into a 'sight::data::Array'.
  */
 class IO_BASE_CLASS_API ArrayReader :  public GenericObjectReader< data::Array >,
                                        public data::location::enableSingleFile< IObjectReader >
@@ -49,13 +49,13 @@ public:
 
     SIGHT_DECLARE_CLASS(ArrayReader, GenericObjectReader< data::Array>, io::base::reader::factory::New<ArrayReader>)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API ArrayReader(io::base::reader::IObjectReader::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~ArrayReader();
 
-    /// Read the file with zlib API.
+    /// Reads the file with zlib API.
     IO_BASE_API void read() override;
 
     /// Defines extension supported by this reader ".raw"

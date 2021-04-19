@@ -35,10 +35,9 @@ namespace reader
  * @brief   generic class for all object readers.
  *
  *
- * This class adds 2 methods to the API of IObjectReader. This
- * generic reader test the object type given to the method setObject.
- * And add a new get method getConcreteObject() that returns an object
- * already cast.
+ * This class adds 2 methods to the API of IObjectReader. 
+ * 'setObject' Replaces m_object with the argument casted into DataType.
+ * 'getConcretObject' Returns m_object casted into DataType.
  */
 template<class DATATYPE>
 class GenericObjectReader : virtual public io::base::reader::IObjectReader
@@ -51,7 +50,7 @@ public:
 
     SIGHT_DECLARE_CLASS(GenericObjectReader<DATATYPE>, io::base::reader::IObjectReader)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     GenericObjectReader()
     {
     }
@@ -63,16 +62,16 @@ public:
         return ("");
     }
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     virtual ~GenericObjectReader()
     {
     }
 
     /**
      * @brief m_object setter.
-     * @param[out] obj replace weakptr m_object of the instance reader
+     * @param[out] obj replaces weakptr m_object of the instance reader
      *
-     * This method overload setObject to ensure that given object correspond to DATATYPE
+     * This method overloads setObject to ensure that given object corresponds to DATATYPE
      */
     void setObject( core::tools::Object::sptr obj ) override
     {
@@ -84,7 +83,7 @@ public:
      * @brief m_object getter.
      * @return m_object
      *
-     * This method automatic cast object in correct DataType.
+     * This method automatically cast object in the correct DataType.
      */
     virtual std::shared_ptr< DataType > getConcreteObject()
     {

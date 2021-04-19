@@ -34,10 +34,10 @@ namespace writer
 {
 
 /**
- * @brief   Array Writer. Write file format .raw
+ * @brief   Array Writer. Writes .raw files.
  *
  *
- * Ircad writer to write a data::Array on filesystem in a raw format
+ * Writes 'sight::data::Array' into a '.raw' file.
  */
 class IO_BASE_CLASS_API ArrayWriter :  public GenericObjectWriter< data::Array >,
                                        public data::location::enableSingleFile< io::base::writer::IObjectWriter >
@@ -48,16 +48,16 @@ public:
     SIGHT_DECLARE_CLASS(ArrayWriter, GenericObjectWriter< data::Array>,
                         io::base::writer::factory::New< ArrayWriter >)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API ArrayWriter(io::base::writer::IObjectWriter::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~ArrayWriter();
 
-    /// Read the file with zlib API.
+    /// Writes the file using zlib API.
     IO_BASE_API void write() override;
 
-    /// Defines extension supported by this writer ".raw"
+    /// Defines extensions supported by this writer. Here: ".raw"
     IO_BASE_API std::string extension() override;
 
 };
