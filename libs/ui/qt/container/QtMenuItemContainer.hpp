@@ -41,7 +41,7 @@ namespace container
 {
 
 /**
- * @brief   Defines the Qt menuItem bar container.
+ * @brief   Defines the Qt menu item bar container.
  */
 class UI_QT_CLASS_API QtMenuItemContainer : public ui::base::container::fwMenuItem
 {

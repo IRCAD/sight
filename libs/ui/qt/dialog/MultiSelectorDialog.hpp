@@ -39,7 +39,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   Allows choosing an element among several (selections)
+ * @brief   Allows choosing multiple elements among several selections.
  */
 
 class UI_QT_CLASS_API MultiSelectorDialog : public ui::base::dialog::IMultiSelectorDialog,

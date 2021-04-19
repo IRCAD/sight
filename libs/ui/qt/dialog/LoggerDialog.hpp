@@ -39,7 +39,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   Allows choosing an element among several (selections).
+ * @brief   Defines a dialog showing log information.
  */
 class UI_QT_CLASS_API LoggerDialog : public QDialog,
                                      public ui::base::dialog::ILoggerDialog
