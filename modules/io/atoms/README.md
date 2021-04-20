@@ -4,7 +4,8 @@ Contains services for reading and writing atoms (`sight::atoms::Object`).
 In the process of saving C++ structures from memory to hard drive, this module provides services to load and save `sight::atoms::Object`;
 
 ## Services
-// TODO: add `FilterUnknownActivies`' s description.
+
+- **FilterUnknownActivities**: filters out unknown activities from sight::atoms::Object.
 - **SReader**: loads a `sight::atoms::Object` and converts it into `sight::data::Object`.
 - **SWriter**: converts a `sight::data::Object` into `sight::atoms::Object` and saves it to hard drive.
 
