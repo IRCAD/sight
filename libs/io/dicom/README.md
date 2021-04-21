@@ -10,10 +10,10 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **SeriesDB**: reads / writes a sight::data::SeriesDB from/to DICOM files. It uses internally Series reader / writer
 - **SurfaceSegmentation**: writes a sight::data::ModelSeries to a surface segmentation in DICOM files.
 
-### container
------------------------------------
+### Container
+
 @TODO: describe `container/sr` folder 
------------------------------------
+
 - **DicomCodedAttribute**: represents a DICOM basic coded entry. 
   It stores the four mains attributes : Code Value, Coding Scheme Designator, Coding Scheme Version and Code Meaning.
   
