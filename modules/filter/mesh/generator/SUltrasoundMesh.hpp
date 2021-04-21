@@ -42,16 +42,16 @@ namespace sight::module::filter::mesh
 namespace generator
 {
 /**
- * @brief Generate the mesh used to display the ultrasound image.
+ * @brief Generates the mesh used to display the ultrasound image.
  *
  * @section Slots Slots
  * - \b setIntParameter(int, std::string): Called to modify the simulation parameters.
- *   - depth: Set the depth of the US plane.
- *   - angle: Set angle of the US beam.
- *   - width: Set the width of the US plane.
- *   - deltaDepth: Set the delta depth of the US plane.
+ *   - depth: Sets the depth of the US plane.
+ *   - angle: Sets angle of the US beam.
+ *   - width: Sets the width of the US plane.
+ *   - deltaDepth: Sets the delta depth of the US plane.
  * - \b setBoolParameter(bool, std::string): Called to modify the simulation parameters.
- *   - shape: Use a rectangle or an US beam.
+ *   - shape: rectangle or US beam.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -62,7 +62,7 @@ namespace generator
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [sight::data::Mesh] : the generate US plane.
+ * - \b mesh [sight::data::Mesh] : the generated US plane.
  *
  * @subsection Configuration Configuration:
  * - \b resolutionX (optional, default=25u) : resolution in X of the US plane.
