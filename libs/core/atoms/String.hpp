@@ -32,7 +32,7 @@ namespace sight::atoms
 {
 
 /**
- * @brief Class represented a String
+ * @brief Class representing a String.
  *
  */
 class ATOMS_CLASS_API String : public Base
