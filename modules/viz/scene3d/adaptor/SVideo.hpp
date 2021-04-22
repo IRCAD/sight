@@ -169,7 +169,7 @@ private:
     /// Defines the previous viewport width.
     int m_previousViewportWidth { 0 };
 
-    /// Defines the previous image spacing.
+    /// Defines the previous viewport height.
     int m_previousViewportHeight { 0 };
 
     /// Defines the previous image type.
