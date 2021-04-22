@@ -166,7 +166,7 @@ private:
     /// Defines the previous image spacing.
     size_t m_previousHeight { 0 };
 
-    /// Defines the previous image size.
+    /// Defines the previous viewport width.
     int m_previousViewportWidth { 0 };
 
     /// Defines the previous image spacing.
