@@ -41,7 +41,7 @@ namespace sight::module::ui::qt::calibration
 {
 
 /**
- * @brief   This editor allows to add images into a data::Vector from an data::FrameTL.
+ * @brief   This editor allows to add images to a data::Vector from a data::FrameTL.
  *
  * @section Slots Slots
  * - \b add(core::HiResClock::HiResClockType): .

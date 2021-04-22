@@ -40,7 +40,7 @@ namespace com
 {
 
 /**
- * @brief This editor shows a button and send a signal when it is clicked.
+ * @brief This editor shows a button and sends a signal when it is clicked.
  *
  * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  *
