@@ -269,19 +269,9 @@ void SVideo::updating()
         defaultMat->copyDetailsTo(m_material);
 
         // Set the texture to the main material pass
-        ::Ogre::Pass* ogrePass        = m_material->getTechnique(0)->getPass(0);
-        ::Ogre::TextureUnitState* tus = ogrePass->getTextureUnitState("image");
+        this->updateTextureFiltering();
 
-        // Set up texture filtering
-        if( m_bilinearFiltering )
-        {
-            tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        }
-        else
-        {
-            tus->setTextureFiltering(::Ogre::TFO_NONE);
-        }
-
+        ::Ogre::TextureUnitState* tus = m_material->getTechnique(0)->getPass(0)->getTextureUnitState("image");
         tus->setTexture(m_texture);
 
         if(tf)
@@ -299,7 +289,7 @@ void SVideo::updating()
     sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, true);
 
     if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
-        // If scaling is disable and one of the viewport coordinate is modified
+        // If scaling is disabled and one of the viewport coordinate is modified
         // Then we need to trigger an update of the viewport displaying the texture
         || (!m_scaling
             && (viewport->getActualWidth() != m_previousViewportWidth
@@ -475,18 +465,24 @@ void SVideo::setBilinearFiltering(bool bilinearFiltering)
     // initialization, thus crashing the app
     if(m_isTextureInit)
     {
-        ::Ogre::Pass* ogrePass        = m_material->getTechnique(0)->getPass(0);
-        ::Ogre::TextureUnitState* tus = ogrePass->getTextureUnitState("image");
+        this->updateTextureFiltering();
+    }
+}
 
-        // Set up texture filtering
-        if( m_bilinearFiltering )
-        {
-            tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        }
-        else
-        {
-            tus->setTextureFiltering(::Ogre::TFO_NONE);
-        }
+//------------------------------------------------------------------------------
+
+void SVideo::updateTextureFiltering()
+{
+    ::Ogre::TextureUnitState* tus = m_material->getTechnique(0)->getPass(0)->getTextureUnitState("image");
+
+    // Set up texture filtering
+    if( m_bilinearFiltering )
+    {
+        tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    }
+    else
+    {
+        tus->setTextureFiltering(::Ogre::TFO_NONE);
     }
 }
 
