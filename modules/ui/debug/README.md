@@ -8,6 +8,12 @@ This module contains editors and actions for debugging purposes.
 - **ComponentsTree**: shows module information via an action.
 - **ClassFactoryRegistryInfo**: shows services registered in the factory via an action.
 
+### action
+This sub-folder contains classes defining some actions.
+
+- **ClassFactoryRegistryInfo**: implements an action to show services registered in a factory.
+- **ComponentsTree**: implements an action that shows a module's information.
+
 ## CMake
 
 ```cmake
