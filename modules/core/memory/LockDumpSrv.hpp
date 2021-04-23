@@ -32,7 +32,7 @@ namespace sight::module::memory
 {
 
 /**
- * @brief  This service performs dumps-locks on objects. They are unlocked when the service stops.
+ * @brief This service performs dumps-locks on objects. They are unlocked when the service stops.
  *
  * @section XML XML Configuration
  *
