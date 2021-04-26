@@ -110,13 +110,6 @@ if(NOT VCPKG_TARGET_TRIPLET)
         list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
     endif()
 
-    # Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
-    file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
-    foreach(LIB_CONFIG ${LIB_CONFIGS})
-        message(STATUS "include: ${LIB_CONFIG}")
-        include("${LIB_CONFIG}")
-    endforeach()
-
     set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
     mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
@@ -273,11 +266,19 @@ install(
     dev
 )
 
+# install CppUnitConfig.cmake in a modules folder.
+install( FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake"
+    DESTINATION
+      ${FWCONFIG_PACKAGE_LOCATION}/modules
+    COMPONENT
+      dev
+  )
+
 # Install some files needed for the build
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
-    "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+    "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
     "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
     "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
@@ -303,6 +304,14 @@ install(
 )
 
 if(WIN32)
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build/windows
+      COMPONENT
+        dev
+    )
     install(
       FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
@@ -345,6 +354,8 @@ elseif(UNIX)
     install(
       FILES
       "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
+      "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_exe.sh.in"
+      "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_test.sh.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/build/linux
       COMPONENT
@@ -353,6 +364,7 @@ elseif(UNIX)
     install(
       FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
+        
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
@@ -360,9 +372,18 @@ elseif(UNIX)
     )
 
     install(
-      FILES
+      PROGRAMS
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
+      COMPONENT
+        dev
+    )
+
+    install(
+      FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux/template_exe.sh.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install/linux

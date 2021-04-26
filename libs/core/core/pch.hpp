@@ -45,12 +45,18 @@
 #include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/throw_exception.hpp>
 
+#include <cstdint>
+#include <exception>
+#include <filesystem>
+#include <functional>
+#include <future>
 #include <iostream>
 #include <iterator>
 #include <map>
 #include <memory>
 #include <string>
 #include <typeinfo>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 

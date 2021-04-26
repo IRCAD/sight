@@ -1,5 +1,5 @@
 <extension implements="::sight::service::extension::AppConfig" >
-    <id>SightViewer_TransferFunctionManagerWindow_AppCfg</id>
+    <id>TransferFunctionManagerWindow_AppCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />

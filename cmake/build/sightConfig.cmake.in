@@ -18,6 +18,7 @@ if(UNIX)
         COPYONLY
     )
     list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
 endif()
 
 setExternalLibrariesDir()
