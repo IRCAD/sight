@@ -123,28 +123,20 @@ macro(initProject PRJ_NAME PRJ_TYPE)
     set(${FWPROJECT_NAME}_HEADERS)
     set(${FWPROJECT_NAME}_SOURCES)
 
-    set(SUBDIRS ${ARGN})
-    list(LENGTH SUBDIRS NB_SUBDIRS)
-    if(NB_SUBDIRS EQUAL 0)
-        list(APPEND SUBDIRS ${PRJ_SOURCE_DIR})
+    file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx")
+    file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx")
+    
+    if (NOT "${PRJ_TYPE}" STREQUAL "TEST")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/api")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/api")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
     endif()
-
-    foreach(SUBDIR ${SUBDIRS})
-        file(GLOB_RECURSE HEADERS "${SUBDIR}/*.hpp" "${SUBDIR}/*.h" "${SUBDIR}/*.hxx")
-        file(GLOB_RECURSE SOURCES "${SUBDIR}/*.cpp" "${SUBDIR}/*.c" "${SUBDIR}/*.cxx")
-        
-        if (NOT "${PRJ_TYPE}" STREQUAL "TEST")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/api")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/api")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
-        endif()
-        
-        list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
-        list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
-    endforeach()
+    
+    list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
+    list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
 
     set (${FWPROJECT_NAME}_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
     set (${FWPROJECT_NAME}_DIR       ${${FWPROJECT_NAME}_DIR}  PARENT_SCOPE)
@@ -488,9 +480,9 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            $<BUILD_INTERFACE:${${FWPROJECT_NAME}_PCH_LIB}>)
 
-        add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${TARGET_OBJECT_LIB}> ${${TARGET_NAME}_PCH_LIB})
+        add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${TARGET_OBJECT_LIB}> $<BUILD_INTERFACE:${${TARGET_NAME}_PCH_LIB}>)
 
         target_include_directories(${TARGET_OBJECT_LIB} PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -507,7 +499,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            $<BUILD_INTERFACE:${${FWPROJECT_NAME}_PCH_LIB}>)
         target_include_directories(${FWPROJECT_NAME} PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>

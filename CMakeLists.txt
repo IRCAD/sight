@@ -38,6 +38,11 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+option(SIGHT_ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
+option(SIGHT_VERBOSE_PCH  "Display debug messages to help debugging PCH" OFF)
+mark_as_advanced(SIGHT_ENABLE_PCH)
+mark_as_advanced(SIGHT_VERBOSE_PCH )
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
@@ -52,11 +57,6 @@ set(SIGHT_TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, su
 mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
 set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
 mark_as_advanced(SIGHT_TESTS_FILTER)
-
-option(SIGHT_ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
-option(SIGHT_VERBOSE_PCH  "Display debug messages to help debugging PCH" OFF)
-mark_as_advanced(SIGHT_ENABLE_PCH)
-mark_as_advanced(SIGHT_VERBOSE_PCH )
 
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
@@ -227,7 +227,10 @@ setExternalLibrariesDir()
 get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
 
 # For now, use a hardcoded list, we may compute this later from SIGHT_COMPONENTS 
-set(SIGHT_COMPONENTS "core;pchCore;data;pchData;activity;service;pchServices;pchServicesOmp;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_zip;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_vtk;io_opencv;io_dimse;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_pcl;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_flaticons;config_viz_scene3d;activity_navigation_calibration")
+set(SIGHT_COMPONENTS "core;data;activity;service;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_zip;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_vtk;io_opencv;io_dimse;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_flaticons;config_viz_scene3d;activity_navigation_calibration")
+if(NOT WIN32)
+  list(APPEND SIGHT_COMPONENTS "module_io_pcl")
+endif()
 
 if(SIGHT_ENABLE_OPENVSLAM)
   list(APPEND SIGHT_COMPONENTS "navigation_openvslam" "module_navigation_openvslam")
@@ -392,6 +395,9 @@ elseif(UNIX)
     )
 endif()
 
+if(MSVC)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/cmake/install/windows)
+endif()
 
 ########################################################################################################################
 # Misc generators
