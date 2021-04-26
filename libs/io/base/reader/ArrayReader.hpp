@@ -36,7 +36,7 @@ namespace reader
 {
 
 /**
- * @brief   Array Reader. Reads '.raw' files.  
+ * @brief   Array Reader. Reads '.raw' files.
  *
  *
  * Reads '.raw' files and converts them into a 'sight::data::Array'.

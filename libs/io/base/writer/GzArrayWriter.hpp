@@ -34,7 +34,7 @@ namespace writer
 {
 
 /**
- * @brief   Array Writer. Write .raw.gz files. 
+ * @brief   Array Writer. Write .raw.gz files.
  *
  *
  * Writes 'sight::data::Array' into a '.raw.gz' file.

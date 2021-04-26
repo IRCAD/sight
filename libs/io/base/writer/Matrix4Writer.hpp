@@ -35,7 +35,7 @@ namespace writer
 {
 
 /**
- * @brief   Writer for transformation of 3D Matrix. Writes .trf files. 
+ * @brief   Writer for transformation of 3D Matrix. Writes .trf files.
  *
  *
  * Writes 'sight::data::Matrix4' into a '.trf' file.

@@ -35,7 +35,7 @@ namespace reader
 {
 
 /**
- * @brief   Reader for transformation of 3D Matrix. Read .trf files. 
+ * @brief   Reader for transformation of 3D Matrix. Read .trf files.
  *
  *
  * Reads '.trf' files and converts them into a 'sight::data::Matrix4'.

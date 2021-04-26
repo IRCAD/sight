@@ -37,7 +37,7 @@ namespace writer
 {
 
 /**
- * @brief   Image Writer. Writes .raw.gz files. 
+ * @brief   Image Writer. Writes .raw.gz files.
  *
  *
  * Writes `sight::data::Image` into a `.raw.gz` file.

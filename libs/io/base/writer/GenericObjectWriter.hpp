@@ -34,7 +34,7 @@ namespace writer
 /**
  * @brief   generic class for all object writers.
  *
- * This class adds 2 methods to the API of IObjectWriter. 
+ * This class adds 2 methods to the API of IObjectWriter.
  * 'setObject' Replaces m_object with the argument casted into DataType.
  * 'getConcretObject' Returns m_object casted into DataType.
  */
