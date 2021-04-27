@@ -178,7 +178,7 @@ prebuild:windows:
   stage: prebuild
   script:
     # Checkout vcpkg packages, the script only downloads if necessary
-    - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake"
+    - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake"
 
 .windows_build:
   extends: .windows_before
@@ -188,7 +188,7 @@ prebuild:windows:
   stage: build
   script:
     # Get the archive name from our CMake script
-    - $ARCHIVE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\vcpkg.cmake" '2>&1'
+    - $ARCHIVE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     # Build the project on the merge result.
     - cd "${env:CI_PROJECT_DIR}/build"
     - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$ARCHIVE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=ON
