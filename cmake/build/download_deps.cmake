@@ -4,16 +4,15 @@
 
 cmake_minimum_required(VERSION 3.18)
 
-# Set sight deps root directory (where the sight deps packages will be installed ) 
-set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps" CACHE PATH "Sight deps root directory")
-mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
-
 if(WIN32)
     set(SIGHT_DEPS_BASENAME "sight-vcpkg")
     set(SIGHT_DEPS_COMMIT "b1d40499")
     set(SIGHT_DEPS_EXTENSION ".zip")
 
     set(SIGHT_DEPS_PACKAGE_HASH "c4adcde58ca6d513d901d341efffc64123e706e1be41e97405eb9b365dd54adf")
+                
+    # By default, we avoid to download binary packages inside the build tree on windows
+    set(OUTPUT ".")
 else()
     set(SIGHT_DEPS_BASENAME "sight-deps-${CMAKE_BUILD_TYPE}-19.0.0-16")
     set(SIGHT_DEPS_COMMIT "g5b9e69b")
@@ -30,6 +29,9 @@ else()
         # Falback for other build type
         set(SIGHT_DEPS_PACKAGE_HASH "bb1464671ed43672f2698696b6fd80645442f2af69455638b54b02f6f351c5dd")
     endif()
+        
+    # Command line arguments used to specify the output directory
+    set(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps")
 endif()
 
 # Packages name and version
@@ -37,16 +39,15 @@ set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-${SIGHT_DEPS_COMMIT}${SIGHT_DEPS_
 set(SIGHT_DEPS_PACKAGE_ARCHIVE "${SIGHT_DEPS_PACKAGE}${SIGHT_DEPS_EXTENSION}")
 set(SIGHT_DEPS_PACKAGE_URL "https://conan.ircad.fr/artifactory/data/sight-deps/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
 
-# Command line arguments used in the CI/CD to get the name of the downloaded package
+# Command line argument used in the CI/CD to get the name of the downloaded package
 if(GET_ARCHIVE_FOLDER)
     message("${SIGHT_DEPS_PACKAGE}")
     return()
 endif()
 
-# Command line arguments used to specify the output directory
-if(NOT OUTPUT)
-    set(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/..")
-endif()
+# Set sight deps root directory (where the sight deps packages will be installed ) 
+set(SIGHT_DEPS_ROOT_DIRECTORY "${OUTPUT}" CACHE PATH "Sight deps root directory")
+mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
 
 # Download and install package, if needed
 get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
