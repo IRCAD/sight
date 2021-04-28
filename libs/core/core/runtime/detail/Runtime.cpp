@@ -98,7 +98,7 @@ void Runtime::addModules( const std::filesystem::path& repository )
     {
         const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules( repository );
         std::for_each( modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1) );
-        static const std::regex expr("share/\\w*");
+        static const std::regex expr("share[\\\\/]\\w*");
         const auto libRepoStr = std::regex_replace(repository.string(), expr, MODULE_LIB_PREFIX);
         m_repositories.push_back(std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)));
     }
