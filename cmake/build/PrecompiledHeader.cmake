@@ -56,13 +56,6 @@
 
 include(CMakeParseArguments)
 
-if(SIGHT_ENABLE_PCH)
-    if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        # We need 3.7 because of DEPFILE in add_custom_command
-        cmake_minimum_required(VERSION 3.7)
-    endif()
-endif()
-
 macro(combine_arguments _variable)
   set(_result "")
   foreach(_element ${${_variable}})
@@ -108,6 +101,7 @@ function(pch_msvc_hook variable access value current_list_file stack)
 
 endfunction()
 
+# Only used on Linux
 function(export_all_flags _filename)
     set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
     set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
@@ -122,6 +116,7 @@ function(export_all_flags _filename)
     file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n")
 endfunction()
 
+# Only used on Linux
 function(assign_precompiled_header _target _pch _pch_header)
 
     # Iterate over all source files and request pch usage
@@ -158,13 +153,13 @@ function(assign_precompiled_header _target _pch _pch_header)
 endfunction()
 
 macro(add_precompiled_header_cpp _target)
-
     # Add an "object" library to compile the pch
     # That allows to share the pch, targets using this pch can then link with the pch.obj thanks to this fake library
     # This also help us to remove some unwanted compile definitions (see pch_msvc_hook function)
     add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
     set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY
-        "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/")
+                          "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${_target}.dir/")
+
 endmacro()
 
 function(add_precompiled_header _target _input)
@@ -176,11 +171,12 @@ function(add_precompiled_header _target _input)
 
     set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
 
-    set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/include/${_target}")
-    make_directory("${_cxx_path}")
-    set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/include/${_target}/pch.hpp")
+    set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}")
+    set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp")
     set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
     set(_pch_cxx_pdb "${_cxx_path}/${_input_we}.pdb")
+
+    set_target_properties(${_target} PROPERTIES PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
     # Iterate over all source files and request pch usage
     get_target_property(sources ${_target} SOURCES)
@@ -212,7 +208,7 @@ function(add_precompiled_header _target _input)
         set(_pch_compile_flags "")
         if(_source STREQUAL "${_PCH_SOURCE_CXX}")
             set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \
-                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\\include\\${_target}\"")
+                                    \"/I${CMAKE_CURRENT_SOURCE_DIR}\"")
             set(_pch_source_cxx_found TRUE)
             set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
 
@@ -319,15 +315,15 @@ function(add_precompiled_header _target _input)
 endfunction()
 
 function(use_precompiled_header _target _input)
-    cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
     get_target_property(_pch_binary_dir ${_input} BINARY_DIR)
 
     if(MSVC)
-        target_include_directories(${_target} PRIVATE "${${_input}_PROJECT_DIR}/include/${_input}" )
+        get_target_property(INPUT_PROJECT_DIR ${_input} PROJECT_DIR)
+        target_include_directories(${_target} PRIVATE "${INPUT_PROJECT_DIR}" )
 
-        set(_pch_header "${${_input}_PROJECT_DIR}/include/${_input}/pch.hpp")
-        set(_cxx_path "${_pch_binary_dir}/include/${_input}")
+        set(_pch_header "${INPUT_PROJECT_DIR}/pch.hpp")
+        set(_cxx_path "${_pch_binary_dir}")
         set(_pch_cxx_pch "${_cxx_path}/pch.pch")
 
         # Iterate over all source files and request pch usage

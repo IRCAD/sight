@@ -289,11 +289,10 @@ bool loadLibrary(const std::string& identifier)
             s_LIBRARIES[identifier] = library;
             return true;
         }
-        catch (const RuntimeException& e)
+        catch (const RuntimeException& )
         {
             // Fail silently and potentially try in the next repository
         }
-
     }
     SIGHT_ERROR("Could not load library '" + identifier);
 

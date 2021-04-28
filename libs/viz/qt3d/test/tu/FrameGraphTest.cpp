@@ -22,6 +22,8 @@
 
 #include "FrameGraphTest.hpp"
 
+#include "TestApplication.hpp"
+
 #include "viz/qt3d/core/FrameGraph.hpp"
 
 #include <QCameraSelector>
@@ -71,6 +73,8 @@ void FrameGraphTest::tearDown()
 
 void FrameGraphTest::initializeFrameGraph()
 {
+    TestApplication app;
+
     auto frameGraph = new sight::viz::qt3d::core::FrameGraph();
 
     CPPUNIT_ASSERT(frameGraph != nullptr);

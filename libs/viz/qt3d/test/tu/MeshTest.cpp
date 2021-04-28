@@ -22,6 +22,8 @@
 
 #include "MeshTest.hpp"
 
+#include "TestApplication.hpp"
+
 #include "viz/qt3d/core/GenericScene.hpp"
 #include "viz/qt3d/data/Mesh.hpp"
 
@@ -69,6 +71,8 @@ void MeshTest::tearDown()
 
 void MeshTest::setCubeMesh()
 {
+    TestApplication app;
+
     // Arranges a cube data::Mesh and a generic scene.
     auto scene = new sight::viz::qt3d::core::GenericScene(false);
     scene->setCamera(scene->getCamera());
@@ -157,6 +161,8 @@ void MeshTest::setCubeMesh()
 
 void MeshTest::centerCameraOnCube()
 {
+    TestApplication app;
+
     // Arranges a cube data::Mesh and a generic scene.
     const auto scene  = new sight::viz::qt3d::core::GenericScene(false);
     const auto camera = scene->getCamera();

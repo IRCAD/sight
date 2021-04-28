@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,15 +19,24 @@
  *
  ***********************************************************************/
 
-/**
- * @brief       The namespace sight::module::io::matrix contains reader and writer services for basic data::Object
- * which
- * doesn't need
- * external library.
- */
 #pragma once
 
-namespace sight::module::io::matrix
-{
+#include <QGuiApplication>
 
-}
+class TestApplication : QGuiApplication
+{
+public:
+    TestApplication() :
+        QGuiApplication(s_argc, s_argv)
+    {
+    }
+
+private:
+#if defined(__linux)
+    static inline char* s_argv[] = {"TestApplication", "-platform", "offscreen", nullptr};
+    static inline int s_argc = 3;
+#else
+    static inline char* s_argv[] = {"TestApplication", 0};
+    static inline int s_argc = 1;
+#endif
+};

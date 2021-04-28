@@ -57,7 +57,7 @@ SceneTest::~SceneTest()
 void SceneTest::setUp()
 {
     // Don't output the log to the terminal and delete the file when the test is done.
-    ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
+    Ogre::LogManager* logMgr = new Ogre::LogManager();
     logMgr->createLog("OgreTest.log", true, false, true);
 
     m_ogreRoot = Utils::getOgreRoot();
