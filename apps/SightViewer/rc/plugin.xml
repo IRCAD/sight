@@ -12,7 +12,6 @@
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::sight::service::extension::Config" >
         <id>SightViewer_jsonReader_SrvCfg</id>
@@ -365,7 +364,7 @@
 
             <!-- TF manager -->
             <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
+                <appConfig id="TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
                 <inout key="image" uid="image" />

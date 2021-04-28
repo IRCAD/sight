@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
     po::options_description options("Sight application launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("module-path,B", "Adds a module path")
+        ("module-path,B", po::value(&modulePaths), "Adds a module path")
     ;
 
     // Log options
