@@ -117,10 +117,17 @@ void SSliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sag
 
 //-----------------------------------------------------------------------------
 
-void SSliceIndexPositionEditor::configureSliceIndex(int sliceIndex)
+void SSliceIndexPositionEditor::setSliceIndex(int sliceIndex)
 {
     m_orientation = static_cast< Orientation >(sliceIndex);
     this->updateSliceTypeFromImg(m_orientation);
+}
+
+//-----------------------------------------------------------------------------
+
+int SSliceIndexPositionEditor::getSliceIndex() const
+{
+    return static_cast< int >(m_orientation);
 }
 
 //-----------------------------------------------------------------------------

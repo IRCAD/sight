@@ -59,13 +59,14 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto execPath   = ::boost::dll::program_location().remove_filename();
+        const auto execPath = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
-        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core");
+        const auto actualPath       = core::tools::os::getSharedLibraryPath("sight_core.dll");
         const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
 #else
-        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core").replace_extension().replace_extension();
+        const auto actualPath =
+            core::tools::os::getSharedLibraryPath("sight_core").replace_extension().replace_extension();
         const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
                                       "libsight_core.so";
 #endif
@@ -91,7 +92,7 @@ void Os::getSharedLibraryPath()
     auto handle = ::boost::dll::shared_library(campPath.string());
     CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle );
 
-    CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));
+    CPPUNIT_ASSERT_EQUAL(fs::weakly_canonical(campPath), core::tools::os::getSharedLibraryPath("camp"));
 }
 
 } // namespace ut

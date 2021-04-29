@@ -123,28 +123,20 @@ macro(initProject PRJ_NAME PRJ_TYPE)
     set(${FWPROJECT_NAME}_HEADERS)
     set(${FWPROJECT_NAME}_SOURCES)
 
-    set(SUBDIRS ${ARGN})
-    list(LENGTH SUBDIRS NB_SUBDIRS)
-    if(NB_SUBDIRS EQUAL 0)
-        list(APPEND SUBDIRS ${PRJ_SOURCE_DIR})
+    file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx")
+    file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx")
+    
+    if (NOT "${PRJ_TYPE}" STREQUAL "TEST")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/api")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/api")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
     endif()
-
-    foreach(SUBDIR ${SUBDIRS})
-        file(GLOB_RECURSE HEADERS "${SUBDIR}/*.hpp" "${SUBDIR}/*.h" "${SUBDIR}/*.hxx")
-        file(GLOB_RECURSE SOURCES "${SUBDIR}/*.cpp" "${SUBDIR}/*.c" "${SUBDIR}/*.cxx")
-        
-        if (NOT "${PRJ_TYPE}" STREQUAL "TEST")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/api")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
-            list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/api")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
-            list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
-        endif()
-        
-        list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
-        list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
-    endforeach()
+    
+    list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
+    list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
 
     set (${FWPROJECT_NAME}_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
     set (${FWPROJECT_NAME}_DIR       ${${FWPROJECT_NAME}_DIR}  PARENT_SCOPE)
@@ -166,18 +158,18 @@ macro(initProject PRJ_NAME PRJ_TYPE)
 endmacro()
 
 
-macro(configureProject FWPROJECT_NAME)
+macro(configureProject FWPROJECT_NAME )
     string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
 
-    if(${FWPROJECT_NAME}_OBJECT_LIB)
-        set(TARGET_NAME ${FWPROJECT_NAME_OBJECT_LIB})
+    if(TARGET_OBJECT_LIB)
+        set(BUILD_TARGET_NAME ${TARGET_OBJECT_LIB})
     else()
-        set(TARGET_NAME ${FWPROJECT_NAME})
+        set(BUILD_TARGET_NAME ${FWPROJECT_NAME})
     endif()
 
     set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${SIGHT_VERSION} SOVERSION ${SIGHT_API_VERSION})
 
-    target_compile_definitions(${TARGET_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
+    target_compile_definitions(${BUILD_TARGET_NAME} PRIVATE "${PROJECT_NAME_UPCASE}_EXPORTS")
 
     # Get CMake target type (not Sight one)
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
@@ -441,8 +433,10 @@ macro(fwCppunitTest FWPROJECT_NAME)
                 message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
             endif()
         endif()
-        # CMAKE_POSITION_INDEPENDENT_CODE sets "-fPIE" but we also needs the "-fPIC" used in the PCH
-        target_compile_options (${FWPROJECT_NAME} PRIVATE "-fPIC")
+        if(UNIX)
+            # CMAKE_POSITION_INDEPENDENT_CODE sets "-fPIE" but we also needs the "-fPIC" used in the PCH
+            target_compile_options (${FWPROJECT_NAME} PRIVATE "-fPIC")
+        endif()
     endif()
 
     if(MSVC_IDE)
@@ -464,27 +458,33 @@ macro(fwCppunitTest FWPROJECT_NAME)
 endmacro()
 
 macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
+    
+    if(${OBJECT_LIBRARY})
+        set(TARGET_OBJECT_LIB ${FWPROJECT_NAME}_obj)
+        set(TARGET_NAME ${TARGET_OBJECT_LIB})
+    else()
+        set(TARGET_NAME ${FWPROJECT_NAME})
+    endif()
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
-        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
-            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
+            add_precompiled_header_cpp(${TARGET_NAME})
         endif()
-        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
+        set(${TARGET_NAME}_PCH_LIB $<TARGET_OBJECTS:${${TARGET_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
     if(${OBJECT_LIBRARY})
-        set(FWPROJECT_NAME_OBJECT_LIB ${FWPROJECT_NAME}_obj)
 
-        add_library(${FWPROJECT_NAME_OBJECT_LIB} OBJECT
+        add_library(${TARGET_OBJECT_LIB} OBJECT
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            $<BUILD_INTERFACE:${${FWPROJECT_NAME}_PCH_LIB}>)
 
-        add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME_OBJECT_LIB}> ${${FWPROJECT_NAME}_PCH_LIB})
+        add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${TARGET_OBJECT_LIB}> $<BUILD_INTERFACE:${${TARGET_NAME}_PCH_LIB}>)
 
-        target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC
+        target_include_directories(${TARGET_OBJECT_LIB} PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
@@ -492,14 +492,14 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         target_include_directories(${FWPROJECT_NAME} PUBLIC
             $<INSTALL_INTERFACE:include>
         )
-        target_link_libraries(${FWPROJECT_NAME} PUBLIC ${FWPROJECT_NAME_OBJECT_LIB})
+        target_link_libraries(${FWPROJECT_NAME} PUBLIC ${TARGET_OBJECT_LIB})
     else()
         add_library(${FWPROJECT_NAME} SHARED
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            $<BUILD_INTERFACE:${${FWPROJECT_NAME}_PCH_LIB}>)
         target_include_directories(${FWPROJECT_NAME} PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
@@ -541,7 +541,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     set(TARGETS_TO_EXPORT ${FWPROJECT_NAME})
 
     if(${OBJECT_LIBRARY})
-        set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${FWPROJECT_NAME_OBJECT_LIB})
+        set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${TARGET_OBJECT_LIB})
     endif()
     install(
         TARGETS ${TARGETS_TO_EXPORT} 
@@ -598,19 +598,13 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
     if(SIGHT_ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
-        
-        if(${OBJECT_LIBRARY})
-            set(TARGET_NAME ${FWPROJECT_NAME_OBJECT_LIB})
-        else()
-            set(TARGET_NAME ${FWPROJECT_NAME})
-        endif()
-        if("${${FWPROJECT_NAME}_PCH_TARGET}" STREQUAL "${FWPROJECT_NAME}")
+        if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
             add_precompiled_header(${TARGET_NAME} pch.hpp)
             if(SIGHT_VERBOSE_PCH)
                 message(STATUS "Use custom precompiled header")
             endif()
         else()
-            use_precompiled_header(${TARGET_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+            use_precompiled_header(${TARGET_NAME} ${${TARGET_NAME}_PCH_TARGET})
             if(SIGHT_VERBOSE_PCH)
                 message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
             endif()
@@ -795,20 +789,26 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
     endif()
 endmacro()
 
-function(getPchTarget TARGET TARGET_DIR TYPE PCH)
+function(getPchTarget TARGET TARGET_DIR TYPE PCH OBJECT_LIBRARY)
+
+    if(${OBJECT_LIBRARY})
+        set(TARGET_NAME ${TARGET}_obj)
+    else()
+        set(TARGET_NAME ${TARGET})
+    endif()
 
     if(NOT PCH STREQUAL "ON")
         # Use pch from an another target
-        set(${TARGET}_PCH_TARGET ${PCH} PARENT_SCOPE)
+        set(${TARGET_NAME}_PCH_TARGET ${PCH} PARENT_SCOPE)
     elseif(EXISTS "${TARGET_DIR}/pch.hpp")
         # Custom pch
-        set(${TARGET}_PCH_TARGET ${TARGET} PARENT_SCOPE)
+        set(${TARGET_NAME}_PCH_TARGET ${TARGET_NAME} PARENT_SCOPE)
     else()
         # Default pch
         if( TYPE STREQUAL "MODULE" )
-            set(${TARGET}_PCH_TARGET pchServices PARENT_SCOPE)
+            set(${TARGET_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
         else()
-            set(${TARGET}_PCH_TARGET pchCore PARENT_SCOPE)
+            set(${TARGET_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
         endif()
     endif()
 
@@ -839,13 +839,11 @@ macro(sight_add_target)
     
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(SIGHT_ENABLE_PCH AND SIGHT_TARGET_TYPE AND SIGHT_TARGET_PCH)
-        set(${NAME}_PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-
-        getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH})
+        getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH} ${SIGHT_TARGET_OBJECT_LIBRARY})
     endif()
     
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE")
-        fwExec(${NAME})
+        fwExec(${NAME} CONSOLE ${SIGHT_TARGET_CONSOLE})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "LIBRARY")
         fwLib(${NAME} ${SIGHT_TARGET_OBJECT_LIBRARY})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")

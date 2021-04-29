@@ -22,6 +22,8 @@
 
 #include "MaterialTest.hpp"
 
+#include "TestApplication.hpp"
+
 #include "viz/qt3d/data/Material.hpp"
 
 #include <data/Material.hpp>
@@ -70,6 +72,8 @@ void MaterialTest::tearDown()
 
 void MaterialTest::initializeMaterial()
 {
+    TestApplication app;
+
     auto sightMaterial = data::Material::New();
     auto qt3dMaterial  = new viz::qt3d::data::Material();
 

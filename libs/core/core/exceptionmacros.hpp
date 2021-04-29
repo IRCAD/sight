@@ -48,8 +48,10 @@
 // --------------------------------------------------------------------------------
 
 # ifdef LOG_FWEXCEPTIONS
-#  define __FWCORE_EXCEPTION_LOG(excep)         \
-    SIGHT_WARN(__FWCORE_EXCEPTION_INFO(excep))
+// Copy the exception parameter to avoid warning C4239 when it is a rvalue
+#  define __FWCORE_EXCEPTION_LOG(excep)           \
+    auto BOOST_PP_CAT(__excep, __LINE__) = excep; \
+    SIGHT_WARN(__FWCORE_EXCEPTION_INFO(BOOST_PP_CAT(__excep, __LINE__)))
 # else
 # define __FWCORE_EXCEPTION_LOG(excep)
 # endif
