@@ -1,4 +1,4 @@
- # sight::data
+# sight::data
 
 This is one of the most important library in _Sight_. It defines data object that are going to be used in services.
 

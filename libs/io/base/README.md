@@ -1,6 +1,6 @@
 # sight::io::base
 
-
+Contains base classes & functions for input/output.
 
 ## Services
 

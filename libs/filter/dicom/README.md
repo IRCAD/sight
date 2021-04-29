@@ -1,4 +1,4 @@
- # sight::filter::dicom
+# sight::filter::dicom
 
 Contains filters used to pre-process DICOM files before reading
 

@@ -1,6 +1,6 @@
- # sight::core
+# sight::core
 
-Lowest library in _Sight_. It defines core classes, communication, logging and threading mechanisms. It alo brings the runtime library used to discover and load modules.
+Lowest library in _Sight_. It defines core classes, communication, logging and threading mechanisms. It also brings the runtime library used to discover and load modules.
 
 ## Structure
 

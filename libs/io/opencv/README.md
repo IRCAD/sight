@@ -1,6 +1,6 @@
 # sight::io::opencv
 
-Library containing helper classes for data conversion between openCV and SIGHT.
+Library containing helper classes for data conversion between OpenCV and Sight.
 
 ## Classes:
 
@@ -9,7 +9,7 @@ Library containing helper classes for data conversion between openCV and SIGHT.
 - **Image**: manages conversion from/to OpenCV to/from data::Image.
 - **Matrix**: converts data::Matrix4 to opencv Mat.
 - **PointList**: manages conversion from/to OpenCV cv::Point2d to/from data::Point and data::PointList.
-- **Type**: manages type conversion from/to OpenCV  to/from SIGHT.
+- **Type**: manages type conversion from/to OpenCV  to/from Sight.
 
 ## How to use it
 

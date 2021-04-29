@@ -1,6 +1,6 @@
 # sight::io::patch
 
-Library dealing with semantic and structural patches for ::sight::data.
+Library dealing with semantic and structural patches for sight::data.
 
 ## Semantic patches
 

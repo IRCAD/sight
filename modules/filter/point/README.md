@@ -1,6 +1,6 @@
 # sight::module::filter::point
 
-This module contains services to process `sight::data::PointList`.
+Contains services to process `sight::data::PointList`.
 
 ## Services
 

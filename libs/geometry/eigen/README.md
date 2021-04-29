@@ -2,7 +2,6 @@
 
 Contains functions to handle type conversion between `Eigen` types and `sight::data` types.
 
-
 ## Namespaces
 
 - **helper**

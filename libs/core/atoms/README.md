@@ -1,6 +1,6 @@
 # sight::atoms
 
-It defines classes describing and wrapping different types, plus visitors and helper functions.
+Defines classes describing and wrapping different types, along with visitors and helper functions.
 
 ## Classes
 

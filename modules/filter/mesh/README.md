@@ -1,6 +1,6 @@
 # sight::module::filter::mesh
 
-This module contains services for mesh filtering. 
+Contains services for mesh filtering. 
 
 ## Services
 

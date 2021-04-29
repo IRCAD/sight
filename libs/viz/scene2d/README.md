@@ -1,7 +1,7 @@
 # sight::viz::scene2d
 
 Contains the generic classes for the 2D scene display elements. 
-The generic element cover backgroun size, position, viewports, scenes and mouse interactions.
+The generic element cover background size, position, viewports, scenes and mouse interactions.
 
 ## Classes
 

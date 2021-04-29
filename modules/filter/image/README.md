@@ -1,6 +1,6 @@
 # sight::module::filter::image
 
-This module contains services for image processing. 
+Contains services for image processing. 
 In other words it contains services to operate on a `sight::data::Image`.
 
 ## Services

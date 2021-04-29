@@ -44,7 +44,7 @@ target_link_libraries(myTarget <PUBLIC|PRIVATE> activity)
 
 #### Activity configuration
 
-An activity is defined by the extension "::sight::activity::extension::Activity". It is used to launch an
+An activity is defined by the extension `sight::activity::extension::Activity`. It is used to launch an
 AppConfig with the selected data, it will create a new data data::ActivitySeries that inherits from a
 data::Series.
 

@@ -1,4 +1,4 @@
- # sight::modules::service
+# sight::modules::service
 
 Initializes service, serviceConfig, appConfig & appConfigParameters extension points registries.
 Contains also `.xsd` files to perform checks of each of the previously named configurations.

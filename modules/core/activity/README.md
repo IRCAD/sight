@@ -1,4 +1,4 @@
- # sight::modules::activity
+# sight::modules::activity
 
 Contains helpers and services allowing to launch activities. Initializes Activity extension point registry.
 

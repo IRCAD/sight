@@ -1,6 +1,6 @@
 # sight::module::memory
 
-The namespace sight::module::memory contains services to manage memory and lock objects to prevent dump.
+Contains services to manage memory and lock objects to prevent dump.
 
 ## Services
 
