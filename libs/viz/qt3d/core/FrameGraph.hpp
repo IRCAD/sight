@@ -77,13 +77,16 @@ public:
     VIZ_QT3D_QT_API ~FrameGraph() override;
 
     /// @returns the camera this framegraph is associated to.
-    VIZ_QT3D_QT_API Qt3DCore::QEntity* const getCamera() const;
+    VIZ_QT3D_QT_API Qt3DCore::QEntity* getCamera() const;
 
     /// @returns the framegraph's clear color.
     VIZ_QT3D_QT_API QColor getClearColor() const;
 
     /// @returns the buffers to clear before rendering.
     VIZ_QT3D_QT_API Qt3DRender::QClearBuffers::BufferType getBuffersToClear() const;
+
+    /// Gets the camera selector.
+    VIZ_QT3D_QT_API Qt3DRender::QCameraSelector* getCameraSelector();
 
     /// Updates the framegraph's camera.
     VIZ_QT3D_QT_API void setCamera(Qt3DCore::QEntity* _camera);
@@ -93,6 +96,12 @@ public:
 
     /// Sets the buffers to clear before rendering.
     VIZ_QT3D_QT_API void setBuffersToClear(Qt3DRender::QClearBuffers::BufferType _buffers);
+
+    /// Gets all nodes attached to the frame graph.
+    VIZ_QT3D_QT_API QVector<Qt3DRender::QFrameGraphNode*> getAllNodes();
+
+    /// Adds a node to the frame graph.
+    VIZ_QT3D_QT_API void addNode(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent);
 
 Q_SIGNALS:
 
@@ -106,6 +115,9 @@ Q_SIGNALS:
     void buffersToClearChanged();
 
 private:
+
+    /// Gets recursivly alls node from the frame graph.
+    void getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes, Qt3DRender::QFrameGraphNode* _currentNode);
 
     ///Contains a viewport allowing to choose which portion of the screen is rendered. Default is the whole screen.
     QPointer< Qt3DRender::QViewport > m_viewport;

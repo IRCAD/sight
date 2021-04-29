@@ -52,7 +52,7 @@ mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
 # Download and install package, if needed
 get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
     
-if(NOT EXISTS ${SIGHT_DEPS_PACKAGE_DIRECTORY})
+if(NOT EXISTS "${SIGHT_DEPS_PACKAGE_DIRECTORY}")
     # Download the sight deps archive
     file(
         DOWNLOAD "${SIGHT_DEPS_PACKAGE_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}"
