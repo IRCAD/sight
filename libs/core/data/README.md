@@ -1,6 +1,6 @@
 # sight::data
 
-This is one of the most important library in _Sight_. It defines data object that are going to be used in services.
+This is one of the most important libraries in _Sight_. It defines data objects that are going to be used in services.
 
 _Sight_ relies on many third part libraries, and as such, it needs common data structures to communicate between them.
 Basic data are provided, such as scalar values, string, geometric entities, as well as medical data used in computer 
@@ -9,7 +9,7 @@ assisted surgery such as images, segmentations, etc...
 ## Data classes
 
 The base data class is `::sight::data::Object`. It provides a default slot to warn subscribers when its content changes.
-All concrete data classes implements this interface.
+All concrete data classes implement this interface.
 
 ### Basic
 
@@ -31,7 +31,7 @@ All concrete data classes implements this interface.
 - **ActivitySeries**: contains information and data of an application activity.
 - **DicomSeries**: contains a DICOM series.
 - **Equipment**: contains an equipment information.
-- **Histogram**: contains the istogram of a `::sight::data::Image`.
+- **Histogram**: contains the histogram of a `::sight::data::Image`.
 - **Image**: defines an image.
 - **ImageSeries**: contains a `::sight::data::Image` and the associated medical data.
 - **Landmarks**: defines a set of spatial (3D) or color (4D) points.
@@ -44,7 +44,7 @@ All concrete data classes implements this interface.
 - **ROITraits**: defines ROI traits containing an identifier, an evaluated expression, a ROI mask node used for ROIand a structure traits associated to the ROI.
 - **Series**: defines medical data.
 - **SeriesDB**: holds `::sight::data::series`
-- **StructureTraits**: define sa structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
+- **StructureTraits**: defines a structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
 - **StructureTraitsDictionary**: dictionary of `::sight::data::StructureTraits`.
 - **StructureTraitsHelper**: helper of `::sight::data::StructureTraits`.
 - **Study**: contains a medical study information. 
@@ -56,7 +56,7 @@ All concrete data classes implements this interface.
 - **Camera**: contains intrinsic and extrinsic parameters of a camera.
 - **CameraSeries**: stores a collection of cameras.
 - **FrameTL**: defines a timeline of `::sight::data::Image`.
-- **MarkerMap**: stores amap of optical markers (2D).
+- **MarkerMap**: stores a map of optical markers (2D).
 - **MarkerTL**: defines a timeline of 2D markers from their four corner positions.
 - **MatrixTL**: defines a timeline of raw 4x4 matrices.
 - **RawBufferTL**: defines a timeline of buffers.
@@ -67,7 +67,7 @@ All concrete data classes implements this interface.
 - **Matrix4**: 4x4 transformation matrix.
 - **Material**: material is represented by an ambient color and a diffuse color.
 - **Mesh**: geometrical mesh composed of points, lines, triangles, quads or polygons.
-- **Plane**: plane defined by tree `sight::data::Point`.
+- **Plane**: plane defined by three `sight::data::Point`.
 - **PlaneList**: list of `sight::data::Plane`.
 - **Point**: 3D point.
 - **PointList**: list of 3D `sight::data::Point`.
@@ -88,7 +88,7 @@ All concrete data classes implements this interface.
 ### Technical
 
 - **Exception**: implements exception related to data.
-- **GenericFieldBase**: defines generaic operators on sight data.
+- **GenericFieldBase**: defines generic operators on sight data.
 - **GenericTL**: defines a timeline of template objects.
 - **ObjectLock**: helper to lock specific object, manages : `sight::data::Image`, `sight::data::Mesh` and `sight::data::Array`.
 

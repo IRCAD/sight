@@ -1,8 +1,8 @@
 # activity::navigation::calibration
 
 Contains xml activities related to calibration (camera & tools).
-Optical calibration are performed using a checkerboard or charuco tags.
-Tool calibration are performed using a tracked aruco tag.
+Optical calibration is performed using a checkerboard or charuco tags.
+Tool calibration is performed using a tracked aruco tag.
    
 > **Note:** Tool calibration is deprecated and will be removed in next versions.
 

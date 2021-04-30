@@ -41,7 +41,7 @@ namespace writer
  *
  *
  * Writes `sight::data::Image` into a `.raw.gz` file.
- * The buffer is writen in a file using zlib.
+ * The buffer is written in a file using zlib.
  */
 class IO_BASE_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< data::Image >,
                                                public data::location::enableSingleFile< io::base::writer::

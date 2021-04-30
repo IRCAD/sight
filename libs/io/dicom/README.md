@@ -31,7 +31,7 @@ Library containing functions for reading and writing DICOM files. It also contai
   It implements many tag value getters/setters. 
   It defines also some tools for converting GDCM data to Sight data.
 - **DicomDataWriter**: contains helpers to write information into GDCM datasets.
-- **DicomDir**: extract a list of files from a dicomdir file.
+- **DicomDir**: extracts a list of files from a dicomdir file.
 - **DicomSearch**: contains helpers to search dicom files on filesystem.
 - **DicomSeries**: generates/fills DicomSeries.
 - **DicomSeriesAnonymizer**: contains helpers to anonymize DicomSeries.

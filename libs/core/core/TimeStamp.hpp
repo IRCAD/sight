@@ -29,7 +29,7 @@ namespace sight::core
 {
 
 /**
- * @brief Provides a timestamp and a expiry system.
+ * @brief Provides a timestamp and an expiry system.
  *
  */
 class CORE_CLASS_API TimeStamp : public BaseObject

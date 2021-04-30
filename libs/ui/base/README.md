@@ -65,11 +65,11 @@ Mechanism which allows to store and get user preferences and propose them from o
 
 - **Action**:  defines the action registry for the graphical interface services
 - **detail**: internal mechanism: provides the instances of the factory registry
-- **macro**: defines the macro which registers internaly the uiser interfaces services
-- **Menu**: defines a registry which handles xml definitions of a grafical menu 
-- **MenuBar**: defines a registry which handles xml definitions of a grafical menu bar
-- **ToolBar**: defines a registry which handles xml definitions of a grafical tool bar 
-- **View**: defines a registry which handles xml definitions of a grafical generic view manager 
+- **macro**: defines the macro which registers internally the user interfaces services
+- **Menu**: defines a registry which handles xml definitions of a graphical menu 
+- **MenuBar**: defines a registry which handles xml definitions of a graphical menu bar
+- **ToolBar**: defines a registry which handles xml definitions of a graphical tool bar 
+- **View**: defines a registry which handles xml definitions of a graphical generic view manager 
 
 
 ### _view_

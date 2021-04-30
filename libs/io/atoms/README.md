@@ -15,12 +15,12 @@ Data are written with a version, and, when loaded, if the version differs, the p
 - **new**: generic constructor for atoms reader and writer with restrictions on objects construction.
 - **detail**: internal mechanism: provides the instances of the factory registry.
 - **macro**: contains a filter macro for the atoms registry.
-- **functions**: verifies if a givent atom matches a `sight::data::Series`.
+- **functions**: verifies if a given atom matches a `sight::data::Series`.
 - **IFilter**: removes atom attributes which are not managed by a context.
 
 ### _patch_
 
-Defines classes which allows to convert atoms of different versions from one version to another. 
+Defines classes which allow to convert atoms of different versions from one version to another. 
 
 - **new**: generic constructor for atoms patcher with restrictions on objects construction.
 - **detail**: internal mechanism: provides the instances of the factory registry.

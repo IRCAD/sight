@@ -20,7 +20,7 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
 - **SHistogramValue**
   Displays the values clicked by mouse on the histogram of the image
 - **SLine**
-  Draw a line on the scene2D
+  Draws a line on the scene2D
 - **SMultipleTF**
   Displays a composite of TF and interact with them.
 - **SNegato**
@@ -28,7 +28,7 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
 - **SScaleValues**
   Displays values and units on the axis
 - **SSquare**
-  Draw a square on the scene2D
+  Draws a square on the scene2D
 - **STransferFunction**
   Applies a transfer function on the image displayed
 - **SViewportInteractor**

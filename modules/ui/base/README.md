@@ -24,7 +24,7 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 * **SPushField**: adds or removes an object's Field in `sight::data::Composite` with specific key.
 
-* **SPushObject**: adds or remove an object in composite with specific key.
+* **SPushObject**: adds or removes an object in composite with specific key.
 
 * **SQuit**: closes the window and reset root object.
 

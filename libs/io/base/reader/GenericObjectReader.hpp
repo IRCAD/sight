@@ -83,7 +83,7 @@ public:
      * @brief m_object getter.
      * @return m_object
      *
-     * This method automatically cast object in the correct DataType.
+     * This method automatically casts object in the correct DataType.
      */
     virtual std::shared_ptr< DataType > getConcreteObject()
     {

@@ -19,7 +19,7 @@ The library proposes different base classes to implement services. They bring a 
 These classes are used for the lib internal mechanism:
 
 - **MemoryReadArchive**: reads the data from an archive 
-- **MemoryWriteArchive**: write some data in an archive
+- **MemoryWriteArchive**: writes some data in an archive
 
 ## Converters
 
@@ -34,7 +34,7 @@ The present converters transform (forward and backward) various sight native dat
 - **ImageConverter**: manages the conversion between `data::Image` and `igtl::ImageMessage`
 - **LineConverter**: manages the conversion between `data::Line` and `igtl::PositionMessage`
 - **MatrixConverter**: manages the conversion between `data::Matrix4` and `igtl::TransformationMessage`
-- **MeshConverter**: manages the conversion between `data::Mesh** and `igtl::PolyDataMessage`
+- **MeshConverter**: manages the conversion between `data::Mesh` and `igtl::PolyDataMessage`
 - **PointListConverter**: manages the conversion between `data::PointList` and `igtl::PointMessage`
 - **ScalarConverter**: manages the conversion between `data::Integer` of Float and `igtl::RawMessage`
 - **StringConverter**: manages the conversion between `data::String` and `igtl::StringMessage`

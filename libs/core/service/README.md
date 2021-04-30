@@ -1,6 +1,6 @@
 # sight::service
 
-This is one of the most important library in _Sight_. It defines extension points for _services_ and _appConfig_:
+This is one of the most important libraries in _Sight_. It defines extension points for _services_ and _appConfig_:
 - **Factory**: allows to define new services.
 - **Config**: creates service configurations that can be shared between different services.
 - **AppConfig**: application configuration that describe a set of data, services and connections. **This is the main way to create applications in _Sight_.**
@@ -60,14 +60,14 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 
 - **Boolean**: specialisation of GenericField parser for boolean
 - **Color**: parses an hexa color value from an xml-based description and set it to the color data (`sight::data::Color`) object
-- **Composite**: parses and construct a composite (`sight::data::Composit`) and its associated services from an XML-based description
+- **Composite**: parses and constructs a composite (`sight::data::Composite`) and its associated services from an XML-based description
 - **Float**: specialisation of GenericField parser for float
-- **GenericField**: parses and construct a GenericField (`sight::data::GenericFieldBase`) and its associated services from an XML-based description
-- **List**: parses and construct a List (`sight::data::List`) and its associated services from an XML-based description
-- **Matrix4**: parses and construct a square 4x4 Matrix (`sight::data::Matrix4`) and its associated services from an XML-based description
-- **Object**: parses and construct a generic sight Object (`sight::data::Object`) from an XML-based description. Does nothing as no IService method is specialized
+- **GenericField**: parses and constructs a GenericField (`sight::data::GenericFieldBase`) and its associated services from an XML-based description
+- **List**: parses and constructs a List (`sight::data::List`) and its associated services from an XML-based description
+- **Matrix4**: parses and constructs a square 4x4 Matrix (`sight::data::Matrix4`) and its associated services from an XML-based description
+- **Object**: parses and constructs a generic sight Object (`sight::data::Object`) from an XML-based description. Does nothing as no IService method is specialized
 - **String**: specialisation of GenericField parser for string
-- **TransferFunction**: parses and construct a TransferFunction (`sight::data::TransferFunction`) and its associated services from an XML-based description
+- **TransferFunction**: parses and constructs a TransferFunction (`sight::data::TransferFunction`) and its associated services from an XML-based description
 
 ### _registry_
 

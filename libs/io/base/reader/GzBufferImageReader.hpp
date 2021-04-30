@@ -40,7 +40,7 @@ namespace reader
  * @brief   Image Reader. Reads '.raw.gz' files.
  *
  * Reads 'raw.gz' files and converts them into a 'sight::data::Image'.
- * The buffer is writen in a file using zlib.
+ * The buffer is written in a file using zlib.
  */
 class IO_BASE_CLASS_API GzBufferImageReader :  public GenericObjectReader< data::Image >,
                                                public data::location::enableSingleFile< IObjectReader >

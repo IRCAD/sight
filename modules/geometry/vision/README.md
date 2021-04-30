@@ -1,6 +1,6 @@
 # sight::module::geometry::vision
 
-Contains services that implements some computer vision algorithms, notably to calibrate cameras and estimate object poses.
+Contains services that implement some computer vision algorithms, notably to calibrate cameras and estimate object poses.
 
 ## Services
 

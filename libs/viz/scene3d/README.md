@@ -24,7 +24,7 @@ This library links with `Ogre3d` and `OpenGL`.
 - **R2VBRenderable**: implements a render-to-vertex-buffer (r2vb) process (GL_TRANSFORM_FEEDBACK).
 - **SRender**: defines a generic scene service that shows adaptors in a 3D Ogre scene.
 - **Text**: displays overlay text.
-- **TransfertFunction**: manages a tranfer function from a GPU point of view.
+- **TransfertFunction**: manages a transfer function from a GPU point of view.
 - **Utils**: provides some Ogre3d general functions for Sight
 - **WindowManager**: stores all Ogre render windows and manage their deletion (singleton).
 

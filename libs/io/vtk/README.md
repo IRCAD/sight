@@ -4,7 +4,7 @@ Library for writing and reading data (image, mesh, ...) to and from many VTK for
 
 ## Classes
 
-Most of the classes inherits from io::base::reader::GenericObjectReader or io::base::writer::GenericObjectWriter. They share all almost the same API.
+Most of the classes inherit from io::base::reader::GenericObjectReader or io::base::writer::GenericObjectWriter. They all share almost the same API.
 
 ### Helper
 
@@ -22,7 +22,7 @@ Most of the classes inherits from io::base::reader::GenericObjectReader or io::b
 - **ModelSeriesObjWriter**: writes `ModelSeries` to many `.obj`
 - **ObjMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.obj`.
 - **PlyMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.ply`.
-- **SeriesDBReader**: reads `SeriesDB` from a collection of files. IT basically uses others readers depending of the file extension.
+- **SeriesDBReader**: reads `SeriesDB` from a collection of files. It basically uses other readers depending of the file extension.
 - **StlMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.stl`.
 - **VtiImage[Read|Writ]er**: reads/writes `Image` to/from `.vti`.
 - **VtpMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.vtp`.
