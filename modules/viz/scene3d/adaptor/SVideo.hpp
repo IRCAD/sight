@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b hide(): hides the video.
  * - \b updateTF(): updates the displayed transfer function.
  * - \b updatePL(): updates the displayed point list.
- * - \b setBilinearFiltering(bool): toggles between nearest (false) and bilinear (true) filtering.
+ * - \b setFiltering(bool): toggles between nearest (false) and bilinear (true) filtering.
  * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
  * @section XML XML Configuration
@@ -66,7 +66,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created SMaterial.
  * - \b textureName (optional, string, default=""): the name of the Ogre texture the mesh will use.
- * - \b bilinearFiltering (optional, bool, default=false): whether to use or not bilinear filtering for the texture.
+ * - \b filtering (optional, bool, default=false): whether to use or not bilinear filtering for the texture.
  * - \b scaling (optional, bool, default=true): whether to scale the video to the viewport or
  *      keep it at its original resolution.
  * - \b radius (optional, float, default=1.f): billboard radius.
@@ -134,7 +134,7 @@ private:
     void updatePL();
 
     /// SLOTS: whether to use or not bilinear filtering
-    void setBilinearFiltering(bool);
+    void setFiltering(bool);
 
     /// SLOTS: whether to scale or not the video to occupy the whole viewport
     void scale(bool);
@@ -194,7 +194,7 @@ private:
     std::string m_textureName { "" };
 
     /// Defines whether of not the video texture will use bilinear filtering
-    bool m_bilinearFiltering { false };
+    bool m_filtering { false };
 
     /// Defines whether the video is scaled to the viewport or displayed at its original size.
     bool m_scaling { true };

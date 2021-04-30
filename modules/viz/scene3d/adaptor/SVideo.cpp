@@ -48,28 +48,28 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT              = "updateTF";
-static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT              = "updatePL";
-static const core::com::Slots::SlotKeyType s_SET_BILINEAR_FILTERING_SLOT = "setBilinearFiltering";
-static const core::com::Slots::SlotKeyType s_SCALE_SLOT                  = "scale";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT     = "updateTF";
+static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT     = "updatePL";
+static const core::com::Slots::SlotKeyType s_SET_FILTERING_SLOT = "setFiltering";
+static const core::com::Slots::SlotKeyType s_SCALE_SLOT         = "scale";
 
 static const service::IService::KeyType s_IMAGE_INPUT = "image";
 static const service::IService::KeyType s_TF_INPUT    = "tf";
 static const service::IService::KeyType s_PL_INPUT    = "pointList";
 
-static const std::string s_VISIBLE_CONFIG            = "visible";
-static const std::string s_MATERIAL_TEMPLATE_CONFIG  = "materialTemplate";
-static const std::string s_TEXTURE_NAME_CONFIG       = "textureName";
-static const std::string s_BILINEAR_FILTERING_CONFIG = "bilinearFiltering";
-static const std::string s_SCALING_CONFIG            = "scaling";
-static const std::string s_RADIUS_CONFIG             = "radius";
-static const std::string s_DISPLAY_LABEL_CONFIG      = "displayLabel";
-static const std::string s_LABEL_COLOR_CONFIG        = "labelColor";
-static const std::string s_COLOR_CONFIG              = "color";
-static const std::string s_FIXED_SIZE_CONFIG         = "fixedSize";
-static const std::string s_QUERY_CONFIG              = "queryFlags";
-static const std::string s_FONT_SOURCE_CONFIG        = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG          = "fontSize";
+static const std::string s_VISIBLE_CONFIG           = "visible";
+static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
+static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
+static const std::string s_FILTERING_CONFIG         = "filtering";
+static const std::string s_SCALING_CONFIG           = "scaling";
+static const std::string s_RADIUS_CONFIG            = "radius";
+static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
+static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
+static const std::string s_COLOR_CONFIG             = "color";
+static const std::string s_FIXED_SIZE_CONFIG        = "fixedSize";
+static const std::string s_QUERY_CONFIG             = "queryFlags";
+static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
+static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
 
 static const std::string s_VIDEO_MATERIAL_NAME            = "Video";
 static const std::string s_VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
@@ -81,7 +81,7 @@ SVideo::SVideo() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
     newSlot(s_UPDATE_PL_SLOT, &SVideo::updatePL, this);
-    newSlot(s_SET_BILINEAR_FILTERING_SLOT, &SVideo::setBilinearFiltering, this);
+    newSlot(s_SET_FILTERING_SLOT, &SVideo::setFiltering, this);
     newSlot(s_SCALE_SLOT, &SVideo::scale, this);
 }
 
@@ -105,7 +105,7 @@ void SVideo::configuring()
 
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
     m_textureName          = config.get<std::string>(s_TEXTURE_NAME_CONFIG, m_textureName);
-    m_bilinearFiltering    = config.get<bool>(s_BILINEAR_FILTERING_CONFIG, m_bilinearFiltering);
+    m_filtering            = config.get<bool>(s_FILTERING_CONFIG, m_filtering);
     m_scaling              = config.get<bool>(s_SCALING_CONFIG, m_scaling);
     m_radius               = config.get<std::string>(s_RADIUS_CONFIG, m_radius);
     m_displayLabel         = config.get<std::string>(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
@@ -217,7 +217,9 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-    ::Ogre::Viewport* viewport         = sceneManager->getCurrentViewport();
+    SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
+    ::Ogre::Viewport* viewport = sceneManager->getCurrentViewport();
+    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
 
     // Getting Sight Image
     const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
@@ -271,7 +273,10 @@ void SVideo::updating()
         // Set the texture to the main material pass
         this->updateTextureFiltering();
 
-        ::Ogre::TextureUnitState* tus = m_material->getTechnique(0)->getPass(0)->getTextureUnitState("image");
+        ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+        SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
+        ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+        SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
         tus->setTexture(m_texture);
 
         if(tf)
@@ -456,9 +461,9 @@ void SVideo::clearEntity()
 
 //------------------------------------------------------------------------------
 
-void SVideo::setBilinearFiltering(bool bilinearFiltering)
+void SVideo::setFiltering(bool filtering)
 {
-    m_bilinearFiltering = bilinearFiltering;
+    m_filtering = filtering;
 
     // Only allow updating when the texture has been initialized
     // Otherwise, we might end up in cases where the slot is called before the
@@ -473,17 +478,15 @@ void SVideo::setBilinearFiltering(bool bilinearFiltering)
 
 void SVideo::updateTextureFiltering()
 {
-    ::Ogre::TextureUnitState* tus = m_material->getTechnique(0)->getPass(0)->getTextureUnitState("image");
+    ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+    SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
+    ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+    SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
 
     // Set up texture filtering
-    if( m_bilinearFiltering )
-    {
-        tus->setTextureFiltering(::Ogre::TFO_BILINEAR);
-    }
-    else
-    {
-        tus->setTextureFiltering(::Ogre::TFO_NONE);
-    }
+    m_filtering ?
+    tus->setTextureFiltering(::Ogre::TFO_BILINEAR) :
+    tus->setTextureFiltering(::Ogre::TFO_NONE);
 }
 
 //------------------------------------------------------------------------------
