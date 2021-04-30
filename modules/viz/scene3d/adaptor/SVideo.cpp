@@ -484,9 +484,7 @@ void SVideo::updateTextureFiltering()
     SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
 
     // Set up texture filtering
-    m_filtering ?
-    tus->setTextureFiltering(::Ogre::TFO_BILINEAR) :
-    tus->setTextureFiltering(::Ogre::TFO_NONE);
+    tus->setTextureFiltering( m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE );
 }
 
 //------------------------------------------------------------------------------
