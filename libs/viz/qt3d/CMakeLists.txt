@@ -1,6 +1,5 @@
 sight_add_target( viz_qt3d TYPE LIBRARY WARNINGS_AS_ERRORS ON )
 
-
 target_compile_definitions(viz_qt3d PUBLIC "-DQT_NO_KEYWORDS")
 
 find_package(Qt5 QUIET COMPONENTS
@@ -22,8 +21,6 @@ target_link_libraries(viz_qt3d PUBLIC
     Qt5::3DExtras
     Qt5::3DInput
 )
-
-set(FWPROJECT_FULLNAME viz_qt3d)
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/resources.cfg.in"
                 "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/viz_qt3d/resources.cfg" @ONLY)

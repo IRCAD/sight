@@ -46,6 +46,8 @@
 #include <filesystem>
 #include <functional>
 #include <future>
+#include <iostream>
+#include <iterator>
 #include <map>
 #include <string>
 #include <typeinfo>

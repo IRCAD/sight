@@ -26,6 +26,8 @@
 
 #include <core/thread/Worker.hpp>
 
+#include <io/dimse/helper/Series.hpp>
+
 #include <utest/Exception.hpp>
 
 #include <utestData/Data.hpp>
@@ -34,8 +36,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <dcmtk/config/osconfig.h>
-
-#include <io/dimse/helper/Series.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::dimse::ut::SeriesEnquirerTest );
 
@@ -134,9 +134,9 @@ void SeriesEnquirerTest::pushSeries()
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), filenames.size());
 
     std::vector< std::filesystem::path > paths;
-    for(const std::string& file: filenames)
+    for(const auto file : filenames)
     {
-        paths.push_back(file);
+        paths.push_back(file.string());
     }
 
     // Try to push instances to the pacs

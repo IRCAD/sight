@@ -22,9 +22,12 @@
 
 #include "viz/qt3d/data/Mesh.hpp"
 
+#include "viz/qt3d/ComputeMaterial.hpp"
 #include "viz/qt3d/core/GenericScene.hpp"
 
 #include <geometry/data/Mesh.hpp>
+
+#include <QComputeCommand>
 
 #include <Qt3DCore/QEntity>
 
@@ -73,14 +76,14 @@ Mesh::~Mesh()
 
 //------------------------------------------------------------------------------
 
-viz::qt3d::data::Material* const Mesh::getMaterial() const
+viz::qt3d::data::Material* Mesh::getMaterial() const
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-sight::viz::qt3d::core::GenericScene* const Mesh::getScene() const
+sight::viz::qt3d::core::GenericScene* Mesh::getScene() const
 {
     return m_scene;
 }
@@ -271,17 +274,54 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     auto itrCell      = _mesh->begin< sight::data::iterator::ConstCellIterator >();
     const auto endItr = _mesh->end< sight::data::iterator::ConstCellIterator >();
 
+    bool isTriangleMesh = true;
+
+    // TODO: The loop before is probably not optimal and would need some extra optimization work
+    // Also, mesh composed of triangles and quads would probably not be handled properly
+    // See comments in https://git.ircad.fr/sight/sight/-/merge_requests/476
     unsigned int countIndex = 0;
     for(; itrCell != endItr; ++itrCell)
     {
+        if(countIndex == 0 && itrCell->nbPoints == 4)
+        {
+            isTriangleMesh = false;
+
+            // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
+            // triangle mesh.
+            indexBufferData.resize(6 * static_cast<int>(_mesh->getNumberOfCells()) *
+                                   static_cast<int>(sizeof(unsigned int)));
+            rawIndexBufferData = reinterpret_cast<unsigned int*>( indexBufferData.data() );
+
+            m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
+
+            this->addComputeEntityToScene(static_cast<int>(_mesh->getNumberOfCells()));
+        }
+
+        SIGHT_WARN_IF("A mesh can contain only one type of primitive (quad or triangle).",
+                      (!isTriangleMesh && itrCell->nbPoints != 4) || (isTriangleMesh && itrCell->nbPoints != 3))
+
         for(unsigned int i = 0; i < itrCell->nbPoints; ++i)
         {
 
             auto pIdx = static_cast<unsigned int>(itrCell->pointIdx[i]);
 
-            rawIndexBufferData[countIndex] = pIdx;
+            // If triangle mesh, only need to copy each point
+            if(isTriangleMesh || (i != itrCell->nbPoints-1))
+            {
+                rawIndexBufferData[countIndex] = pIdx;
 
-            countIndex++;
+                countIndex++;
+            }
+            // If quad mesh, a quad face is rearranged in 2 triangle face
+            // 6 points are defined, 4 with quad coordinates, and the last 2 points will be completed by compute shader
+            else
+            {
+                rawIndexBufferData[countIndex]   = 0;
+                rawIndexBufferData[countIndex+1] = pIdx;
+                rawIndexBufferData[countIndex+2] = 0;
+
+                countIndex += 3;
+            }
         }
     }
 
@@ -291,6 +331,22 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     m_indexBuffer->setData(indexBufferData);
 
     return;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::addComputeEntityToScene(int _numberOfCells)
+{
+    auto const computeEntity  = new Qt3DCore::QEntity(m_scene);
+    auto const computeCommand = new Qt3DRender::QComputeCommand(computeEntity);
+
+    auto const computeMat = new viz::qt3d::ComputeMaterial();
+    computeMat->setIndexBuffer(m_indexBuffer);
+
+    computeEntity->addComponent(computeMat);
+    computeEntity->addComponent(computeCommand);
+
+    computeMat->updateFrameGraph(m_scene->getFrameGraph(), _numberOfCells);
 }
 
 } // namespace data.

@@ -4,7 +4,6 @@
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
-    <requirement id="sight::module::viz::qt3d" />
 
     <extension implements="::sight::service::extension::Config" >
         <id>Tuto16SceneQt3D_jsonReader_SrvCfg</id>

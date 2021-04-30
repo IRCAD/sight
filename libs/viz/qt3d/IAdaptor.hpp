@@ -33,9 +33,21 @@ namespace sight::viz::qt3d
 /**
  * @brief Interface providing behavior of Qt3D adaptor services.
  *
- * @section Slot Slot
- * - \b updateVisibility(bool): shows or hides the mesh.
- * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
+ * @section Slots Slots
+ * - \b updateVisibility(bool): sets whether the adaptor is shown or not.
+ * - \b toggleVisibility(): toggle whether the adaptor is shown or not.
+ * - \b show(): shows the adaptor.
+ * - \b hide(): hides the hide.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="..." >
+        <config visible="true" />
+    </service>
+   @endcode
+ *
+ * @subsection Configuration Configuration:
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VIZ_QT3D_CLASS_API IAdaptor : public service::IService
 {
@@ -48,6 +60,10 @@ public:
     VIZ_QT3D_API SRender::sptr getRenderService() const;
 
 protected:
+    VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_SHOW_SLOT;
+    VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Creates the interface.
     VIZ_QT3D_API IAdaptor();
@@ -55,17 +71,30 @@ protected:
     /// Destroys the interface.
     VIZ_QT3D_API ~IAdaptor() override;
 
+    /// Parses common adaptor parameters.
+    VIZ_QT3D_API void configureParams();
+
     /// Registers the adaptor into its SRender service.
     VIZ_QT3D_API void initialize();
 
     /**
-     * @brief Sets whether the mesh is to be seen or not.
-     * @param _visibility the visibility status of the volume.
+     * @brief SLOT: sets the visibility of the adaptor.
+     * @param _isVisible the visibility status.
+     * @see setVisible(bool)
      */
-    VIZ_QT3D_API virtual void updateVisibility(bool _visibility);
+    VIZ_QT3D_API void updateVisibility(bool _isVisible);
 
-    /// Toggles the visibility of the axis.
+    /// SLOT: toggles the visibility of the adaptor.
     VIZ_QT3D_API void toggleVisibility();
+
+    /// SLOT: shows the adaptor.
+    VIZ_QT3D_API void show();
+
+    /// SLOT: hides the adaptor.
+    VIZ_QT3D_API void hide();
+
+    /// Sets the visibility of the adaptor.
+    VIZ_QT3D_API virtual void setVisible(bool _visible);
 
     /// Contains the render service this adaptor is attached to.
     viz::qt3d::SRender::wptr m_renderService;

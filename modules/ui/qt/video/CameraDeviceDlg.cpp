@@ -241,10 +241,10 @@ void CameraDeviceDlg::onSelectDevice(int index)
         {
             data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
-            ::fwVideoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
-            iter = ::fwVideoQt::helper::pixelFormatTranslator.left.find(settings.pixelFormat());
+            PixelFormatTranslatorType::left_const_iterator iter;
+            iter = pixelFormatTranslator.left.find(settings.pixelFormat());
 
-            if(iter != ::fwVideoQt::helper::pixelFormatTranslator.left.end())
+            if(iter != pixelFormatTranslator.left.end())
             {
                 format = iter->second;
             }

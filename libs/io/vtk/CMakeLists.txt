@@ -1,19 +1,5 @@
 sight_add_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
 
-
-find_package(VTK QUIET REQUIRED COMPONENTS
-    vtkFiltersGeometry
-    vtkFiltersModeling
-    vtkIOExport
-    vtkIOGeometry
-    vtkIOImage
-    vtkIOLegacy
-    vtkIOPLY
-    vtkIOXML
-    vtkRenderingFreeType
-    vtkRenderingOpenGL2  # Needed notably for the VtkObjExporter
-)
-
 if(VCPKG_TARGET_TRIPLET)
     # VTK9
     target_link_libraries(io_vtk PUBLIC

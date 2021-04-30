@@ -1,7 +1,6 @@
 /************************************************************************
  *
  * Copyright (C) 2021 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,12 +19,24 @@
  *
  ***********************************************************************/
 
-/**
- * @brief       The namespace sight::module::filter::image contains services for ITK image registration.
- */
 #pragma once
 
-namespace sight::module::filter::image
-{
+#include <QGuiApplication>
 
-} // namespace sight::module::filter::image
+class TestApplication : QGuiApplication
+{
+public:
+    TestApplication() :
+        QGuiApplication(s_argc, s_argv)
+    {
+    }
+
+private:
+#if defined(__linux)
+    static inline char* s_argv[] = {"TestApplication", "-platform", "offscreen", nullptr};
+    static inline int s_argc = 3;
+#else
+    static inline char* s_argv[] = {"TestApplication", 0};
+    static inline int s_argc = 1;
+#endif
+};
