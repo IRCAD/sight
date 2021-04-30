@@ -20,17 +20,6 @@
  *
  ***********************************************************************/
 
-/************************************************************************
- * Copyright (C) 2018-2021 IRCAD France - All rights reserved.
- * Copyright (C) 2018-2020 IHU Strasbourg - All rights reserved.
- *
- * This file is part of Sight-nonfree.
- *
- * Sight-nonfree can not be copied, modified and/or distributed without
- * the express permission of IRCAD France and IHU Strasbourg.
- *
- ***********************************************************************/
-
 #include "mesh.hpp"
 
 #include <io/vtk/helper/Mesh.hpp>
