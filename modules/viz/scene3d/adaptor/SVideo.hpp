@@ -44,7 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateTF(): updates the displayed transfer function.
  * - \b updatePL(): updates the displayed point list.
  * - \b setBilinearFiltering(bool): toggles between nearest (false) and bilinear (true) filtering.
- * - \b scale(bool): display the video at its original size (false) or scales the video to the viewport (true).
+ * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
  * @section XML XML Configuration
  * @code{.xml}
