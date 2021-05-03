@@ -96,7 +96,7 @@ namespace sight::module::io::video
  *  (only available if reading set of images) (default: false).
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
  * (only available if reading set of images) (default: false).
- * - \b step (optionnal): value to jump between two images when calling readNext/readPrevious slots (default: 1)
+ * - \b step (optional): value to jump between two images when calling readNext/readPrevious slots (default: 1)
  * - \b defaultDuration (optional): if duration (between each frames) cannot be deduced with filename
  * this value is used (default: 5000), this is a very advanced option.
  * It will have not effects if reading a video or if a timestamp can be deduced from images filenames

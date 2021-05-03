@@ -39,7 +39,7 @@ namespace sight::ui::qt
 namespace dialog
 {
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
+ * @brief   Defines the generic file/folder dialog.
  *
  */
 class UI_QT_CLASS_API LocationDialog : public ui::base::dialog::ILocationDialog

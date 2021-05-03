@@ -63,7 +63,7 @@ public:
     UI_HISTORY_API virtual bool undo() = 0;
 
     /**
-     * @brief Return an optionnal description of the command.
+     * @brief Return an optional description of the command.
      */
     UI_HISTORY_API virtual const std::string getDescription() const
     {

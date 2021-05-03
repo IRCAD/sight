@@ -39,10 +39,10 @@ namespace sight::module::ui::qt::calibration
 {
 
 /**
- * @brief   SIntrinsicEdition service is used to set the intrinsic parameter infos.
+ * @brief   SIntrinsicEdition service is used to set the intrinsic parameter information.
  *
- * This services displays a dialog to change the resolution of your calibration, it computes the new intrinsic
- * parameters
+ * This services displays a dialog to change the resolution of your calibration, and computes the new intrinsic
+ * parameters.
  *
  * @section XML XML Configuration
  *

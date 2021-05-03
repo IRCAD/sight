@@ -40,7 +40,7 @@ namespace sight::activity
 {
 
 /**
- * @brief Base class for all activity validator's classes
+ * @brief Base class for all activity validator's classes.
  */
 class ACTIVITY_CLASS_API IValidator : public core::BaseObject
 {

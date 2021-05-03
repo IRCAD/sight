@@ -40,7 +40,7 @@ namespace sight::activity
 {
 
 /**
- * @brief Base class for all activity builder's classes
+ * @brief Base class for all activity builder's classes.
  */
 class ACTIVITY_CLASS_API IBuilder : public core::BaseObject
 {

@@ -41,7 +41,7 @@ namespace sight::module::io::atoms
 {
 
 /**
- * @brief Atoms reader. Service to load data from Atoms format
+ * @brief Atoms reader. Service to load data from Atoms format.
  *
  * @section Signals Signals
  * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be

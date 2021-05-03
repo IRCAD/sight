@@ -36,11 +36,11 @@ namespace reader
 {
 
 /**
- * @brief   Array Reader. Read file format .raw.gz
+ * @brief   Array Reader. Reads '.raw.gz' files.
  *
  *
- * Ircad reader to read a data::Array on filesystem which the file format
- * is .raw.gz. This format is basic. The buffer is writen in a file with zlib.
+ *  Reads '.raw.gz' files and converts them into a 'sight::data::Array'.
+ *  The buffer is writen in a file using zlib.
  */
 class IO_BASE_CLASS_API GzArrayReader :  public GenericObjectReader< data::Array >,
                                          public data::location::enableSingleFile< IObjectReader >
@@ -51,16 +51,16 @@ public:
     SIGHT_DECLARE_CLASS(GzArrayReader, GenericObjectReader< data::Array>,
                         io::base::reader::factory::New< GzArrayReader >)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API GzArrayReader(io::base::reader::IObjectReader::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~GzArrayReader();
 
-    /// Read the file with zlib API.
+    /// Reads the file using the zlib API.
     IO_BASE_API void read() override;
 
-    /// Defines extension supported by this reader ".raw.gz"
+    /// Defines extensions supported by this reader. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
 
 };

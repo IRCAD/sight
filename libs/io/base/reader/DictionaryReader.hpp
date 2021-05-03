@@ -42,11 +42,11 @@ namespace reader
 {
 
 /**
- * @brief   Dictionary reader. Read file with .dic extension.
+ * @brief   Dictionary reader. Reads '.dic' files.
  *
  *
- * Ircad reader to read a data::StructureTraitsDictionary on filesystem which the file format
- * is .dic. This is an ascii file the structure of each line is defined on the first line of this file.
+ * Reads '.dic' files and converts them into a 'sight::data::StructureTraitsDictionary'.
+ * This is an ASCII file. The structure of each line is defined on the first line of this file.
  */
 class IO_BASE_CLASS_API DictionaryReader :
     public GenericObjectReader< data::StructureTraitsDictionary>,

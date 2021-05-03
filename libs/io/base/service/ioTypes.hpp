@@ -30,7 +30,7 @@
 
 namespace sight::io::base::service
 {
-//! IOPathType defines different type of paths used by service readers/writers
+//! IOPathType defines different types of paths used by service readers/writers
 typedef enum
 {
     FILE             = (1 << 0),  /*!< io service can manage file and cannot manage a list of file*/

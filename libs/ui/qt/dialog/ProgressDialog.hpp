@@ -47,7 +47,7 @@ namespace sight::ui::qt
 namespace dialog
 {
 /**
- * @brief   This class allows us to select an acquisition in a patient data base.
+ * @brief   Allows to select an acquisition in a patient database.
  *
  * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
  * @todo ProgressDialog is not commented.

@@ -35,7 +35,7 @@ namespace sight::module::ui::qt::calibration
 {
 
 /**
- * @brief   Launch an AppConfig to display calibration images.
+ * @brief   Launches an AppConfig to display calibration images.
  *
  *  This service works on a data::Composite.
  *  It starts/stops a template configuration. This service can display one or two images.

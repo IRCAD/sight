@@ -32,7 +32,7 @@ namespace sight::module::filter::point
 {
 
 /**
- * @brief   Register a point list against a reference point list. Each point in the list to register is matched
+ * @brief   Registers a point list against a reference point list. Each point in the list to register is matched
  *          with a point in the reference list according to their order or to their labels if they have any.
  *          The output is a transformation matrix.
  * @section Signals Signals

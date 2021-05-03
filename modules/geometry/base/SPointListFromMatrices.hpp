@@ -34,7 +34,7 @@ namespace sight::module::geometry::base
 {
 
 /**
- * @brief The SPointListFromMatrices service extracts translation part of multiple matrices and put it into a pointlist.
+ * @brief Extracts translation part of multiple matrices and put it into a pointlist.
  * The pointlist is cleared by default. It can be set to 'appending' mode through the configuration.
  *
  * @section XML XML Configuration

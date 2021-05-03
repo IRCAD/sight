@@ -38,7 +38,7 @@ class Scene
 public:
 
     /**
-     * @brief Look for a given scene node in a scene manager.
+     * @brief Looks for a given scene node in a scene manager.
      * @param[in] _nodeId Identifier of the node
      * @param[in] _sceneMgr Scene manager
      * @return the Ogre scene node, null if not found

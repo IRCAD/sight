@@ -36,11 +36,10 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 /**
- * @brief This adaptor maps a texture on a mesh. This is done via module::viz::scene3d::adaptor::SMaterial. In the
- * configuration we
- *  don't specify the material adaptor since it is automatically created by the module::viz::scene3d::adaptor::SMesh
- * adaptor.
- *  The mesh adaptor isn't specified too because the texture can be applied on several meshes.
+ * @brief This adaptor maps a texture on a mesh. This is done via module::viz::scene3d::adaptor::SMaterial.
+ * In the configuration we don't specify the material adaptor since it is automatically created by the
+ * module::viz::scene3d::adaptor::SMesh adaptor.
+ * The mesh adaptor isn't specified either because the texture can be applied on several meshes.
  *
  * @section Signals Signals
  * - \b textureSwapped() : Emitted when the texture is modified.

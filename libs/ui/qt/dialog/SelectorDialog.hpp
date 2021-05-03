@@ -38,7 +38,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
+ * @brief   Allows choosing an element among several selections.
  */
 class UI_QT_CLASS_API SelectorDialog : public ui::base::dialog::ISelectorDialog
 {

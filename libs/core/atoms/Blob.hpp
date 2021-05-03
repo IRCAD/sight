@@ -31,7 +31,7 @@
 namespace sight::atoms
 {
 /**
- * @brief Representation of a buffer
+ * @brief Represents a buffer.
  *
  * A blob wraps a buffer
  */

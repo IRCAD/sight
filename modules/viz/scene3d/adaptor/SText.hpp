@@ -36,7 +36,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor displays a text object in the center or along the window's borders.
+ * @brief This adaptor displays a text object in the center or along the window borders.
  *
  * @section Slots Slots
  * -\b setText(std::string): sets the text to be displayed.

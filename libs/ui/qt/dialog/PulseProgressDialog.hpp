@@ -40,7 +40,7 @@ namespace sight::ui::qt
 namespace dialog
 {
 /**
- * @brief   This class allows us to show a pulse progress bar.
+ * @brief   Allows to show a pulse progress bar.
  */
 class UI_QT_CLASS_API PulseProgressDialog : public ui::base::dialog::IPulseProgressDialog
 {

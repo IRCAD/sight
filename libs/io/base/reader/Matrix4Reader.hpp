@@ -35,11 +35,10 @@ namespace reader
 {
 
 /**
- * @brief   Reader for transformation of 3D Matrix. Read file format .trf
+ * @brief   Reader for transformation of 3D Matrix. Read .trf files.
  *
  *
- * Ircad reader to read a data::Matrix4 on filesystem which the file format
- * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
+ * Reads '.trf' files and converts them into a 'sight::data::Matrix4'.
  */
 class IO_BASE_CLASS_API Matrix4Reader :
     public GenericObjectReader< data::Matrix4 >,
@@ -51,16 +50,16 @@ public:
     SIGHT_DECLARE_CLASS(Matrix4Reader, GenericObjectReader< data::Matrix4 >,
                         io::base::reader::factory::New< Matrix4Reader >)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API Matrix4Reader(io::base::reader::IObjectReader::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~Matrix4Reader();
 
-    /// Read the file with standard iostream API.
+    /// Reads the file using standard iostream API.
     IO_BASE_API void read() override;
 
-    /// Defines extension supported by this reader ".trf"
+    /// Defines the extensions supported by this reader. Here: ".trf"
     IO_BASE_API std::string extension() override;
 
 };

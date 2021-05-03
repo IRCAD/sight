@@ -34,11 +34,11 @@ namespace writer
 {
 
 /**
- * @brief   Array Writer. Write file format .raw.gz
+ * @brief   Array Writer. Write .raw.gz files.
  *
  *
- * Ircad writer to write a data::Array on filesystem which the file format
- * is .raw.gz. This format is basic. The buffer is written in a file with zlib.
+ * Writes 'sight::data::Array' into a '.raw.gz' file.
+ * The buffer is written in a file using zlib.
  */
 class IO_BASE_CLASS_API GzArrayWriter :  public GenericObjectWriter< data::Array >,
                                          public data::location::enableSingleFile< io::base::writer::IObjectWriter >
@@ -49,16 +49,16 @@ public:
     SIGHT_DECLARE_CLASS(GzArrayWriter, GenericObjectWriter< data::Array>,
                         io::base::writer::factory::New< GzArrayWriter >)
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API GzArrayWriter(io::base::writer::IObjectWriter::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~GzArrayWriter();
 
-    /// Read the file with zlib API.
+    /// Writes the file using zlib API.
     IO_BASE_API void write() override;
 
-    /// Defines extension supported by this writer ".raw.gz"
+    /// Defines the extensions supported by this writer. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
 
 };

@@ -32,7 +32,7 @@ namespace sight::ui::qt
 {
 
 /**
- * @brief   Defines the generic cursor for IHM.
+ * @brief   Defines the generic cursor.
  */
 class UI_QT_CLASS_API Cursor : public ui::base::ICursor
 {
