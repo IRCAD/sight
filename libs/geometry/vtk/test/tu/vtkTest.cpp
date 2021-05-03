@@ -53,16 +53,16 @@ void vtkTest::computeCenterOfMass()
 {
     sight::data::Mesh::sptr mesh             = sight::data::Mesh::New();
     const auto dumpLock                      = mesh->lock();
-    const std::array<double, 3> centerOfMass = {0.5, 0.5, 0.5};
+    const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
 
     mesh->pushPoint(0.f, 0.f, 0.f);
     mesh->pushPoint(1.f, 0.f, 0.f);
-    mesh->pushPoint(1.f, 1.f, 0.f);
-    mesh->pushPoint(0.f, 1.f, 0.f);
-    mesh->pushPoint(0.f, 0.f, 1.f);
-    mesh->pushPoint(1.f, 0.f, 1.f);
-    mesh->pushPoint(1.f, 1.f, 1.f);
-    mesh->pushPoint(0.f, 1.f, 1.f);
+    mesh->pushPoint(1.f, 3.f, 0.f);
+    mesh->pushPoint(0.f, 3.f, 0.f);
+    mesh->pushPoint(0.f, 0.f, 5.f);
+    mesh->pushPoint(1.f, 0.f, 5.f);
+    mesh->pushPoint(1.f, 3.f, 5.f);
+    mesh->pushPoint(0.f, 3.f, 5.f);
 
     mesh->pushCell(0, 1, 2, 3);
     mesh->pushCell(0, 4, 5, 1);
