@@ -48,7 +48,7 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
     m_timeStep(100),
     m_sigRepeated(RepeatedSignalType::New())
 {
-    core::com::HasSignals::m_signals(s_REPEATED_SIGNAL, m_sigRepeated);
+    m_sigRepeated = newSignal< RepeatedSignalType >(s_REPEATED_SIGNAL);
 
     newSignal< RepeatStoppedSignalType >( s_REPEAT_STOPPED_SIGNAL );
 }
