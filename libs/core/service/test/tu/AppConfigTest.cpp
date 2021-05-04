@@ -1033,6 +1033,8 @@ void AppConfigTest::optionalKeyTest()
                             "data2").get_shared());
 
         CPPUNIT_ASSERT(data2bis == srv2->getLockedInput< data::Object>("data2").get_shared());
+
+        fwTestWaitMacro("data2" == srv2->getSwappedObjectKey() && data2bis == srv2->getSwappedObject());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
         CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject() );
 
@@ -1047,6 +1049,8 @@ void AppConfigTest::optionalKeyTest()
                         data2b == srv2->getLockedInput< data::Object>("data2").get_shared());
 
         CPPUNIT_ASSERT(data2b == srv2->getLockedInput< data::Object>("data2").get_shared());
+
+        fwTestWaitMacro("data2" == srv2->getSwappedObjectKey() && data2b == srv2->getSwappedObject());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
         CPPUNIT_ASSERT(data2b == srv2->getSwappedObject() );
 
