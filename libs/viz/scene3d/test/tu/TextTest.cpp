@@ -27,7 +27,6 @@
 #include <viz/scene3d/Text.hpp>
 #include <viz/scene3d/Utils.hpp>
 
-#include <OGRE/OgreLogManager.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneNode.h>
@@ -44,38 +43,14 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-TextTest::TextTest()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-TextTest::~TextTest()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void TextTest::setUp()
 {
-    m_ogreRoot = Utils::getOgreRoot();
-
-    // Don't output the log to the terminal and delete the file when the test is done.
-    ::Ogre::LogManager* logMgr = ::Ogre::LogManager::getSingletonPtr();
-    logMgr->createLog("OgreTest.log", true, false, true);
 }
 
 //------------------------------------------------------------------------------
 
 void TextTest::tearDown()
 {
-    if(m_ogreRoot)
-    {
-        m_ogreRoot = nullptr;
-        Utils::destroyOgreRoot();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -83,11 +58,13 @@ void TextTest::tearDown()
 void TextTest::factoryTest()
 {
     //This is needed for the TextureManager to be instanced, no better way has be found.
-    auto ogreRenderWindow = m_ogreRoot->createRenderWindow("Dummy-RenderWindow",
-                                                           static_cast<unsigned int>(1),
-                                                           static_cast<unsigned int>(1),
-                                                           false,
-                                                           nullptr);
+
+    auto ogreRoot         = Utils::getOgreRoot();
+    auto ogreRenderWindow = ogreRoot->createRenderWindow("Dummy-RenderWindow",
+                                                         static_cast<unsigned int>(1),
+                                                         static_cast<unsigned int>(1),
+                                                         false,
+                                                         nullptr);
     ogreRenderWindow->setVisible(false);
     ogreRenderWindow->setAutoUpdated(false);
     ::Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -95,7 +72,7 @@ void TextTest::factoryTest()
     // Load the material manually because the Font will need it
     ::Ogre::MaterialManager::getSingleton().load("Text", viz::scene3d::RESOURCE_GROUP);
 
-    ::Ogre::SceneManager* sceneManager = m_ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    ::Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
     const auto& factoryName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
     const auto& textName1   = "COUCOU";
 
@@ -128,12 +105,12 @@ void TextTest::factoryTest()
 
     CPPUNIT_ASSERT(sceneManager->getMovableObjects(factoryName).empty());
 
-    m_ogreRoot->destroySceneManager(sceneManager);
+    ogreRoot->destroySceneManager(sceneManager);
 
     // ogreRenderWindow->destroy() leads to a double delete crash when deleting ogre root node
     // Use the "recommended" way to delete the RenderWindow as it also detach it from root node
     ogreRenderWindow = nullptr;
-    m_ogreRoot->getRenderSystem()->destroyRenderWindow("Dummy-RenderWindow");
+    ogreRoot->getRenderSystem()->destroyRenderWindow("Dummy-RenderWindow");
 }
 
 //------------------------------------------------------------------------------

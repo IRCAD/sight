@@ -40,18 +40,10 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    TextTest();
-    virtual ~TextTest();
-
     void setUp() override;
     void tearDown() override;
 
     void factoryTest();
-
-private:
-    /// Ogre root to setup the scene and instantiate 'Text' objects.
-    ::Ogre::Root* m_ogreRoot {nullptr};
-
 };
 
 } //namespace ut
