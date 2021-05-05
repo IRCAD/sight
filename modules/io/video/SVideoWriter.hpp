@@ -34,7 +34,7 @@ namespace sight::module::io::video
 {
 
 /**
- * @brief Thi service allows to save the timeline frames in a video file.
+ * @brief This service allows to save the timeline frames in a video file.
  *
  * - \b saveFrame(timestamp) : add the current frame in the video
  * - \b startRecord() : start recording

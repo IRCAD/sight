@@ -42,7 +42,7 @@ public:
     /// Initializes signals.
     MODULE_IO_IGTL_API INetworkListener();
 
-    /// Destoys the interface.
+    /// Destroys the interface.
     MODULE_IO_IGTL_API ~INetworkListener() override;
 
 protected:

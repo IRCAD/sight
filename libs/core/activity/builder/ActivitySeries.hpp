@@ -34,7 +34,7 @@ namespace builder
 {
 
 /**
- * @brief   Defines the default builder for the data ActivitySeries.
+ * @brief Defines the default builder for the data ActivitySeries.
  */
 class ACTIVITY_CLASS_API ActivitySeries : public activity::IBuilder
 {

@@ -26,6 +26,7 @@
 #include <core/runtime/detail/Module.hpp>
 #include <core/runtime/detail/Runtime.hpp>
 #include <core/runtime/Extension.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Plugin.hpp>
 #include <core/runtime/profile/Profile.hpp>
@@ -148,6 +149,57 @@ void RuntimeTest::testOperations()
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
+}
+
+//------------------------------------------------------------------------------
+
+void RuntimeTest::testPropertyTree()
+{
+    {
+        boost::property_tree::ptree config;
+        config.put("test.yes", "foo");
+        config.put("test.no", "no");
+        config.put("test.true", "true");
+        config.put("test.false", "false");
+
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value(config, "test.yes", true), core::Exception);
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value(config, "test.no", true), core::Exception);
+        bool value = core::runtime::get_ptree_value(config, "test.true", true);
+        CPPUNIT_ASSERT_EQUAL(true, value);
+        value = core::runtime::get_ptree_value(config, "test.false", true);
+        CPPUNIT_ASSERT_EQUAL(false, value);
+        value = core::runtime::get_ptree_value(config, "not_set!!!", true);
+        CPPUNIT_ASSERT_EQUAL(true, value);
+        value = core::runtime::get_ptree_value(config, "not_set!!!", false);
+        CPPUNIT_ASSERT_EQUAL(false, value);
+    }
+
+    {
+        boost::property_tree::ptree config;
+        config.put("test.int", "42");
+        config.put("test.real", "2.34");
+        config.put("test.string", "digits");
+
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.real", 23), core::Exception);
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.string", 23), core::Exception);
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<float>(config, "test.string", 23.f), core::Exception);
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<double>(config, "test.string", 23.), core::Exception);
+
+        int value = core::runtime::get_ptree_value(config, "test.int", 23);
+        CPPUNIT_ASSERT_EQUAL(42, value);
+        value = core::runtime::get_ptree_value(config, "not_set!!!", 23);
+        CPPUNIT_ASSERT_EQUAL(23, value);
+
+        double real = core::runtime::get_ptree_value(config, "test.int", 23);
+        CPPUNIT_ASSERT_EQUAL(42., real);
+        real = core::runtime::get_ptree_value(config, "test.real", 42.3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.34, real, 0.0001);
+
+        std::string str = core::runtime::get_ptree_value(config, "test.string", std::string("foo"));
+        CPPUNIT_ASSERT_EQUAL(std::string("digits"), str);
+        str = core::runtime::get_ptree_value(config, "test.missing_string", std::string("foo"));
+        CPPUNIT_ASSERT_EQUAL(std::string("foo"), str);
+    }
 }
 
 //------------------------------------------------------------------------------

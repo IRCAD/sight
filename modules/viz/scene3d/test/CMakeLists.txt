@@ -1,0 +1,2 @@
+sight_add_target( module_viz_scene3d_test TYPE MODULE PCH pchCore )
+target_link_libraries(module_viz_scene3d_test PUBLIC viz_scene3d)

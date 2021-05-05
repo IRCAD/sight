@@ -39,8 +39,6 @@ CPPUNIT_TEST( copyColors );
 CPPUNIT_TEST_SUITE_END();
 
 public:
-    MeshTest();
-    virtual ~MeshTest();
     // interface
     void setUp();
     void tearDown();

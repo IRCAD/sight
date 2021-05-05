@@ -32,7 +32,7 @@ namespace sight::module::geometry::base
 {
 
 /**
- * @brief  Compute the vector between a point and a target
+ * @brief  Computes the vector between a point and a target
  *
  * @section Signals Signals
  * - \b lengthChanged(float): Emitted when the length between a point and a target changed

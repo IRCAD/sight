@@ -43,7 +43,7 @@ namespace compositor
 {
 
 /**
- * @brief   Manage the compositors in a layer view.
+ * @brief   Manages the compositors in a layer view.
  */
 class VIZ_SCENE3D_CLASS_API ChainManager : ::boost::noncopyable,
                                            public service::IHasServices

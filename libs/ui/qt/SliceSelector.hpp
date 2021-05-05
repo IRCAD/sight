@@ -42,7 +42,7 @@ namespace sight::ui::qt
 {
 
 /**
- * @brief A qt panel used to control a VTK 2D Negatoscope view.
+ * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
  */
 class SliceSelector : public QWidget

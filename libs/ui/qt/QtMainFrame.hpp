@@ -33,7 +33,7 @@ namespace sight::ui::qt
 {
 
 /**
- * @brief A qt panel used to control a VTK 2D Negatoscope view.
+ * @brief defines the Qt main frame.
  *
  */
 class QtMainFrame : public QMainWindow

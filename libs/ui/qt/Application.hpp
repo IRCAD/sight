@@ -32,7 +32,7 @@ namespace sight::ui::qt
 {
 
 /**
- * @brief   Gives access to the qml application part
+ * @brief   Gives access to the qml application part.
  */
 class UI_QT_CLASS_API Application : public ui::base::Application
 {

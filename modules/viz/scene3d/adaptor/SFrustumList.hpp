@@ -34,7 +34,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor displays a new Frustum each times the transform is updated.
+ * @brief This adaptor displays a new Frustum each time the transform is updated.
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots

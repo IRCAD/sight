@@ -50,7 +50,7 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     data::Study::sptr study         = data::Study::New();
     data::Equipment::sptr equipment = data::Equipment::New();
 
-    // Set informations to series
+    // Set information to series
     series->setPatient(patient);
     series->setStudy(study);
     series->setEquipment(equipment);

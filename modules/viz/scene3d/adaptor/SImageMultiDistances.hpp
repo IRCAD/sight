@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor displays distances retrieved from an image fields.
+ * @brief This adaptor displays distances retrieved from the image fields.
  *
  * @section Slots Slots
  * - \b addDistance(): adds distances contained in the image from the scene manager.

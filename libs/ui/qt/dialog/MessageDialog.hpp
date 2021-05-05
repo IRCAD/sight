@@ -38,7 +38,7 @@ namespace dialog
 {
 
 /**
- * @brief Defines the generic message box for IHM.
+ * @brief Defines the generic message box.
  */
 class UI_QT_CLASS_API MessageDialog : public ui::base::dialog::IMessageDialog
 {

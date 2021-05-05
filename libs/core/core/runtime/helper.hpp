@@ -28,6 +28,8 @@
 #include "core/runtime/operations.hpp"
 #include "core/runtime/Runtime.hpp"
 
+#include <boost/property_tree/ptree.hpp>
+
 namespace sight::core::runtime
 {
 
@@ -91,8 +93,41 @@ CORE_API std::vector< std::string > getAllIdsForPoint( std::string _extension_pt
 /**
  * @brief   Get information for the point
  * @return  a string with the information of the extension point
- *
  */
 CORE_API std::string getInfoForPoint( std::string _extension_pt);
+
+/**
+ * @brief   Returns the value of a path in a boost::property::tree.
+ *  This handles three different cases that a single boost function can't discriminate.
+ *  1. If the path exists, this returns the value
+ *  2. If the path exists but the value type is not compatible, this throws a core::Exception
+ *  3. If the path does not exist, this returns the default value
+ * @return  value if the path is set, default value otherwise
+ * @throw   sight::core::Exception if the value type is not compatible
+ */
+template<typename T>
+T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& path, T defaultValue)
+{
+    boost::property_tree::ptree element;
+    try
+    {
+        element = tree.get_child(path);
+    }
+    catch(const boost::property_tree::ptree_bad_path& e)
+    {
+        // 3.
+        return defaultValue;
+    }
+
+    if(boost::optional<T> value = element.get_value_optional<T>())
+    {
+        // 1.
+        return *value;
+    }
+
+    // 2.
+    SIGHT_THROW_EXCEPTION(core::Exception("Wrong value set in path: " + path));
+    return defaultValue;
+}
 
 }

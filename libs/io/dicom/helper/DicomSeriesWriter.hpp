@@ -56,7 +56,7 @@ class DicomAnonymizer;
 /**
  * @brief Write a DicomSeries in DICOM format.
  *
- * This writer optionally manages anonymisation if an instance of DicomAnonymizer is set.
+ * This writer optionally manages anonymization if an instance of DicomAnonymizer is set.
  * The output DICOM files can be exported into an archive (folder or zipped file) if output archive is set.
  *
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
@@ -102,7 +102,7 @@ protected:
     /// Compute DICOM filename according to anonymizer or return default filename.
     std::string getFilename(const size_t& instanceIndex);
 
-    /// Process inputStream to outputStream with anonymisation management.
+    /// Process inputStream to outputStream with anonymization management.
     void processStream(std::istream& inputStream, std::ostream& outputStream);
 
     /// Process write on archive
@@ -117,10 +117,10 @@ protected:
     /// Job observer
     SPTR(core::jobs::Observer) m_job;
 
-    /// Optionnal anonymiser
+    /// Optional anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;
 
-    /// Optionnal output archive
+    /// Optional output archive
     SPTR(io::zip::IWriteArchive) m_archive;
 
     /// Optional subPath (related to write archive

@@ -33,7 +33,7 @@ namespace sight::atoms
 {
 
 /**
- * @brief   Implements atoms exception
+ * @brief   Implements atom exception.
  */
 struct ATOMS_CLASS_API Exception : public core::Exception
 {

@@ -39,6 +39,7 @@
 #include <data/mt/shared_ptr.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
 
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>

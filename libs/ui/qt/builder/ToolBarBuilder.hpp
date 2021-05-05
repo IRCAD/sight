@@ -38,7 +38,7 @@ namespace builder
 {
 
 /**
- * @brief   Defines the generic layout manager for IHM.
+ * @brief   Defines a tool bar.
  *
  */
 class UI_QT_CLASS_API ToolBarBuilder : public ui::base::builder::IToolBarBuilder

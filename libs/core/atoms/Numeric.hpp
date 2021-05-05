@@ -35,7 +35,7 @@ namespace sight::atoms
 {
 
 /**
- * @brief Storing a  numeric value
+ * @brief Stores a numeric value.
  **/
 class ATOMS_CLASS_API Numeric : public Base
 {

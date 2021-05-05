@@ -35,11 +35,11 @@ namespace writer
 {
 
 /**
- * @brief   Writer for transformation of 3D Matrix. Write file format .trf
+ * @brief   Writer for transformation of 3D Matrix. Writes .trf files.
  *
  *
- * Ircad writer to write a data::Matrix4 on filesystem which the file format
- * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
+ * Writes 'sight::data::Matrix4' into a '.trf' file.
+ * This is an ascii file which contains matrix 4x4 values
  */
 class IO_BASE_CLASS_API Matrix4Writer :
     public GenericObjectWriter< data::Matrix4>,
@@ -53,16 +53,16 @@ public:
         GenericObjectWriter< data::Matrix4 >,
         io::base::writer::factory::New< Matrix4Writer >
         )
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API Matrix4Writer(io::base::writer::IObjectWriter::Key key);
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~Matrix4Writer();
 
-    /// Write the file with standard iostream API.
+    /// Writes the file using the standard iostream API.
     IO_BASE_API void write() override;
 
-    /// Defines extension supported by this writer ".trf"
+    /// Defines the extensions supported by this writer. Here: ".trf"
     IO_BASE_API std::string  extension() override;
 
 };

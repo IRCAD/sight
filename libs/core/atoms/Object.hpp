@@ -30,7 +30,7 @@ namespace sight::atoms
 {
 
 /**
- * @brief Class represented a data::Object
+ * @brief Class representing a data::Object.
  *
  */
 class ATOMS_CLASS_API Object : public Base

@@ -82,9 +82,9 @@ void Os::getSharedLibraryPath()
     // Now load that library and check that we find it
 #if defined(WIN32)
     #if defined(_DEBUG)
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "campd.dll";
+    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "campd.dll");
     #else
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
+    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "camp.dll");
     #endif
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
@@ -92,7 +92,7 @@ void Os::getSharedLibraryPath()
     auto handle = ::boost::dll::shared_library(campPath.string());
     CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle );
 
-    CPPUNIT_ASSERT_EQUAL(fs::weakly_canonical(campPath), core::tools::os::getSharedLibraryPath("camp"));
+    CPPUNIT_ASSERT_EQUAL(campPath, core::tools::os::getSharedLibraryPath("camp"));
 }
 
 } // namespace ut

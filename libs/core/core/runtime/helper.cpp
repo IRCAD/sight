@@ -183,4 +183,5 @@ std::vector< std::shared_ptr< core::runtime::Extension > > getAllExtensionsForPo
 
     return point->getAllExtensions();
 }
+
 }

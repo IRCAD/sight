@@ -45,11 +45,11 @@ namespace reader
 /**
  * @brief   Base class for all object readers.
  *
- * This class defines the API to use basic object readers. This reader is not
- * service. Their equivalent exist as services see io::base::service::IReader. To read an
- * object with this class, use setLocation and setOject method before execute
- * the method read. Reading modify the object given in parameter with the
- * method setOject.
+ * This class defines the API to use basic object readers. This reader is not a
+ * service. Their equivalent exist as services. See io::base::service::IReader. To read an
+ * object with this class, use setLocation and setOject method before executing
+ * the method read. Reading modifies the object given in parameter with the
+ * method setObject.
  */
 class IO_BASE_CLASS_API IObjectReader : public core::BaseObject
 {
@@ -82,14 +82,14 @@ public:
     /**
      * @brief Defines an reader interface.
      *
-     * This method (re)init the object given in parameter of setObject method.
+     * This method (re)inits the object given in parameter of setObject method.
      */
     IO_BASE_API virtual void read() = 0;
 
     /**
      * @brief m_object setter.
-     * @param[out] _pObject replace weakptr m_object of the instance reader
-     * @note m_object is save in class with a weakptr
+     * @param[out] _pObject replaces weakptr m_object of the instance reader
+     * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method getObject()
      */
     IO_BASE_API virtual void setObject( core::tools::Object::sptr _pObject );
@@ -130,10 +130,10 @@ public:
 
 protected:
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     IO_BASE_API IObjectReader();
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     IO_BASE_API virtual ~IObjectReader();
 
     /**

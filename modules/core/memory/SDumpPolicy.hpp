@@ -32,6 +32,23 @@
 namespace sight::module::memory
 {
 
+/**
+ * @brief Configures the dumping policy.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service ...>
+       <config>
+           <policy>ValveDump</policy>
+           <params>
+               <min_free_mem>524288000</min_free_mem>
+               <hysteresis_offet>104857600</hysteresis_offet>
+           </params>
+       </config>
+   </service>
+ * @endcode
+ */
 class MODULE_MEMORY_CLASS_API SDumpPolicy : public service::IController
 {
 
@@ -43,20 +60,6 @@ public:
 
     MODULE_MEMORY_API virtual ~SDumpPolicy();
 
-    /**
-     * Configuration example :
-       @code{.xml}
-       <service ...>
-       <config>
-         <policy>ValveDump</policy>
-         <params>
-          <min_free_mem>524288000</min_free_mem>
-          <hysteresis_offet>104857600</hysteresis_offet>
-         </params>
-       </config>
-       </service>
-       @endcode
-     * */
     MODULE_MEMORY_API void configuring() override;
 
     /// Overrides

@@ -49,6 +49,8 @@ CPPUNIT_TEST( createObjectFromShaderParameter );
 CPPUNIT_TEST_SUITE_END();
 
 public:
+    ShadingTest();
+
     // interface
     void setUp();
     void tearDown();
@@ -64,8 +66,6 @@ public:
     void createObjectFromShaderParameter();
 
 private:
-    /// Ogre root necessary to setup up everything properly
-    ::Ogre::Root* m_ogreRoot;
     /// Dummy material created at runtime
     ::Ogre::MaterialPtr m_material;
 };

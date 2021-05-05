@@ -32,6 +32,7 @@
 #include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreCamera.h>
+#include <OGRE/OgreCommon.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
@@ -47,8 +48,10 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
-static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT = "updatePL";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT     = "updateTF";
+static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT     = "updatePL";
+static const core::com::Slots::SlotKeyType s_SET_FILTERING_SLOT = "setFiltering";
+static const core::com::Slots::SlotKeyType s_SCALE_SLOT         = "scale";
 
 static const service::IService::KeyType s_IMAGE_INPUT = "image";
 static const service::IService::KeyType s_TF_INPUT    = "tf";
@@ -57,6 +60,8 @@ static const service::IService::KeyType s_PL_INPUT    = "pointList";
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
 static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
+static const std::string s_FILTERING_CONFIG         = "filtering";
+static const std::string s_SCALING_CONFIG           = "scaling";
 static const std::string s_RADIUS_CONFIG            = "radius";
 static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
 static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
@@ -76,6 +81,8 @@ SVideo::SVideo() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
     newSlot(s_UPDATE_PL_SLOT, &SVideo::updatePL, this);
+    newSlot(s_SET_FILTERING_SLOT, &SVideo::setFiltering, this);
+    newSlot(s_SCALE_SLOT, &SVideo::scale, this);
 }
 
 //------------------------------------------------------------------------------
@@ -98,6 +105,8 @@ void SVideo::configuring()
 
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
     m_textureName          = config.get<std::string>(s_TEXTURE_NAME_CONFIG, m_textureName);
+    m_filtering            = config.get<bool>(s_FILTERING_CONFIG, m_filtering);
+    m_scaling              = config.get<bool>(s_SCALING_CONFIG, m_scaling);
     m_radius               = config.get<std::string>(s_RADIUS_CONFIG, m_radius);
     m_displayLabel         = config.get<std::string>(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
     m_labelColor           = config.get<std::string>(s_LABEL_COLOR_CONFIG, m_labelColor);
@@ -207,6 +216,11 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
+    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
+    SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
+    ::Ogre::Viewport* viewport = sceneManager->getCurrentViewport();
+    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
+
     // Getting Sight Image
     const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
@@ -257,8 +271,13 @@ void SVideo::updating()
         defaultMat->copyDetailsTo(m_material);
 
         // Set the texture to the main material pass
-        ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-        ogrePass->getTextureUnitState("image")->setTexture(m_texture);
+        this->updateTextureFiltering();
+
+        ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+        SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
+        ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+        SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
+        tus->setTexture(m_texture);
 
         if(tf)
         {
@@ -274,7 +293,13 @@ void SVideo::updating()
     const data::Image::Size size = imageSight->getSize2();
     sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, true);
 
-    if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
+    if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
+        // If scaling is disabled and one of the viewport coordinate is modified
+        // Then we need to trigger an update of the viewport displaying the texture
+        || (!m_scaling
+            && (viewport->getActualWidth() != m_previousViewportWidth
+                || viewport->getActualHeight() != m_previousViewportHeight))
+        || m_forcePlaneUpdate)
     {
         this->clearEntity();
 
@@ -310,13 +335,27 @@ void SVideo::updating()
         ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
         SIGHT_ASSERT("Default camera not found", cam);
         cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
-        cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
+
+        if(m_scaling)
+        {
+            cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
+        }
+        else
+        {
+            cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(viewport->getActualHeight()));
+            cam->setOrthoWindowWidth(static_cast< ::Ogre::Real >(viewport->getActualWidth()));
+        }
+        // Make sure no further scaling request is required
+        m_forcePlaneUpdate = false;
 
         m_isTextureInit = true;
     }
 
     m_previousWidth  = size[0];
     m_previousHeight = size[1];
+
+    m_previousViewportWidth  = viewport->getActualWidth();
+    m_previousViewportHeight = viewport->getActualHeight();
 
     this->requestRender();
 }
@@ -421,5 +460,47 @@ void SVideo::clearEntity()
 }
 
 //------------------------------------------------------------------------------
+
+void SVideo::setFiltering(bool filtering)
+{
+    m_filtering = filtering;
+
+    // Only allow updating when the texture has been initialized
+    // Otherwise, we might end up in cases where the slot is called before the
+    // initialization, thus crashing the app
+    if(m_isTextureInit)
+    {
+        this->updateTextureFiltering();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SVideo::updateTextureFiltering()
+{
+    ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+    SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
+    ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+    SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
+
+    // Set up texture filtering
+    tus->setTextureFiltering( m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE );
+}
+
+//------------------------------------------------------------------------------
+
+void SVideo::scale(bool value)
+{
+    m_scaling          = value;
+    m_forcePlaneUpdate = true;
+
+    // Only allow updating when the texture has been initialized
+    // Otherwise, we might end up in cases where the slot is called before the
+    // initialization, thus crashing the app
+    if(m_isTextureInit)
+    {
+        this->updating();
+    }
+}
 
 } // namespace sight::module::viz::scene3d::adaptor.
