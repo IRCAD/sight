@@ -63,8 +63,8 @@
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
-            <config id="DicomReaderConfig" service="::sight::module::io::dicom::SDicomSeriesDBReader" />
+            <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
+            <config id="DicomReaderConfig" service="sight::module::io::dicom::SDicomSeriesDBReader" />
         </config>
     </extension>
 

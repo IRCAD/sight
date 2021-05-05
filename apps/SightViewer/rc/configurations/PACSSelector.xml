@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>SightViewer_PACSSelector_AppCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
@@ -436,7 +436,7 @@
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
-                <icon series="::sight::data::DicomSeries" icon="sight::module::ui::flaticons/GreenMedicine.svg" />
+                <icon series="sight::data::DicomSeries" icon="sight::module::ui::flaticons/GreenMedicine.svg" />
             </icons>
             <config selectionMode="extended" allowedRemove="false" />
         </service>
@@ -453,21 +453,21 @@
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="series" uid="previewDicom" />
             <inout key="image" uid="previewImage" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
         <service uid="seriesPullerSrv" type="sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
         <service uid="localSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>
-                <icon series="::sight::data::ImageSeries" icon="sight::module::ui::flaticons/Volume.svg" />
+                <icon series="sight::data::ImageSeries" icon="sight::module::ui::flaticons/Volume.svg" />
             </icons>
             <config selectionMode="extended"
                     removeStudyicon="sight::module::ui::flaticons/RedCross.svg"
