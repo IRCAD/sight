@@ -162,19 +162,23 @@ void SSliceIndexDicomEditor::updating()
     const auto dicomSeries   = this->getLockedInOut< const data::DicomSeries >(s_DICOMSERIES_INOUT);
     const size_t sliceNumber = dicomSeries->getNumberOfInstances();
 
-    // If the current slice index is the initial value of the slider, we just send a signal to trigger other services.
-    const int currentSlice = m_slider->value();
-    if(currentSlice == static_cast<int>(sliceNumber/2))
+    if(sliceNumber > 0)
     {
-        this->changeSliceIndex(currentSlice);
-    }
-    else
-    {
-        // Fill slider informations.
-        m_slider->setRange(0, static_cast<int>(sliceNumber-1));
-        m_slider->setValue(static_cast<int>(sliceNumber/2));
+        // If the current slice index is the initial value of the slider, we just send a signal to trigger other
+        // services.
+        const int currentSlice = m_slider->value();
+        if(currentSlice == static_cast<int>(sliceNumber/2))
+        {
+            this->changeSliceIndex(currentSlice);
+        }
+        else
+        {
+            // Fill slider informations.
+            m_slider->setRange(0, static_cast<int>(sliceNumber-1));
+            m_slider->setValue(static_cast<int>(sliceNumber/2));
 
-        this->setSliderInformation(static_cast<unsigned int>(sliceNumber/2));
+            this->setSliderInformation(static_cast<unsigned int>(sliceNumber/2));
+        }
     }
 }
 
@@ -288,8 +292,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             }
 
             // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmpPath      = core::tools::System::getTemporaryFolder() / "dicom/";
-            std::filesystem::path downloadPath = tmpPath.string() + seriesInstanceUID + "/" + sopInstanceUID;
+            std::filesystem::path tmpPath      = core::tools::System::getTemporaryFolder() / "dicom";
+            std::filesystem::path downloadPath = tmpPath / seriesInstanceUID / sopInstanceUID;
             dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
             success = true;
@@ -308,6 +312,10 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to execute query");
+    }
+    catch(const std::filesystem::filesystem_error& _e)
+    {
+        SIGHT_ERROR(std::string(_e.what()));
     }
 
     // Disconnect the series enquirer.
