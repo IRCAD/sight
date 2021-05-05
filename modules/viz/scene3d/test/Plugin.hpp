@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2021 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,32 +22,30 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <core/runtime/Plugin.hpp>
 
-namespace sight::viz::scene3d
-{
-namespace helper
-{
+#include <OgreRoot.h>
 
-namespace ut
+namespace sight::module::viz::scene3d::test
 {
 
-class MeshTest : public CPPUNIT_NS::TestFixture
+/**
+ * @brief   This class instantiates and destroy an Ogre::Root, which is useful for
+ */
+class Plugin : public core::runtime::Plugin
 {
-CPPUNIT_TEST_SUITE( MeshTest );
-CPPUNIT_TEST( copyColors );
-CPPUNIT_TEST_SUITE_END();
+/// Destructor. Do nothing.
+~Plugin() noexcept;
 
-public:
-    // interface
-    void setUp();
-    void tearDown();
+/// Instantiates Ogre Root.
+void start();
 
-    void copyColors();
+/// Overrides stop method. Do nothing
+void stop() noexcept;
 
 private:
+    /// Ogre root to setup the scene and instantiate 'Text' objects.
+    Ogre::Root* m_ogreRoot {nullptr};
 };
 
-} //namespace ut
-} //namespace helper
-} //namespace sight::viz::scene3d
+} // namespace sight::module::viz::scene3d::test

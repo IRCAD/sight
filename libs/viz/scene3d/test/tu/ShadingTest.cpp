@@ -31,7 +31,6 @@
 
 #include <viz/scene3d/helper/Shading.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
@@ -48,12 +47,18 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
+ShadingTest::ShadingTest()
+{
+}
+
+//------------------------------------------------------------------------------
+
 void ShadingTest::setUp()
 {
-    m_ogreRoot = Utils::getOgreRoot();
+    auto& mgr     = Ogre::MaterialManager::getSingleton();
+    auto material = mgr.createOrRetrieve("TestMaterial", viz::scene3d::RESOURCE_GROUP);
 
-    auto& mgr = ::Ogre::MaterialManager::getSingleton();
-    m_material = mgr.create("TestMaterial", viz::scene3d::RESOURCE_GROUP);
+    m_material = Ogre::dynamic_pointer_cast< Ogre::Material >(material.first);
     m_material->createTechnique();
 }
 
@@ -61,8 +66,6 @@ void ShadingTest::setUp()
 
 void ShadingTest::tearDown()
 {
-    m_ogreRoot = nullptr;
-    Utils::destroyOgreRoot();
 }
 
 //------------------------------------------------------------------------------

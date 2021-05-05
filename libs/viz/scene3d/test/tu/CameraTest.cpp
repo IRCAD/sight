@@ -256,8 +256,7 @@ void CameraTest::convertPixelToWorldSpace()
 
         comparePoint(standardPoint, unprojectedPoint);
     }
-
-    Utils::destroyOgreRoot();
+    root->destroySceneManager(sceneManager);
 }
 
 //------------------------------------------------------------------------------

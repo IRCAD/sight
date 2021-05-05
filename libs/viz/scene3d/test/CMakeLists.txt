@@ -6,3 +6,5 @@ target_link_libraries(viz_scene3dTest PUBLIC
                       data
                       viz_scene3d
 )
+
+add_dependencies(viz_scene3dTest module_viz_scene3d_test)
