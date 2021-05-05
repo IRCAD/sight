@@ -216,11 +216,6 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-    SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
-    ::Ogre::Viewport* viewport = sceneManager->getCurrentViewport();
-    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
-
     // Getting Sight Image
     const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
@@ -293,6 +288,10 @@ void SVideo::updating()
     const data::Image::Size size = imageSight->getSize2();
     sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, true);
 
+    const auto layer                     = this->getLayer();
+    const Ogre::Viewport* const viewport = layer->getViewport();
+    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
+
     if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
         // If scaling is disabled and one of the viewport coordinate is modified
         // Then we need to trigger an update of the viewport displaying the texture
@@ -313,12 +312,14 @@ void SVideo::updating()
 
         ::Ogre::MovablePlane plane( ::Ogre::Vector3::UNIT_Z, 0 );
 
-        ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-        ::Ogre::MeshManager& meshManager   = ::Ogre::MeshManager::getSingleton();
+        Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
 
         m_mesh = meshManager.createPlane(videoMeshName, sight::viz::scene3d::RESOURCE_GROUP,
                                          plane, static_cast< ::Ogre::Real >(size[0]),
                                          static_cast< ::Ogre::Real >(size[1]));
+
+        Ogre::SceneManager* sceneManager = this->getSceneManager();
+        SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
 
         // Create Ogre Entity
         m_entity = sceneManager->createEntity(entityName, videoMeshName);
