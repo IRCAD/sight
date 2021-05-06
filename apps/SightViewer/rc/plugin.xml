@@ -35,6 +35,15 @@
         <desc>DICOM</desc>
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+        </config>
+    </extension>
+
+    <extension implements="::sight::service::extension::Config">
+        <id>SightViewerDicomReaderConfig</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
 
@@ -281,10 +290,10 @@
             <service uid="openSeriesDBAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
-                <config id="SightViewer_jsonReader_SrvCfg" service="::sight::module::io::atoms::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="::sight::module::io::vtk::SSeriesDBReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="::sight::module::io::dicom::SSeriesDBReader" />
+                <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
+                <config id="SightViewer_jsonReader_SrvCfg" service="sight::module::io::atoms::SReader" />
+                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
+                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
             </service>
 
             <!-- Show the negato/volume view -->
