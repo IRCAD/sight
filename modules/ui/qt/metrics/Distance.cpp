@@ -30,9 +30,9 @@
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
