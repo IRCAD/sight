@@ -216,11 +216,6 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-    SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
-    ::Ogre::Viewport* viewport = sceneManager->getCurrentViewport();
-    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
-
     // Getting Sight Image
     const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
@@ -233,18 +228,18 @@ void SVideo::updating()
         // /////////////////////////////////////////////////////////////////////
         if(!m_texture)
         {
-            auto texture = ::Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
+            auto texture = Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
                 this->getID() + "_VideoTexture",
                 sight::viz::scene3d::RESOURCE_GROUP, true).first;
 
-            m_texture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( texture );
+            m_texture = Ogre::dynamic_pointer_cast< Ogre::Texture>( texture );
         }
 
-        auto& mtlMgr   = ::Ogre::MaterialManager::getSingleton();
+        auto& mtlMgr   = Ogre::MaterialManager::getSingleton();
         const auto tfW = this->getWeakInput< data::TransferFunction >(s_TF_INPUT);
         const auto tf  = tfW.lock();
 
-        ::Ogre::MaterialPtr defaultMat;
+        Ogre::MaterialPtr defaultMat;
         if(tf)
         {
             if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
@@ -262,20 +257,20 @@ void SVideo::updating()
         }
 
         // Duplicate the template material to create our own material
-        auto material = ::Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
+        auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
             this->getID() + "_VideoMaterial",
             sight::viz::scene3d::RESOURCE_GROUP,
             true).first;
-        m_material = ::Ogre::dynamic_pointer_cast< ::Ogre::Material>( material );
+        m_material = Ogre::dynamic_pointer_cast< Ogre::Material>( material );
 
         defaultMat->copyDetailsTo(m_material);
 
         // Set the texture to the main material pass
         this->updateTextureFiltering();
 
-        ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
         SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
-        ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+        Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
         SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
         tus->setTexture(m_texture);
 
@@ -291,7 +286,11 @@ void SVideo::updating()
     }
 
     const data::Image::Size size = imageSight->getSize2();
-    sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, ::Ogre::TEX_TYPE_2D, true);
+    sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, Ogre::TEX_TYPE_2D, true);
+
+    const auto layer                     = this->getLayer();
+    const Ogre::Viewport* const viewport = layer->getViewport();
+    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
 
     if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
         // If scaling is disabled and one of the viewport coordinate is modified
@@ -311,14 +310,16 @@ void SVideo::updating()
         const std::string entityName    = thisID + "_VideoEntity";
         const std::string nodeName      = thisID + "_VideoSceneNode";
 
-        ::Ogre::MovablePlane plane( ::Ogre::Vector3::UNIT_Z, 0 );
+        Ogre::MovablePlane plane( Ogre::Vector3::UNIT_Z, 0 );
 
-        ::Ogre::SceneManager* sceneManager = this->getSceneManager();
-        ::Ogre::MeshManager& meshManager   = ::Ogre::MeshManager::getSingleton();
+        Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
 
         m_mesh = meshManager.createPlane(videoMeshName, sight::viz::scene3d::RESOURCE_GROUP,
-                                         plane, static_cast< ::Ogre::Real >(size[0]),
-                                         static_cast< ::Ogre::Real >(size[1]));
+                                         plane, static_cast< Ogre::Real >(size[0]),
+                                         static_cast< Ogre::Real >(size[1]));
+
+        Ogre::SceneManager* sceneManager = this->getSceneManager();
+        SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
 
         // Create Ogre Entity
         m_entity = sceneManager->createEntity(entityName, videoMeshName);
@@ -332,18 +333,18 @@ void SVideo::updating()
         m_sceneNode->setPosition(0, 0, -1);
         m_sceneNode->setVisible(m_isVisible);
 
-        ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+        Ogre::Camera* cam = layer->getDefaultCamera();
         SIGHT_ASSERT("Default camera not found", cam);
-        cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
+        cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 
         if(m_scaling)
         {
-            cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
+            cam->setOrthoWindowHeight(static_cast< Ogre::Real >(size[1]));
         }
         else
         {
-            cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(viewport->getActualHeight()));
-            cam->setOrthoWindowWidth(static_cast< ::Ogre::Real >(viewport->getActualWidth()));
+            cam->setOrthoWindowHeight(static_cast< Ogre::Real >(viewport->getActualHeight()));
+            cam->setOrthoWindowWidth(static_cast< Ogre::Real >(viewport->getActualWidth()));
         }
         // Make sure no further scaling request is required
         m_forcePlaneUpdate = false;
@@ -402,7 +403,7 @@ void SVideo::updateTF()
 
     m_gpuTF->updateTexture(tf.get_shared());
 
-    ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+    Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
     m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
 
     this->requestRender();
@@ -453,7 +454,7 @@ void SVideo::clearEntity()
     }
     if (m_mesh)
     {
-        ::Ogre::MeshManager& meshManager = ::Ogre::MeshManager::getSingleton();
+        Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
         meshManager.remove(m_mesh->getName(), sight::viz::scene3d::RESOURCE_GROUP);
         m_mesh.reset();
     }
@@ -478,9 +479,9 @@ void SVideo::setFiltering(bool filtering)
 
 void SVideo::updateTextureFiltering()
 {
-    ::Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+    Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
     SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
-    ::Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
+    Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
     SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
 
     // Set up texture filtering
