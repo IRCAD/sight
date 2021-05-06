@@ -23,8 +23,8 @@
 #include "MedicalImageHelpersTest.hpp"
 
 #include <data/Array.hpp>
-#include <data/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -358,16 +358,16 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
-            const data::Image::BufferType* pixBuf =
+            const data::Image::BufferType* pixBuf2 =
                 static_cast< data::Image::BufferType* >(image->getPixelBuffer(10));
 
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
             image->setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 5*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 5*3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 6*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 6*3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
         }
     }

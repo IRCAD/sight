@@ -894,19 +894,17 @@ endmacro()
 #   to activate "warning as errors", simply write in the Properties.cmake of your project:
 #   set(WARNINGS_AS_ERRORS ON)
 macro(fwManageWarnings PROJECT)
-    if(${${PROJECT}_WARNINGS_AS_ERRORS})
-        if(MSVC)
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-                # wd4996: deprecated declaration will be displayed as warning and not errors
-                target_compile_options(${PROJECT} PRIVATE /WX /wd4996)
-            else()
-                message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
-            endif()
-        elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            # deprecated declaration will be displayed as warning and not errors
-            target_compile_options(${PROJECT} PRIVATE "-Werror" "-Wno-error=deprecated-declarations")
-        endif ()
-    endif()
+    if(MSVC)
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
+            # wd4996: deprecated declaration will be displayed as warning and not errors
+            target_compile_options(${PROJECT} PRIVATE /WX /wd4996)
+        else()
+            message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
+        endif()
+    elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        # deprecated declaration will be displayed as warning and not errors
+        target_compile_options(${PROJECT} PRIVATE "-Werror" "-Wno-error=deprecated-declarations")
+    endif ()
 endmacro()
 
 # Scans specified directory  ('curdir') and returns a list of subdirectories ('result').
