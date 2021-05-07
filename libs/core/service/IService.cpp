@@ -46,6 +46,7 @@ namespace sight::service
 
 const core::com::Signals::SignalKeyType IService::s_STARTED_SIG          = "started";
 const core::com::Signals::SignalKeyType IService::s_UPDATED_SIG          = "updated";
+const core::com::Signals::SignalKeyType IService::s_SWAPPED_SIG          = "swapped";
 const core::com::Signals::SignalKeyType IService::s_STOPPED_SIG          = "stopped";
 const core::com::Signals::SignalKeyType IService::s_INFO_NOTIFIED_SIG    = "infoNotified";
 const core::com::Signals::SignalKeyType IService::s_SUCCESS_NOTIFIED_SIG = "successNotified";
@@ -67,6 +68,7 @@ IService::IService() :
 {
     newSignal<StartedSignalType>( s_STARTED_SIG );
     newSignal<UpdatedSignalType>( s_UPDATED_SIG );
+    newSignal<SwappedSignalType>( s_SWAPPED_SIG );
     newSignal<StoppedSignalType>( s_STOPPED_SIG );
     newSignal<InfoNotifiedSignalType>( s_INFO_NOTIFIED_SIG );
     newSignal<SuccessNotifiedSignalType>( s_SUCCESS_NOTIFIED_SIG );
@@ -699,6 +701,9 @@ IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, data::
     }
 
     this->autoConnect();
+
+    auto sig = this->signal<SwappedSignalType>(s_SWAPPED_SIG);
+    sig->asyncEmit();
 
     return future;
 
