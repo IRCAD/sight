@@ -1,6 +1,5 @@
 add_subdirectory(ExDetectCamMotion)
 add_subdirectory(ExImageSubstraction)
-add_subdirectory(ExImageMix)
 add_subdirectory(ExRegistration)
 add_subdirectory(ExRGBDImageMasking)
 add_subdirectory(ExDicomSegmentation)

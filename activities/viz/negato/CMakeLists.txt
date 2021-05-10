@@ -1,8 +1,6 @@
-sight_add_target( 2DVisualizationActivity TYPE MODULE )
+sight_add_target( activity_viz_negato TYPE MODULE )
 
-
-
-add_dependencies(2DVisualizationActivity 
+add_dependencies(activity_viz_negato 
                  data
                  module_activity
                  module_ui_base

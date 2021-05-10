@@ -154,7 +154,7 @@ void SSeriesDBReader::configuring()
     m_filterConfig = config.get<std::string>("filterConfig", "");
 
     // Set filter
-    m_filterType = config.get<std::string>("filterConfig", "");
+    m_filterType = config.get<std::string>("filterType", "");
 
     // Show log dialog
     m_showLogDialog = config.get<bool>("showLogDialog", true);

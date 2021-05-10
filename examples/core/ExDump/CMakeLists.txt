@@ -16,8 +16,7 @@ add_dependencies(ExDump
                  module_io_dicom
                  module_io_matrix
                  module_memory
-                 2DVisualizationActivity
-                 3DVisualizationActivity
+                 activity_viz_negato
                  module_io_activity
                  atoms
                  module_debug

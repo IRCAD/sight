@@ -153,7 +153,8 @@ void Image::readImagePlaneModule()
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
     }
 
-    // Compute Z image spacing
+    // Computing Z image spacing from two adjacent slices is preferable than reading Slice Thickness tag
+    // See http://gdcm.sourceforge.net/wiki/index.php/Imager_Pixel_Spacing, Spacing along Z (third dimension)
     const data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
     if(dicomContainer.size() > 1)
     {

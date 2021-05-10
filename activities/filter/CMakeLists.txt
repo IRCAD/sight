@@ -1,2 +1,0 @@
-add_subdirectory(registrationActivity)
-add_subdirectory(blendActivity)

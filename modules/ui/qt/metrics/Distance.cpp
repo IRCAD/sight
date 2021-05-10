@@ -30,6 +30,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/String.hpp>
 
@@ -119,7 +120,7 @@ void Distance::onDistanceButton()
     SIGHT_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
-    image->setField("ShowDistances",  data::Boolean::New(true));
+    image->setField(data::fieldHelper::Image::m_distanceVisibility,  data::Boolean::New(true));
 
     m_sigDistanceRequested->asyncEmit();
 }

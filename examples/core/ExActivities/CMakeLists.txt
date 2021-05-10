@@ -14,8 +14,7 @@ add_dependencies(ExActivities
                  module_io_atoms
                  module_io_vtk
                  module_io_activity
-                 2DVisualizationActivity
-                 volumeRenderingActivity
+                 activity_viz_negato
                  config_ui_activity
                  module_viz_sample
 )

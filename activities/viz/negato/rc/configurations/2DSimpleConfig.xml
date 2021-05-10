@@ -1,13 +1,11 @@
 <extension implements="::sight::service::extension::AppConfig">
-    <id>2DSimpleConfig2</id>
+    <id>2DSimpleConfig</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="objectID" />
         <param name="imageID" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
-        <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
         <object uid="${imageID}" type="sight::data::Image" src="ref" />
         <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
@@ -25,44 +23,26 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="fwRenderVTK::SRender">
+        <service uid="gs" type="sight::viz::scene3d::SRender" >
             <scene>
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="0.0" />
+                <background topColor="#36393E" bottomColor="#36393E" />
+                
+                <layer id="default" order="1" transparency="HybridTransparency" numPeels="4" />
 
                 <adaptor uid="interactor4Negato" />
-                <adaptor uid="imageText" />
                 <adaptor uid="seriesAdaptor" />
                 <adaptor uid="nameAdaptor" />
-                <adaptor uid="imageSliceOrientationText" />
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${imageID}" />
-            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            <config layer="default" priority="0" orientation="${orientation}" />
         </service>
 
-        <service uid="seriesAdaptor" type="visuVTKAdaptor::SImageSeries" autoConnect="yes">
-            <inout key="imageSeries" uid="${objectID}" />
-            <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
-        </service>
-
-        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
-            <in key="object" uid="${objectID}" />
-            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
-        </service>
-
-        <service uid="imageSliceOrientationText" type="visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
-            <in key="image" uid="${imageID}" />
-            <config renderer="default">
-                <locations>default</locations>
-                <initialOrientation>${orientation}</initialOrientation>
-            </config>
+        <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes">
+            <inout key="image" uid="${imageID}" />
+            <config layer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
@@ -85,9 +65,6 @@
 
         <!-- gs adaptors -->
         <start uid="interactor4Negato" />
-        <start uid="imageText" />
         <start uid="seriesAdaptor" />
-        <start uid="nameAdaptor" />
-        <start uid="imageSliceOrientationText" />
     </config>
 </extension>
