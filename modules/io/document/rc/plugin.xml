@@ -6,6 +6,7 @@
         <type>sight::io::base::service::IWriter</type>
         <service>sight::module::io::document::SPdfWriter</service>
         <object>sight::data::Object</object>
+        <desc>PDF Writer</desc>
     </extension>
 
 </plugin>

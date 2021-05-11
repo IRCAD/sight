@@ -108,7 +108,7 @@ Qt3DRender::QRenderSettings* const GenericScene::getRenderSettings() const
 
 //------------------------------------------------------------------------------
 
-FrameGraph* const GenericScene::getFrameGraph() const
+FrameGraph* GenericScene::getFrameGraph() const
 {
     return m_frameGraph;
 }

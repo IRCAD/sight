@@ -41,17 +41,11 @@ CPPUNIT_TEST( getNodeById );
 CPPUNIT_TEST_SUITE_END();
 
 public:
-    SceneTest();
-    virtual ~SceneTest();
     // interface
     void setUp();
     void tearDown();
 
     void getNodeById();
-
-private:
-    /// Ogre root necessary to setup up everything properly
-    ::Ogre::Root* m_ogreRoot;
 };
 
 } //namespace ut

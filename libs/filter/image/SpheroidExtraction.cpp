@@ -19,6 +19,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+#ifndef WIN32
 
 #include "filter/image/SpheroidExtraction.hpp"
 
@@ -163,3 +164,5 @@ data::PointList::sptr SpheroidExtraction::extract(const data::Image::csptr& _ima
 }
 
 } // namespace sight::filter::image.
+
+#endif

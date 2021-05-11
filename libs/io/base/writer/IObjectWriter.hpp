@@ -45,8 +45,8 @@ namespace writer
  * @brief   Base class for all object writers.
  *
  * This class defines the API to use basic object writers. This writer is not
- * a service. Their equivalent exist as services see io::base::service::IWriter. To write an
- * object with this class, use setLocation and setOject method before execute
+ * a service, but its equivalent service exists. See io::base::service::IWriter. To write an
+ * object with this class, use setLocation and setOject method before executing
  * the method write.
  *
  * @todo Remove m_extension of this class. It must be deprecated.
@@ -80,7 +80,7 @@ public:
     };
 
     /**
-     * @brief Defines an writer interface.
+     * @brief Defines a writer interface.
      *
      * This method write the object given in parameter of setObject method.
      */
@@ -101,8 +101,8 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[in] _pObject replace m_object of the instance writer
-     * @note m_object is save in class with a weakptr
+     * @param[in] _pObject replaces m_object of the instance writer
+     * @note m_object is saved in class as a weakptr
      * @note This object can be get with the method getObject()
      */
     IO_BASE_API virtual void setObject( core::tools::Object::csptr object );
@@ -143,7 +143,7 @@ protected:
     IO_BASE_API virtual ~IObjectWriter();
 
     /**
-     * @brief Object write on filesystem by the process.
+     * @brief Object to write on filesystem by the process.
      *
      * This object is given in parameter of setObject method but it is conserved with a weakptr.
      */

@@ -27,10 +27,12 @@
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/Config.hpp>
 
+#include <utest/wait.hpp>
+
 #include <functional>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ServiceConfigTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::service::ut::ServiceConfigTest );
 
 namespace sight::service
 {
@@ -87,19 +89,14 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
         futures.push_back( std::async(std::launch::async, fn) );
     }
 
-    for (auto& future : futures)
-    {
-        const auto status = future.wait_for(std::chrono::seconds(1));
-        CPPUNIT_ASSERT(status == std::future_status::ready);
-        future.get(); // Trigger exceptions
-    }
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
     service::extension::Config::sptr currentServiceConfig;
     currentServiceConfig = service::extension::Config::getDefault();
     currentServiceConfig->clearRegistry();
-    std::vector< std::string > allCconfigs = currentServiceConfig->getAllConfigForService(
+    std::vector< std::string > allConfigs = currentServiceConfig->getAllConfigForService(
         "::sight::service::ut::TestService");
-    CPPUNIT_ASSERT(allCconfigs.empty());
+    CPPUNIT_ASSERT(allConfigs.empty());
 }
 
 //------------------------------------------------------------------------------

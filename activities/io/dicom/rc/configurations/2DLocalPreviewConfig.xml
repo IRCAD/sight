@@ -72,7 +72,7 @@
         <!-- Deferred start -->
         <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
-        <!-- VTK scene 'gs' -->
+        <!-- 3D scene 'gs' -->
         <start uid="pNegatoAdp" />
         <start uid="pNegatoCameraAdp" />
     </config>

@@ -22,10 +22,10 @@
 
 #include "data/DicomSeries.hpp"
 
-#include <core/memory/stream/in/Raw.hpp>
-
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
+
+#include <core/memory/stream/in/Raw.hpp>
 
 #include <filesystem>
 
@@ -107,6 +107,11 @@ void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
 
 void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
 {
+    SIGHT_THROW_EXCEPTION_IF(std::filesystem::filesystem_error(std::string("Dicom path can not be found: "), _path,
+                                                               std::make_error_code(
+                                                                   std::errc::no_such_file_or_directory)),
+                             !std::filesystem::exists(_path) );
+
     core::memory::BufferObject::sptr buffer = core::memory::BufferObject::New();
     const auto buffSize                     = std::filesystem::file_size(_path);
     buffer->setIStreamFactory( std::make_shared< core::memory::stream::in::Raw >(_path),

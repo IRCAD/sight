@@ -90,7 +90,7 @@ public:
     VIZ_QT3D_QT_API Qt3DRender::QRenderSettings* const getRenderSettings() const;
 
     /// @returns the scene's framegraph.
-    VIZ_QT3D_QT_API FrameGraph* const getFrameGraph() const;
+    VIZ_QT3D_QT_API FrameGraph* getFrameGraph() const;
 
     /// Updates the scene's camera.
     VIZ_QT3D_QT_API void setCamera(Qt3DRender::QCamera* _camera);

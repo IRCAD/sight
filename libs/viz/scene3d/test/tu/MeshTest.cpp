@@ -23,7 +23,6 @@
 #include "MeshTest.hpp"
 
 #include "viz/scene3d/helper/Mesh.hpp"
-#include "viz/scene3d/Utils.hpp"
 
 #include <cstdint>
 
@@ -36,19 +35,6 @@ namespace helper
 {
 namespace ut
 {
-
-//------------------------------------------------------------------------------
-
-MeshTest::MeshTest()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-MeshTest::~MeshTest()
-{
-}
 
 //------------------------------------------------------------------------------
 

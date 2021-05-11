@@ -72,7 +72,7 @@ FrameGraph::~FrameGraph()
 
 //------------------------------------------------------------------------------
 
-Qt3DCore::QEntity* const FrameGraph::getCamera() const
+Qt3DCore::QEntity* FrameGraph::getCamera() const
 {
     return m_cameraSelector->camera();
 }
@@ -89,6 +89,13 @@ QColor FrameGraph::getClearColor() const
 Qt3DRender::QClearBuffers::BufferType FrameGraph::getBuffersToClear() const
 {
     return m_clearBuffers->buffers();
+}
+
+//------------------------------------------------------------------------------
+
+Qt3DRender::QCameraSelector* FrameGraph::getCameraSelector()
+{
+    return m_cameraSelector;
 }
 
 //------------------------------------------------------------------------------
@@ -110,6 +117,51 @@ void FrameGraph::setClearColor(const QColor& _color)
 void FrameGraph::setBuffersToClear(Qt3DRender::QClearBuffers::BufferType _buffers)
 {
     m_clearBuffers->setBuffers(_buffers);
+}
+
+//------------------------------------------------------------------------------
+
+QVector<Qt3DRender::QFrameGraphNode*> FrameGraph::getAllNodes()
+{
+    QVector<Qt3DRender::QFrameGraphNode*> result;
+    getAllNodesRec(result, this);
+
+    return result;
+}
+
+//------------------------------------------------------------------------------
+
+void FrameGraph::getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes,
+                                Qt3DRender::QFrameGraphNode* _currentNode)
+{
+    auto children = _currentNode->children();
+    if(!children.isEmpty())
+    {
+        for(int i = 0; i < children.size(); i++)
+        {
+            if(qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]) != nullptr)
+            {
+                _nodes.push_back(qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]));
+                getAllNodesRec(_nodes, qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]));
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void FrameGraph::addNode(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent)
+{
+    auto nodes = this->getAllNodes();
+    for(int i = 0; i < nodes.size(); i++)
+    {
+        if(qobject_cast<Qt3DRender::QFrameGraphNode*>(nodes[i])->parentFrameGraphNode() == _parent)
+        {
+            nodes[i]->setParent(_node);
+        }
+    }
+
+    _node->setParent(_parent);
 }
 
 } // namespace core.

@@ -99,29 +99,29 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-<connect>
-    <signal>videoSelectorSrv/configuredCameras</signal>
-    <slot>videoGrabberSrv/reconfigure</slot>
-</connect>
+        <connect>
+            <signal>videoSelectorSrv/configuredCameras</signal>
+            <slot>videoGrabberSrv/reconfigure</slot>
+        </connect>
 
-<connect>
-    <signal>videoGrabberSrv/cameraStarted</signal>
-    <slot>pauseVideoAct/show</slot>
-    <slot>startVideoAct/hide</slot>
-    <slot>stopVideoAct/setExecutable</slot>
-    <slot>loopVideoAct/setExecutable</slot>
-</connect>
+        <connect>
+            <signal>videoGrabberSrv/cameraStarted</signal>
+            <slot>pauseVideoAct/show</slot>
+            <slot>startVideoAct/hide</slot>
+            <slot>stopVideoAct/setExecutable</slot>
+            <slot>loopVideoAct/setExecutable</slot>
+        </connect>
 
-<connect>
-    <signal>${camera}/idModified</signal>
-    <slot>videoGrabberSrv/stopCamera</slot>
-</connect>
+        <connect>
+            <signal>${camera}/idModified</signal>
+            <slot>videoGrabberSrv/stopCamera</slot>
+        </connect>
 
-<connect>
-    <signal>${camera}/modified</signal>
-    <slot>startVideoAct/setExecutable</slot>
-    <slot>stopVideoAct/update</slot>
-</connect>
+        <connect>
+            <signal>${camera}/modified</signal>
+            <slot>startVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/update</slot>
+        </connect>
 
         <connect channel="${cameraModifiedChannel}">
             <slot>${videoGrabber}/stopCamera</slot>

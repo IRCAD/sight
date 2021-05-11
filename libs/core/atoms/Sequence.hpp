@@ -31,7 +31,7 @@
 namespace sight::atoms
 {
 /**
- * @brief Sequence represented a list of meta object.
+ * @brief Class representing a list of meta objects.
  *
  */
 class ATOMS_CLASS_API Sequence : public Base

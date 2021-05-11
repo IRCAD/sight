@@ -22,4 +22,13 @@ moduleParam(module_ui_qt
         sight::module::ui::qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
+
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        Tuto16SceneQt3D_AppCfg
+) # Main application's configuration to launch
+
 sight_generate_profile(Tuto16SceneQt3D)

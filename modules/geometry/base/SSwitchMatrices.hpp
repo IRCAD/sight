@@ -36,7 +36,7 @@ namespace sight::module::geometry::base
 {
 
 /**
- * @brief   This service switch between several matrices.
+ * @brief  Switches between several matrices.
  *
  * @section Slots Slots
  * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is

@@ -26,6 +26,7 @@ moduleParam(module_ui_qt
         sight::module::ui::qt/flatdark.rcc
         sight::module::ui::qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
+
 moduleParam(
         module_appXml
     PARAM_LIST

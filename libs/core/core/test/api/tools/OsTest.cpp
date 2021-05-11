@@ -59,13 +59,14 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto execPath   = ::boost::dll::program_location().remove_filename();
+        const auto execPath = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
-        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core");
+        const auto actualPath       = core::tools::os::getSharedLibraryPath("sight_core.dll");
         const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
 #else
-        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core").replace_extension().replace_extension();
+        const auto actualPath =
+            core::tools::os::getSharedLibraryPath("sight_core").replace_extension().replace_extension();
         const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
                                       "libsight_core.so";
 #endif
@@ -81,9 +82,9 @@ void Os::getSharedLibraryPath()
     // Now load that library and check that we find it
 #if defined(WIN32)
     #if defined(_DEBUG)
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "campd.dll";
+    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "campd.dll");
     #else
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
+    const auto campPath = fs::weakly_canonical(fs::path(CAMP_LIB_DIR) / "camp.dll");
     #endif
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";

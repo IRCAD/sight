@@ -156,7 +156,7 @@
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="DicomPacsReaderConfig" />
         </service>
 
         <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">

@@ -18,6 +18,7 @@ add_dependencies(dicomxplorer
                  module_io_activity
                  activity_io_dicom
                  activity_io_dicomweb
+                 activity_viz_negato
                  module_ui_icons
                  atoms
                  module_ui_base

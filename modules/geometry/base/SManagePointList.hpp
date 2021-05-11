@@ -91,8 +91,8 @@ private:
     virtual void stopping() final;
 
     /**
-     * @brief SLOT: Add or remove a point from picking informations.
-     * @param _info picking informations.
+     * @brief SLOT: Add or remove a point from picking information.
+     * @param _info picking information.
      */
     void pick(data::tools::PickingInfo _info) const;
 

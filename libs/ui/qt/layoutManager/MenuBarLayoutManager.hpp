@@ -38,7 +38,7 @@ namespace layoutManager
 {
 
 /**
- * @brief   Defines the menu bar layout manager for IHM.
+ * @brief   Defines the menu bar layout manager for the GUI.
  */
 class UI_QT_CLASS_API MenuBarLayoutManager : public ui::base::layoutManager::IMenuBarLayoutManager
 {

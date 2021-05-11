@@ -32,7 +32,7 @@ namespace sight::module::geometry::base
 {
 
 /**
- * @brief Apply a matrix to a landmark.
+ * @brief Applies a matrix to a landmark.
  *
  * @section Signals Signals
  * - \b landmarkUpdated(string): Emitted when the landmark is modified

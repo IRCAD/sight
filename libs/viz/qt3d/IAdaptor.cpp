@@ -31,8 +31,12 @@ namespace sight::viz::qt3d
 
 //-----------------------------------------------------------------------------
 
-static const sight::core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-static const sight::core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const sight::core::com::Slots::SlotKeyType IAdaptor::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const sight::core::com::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const sight::core::com::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
+const sight::core::com::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
+
+static const std::string s_VISIBLE_CONFIG = "visible";
 
 //------------------------------------------------------------------------------
 
@@ -40,12 +44,22 @@ IAdaptor::IAdaptor()
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &IAdaptor::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &IAdaptor::toggleVisibility, this);
+    newSlot(s_SHOW_SLOT, &IAdaptor::show, this);
+    newSlot(s_HIDE_SLOT, &IAdaptor::hide, this);
 }
 
 //------------------------------------------------------------------------------
 
 IAdaptor::~IAdaptor()
 {
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::configureParams()
+{
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //------------------------------------------------------------------------------
@@ -78,14 +92,34 @@ void IAdaptor::updateVisibility(bool _visibility)
 {
     // Enable/disable qt3d entity according to _visibility.
     m_isVisible = _visibility;
+    this->setVisible(m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::toggleVisibility()
 {
-    m_isVisible = !m_isVisible;
-    this->updateVisibility(m_isVisible);
+    this->updateVisibility(!m_isVisible);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::show()
+{
+    this->updateVisibility(true);
+}
+//------------------------------------------------------------------------------
+
+void IAdaptor::hide()
+{
+    this->updateVisibility(false);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::setVisible(bool)
+{
+    SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }
 
 //------------------------------------------------------------------------------

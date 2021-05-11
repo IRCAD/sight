@@ -38,6 +38,11 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+option(SIGHT_ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
+option(SIGHT_VERBOSE_PCH  "Display debug messages to help debugging PCH" OFF)
+mark_as_advanced(SIGHT_ENABLE_PCH)
+mark_as_advanced(SIGHT_VERBOSE_PCH )
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
@@ -52,11 +57,6 @@ set(SIGHT_TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, su
 mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
 set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
 mark_as_advanced(SIGHT_TESTS_FILTER)
-
-option(SIGHT_ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
-option(SIGHT_VERBOSE_PCH  "Display debug messages to help debugging PCH" OFF)
-mark_as_advanced(SIGHT_ENABLE_PCH)
-mark_as_advanced(SIGHT_VERBOSE_PCH )
 
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
@@ -102,7 +102,7 @@ set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
 list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
 
-if(NOT VCPKG_TARGET_TRIPLET)
+if(UNIX)
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
@@ -116,57 +116,7 @@ if(NOT VCPKG_TARGET_TRIPLET)
     # Use directly SIGHT_EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
     # OpenVSLAM is the only package provided by sight-deps
     if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
-        # Set sight deps root directory (where the sight deps packages will be installed ) 
-        set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps" CACHE PATH "Sight deps root directory")
-        mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
-
-        # Packages name and version
-        set(SIGHT_DEPS_PACKAGE "sight-deps-${CMAKE_BUILD_TYPE}-19.0.0-16-g5b9e69b-${CMAKE_HOST_SYSTEM_NAME}")
-        set(SIGHT_DEPS_PACKAGE_ARCHIVE "${SIGHT_DEPS_PACKAGE}-dev.tar.zst")
-        set(SIGHT_DEPS_PACKAGE_URL "https://conan.ircad.fr/artifactory/data/sight-deps/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
-
-        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            set(SIGHT_DEPS_PACKAGE_HASH "6357c36c5e35327a2610bf3a02119a3b1bfa365e2a78ca705118e9b7e99bcd1b")
-        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-            set(SIGHT_DEPS_PACKAGE_HASH "e5b90189665145cb82d1a4404f6b09b7f8e19cfa241040f90710fcbd7534aac7")
-        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-            set(SIGHT_DEPS_PACKAGE_HASH "bb1464671ed43672f2698696b6fd80645442f2af69455638b54b02f6f351c5dd")
-        else()
-            # Falback for other build type
-            set(SIGHT_DEPS_PACKAGE_HASH "bb1464671ed43672f2698696b6fd80645442f2af69455638b54b02f6f351c5dd")
-        endif()
-
-        # Download and install package, if needed
-        get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
-            
-        if(NOT EXISTS ${SIGHT_DEPS_PACKAGE_DIRECTORY})
-            # Download the sight deps archive
-            file(
-                DOWNLOAD "${SIGHT_DEPS_PACKAGE_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}"
-                SHOW_PROGRESS
-                EXPECTED_HASH SHA256=${SIGHT_DEPS_PACKAGE_HASH}
-            )
-
-            # Extract it
-            file(
-            ARCHIVE_EXTRACT 
-            INPUT "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}"
-            DESTINATION "${SIGHT_DEPS_ROOT_DIRECTORY}"
-            VERBOSE
-            )
-
-            file(REMOVE "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
-        endif()
-
-        # Use ${SIGHT_DEPS_PACKAGE_DIRECTORY} as external libraries
-        set(SIGHT_EXTERNAL_LIBRARIES ${SIGHT_DEPS_PACKAGE_DIRECTORY})
-        message("Using ${SIGHT_EXTERNAL_LIBRARIES} for Sight external libraries")
-
-        unset(SIGHT_DEPS_PACKAGE_DIRECTORY)
-        unset(SIGHT_DEPS_PACKAGE_HASH)
-        unset(SIGHT_DEPS_PACKAGE_URL)
-        unset(SIGHT_DEPS_PACKAGE_ARCHIVE)
-        unset(SIGHT_DEPS_PACKAGE)
+      include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/download_deps.cmake)
     endif()
 
     if(SIGHT_EXTERNAL_LIBRARIES)
@@ -227,7 +177,10 @@ setExternalLibrariesDir()
 get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
 
 # For now, use a hardcoded list, we may compute this later from SIGHT_COMPONENTS 
-set(SIGHT_COMPONENTS "core;pchCore;data;pchData;activity;service;pchServices;pchServicesOmp;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_zip;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_vtk;io_opencv;io_dimse;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_pcl;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_flaticons;config_viz_scene3d;activity_navigation_calibration")
+set(SIGHT_COMPONENTS "core;data;activity;service;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_zip;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_vtk;io_opencv;io_dimse;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_flaticons;config_viz_scene3d;activity_navigation_calibration;geometry_vtk")
+if(NOT WIN32)
+  list(APPEND SIGHT_COMPONENTS "module_io_pcl")
+endif()
 
 if(SIGHT_ENABLE_OPENVSLAM)
   list(APPEND SIGHT_COMPONENTS "navigation_openvslam" "module_navigation_openvslam")
@@ -278,6 +231,7 @@ install( FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake"
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
     "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
     "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
     "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
@@ -392,6 +346,9 @@ elseif(UNIX)
     )
 endif()
 
+if(MSVC)
+  add_subdirectory(${CMAKE_SOURCE_DIR}/cmake/install/windows)
+endif()
 
 ########################################################################################################################
 # Misc generators

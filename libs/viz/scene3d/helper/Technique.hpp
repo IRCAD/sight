@@ -38,7 +38,7 @@ class Technique
 public:
 
     /**
-     * @brief copies a technique to an existing material
+     * @brief Copies a technique to an existing material
      *
      * @param[in] _tech technique to copy
      * @param[in] _schemeName new technique's scheme

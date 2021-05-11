@@ -63,7 +63,7 @@ public:
     VIZ_QT3D_QT_API Material(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroys the material.
-    VIZ_QT3D_QT_API virtual ~Material();
+    VIZ_QT3D_QT_API ~Material() override;
 
     /// @returns ambient color.
     VIZ_QT3D_QT_API QColor getAmbient();

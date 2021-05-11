@@ -188,4 +188,9 @@
          <object>sight::data::Object</object>
          <desc>This action allows to snapshot a generic scene</desc>
     </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::service::IController</type>
+        <service>sight::module::ui::base::com::SRecurrentSignal</service>
+    </extension>
 </plugin>

@@ -155,7 +155,7 @@ public:
     }
 
     /// Produced object type name. (i.e. "GridProxyGeometry")
-    static ::Ogre::String FACTORY_TYPE_NAME;
+    VIZ_SCENE3D_API static ::Ogre::String FACTORY_TYPE_NAME;
 
     /// Returns the object type name.
     VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override

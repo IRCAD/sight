@@ -74,10 +74,10 @@ public:
     VIZ_QT3D_QT_API ~Mesh() override;
 
     /// @returns mesh material.
-    VIZ_QT3D_QT_API viz::qt3d::data::Material* const getMaterial() const;
+    VIZ_QT3D_QT_API viz::qt3d::data::Material* getMaterial() const;
 
     /// @returns the scene associated with the mesh.
-    VIZ_QT3D_QT_API sight::viz::qt3d::core::GenericScene* const getScene() const;
+    VIZ_QT3D_QT_API sight::viz::qt3d::core::GenericScene* getScene() const;
 
     /// Updates mesh material.
     VIZ_QT3D_QT_API void setMaterial(viz::qt3d::data::Material* _material);
@@ -85,7 +85,7 @@ public:
     /// Updates the scene associated with the mesh.
     VIZ_QT3D_QT_API void setScene(sight::viz::qt3d::core::GenericScene* _scene);
 
-    /// Constructs postion and normal buffers according to _mesh.
+    /// Constructs position and normal buffers according to _mesh.
     VIZ_QT3D_QT_API void buildBuffers(sight::data::Mesh::sptr _mesh);
 
     /// Updates the mesh according to _mesh.
@@ -100,6 +100,12 @@ Q_SIGNALS:
     void materialChanged();
 
 private:
+
+    /**
+     * @brief Adds the compute shader that change a quad mesh to a triangle mesh.
+     * @param _numberOfCells the cells number of the mesh.
+     */
+    void addComputeEntityToScene(int _numberOfCells);
 
     /// Contains the scene rendering this mesh.
     QPointer< sight::viz::qt3d::core::GenericScene > m_scene;

@@ -38,7 +38,6 @@ namespace sight::module::viz::qt3d::adaptor
  * @section Slot Slot
  * - \b updateVisibility(bool): shows or hides the mesh.
  * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
- * - \b modifyVertices(): called when the vertices are modified.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -95,13 +94,13 @@ protected:
     /// Does nothing.
     MODULE_VIZ_QT3D_API void stopping() override;
 
-private:
-
     /**
      * @brief Sets whether the mesh is to be seen or not.
-     * @param _visibility the visibility status of the volume.
+     * @param _visible the visibility status of the mesh.
      */
-    void updateVisibility(bool _visibility) override;
+    MODULE_VIZ_QT3D_API void setVisible(bool _visible) override;
+
+private:
 
     /// Updates mesh vertices.
     void modifyVertices();

@@ -36,6 +36,11 @@ class Object;
 namespace sight::module::io::atoms
 {
 
+/**
+ * @brief Filters out unknown activities from sight::atoms::Object.
+ *
+ * @see sight::io::atoms::filter::IFilter
+ */
 class MODULE_IO_ATOMS_CLASS_API FilterUnknownActivities : public sight::io::atoms::filter::IFilter
 {
 

@@ -198,9 +198,12 @@ void CameraTest::convertPixelToWorldSpace()
 {
     auto* const root         = viz::scene3d::Utils::getOgreRoot();
     auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
+
+    // Use a size > 120 because windows will anyway switch to a larger size
+    const ::Ogre::Vector2 screenSize(200, 200);
     auto* const renderWindow = root->createRenderWindow("TestRenderWindow",
-                                                        1u,
-                                                        1u,
+                                                        screenSize.x,
+                                                        screenSize.y,
                                                         false,
                                                         nullptr);
     renderWindow->setVisible(false);
@@ -216,7 +219,7 @@ void CameraTest::convertPixelToWorldSpace()
 
     camera->setProjectionType(::Ogre::ProjectionType::PT_PERSPECTIVE);
     {
-        // Manualy project a point
+        // Manually project a point
         const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
@@ -227,7 +230,7 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
+        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(screenSize.x, screenSize.y, 1);
         const ::Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
@@ -236,7 +239,7 @@ void CameraTest::convertPixelToWorldSpace()
 
     camera->setProjectionType(::Ogre::ProjectionType::PT_ORTHOGRAPHIC);
     {
-        // Manualy project a point
+        // Manually project a point
         const ::Ogre::Vector4 standardPoint(1.f, 2.f, 3.f, 1.f);
         const ::Ogre::Vector4 clippedPoint = camera->getProjectionMatrix() * camera->getViewMatrix() * standardPoint;
         const ::Ogre::Vector3 ndcPoint     = clippedPoint.xyz()/clippedPoint.w;
@@ -247,14 +250,13 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
+        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(screenSize.x, screenSize.y, 1);
         const ::Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }
-
-    Utils::destroyOgreRoot();
+    root->destroySceneManager(sceneManager);
 }
 
 //------------------------------------------------------------------------------

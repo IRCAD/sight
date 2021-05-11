@@ -1,14 +1,12 @@
 sight_add_target( io_igtl TYPE LIBRARY )
 
-
-
 find_package(LibArchive REQUIRED)
 target_include_directories(io_igtl PRIVATE ${LibArchive_INCLUDE_DIRS})
 target_link_libraries(io_igtl PRIVATE ${LibArchive_LIBRARIES})
 
 if(VCPKG_TARGET_TRIPLET)
     find_package(OpenIGTLink CONFIG REQUIRED)
-    target_link_libraries(io_igtl PRIVATE OpenIGTLink)
+    target_link_libraries(io_igtl PUBLIC OpenIGTLink)
 else()
     find_package(OpenIGTLink QUIET REQUIRED)
     target_link_libraries(io_igtl PUBLIC ${OpenIGTLink_LIBRARIES})

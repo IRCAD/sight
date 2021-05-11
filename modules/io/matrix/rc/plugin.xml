@@ -14,4 +14,19 @@
         <desc>Matrix4 Writer</desc>
     </extension>
 
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::io::base::service::IReader</type>
+        <service>sight::module::io::matrix::SMatricesReader</service>
+        <object>sight::data::MatrixTL</object>
+        <desc>Reads matrices from a CSV file and push them in a timeline</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::io::base::service::IWriter</type>
+        <service>sight::module::io::matrix::SMatrixWriter</service>
+        <object>sight::data::MatrixTL</object>
+        <desc>Saves the matrices timeline into a csv file</desc>
+    </extension>
+
 </plugin>

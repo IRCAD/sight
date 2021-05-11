@@ -39,7 +39,7 @@ namespace sight::core::jobs
 
 /**
  * @brief   This class encapsulate a task that will report it's progression
- * The embeded task will be run at most once. Once the job is finished or has
+ * The embedded task will be run at most once. Once the job is finished or has
  * been canceled, the job (thus the task) will not be run anymore)
  */
 class CORE_CLASS_API Job : public IJob

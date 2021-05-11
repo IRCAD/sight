@@ -24,7 +24,6 @@
 
 #include "viz/scene3d/helper/Scene.hpp"
 
-#include <OGRE/OgreLogManager.h>
 #include <OGRE/OgreSceneNode.h>
 
 #include <cstdint>
@@ -41,41 +40,22 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-SceneTest::SceneTest()
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-SceneTest::~SceneTest()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SceneTest::setUp()
 {
-    // Don't output the log to the terminal and delete the file when the test is done.
-    ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
-    logMgr->createLog("OgreTest.log", true, false, true);
-
-    m_ogreRoot = Utils::getOgreRoot();
 }
 
 //------------------------------------------------------------------------------
 
 void SceneTest::tearDown()
 {
-    m_ogreRoot = nullptr;
-    Utils::destroyOgreRoot();
 }
 
 //------------------------------------------------------------------------------
 
 void SceneTest::getNodeById()
 {
-    ::Ogre::SceneManager* sceneManager = m_ogreRoot->createSceneManager("DefaultSceneManager", "test");
+    auto ogreRoot = Utils::getOgreRoot();
+    ::Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
     ::Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
     CPPUNIT_ASSERT(nullptr != rootNode);
@@ -119,6 +99,8 @@ void SceneTest::getNodeById()
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1_1", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("AHDFVHDFD", rootNode));
     CPPUNIT_ASSERT_EQUAL(nullNode, viz::scene3d::helper::Scene::getNodeById("Node2_1", node1));
+
+    ogreRoot->destroySceneManager(sceneManager);
 }
 
 //------------------------------------------------------------------------------

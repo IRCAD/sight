@@ -35,7 +35,7 @@ namespace sight::activity
 {
 
 /**
- * @brief Base class for services that launches Activity
+ * @brief Base class for services that launches Activity instances.
  */
 class ACTIVITY_CLASS_API IActivityLauncher
 {

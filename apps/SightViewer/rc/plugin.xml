@@ -12,7 +12,6 @@
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::sight::service::extension::Config" >
         <id>SightViewer_jsonReader_SrvCfg</id>
@@ -36,6 +35,15 @@
         <desc>DICOM</desc>
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+        </config>
+    </extension>
+
+    <extension implements="::sight::service::extension::Config">
+        <id>SightViewerDicomReaderConfig</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
 
@@ -282,10 +290,10 @@
             <service uid="openSeriesDBAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
-                <config id="SightViewer_jsonReader_SrvCfg" service="::sight::module::io::atoms::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="::sight::module::io::vtk::SSeriesDBReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="::sight::module::io::dicom::SSeriesDBReader" />
+                <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
+                <config id="SightViewer_jsonReader_SrvCfg" service="sight::module::io::atoms::SReader" />
+                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
+                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
             </service>
 
             <!-- Show the negato/volume view -->
@@ -365,7 +373,7 @@
 
             <!-- TF manager -->
             <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
+                <appConfig id="TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
                 <inout key="image" uid="image" />

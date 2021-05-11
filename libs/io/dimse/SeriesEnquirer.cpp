@@ -494,7 +494,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromD
 
     // Search by series UID.
     const std::string searchString = _fromDate +"-" + _toDate;
-    dataset.putAndInsertOFStringArray(DCM_SeriesDate, searchString.c_str());
+    dataset.putAndInsertOFStringArray(DCM_StudyDate, searchString.c_str());
 
     // Fields needed by Series.
     dataset.putAndInsertOFStringArray(DCM_Modality, "");
@@ -519,7 +519,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromD
     // Fields needed by Study.
     dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "");
     dataset.putAndInsertOFStringArray(DCM_StudyID, "");
-    dataset.putAndInsertOFStringArray(DCM_StudyDate, "");
+    dataset.putAndInsertOFStringArray(DCM_SeriesDate, "");
     dataset.putAndInsertOFStringArray(DCM_StudyTime, "");
     dataset.putAndInsertOFStringArray(DCM_ReferringPhysicianName, "");
     dataset.putAndInsertOFStringArray(DCM_ConsultingPhysicianName, "");

@@ -29,7 +29,6 @@
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
 #include "core/runtime/detail/Runtime.hpp"
-
 #include <core/spyLog.hpp>
 
 #include <algorithm>
@@ -175,7 +174,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
         if(module == nullptr)
         {
-            SIGHT_ERROR("Could not find module '" + moduleFolder + "'");
+            SIGHT_DEBUG("Could not find module '" + moduleFolder + "'");
             return std::filesystem::path();
         }
         return getModuleResourcePath(module, pathWithoutModule );
@@ -289,11 +288,10 @@ bool loadLibrary(const std::string& identifier)
             s_LIBRARIES[identifier] = library;
             return true;
         }
-        catch (const RuntimeException& e)
+        catch (const RuntimeException& )
         {
             // Fail silently and potentially try in the next repository
         }
-
     }
     SIGHT_ERROR("Could not load library '" + identifier);
 

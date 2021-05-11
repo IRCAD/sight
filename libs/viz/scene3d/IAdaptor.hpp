@@ -115,16 +115,7 @@ protected:
      */
     VIZ_SCENE3D_API void info(std::ostream& _sstream) override;
 
-    /**
-     * @brief Parses common adaptor parameters
-     *
-     * @code{.xml}
-            <config layer="..." />
-       @endcode
-     *
-     * @subsection Configuration Configuration:
-     * - \b layer (mandatory, string): id of the layer where this adaptor applies.
-     */
+    /// Parses common adaptor parameters.
     VIZ_SCENE3D_API void configureParams();
 
     /// Registers the adaptor into its render service.

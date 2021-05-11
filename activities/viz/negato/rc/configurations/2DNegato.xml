@@ -16,33 +16,46 @@
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
+                <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar QWidget {
+                            background-color: none;
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" minHeight="30" />
                 </layout>
+                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35" >
+                    <styleSheet>
+                        <![CDATA[
+                        #SlideBar QWidget {
+                            background-color: none;
+                        }
+                        ]]>
+                    </styleSheet>
+                </slideView>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
+                <slideView sid="negato_top_slider_view" start="yes" />
                 <view sid="negato" start="yes" />
-                <view sid="multiView_negato_bottom" start="yes" />
+                <slideView sid="negato_bottom_slider_view" start="yes" />
             </registry>
         </service>
         
-        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
+        <service uid="negato_top_slider_view" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
                 <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="0" minWidth="30" />
-                    <view proportion="1" />
-                    <view proportion="0" minWidth="30" />
+                    <orientation value="vertical" />
                 </layout>
             </gui>
             <registry>
                 <toolBar sid="topToolbarView" start="yes" />
-                <view sid="slider_negato" start="yes" />
-                <view sid="distanceNegatoEditor" start="yes" />
             </registry>
         </service>
 
@@ -50,10 +63,36 @@
             <gui>
                 <layout>
                     <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <spacer/>
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="snapshotAct" start="yes" />
+            </registry>
+        </service>
+        
+        <service uid="negato_bottom_slider_view" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" backgroundColor="#00000000"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="multiView_negato_bottom" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="slider_negato" start="yes" />
             </registry>
         </service>
 
@@ -122,10 +161,6 @@
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">
-            <inout key="image" uid="${image}" />
-        </service>
-
         <!-- Write the snapshot image -->
         <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
@@ -134,18 +169,19 @@
             <addSelection service="sight::module::io::atoms::SWriter" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
-        <connect>
-            <signal>distanceNegatoEditor/distanceRequested</signal>
-            <slot>multiDistances/createDistance</slot>
-        </connect>
-
         <connect channel="${CrossTypeChannel}">
             <slot>MPRNegato/setCrossScale</slot>
         </connect>
 
         <connect channel="${PickingChannel}">
             <signal>pickerInteractor/picked</signal>
+        </connect>
+
+        <!-- Slide view -->
+        <connect>
+            <signal>mainView/started</signal>
+            <slot>negato_top_slider_view/show</slot>
+            <slot>negato_bottom_slider_view/show</slot>
         </connect>
 
         <start uid="LockImageSrv" />
@@ -158,5 +194,6 @@
         <start uid="negatoAdp" />
         <start uid="multiDistancesAdp" />
         <start uid="landmarksAdp" />
+        <start uid="imageWriterSrv" />
     </config>
 </extension>

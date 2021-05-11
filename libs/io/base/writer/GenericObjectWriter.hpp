@@ -34,10 +34,9 @@ namespace writer
 /**
  * @brief   generic class for all object writers.
  *
- * This class adds 2 methods to the API of IObjectWriter. This
- * generic reader test the object type given to the method setObject.
- * And add a new get method getConcreteObject() that returns an object
- * already cast.
+ * This class adds 2 methods to the API of IObjectWriter.
+ * 'setObject' Replaces m_object with the argument casted into DataType.
+ * 'getConcretObject' Returns m_object casted into DataType.
  */
 template<class DATATYPE>
 class GenericObjectWriter : public io::base::writer::IObjectWriter
@@ -62,9 +61,9 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[out] obj replace weakptr m_object of the instance reader
+     * @param[out] obj replaces weakptr m_object of the instance reader
      *
-     * This method overload setObject to ensure that given object correspond to DATATYPE
+     * This method overloads setObject to ensure that given object corresponds to DATATYPE
      */
     void setObject( core::tools::Object::csptr obj) override
     {
@@ -78,7 +77,7 @@ public:
      * @brief m_object getter.
      * @return m_object
      *
-     * This method automatic cast object in correct DataType.
+     * This method automatically casts object in correct DataType.
      */
     virtual std::shared_ptr< const DataType > getConcreteObject() const
     {

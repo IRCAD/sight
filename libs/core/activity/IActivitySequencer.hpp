@@ -33,7 +33,7 @@ namespace sight::activity
 {
 
 /**
- * @brief Base class for services that creates Activity sequentially
+ * @brief Base class for services that creates Activity instances sequentially.
  */
 class ACTIVITY_CLASS_API IActivitySequencer : public IActivityLauncher
 {

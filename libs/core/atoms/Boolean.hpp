@@ -32,7 +32,7 @@ namespace sight::atoms
 {
 
 /**
- * @brief Represented a Boolean value
+ * @brief Represents a Boolean value.
  *
  */
 class ATOMS_CLASS_API Boolean : public Base

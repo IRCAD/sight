@@ -38,6 +38,7 @@ CPPUNIT_TEST_SUITE( RuntimeTest );
 CPPUNIT_TEST( testLibrary );
 CPPUNIT_TEST( testModule );
 CPPUNIT_TEST( testOperations );
+CPPUNIT_TEST( testPropertyTree );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,6 +51,7 @@ public:
     void testLibrary();
     void testModule();
     void testOperations();
+    void testPropertyTree();
 };
 
 } // namespace ut

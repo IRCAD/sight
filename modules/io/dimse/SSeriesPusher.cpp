@@ -105,6 +105,8 @@ void SSeriesPusher::starting()
 
 void SSeriesPusher::stopping()
 {
+    m_pushSeriesWorker->stop();
+    m_pushSeriesWorker.reset();
 }
 
 //------------------------------------------------------------------------------

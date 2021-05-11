@@ -23,7 +23,6 @@
 #include "core/runtime/helper.hpp"
 
 #include "core/runtime/Convert.hpp"
-
 #include <core/base.hpp>
 #include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Runtime.hpp>
@@ -183,4 +182,5 @@ std::vector< std::shared_ptr< core::runtime::Extension > > getAllExtensionsForPo
 
     return point->getAllExtensions();
 }
+
 }

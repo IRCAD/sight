@@ -382,10 +382,16 @@ void AppConfigManager::destroyCreatedServices()
 {
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_createdSrv)
     {
-        SIGHT_ASSERT("Service expired.", !w_srv.expired());
-
         const service::IService::sptr srv = w_srv.lock();
-        SIGHT_ASSERT("Service " << srv->getID() << " must be stopped before destruction.", srv->isStopped());
+        SIGHT_ASSERT("Service expired.", srv);
+
+        // Force stopping services. It can happen for deferred services and when the associated data is not yet deleted.
+        // Anyway, we must stop them before destroying them in all cases.
+        if(!srv->isStopped())
+        {
+            SIGHT_WARN("Service " << srv->getID() << " is still running and will be stopped.")
+            srv->stop().wait();
+        }
         service::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
