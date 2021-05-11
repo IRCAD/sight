@@ -209,6 +209,9 @@ public:
     SERVICE_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
     typedef core::com::Signal<void ()> UpdatedSignalType;
 
+    SERVICE_API static const core::com::Signals::SignalKeyType s_SWAPPED_SIG;
+    typedef core::com::Signal<void ()> SwappedSignalType;
+
     SERVICE_API static const core::com::Signals::SignalKeyType s_STOPPED_SIG;
     typedef core::com::Signal<void ()> StoppedSignalType;
 
