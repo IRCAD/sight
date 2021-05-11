@@ -52,7 +52,6 @@
                 <mode>include</mode>
                 <id>Calibration</id>
                 <id>CalibrationCharuco</id>
-                <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
                 <id>ToolCalibration</id>
