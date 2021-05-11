@@ -22,15 +22,14 @@
 
 #include "service/helper/ConfigLauncher.hpp"
 
+#include <service/macros.hpp>
+
+#include <core/runtime/helper.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Composite.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/property_tree/xml_parser.hpp>
 
 namespace sight::service
 {
@@ -86,7 +85,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
 
         parameterCfg.add("<xmlattr>.replace", key);
 
-        const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
+        const bool optional = core::runtime::get_ptree_value(itCfg->second, "<xmlattr>.optional", false);
 
         auto obj = _service->getInOut< data::Object>(key);
         if(optional)
@@ -96,7 +95,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
         }
         else
         {
-            SIGHT_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exist.", obj);
+            SIGHT_ASSERT("Object key '" + key + "' with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
 

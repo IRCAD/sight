@@ -30,6 +30,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/Convert.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/Object.hpp>
@@ -300,7 +301,7 @@ service::IService::Config Config::parseService(const boost::property_tree::ptree
                  !srvConfig.m_type.empty());
 
     // AutoConnect
-    srvConfig.m_globalAutoConnect = srvElem.get<bool>("<xmlattr>.autoConnect", false);
+    srvConfig.m_globalAutoConnect = core::runtime::get_ptree_value(srvElem, "<xmlattr>.autoConnect", false);
 
     // Worker key
     srvConfig.m_worker = srvElem.get<std::string>("<xmlattr>.worker", "");
@@ -365,12 +366,12 @@ service::IService::Config Config::parseService(const boost::property_tree::ptree
         }
 
         // AutoConnect
-        objConfig.m_autoConnect = cfg.second.get<bool>("<xmlattr>.autoConnect", false);
+        objConfig.m_autoConnect = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.autoConnect", false);
 
         // Optional
         if(objConfig.m_access != service::IService::AccessType::OUTPUT)
         {
-            objConfig.m_optional = cfg.second.get<bool>("<xmlattr>.optional", false);
+            objConfig.m_optional = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.optional", false);
         }
         else
         {
@@ -395,12 +396,14 @@ service::IService::Config Config::parseService(const boost::property_tree::ptree
                 grouObjConfig.m_key = KEY_GROUP_NAME(group.value(), count++);
 
                 // AutoConnect
-                grouObjConfig.m_autoConnect = groupCfg->second.get<bool>("<xmlattr>.autoConnect", false);
+                grouObjConfig.m_autoConnect = core::runtime::get_ptree_value(groupCfg->second, "<xmlattr>.autoConnect",
+                                                                             false);
 
                 // Optional
                 if(grouObjConfig.m_access != service::IService::AccessType::OUTPUT)
                 {
-                    grouObjConfig.m_optional = groupCfg->second.get<bool>("<xmlattr>.optional", false);
+                    grouObjConfig.m_optional = core::runtime::get_ptree_value(groupCfg->second, "<xmlattr>.optional",
+                                                                              false);
                 }
 
                 srvConfig.m_objects.emplace_back(grouObjConfig);
