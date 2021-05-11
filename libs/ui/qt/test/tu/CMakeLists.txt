@@ -1,4 +1,4 @@
-sight_add_target( ui_qt_test TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target(ui_qt_test TYPE TEST WARNINGS_AS_ERRORS OFF)
 
 
 target_compile_definitions(ui_qt_test PUBLIC "-DQT_NO_KEYWORDS")

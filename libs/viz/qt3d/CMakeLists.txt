@@ -1,4 +1,4 @@
-sight_add_target( viz_qt3d TYPE LIBRARY WARNINGS_AS_ERRORS ON )
+sight_add_target(viz_qt3d TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 
 target_compile_definitions(viz_qt3d PUBLIC "-DQT_NO_KEYWORDS")
 

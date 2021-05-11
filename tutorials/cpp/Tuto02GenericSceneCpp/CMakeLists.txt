@@ -1,5 +1,4 @@
-sight_add_target( Tuto02GenericSceneCpp TYPE APP START ON WARNINGS_AS_ERRORS ON )
-
+sight_add_target(Tuto02GenericSceneCpp TYPE APP START ON WARNINGS_AS_ERRORS OFF)
 
 add_dependencies(Tuto02GenericSceneCpp 
                  module_ui_base

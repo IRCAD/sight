@@ -287,20 +287,20 @@ void WorkerTest::timerTest()
     // - Assert that m_checkMemory==12345 in TimerAsio::call() at the end of the if
     // - You may need to uncomment the tests above
     {
-        core::thread::Timer::sptr timer = worker->createTimer();
+        core::thread::Timer::sptr timer2 = worker->createTimer();
         duration = std::chrono::milliseconds(10);
-        timer->setFunction( [duration]()
+        timer2->setFunction( [duration]()
                 {
                     std::this_thread::sleep_for( duration*90 );
                 } );
 
-        timer->setDuration(duration);
+        timer2->setDuration(duration);
 
-        timer->start();
+        timer2->start();
         std::this_thread::sleep_for( duration * 2 );
-        timer->stop();
+        timer2->stop();
 
-        timer.reset();
+        timer2.reset();
     }
 
     worker->stop();

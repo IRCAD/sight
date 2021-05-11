@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include "utest/config.hpp"
 
 namespace sight::utest
 {
 
-class CORE_CLASS_API Slow
+class UTEST_CLASS_API Slow
 {
 public:
-    CORE_API static bool ignoreSlowTests();
+    UTEST_API static bool ignoreSlowTests();
 };
 
 } // namespace sight::utest

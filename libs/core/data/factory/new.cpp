@@ -60,7 +60,6 @@ data::Object::sptr New( const data::registry::KeyType& _classname )
             if(!loaded)
             {
                 SIGHT_THROW("Cannot load library for data '" + classname + "'");
-                return nullptr;
             }
         }
         else

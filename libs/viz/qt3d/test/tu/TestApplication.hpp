@@ -23,20 +23,28 @@
 
 #include <QGuiApplication>
 
-class TestApplication : QGuiApplication
+#include <string>
+
+struct ArgV
+{
+#ifdef WIN32
+    std::string m_argvs[1] = {"TestApplication"};
+    char* m_argv[2]        = {m_argvs[0].data(), nullptr};
+    int m_argc {1};
+#else
+    std::string m_argvs[3] = {"TestApplication", "-platform", "offscreen"};
+    char* m_argv[4]        = {m_argvs[0].data(), m_argvs[1].data(), m_argvs[2].data(), nullptr};
+    int m_argc {3};
+#endif
+};
+
+class TestApplication : private ArgV,
+                        public QGuiApplication
 {
 public:
     TestApplication() :
-        QGuiApplication(s_argc, s_argv)
+        ArgV(),
+        QGuiApplication(m_argc, m_argv)
     {
     }
-
-private:
-#if defined(__linux)
-    static inline char* s_argv[] = {"TestApplication", "-platform", "offscreen", nullptr};
-    static inline int s_argc = 3;
-#else
-    static inline char* s_argv[] = {"TestApplication", 0};
-    static inline int s_argc = 1;
-#endif
 };
