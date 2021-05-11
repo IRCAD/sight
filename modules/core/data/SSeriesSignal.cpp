@@ -22,6 +22,9 @@
 
 #include "SSeriesSignal.hpp"
 
+#include <data/ActivitySeries.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
@@ -29,9 +32,6 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
-
-#include <data/ActivitySeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 
 #include <service/macros.hpp>
 

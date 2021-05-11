@@ -24,13 +24,13 @@
 
 #include "modules/data/config.hpp"
 
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
-
-#include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
 
 #include <service/IController.hpp>
 
