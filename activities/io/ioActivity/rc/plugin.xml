@@ -4,7 +4,7 @@
     <requirement id="sight::module::activity" />
 
     <!-- Activity used to export an image series. -->
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
@@ -21,7 +21,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
@@ -38,7 +38,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>DicomSegmentationSurfaceExport</id>
         <title>Dicom Segmentation Surface Export</title>
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>
@@ -55,7 +55,7 @@
     </extension>
 
     <!-- App config used to export the selected series. -->
-    <extension implements="::sight::service::extension::AppConfig">
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExportSelection</id>
         <parameters>
             <param name="selection" />
@@ -67,7 +67,7 @@
                 <inout key="data" uid="${selection}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::atoms::SWriter" />
+                <addSelection service="sight::module::io::atoms::SWriter" />
             </service>
             <start uid="export_selection" />
             <update uid="export_selection" />
@@ -75,7 +75,7 @@
     </extension>
 
     <!-- App config used to export a Model to a Dicom Segmentation Surface. -->
-    <extension implements="::sight::service::extension::AppConfig">
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExportDicomSelection</id>
         <parameters>
             <param name="model" />
@@ -87,7 +87,7 @@
                 <inout key="data" uid="${model}" />
                 <type mode="writer" />
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::dicom::SSurfaceSegmentationWriter" />
+                <addSelection service="sight::module::io::dicom::SSurfaceSegmentationWriter" />
             </service>
 
             <start uid="exportSelection" />
@@ -96,59 +96,59 @@
     </extension>
 
     <!-- Service config used to read SeriesDB without using ioAtoms. -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SDBReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
-            <addSelection service="::sight::module::io::matrix::SAttachmentSeriesReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
         </config>
     </extension>
 
     <!-- Service config used to read seriesDB using ioAtoms. -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SDBAtomsReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>Atoms seriesDB reader.</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
-            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
+            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
         </config>
     </extension>
 
     <!-- Service config used to write a seriesDB using ioAtoms. -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SDBAtomsWriterIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>Atoms seriesDB writer.</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
-            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::atoms::SWriter" />
+            <config id="MDAtomsConfig" service="sight::module::io::atoms::SWriter" />
         </config>
     </extension>
 
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>FullSDBReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::sight::module::io::matrix::SAttachmentSeriesReader" />
-            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
+            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
         </config>
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>MDAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
@@ -157,7 +157,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>ActivityMDAtomsConfig</id>
         <desc>Reader/Writer for atoms representing an activity project</desc>
         <config>
@@ -171,32 +171,32 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>ActivityReaderConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>Activity reader</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
-            <config id="ActivityMDAtomsConfig" service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
+            <config id="ActivityMDAtomsConfig" service="sight::module::io::atoms::SReader" />
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>ActivityWriterConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>Activity writer</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
-            <config id="ActivityMDAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::atoms::SWriter" />
+            <config id="ActivityMDAtomsConfig" service="sight::module::io::atoms::SWriter" />
         </config>
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer to read landmarks -->
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>LandmarksAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
