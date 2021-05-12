@@ -777,7 +777,7 @@ void SVolumeRender::createWidget()
     ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
 
     const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    const auto clippingMatrix = wClippingMatrix.lock();
+    const auto clippingMatrix  = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         ogreClippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
@@ -902,17 +902,22 @@ void SVolumeRender::updateClippingBox()
 {
     if(m_widget)
     {
-        const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-        const auto clippingMatrix = wClippingMatrix.lock();
-        if(clippingMatrix)
+        bool matrixSet = false;
+        ::Ogre::Matrix4 clippingMx;
         {
-                this->getRenderService()->makeCurrent();
-
-            ::Ogre::Matrix4 clippingMx;
+            const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+            const auto clippingMatrix  = wClippingMatrix.lock();
+            if (clippingMatrix)
             {
                 clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
+                matrixSet  = true;
             }
+        }
 
+        if (matrixSet)
+        {
+            this->getRenderService()->makeCurrent();
+            // updateFromTransform is called outside of the lock of the InOut data to prevent a deadlock
             m_widget->updateFromTransform(clippingMx);
         }
     }
@@ -923,7 +928,7 @@ void SVolumeRender::updateClippingBox()
 void SVolumeRender::updateClippingTM3D()
 {
     auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    auto clippingMatrix = wClippingMatrix.lock();
+    auto clippingMatrix  = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         sight::viz::scene3d::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());
