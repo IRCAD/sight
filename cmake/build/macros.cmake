@@ -214,6 +214,9 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     # Adds project into folder rc
     set_target_properties("${TARGET}" PROPERTIES FOLDER "rc")
 
+    get_property(SIGHT_RC_TARGET GLOBAL PROPERTY SIGHT_RC_TARGET)
+    set_property(GLOBAL PROPERTY SIGHT_RC_TARGET ${SIGHT_RC_TARGET};${TARGET} )
+
     unset(CREATED_RESOURCES_LIST)
 endmacro()
 
@@ -945,5 +948,47 @@ function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
     endwhile()
 
     list(REMOVE_DUPLICATES RESULT)
+    set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
+endfunction()
+
+function(findTargetDependencies TARGET RESULT_VAR)
+    set(DEPENDENCY_LIST)
+    set(RESULT "")
+    list(APPEND DEPENDENCY_LIST ${TARGET})
+    while(DEPENDENCY_LIST)
+
+        list(GET DEPENDENCY_LIST 0 DEPENDENCY)
+        list(REMOVE_AT DEPENDENCY_LIST 0 )
+
+        if(NOT PROCESSED_${DEPENDENCY})
+            get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
+            set(DEPENDS_COPY ${DEPENDS})
+            foreach(dep ${DEPENDS})
+                if(NOT ${dep} IN_LIST SIGHT_COMPONENTS)
+                    list(REMOVE_ITEM DEPENDS_COPY ${dep})
+                endif()
+            endforeach()
+            
+            list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
+
+            get_target_property(DEPENDS ${DEPENDENCY} MANUALLY_ADDED_DEPENDENCIES) 
+            set(DEPENDS_COPY ${DEPENDS})
+            foreach(dep ${DEPENDS})
+                if(NOT ${dep} IN_LIST SIGHT_COMPONENTS)
+                    list(REMOVE_ITEM DEPENDS_COPY ${dep})
+                endif()
+            endforeach()
+            if(DEPENDS)
+                list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
+            endif()
+
+            set(PROCESSED_${DEPENDENCY} 1)
+        endif()
+
+        list(APPEND RESULT ${DEPENDENCY})
+    endwhile()
+
+    list(REMOVE_DUPLICATES RESULT)
+    list(REMOVE_ITEM RESULT ${TARGET})
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
 endfunction()

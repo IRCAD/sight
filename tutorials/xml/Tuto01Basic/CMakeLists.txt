@@ -17,4 +17,3 @@ moduleParam(
 ) # Main application's configuration to launch
 
 sight_generate_profile(Tuto01Basic)
-sight_generate_profile(Tuto01Basic)

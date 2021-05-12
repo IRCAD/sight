@@ -37,6 +37,9 @@ qt5_add_binary_resources(module_ui_qt_FLATDARK_RCC
 add_dependencies(module_ui_qt module_ui_qt_DARKSTYLE_RCC)
 add_dependencies(module_ui_qt module_ui_qt_FLATDARK_RCC)
 
+get_property(SIGHT_RC_TARGET GLOBAL PROPERTY SIGHT_RC_TARGET)
+set_property(GLOBAL PROPERTY SIGHT_RC_TARGET ${SIGHT_RC_TARGET};module_ui_qt_DARKSTYLE_RCC;module_ui_qt_FLATDARK_RCC )
+
 target_link_libraries(module_ui_qt PUBLIC 
                       activity
                       core

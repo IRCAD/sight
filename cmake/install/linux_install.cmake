@@ -1,8 +1,6 @@
 #Linux install
 macro(linux_install PRJ_NAME)
 
-    set(CPACK_GENERATOR TGZ)
-    set(CPACK_SOURCE_GENERATOR TGZ)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
@@ -46,25 +44,13 @@ macro(linux_install PRJ_NAME)
         endforeach()
     endif()
 
-    if(VCPKG_TARGET_TRIPLET)
-        if(${PRJ_NAME} STREQUAL "sight")
-            # Needed for fixup_bundle first argument
-            set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
-        endif()
-
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
-
-        set(CPACK_OUTPUT_FILE_PREFIX packages)
-        set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
-
-        execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-
-        set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}-Sight_${GIT_TAG}")
-        set(CPACK_PACKAGE_VENDOR "IRCAD")
-        set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-        set(CPACK_PACKAGE_VERSION "${VERSION}")
+    if(${PRJ_NAME} STREQUAL "sight")
+        # Needed for fixup_bundle first argument
+        set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
     endif()
+
+    #configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+    #install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
 
     if("${TARGET_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
@@ -76,7 +62,5 @@ macro(linux_install PRJ_NAME)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
-
-    include(CPack)
 
 endmacro()

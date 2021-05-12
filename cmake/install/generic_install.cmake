@@ -8,6 +8,9 @@ endif()
 
 function(generic_install)
 
+    get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
+    set_property(GLOBAL PROPERTY SIGHT_APPS ${SIGHT_APPS};${FWPROJECT_NAME} )
+
     if(${FWPROJECT_NAME}_GENERIC_INSTALL_API_CHECK)
         message(WARNING "generic_install() called twice for the target '${FWPROJECT_NAME}'.\nIt is probably present "
                         "in its CMakeLists.txt, please remove it.\ngeneric_install() will no longer be available in "
