@@ -26,24 +26,6 @@ macro(linux_install PRJ_NAME)
         message(FATAL_ERROR "'${PRJ_NAME}' is not an installable (type : ${TARGET_TYPE})")
     endif()
 
-    set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
-
-    if(${FW_BUILD_EXTERNAL})
-        # install requirements
-        findAllDependencies("${PROJECT}" PROJECT_LIST)
-
-        foreach(REQUIREMENT ${PROJECT_LIST})
-            if(${REQUIREMENT}_EXTERNAL)
-                if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${SIGHT_MODULE_LIB_PREFIX})
-                endif()
-                if(EXISTS "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION ${SIGHT_MODULE_RC_PREFIX})
-                endif()
-            endif()
-        endforeach()
-    endif()
-
     if(${PRJ_NAME} STREQUAL "sight")
         # Needed for fixup_bundle first argument
         set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")

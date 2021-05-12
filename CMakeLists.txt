@@ -392,19 +392,10 @@ foreach(APP ${SIGHT_APPS})
   foreach(DEP ${DEPENDS})
     add_dependencies(${APP}_install ${DEP}_install)
   endforeach()
+
+  add_custom_target(${APP}_package
+                    cpack --config ${APP_BINARY_DIR}/CPackConfig.cmake )
+  add_dependencies(${APP}_package ${APP}_install)
+
 endforeach()
 
-set(CPACK_OUTPUT_FILE_PREFIX packages)
-set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
-
-execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-
-set(CPACK_GENERATOR TGZ)
-set(CPACK_SOURCE_GENERATOR TGZ)
-set(SIGHT_PACKAGE_TARGET Tuto17SimpleAR)
-set(CPACK_PACKAGE_FILE_NAME "${SIGHT_PACKAGE_TARGET}-${VERSION}-linux_${ARCHITECTURE}-Sight_${GIT_TAG}")
-set(CPACK_PACKAGE_VENDOR "IRCAD")
-set(CPACK_PACKAGE_NAME "${SIGHT_PACKAGE_TARGET}")
-set(CPACK_PACKAGE_VERSION "${VERSION}")
-set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_INSTALL_PREFIX};${SIGHT_PACKAGE_TARGET};ALL;/")
-include(CPack)

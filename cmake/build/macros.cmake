@@ -1,4 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
@@ -114,9 +115,8 @@ macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
 endmacro()
 
 macro(initProject PRJ_NAME PRJ_TYPE)
-    if(CREATE_SUBPROJECTS)
-        project( ${PRJ_NAME} )
-    endif()
+    project( ${PRJ_NAME} )
+
     set(FWPROJECT_NAME ${PRJ_NAME})
     set(PRJ_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -214,9 +214,6 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     # Adds project into folder rc
     set_target_properties("${TARGET}" PROPERTIES FOLDER "rc")
 
-    get_property(SIGHT_RC_TARGET GLOBAL PROPERTY SIGHT_RC_TARGET)
-    set_property(GLOBAL PROPERTY SIGHT_RC_TARGET ${SIGHT_RC_TARGET};${TARGET} )
-
     unset(CREATED_RESOURCES_LIST)
 endmacro()
 
@@ -313,8 +310,7 @@ macro(fwExec FWPROJECT_NAME)
 
     install(
         TARGETS ${FWPROJECT_NAME}
-        RUNTIME DESTINATION bin
-        OPTIONAL
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         )
 
     # Adds project into folder exec
@@ -922,35 +918,6 @@ macro(fwDirList result curdir)
     set(${result} ${dirlist})
 endmacro()
 
-function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
-    set(DEPENDENCY_LIST)
-    set(RESULT "")
-    list(APPEND DEPENDENCY_LIST ${FWPROJECT_NAMES})
-    while(DEPENDENCY_LIST)
-
-        list(GET DEPENDENCY_LIST 0 DEPENDENCY)
-        list(REMOVE_AT DEPENDENCY_LIST 0 )
-
-        if(NOT PROCESSED_${DEPENDENCY})
-            get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
-            set(DEPENDS_COPY ${DEPENDS})
-            foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST FWPROJECT_NAMES)
-                    list(REMOVE_ITEM DEPENDS_COPY ${dep})
-                endif()
-            endforeach()
-            
-            list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
-            set(PROCESSED_${DEPENDENCY} 1)
-        endif()
-
-        list(APPEND RESULT ${DEPENDENCY})
-    endwhile()
-
-    list(REMOVE_DUPLICATES RESULT)
-    set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
-endfunction()
-
 function(findTargetDependencies TARGET RESULT_VAR)
     set(DEPENDENCY_LIST)
     set(RESULT "")
@@ -974,7 +941,7 @@ function(findTargetDependencies TARGET RESULT_VAR)
             get_target_property(DEPENDS ${DEPENDENCY} MANUALLY_ADDED_DEPENDENCIES) 
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST SIGHT_COMPONENTS)
+                if(NOT ${dep} IN_LIST SIGHT_COMPONENTS AND NOT "${dep}" STREQUAL "sightrun")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()

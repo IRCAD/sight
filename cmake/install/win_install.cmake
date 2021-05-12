@@ -28,26 +28,6 @@ macro(win_install PRJ_NAME)
 
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
-    #configure the 'fixup' script
-    set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
-
-    if(${FW_BUILD_EXTERNAL})
-        # install requirements
-        findAllDependencies("${PROJECT}" PROJECT_LIST)
-
-        # install requirements
-        foreach(REQUIREMENT ${PROJECT_LIST})
-            if(${REQUIREMENT}_EXTERNAL)
-                if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_LIB_PREFIX}")
-                endif()
-                if(EXISTS "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_RC_PREFIX}")
-                endif()
-            endif()
-        endforeach()
-    endif()
-
     configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
     install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
 
