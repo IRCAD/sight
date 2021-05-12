@@ -183,21 +183,20 @@ void SImageSeriesReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::ImageSeries::sptr imageSeries =
-            this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("ImageSeries is not instanced", imageSeries);
+        const auto imageSeries =
+            this->getLockedInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {
-            data::Image::sptr image = data::Image::New();
+            data::mt::locked_ptr< data::Image> image(data::Image::New());
 
             if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
             {
-                imageSeries->setImage(image);
-                initSeries(imageSeries);
+                imageSeries->setImage(image.get_shared());
+                initSeries(imageSeries.get_shared());
                 this->notificationOfDBUpdate();
             }
         }
@@ -213,8 +212,7 @@ void SImageSeriesReader::updating()
 
 void SImageSeriesReader::notificationOfDBUpdate()
 {
-    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-    SIGHT_ASSERT("imageSeries not instanced", imageSeries);
+    const auto imageSeries = this->getLockedInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
 
     auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {
