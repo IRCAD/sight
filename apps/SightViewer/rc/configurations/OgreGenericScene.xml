@@ -492,8 +492,8 @@
         <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
-            <selection mode="exclude" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
+            <selection mode="include" />
+            <addSelection service="sight::module::io::vtk::SImageWriter" />
         </service>
 
         <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >

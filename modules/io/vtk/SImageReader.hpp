@@ -106,7 +106,7 @@ public:
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
     MODULE_IO_VTK_API static bool loadImage( const std::filesystem::path& vtkFile,
-                                             const SPTR(data::Image)& image,
+                                             const data::mt::locked_ptr< data::Image>& img,
                                              const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 protected:

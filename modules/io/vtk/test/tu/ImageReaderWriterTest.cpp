@@ -325,10 +325,9 @@ void ImageReaderWriterTest::testBitmapImageWriter()
     extensions.push_back("jpeg");
     extensions.push_back("jpg");
     extensions.push_back("png");
-    extensions.push_back("pnm");
     extensions.push_back("tiff");
 
-    for(const std::string ext : extensions)
+    for(const std::string& ext : extensions)
     {
         // Write to bitmap image.
         const std::filesystem::path file = core::tools::System::getTemporaryFolder() / ("temporaryFile." + ext);
