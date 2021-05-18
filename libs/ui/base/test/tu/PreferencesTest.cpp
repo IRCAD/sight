@@ -36,9 +36,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::preferences::ut::PreferencesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::ut::PreferencesTest);
 
-namespace sight::ui::base::preferences
+namespace sight::ui::base
 {
 
 namespace ut
@@ -170,4 +170,4 @@ void PreferencesTest::cleanup()
 
 } //namespace ut
 
-} //namespace sight::ui::base::preferences
+} //namespace sight::ui::base

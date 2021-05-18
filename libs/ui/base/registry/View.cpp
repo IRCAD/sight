@@ -27,8 +27,13 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiRegistry.hpp"
 
+#include <core/runtime/Convert.hpp>
+#include <core/runtime/helper.hpp>
+
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
+
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <utility>
 
@@ -94,100 +99,76 @@ void View::setParent(std::string wid)
 
 void View::initialize(core::runtime::ConfigurationElement::sptr configuration)
 {
-    SIGHT_ASSERT(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName() + "'",
-        configuration->getName() == "registry"
+    const auto configTree = core::runtime::Convert::toPropertyTree(configuration);
+    const auto registryIt = configTree.find("registry");
+    SIGHT_THROW_IF(
+        "Wrong configuration name for '" + m_sid + "', expected 'registry'",
+        registryIt == configTree.not_found()
     );
 
-    // find parent container
-    std::vector<ConfigurationType> vectParent = configuration->find("parent");
-    if(!vectParent.empty())
-    {
-        ConfigurationType parent = vectParent.at(0);
-        SIGHT_ASSERT("<parent> tag must have a 'wid' attribute", parent->hasAttribute("wid"));
-        m_parentWid = parent->getAttributeValue("wid");
-    }
+    // find parent container, ignore if it does not exist
+    m_parentWid = configTree.get<std::string>("registry.parent.<xmlattr>.wid", "");
 
     // index represents associated container with position in subViews vector
     unsigned int index = 0;
+
     // initialize m_sids and m_wids map with configuration
-    std::vector<ConfigurationType> vectViews      = configuration->find("view");
-    std::vector<ConfigurationType> vectSlideViews = configuration->find("slideView");
-    std::copy(vectSlideViews.begin(), vectSlideViews.end(), std::back_inserter(vectViews));
+    const auto registryCfg  = registryIt->second;
+    const auto viewsIt      = registryCfg.equal_range("view");
+    const auto slideViewsIt = registryCfg.equal_range("slideView");
 
-    for(ConfigurationType view : vectViews)
+    // Extracts a ptree from an iterator
+    auto itTotreeFn = [](auto& it)
+                      {
+                          return it.second;
+                      };
+
+    // Gather views and slideViews ptrees to process them in a single loop
+    std::vector<boost::property_tree::ptree> viewsVector;
+    std::transform(viewsIt.first, viewsIt.second, std::back_inserter(viewsVector), itTotreeFn);
+    std::transform(slideViewsIt.first, slideViewsIt.second, std::back_inserter(viewsVector), itTotreeFn);
+
+    for(const auto& view : viewsVector)
     {
-        SIGHT_ASSERT(
-            "<view> tag must have sid or wid attribute",
-            view->hasAttribute("sid") || view->hasAttribute("wid")
-        );
-        if(view->hasAttribute("sid"))
-        {
-            bool start = false;
-            if(view->hasAttribute("start"))
-            {
-                std::string startValue = view->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "Wrong value '" << startValue << "' for 'start' attribute (require yes or no)",
-                    startValue == "yes" || startValue == "no"
-                );
-                start = (startValue == "yes");
-            }
+        const std::string sid = view.get<std::string>("<xmlattr>.sid", "");
+        const std::string wid = view.get<std::string>("<xmlattr>.wid", "");
 
-            std::string sid = view->getAttributeValue("sid");
+        SIGHT_ASSERT("<view> tag must have sid or wid attribute", !sid.empty() || !wid.empty());
+        if(!sid.empty())
+        {
+            const bool start = core::runtime::get_ptree_value(view, "<xmlattr>.start", false);
             m_sids[sid] = SIDContainerMapType::mapped_type(index, start);
         }
-        else if(view->hasAttribute("wid"))
+        else if(!wid.empty())
         {
-            std::string wid = view->getAttributeValue("wid");
             m_wids[wid] = index;
+        }
+        else
+        {
+            SIGHT_FATAL("Unreachable code");
         }
 
         index++;
     }
 
     // find menuBar
-    std::vector<ConfigurationType> vectmenuBar = configuration->find("menuBar");
-    if(!vectmenuBar.empty())
+    if(registryCfg.find("menuBar") != registryCfg.not_found())
     {
-        ConfigurationType menuBarCfg = vectmenuBar.at(0);
-        if(menuBarCfg->hasAttribute("sid"))
+        const std::string sid = registryCfg.get<std::string>("menuBar.<xmlattr>.sid", "");
+        if(!sid.empty())
         {
-            bool start = false;
-            if(menuBarCfg->hasAttribute("start"))
-            {
-                std::string startValue = menuBarCfg->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "Wrong value '" << startValue << "' for 'start' attribute (require yes or no)",
-                    startValue == "yes" || startValue == "no"
-                );
-                start = (startValue == "yes");
-            }
-
-            std::string sid = menuBarCfg->getAttributeValue("sid");
+            const bool start = core::runtime::get_ptree_value(registryCfg, "menuBar.<xmlattr>.start", false);
             m_menuBarSid = std::make_pair(sid, start);
         }
     }
 
     // find toolBar
-    std::vector<ConfigurationType> vectToolBar = configuration->find("toolBar");
-    if(!vectToolBar.empty())
+    if(registryCfg.find("toolBar") != registryCfg.not_found())
     {
-        ConfigurationType toolBarCfg = vectToolBar.at(0);
-        if(toolBarCfg->hasAttribute("sid"))
+        const std::string sid = registryCfg.get<std::string>("toolBar.<xmlattr>.sid", "");
+        if(!sid.empty())
         {
-            bool start = false;
-            if(toolBarCfg->hasAttribute("start"))
-            {
-                std::string startValue = toolBarCfg->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "Wrong value '" << startValue << "' for 'start' attribute (require yes or no)",
-                    startValue == "yes" || startValue == "no"
-                );
-                start = (startValue == "yes");
-            }
-
-            std::string sid = toolBarCfg->getAttributeValue("sid");
+            const bool start = core::runtime::get_ptree_value(registryCfg, "toolBar.<xmlattr>.start", false);
             m_toolBarSid = std::make_pair(sid, start);
         }
     }

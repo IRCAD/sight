@@ -123,6 +123,8 @@ public:
      *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It
      * could also be a wid).
      *
+     * @throw core::Exception if the configuration element does not start with <registry>
+     *
      */
     UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
 
