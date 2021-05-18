@@ -305,7 +305,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
     const std::string id                    = attributes.get<std::string>("id", "");
     const std::string compositors           = attributes.get<std::string>("compositors", "");
     const std::string transparencyTechnique = attributes.get<std::string>("transparency", "HybridTransparency");
-    const std::string numPeels              = attributes.get<std::string>("numPeels", "");
+    const std::string numPeels              = attributes.get<std::string>("numPeels", "4");
     const std::string stereoMode            = attributes.get<std::string>("stereoMode", "");
     const std::string defaultLight          = attributes.get<std::string>("defaultLight", "");
     const auto viewportConfig               = configureLayerViewport(_cfg);
