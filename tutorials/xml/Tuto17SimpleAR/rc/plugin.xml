@@ -58,8 +58,8 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="cameraView" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
@@ -86,19 +86,19 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="yes" />
+                    <menuItem sid="loadCalibAct" start="true" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="startUndistortAct" start="yes" />
-                    <menuItem sid="stopUndistortAct" start="yes" />
-                    <menuItem sid="startDistortAct" start="yes" />
-                    <menuItem sid="stopDistortAct" start="yes" />
-                    <menuItem sid="showMeshAct" start="yes" />
-                    <menuItem sid="showParametersAct" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="startUndistortAct" start="true" />
+                    <menuItem sid="stopUndistortAct" start="true" />
+                    <menuItem sid="startDistortAct" start="true" />
+                    <menuItem sid="stopDistortAct" start="true" />
+                    <menuItem sid="showMeshAct" start="true" />
+                    <menuItem sid="showParametersAct" start="true" />
                 </registry>
             </service>
 
@@ -111,8 +111,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="videoView" start="yes" />
-                    <view sid="parametersView" start="yes" />
+                    <view sid="videoView" start="true" />
+                    <view sid="parametersView" start="true" />
                 </registry>
             </service>
 
@@ -126,7 +126,7 @@
                 </gui>
                 <registry>
                     <view sid="genericSceneSrv" />
-                    <view sid="errorLabelSrv" start="yes" />
+                    <view sid="errorLabelSrv" start="true" />
                 </registry>
             </service>
 
@@ -140,8 +140,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="arucoParamametersSrv" start="yes" />
-                    <view sid="reprojectionParamametersSrv" start="yes" />
+                    <view sid="arucoParamametersSrv" start="true" />
+                    <view sid="reprojectionParamametersSrv" start="true" />
                 </registry>
             </service>
 
@@ -301,7 +301,7 @@
             <!-- Cube displayed on top of the marker plane -->
             <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cubeMesh" />
-                <config layer="default" autoresetcamera="no" />
+                <config layer="default" autoresetcamera="false" />
             </service>
 
             <service uid="distortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="true" >
@@ -409,7 +409,7 @@
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
@@ -442,7 +442,7 @@
                     <!-- list of tag's id -->
                     <marker id="101" />
                 </track>
-                <debugMarkers>yes</debugMarkers>
+                <debugMarkers>true</debugMarkers>
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->

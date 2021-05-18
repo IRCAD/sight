@@ -38,7 +38,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="tfView" start="yes" />
+                <view sid="tfView" start="true" />
             </registry>
         </service>
 
@@ -51,8 +51,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="transferFunctionEditorView" start="yes" />
-                <view sid="containerView" start="yes" />
+                <view sid="transferFunctionEditorView" start="true" />
+                <view sid="containerView" start="true" />
             </registry>
         </service>
 
@@ -79,7 +79,7 @@
             </gui>
             <registry>
                 <view sid="genericSceneMultipleTF" />
-                <view sid="genericSceneViewportSelectorSrv" start="yes" />
+                <view sid="genericSceneViewportSelectorSrv" start="true" />
             </registry>
         </service>
 

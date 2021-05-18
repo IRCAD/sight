@@ -22,7 +22,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="mainView" start="yes" />
+                <view sid="mainView" start="true" />
             </registry>
         </service>
 
@@ -34,8 +34,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="dicomSelector" start="yes" />
-                <view wid="dicomPreview" start="yes" />
+                <view sid="dicomSelector" start="true" />
+                <view wid="dicomPreview" start="true" />
             </registry>
         </service>
 

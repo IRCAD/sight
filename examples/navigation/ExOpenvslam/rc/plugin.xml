@@ -33,9 +33,9 @@
                     </frame>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -46,7 +46,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -61,11 +61,11 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadMapAct" start="yes" />
-                    <menuItem sid="saveMapAct" start="yes" />
-                    <menuItem sid="saveTrajectoriesAct" start="yes" />
-                    <menuItem sid="savePCAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="loadMapAct" start="true" />
+                    <menuItem sid="saveMapAct" start="true" />
+                    <menuItem sid="saveTrajectoriesAct" start="true" />
+                    <menuItem sid="savePCAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -89,18 +89,18 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="yes" />
+                    <menuItem sid="loadCalibAct" start="true" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="startOpenvslamAct" start="yes" />
-                    <menuItem sid="stopOpenvslamAct" start="yes" />
-                    <menuItem sid="pauseOpenvslamAct" start="yes" />
-                    <menuItem sid="resetOpenvslamAct" start="yes" />
-                    <menuItem sid="enableLocalizationAct" start="yes" />
-                    <menuItem sid="showHidePointCloudAct" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="startOpenvslamAct" start="true" />
+                    <menuItem sid="stopOpenvslamAct" start="true" />
+                    <menuItem sid="pauseOpenvslamAct" start="true" />
+                    <menuItem sid="resetOpenvslamAct" start="true" />
+                    <menuItem sid="enableLocalizationAct" start="true" />
+                    <menuItem sid="showHidePointCloudAct" start="true" />
                 </registry>
             </service>
 
@@ -113,8 +113,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sceneViews" start="yes" />
-                    <view sid="editorViews" start="yes" />
+                    <view sid="sceneViews" start="true" />
+                    <view sid="editorViews" start="true" />
                 </registry>
             </service>
 
@@ -127,8 +127,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="yes" />
-                    <view sid="videoView" start="yes" />
+                    <view sid="genericSceneSrv" start="true" />
+                    <view sid="videoView" start="true" />
                 </registry>
             </service>
 
@@ -141,8 +141,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="videoSliderSrv" start="yes" />
-                    <view sid="statusView" start="yes" />
+                    <view sid="videoSliderSrv" start="true" />
+                    <view sid="statusView" start="true" />
                 </registry>
             </service>
 
@@ -157,9 +157,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="openvslamInitSrvStatus" start="yes" />
-                    <view sid="openvslamTrackingStatusSrv" start="yes" />
-                    <view sid="openvslamVocStatusSrv" start="yes" />
+                    <view sid="openvslamInitSrvStatus" start="true" />
+                    <view sid="openvslamTrackingStatusSrv" start="true" />
+                    <view sid="openvslamVocStatusSrv" start="true" />
                 </registry>
             </service>
 
@@ -172,8 +172,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="openvslamOrbSrv" start="yes" />
-                    <view sid="openvslamInitSrv" start="yes" />
+                    <view sid="openvslamOrbSrv" start="true" />
+                    <view sid="openvslamInitSrv" start="true" />
                 </registry>
             </service>
 
@@ -340,7 +340,7 @@
 
             <service uid="pointCloudAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="mesh" uid="openvslamPointCloud" />
-                <config layer="default" autoresetcamera="no" color="#ffffffff" radius="3.0f" textureName="circle.dds" />
+                <config layer="default" autoresetcamera="false" color="#ffffffff" radius="3.0f" textureName="circle.dds" />
             </service>
 
             <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
@@ -462,7 +462,7 @@
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <service uid="openvslamSrv" type="sight::module::navigation::openvslam::SOpenvslam" worker="openvslamWorker" >

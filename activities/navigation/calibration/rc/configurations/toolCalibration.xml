@@ -27,9 +27,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="resultView" start="yes" />
-                <view sid="footer" start="yes" />
-                <toolBar sid="toolBar" start="yes" />
+                <view sid="resultView" start="true" />
+                <view sid="footer" start="true" />
+                <toolBar sid="toolBar" start="true" />
             </registry>
         </service>
 
@@ -41,7 +41,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="status" start="yes" />
+                <view sid="status" start="true" />
             </registry>
         </service>
 
@@ -57,12 +57,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="actionStartOpenIGTLinkClient" start="yes" />
-                <menuItem sid="actionStopOpenIGTLinkClient" start="yes" />
-                <menuItem sid="configureClient" start="yes" />
-                <menuItem sid="actionAddPoint" start="yes" />
-                <menuItem sid="actionComputeCalibration" start="yes" />
-                <menuItem sid="actionExportMatrix" start="yes" />
+                <menuItem sid="actionStartOpenIGTLinkClient" start="true" />
+                <menuItem sid="actionStopOpenIGTLinkClient" start="true" />
+                <menuItem sid="configureClient" start="true" />
+                <menuItem sid="actionAddPoint" start="true" />
+                <menuItem sid="actionComputeCalibration" start="true" />
+                <menuItem sid="actionExportMatrix" start="true" />
             </registry>
         </service>
 
@@ -215,7 +215,7 @@
         </service>
 
         <service uid="calibrationAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
-            <config layer="default" length="20" transform="calibrationAxisTrf" label="no" origin="yes" originColor="#0000FF" />
+            <config layer="default" length="20" transform="calibrationAxisTrf" label="false" origin="true" originColor="#0000FF" />
         </service>
 
         <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
@@ -224,15 +224,15 @@
         </service>
 
         <service uid="systemCenterAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
-            <config layer="default" length="20" transform="id" label="no" origin="yes" originColor="#FFFFFF" />
+            <config layer="default" length="20" transform="id" label="false" origin="true" originColor="#FFFFFF" />
         </service>
 
         <service uid="toolAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
-            <config layer="default" length="20" transform="toolCalibrationTrf" label="no" origin="yes" originColor="#FF0000" />
+            <config layer="default" length="20" transform="toolCalibrationTrf" label="false" origin="true" originColor="#FF0000" />
         </service>
 
         <service uid="trackerAxis0Adp" type="sight::module::viz::scene3d::adaptor::SAxis">
-            <config layer="default" length="20" transform="trackerMatrix0Trf" label="no" origin="yes" originColor="#00FF00" />
+            <config layer="default" length="20" transform="trackerMatrix0Trf" label="false" origin="true" originColor="#00FF00" />
         </service>
 
         <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">

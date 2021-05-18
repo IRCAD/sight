@@ -69,7 +69,7 @@ namespace sight::module::ui::qt::image
     <service uid="..." type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
         <inout key="image" uid="..."/>
         <inout key="tf" uid="..." optional="true" />
-        <config autoWindowing="yes" enableSquareTF="no" />
+        <config autoWindowing="true" enableSquareTF="false" />
     </service>
    @endcode
  *
@@ -79,9 +79,10 @@ namespace sight::module::ui::qt::image
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
- * - \b autoWindowing(optional, default="no"): if 'yes', image windowing will be automatically compute from image pixel
+ * - \b autoWindowing(optional, default="false"): if 'true', image windowing will be automatically compute from image
+ * pixel
  * min/max intensity when this service receive BUFFER event.
- * - \b enableSquareTF(optional, default="yes"): if 'yes', enables the button to switch between current TF and square
+ * - \b enableSquareTF(optional, default="true"): if 'true', enables the button to switch between current TF and square
  * TF.
  */
 class MODULE_UI_QT_CLASS_API WindowLevel final : public QObject,

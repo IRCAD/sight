@@ -77,11 +77,10 @@ void SNeedle::configuring()
     const auto config = configTree.get_child("config.<xmlattr>");
 
     // Default cylinder configuration
-    m_radius     = config.get<double>("radius", m_radius);
-    m_height     = config.get<double>("height", m_height);
-    m_resolution = config.get<int>("resolution", m_resolution);
-    const std::string offsetToOriginStr = config.get<std::string>("offsetToOrigin", "false");
-    m_offsetToOrigin = (offsetToOriginStr == "yes" || offsetToOriginStr == "true" || offsetToOriginStr == "on");
+    m_radius         = config.get<double>("radius", m_radius);
+    m_height         = config.get<double>("height", m_height);
+    m_resolution     = config.get<int>("resolution", m_resolution);
+    m_offsetToOrigin = config.get<bool>("offsetToOrigin", false);
 
     // Full optional needle configuration
     const auto needleConfigTree = configTree.get_child_optional("needle");

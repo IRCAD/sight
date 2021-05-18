@@ -104,7 +104,7 @@ void SNegato3D::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
     if(config.count(s_FILTERING_CONFIG))
     {

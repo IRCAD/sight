@@ -65,8 +65,8 @@ protected:
               </layout>
           </gui>
           <registry>
-              <menu sid="myMenu" start="yes" />
-              <menu sid="myMenu2" start="yes" />
+              <menu sid="myMenu" start="true" />
+              <menu sid="myMenu2" start="true" />
           </registry>
        </service>
        @endcode

@@ -323,7 +323,7 @@ void SRender::configureLayer(const ConfigType& _cfg)
     SIGHT_ASSERT("'id' required attribute missing or empty", !id.empty());
     SIGHT_ASSERT(
         "Unknown 3D mode : " << stereoMode,
-        stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8"
+        stereoMode.empty() || stereoMode == "false" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8"
         || stereoMode == "Stereo"
     );
 
@@ -359,7 +359,7 @@ void SRender::configureLayer(const ConfigType& _cfg)
     ogreLayer->setViewportConfig(viewportConfig);
     ogreLayer->setEnabledOverlays(enabledOverlays);
 
-    if(!defaultLight.empty() && defaultLight == "no")
+    if(!defaultLight.empty() && defaultLight == "false")
     {
         ogreLayer->setHasDefaultLight(false);
     }

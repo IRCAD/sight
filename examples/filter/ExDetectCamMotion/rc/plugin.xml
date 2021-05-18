@@ -28,9 +28,9 @@
                     </frame>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -42,8 +42,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuPreferencesView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuPreferencesView" start="true" />
                 </registry>
             </service>
 
@@ -54,7 +54,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -65,7 +65,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="yes" />
+                    <menuItem sid="videoDirAct" start="true" />
                 </registry>
             </service>
 
@@ -84,12 +84,12 @@
                 </gui>
                 <registry>
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <editor sid="motionStatusSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <editor sid="motionStatusSrv" start="true" />
                 </registry>
             </service>
 
@@ -191,7 +191,7 @@
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->

@@ -94,7 +94,7 @@ void SMeshList::starting()
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", m_layerID);
         config.add("config.<xmlattr>." + s_TRANSFORM_INPUT, transformID);
-        config.add("config.<xmlattr>.autoresetcamera", "no");
+        config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
         const sight::viz::scene3d::IAdaptor::sptr transformAdaptor =

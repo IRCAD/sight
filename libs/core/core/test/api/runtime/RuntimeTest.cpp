@@ -158,13 +158,8 @@ void RuntimeTest::testPropertyTree()
 {
     {
         boost::property_tree::ptree config;
-        config.put("test.yes", "foo");
-        config.put("test.no", "no");
         config.put("test.true", "true");
         config.put("test.false", "false");
-
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value(config, "test.yes", true), core::Exception);
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value(config, "test.no", true), core::Exception);
         bool value = core::runtime::get_ptree_value(config, "test.true", true);
         CPPUNIT_ASSERT_EQUAL(true, value);
         value = core::runtime::get_ptree_value(config, "test.false", true);

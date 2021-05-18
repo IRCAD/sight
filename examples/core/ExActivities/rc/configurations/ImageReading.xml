@@ -23,8 +23,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="imageScene" start="yes" />
-                <toolBar sid="toolBarView" start="yes" />
+                <view sid="imageScene" start="true" />
+                <toolBar sid="toolBarView" start="true" />
             </registry>
         </service>
 
@@ -35,7 +35,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="importAct" start="yes" />
+                <menuItem sid="importAct" start="true" />
             </registry>
         </service>
 

@@ -39,9 +39,9 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -53,8 +53,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuPreferencesView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuPreferencesView" start="true" />
                 </registry>
             </service>
 
@@ -65,7 +65,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -76,7 +76,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="yes" />
+                    <menuItem sid="videoDirAct" start="true" />
                 </registry>
             </service>
 
@@ -106,22 +106,22 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="yes" />
-                    <menuItem sid="loadTransformationAct" start="yes" />
-                    <menuItem sid="loadMeshAct" start="yes" />
+                    <menuItem sid="loadCalibAct" start="true" />
+                    <menuItem sid="loadTransformationAct" start="true" />
+                    <menuItem sid="loadMeshAct" start="true" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="organManagerAct" start="no" />
-                    <menuItem sid="learnBackgroundAct" start="yes" />
-                    <menuItem sid="learnForegroundAct" start="yes" />
-                    <menuItem sid="segmentationParametersAct" start="yes" />
-                    <editor sid="noiseLevelSrv" start="yes" />
-                    <editor sid="bgComponentsSrv" start="yes" />
-                    <editor sid="fgComponentsSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="organManagerAct" start="false" />
+                    <menuItem sid="learnBackgroundAct" start="true" />
+                    <menuItem sid="learnForegroundAct" start="true" />
+                    <menuItem sid="segmentationParametersAct" start="true" />
+                    <editor sid="noiseLevelSrv" start="true" />
+                    <editor sid="bgComponentsSrv" start="true" />
+                    <editor sid="fgComponentsSrv" start="true" />
                 </registry>
             </service>
 
@@ -135,7 +135,7 @@
                 </gui>
                 <registry>
                     <view sid="genericSceneSrv" />
-                    <view sid="thresholdSliderSrv" start="yes" />
+                    <view sid="thresholdSliderSrv" start="true" />
                 </registry>
             </service>
 
@@ -279,7 +279,7 @@
 
             <service uid="modelseriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
                 <in key="model" uid="modelseries" />
-                <config layer="default" autoresetcamera="no" />
+                <config layer="default" autoresetcamera="false" />
             </service>
 
             <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
@@ -303,7 +303,7 @@
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <in key="mesh" uid="skinMesh" />
-                <config layer="default" autoresetcamera="no" shadingMode="ambient" />
+                <config layer="default" autoresetcamera="false" shadingMode="ambient" />
             </service>
 
             <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
@@ -384,7 +384,7 @@
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="cameraRGB" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->

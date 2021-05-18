@@ -34,7 +34,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="extrinsicCameraView" start="yes" />
+                <view sid="extrinsicCameraView" start="true" />
             </registry>
         </service>
 
@@ -48,10 +48,10 @@
                 <toolBar/>
             </gui>
             <registry>
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="videoView" start="yes" />
-                <view sid="calibrationInfoView" start="yes" />
-                <view sid="cameraInfoView" start="yes" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="videoView" start="true" />
+                <view sid="calibrationInfoView" start="true" />
+                <view sid="cameraInfoView" start="true" />
             </registry>
         </service>
 
@@ -65,10 +65,10 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionStartCamera" start="yes" />
-                <menuItem sid="ActionStopCamera" start="yes" />
-                <menuItem sid="PauseVideo" start="yes" />
-                <menuItem sid="LoopVideo" start="yes" />
+                <menuItem sid="ActionStartCamera" start="true" />
+                <menuItem sid="ActionStopCamera" start="true" />
+                <menuItem sid="PauseVideo" start="true" />
+                <menuItem sid="LoopVideo" start="true" />
             </registry>
         </service>
 
@@ -82,8 +82,8 @@
                 </toolBar>
             </gui>
             <registry>
-                <view sid="ExtrinsicCalibrationInfoEditor" start="yes" />
-                <toolBar sid="extrinsicCamera" start="yes" />
+                <view sid="ExtrinsicCalibrationInfoEditor" start="true" />
+                <toolBar sid="extrinsicCamera" start="true" />
             </registry>
         </service>
 
@@ -96,8 +96,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="camerasView" start="yes" />
-                <view sid="VideoSlider" start="yes" />
+                <view sid="camerasView" start="true" />
+                <view sid="VideoSlider" start="true" />
             </registry>
         </service>
 
@@ -110,8 +110,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericScene1Srv" start="yes" />
-                <view sid="genericScene2Srv" start="yes" />
+                <view sid="genericScene1Srv" start="true" />
+                <view sid="genericScene2Srv" start="true" />
             </registry>
         </service>
 
@@ -127,12 +127,12 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="Status" start="yes" />
-                <menuItem sid="ActionAdd" start="yes" />
-                <menuItem sid="ActionRemove" start="yes" />
-                <menuItem sid="ActionReset" start="yes" />
-                <menuItem sid="ActionGoOpenCV" start="yes" />
-                <menuItem sid="ActionDisplayImage" start="yes" />
+                <editor sid="Status" start="true" />
+                <menuItem sid="ActionAdd" start="true" />
+                <menuItem sid="ActionRemove" start="true" />
+                <menuItem sid="ActionReset" start="true" />
+                <menuItem sid="ActionGoOpenCV" start="true" />
+                <menuItem sid="ActionDisplayImage" start="true" />
             </registry>
         </service>
 
@@ -147,10 +147,10 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraInfo1" start="yes" />
-                <view sid="cameraInfo2" start="yes" />
-                <view sid="cameraSeriesInfo" start="yes" />
-                <view sid="errorLabel" start="yes" />
+                <view sid="cameraInfo1" start="true" />
+                <view sid="cameraInfo2" start="true" />
+                <view sid="cameraSeriesInfo" start="true" />
+                <view sid="errorLabel" start="true" />
             </registry>
         </service>
 

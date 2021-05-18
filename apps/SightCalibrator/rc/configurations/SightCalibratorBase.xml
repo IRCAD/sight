@@ -24,8 +24,8 @@
                 <menuBar />
             </gui>
             <registry>
-                <menuBar sid="menuBarView" start="yes" />
-                <view sid="mainview" start="yes" />
+                <menuBar sid="menuBarView" start="true" />
+                <view sid="mainview" start="true" />
             </registry>
         </service>
 
@@ -38,9 +38,9 @@
                 </layout>
             </gui>
             <registry>
-                <menu sid="menuFileView" start="yes" />
-                <menu sid="menuToolsView" start="yes" />
-                <menu sid="menuPreferencesView" start="yes" />
+                <menu sid="menuFileView" start="true" />
+                <menu sid="menuToolsView" start="true" />
+                <menu sid="menuPreferencesView" start="true" />
             </registry>
         </service>
 
@@ -55,11 +55,11 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="openSeriesAct" start="yes" />
-                <menuItem sid="openActivityAct" start="yes" />
-                <menuItem sid="saveAct" start="yes" />
-                <menuItem sid="saveActivityAct" start="no" />
-                <menuItem sid="quitAct" start="yes" />
+                <menuItem sid="openSeriesAct" start="true" />
+                <menuItem sid="openActivityAct" start="true" />
+                <menuItem sid="saveAct" start="true" />
+                <menuItem sid="saveActivityAct" start="false" />
+                <menuItem sid="quitAct" start="true" />
             </registry>
         </service>
 
@@ -70,7 +70,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="selectorAct" start="yes" />
+                <menuItem sid="selectorAct" start="true" />
             </registry>
         </service>
 
@@ -81,7 +81,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="videoDirectoryAct" start="yes" />
+                <menuItem sid="videoDirectoryAct" start="true" />
             </registry>
         </service>
 
@@ -94,7 +94,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="dynamicView" start="yes" />
+                <view sid="dynamicView" start="true" />
                 <view wid="selectorView" />
             </registry>
         </service>

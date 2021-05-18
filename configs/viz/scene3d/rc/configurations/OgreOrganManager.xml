@@ -27,12 +27,12 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="listOrganEditorSrv" start="yes" />
-                <view sid="organMaterialEditorSrv" start="no" />
-                <view sid="representationEditorSrv" start="no" />
-                <view sid="textureSelectorSrv" start="no" />
-                <view sid="materialSelectorSrv" start="no" />
-                <view sid="shaderParametersSrv" start="no" />
+                <view sid="listOrganEditorSrv" start="true" />
+                <view sid="organMaterialEditorSrv" start="false" />
+                <view sid="representationEditorSrv" start="false" />
+                <view sid="textureSelectorSrv" start="false" />
+                <view sid="materialSelectorSrv" start="false" />
+                <view sid="shaderParametersSrv" start="false" />
             </registry>
         </service>
 

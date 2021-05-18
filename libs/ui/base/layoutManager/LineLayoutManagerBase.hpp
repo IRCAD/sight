@@ -107,8 +107,8 @@ public:
                </layout>
            </gui>
            <registry>
-               <view sid="view1" start="yes" />
-               <view sid="view2" start="yes" />
+               <view sid="view1" start="true" />
+               <view sid="view2" start="true" />
            </registry>
        </service>
        @endcode
@@ -128,7 +128,7 @@ public:
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
      *   - \b minHeight : minimal height of the view.
-     *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
+     *   - \b visible  {true | false} : define if the view is visible or not.
      *   - \b toolTip : string that will be displayed next to the mouse pointer when it lies over the view.
      *   - \b backgroundColor (optional) : (hexa) background color.
      */

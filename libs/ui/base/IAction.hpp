@@ -157,7 +157,7 @@ public:
      * If action is configured to be confirmed : show a dialog box to confirm execution.
      * Else return true
      *
-     * @return true if user click on 'yes' button.
+     * @return true if user click on 'true' button.
      */
     UI_BASE_API bool confirmAction();
 
@@ -176,7 +176,7 @@ protected:
      * @code{.xml}
            <service uid="item" type="sight::module::ui::base::SDefaultAction" autoConnect="false" >
               <state active="false" executable="false" inverse="true" visible="true" />
-              <confirmation value="yes" message="..." />
+              <confirmation value="true" message="..." />
            </service>
        @endcode
      * - \<state active="false" executable="false" /\> : fix the state of the action in the menu and Toolbar.
@@ -187,12 +187,12 @@ protected:
      *   - \b visible not mandatory (Default value true ):
      *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
      *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
-     * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirmed
+     * - \<confirmation value="true" message="..." /\> : configure if the action must be confirmed
      *                                                  by the user before executing it.
      *   - \b value : if true the action will show a confirmation message before executing it.
      *   - \b message not mandatory : if not empty the message is shown in dialog box.
      *   - \b defaultbutton not mandatory (default defined by underlying gui backend) :
-     *                      specify the dialog default button (yes or no)
+     *                      specify the dialog default button (true or false)
      */
     UI_BASE_API void initialize();
 

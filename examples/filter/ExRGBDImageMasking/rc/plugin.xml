@@ -46,9 +46,9 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -59,7 +59,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuView" start="yes" />
+                    <menu sid="menuView" start="true" />
                 </registry>
             </service>
 
@@ -74,9 +74,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadTransformationAct" start="yes" />
-                    <menuItem sid="loadMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="loadTransformationAct" start="true" />
+                    <menuItem sid="loadMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -98,15 +98,15 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="yes" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="learnBackgroundAct" start="yes" />
-                    <menuItem sid="organManagerAct" start="no" />
-                    <menuItem sid="showSettingsAct" start="yes" />
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="learnBackgroundAct" start="true" />
+                    <menuItem sid="organManagerAct" start="false" />
+                    <menuItem sid="showSettingsAct" start="true" />
                 </registry>
             </service>
 
@@ -119,7 +119,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="settingsView" start="yes" />
+                    <view sid="settingsView" start="true" />
                     <view sid="genericSceneSrv" />
                 </registry>
             </service>
@@ -134,8 +134,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="enableHoleFillingFilterParamSrv" start="yes" />
-                    <view sid="maskerThresholdParamSrv" start="yes" />
+                    <view sid="enableHoleFillingFilterParamSrv" start="true" />
+                    <view sid="maskerThresholdParamSrv" start="true" />
                 </registry>
             </service>
 
@@ -255,7 +255,7 @@
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
                 <in key="model" uid="modelSeries" />
-                <config layer="default" transform="id" autoresetcamera="no" />
+                <config layer="default" transform="id" autoresetcamera="false" />
             </service>
 
             <service uid="videoARAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
@@ -285,7 +285,7 @@
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" shadingMode="ambient" />
-                <config layer="default" transform="id" autoresetcamera="no" />
+                <config layer="default" transform="id" autoresetcamera="false" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -307,7 +307,7 @@
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <createCameraNumber>2</createCameraNumber>
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->

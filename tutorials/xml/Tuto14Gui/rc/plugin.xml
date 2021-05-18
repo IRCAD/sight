@@ -33,9 +33,9 @@
                 </frame>
             </gui>
             <registry>
-                <menuBar sid="menuBarView" start="yes" />
-                <toolBar sid="toolBarView" start="yes" />
-                <view sid="backgroundView" start="yes" />
+                <menuBar sid="menuBarView" start="true" />
+                <toolBar sid="toolBarView" start="true" />
+                <view sid="backgroundView" start="true" />
             </registry>
         </service>
 
@@ -48,8 +48,8 @@
                 </layout>
             </gui>
             <registry>
-                <menu sid="menu1View" start="yes" />
-                <menu sid="menu2View" start="yes" />
+                <menu sid="menu1View" start="true" />
+                <menu sid="menu2View" start="true" />
             </registry>
         </service>
 
@@ -68,12 +68,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="item1Act" start="no" />
-                <menuItem sid="item2Act" start="no" />
-                <menuItem sid="item3Act" start="no" />
-                <menuItem sid="item4Act" start="no" />
-                <menuItem sid="item5Act" start="no" />
-                <menuItem sid="quitAct" start="no" />
+                <menuItem sid="item1Act" start="false" />
+                <menuItem sid="item2Act" start="false" />
+                <menuItem sid="item3Act" start="false" />
+                <menuItem sid="item4Act" start="false" />
+                <menuItem sid="item5Act" start="false" />
+                <menuItem sid="quitAct" start="false" />
             </registry>
         </service>
 
@@ -87,9 +87,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="item1Act" start="no" />
-                <menuItem sid="item16Act" start="no" />
-                <menuItem sid="item17Act" start="no" />
+                <menuItem sid="item1Act" start="false" />
+                <menuItem sid="item16Act" start="false" />
+                <menuItem sid="item17Act" start="false" />
             </registry>
         </service>
 
@@ -112,24 +112,24 @@
                     <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui/icons/important.png" />
                     <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
                     <spacer/>
-                    <menu name="Test Hide/Show" start="yes" />
+                    <menu name="Test Hide/Show" start="true" />
                     <menuItem name="Quit" icon="sight::module::ui::flaticons/RedCross.svg" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="startAct" start="yes" />
-                <menuItem sid="pauseAct" start="yes" />
-                <menuItem sid="stopAct" start="yes" />
-                <menuItem sid="item1Act" start="yes" />
-                <menuItem sid="item2Act" start="no" />
-                <menuItem sid="item3Act" start="no" />
-                <menuItem sid="item4Act" start="no" />
-                <menuItem sid="item5Act" start="no" />
-                <menuItem sid="item16Act" start="yes" />
-                <menuItem sid="item17Act" start="yes" />
-                <menuItem sid="view5VisibilityAct" start="yes" />
-                <menu sid="testHideShowView" start="yes" />
-                <menuItem sid="quitAct" start="yes" />
+                <menuItem sid="startAct" start="true" />
+                <menuItem sid="pauseAct" start="true" />
+                <menuItem sid="stopAct" start="true" />
+                <menuItem sid="item1Act" start="true" />
+                <menuItem sid="item2Act" start="false" />
+                <menuItem sid="item3Act" start="false" />
+                <menuItem sid="item4Act" start="false" />
+                <menuItem sid="item5Act" start="false" />
+                <menuItem sid="item16Act" start="true" />
+                <menuItem sid="item17Act" start="true" />
+                <menuItem sid="view5VisibilityAct" start="true" />
+                <menu sid="testHideShowView" start="true" />
+                <menuItem sid="quitAct" start="true" />
             </registry>
         </service>
 
@@ -142,9 +142,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="startAct" start="no" />
-                <menuItem sid="pauseAct" start="no" />
-                <menuItem sid="stopAct" start="no" />
+                <menuItem sid="startAct" start="false" />
+                <menuItem sid="pauseAct" start="false" />
+                <menuItem sid="stopAct" start="false" />
             </registry>
         </service>
 
@@ -156,7 +156,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="containerView" start="yes" />
+                <view sid="containerView" start="true" />
             </registry>
         </service>
 
@@ -170,7 +170,7 @@
             </gui>
             <registry>
                 <view wid="subWidView" />
-                <view sid="sub2View" start="yes" />
+                <view sid="sub2View" start="true" />
             </registry>
         </service>
 
@@ -185,9 +185,9 @@
             </gui>
             <registry>
                 <parent wid="subWidView" />
-                <view sid="sub3View" start="yes" />
-                <view sid="sub4View" start="yes" />
-                <view sid="sub5View" start="yes" />
+                <view sid="sub3View" start="true" />
+                <view sid="sub4View" start="true" />
+                <view sid="sub5View" start="true" />
             </registry>
         </service>
 
@@ -200,7 +200,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="view12" start="yes" />
+                <view sid="view12" start="true" />
             </registry>
         </service>
 
@@ -208,7 +208,7 @@
             <gui>
                 <layout type="sight::ui::base::TabLayoutManager" >
                     <view caption="TabView1"  />
-                    <view caption="TabView2" selected="yes" />
+                    <view caption="TabView2" selected="true" />
                     <view caption="TabView3" />
                 </layout>
             </gui>
@@ -225,7 +225,7 @@
             </layout>
         </gui>
          <registry>
-            <view sid="textStatusSrv" start="yes" />
+            <view sid="textStatusSrv" start="true" />
         </registry>
         </service>
 
@@ -239,7 +239,7 @@
                 </layout>
             </gui>
              <registry>
-                <view sid="ircadIHULogoSrv" start="yes" />
+                <view sid="ircadIHULogoSrv" start="true" />
             </registry>
         </service>
 
@@ -254,10 +254,10 @@
                 <toolBar />
             </gui>
             <registry>
-                <view sid="clickSrv" start="yes" />
-                <view sid="meSrv" start="yes" />
-                <view sid="checkableSrv" start="yes" />
-                <toolBar sid="toolbar2View" start="yes" />
+                <view sid="clickSrv" start="true" />
+                <view sid="meSrv" start="true" />
+                <view sid="checkableSrv" start="true" />
+                <toolBar sid="toolbar2View" start="true" />
             </registry>
         </service>
 

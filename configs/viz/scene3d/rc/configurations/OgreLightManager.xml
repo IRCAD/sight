@@ -20,8 +20,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="LightSelector" start="yes" />
-                <view sid="LightEditor" start="yes" />
+                <view sid="LightSelector" start="true" />
+                <view sid="LightEditor" start="true" />
             </registry>
         </service>
 

@@ -34,8 +34,8 @@
                 <menuBar/>
             </gui>
             <registry>
-                <menuBar sid="menuBarView" start="yes" />
-                <view sid="containerView" start="yes" />
+                <menuBar sid="menuBarView" start="true" />
+                <view sid="containerView" start="true" />
             </registry>
         </service>
 
@@ -46,7 +46,7 @@
                 </layout>
             </gui>
             <registry>
-                <menu sid="menuFileView" start="yes" />
+                <menu sid="menuFileView" start="true" />
             </registry>
         </service>
 
@@ -59,8 +59,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="openMeshAct" start="yes" />
-                <menuItem sid="quitAct" start="yes" />
+                <menuItem sid="openMeshAct" start="true" />
+                <menuItem sid="quitAct" start="true" />
             </registry>
         </service>
 
@@ -80,8 +80,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="yes" />
-                <view sid="editorsView" start="yes" />
+                <view sid="genericSceneSrv" start="true" />
+                <view sid="editorsView" start="true" />
             </registry>
         </service>
 
@@ -94,15 +94,15 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="shhowMeshSrv" start="yes" />
-                <view sid="matrixView" start="yes" />
+                <view sid="shhowMeshSrv" start="true" />
+                <view sid="matrixView" start="true" />
             </registry>
         </service>
 
         <service uid="matrixView" type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false" >
             <inout key="matrix" uid="matrix" />
-            <translation enabled="yes" min="-300" />
-            <rotation enabled="yes" min="-180" max="180" />
+            <translation enabled="true" min="-300" />
+            <rotation enabled="true" min="-180" max="180" />
         </service>
 
         <!-- ******************************* Actions ****************************************** -->

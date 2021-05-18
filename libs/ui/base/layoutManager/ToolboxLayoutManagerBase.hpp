@@ -96,8 +96,8 @@ public:
                </layout>
            </gui>
            <registry>
-               <view sid="view1" start="yes" />
-               <view sid="view2" start="no" />
+               <view sid="view1" start="true" />
+               <view sid="view2" start="false" />
                <view wid="view3WID" />
            </registry>
        </service>
@@ -113,9 +113,9 @@ public:
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
      *   - \b minHeight : minimal height of the view.
-     *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
-     *   - \b expanded  {true | yes | false | no} : define if the view is expanded or not.
-     *   - \b useScrollBar  {true | yes | false | no} : define if the view use scrollbar or not.
+     *   - \b visible  {true | false} : define if the view is visible or not.
+     *   - \b expanded  {true |false } : define if the view is expanded or not.
+     *   - \b useScrollBar  {true | false} : define if the view use scrollbar or not.
      */
     UI_BASE_API void initialize(ConfigurationType configuration) override;
 

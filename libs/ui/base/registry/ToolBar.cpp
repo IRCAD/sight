@@ -97,11 +97,11 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
             {
                 std::string startValue = menuItem->getAttributeValue("start");
                 SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
                     << startValue << "'.",
-                    startValue == "yes" || startValue == "no"
+                    startValue == "true" || startValue == "false"
                 );
-                start = (startValue == "yes");
+                start = (startValue == "true");
             }
 
             std::string sid = menuItem->getAttributeValue("sid");
@@ -141,11 +141,11 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
             {
                 std::string startValue = menu->getAttributeValue("start");
                 SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
                     << startValue << "'.",
-                    startValue == "yes" || startValue == "no"
+                    startValue == "true" || startValue == "false"
                 );
-                start = (startValue == "yes");
+                start = (startValue == "true");
             }
 
             std::string sid = menu->getAttributeValue("sid");
@@ -177,11 +177,11 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
             {
                 std::string startValue = editor->getAttributeValue("start");
                 SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
                     << startValue << "'.",
-                    startValue == "yes" || startValue == "no"
+                    startValue == "true" || startValue == "false"
                 );
-                start = (startValue == "yes");
+                start = (startValue == "true");
             }
 
             std::string sid = editor->getAttributeValue("sid");

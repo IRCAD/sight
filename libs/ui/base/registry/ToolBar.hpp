@@ -103,19 +103,21 @@ public:
                    <menuItem sid="item4" />
                    <menuItem sid="item5" />
                    <menu sid="menu" />
-                   <editor sid="editor" start="yes"/>
+                   <editor sid="editor" start="true"/>
                    <editor wid="editorWindow" />
                </registry>
            </service>
        @endcode
      * This method analyzes the registry section of the configuration.
      *
-     * - \<menuItem sid="item2" start="no" /\> : define the service of the menuItem to add in the toolbar.
+     * - \<menuItem sid="item2" start="false" /\> : define the service of the menuItem to add in the toolbar.
      *   - \b sid (mandatory): the service identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
-     * - \<editor sid="editor" start="yes" /\> : define the service of the editor to add in the toolbar.
+     *   - \b start = {true| false} (default value false): indicate if the service must be started by the toolbar
+     * service.
+     * - \<editor sid="editor" start="true" /\> : define the service of the editor to add in the toolbar.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the editor service must be started by the service.
+     *   - \b start = {true| false} (default value false): indicate if the editor service must be started by the
+     * service.
      * - \<editor wid="editorWindow" /\> : reserve a sub container for the editor in the toolbar with the name
      *   "editorWindow". The service which want to use this sub container will have to define a parent
      *   with \<parent wid="editorWindow" /\>.
@@ -126,10 +128,11 @@ public:
     /**
      * @brief manages action service associated with menuItem of toolbar.
      *
-     * Register the menuItem containers for the associated services. Start the services if start=yes.
+     * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribut start="no", the associated action won't be started and the menuItem will be disabled.
-     * If a menuItem has attribut start="yes", two possibilities: \n
+     * If a menuItem has attribut start="false", the associated action won't be started and the menuItem will be
+     * disabled.
+     * If a menuItem has attribut start="true", two possibilities: \n
      *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
      *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
      *
@@ -144,7 +147,7 @@ public:
     /**
      * @brief manages menu service associated with item of toolbar.
      *
-     * Register the menu containers for the associated services. Start the services if start=yes.
+     * Register the menu containers for the associated services. Start the services if start=true.
      *
      * @pre ToolBar must be initialized before.
      * @pre sub toolBar items must be instanced before.
@@ -154,7 +157,7 @@ public:
     /**
      * @brief manages editor service associated with item of toolbar.
      *
-     * Register the containers for the associated services. Start the services if start=yes.
+     * Register the containers for the associated services. Start the services if start=true.
      *
      * @pre ToolBar must be initialized before.
      * @pre sub toolBar items must be instanced before.

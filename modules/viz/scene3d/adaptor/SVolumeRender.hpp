@@ -84,9 +84,9 @@ namespace sight::module::viz::scene3d::adaptor
         <inout key="tf" uid="..." optional="true" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
-                samples="1024" preintegration="yes" dynamic="false" ao="no" colorBleeding="no" shadows="no"
+                samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes" transform="..."/>
+                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="true" transform="..."/>
     </service>
    @endcode
  *
@@ -99,9 +99,9 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b samples (optional, unsigned int, default=512): maximum number of samples per ray or number of slices.
- * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+ * - \b preintegration (optional, true/false, default=false): use pre-integration.
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
- * - \b widgets (optional, yes/no, default=yes): display VR widgets.
+ * - \b widgets (optional, true/false, default=true): display VR widgets.
  * - \b priority (optional, int, default=2): interaction priority of the widget.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b ao (optional, bool, default=false): ambient occlusion usage.
@@ -116,7 +116,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
- * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
+ * - \b autoresetcamera (optional, true/false, default=true): reset the camera at image update to view the whole volume.
  * - \b transform (optional, string, default=""): transform applied to the adaptor's scene node.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */

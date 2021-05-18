@@ -128,11 +128,11 @@ void SSelector::configuring()
 
         const std::string& allowedRemove = allowedRemoveCfg.front()->getValue();
 
-        if(allowedRemove == "yes")
+        if(allowedRemove == "true")
         {
             m_allowedRemove = true;
         }
-        else if(allowedRemove == "no")
+        else if(allowedRemove == "false")
         {
             m_allowedRemove = false;
         }
@@ -150,11 +150,11 @@ void SSelector::configuring()
 
         const std::string& insert = insertCfg.front()->getValue();
 
-        if(insert == "yes")
+        if(insert == "true")
         {
             m_insertMode = true;
         }
-        else if(insert == "no")
+        else if(insert == "false")
         {
             m_insertMode = false;
         }

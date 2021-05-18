@@ -92,9 +92,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="stepperView" start="yes" />
-                <view sid="dynamicView" start="yes" />
-                <view sid="activityCreator" start="yes" />
+                <view sid="stepperView" start="true" />
+                <view sid="dynamicView" start="true" />
+                <view sid="activityCreator" start="true" />
             </registry>
         </service>
 
@@ -111,11 +111,11 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="appLogoView" start="yes" />
-                <view sid="activitySequencer" start="yes" />
-                <view sid="openButton" start="yes" />
-                <view sid="saveButton" start="yes" />
-                <view sid="ircadIhuLogoView" start="yes" />
+                <view sid="appLogoView" start="true" />
+                <view sid="activitySequencer" start="true" />
+                <view sid="openButton" start="true" />
+                <view sid="saveButton" start="true" />
+                <view sid="ircadIhuLogoView" start="true" />
             </registry>
         </service>
 

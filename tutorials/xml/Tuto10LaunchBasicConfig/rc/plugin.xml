@@ -27,8 +27,8 @@
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="imageRendereSrv" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="imageRendereSrv" start="true" />
                 </registry>
             </service>
 
@@ -39,7 +39,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -54,9 +54,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="launchConfigAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="launchConfigAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 

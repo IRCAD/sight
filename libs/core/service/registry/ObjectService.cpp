@@ -186,7 +186,7 @@ std::string ObjectService::getRegistryInformation() const
     for(const auto& service : m_services)
     {
         info << "Service : uid = " << service->getID() << " , classname = " << service->getClassname()
-        << " , service is stopped = " << (service->isStopped() ? "yes" : "no") << std::endl;
+        << " , service is stopped = " << (service->isStopped() ? "true" : "false") << std::endl;
         for(const auto& obj : service->m_inputsMap)
         {
             data::Object::csptr object = obj.second.lock().get_shared();

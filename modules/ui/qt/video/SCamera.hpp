@@ -62,7 +62,7 @@ namespace video
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::SCamera" >
         <inout key="camera" uid="..."/>
-        <videoSupport>yes</videoSupport>
+        <videoSupport>true</videoSupport>
         <label>Video source: </label>
     </service>
    @endcode
@@ -75,7 +75,7 @@ namespace video
     <service uid="..." type="sight::module::ui::qt::video::SCamera" >
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
-        <videoSupport>yes</videoSupport>
+        <videoSupport>true</videoSupport>
         <label>Video source: </label>
     </service>
    @endcode
@@ -85,7 +85,7 @@ namespace video
  * - \b cameraSeries [sight::data::CameraSeries]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
- * - \b videoSupport (optional, default="no"): if we can open a video file in addition with cameras.
+ * - \b videoSupport (optional, default="false"): if we can open a video file in addition with cameras.
  * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  * - \b label (optional, default="Video source: "): label of the selector.

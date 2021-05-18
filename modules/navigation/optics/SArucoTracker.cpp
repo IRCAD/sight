@@ -139,12 +139,11 @@ void SArucoTracker::configuring()
     }
 
     // Get the debug markers flag
-    const std::string markerdebugging = config.get<std::string>("debugMarkers", "no");
-    m_debugMarkers = (markerdebugging == "yes");
+    m_debugMarkers = config.get<bool>("debugMarkers", false);
 
     // Do corner refinement ?
-    const std::string doCornerRefinement = config.get<std::string>("cornerRefinement", "yes");
-    m_detectorParams->cornerRefinementMethod = (doCornerRefinement == "no"
+    const bool doCornerRefinement = config.get<bool>("cornerRefinement", true);
+    m_detectorParams->cornerRefinementMethod = (doCornerRefinement
                                                 ? ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
                                                 : ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
 }

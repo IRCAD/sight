@@ -81,7 +81,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainContainerView" start="yes" />
+                    <view sid="mainContainerView" start="true" />
                 </registry>
             </service>
 
@@ -93,7 +93,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="yes" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -120,10 +120,10 @@
                     </slideView>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="yes" />
-                    <view wid="ogreSceneView" start="yes" />
-                    <view sid="parameterView" start="yes" />
-                    <slideView sid="rightToolbarSliderView" start="yes" />
+                    <toolBar sid="toolBarView" start="true" />
+                    <view wid="ogreSceneView" start="true" />
+                    <view sid="parameterView" start="true" />
+                    <slideView sid="rightToolbarSliderView" start="true" />
                 </registry>
             </service>
 
@@ -135,7 +135,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="rightToolbarView" start="yes" />
+                    <toolBar sid="rightToolbarView" start="true" />
                 </registry>
             </service>
 
@@ -147,7 +147,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showParameterAct" start="yes" />
+                    <menuItem sid="showParameterAct" start="true" />
                 </registry>
             </service>
 
@@ -164,11 +164,11 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolBar sid="parameterToolBarView" start="yes" />
-                    <view sid="volumeParameterView" start="yes" />
+                    <toolBar sid="parameterToolBarView" start="true" />
+                    <view sid="volumeParameterView" start="true" />
                     <view wid="organsParameterView" />
-                    <view sid="landmarksParameterView" start="yes" />
-                    <view sid="lightParameterView" start="yes" />
+                    <view sid="landmarksParameterView" start="true" />
+                    <view sid="lightParameterView" start="true" />
                     <view wid="extrudedMeshesParameterView" />
                 </registry>
             </service>
@@ -186,12 +186,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="volumeManagerAct" start="yes" />
-                    <menuItem sid="organsManagerAct" start="yes" />
-                    <menuItem sid="landmarksManagerAct" start="yes" />
-                    <menuItem sid="lightManagerAct" start="yes" />
-                    <menuItem sid="extrudedMeshesManagerAct" start="yes" />
-                    <menuItem sid="hideParameterAct" start="yes" />
+                    <menuItem sid="volumeManagerAct" start="true" />
+                    <menuItem sid="organsManagerAct" start="true" />
+                    <menuItem sid="landmarksManagerAct" start="true" />
+                    <menuItem sid="lightManagerAct" start="true" />
+                    <menuItem sid="extrudedMeshesManagerAct" start="true" />
+                    <menuItem sid="hideParameterAct" start="true" />
                 </registry>
             </service>
 
@@ -204,7 +204,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="volumeParameterSrv" start="yes" />
+                    <view sid="volumeParameterSrv" start="true" />
                 </registry>
             </service>
 
@@ -217,7 +217,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="landmarksParameterSrv" start="yes" />
+                    <view sid="landmarksParameterSrv" start="true" />
                 </registry>
             </service>
 
@@ -265,22 +265,22 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openSeriesDBAct" start="yes" />
-                    <menuItem sid="pacsAct" start="yes" />
-                    <menuItem sid="negatoViewAct" start="yes" />
-                    <menuItem sid="volumeViewAct" start="yes" />
-                    <menuItem sid="volumeTFAct" start="yes" />
-                    <menuItem sid="meshVisibilityAct" start="yes" />
-                    <menuItem sid="volumeVisibilityAct" start="yes" />
-                    <menuItem sid="negato3DVisibilityAct" start="yes" />
-                    <menuItem sid="boxWidgetVisibilityAct" start="yes" />
-                    <menuItem sid="boxWidgetResetAct" start="yes" />
-                    <menuItem sid="shapeExtruderAct" start="yes" />
-                    <menuItem sid="shapeExtruderRevertAct" start="yes" />
-                    <menuItem sid="addDistanceAct" start="yes" />
-                    <menuItem sid="removeDistanceAct" start="yes" />
-                    <menuItem sid="hideDistanceAct" start="yes" />
-                    <menuItem sid="axisVisibilityAct" start="yes" />
+                    <menuItem sid="openSeriesDBAct" start="true" />
+                    <menuItem sid="pacsAct" start="true" />
+                    <menuItem sid="negatoViewAct" start="true" />
+                    <menuItem sid="volumeViewAct" start="true" />
+                    <menuItem sid="volumeTFAct" start="true" />
+                    <menuItem sid="meshVisibilityAct" start="true" />
+                    <menuItem sid="volumeVisibilityAct" start="true" />
+                    <menuItem sid="negato3DVisibilityAct" start="true" />
+                    <menuItem sid="boxWidgetVisibilityAct" start="true" />
+                    <menuItem sid="boxWidgetResetAct" start="true" />
+                    <menuItem sid="shapeExtruderAct" start="true" />
+                    <menuItem sid="shapeExtruderRevertAct" start="true" />
+                    <menuItem sid="addDistanceAct" start="true" />
+                    <menuItem sid="removeDistanceAct" start="true" />
+                    <menuItem sid="hideDistanceAct" start="true" />
+                    <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
             </service>
 
@@ -526,7 +526,7 @@
             <!-- Parameters for landmarks -->
             <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true" >
                 <inout key="landmarks" uid="landmarks" />
-                <advanced>yes</advanced>
+                <advanced>true</advanced>
             </service>
 
             <!-- Light editor -->

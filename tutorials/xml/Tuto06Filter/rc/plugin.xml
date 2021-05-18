@@ -28,8 +28,8 @@
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -41,8 +41,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuFilterView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFilterView" start="true" />
                 </registry>
             </service>
 
@@ -56,8 +56,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -69,8 +69,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="imageFilterAct" start="yes" />
-                    <menuItem sid="imageFlipperAct" start="yes" />
+                    <menuItem sid="imageFilterAct" start="true" />
+                    <menuItem sid="imageFlipperAct" start="true" />
                 </registry>
             </service>
 
@@ -83,9 +83,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1Srv" start="yes" />
+                    <view sid="image1Srv" start="true" />
                     <!-- As the output image is deferred, the service cannot be started at the beginning. -->
-                    <view sid="image2Srv" start="no" />
+                    <view sid="image2Srv" start="false" />
                 </registry>
             </service>
 

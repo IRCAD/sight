@@ -33,8 +33,8 @@
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -48,8 +48,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuMesherView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuMesherView" start="true" />
                 </registry>
             </service>
 
@@ -63,9 +63,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="saveModelSeriesAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="saveModelSeriesAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -77,8 +77,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="createMesh50Act" start="yes" />
-                    <menuItem sid="createMesh80Act" start="yes" />
+                    <menuItem sid="createMesh50Act" start="true" />
+                    <menuItem sid="createMesh80Act" start="true" />
                 </registry>
             </service>
 
@@ -87,12 +87,12 @@
                     <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
+                        <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="yes" />
-                    <view sid="sceneEditorsView" start="yes" />
+                    <view sid="containerView" start="true" />
+                    <view sid="sceneEditorsView" start="true" />
                 </registry>
             </service>
 
@@ -105,8 +105,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="yes" />
-                    <view sid="organsView" start="yes" />
+                    <view sid="genericSceneSrv" start="true" />
+                    <view sid="organsView" start="true" />
                 </registry>
             </service>
 
@@ -119,9 +119,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="listOrganEditorSrv" start="no" />
-                    <view sid="organMaterialEditorSrv" start="no" />
-                    <view sid="representationEditorSrv" start="no" />
+                    <view sid="listOrganEditorSrv" start="false" />
+                    <view sid="organMaterialEditorSrv" start="false" />
+                    <view sid="representationEditorSrv" start="false" />
                 </registry>
             </service>
 
@@ -135,9 +135,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="showNegatoSrv" start="yes" />
-                    <view sid="sliderIndexEditorSrv" start="no" />
-                    <view sid="snapshotSrv" start="yes" />
+                    <view sid="showNegatoSrv" start="true" />
+                    <view sid="sliderIndexEditorSrv" start="false" />
+                    <view sid="snapshotSrv" start="true" />
                 </registry>
             </service>
 

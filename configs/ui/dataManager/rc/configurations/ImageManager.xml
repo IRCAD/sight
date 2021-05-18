@@ -36,8 +36,8 @@ Example:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="windowLevelImage" start="yes" />
-                <view sid="sliderView" start="yes" />
+                <view sid="windowLevelImage" start="true" />
+                <view sid="sliderView" start="true" />
             </registry>
         </service>
 
@@ -49,7 +49,7 @@ Example:
                 </layout>
             </gui>
             <registry>
-                <view sid="selectorSliderNegatoImage" start="yes" />
+                <view sid="selectorSliderNegatoImage" start="true" />
             </registry>
         </service>
 

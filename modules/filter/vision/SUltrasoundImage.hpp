@@ -73,8 +73,8 @@ namespace sight::module::filter::vision
  * @subsection Configuration Configuration:
  * - \b thresholdMin (optional, default=4) : Minimum threshold used for ultrasound plane extraction.
  * - \b USDepth (optional, default=19.) : Value of depth of the US probe.
- * - \b debug (optional, default=no) : Debug mode.
- * - \b convex (optional, default=yes) : Convex shape of extracted image.
+ * - \b debug (optional, default=false) : Debug mode.
+ * - \b convex (optional, default=true) : Convex shape of extracted image.
  */
 class MODULE_FILTER_VISION_CLASS_API SUltrasoundImage final : public service::IOperator
 {

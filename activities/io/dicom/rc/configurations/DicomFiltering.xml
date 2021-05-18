@@ -28,10 +28,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="centerView" start="yes" />
-                <view sid="bottomView" start="yes" />
-                <view sid="rightView" start="yes" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="centerView" start="true" />
+                <view sid="bottomView" start="true" />
+                <view sid="rightView" start="true" />
             </registry>
         </service>
 
@@ -49,12 +49,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_readDicomSeries" start="yes" />
-                <menuItem sid="action_previewFilteredDicomSeries" start="yes" />
-                <menuItem sid="action_convertSeries" start="yes" />
-                <menuItem sid="action_pushSeries" start="yes" />
+                <menuItem sid="action_readDicomSeries" start="true" />
+                <menuItem sid="action_previewFilteredDicomSeries" start="true" />
+                <menuItem sid="action_convertSeries" start="true" />
+                <menuItem sid="action_pushSeries" start="true" />
 
-                <menu sid="menuHelp" start="yes" />
+                <menu sid="menuHelp" start="true" />
             </registry>
         </service>
 
@@ -68,8 +68,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="readingSelector" start="yes" />
-                <view wid="readingPreview" start="yes" />
+                <view sid="readingSelector" start="true" />
+                <view wid="readingPreview" start="true" />
             </registry>
         </service>
 
@@ -82,8 +82,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="loadedSelector" start="yes" />
-                <view wid="loadedPreview" start="yes" />
+                <view sid="loadedSelector" start="true" />
+                <view wid="loadedPreview" start="true" />
             </registry>
         </service>
 
@@ -95,7 +95,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="filterSelectionEditor" start="yes" />
+                <view sid="filterSelectionEditor" start="true" />
             </registry>
         </service>
 
@@ -107,7 +107,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="activityHelp" start="yes" />
+                <menuItem sid="activityHelp" start="true" />
             </registry>
         </service>
 

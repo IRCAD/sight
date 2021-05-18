@@ -39,9 +39,9 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="cameraView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
@@ -53,8 +53,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuPreferencesView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuPreferencesView" start="true" />
                 </registry>
             </service>
 
@@ -66,8 +66,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showParametersAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="showParametersAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -78,7 +78,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="yes" />
+                    <menuItem sid="videoDirAct" start="true" />
                 </registry>
             </service>
 
@@ -97,14 +97,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="yes" />
+                    <menuItem sid="loadCalibAct" start="true" />
                     <editor sid="videoSelector1Srv" />
                     <editor sid="videoSelector2Srv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="startRecordAct" start="yes" />
-                    <menuItem sid="stopRecordAct" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="startRecordAct" start="true" />
+                    <menuItem sid="stopRecordAct" start="true" />
                 </registry>
             </service>
 
@@ -117,8 +117,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="videoView" start="yes" />
-                    <view sid="parametersView" start="yes" />
+                    <view sid="videoView" start="true" />
+                    <view sid="parametersView" start="true" />
                 </registry>
             </service>
 
@@ -131,8 +131,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="stereoView" start="yes" />
-                    <view sid="infoView" start="yes" />
+                    <view sid="stereoView" start="true" />
+                    <view sid="infoView" start="true" />
                 </registry>
             </service>
 
@@ -145,8 +145,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="reprojectionInfoView" start="yes" />
-                    <view sid="reprojectionMatrixStatusSrv" start="yes" />
+                    <view sid="reprojectionInfoView" start="true" />
+                    <view sid="reprojectionMatrixStatusSrv" start="true" />
                 </registry>
             </service>
 
@@ -173,8 +173,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="errorLabelLeftSrv" start="yes" />
-                    <view sid="errorLabelRightSrv" start="yes" />
+                    <view sid="errorLabelLeftSrv" start="true" />
+                    <view sid="errorLabelRightSrv" start="true" />
                 </registry>
             </service>
 
@@ -190,9 +190,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="arucoParamsSrv" start="yes" />
-                    <view sid="reprojectionParamsSrv" start="yes" />
-                    <view sid="synchroParamsSrv" start="yes" />
+                    <view sid="arucoParamsSrv" start="true" />
+                    <view sid="reprojectionParamsSrv" start="true" />
+                    <view sid="synchroParamsSrv" start="true" />
                 </registry>
             </service>
 
@@ -434,12 +434,12 @@
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelector1Srv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera1" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <service uid="videoSelector2Srv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera2" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
@@ -465,7 +465,7 @@
                     <!-- list of id -->
                     <marker id="101" />
                 </track>
-                <debugMarkers>yes</debugMarkers>
+                <debugMarkers>true</debugMarkers>
             </service>
 
             <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
@@ -479,7 +479,7 @@
                     <!-- list of id -->
                     <marker id="101" />
                 </track>
-                <debugMarkers>yes</debugMarkers>
+                <debugMarkers>true</debugMarkers>
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->

@@ -26,8 +26,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="negato" start="yes" />
-                <view sid="multiView_negato_bottom" start="yes" />
+                <view sid="negato" start="true" />
+                <view sid="multiView_negato_bottom" start="true" />
             </registry>
         </service>
         
@@ -42,9 +42,9 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="topToolbarView" start="yes" />
-                <view sid="slider_negato" start="yes" />
-                <view sid="distanceNegatoEditor" start="yes" />
+                <toolBar sid="topToolbarView" start="true" />
+                <view sid="slider_negato" start="true" />
+                <view sid="distanceNegatoEditor" start="true" />
             </registry>
         </service>
 
@@ -55,7 +55,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="snapshotAct" start="yes" />
+                <menuItem sid="snapshotAct" start="true" />
             </registry>
         </service>
 

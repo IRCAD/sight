@@ -23,7 +23,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="selectorSrv" start="yes" />
+                <view sid="selectorSrv" start="true" />
             </registry>
         </service>
 

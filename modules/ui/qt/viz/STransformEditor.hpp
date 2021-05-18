@@ -44,8 +44,8 @@ namespace sight::module::ui::qt::viz
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false">
         <inout key="matrix" uid="..."/>
-        <translation enabled="no" min="-300"/>
-        <rotation enabled="yes" min="-180" max="180" />
+        <translation enabled="false" min="-300"/>
+        <rotation enabled="true" min="-180" max="180" />
     </service>
    @endcode
  *
@@ -54,7 +54,7 @@ namespace sight::module::ui::qt::viz
  *
  * @subsection Configuration Configuration
  * - \b enabled (optional): enable/disable rotation/translation edition.
- *      Can be 'yes', 'no' or a combination of [xyz] (default: yes).
+ *      Can be 'true', 'false' or a combination of [xyz] (default: true).
  * - \b min (optional): set the minimum value for translation/rotation (default: translation=-300, rotation=-180 ).
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
  */

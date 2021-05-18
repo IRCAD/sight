@@ -164,7 +164,7 @@ void Plugin::initialize()
                 service::IService::ConfigType view;
                 view.put("<xmlattr>.proportion", "0");
                 view.put("<xmlattr>.minHeight", "30");
-                view.put("<xmlattr>.resizable", "no");
+                view.put("<xmlattr>.resizable", "false");
                 view.put("<xmlattr>.backgroundColor", "#3E4453");
                 gui.add_child("view", view);
             }

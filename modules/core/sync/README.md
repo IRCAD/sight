@@ -26,7 +26,7 @@ add_dependencies(myTarget module_sync ... )
 
 Please find here some example of frame matrix synchronizer
 ```
-<service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
+<service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="true">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />

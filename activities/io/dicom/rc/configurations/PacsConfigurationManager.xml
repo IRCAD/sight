@@ -20,7 +20,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="mainView" start="yes" />
+                <view sid="mainView" start="true" />
             </registry>
         </service>
 
@@ -31,7 +31,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="pacsConfigurationEditor" start="yes" />
+                <view sid="pacsConfigurationEditor" start="true" />
             </registry>
         </service>
 

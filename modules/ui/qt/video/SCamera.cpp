@@ -99,7 +99,7 @@ void SCamera::configuring()
 {
     const service::IService::ConfigType config = this->getConfigTree();
 
-    m_bVideoSupport    = (config.get<std::string>(s_VIDEO_SUPPORT_CONFIG, "no") == "yes");
+    m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
     m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
     m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 

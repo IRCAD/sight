@@ -6,7 +6,7 @@
         <param name="AS_UID" />
         <param name="image" />
         <param name="landmarks" />
-        <param name="advancedLandmarksEditor" default="yes" />
+        <param name="advancedLandmarksEditor" default="true" />
         <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
         <param name="enabledNextChannel" default="enabledNextChannel" />
         <param name="previousActivityChannel" default="previousActivityChannel" />
@@ -30,11 +30,11 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
+                <toolBar sid="toolBar" start="true" />
                 <view wid="view_negato1" />
                 <view wid="view_negato2" />
                 <view wid="view_negato3" />
-                <view sid="landmarksEditor" start="yes" />
+                <view sid="landmarksEditor" start="true" />
             </registry>
         </service>
 
@@ -60,19 +60,19 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionPrevious" start="yes" />
-                <menuItem sid="ActionNext" start="yes" />
-                <menuItem sid="ActionLoadLandmark" start="yes" />
-                <menuItem sid="ActionSaveLandmark" start="yes" />
-                <!-- <menuItem sid="ActionSFocusLandmark" start="yes" /> -->
-                <menuItem sid="ActionEditLandmark" start="yes" />
-                <menuItem sid="ActionAddDistance" start="yes" />
-                <menuItem sid="ActionRemoveDistance" start="yes" />
-                <menuItem sid="ActionHideDistance" start="yes" />
-                <menuItem sid="ActionHideCross" start="yes" />
-                <menuItem sid="ActionShowNormalCross" start="yes" />
-                <menuItem sid="ActionShowFullCross" start="yes" />
-                <menuItem sid="ActionExportActivity" start="yes" />
+                <menuItem sid="ActionPrevious" start="true" />
+                <menuItem sid="ActionNext" start="true" />
+                <menuItem sid="ActionLoadLandmark" start="true" />
+                <menuItem sid="ActionSaveLandmark" start="true" />
+                <!-- <menuItem sid="ActionSFocusLandmark" start="true" /> -->
+                <menuItem sid="ActionEditLandmark" start="true" />
+                <menuItem sid="ActionAddDistance" start="true" />
+                <menuItem sid="ActionRemoveDistance" start="true" />
+                <menuItem sid="ActionHideDistance" start="true" />
+                <menuItem sid="ActionHideCross" start="true" />
+                <menuItem sid="ActionShowNormalCross" start="true" />
+                <menuItem sid="ActionShowFullCross" start="true" />
+                <menuItem sid="ActionExportActivity" start="true" />
             </registry>
         </service>
 

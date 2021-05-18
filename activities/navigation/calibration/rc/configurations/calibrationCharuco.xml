@@ -29,7 +29,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="yes" />
+                <toolBar sid="toolBarView" start="true" />
                 <view wid="calibrationView" />
             </registry>
         </service>
@@ -49,12 +49,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="previousAct" start="yes" />
-                <menuItem sid="nextAct" start="yes" />
-                <menuItem sid="exportAct" start="yes" />
-                <menuItem sid="writeCalibrationAct" start="yes" />
-                <editor sid="cameraLauncherAct" start="no" />
-                <menuItem sid="chessboardSizeAct" start="yes" />
+                <menuItem sid="previousAct" start="true" />
+                <menuItem sid="nextAct" start="true" />
+                <menuItem sid="exportAct" start="true" />
+                <menuItem sid="writeCalibrationAct" start="true" />
+                <editor sid="cameraLauncherAct" start="false" />
+                <menuItem sid="chessboardSizeAct" start="true" />
             </registry>
         </service>
 

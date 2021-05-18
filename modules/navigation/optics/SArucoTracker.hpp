@@ -66,8 +66,8 @@ namespace sight::module::navigation::optics
                 <marker id="32,10" />
                 <marker id="52,45" />
             </track>
-            <debugMarkers>yes</debugMarkers>
-            <cornerRefinement>yes</cornerRefinement>
+            <debugMarkers>true</debugMarkers>
+            <cornerRefinement>true</cornerRefinement>
         </service>
 
         or
@@ -86,7 +86,8 @@ namespace sight::module::navigation::optics
                 <marker id="52,45" />
             </track>
             <debugMarkers>yes</debugMarkers>
-            <cornerRefinement>yes</cornerRefinement>
+            <debugMarkers>true</debugMarkers>
+            <cornerRefinement>true</cornerRefinement>
         </service>
    @endcode
  * @subsection Input Input
@@ -105,8 +106,9 @@ namespace sight::module::navigation::optics
  *  - \b track (mandatory)
  *      - \b markers (mandatory) : list of the tracked markers.
  *           - \b id (mandatory) : ids of the markers to detect.
- *  - \b debugMarkers : if value is yes markers debugging mode is activated.
- *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
+
+ *  - \b debugMarkers : if value is true, markers debugging mode is activated.
+ *  - \b cornerRefinement: if true, corner refinement by subpixel will be activited
  *  not.
  */
 class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::ITracker

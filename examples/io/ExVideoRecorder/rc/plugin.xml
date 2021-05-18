@@ -29,8 +29,8 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -50,15 +50,15 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="yes" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="frameRecordingAct" start="yes" />
-                    <menuItem sid="videoRecordingAct" start="yes" />
-                    <editor sid="parametersSrv" start="yes" />
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="frameRecordingAct" start="true" />
+                    <menuItem sid="videoRecordingAct" start="true" />
+                    <editor sid="parametersSrv" start="true" />
                 </registry>
             </service>
 
@@ -161,7 +161,7 @@
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >

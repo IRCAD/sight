@@ -18,7 +18,7 @@
             <!-- Frame service:
                 The frame creates a container for the rendering service and a menu bar.
                 In this tutorial, the gui services will automatically start the services they register using the
-                'start="yes"' attribute.
+                'start="true"' attribute.
             -->
             <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
@@ -30,8 +30,8 @@
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="imageRenderSrv" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="imageRenderSrv" start="true" />
                 </registry>
             </service>
 
@@ -50,7 +50,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuView" start="yes" />
+                    <menu sid="menuView" start="true" />
                 </registry>
             </service>
 
@@ -74,8 +74,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 

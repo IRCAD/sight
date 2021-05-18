@@ -58,7 +58,7 @@ void SImage::configuring()
         if(itCfg->second.get<std::string>("<xmlattr>.key") == s_IMAGE_INPUT)
         {
             m_imageAutoConnect =
-                itCfg->second.get_optional<std::string>("<xmlattr>.autoConnect").get_value_or("no") == "yes";
+                itCfg->second.get_optional<std::string>("<xmlattr>.autoConnect").get_value_or("false") == "true";
         }
     }
 }

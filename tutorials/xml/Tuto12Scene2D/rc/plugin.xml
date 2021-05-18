@@ -19,7 +19,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="yes" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -32,8 +32,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="no" />
-                    <view sid="editorView" start="yes" />
+                    <view sid="genericSceneSrv" start="false" />
+                    <view sid="editorView" start="true" />
                 </registry>
             </service>
 
@@ -46,8 +46,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="spacingEditorSrv" start="no" />
-                    <view sid="depthRangeSliderSrv" start="no" />
+                    <view sid="spacingEditorSrv" start="false" />
+                    <view sid="depthRangeSliderSrv" start="false" />
                 </registry>
             </service>
 

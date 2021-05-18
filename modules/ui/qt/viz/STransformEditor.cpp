@@ -82,13 +82,13 @@ void STransformEditor::configuring()
 
     service::IService::ConfigType config = this->getConfigTree();
 
-    const std::string rotation = config.get<std::string>("rotation.<xmlattr>.enabled", "yes");
+    const std::string rotation = config.get<std::string>("rotation.<xmlattr>.enabled", "true");
 
-    if(rotation == "no")
+    if(rotation == "false")
     {
         m_rotation = "";
     }
-    else if(rotation == "yes")
+    else if(rotation == "true")
     {
         m_rotation = "xyz";
     }
@@ -98,19 +98,19 @@ void STransformEditor::configuring()
     }
     else
     {
-        SIGHT_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
+        SIGHT_ERROR("Attribute 'rotation' should be 'true', 'false' or a combination of [xyz]");
     }
 
     m_rotationRange[0] = config.get<int>("rotation.<xmlattr>.min", m_rotationRange[0]);
     m_rotationRange[1] = config.get<int>("rotation.<xmlattr>.max", m_rotationRange[1]);
 
-    const std::string translation = config.get<std::string>("translation.<xmlattr>.enabled", "yes");
+    const std::string translation = config.get<std::string>("translation.<xmlattr>.enabled", "true");
 
-    if(translation == "no")
+    if(translation == "false")
     {
         m_translation = "";
     }
-    else if(translation == "yes")
+    else if(translation == "true")
     {
         m_translation = "xyz";
     }
@@ -120,7 +120,7 @@ void STransformEditor::configuring()
     }
     else
     {
-        SIGHT_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
+        SIGHT_ERROR("Attribute 'translation' should be 'true', 'false' or a combination of [xyz]");
     }
 
     m_translationRange[0] = config.get<int>("translation.<xmlattr>.min", m_translationRange[0]);

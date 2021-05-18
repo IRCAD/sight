@@ -139,7 +139,7 @@ void SVideo::starting()
 
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", this->getLayerID());
-        config.add("config.<xmlattr>.autoresetcamera", "no");
+        config.add("config.<xmlattr>.autoresetcamera", "false");
         if(!m_materialTemplateName.empty())
         {
             config.add("config.<xmlattr>." + s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
