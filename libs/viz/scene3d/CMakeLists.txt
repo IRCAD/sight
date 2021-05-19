@@ -20,10 +20,6 @@ if(WIN32)
         if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
             get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
         endif()
-
-        if(EXISTS "${OGRE_CONFIG_DIR}/../debug/bin")
-            get_filename_component(OGRE_CONFIG_DIR "${OGRE_CONFIG_DIR}/../debug/bin" ABSOLUTE)
-        endif()
     endif()
 
     file(GLOB OGRE_PLUGINS

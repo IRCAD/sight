@@ -738,6 +738,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY)
+            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION bin)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "MODULE")

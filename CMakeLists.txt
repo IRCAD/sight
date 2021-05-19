@@ -149,7 +149,7 @@ endif()
 # Fixed path for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/bin )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR} )
     set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
 endforeach()
@@ -268,7 +268,7 @@ if(WIN32)
     )
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/package.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
@@ -290,8 +290,6 @@ if(WIN32)
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.template.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
-      COMPONENT
-        dev
     )
     install(
       FILES
@@ -301,8 +299,6 @@ if(WIN32)
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
-      COMPONENT
-        dev
     )
 elseif(UNIX)
     install(
@@ -374,6 +370,7 @@ if(SIGHT_GENERATE_VSCODE_WS)
     vscodeGenerator(${PROJECT_LIST})
 endif()
 
+  # Add an install target for every component
 foreach(COMPONENT ${SIGHT_COMPONENTS})
   get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
   add_custom_target(${COMPONENT}_install
@@ -384,18 +381,60 @@ endforeach()
 get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
 foreach(APP ${SIGHT_APPS})
   get_target_property(APP_BINARY_DIR ${APP} BINARY_DIR)
+  
+  # Add an install target for every app
   add_custom_target(${APP}_install
                     ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${APP_BINARY_DIR}/cmake_install.cmake)
   add_dependencies(${APP}_install ${APP})
   findTargetDependencies(${APP} DEPENDS)
   
   foreach(DEP ${DEPENDS})
-    add_dependencies(${APP}_install ${DEP}_install)
+    add_dependencies(${APP}_install ${DEP}_install) 
   endforeach()
 
+  # Used in windows_fixup.cmake.in
+  if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}/debug")
+  else()
+    set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}")
+    set(EXCLUDE_PATTERN ".*/debug/.*")
+  endif()
+
+  # Add a fixup target for every app
+  if(WIN32)
+    set(VCPKG_ROOT_DIR ${Boost_INCLUDE_DIR}/..)
+    # Use sightrun as the entry app
+    set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe") # For windows_fixup.cmake.in
+
+    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake @ONLY)
+    add_custom_target(${APP}_fixup
+                      ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
+                      COMMENT "Fixup before packaging...")
+    add_dependencies(${APP}_fixup ${APP}_install)
+  endif()
+
+  # Add a package target for every app
   add_custom_target(${APP}_package
-                    cpack --config ${APP_BINARY_DIR}/CPackConfig.cmake )
+                    cpack --config ${APP_BINARY_DIR}/CPackConfig.cmake)
   add_dependencies(${APP}_package ${APP}_install)
+  if(WIN32)
+    add_dependencies(${APP}_package ${APP}_fixup)
+  endif()
 
 endforeach()
 
+# Whole library packaging    
+set(CPACK_OUTPUT_FILE_PREFIX packages)
+set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
+
+execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+set(CPACK_GENERATOR TGZ)
+set(CPACK_SOURCE_GENERATOR TGZ)
+set(CPACK_PACKAGE_FILE_NAME "Sight-${SIGHT_VERSION}-linux_${ARCHITECTURE}-${GIT_TAG}")
+set(CPACK_PACKAGE_VENDOR "IRCAD")
+set(CPACK_PACKAGE_NAME "Sight")
+set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
+set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
+set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
+include(CPack)
