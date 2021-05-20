@@ -28,6 +28,7 @@
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
+#include <QWindow>
 
 namespace sight::ui::qt
 {
@@ -37,20 +38,22 @@ namespace widget
 
 //-----------------------------------------------------------------------------
 
-SlideBar::SlideBar(QWidget* _parent,
-                   HAlignment _hAlign,
-                   VAlignment _vAlign,
-                   int _width,
-                   bool _percentWidth,
-                   int _height,
-                   bool _percentHeight,
-                   int _hOffset,
-                   bool _percentHOffset,
-                   int _vOffset,
-                   bool _percentVOffset,
-                   double _opacity,
-                   bool _animatable,
-                   AnimatableAlignment _animatableAlignment) :
+SlideBar::SlideBar(
+    QWidget* _parent,
+    HAlignment _hAlign,
+    VAlignment _vAlign,
+    int _width,
+    bool _percentWidth,
+    int _height,
+    bool _percentHeight,
+    int _hOffset,
+    bool _percentHOffset,
+    int _vOffset,
+    bool _percentVOffset,
+    double _opacity,
+    bool _animatable,
+    AnimatableAlignment _animatableAlignment
+) :
     QWidget(_parent),
     m_hAlignment(_hAlign),
     m_vAlignment(_vAlign),
@@ -79,10 +82,11 @@ void SlideBar::init()
     this->updatePosition();
 
     // window flags to have a frameless dialog that can be displayed over an openGL widget
-    this->setWindowFlags(Qt::Tool
-                         | Qt::FramelessWindowHint
-                         | Qt::NoDropShadowWindowHint
-                         );
+    this->setWindowFlags(
+        Qt::Tool
+        | Qt::FramelessWindowHint
+        | Qt::NoDropShadowWindowHint
+    );
 
     // Set the transparent background
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -91,11 +95,15 @@ void SlideBar::init()
     // (just listening parent event is not enough because the Move event is only send on activeWindow).
     this->parent()->installEventFilter(this);
 
-    auto activeWindow = qApp->activeWindow();
-    if(activeWindow)
+    // Find the real root (when using opengl/ogre, there are intermediate "QWindow")
+    QWidget* ancestor = this->parentWidget();
+    while(ancestor->parentWidget() != nullptr)
     {
-        activeWindow->installEventFilter(this);
+        ancestor = ancestor->parentWidget();
     }
+
+    ancestor = ancestor->topLevelWidget();
+    ancestor->installEventFilter(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +129,7 @@ void SlideBar::updatePosition()
     }
     else
     {
-        width = std::min(width, static_cast< int >(m_width/100. * width));
+        width = std::min(width, static_cast<int>(m_width / 100. * width));
     }
 
     if(!m_percentHeight)
@@ -133,7 +141,7 @@ void SlideBar::updatePosition()
     }
     else
     {
-        height = std::min(height, static_cast< int >(m_height/100. * height));
+        height = std::min(height, static_cast<int>(m_height / 100. * height));
     }
 
     this->setFixedWidth(width);
@@ -149,7 +157,7 @@ void SlideBar::updatePosition()
     }
     else
     {
-        hOffset = static_cast< int >(m_hOffset/100. * this->parentWidget()->width());
+        hOffset = static_cast<int>(m_hOffset / 100. * this->parentWidget()->width());
     }
 
     if(!m_percentVOffset)
@@ -158,7 +166,7 @@ void SlideBar::updatePosition()
     }
     else
     {
-        vOffset = static_cast< int >(m_vOffset/100. * this->parentWidget()->height());
+        vOffset = static_cast<int>(m_vOffset / 100. * this->parentWidget()->height());
     }
 
     // Compute the shown and hidden position.
@@ -174,21 +182,21 @@ void SlideBar::updatePosition()
         QPoint pos = this->parentWidget()->rect().topRight();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x()-width - hOffset, pos.y() + vOffset, width, height);
+        m_shownPosition = QRect(pos.x() - width - hOffset, pos.y() + vOffset, width, height);
     }
     else if(m_hAlignment == LEFT && m_vAlignment == BOTTOM)
     {
         QPoint pos = this->parentWidget()->rect().bottomLeft();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x() + hOffset, pos.y()-height - vOffset, width, height);
+        m_shownPosition = QRect(pos.x() + hOffset, pos.y() - height - vOffset, width, height);
     }
     else if(m_hAlignment == RIGHT && m_vAlignment == BOTTOM)
     {
         QPoint pos = this->parentWidget()->rect().bottomRight();
         pos = this->parentWidget()->mapToGlobal(pos);
 
-        m_shownPosition = QRect(pos.x()-width - hOffset, pos.y()-height - vOffset, width, height);
+        m_shownPosition = QRect(pos.x() - width - hOffset, pos.y() - height - vOffset, width, height);
     }
 
     switch(m_animatableAlignment)
@@ -197,9 +205,10 @@ void SlideBar::updatePosition()
         {
             QPoint pos = this->parentWidget()->rect().topLeft();
             pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y()-height + vOffset, width, 0);
+            m_hiddenPosition = QRect(m_shownPosition.x(), pos.y() - height + vOffset, width, 0);
             break;
         }
+
         case BOTTOM_ANIMATION:
         {
             QPoint pos = this->parentWidget()->rect().bottomLeft();
@@ -207,13 +216,15 @@ void SlideBar::updatePosition()
             m_hiddenPosition = QRect(m_shownPosition.x(), pos.y() + vOffset, width, 0);
             break;
         }
+
         case LEFT_ANIMATION:
         {
             QPoint pos = this->parentWidget()->rect().topLeft();
             pos              = this->parentWidget()->mapToGlobal(pos);
-            m_hiddenPosition = QRect(pos.x()-width + hOffset, m_shownPosition.y(), 0, height);
+            m_hiddenPosition = QRect(pos.x() - width + hOffset, m_shownPosition.y(), 0, height);
             break;
         }
+
         case RIGHT_ANIMATION:
         {
             QPoint pos = this->parentWidget()->rect().bottomRight();
@@ -304,8 +315,8 @@ void SlideBar::slide(bool _visible)
     {
         this->forceHide();
     }
-    m_isShown = _visible;
 
+    m_isShown = _visible;
 }
 
 //-----------------------------------------------------------------------------
@@ -318,21 +329,6 @@ bool SlideBar::eventFilter(QObject* _obj, QEvent* _event)
     {
         this->updatePosition();
     }
-    else if(_event->type() == QEvent::WindowActivate)
-    {
-        auto activeWindow = qApp->activeWindow();
-        SIGHT_ASSERT("No active window", activeWindow);
-        activeWindow->installEventFilter(this);
-        this->updatePosition();
-    }
-    else if(_event->type() == QEvent::WindowDeactivate)
-    {
-        auto mainFrame = dynamic_cast< ui::qt::QtMainFrame*>(_obj);
-        if(mainFrame)
-        {
-            mainFrame->removeEventFilter(this);
-        }
-    }
     else if(_event->type() == QEvent::Show)
     {
         if(m_isShown)
@@ -344,10 +340,12 @@ bool SlideBar::eventFilter(QObject* _obj, QEvent* _event)
     {
         this->forceHide();
     }
+
     return QObject::eventFilter(_obj, _event);
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace widget
+
 } // namespace sight::ui::qt
