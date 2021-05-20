@@ -58,18 +58,17 @@ LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key key) :
 
 core::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget* parent = qApp->activeWindow();
-    QString caption = QString::fromStdString(this->getTitle());
-    QString path    = QString::fromStdString(this->getDefaultLocation()->toString());
-    QString filter  = this->fileFilters();
-    core::location::ILocation::sptr location;
+    const QString& caption = QString::fromStdString(this->getTitle());
+    const QString& path    = QString::fromStdString(this->getDefaultLocation().toString());
+    const QString& filter  = this->fileFilters();
+    data::location::ILocation::sptr location;
 
     QFileDialog dialog;
     dialog.setDirectory(path);
     dialog.setNameFilter(filter);
     dialog.setWindowTitle(caption);
 
-    if(m_style & ui::base::dialog::ILocationDialog::READ)
+    if(m_style & ui::base::dialog::ILocationDialog::READ || m_type == ui::base::dialog::ILocationDialog::FOLDER)
     {
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     }
@@ -78,79 +77,64 @@ core::location::ILocation::sptr LocationDialog::show()
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
     }
 
-    if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
+    if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE
+       || m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
     {
-        SIGHT_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
-
         dialog.setFilter(QDir::Filter::Files);
-        dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
-        QStringList files;
-        if(dialog.exec())
-        {
-            files      = dialog.selectedFiles();
-            m_wildcard = dialog.selectedNameFilter().toStdString();
-        }
 
-        if(!files.isEmpty())
-        {
-            std::vector<std::filesystem::path> paths;
-            for(QString filename : files)
-            {
-                std::filesystem::path bpath(filename.toStdString());
-                paths.push_back(bpath);
-            }
-
-            const auto& multipleFiles = std::make_shared<core::location::MultipleFiles>();
-            multipleFiles->setFiles(paths);
-            location = multipleFiles;
-        }
-    }
-    else if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
-    {
-        QString fileName;
         if((m_style & ui::base::dialog::ILocationDialog::READ)
            || (m_style & ui::base::dialog::ILocationDialog::FILE_MUST_EXIST))
         {
-            dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
-            if(dialog.exec() && !dialog.selectedFiles().empty())
+            if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
             {
-                fileName   = dialog.selectedFiles()[0];
-                m_wildcard = dialog.selectedNameFilter().toStdString();
+                dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
+            }
+            else
+            {
+                dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
             }
         }
-        else if(m_style & ui::base::dialog::ILocationDialog::WRITE)
+        else
         {
-            if(dialog.exec() && !dialog.selectedFiles().empty())
-            {
-                fileName   = dialog.selectedFiles()[0];
-                m_wildcard = dialog.selectedNameFilter().toStdString();
-            }
-        }
-
-        if(!fileName.isNull())
-        {
-            const auto& singleFile = std::make_shared<core::location::SingleFile>();
-            singleFile->setFile(fileName.toStdString());
-            location = singleFile;
+            dialog.setFileMode(QFileDialog::FileMode::AnyFile);
         }
     }
     else if(m_type == ui::base::dialog::ILocationDialog::FOLDER)
     {
         dialog.setFilter(QDir::Filter::Dirs);
-        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
         dialog.setFileMode(QFileDialog::FileMode::Directory);
+        dialog.setOption(QFileDialog::Option::ShowDirsOnly, true);
+    }
 
-        QString dir;
-        if(dialog.exec() && !dialog.selectedFiles().empty())
+    if(dialog.exec() == QFileDialog::Accepted)
+    {
+        const auto& selectedFiles = dialog.selectedFiles();
+        if(!selectedFiles.isEmpty())
         {
-            dir = dialog.selectedFiles()[0];
-        }
+            m_wildcard = dialog.selectedNameFilter().toStdString();
 
-        if(!dir.isNull())
-        {
-            const auto& singleDirectory = std::make_shared<core::location::SingleFolder>();
-            singleDirectory->setFolder(dir.toStdString());
-            location = singleDirectory;
+            if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
+            {
+                const auto& selectedFile = selectedFiles.constFirst();
+                location = data::location::SingleFile::New(selectedFile.toStdString());
+            }
+            else if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
+            {
+                std::vector<std::filesystem::path> paths;
+                for(const QString& file : selectedFiles)
+                {
+                    paths.push_back(file.toStdString());
+                }
+
+                auto multifiles = data::location::MultiFiles::New();
+                multifiles->setPaths(paths);
+                location = multifiles;
+            }
+            else if(m_type == ui::base::dialog::ILocationDialog::FOLDER)
+            {
+                const auto& selectedDirectory = selectedFiles.constFirst();
+                location = data::location::Folder::New(selectedDirectory.toStdString());
+            }
         }
     }
 
@@ -168,21 +152,20 @@ void LocationDialog::setType(ui::base::dialog::ILocationDialog::Types type)
 
 ui::base::dialog::ILocationDialog& LocationDialog::setOption(ui::base::dialog::ILocationDialog::Options option)
 {
-    if(option == ui::base::dialog::ILocationDialog::WRITE)
+    using ui::base::dialog::ILocationDialog;
+    if(option == ILocationDialog::WRITE)
     {
-        m_style = (ui::base::dialog::ILocationDialog::Options) (m_style & ~ui::base::dialog::ILocationDialog::READ);
-        m_style = (ui::base::dialog::ILocationDialog::Options) (m_style | ui::base::dialog::ILocationDialog::WRITE);
+        m_style = static_cast<ILocationDialog::Options>(m_style & ~ILocationDialog::READ);
+        m_style = static_cast<ILocationDialog::Options>(m_style | ILocationDialog::WRITE);
     }
-    else if(option == ui::base::dialog::ILocationDialog::READ)
+    else if(option == ILocationDialog::READ)
     {
-        m_style = (ui::base::dialog::ILocationDialog::Options) (m_style & ~ui::base::dialog::ILocationDialog::WRITE);
-        m_style = (ui::base::dialog::ILocationDialog::Options) (m_style | ui::base::dialog::ILocationDialog::READ);
+        m_style = static_cast<ILocationDialog::Options>(m_style & ~ILocationDialog::WRITE);
+        m_style = static_cast<ILocationDialog::Options>(m_style | ILocationDialog::READ);
     }
-    else if(option == ui::base::dialog::ILocationDialog::FILE_MUST_EXIST)
+    else if(option == ILocationDialog::FILE_MUST_EXIST)
     {
-        m_style =
-            (ui::base::dialog::ILocationDialog::Options) (m_style
-                                                          | ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+        m_style = static_cast<ILocationDialog::Options>(m_style | ILocationDialog::FILE_MUST_EXIST);
     }
 
     return *this;
