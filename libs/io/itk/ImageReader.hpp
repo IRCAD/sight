@@ -24,25 +24,27 @@
 
 #include "io/itk/config.hpp"
 
+#include <core/location/SingleFile.hpp>
 #include <core/tools/ProgressAdviser.hpp>
 
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/reader/GenericObjectReader.hpp>
 
 namespace sight::io::itk
 {
 
-class ImageReader : public io::base::reader::GenericObjectReader< data::Image >,
-                    public data::location::enableSingleFile< io::base::reader::IObjectReader >,
+class ImageReader : public base::reader::GenericObjectReader<data::Image>,
+                    public core::location::SingleFile,
                     public core::tools::ProgressAdviser
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ImageReader, io::base::reader::GenericObjectReader< data::Image>,
-                        io::base::reader::factory::New< ImageReader >);
+    SIGHT_DECLARE_CLASS(
+        ImageReader,
+        io::base::reader::GenericObjectReader<data::Image>,
+        io::base::reader::factory::New<ImageReader>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_ITK_API ImageReader(io::base::reader::IObjectReader::Key key);

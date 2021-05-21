@@ -24,7 +24,8 @@
 
 #include "io/vtk/config.hpp"
 
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
+
 #include <data/Mesh.hpp>
 
 #include <io/base/reader/GenericObjectReader.hpp>
@@ -33,8 +34,10 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
 class IJob;
+
 }
 
 namespace sight::io::vtk
@@ -46,14 +49,16 @@ namespace sight::io::vtk
  */
 
 class IO_VTK_CLASS_API ObjMeshReader :
-    public io::base::reader::GenericObjectReader< data::Mesh >,
-    public data::location::enableSingleFile< io::base::reader::IObjectReader >
+    public base::reader::GenericObjectReader<data::Mesh>,
+    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ObjMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
-                        io::base::reader::factory::New< ObjMeshReader >)
+    SIGHT_DECLARE_CLASS(
+        ObjMeshReader,
+        io::base::reader::GenericObjectReader<data::Mesh>,
+        io::base::reader::factory::New<ObjMeshReader>
+    )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
@@ -67,6 +72,7 @@ public:
 
     /// @return ".obj"
     IO_VTK_API std::string extension() override;
+
     /// @return internal job
     IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
 
@@ -74,7 +80,6 @@ private:
 
     ///Internal job
     SPTR(core::jobs::Observer) m_job;
-
 };
 
 } // namespace sight::io::vtk

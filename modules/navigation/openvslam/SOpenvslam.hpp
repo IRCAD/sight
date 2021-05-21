@@ -28,12 +28,12 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/HiResTimer.hpp>
+#include <core/location/SingleFile.hpp>
 #include <core/thread/Timer.hpp>
 
 #include <data/Camera.hpp>
 #include <data/Float.hpp>
 #include <data/FrameTL.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
@@ -351,7 +351,7 @@ private:
     std::string m_saveMapPath;
 
     /// Stores the folder where to save trajectories files.
-    data::location::SingleFile::sptr m_trajectoriesSavePath;
+    core::location::SingleFile::sptr m_trajectoriesSavePath;
 
     /// Stores the trajectories format ("KITTI" or "TUM" are internal formats in openvslam).
     /// This is only used when saving trajectories at stop.

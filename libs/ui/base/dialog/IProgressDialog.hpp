@@ -25,8 +25,6 @@
 #include "ui/base/config.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <data/location/ILocation.hpp>
-
 #include <boost/signals2.hpp>
 
 #include <functional>
@@ -34,8 +32,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  *
@@ -45,13 +45,12 @@ namespace dialog
 class UI_BASE_CLASS_API IProgressDialog : public ui::base::GuiBaseObject,
                                           public ::boost::signals2::trackable
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(IProgressDialog, ui::base::GuiBaseObject, progressDialogFactory)
 
     typedef std::string FactoryRegistryKeyType;
-    typedef boost::function< void () >  CancelCallbackType;
+    typedef boost::function<void ()> CancelCallbackType;
 
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
@@ -104,22 +103,25 @@ protected:
     CancelCallbackType m_cancelCallback;
     bool m_canceled;
     bool m_raise;
+
     ///progress bar's current value: [0-100]
     int m_value;
     bool m_processUserEvents;
 
 protected:
+
     //------------------------------------------------------------------------------
 
     static sptr progressDialogFactory()
     {
         ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
-            ui::base::dialog::IProgressDialog::REGISTRY_KEY);
+            ui::base::dialog::IProgressDialog::REGISTRY_KEY
+        );
         ui::base::dialog::IProgressDialog::sptr progressDlg = ui::base::dialog::IProgressDialog::dynamicCast(guiObj);
         return progressDlg;
     }
-
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

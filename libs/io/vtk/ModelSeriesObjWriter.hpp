@@ -24,7 +24,7 @@
 
 #include "io/vtk/config.hpp"
 
-#include <data/location/Folder.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -32,17 +32,23 @@
 
 namespace sight::data
 {
+
 class Reconstruction;
+
 }
 
 namespace sight::data
 {
+
 class ModelSeries;
+
 }
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::io::vtk
@@ -53,14 +59,16 @@ namespace sight::io::vtk
  *
  * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public io::base::writer::GenericObjectWriter< data::ModelSeries >,
-                             public data::location::enableFolder< io::base::writer::IObjectWriter >
+class ModelSeriesObjWriter : public io::base::writer::GenericObjectWriter<data::ModelSeries>,
+                             public core::location::SingleFolder
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ModelSeriesObjWriter, io::base::writer::GenericObjectWriter< data::ModelSeries >,
-                        io::base::writer::factory::New< ModelSeriesObjWriter >)
+    SIGHT_DECLARE_CLASS(
+        ModelSeriesObjWriter,
+        io::base::writer::GenericObjectWriter<data::ModelSeries>,
+        io::base::writer::factory::New<ModelSeriesObjWriter>
+    )
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 

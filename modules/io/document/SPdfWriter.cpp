@@ -22,13 +22,12 @@
 
 #include "SPdfWriter.hpp"
 
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
-
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <service/macros.hpp>
 
@@ -54,9 +53,9 @@ SPdfWriter::SPdfWriter()
 
 //-----------------------------------------------------------------------------
 
-void SPdfWriter::info(std::ostream& _sstream )
+void SPdfWriter::info(std::ostream& _sstream)
 {
-    this->IWriter::info( _sstream );
+    this->IWriter::info(_sstream);
     _sstream << std::endl << " External data file reader";
 }
 
@@ -75,14 +74,14 @@ void SPdfWriter::configuring()
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
-    if (containersConfig)
+    if(containersConfig)
     {
-        const std::vector< ConfigurationType > containersCfg = containersConfig->find(s_CONTAINER_INPUT);
-        for (const auto& cfg : containersCfg)
+        const std::vector<ConfigurationType> containersCfg = containersConfig->find(s_CONTAINER_INPUT);
+        for(const auto& cfg : containersCfg)
         {
             SIGHT_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
             const std::string id = cfg->getAttributeValue("uid");
-            m_containersIDs.push_back( id );
+            m_containersIDs.push_back(id);
         }
     }
 }
@@ -98,22 +97,21 @@ void SPdfWriter::configureWithIHM()
 
 void SPdfWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("pdf", "*.pdf");
 
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        this->setFile(result->getPath());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
+        this->setFile(result->getFile());
     }
     else
     {
@@ -125,15 +123,16 @@ void SPdfWriter::openLocationDialog()
 
 void SPdfWriter::updating()
 {
-    if( !this->hasLocationDefined() )
+    if(!this->hasLocationDefined())
     {
         configureWithIHM();
     }
-    if( this->hasLocationDefined() )
+
+    if(this->hasLocationDefined())
     {
-        QPdfWriter pdfWriter( this->getLocations().front().string().c_str() );
-        QPainter painter( &pdfWriter );
-        pdfWriter.setPageSize( QPagedPaintDevice::A4 );
+        QPdfWriter pdfWriter(this->getLocations().front().string().c_str());
+        QPainter painter(&pdfWriter);
+        pdfWriter.setPageSize(QPagedPaintDevice::A4);
 
         // Scale value to fit the images to a PDF page
         const int scale          = static_cast<const int>(pdfWriter.logicalDpiX() * 8);
@@ -141,50 +140,53 @@ void SPdfWriter::updating()
 
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;
-        std::vector< std::shared_future< QImage > > futuresQImage;
-        for( const data::Image::sptr& fwImage : m_imagesToExport )
+        std::vector<std::shared_future<QImage> > futuresQImage;
+        for(const data::Image::sptr& fwImage : m_imagesToExport)
         {
-            std::shared_future< QImage > future;
+            std::shared_future<QImage> future;
             future = pool.post(&SPdfWriter::convertFwImageToQImage, fwImage);
-            futuresQImage.push_back( future );
+            futuresQImage.push_back(future);
         }
-        std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future< QImage >::wait));
-        for (auto& future : futuresQImage)
+
+        std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future<QImage>::wait));
+        for(auto& future : futuresQImage)
         {
             QImage imageToDraw = future.get();
             imagesToScale.push_back(imageToDraw);
         }
 
         // Adding QImage from Qt containers to the list of images to scale
-        for( QWidget*& qtContainer : m_containersToExport )
+        for(QWidget*& qtContainer : m_containersToExport)
         {
             QImage imageToDraw = qtContainer->grab().toImage();
             imagesToScale.push_back(imageToDraw);
         }
 
         // Scales images to fit the A4 format
-        std::vector< std::shared_future< void > > futures;
+        std::vector<std::shared_future<void> > futures;
         const size_t sizeImagesToScale = imagesToScale.size();
-        for( size_t idx = 0; idx < sizeImagesToScale; ++idx )
+        for(size_t idx = 0 ; idx < sizeImagesToScale ; ++idx)
         {
             std::shared_future<void> future;
             future = pool.post(&SPdfWriter::scaleQImage, std::ref(imagesToScale[idx]), scale);
-            futures.push_back( future );
+            futures.push_back(future);
         }
+
         std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
         // Draws images onto the PDF.
-        for( QImage& qImage : imagesToScale )
+        for(QImage& qImage : imagesToScale)
         {
-            if ( pdfWriter.newPage() )
+            if(pdfWriter.newPage())
             {
-                pdfWriter.setPageSize( QPagedPaintDevice::A4 );
-                if ( !qImage.isNull() && qImage.bits() != nullptr )
+                pdfWriter.setPageSize(QPagedPaintDevice::A4);
+                if(!qImage.isNull() && qImage.bits() != nullptr)
                 {
-                    painter.drawImage( 0, 0, qImage);
+                    painter.drawImage(0, 0, qImage);
                 }
             }
         }
+
         painter.end();
     }
 }
@@ -194,9 +196,9 @@ void SPdfWriter::updating()
 void SPdfWriter::starting()
 {
     const size_t groupImageSize = this->getKeyGroupSize(s_IMAGE_INPUT);
-    for (size_t idxImage = 0; idxImage < groupImageSize; ++idxImage)
+    for(size_t idxImage = 0 ; idxImage < groupImageSize ; ++idxImage)
     {
-        data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INPUT, idxImage);
+        data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INPUT, idxImage);
         m_imagesToExport.push_back(image);
     }
 
@@ -204,15 +206,16 @@ void SPdfWriter::starting()
     {
         ui::qt::container::QtContainer::sptr containerElt;
         sight::ui::base::container::fwContainer::sptr fwContainerFromConfig;
-        if ( sight::ui::base::GuiRegistry::hasSIDContainer( id ) )
+        if(sight::ui::base::GuiRegistry::hasSIDContainer(id))
         {
-            fwContainerFromConfig = sight::ui::base::GuiRegistry::getSIDContainer( id );
+            fwContainerFromConfig = sight::ui::base::GuiRegistry::getSIDContainer(id);
         }
         else
         {
-            fwContainerFromConfig = sight::ui::base::GuiRegistry::getWIDContainer( id );
+            fwContainerFromConfig = sight::ui::base::GuiRegistry::getWIDContainer(id);
         }
-        if (fwContainerFromConfig)
+
+        if(fwContainerFromConfig)
         {
             containerElt = ui::qt::container::QtContainer::dynamicCast(fwContainerFromConfig);
             m_containersToExport.push_back(containerElt->getQtContainer());
@@ -224,10 +227,11 @@ void SPdfWriter::starting()
 
 void SPdfWriter::stopping()
 {
-    for( QWidget*& qtContainer : m_containersToExport )
+    for(QWidget*& qtContainer : m_containersToExport)
     {
         qtContainer = nullptr;
     }
+
     m_containersToExport.clear();
     m_imagesToExport.clear();
 }
@@ -251,9 +255,9 @@ void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 
 QImage SPdfWriter::convertFwImageToQImage(data::Image::sptr fwImage)
 {
-    if (fwImage->getNumberOfComponents() == 3
-        && fwImage->getType().string() == "uint8"
-        && fwImage->getSize2()[2] == 1)
+    if(fwImage->getNumberOfComponents() == 3
+       && fwImage->getType().string() == "uint8"
+       && fwImage->getSize2()[2] == 1)
     {
         // Initialize QImage parameters
         const data::Image::Size dimension = fwImage->getSize2();
@@ -265,18 +269,20 @@ QImage SPdfWriter::convertFwImageToQImage(data::Image::sptr fwImage)
 
         const auto dumpLock = fwImage->lock();
 
-        auto imageItr = fwImage->begin< data::iterator::RGB >();
+        auto imageItr = fwImage->begin<data::iterator::RGB>();
 
-        const unsigned int size = static_cast<unsigned int>( width * height) * 4;
-        for(unsigned int idx = 0; idx < size; idx += 4, ++imageItr)
+        const unsigned int size = static_cast<unsigned int>(width * height) * 4;
+        for(unsigned int idx = 0 ; idx < size ; idx += 4, ++imageItr)
         {
-            qImageBuffer[idx+3] = (255 & 0xFF);
-            qImageBuffer[idx+2] = (imageItr->r & 0xFF);
-            qImageBuffer[idx+1] = (imageItr->g & 0xFF);
-            qImageBuffer[idx+0] = (imageItr->b & 0xFF);
+            qImageBuffer[idx + 3] = (255 & 0xFF);
+            qImageBuffer[idx + 2] = (imageItr->r & 0xFF);
+            qImageBuffer[idx + 1] = (imageItr->g & 0xFF);
+            qImageBuffer[idx + 0] = (imageItr->b & 0xFF);
         }
+
         return qImage.mirrored(0, 1);
     }
+
     return QImage();
 }
 

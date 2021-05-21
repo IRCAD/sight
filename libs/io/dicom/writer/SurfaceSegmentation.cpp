@@ -44,13 +44,13 @@ SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::SurfaceSegmentation);
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_logger(core::log::Logger::New()),
     m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
 {
@@ -84,8 +84,10 @@ void SurfaceSegmentation::write()
     const std::string& imagePatientName = associatedDicomSeries->getPatient()->getName();
     if(modelPatientName != imagePatientName)
     {
-        m_logger->warning("The patient's name of the model (\"" + modelPatientName + "\") "
-                          "does not match the patient's name of the image (\"" + imagePatientName + "\").");
+        m_logger->warning(
+            "The patient's name of the model (\"" + modelPatientName + "\") "
+                                                                       "does not match the patient's name of the image (\"" + imagePatientName + "\")."
+        );
     }
 
     // Verify matching Patient ID
@@ -93,8 +95,10 @@ void SurfaceSegmentation::write()
     const std::string& imagePatientID = associatedDicomSeries->getPatient()->getPatientId();
     if(modelPatientID != imagePatientID)
     {
-        m_logger->warning("The patient ID of the model (\"" + modelPatientID + "\") "
-                          "does not match the patient ID of the image (\"" + imagePatientID + "\").");
+        m_logger->warning(
+            "The patient ID of the model (\"" + modelPatientID + "\") "
+                                                                 "does not match the patient ID of the image (\"" + imagePatientID + "\")."
+        );
     }
 
     // Verify matching Study Instance UID
@@ -102,8 +106,10 @@ void SurfaceSegmentation::write()
     const std::string& imageStudyInstanceUID = associatedDicomSeries->getStudy()->getInstanceUID();
     if(modelStudyInstanceUID != imageStudyInstanceUID)
     {
-        m_logger->warning("The study instance UID of the model (\"" + modelStudyInstanceUID + "\") "
-                          "does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\").");
+        m_logger->warning(
+            "The study instance UID of the model (\"" + modelStudyInstanceUID + "\") "
+                                                                                "does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\")."
+        );
     }
 
     // Complete Model Series with information from associated Image Series
@@ -113,10 +119,10 @@ void SurfaceSegmentation::write()
     modelSeries->setStudy(associatedDicomSeries->getStudy());
 
     SPTR(io::dicom::container::DicomInstance) associatedDicomInstance =
-        std::make_shared< io::dicom::container::DicomInstance >(associatedDicomSeries, m_logger);
+        std::make_shared<io::dicom::container::DicomInstance>(associatedDicomSeries, m_logger);
 
     SPTR(io::dicom::container::DicomInstance) modelInstance =
-        std::make_shared< io::dicom::container::DicomInstance >(modelSeries, m_logger, false);
+        std::make_shared<io::dicom::container::DicomInstance>(modelSeries, m_logger, false);
 
     m_writerJob->doneWork(0);
     m_writerJob->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
@@ -131,7 +137,7 @@ void SurfaceSegmentation::write()
     {
         iod.write(modelSeries);
     }
-    catch (const io::dicom::exception::Failed& e)
+    catch(const io::dicom::exception::Failed& e)
     {
         m_logger->critical(e.what());
     }
@@ -164,4 +170,5 @@ SPTR(core::log::Logger) SurfaceSegmentation::getLogger() const
 //------------------------------------------------------------------------------
 
 } // namespace writer
+
 } // namespace sight::io::dicom

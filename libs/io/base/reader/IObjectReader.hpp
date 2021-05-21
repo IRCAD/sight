@@ -30,8 +30,6 @@
 #include <core/jobs/IJob.hpp>
 #include <core/tools/Object.hpp>
 
-#include <data/location/ILocation.hpp>
-
 #include <cstdint>
 #include <filesystem>
 #include <functional>
@@ -53,13 +51,12 @@ namespace reader
  */
 class IO_BASE_CLASS_API IObjectReader : public core::BaseObject
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(IObjectReader)
 
-    typedef std::function< void ( std::uint64_t /*progress*/) > ProgressCallback;
-    typedef std::function< void ( ) > CancelCallback;
+    typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
+    typedef std::function<void ()> CancelCallback;
 
     typedef io::base::reader::factory::Key Key;
 
@@ -69,10 +66,11 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry()
         {
             io::base::reader::registry::get()->addFactory(T::classname(), &io::base::reader::factory::New<T>);
@@ -92,7 +90,7 @@ public:
      * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method getObject()
      */
-    IO_BASE_API virtual void setObject( core::tools::Object::sptr _pObject );
+    IO_BASE_API virtual void setObject(core::tools::Object::sptr _pObject);
 
     /**
      * @brief m_object getter.
@@ -100,20 +98,7 @@ public:
      * @return m_object
      * @note m_object is saved in reader with a weakptr
      */
-    IO_BASE_API virtual core::tools::Object::sptr getObject();
-
-    /**
-     * @brief m_location setter.
-     * @param[in] _location set location where object will be read
-     */
-    IO_BASE_API virtual void setLocation( const data::location::ILocation::sptr _location );
-
-    /**
-     * @brief m_location getter.
-     *
-     * @return m_location
-     */
-    IO_BASE_API virtual data::location::ILocation::sptr getLocation();
+    IO_BASE_API virtual core::tools::Object::sptr getObject() const;
 
     IO_BASE_API virtual std::string extension() = 0;
 
@@ -142,10 +127,6 @@ protected:
      * This object is given in parameter of setObject method but it is conserved with a weakptr.
      */
     core::tools::Object::wptr m_object;
-
-    /// Object location ( file path, directory path, url, etc )
-    data::location::ILocation::sptr m_location;
-
 };
 
 } // namespace reader

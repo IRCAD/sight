@@ -23,7 +23,6 @@
 #pragma once
 
 #include "atoms/config.hpp"
-
 #include <atoms/Object.hpp>
 
 #include <core/tools/UUID.hpp>
@@ -32,7 +31,9 @@
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::atoms::conversion
@@ -43,7 +44,6 @@ namespace sight::atoms::conversion
  */
 class ATOMS_CLASS_API AtomVisitor
 {
-
 public:
 
     /**
@@ -59,29 +59,44 @@ public:
      * @brief This policy reuses the data associated with an existing uuid
      */
     struct ReusePolicy : IReadPolicy
-    { ATOMS_API virtual SPTR(data::Object) operator()(const std::string& uuid,
-                                                      const std::string& classname) const; };
+    {
+        ATOMS_API virtual SPTR(data::Object) operator()(
+            const std::string& uuid,
+            const std::string& classname
+        ) const;
+    };
 
     /**
      * @brief This policy changes data's uuid if it already exists
      */
     struct ChangePolicy : IReadPolicy
-    { ATOMS_API virtual SPTR(data::Object) operator()(const std::string& uuid,
-                                                      const std::string& classname) const; };
+    {
+        ATOMS_API virtual SPTR(data::Object) operator()(
+            const std::string& uuid,
+            const std::string& classname
+        ) const;
+    };
 
     /**
      * @brief This policy throws an exception if the loaded uuid is not available
      */
     struct StrictPolicy : IReadPolicy
-    { ATOMS_API virtual SPTR(data::Object) operator()(const std::string& uuid,
-                                                      const std::string& classname) const; };
+    {
+        ATOMS_API virtual SPTR(data::Object) operator()(
+            const std::string& uuid,
+            const std::string& classname
+        ) const;
+    };
     /** @} */
 
-    typedef std::map< core::tools::UUID::UUIDType, SPTR(data::Object) > DataCacheType;
+    typedef std::map<std::string, SPTR(data::Object)> DataCacheType;
 
     /// Constructors. Initializes parameters.
-    ATOMS_API AtomVisitor( const atoms::Object::sptr& atomObj, DataCacheType& cache,
-                           const IReadPolicy& uuidPolicy );
+    ATOMS_API AtomVisitor(
+        const atoms::Object::sptr& atomObj,
+        DataCacheType& cache,
+        const IReadPolicy& uuidPolicy
+    );
 
     /// Destructor. Does nothing.
     ATOMS_API virtual ~AtomVisitor();
@@ -103,10 +118,10 @@ public:
 private:
 
     /// Creates an empty data object from the classname in atom info and store it in the cache.
-    void processMetaInfos( const atoms::Object::MetaInfosType& metaInfos );
+    void processMetaInfos(const atoms::Object::MetaInfosType& metaInfos);
 
     /// Visits data object to fill it from atom (use AtomToDataMappingVisitor).
-    void processAttributes( const atoms::Object::AttributesType& attributes );
+    void processAttributes(const atoms::Object::AttributesType& attributes);
 
     /// Atom object to convert
     atoms::Object::sptr m_atomObj;

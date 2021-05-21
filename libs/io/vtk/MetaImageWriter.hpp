@@ -24,8 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -33,7 +34,9 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::io::vtk
@@ -44,14 +47,16 @@ namespace sight::io::vtk
  *
  * Write a MetaImage using the VTK lib
  */
-class MetaImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
-                        public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+class MetaImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                        public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(MetaImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                        io::base::writer::factory::New< MetaImageWriter >);
+    SIGHT_DECLARE_CLASS(
+        MetaImageWriter,
+        io::base::writer::GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<MetaImageWriter>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
@@ -73,7 +78,6 @@ private:
 
     ///Internal job
     SPTR(core::jobs::Observer) m_job;
-
 };
 
 } // namespace sight::io::vtk

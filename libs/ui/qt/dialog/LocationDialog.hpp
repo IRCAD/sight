@@ -36,43 +36,46 @@ class QString;
  */
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic file/folder dialog.
  *
  */
 class UI_QT_CLASS_API LocationDialog : public ui::base::dialog::ILocationDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New< LocationDialog >)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>)
 
     UI_QT_API LocationDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API data::location::ILocation::sptr show() override;
+    UI_QT_API core::location::ILocation::sptr show() override;
 
-    UI_QT_API void setType( ui::base::dialog::ILocationDialog::Types type ) override;
+    UI_QT_API void setType(ui::base::dialog::ILocationDialog::Types type) override;
 
-    UI_QT_API ui::base::dialog::ILocationDialog& setOption( ui::base::dialog::ILocationDialog::Options option) override;
+    UI_QT_API ui::base::dialog::ILocationDialog& setOption(ui::base::dialog::ILocationDialog::Options option) override;
 
     // Example ( addFilter("images","*.png *.jpg");
-    UI_QT_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
+    UI_QT_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
 
 protected:
 
     ui::base::dialog::ILocationDialog::Options m_style;
     ui::base::dialog::ILocationDialog::Types m_type;
-    std::vector< std::pair< std::string, std::string > > m_filters;
+    std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
     QString fileFilters();
+
     /// Gets the current extension file selection
     UI_QT_API std::string getCurrentSelection() const override;
 
     std::string m_wildcard;
-
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qt

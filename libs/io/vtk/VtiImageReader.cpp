@@ -36,14 +36,14 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::vtk::VtiImageReader );
+SIGHT_REGISTER_IO_READER(::sight::io::vtk::VtiImageReader);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 VtiImageReader::VtiImageReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("Vti image reader"))
 {
 }
@@ -58,28 +58,27 @@ VtiImageReader::~VtiImageReader()
 
 void VtiImageReader::read()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
     data::Image::sptr pImage = getConcreteObject();
 
-    vtkSmartPointer< vtkXMLImageDataReader > reader = vtkSmartPointer< vtkXMLImageDataReader >::New();
+    vtkSmartPointer<vtkXMLImageDataReader> reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     using namespace sight::io::vtk::helper;
-    vtkSmartPointer< vtkLambdaCommand > progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
-    progressCallback = vtkSmartPointer< vtkLambdaCommand >::New();
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     reader->UpdateInformation();
@@ -90,14 +89,14 @@ void VtiImageReader::read()
 
     m_job->finish();
 
-    SIGHT_THROW_IF("VtiImageReader cannot read Vti image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("VtiImageReader cannot read Vti image file :" << this->getFile().string(), !img);
     try
     {
-        io::vtk::fromVTKImage( img, pImage);
+        io::vtk::fromVTKImage(img, pImage);
     }
-    catch( std::exception& e)
+    catch(std::exception& e)
     {
-        SIGHT_THROW("VTIImage to data::Image failed "<<e.what());
+        SIGHT_THROW("VTIImage to data::Image failed " << e.what());
     }
 }
 

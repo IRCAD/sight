@@ -25,13 +25,12 @@
 #include "io/base/reader/registry/macros.hpp"
 
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <zlib.h>
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::GzBufferImageReader );
+SIGHT_REGISTER_IO_READER(::sight::io::base::reader::GzBufferImageReader);
 
 namespace sight::io::base
 {
@@ -41,10 +40,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzBufferImageReader::GzBufferImageReader(io::base::reader::IObjectReader::Key) :
-    data::location::
-    enableSingleFile< IObjectReader >(
-        this)
+GzBufferImageReader::GzBufferImageReader(io::base::reader::IObjectReader::Key)
 {
 }
 
@@ -58,10 +54,9 @@ GzBufferImageReader::~GzBufferImageReader()
 
 void GzBufferImageReader::read()
 {
-    assert( data::location::SingleFile::dynamicCast(m_location) );
-    std::filesystem::path file = data::location::SingleFile::dynamicCast(m_location)->getPath();
+    std::filesystem::path file = this->getFile();
 
-    assert( file.empty() == false );
+    assert(file.empty() == false);
 
     data::Image::sptr image = getConcreteObject();
     size_t imageSizeInBytes = image->getSizeInBytes();
@@ -73,7 +68,7 @@ void GzBufferImageReader::read()
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
 
     SIGHT_ASSERT("rawFile not instanced", rawFile);
-    if ( rawFile == 0 )
+    if(rawFile == 0)
     {
         std::string str = "Unable to open ";
         str += file.string();
@@ -83,15 +78,15 @@ void GzBufferImageReader::read()
     int uncompressedbytesreaded;
     size_t readBytes = 0;
 
-    while ( (uncompressedbytesreaded =
-                 gzread(rawFile, ptr + readBytes, static_cast<unsigned int>(imageSizeInBytes - readBytes))) > 0 )
+    while((uncompressedbytesreaded =
+               gzread(rawFile, ptr + readBytes, static_cast<unsigned int>(imageSizeInBytes - readBytes))) > 0)
     {
         readBytes += static_cast<size_t>(uncompressedbytesreaded);
     }
 
     gzclose(rawFile);
 
-    if ( uncompressedbytesreaded == -1 )
+    if(uncompressedbytesreaded == -1)
     {
         std::string str = "Unable to read ";
         str += file.string();
@@ -103,7 +98,7 @@ void GzBufferImageReader::read()
 
 std::string GzBufferImageReader::extension()
 {
-    return (".raw.gz");
+    return ".raw.gz";
 }
 
 //------------------------------------------------------------------------------

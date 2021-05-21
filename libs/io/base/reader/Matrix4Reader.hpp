@@ -25,7 +25,8 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/GenericObjectReader.hpp"
 
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
+
 #include <data/Matrix4.hpp>
 
 namespace sight::io::base
@@ -41,14 +42,16 @@ namespace reader
  * Reads '.trf' files and converts them into a 'sight::data::Matrix4'.
  */
 class IO_BASE_CLASS_API Matrix4Reader :
-    public GenericObjectReader< data::Matrix4 >,
-    public data::location::enableSingleFile< IObjectReader >
+    public GenericObjectReader<data::Matrix4>,
+    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Matrix4Reader, GenericObjectReader< data::Matrix4 >,
-                        io::base::reader::factory::New< Matrix4Reader >)
+    SIGHT_DECLARE_CLASS(
+        Matrix4Reader,
+        GenericObjectReader<data::Matrix4>,
+        io::base::reader::factory::New<Matrix4Reader>
+    )
 
     /// Constructor. Does nothing.
     IO_BASE_API Matrix4Reader(io::base::reader::IObjectReader::Key key);
@@ -61,7 +64,6 @@ public:
 
     /// Defines the extensions supported by this reader. Here: ".trf"
     IO_BASE_API std::string extension() override;
-
 };
 
 }

@@ -26,15 +26,16 @@
 #include "io/dicom/container/DicomInstance.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/ProgressAdviser.hpp>
 
 #include <data/ImageSeries.hpp>
-#include <data/location/Folder.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
 
@@ -43,15 +44,17 @@ namespace writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class IO_DICOM_CLASS_API Series : public io::base::writer::GenericObjectWriter< data::Series >,
-                                  public data::location::enableFolder< io::base::writer::IObjectWriter >,
+class IO_DICOM_CLASS_API Series : public io::base::writer::GenericObjectWriter<data::Series>,
+                                  public core::location::SingleFolder,
                                   public core::tools::ProgressAdviser
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Series, io::base::writer::GenericObjectWriter< data::Series >,
-                        io::base::writer::factory::New< Series >);
+    SIGHT_DECLARE_CLASS(
+        Series,
+        io::base::writer::GenericObjectWriter<data::Series>,
+        io::base::writer::factory::New<Series>
+    );
 
     typedef enum
     {
@@ -60,7 +63,7 @@ public:
         COMPREHENSIVE_3D_SR = 3 /*! Export Fiducials using Comprehensive3DSRIOD */
     } FiducialsExportMode;
 
-    typedef std::map< std::string, SPTR(io::dicom::container::DicomInstance) > DicomInstanceMapType;
+    typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> DicomInstanceMapType;
 
     /// Constructor
     IO_DICOM_API Series(io::base::writer::IObjectWriter::Key key);
@@ -115,8 +118,8 @@ private:
 
     /// Fiducials Export Mode
     FiducialsExportMode m_fiducialsExportMode;
-
 };
 
 } // namespace writer
+
 } // namespace sight::io::dicom

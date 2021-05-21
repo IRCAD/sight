@@ -63,10 +63,11 @@
 
 #include <functional>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::conversion::ut::ConversionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::atoms::conversion::ut::ConversionTest);
 
 namespace sight::atoms::conversion
 {
+
 namespace ut
 {
 
@@ -91,11 +92,12 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
     data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
     {
-        SIGHT_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
+
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,23 +126,26 @@ void ConversionTest::dataToAtomTest()
 
     atoms::Object::sptr atom;
 
-    for ( data::Object::sptr object : VALUES )
+    for(data::Object::sptr object : VALUES)
     {
         atom = atoms::conversion::convert(object);
 
         const ::camp::Class& metaClass = ::camp::classByName(object->getClassname());
 
         //Type test
-        CPPUNIT_ASSERT_EQUAL( object->getClassname(),
-                              atom->getMetaInfo( atoms::conversion::DataVisitor::CLASSNAME_METAINFO ) );
+        CPPUNIT_ASSERT_EQUAL(
+            object->getClassname(),
+            atom->getMetaInfo(atoms::conversion::DataVisitor::CLASSNAME_METAINFO)
+        );
 
         //Test attribute type
-        for( atoms::Object::AttributesType::value_type elem :  atom->getAttributes() )
+        for(atoms::Object::AttributesType::value_type elem : atom->getAttributes())
         {
-            std::string classname = atom->getMetaInfo( atoms::conversion::DataVisitor::CLASSNAME_METAINFO );
+            std::string classname = atom->getMetaInfo(atoms::conversion::DataVisitor::CLASSNAME_METAINFO);
+
             // Drop attributes from atoms::conversion::mappers.
-            if( ( classname == "sight::data::Mesh" && elem.first == "attributes" ) ||
-                ( classname == "sight::data::Graph" && elem.first == "connections" ) )
+            if((classname == "sight::data::Mesh" && elem.first == "attributes")
+               || (classname == "sight::data::Graph" && elem.first == "connections"))
             {
                 continue;
             }
@@ -153,35 +158,44 @@ void ConversionTest::dataToAtomTest()
                     CPPUNIT_ASSERT(elem.second->isString());
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
+
                 case camp::realType:
                 case camp::intType:
                     CPPUNIT_ASSERT(elem.second->isNumeric());
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
+
                 case camp::boolType:
                     CPPUNIT_ASSERT(elem.second->isBoolean());
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
+
                 case camp::userType:
-                    if( ( ( classname == "sight::data::Material" ) && ( attribute == "diffuse_texture" ) ) ||
-                        ( ( classname == "sight::data::Reconstruction" ) && ( attribute == "image" ) ) ||
-                        ( ( classname == "sight::data::Reconstruction" ) && ( attribute == "mesh" ) ) )
+                    if(((classname == "sight::data::Material") && (attribute == "diffuse_texture"))
+                       || ((classname == "sight::data::Reconstruction") && (attribute == "image"))
+                       || ((classname == "sight::data::Reconstruction") && (attribute == "mesh")))
                     {
-                        CPPUNIT_ASSERT_MESSAGE("classname: " + classname + ", attribute: " + attribute,
-                                               !elem.second);
+                        CPPUNIT_ASSERT_MESSAGE(
+                            "classname: " + classname + ", attribute: " + attribute,
+                            !elem.second
+                        );
                     }
                     else
                     {
                         CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
                     }
+
                     break;
+
                 case camp::mappingType:
                     CPPUNIT_ASSERT(elem.second->isMapping());
                     break;
+
                 case camp::enumType:
                     CPPUNIT_ASSERT(elem.second->isString());
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
+
                 case camp::arrayType:
                     CPPUNIT_ASSERT(elem.second->isSequence());
                     break;
@@ -200,8 +214,8 @@ void ConversionTest::materialConversionTest()
 
     // Create Atom
     data::Material::sptr materialTmp;
-    materialTmp = data::Object::copy( material );
-    atoms::Object::sptr atom = atoms::conversion::convert( materialTmp );
+    materialTmp = data::Object::copy(material);
+    atoms::Object::sptr atom = atoms::conversion::convert(materialTmp);
     materialTmp.reset();
 
     // Create Data from Atom
@@ -218,18 +232,22 @@ void ConversionTest::meshConversionTest()
     data::Mesh::sptr mesh = data::Mesh::New();
     const auto lock       = mesh->lock();
 
-    mesh->reserve(90, 30, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS
-                  | data::Mesh::Attributes::POINT_NORMALS
-                  | data::Mesh::Attributes::POINT_TEX_COORDS);
+    mesh->reserve(
+        90,
+        30,
+        data::Mesh::CellType::TRIANGLE,
+        data::Mesh::Attributes::POINT_COLORS
+        | data::Mesh::Attributes::POINT_NORMALS
+        | data::Mesh::Attributes::POINT_TEX_COORDS
+    );
 
-    atoms::Object::sptr atom = atoms::conversion::convert( mesh );
+    atoms::Object::sptr atom = atoms::conversion::convert(mesh);
 
     // Create Data from Atom
     data::Object::sptr convertedMesh = atoms::conversion::convert(atom);
     data::Mesh::sptr mesh2           = data::Mesh::dynamicCast(convertedMesh);
 
     compare(mesh, mesh2);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -237,30 +255,30 @@ void ConversionTest::meshConversionTest()
 void ConversionTest::graphConversionTest()
 {
     atoms::Object::sptr atom;
-    core::tools::UUID::UUIDType gID, n1ID, n2ID, n3ID, e12ID, e23ID;
+    std::string gID, n1ID, n2ID, n3ID, e12ID, e23ID;
     {
         data::Graph::sptr g = data::Graph::New();
-        gID = core::tools::UUID::get(g);
+        gID = g->getUUID();
         data::Node::sptr n1 = data::Node::New();
-        n1ID = core::tools::UUID::get(n1);
+        n1ID = n1->getUUID();
         data::Node::sptr n2 = data::Node::New();
-        n2ID = core::tools::UUID::get(n2);
+        n2ID = n2->getUUID();
         data::Node::sptr n3 = data::Node::New();
-        n3ID = core::tools::UUID::get(n3);
+        n3ID = n3->getUUID();
         data::Edge::sptr e12 = data::Edge::New();
-        e12ID = core::tools::UUID::get(e12);
+        e12ID = e12->getUUID();
         data::Edge::sptr e23 = data::Edge::New();
-        e23ID = core::tools::UUID::get(e23);
+        e23ID = e23->getUUID();
 
         // build graph
         g->addNode(n1);
         g->addNode(n2);
         g->addNode(n3);
 
-        n1->addOutputPort( data::Port::New() );
-        n2->addInputPort( data::Port::New() );
-        n2->addOutputPort( data::Port::New() );
-        n3->addInputPort( data::Port::New() );
+        n1->addOutputPort(data::Port::New());
+        n2->addInputPort(data::Port::New());
+        n2->addOutputPort(data::Port::New());
+        n3->addInputPort(data::Port::New());
 
         e12->setIdentifiers("IDNOTdefined", "IDNOTdefined");
         e23->setIdentifiers("IDNOTdefined", "IDNOTdefined");
@@ -272,60 +290,60 @@ void ConversionTest::graphConversionTest()
         e12->setField("infoTest", data::String::New("valueInfoTest"));
 
         // Create Atom
-        atom = atoms::conversion::convert( g );
+        atom = atoms::conversion::convert(g);
     }
 
     // Create Data from Atom
-    data::Graph::sptr newGraph = data::Graph::dynamicCast( atoms::conversion::convert(atom) );
+    data::Graph::sptr newGraph = data::Graph::dynamicCast(atoms::conversion::convert(atom));
 
     // nodes
     data::Node::sptr n1, n2, n3;
 
     // Test nodes
     const data::Graph::NodeContainer& nodes = newGraph->getNodes();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size", (size_t)3, nodes.size() );
-    for( data::Node::sptr node :  nodes )
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size", (size_t) 3, nodes.size());
+    for(data::Node::sptr node : nodes)
     {
-        core::tools::UUID::UUIDType nodeID = core::tools::UUID::get(node);
-        CPPUNIT_ASSERT_MESSAGE("Test node uuid", nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
-        if (  nodeID == n1ID )
+        std::string nodeID = node->getUUID();
+        CPPUNIT_ASSERT_MESSAGE("Test node uuid", nodeID == n1ID || nodeID == n2ID || nodeID == n3ID);
+        if(nodeID == n1ID)
         {
             n1 = node;
         }
-        else if  (  nodeID == n2ID )
+        else if(nodeID == n2ID)
         {
             n2 = node;
         }
-        else if  (  nodeID == n3ID )
+        else if(nodeID == n3ID)
         {
             n3 = node;
         }
-
     }
-    CPPUNIT_ASSERT_MESSAGE("Test node n1", n1 );
-    CPPUNIT_ASSERT_MESSAGE("Test node n2", n2 );
-    CPPUNIT_ASSERT_MESSAGE("Test node n3", n3 );
+
+    CPPUNIT_ASSERT_MESSAGE("Test node n1", n1);
+    CPPUNIT_ASSERT_MESSAGE("Test node n2", n2);
+    CPPUNIT_ASSERT_MESSAGE("Test node n3", n3);
 
     // Test edges
     const data::Graph::ConnectionContainer& connections = newGraph->getConnections();
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size", (size_t)2, connections.size() );
-    for( data::Graph::ConnectionContainer::value_type elem  :  connections )
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size", (size_t) 2, connections.size());
+    for(data::Graph::ConnectionContainer::value_type elem : connections)
     {
-        core::tools::UUID::UUIDType edgeID = core::tools::UUID::get(elem.first);
-        CPPUNIT_ASSERT_MESSAGE("Test edge uuid", edgeID == e12ID || edgeID == e23ID );
-        if ( edgeID == e12ID )
+        std::string edgeID = elem.first->getUUID();
+        CPPUNIT_ASSERT_MESSAGE("Test edge uuid", edgeID == e12ID || edgeID == e23ID);
+        if(edgeID == e12ID)
         {
-            CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n1 );
-            CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n2 );
+            CPPUNIT_ASSERT(newGraph->getSourceNode(elem.first) == n1);
+            CPPUNIT_ASSERT(newGraph->getDestinationNode(elem.first) == n2);
 
             // test field
-            CPPUNIT_ASSERT( elem.first->getField("infoTest") );
-            CPPUNIT_ASSERT( elem.first->getField< data::String >("infoTest")->value() == "valueInfoTest" );
+            CPPUNIT_ASSERT(elem.first->getField("infoTest"));
+            CPPUNIT_ASSERT(elem.first->getField<data::String>("infoTest")->value() == "valueInfoTest");
         }
         else
         {
-            CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n2 );
-            CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n3 );
+            CPPUNIT_ASSERT(newGraph->getSourceNode(elem.first) == n2);
+            CPPUNIT_ASSERT(newGraph->getDestinationNode(elem.first) == n3);
         }
     }
 }
@@ -339,10 +357,10 @@ void ConversionTest::tfConversionTest()
     data::TransferFunction::sptr tf = utestData::generator::Object::createTFColor(15, 120, 50);
 
     // Create Atom
-    atom = atoms::conversion::convert( tf );
+    atom = atoms::conversion::convert(tf);
 
     data::TransferFunction::sptr newTF =
-        data::TransferFunction::dynamicCast( atoms::conversion::convert(atom) );
+        data::TransferFunction::dynamicCast(atoms::conversion::convert(atom));
 
     compare(tf, newTF);
 }
@@ -356,10 +374,10 @@ void ConversionTest::seriesDBConversionTest()
     data::SeriesDB::sptr sdb = utestData::generator::SeriesDB::createSeriesDB(2, 3, 1);
 
     // Create Atom
-    atom = atoms::conversion::convert( sdb );
+    atom = atoms::conversion::convert(sdb);
 
     data::SeriesDB::sptr newSdb =
-        data::SeriesDB::dynamicCast( atoms::conversion::convert(atom) );
+        data::SeriesDB::dynamicCast(atoms::conversion::convert(atom));
 
     compare(sdb, newSdb);
 }
@@ -375,10 +393,10 @@ void ConversionTest::landmarksConversionTest()
         data::Landmarks::sptr landmarks = data::Landmarks::New();
 
         // Create Atom
-        atom = atoms::conversion::convert( landmarks );
+        atom = atoms::conversion::convert(landmarks);
 
         data::Landmarks::sptr newLandmarks =
-            data::Landmarks::dynamicCast( atoms::conversion::convert(atom) );
+            data::Landmarks::dynamicCast(atoms::conversion::convert(atom));
 
         compare(landmarks, newLandmarks);
     }
@@ -416,10 +434,10 @@ void ConversionTest::landmarksConversionTest()
         landmarks->addPoint(GROUP1, POINT4);
 
         // Create Atom
-        atoms::Object::sptr atom = atoms::conversion::convert( landmarks );
+        atoms::Object::sptr atom = atoms::conversion::convert(landmarks);
 
         data::Landmarks::sptr newLandmarks =
-            data::Landmarks::dynamicCast( atoms::conversion::convert(atom) );
+            data::Landmarks::dynamicCast(atoms::conversion::convert(atom));
 
         CPPUNIT_ASSERT(newLandmarks);
 
@@ -428,7 +446,7 @@ void ConversionTest::landmarksConversionTest()
 
         const data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
 
-        for (const auto& name : names)
+        for(const auto& name : names)
         {
             CPPUNIT_ASSERT_NO_THROW(newLandmarks->getGroup(name));
 
@@ -438,15 +456,28 @@ void ConversionTest::landmarksConversionTest()
             CPPUNIT_ASSERT(group.m_color == newGroup.m_color);
             CPPUNIT_ASSERT_EQUAL(group.m_points.size(), newGroup.m_points.size());
 
-            for (size_t i = 0; i < group.m_points.size(); ++i)
+            for(size_t i = 0 ; i < group.m_points.size() ; ++i)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("point[" + std::to_string(i) + "][0]",
-                                                     group.m_points[i][0], newGroup.m_points[i][0], 0.00001);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("point[" + std::to_string(i) + "][1]",
-                                                     group.m_points[i][1], newGroup.m_points[i][1], 0.00001);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("point[" + std::to_string(i) + "][2]",
-                                                     group.m_points[i][2], newGroup.m_points[i][2], 0.00001);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                    "point[" + std::to_string(i) + "][0]",
+                    group.m_points[i][0],
+                    newGroup.m_points[i][0],
+                    0.00001
+                );
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                    "point[" + std::to_string(i) + "][1]",
+                    group.m_points[i][1],
+                    newGroup.m_points[i][1],
+                    0.00001
+                );
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                    "point[" + std::to_string(i) + "][2]",
+                    group.m_points[i][2],
+                    newGroup.m_points[i][2],
+                    0.00001
+                );
             }
+
             CPPUNIT_ASSERT_EQUAL(group.m_size, newGroup.m_size);
             CPPUNIT_ASSERT_EQUAL(int(group.m_shape), int(newGroup.m_shape));
             CPPUNIT_ASSERT_EQUAL(group.m_visibility, newGroup.m_visibility);
@@ -466,18 +497,18 @@ void ConversionTest::objectMultiReferencedTest()
         composite->getContainer()["key2"] = data;
 
         // Create Atom
-        atom = atoms::conversion::convert( composite );
+        atom = atoms::conversion::convert(composite);
     }
 
     // Create Data from Atom
     data::Composite::sptr newComposite =
-        data::Composite::dynamicCast( atoms::conversion::convert(atom) );
+        data::Composite::dynamicCast(atoms::conversion::convert(atom));
     data::Composite::ContainerType& dataMap = newComposite->getContainer();
-    CPPUNIT_ASSERT( dataMap.find("key1") != dataMap.end() );
-    CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
-    CPPUNIT_ASSERT( dataMap["key1"] );
-    CPPUNIT_ASSERT( dataMap["key2"] );
-    CPPUNIT_ASSERT( dataMap["key2"] == dataMap["key1"] );
+    CPPUNIT_ASSERT(dataMap.find("key1") != dataMap.end());
+    CPPUNIT_ASSERT(dataMap.find("key2") != dataMap.end());
+    CPPUNIT_ASSERT(dataMap["key1"]);
+    CPPUNIT_ASSERT(dataMap["key2"]);
+    CPPUNIT_ASSERT(dataMap["key2"] == dataMap["key1"]);
 }
 
 //-----------------------------------------------------------------------------
@@ -485,29 +516,31 @@ void ConversionTest::objectMultiReferencedTest()
 void ConversionTest::recursiveObjectTest()
 {
     atoms::Object::sptr atom;
-    core::tools::UUID::UUIDType compositeID;
+    std::string compositeID;
     {
         data::Composite::sptr composite = data::Composite::New();
-        compositeID                      = core::tools::UUID::get( composite );
+        compositeID                      = composite->getUUID();
         composite->getContainer()["key"] = composite;
+
         // Create Atom
-        atom = atoms::conversion::convert( composite );
+        atom = atoms::conversion::convert(composite);
 
         // Hack, remove composite to destroy composite
         composite->getContainer().erase("key");
     }
 
-    CPPUNIT_ASSERT( !core::tools::UUID::exist( compositeID ) );
+    CPPUNIT_ASSERT(!core::tools::Object::fromUUID(compositeID));
 
     // Create Data from Atom
     data::Composite::sptr newComposite =
-        data::Composite::dynamicCast( atoms::conversion::convert(atom) );
+        data::Composite::dynamicCast(atoms::conversion::convert(atom));
     data::Composite::ContainerType& dataMap = newComposite->getContainer();
-    CPPUNIT_ASSERT( dataMap.find("key") != dataMap.end() );
-    CPPUNIT_ASSERT( newComposite == dataMap["key"] );
+    CPPUNIT_ASSERT(dataMap.find("key") != dataMap.end());
+    CPPUNIT_ASSERT(newComposite == dataMap["key"]);
 
     // Same hack as before to deallocate the new composite.
     newComposite->getContainer().erase("key");
+
     // The atom also references itself, clear it to prevent a memory leak.
     atom->clearAttribute();
 }
@@ -523,19 +556,20 @@ void ConversionTest::dataFactoryNotFoundExceptionTest()
         composite->getContainer()["key"] = data;
 
         // Create Atom
-        atom = atoms::conversion::convert( composite );
+        atom = atoms::conversion::convert(composite);
     }
 
     {
-        atoms::Map::sptr map    = atoms::Map::dynamicCast( atom->getAttribute("values") );
-        atoms::Object::sptr obj = atoms::Object::dynamicCast( (*map)["key"] );
-        obj->eraseMetaInfo( atoms::conversion::DataVisitor::CLASSNAME_METAINFO );
-        obj->setMetaInfo( atoms::conversion::DataVisitor::CLASSNAME_METAINFO, "CHANGE::CLASNAME" );
+        atoms::Map::sptr map    = atoms::Map::dynamicCast(atom->getAttribute("values"));
+        atoms::Object::sptr obj = atoms::Object::dynamicCast((*map)["key"]);
+        obj->eraseMetaInfo(atoms::conversion::DataVisitor::CLASSNAME_METAINFO);
+        obj->setMetaInfo(atoms::conversion::DataVisitor::CLASSNAME_METAINFO, "CHANGE::CLASNAME");
     }
 
-    CPPUNIT_ASSERT_THROW( atoms::conversion::convert(atom),
-                          atoms::conversion::exception::DataFactoryNotFound );
-
+    CPPUNIT_ASSERT_THROW(
+        atoms::conversion::convert(atom),
+        atoms::conversion::exception::DataFactoryNotFound
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -548,10 +582,12 @@ void ConversionTest::uuidExceptionTest()
     composite->getContainer()["key"] = data;
 
     // Create Atom
-    atoms::Object::sptr atom = atoms::conversion::convert( composite );
+    atoms::Object::sptr atom = atoms::conversion::convert(composite);
 
-    CPPUNIT_ASSERT_THROW( atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::StrictPolicy()),
-                          atoms::conversion::exception::DuplicatedDataUUID );
+    CPPUNIT_ASSERT_THROW(
+        atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::StrictPolicy()),
+        atoms::conversion::exception::DuplicatedDataUUID
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -564,19 +600,18 @@ void ConversionTest::uuidChangeTest()
     composite->getContainer()["key"] = data;
 
     // Create Atom
-    atoms::Object::sptr atom = atoms::conversion::convert( composite );
+    atoms::Object::sptr atom = atoms::conversion::convert(composite);
 
     data::Composite::sptr compositeReloaded;
     data::String::sptr dataReloaded;
 
     compositeReloaded = data::Composite::dynamicCast(
         atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::ChangePolicy())
-        );
+    );
     dataReloaded = data::String::dynamicCast((*compositeReloaded)["key"]);
 
-    CPPUNIT_ASSERT( core::tools::UUID::get(composite) != core::tools::UUID::get(compositeReloaded) );
-    CPPUNIT_ASSERT( core::tools::UUID::get(data) != core::tools::UUID::get(dataReloaded) );
-
+    CPPUNIT_ASSERT(composite->getUUID() != compositeReloaded->getUUID());
+    CPPUNIT_ASSERT(data->getUUID() != dataReloaded->getUUID());
 }
 
 //-----------------------------------------------------------------------------
@@ -589,18 +624,18 @@ void ConversionTest::uuidReuseTest()
     composite->getContainer()["key"] = data;
 
     // Create Atom
-    atoms::Object::sptr atom = atoms::conversion::convert( composite );
+    atoms::Object::sptr atom = atoms::conversion::convert(composite);
 
     data::Composite::sptr compositeReloaded;
     data::String::sptr dataReloaded;
 
     compositeReloaded = data::Composite::dynamicCast(
         atoms::conversion::convert(atom, atoms::conversion::AtomVisitor::ReusePolicy())
-        );
+    );
     dataReloaded = data::String::dynamicCast((*compositeReloaded)["key"]);
 
-    CPPUNIT_ASSERT_EQUAL( composite, compositeReloaded );
-    CPPUNIT_ASSERT_EQUAL( data, dataReloaded );
+    CPPUNIT_ASSERT_EQUAL(composite, compositeReloaded);
+    CPPUNIT_ASSERT_EQUAL(data, dataReloaded);
 }
 
 //-----------------------------------------------------------------------------
@@ -609,17 +644,17 @@ class ClassNotCamped : public data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ClassNotCamped, data::Object, data::factory::New< ClassNotCamped >)
+    SIGHT_DECLARE_CLASS(ClassNotCamped, data::Object, data::factory::New<ClassNotCamped>)
 
     ClassNotCamped(data::Object::Key)
     {
     }
+
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType& ) override
+    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType&) override
     {
     }
-
 };
 
 //------------------------------------------------------------------------------
@@ -628,7 +663,7 @@ void ConversionTest::campFactoryNotFoundExceptionTest()
 {
     ClassNotCamped::sptr obj = ClassNotCamped::New();
     CPPUNIT_ASSERT(obj);
-    CPPUNIT_ASSERT_THROW( atoms::conversion::convert( obj ), ::camp::ClassNotFound );
+    CPPUNIT_ASSERT_THROW(atoms::conversion::convert(obj), ::camp::ClassNotFound);
 }
 
 //-----------------------------------------------------------------------------
@@ -640,18 +675,18 @@ void ConversionTest::nullPtrManagmentTest()
         atoms::Object::sptr atom;
         {
             data::Mesh::sptr mesh = data::Mesh::New();
-            CPPUNIT_ASSERT( !mesh->hasPointColors() );
+            CPPUNIT_ASSERT(!mesh->hasPointColors());
 
             // Create Atom
-            atom = atoms::conversion::convert( mesh );
+            atom = atoms::conversion::convert(mesh);
         }
 
         // null ptr must be also in atom
-        CPPUNIT_ASSERT( atom->getAttributes().find("point_colors") != atom->getAttributes().end() );
+        CPPUNIT_ASSERT(atom->getAttributes().find("point_colors") != atom->getAttributes().end());
 
-        data::Mesh::sptr newMesh = data::Mesh::dynamicCast( atoms::conversion::convert(atom) );
-        CPPUNIT_ASSERT( newMesh );
-        CPPUNIT_ASSERT( !newMesh->hasPointColors() );
+        data::Mesh::sptr newMesh = data::Mesh::dynamicCast(atoms::conversion::convert(atom));
+        CPPUNIT_ASSERT(newMesh);
+        CPPUNIT_ASSERT(!newMesh->hasPointColors());
     }
 
     // null shared ptr in map is managed
@@ -663,24 +698,24 @@ void ConversionTest::nullPtrManagmentTest()
             composite->getContainer()["key2"] = data::Object::sptr();
 
             // Create Atom
-            atom = atoms::conversion::convert( composite );
+            atom = atoms::conversion::convert(composite);
         }
 
         {
-            atoms::Map::sptr map = atoms::Map::dynamicCast( atom->getAttribute("values") );
-            CPPUNIT_ASSERT_EQUAL( (size_t)2, map->size() );
-            CPPUNIT_ASSERT( map->find("key2") != map->end() );
-            CPPUNIT_ASSERT( !(*map)["key2"] );
+            atoms::Map::sptr map = atoms::Map::dynamicCast(atom->getAttribute("values"));
+            CPPUNIT_ASSERT_EQUAL((size_t) 2, map->size());
+            CPPUNIT_ASSERT(map->find("key2") != map->end());
+            CPPUNIT_ASSERT(!(*map)["key2"]);
         }
 
         data::Composite::sptr newComposite =
-            data::Composite::dynamicCast( atoms::conversion::convert(atom) );
+            data::Composite::dynamicCast(atoms::conversion::convert(atom));
         data::Composite::ContainerType& dataMap = newComposite->getContainer();
-        CPPUNIT_ASSERT( newComposite );
-        CPPUNIT_ASSERT_EQUAL( (size_t)2, dataMap.size() );
-        CPPUNIT_ASSERT( dataMap["key1"] );
-        CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
-        CPPUNIT_ASSERT( !dataMap["key2"] );
+        CPPUNIT_ASSERT(newComposite);
+        CPPUNIT_ASSERT_EQUAL((size_t) 2, dataMap.size());
+        CPPUNIT_ASSERT(dataMap["key1"]);
+        CPPUNIT_ASSERT(dataMap.find("key2") != dataMap.end());
+        CPPUNIT_ASSERT(!dataMap["key2"]);
     }
 
     // null shared ptr in vector is managed
@@ -688,78 +723,80 @@ void ConversionTest::nullPtrManagmentTest()
         atoms::Object::sptr atom;
         {
             data::Vector::sptr vector = data::Vector::New();
-            vector->getContainer().push_back( data::String::New() );
-            vector->getContainer().push_back( data::Object::sptr() );
+            vector->getContainer().push_back(data::String::New());
+            vector->getContainer().push_back(data::Object::sptr());
 
             // Create Atom
-            atom = atoms::conversion::convert( vector );
+            atom = atoms::conversion::convert(vector);
         }
 
         {
-            atoms::Sequence::sptr seq = atoms::Sequence::dynamicCast( atom->getAttribute("values") );
-            CPPUNIT_ASSERT_EQUAL( (size_t)2, seq->size() );
-            CPPUNIT_ASSERT( !(*seq)[1] );
+            atoms::Sequence::sptr seq = atoms::Sequence::dynamicCast(atom->getAttribute("values"));
+            CPPUNIT_ASSERT_EQUAL((size_t) 2, seq->size());
+            CPPUNIT_ASSERT(!(*seq)[1]);
         }
 
-        data::Vector::sptr newVector         = data::Vector::dynamicCast( atoms::conversion::convert(atom) );
+        data::Vector::sptr newVector         = data::Vector::dynamicCast(atoms::conversion::convert(atom));
         data::Vector::ContainerType& dataVec = newVector->getContainer();
-        CPPUNIT_ASSERT( newVector );
-        CPPUNIT_ASSERT_EQUAL( (size_t)2, dataVec.size() );
-        CPPUNIT_ASSERT( dataVec[0] );
-        CPPUNIT_ASSERT( !dataVec[1] );
+        CPPUNIT_ASSERT(newVector);
+        CPPUNIT_ASSERT_EQUAL((size_t) 2, dataVec.size());
+        CPPUNIT_ASSERT(dataVec[0]);
+        CPPUNIT_ASSERT(!dataVec[1]);
     }
 }
 
-}  // namespace ut
-}  // namespace sight::atoms::conversion
+} // namespace ut
+
+} // namespace sight::atoms::conversion
 
 //-----------------------------------------------------------------------------
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (atoms) (conversion) (ut) (ClassNotManaged));
 
 namespace sight::atoms::conversion
 {
+
 namespace ut
 {
 
 class ClassNotManaged : public data::Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ClassNotManaged, data::Object, data::factory::New< ClassNotManaged >)
+    SIGHT_DECLARE_CLASS(ClassNotManaged, data::Object, data::factory::New<ClassNotManaged>)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (atoms) (conversion) (ut) (ClassNotManaged))
 
     ClassNotManaged(data::Object::Key)
     {
-        m_values.insert( std::make_pair( data::String::New(), 0.2 ) );
+        m_values.insert(std::make_pair(data::String::New(), 0.2));
     }
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType& ) override
+    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType&) override
     {
     }
 
-    std::map< data::String::sptr, double > m_values;
-
+    std::map<data::String::sptr, double> m_values;
 };
 
-}     // namespace ut
-}  // namespace sight::atoms::conversion
+} // namespace ut
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged))
+} // namespace sight::atoms::conversion
+
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (atoms) (conversion) (ut) (ClassNotManaged))
 {
     builder
     .tag("object_version", "1")
     .tag("lib_name", "sight::atoms")
-    .base< sight::data::Object>()
+    .base<sight::data::Object>()
     .property("values", &sight::atoms::conversion::ut::ClassNotManaged::m_values);
 }
 
 namespace sight::atoms::conversion
 {
+
 namespace ut
 {
 
@@ -773,25 +810,29 @@ void ConversionTest::conversionNotManagedExceptionTest()
 
         ClassNotManaged::sptr classNotManaged = ClassNotManaged::New();
 
-        CPPUNIT_ASSERT_THROW( atoms::conversion::convert( classNotManaged ),
-                              atoms::conversion::exception::ConversionNotManaged );
+        CPPUNIT_ASSERT_THROW(
+            atoms::conversion::convert(classNotManaged),
+            atoms::conversion::exception::ConversionNotManaged
+        );
     }
 
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         atoms::Object::sptr atomObj = atoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector" );
-        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID() );
+        atomObj->setMetaInfo(DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector");
+        atomObj->setMetaInfo(DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
 
-        CPPUNIT_ASSERT_THROW( atoms::conversion::convert( atomObj ),
-                              atoms::conversion::exception::ConversionNotManaged );
+        CPPUNIT_ASSERT_THROW(
+            atoms::conversion::convert(atomObj),
+            atoms::conversion::exception::ConversionNotManaged
+        );
     }
 
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         atoms::Object::sptr atomObj = atoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector");
-        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
+        atomObj->setMetaInfo(DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector");
+        atomObj->setMetaInfo(DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
 
         atoms::Map::sptr atomFields = atoms::Map::New();
         atomObj->setAttribute("fields", atomFields);
@@ -800,12 +841,15 @@ void ConversionTest::conversionNotManagedExceptionTest()
         atomObj->setAttribute("values", atomSeq);
 
         atoms::Map::sptr atomBasicMap = atoms::Map::New();
-        atomSeq->push_back( atomBasicMap );
+        atomSeq->push_back(atomBasicMap);
 
-        CPPUNIT_ASSERT_THROW( atoms::conversion::convert( atomObj ),
-                              atoms::conversion::exception::ConversionNotManaged );
+        CPPUNIT_ASSERT_THROW(
+            atoms::conversion::convert(atomObj),
+            atoms::conversion::exception::ConversionNotManaged
+        );
     }
 }
 
-}     // namespace ut
-}  // namespace sight::atoms::conversion
+} // namespace ut
+
+} // namespace sight::atoms::conversion

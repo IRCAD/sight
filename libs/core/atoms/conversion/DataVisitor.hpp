@@ -24,6 +24,7 @@
 
 #include "atoms/config.hpp"
 
+#include <core/macros.hpp>
 #include <core/reflection/camp/ExtendedClassVisitor.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -31,12 +32,16 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::atoms::conversion
@@ -49,15 +54,15 @@ namespace sight::atoms::conversion
  */
 class ATOMS_CLASS_API DataVisitor : public ::camp::ExtendedClassVisitor
 {
-
 public:
 
-    typedef std::map< core::tools::UUID::UUIDType, SPTR(atoms::Object) > AtomCacheType;
+    typedef std::map<std::string, SPTR(atoms::Object)> AtomCacheType;
 
     typedef std::string ClassnameType;
 
     /// Key of the meta info to store data object classname
     ATOMS_API static const std::string CLASSNAME_METAINFO;
+
     /// Key of the meta info to store data object ID
     ATOMS_API static const std::string ID_METAINFO;
 
@@ -67,7 +72,7 @@ public:
      * Creates a new atoms::Object. Sets : ID from dataObj UUID, meta info
      * CLASSNAME_METAINFO from dataObj classname() and add tag information from camp data
      */
-    ATOMS_API DataVisitor( SPTR(data::Object)dataObj, AtomCacheType& cache );
+    ATOMS_API DataVisitor(SPTR(data::Object)dataObj, AtomCacheType& cache);
 
     /// Destructor. Does nothing.
     ATOMS_API virtual ~DataVisitor();

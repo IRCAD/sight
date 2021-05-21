@@ -25,11 +25,11 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
+#include <core/location/MultipleFiles.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/log/Logger.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/MultiFiles.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/base/reader/GenericObjectReader.hpp>
@@ -38,9 +38,11 @@
 
 namespace sight::core::jobs
 {
+
 class Aggregator;
 class IJob;
 class Observer;
+
 }
 
 namespace sight::io::dicom
@@ -52,20 +54,22 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::SeriesDB.
  */
-class IO_DICOM_CLASS_API SeriesDB : public io::base::reader::GenericObjectReader< data::SeriesDB >,
-                                    public data::location::enableFolder< io::base::reader::IObjectReader >,
-                                    public data::location::enableMultiFiles< io::base::reader::IObjectReader >,
+class IO_DICOM_CLASS_API SeriesDB : public base::reader::GenericObjectReader<data::SeriesDB>,
+                                    public core::location::SingleFolder,
+                                    public core::location::MultipleFiles,
                                     public core::com::HasSignals
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesDB, io::base::reader::GenericObjectReader< data::SeriesDB >,
-                        io::base::reader::factory::New< SeriesDB >);
+    SIGHT_DECLARE_CLASS(
+        SeriesDB,
+        io::base::reader::GenericObjectReader<data::SeriesDB>,
+        io::base::reader::factory::New<SeriesDB>
+    );
 
-    typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
-    typedef std::vector< std::string > FilenameContainerType;
-    typedef std::vector< std::string > SupportedSOPClassContainerType;
+    typedef std::vector<SPTR(data::DicomSeries)> DicomSeriesContainerType;
+    typedef std::vector<std::string> FilenameContainerType;
+    typedef std::vector<std::string> SupportedSOPClassContainerType;
 
     /// Constructor
     IO_DICOM_API SeriesDB(io::base::reader::IObjectReader::Key key);
@@ -81,9 +85,11 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    IO_DICOM_API void readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                            const service::IService::sptr& notifier
-                                                = service::IService::sptr());
+    IO_DICOM_API void readFromDicomSeriesDB(
+        const data::SeriesDB::csptr& dicomSeriesDB,
+        const service::IService::sptr& notifier
+        = service::IService::sptr()
+    );
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -171,8 +177,10 @@ private:
      * @param[in] a First DicomSeries
      * @param[in] b Second DicomSeries
      */
-    static bool dicomSeriesComparator(const SPTR(data::DicomSeries)& a,
-                                      const SPTR(data::DicomSeries)& b);
+    static bool dicomSeriesComparator(
+        const SPTR(data::DicomSeries)& a,
+        const SPTR(data::DicomSeries)& b
+    );
 
     /// Object Reader Map
     DicomSeriesContainerType m_dicomSeriesContainer;
@@ -202,6 +210,6 @@ private:
     SPTR(core::jobs::Observer) m_converterJob;
 };
 
-}  // namespace reader
+} // namespace reader
 
-}  // namespace sight::io::dicom
+} // namespace sight::io::dicom

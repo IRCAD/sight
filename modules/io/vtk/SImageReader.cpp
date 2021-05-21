@@ -29,10 +29,10 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
@@ -82,7 +82,7 @@ void SImageReader::configureWithIHM()
 
 void SImageReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     /* Initialize the available extensions for BitmapImageReader */
     std::vector<std::string> ext;
@@ -100,7 +100,7 @@ void SImageReader::openLocationDialog()
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialogFile.setDefaultLocation(data::location::Folder::New(_sDefaultPath));
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -108,13 +108,12 @@ void SImageReader::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
     if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation(data::location::Folder::New(_sDefaultPath));
-        this->setFile(result->getPath());
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {

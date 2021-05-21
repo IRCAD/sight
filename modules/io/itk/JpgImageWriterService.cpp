@@ -23,9 +23,9 @@
 #include "JpgImageWriterService.hpp"
 
 #include <core/base.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
 
 #include <io/base/service/IWriter.hpp>
 #include <io/itk/JpgImageWriter.hpp>
@@ -77,21 +77,20 @@ void JpgImageWriterService::configureWithIHM()
 
 void JpgImageWriterService::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
-    data::location::Folder::sptr result;
-    result = data::location::Folder::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getFolder();
         this->setFolder(result->getFolder());
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        defaultDirectory = result;
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -113,7 +112,7 @@ void JpgImageWriterService::stopping()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::info(std::ostream& _sstream )
+void JpgImageWriterService::info(std::ostream& _sstream)
 {
     _sstream << "JpgImageWriterService::info";
 }
@@ -125,30 +124,31 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
     auto writer = sight::io::itk::JpgImageWriter::New();
     sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
-    data::location::Folder::sptr loc = data::location::Folder::New();
-    loc->setFolder(imgPath);
-    writer->setLocation(loc);
+    writer->setFolder(imgPath);
     writer->setObject(img);
 
     try
     {
-        writer->addHandler( progressMeterGUI );
+        writer->addHandler(progressMeterGUI);
         writer->write();
-
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     ss.str(),
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            ss.str(),
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
-    catch( ... )
+    catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     "Warning during saving",
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            "Warning during saving",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 }
 
@@ -156,11 +156,10 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
 
 void JpgImageWriterService::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr image = this->getInput< data::Image >(sight::io::base::service::s_DATA_KEY);
+        data::Image::csptr image = this->getInput<data::Image>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::base::Cursor cursor;

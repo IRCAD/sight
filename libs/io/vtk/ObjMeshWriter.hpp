@@ -24,7 +24,7 @@
 
 #include "io/vtk/config.hpp"
 
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -32,13 +32,17 @@
 
 namespace sight::data
 {
+
 class Mesh;
+
 }
 
 namespace sight::core::jobs
 {
+
 class Observer;
 class IJob;
+
 }
 
 namespace sight::io::vtk
@@ -48,14 +52,16 @@ namespace sight::io::vtk
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class ObjMeshWriter : public io::base::writer::GenericObjectWriter< data::Mesh >,
-                      public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+class ObjMeshWriter : public base::writer::GenericObjectWriter<data::Mesh>,
+                      public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ObjMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
-                        io::base::writer::factory::New< ObjMeshWriter >)
+    SIGHT_DECLARE_CLASS(
+        ObjMeshWriter,
+        io::base::writer::GenericObjectWriter<data::Mesh>,
+        io::base::writer::factory::New<ObjMeshWriter>
+    )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.

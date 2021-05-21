@@ -25,11 +25,11 @@
 #include "modules/io/itk/InrImageWriterService.hpp"
 
 #include <core/base.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/service/IWriter.hpp>
 #include <io/itk/ImageWriter.hpp>
@@ -81,21 +81,20 @@ void SImageSeriesWriter::configureWithIHM()
 
 void SImageSeriesWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        this->setFile( result->getPath() );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -117,7 +116,7 @@ void SImageSeriesWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::info(std::ostream& _sstream )
+void SImageSeriesWriter::info(std::ostream& _sstream)
 {
     _sstream << "SImageSeriesWriter::info";
 }
@@ -126,12 +125,11 @@ void SImageSeriesWriter::info(std::ostream& _sstream )
 
 void SImageSeriesWriter::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
 
-        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
+        data::ImageSeries::csptr iseries = this->getInput<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();

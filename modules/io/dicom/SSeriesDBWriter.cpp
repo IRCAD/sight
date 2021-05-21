@@ -23,10 +23,10 @@
 #include "SSeriesDBWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
 #include <data/helper/SeriesDB.hpp>
-#include <data/location/Folder.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
@@ -70,21 +70,20 @@ void SSeriesDBWriter::configureWithIHM()
 
 void SSeriesDBWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(ui::base::dialog::LocationDialog::FOLDER);
 
-    data::location::Folder::sptr result;
-    result = data::location::Folder::dynamicCast( dialogFile.show() );
-    if (result && this->selectFiducialsExportMode())
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    if(result && this->selectFiducialsExportMode())
     {
-        _sDefaultPath = result->getFolder();
-        this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        defaultDirectory->setFolder(result->getFolder());
+        this->setFolder(result->getFolder());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -115,17 +114,19 @@ void SSeriesDBWriter::configuring()
 
 void SSeriesDBWriter::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
             sight::ui::base::dialog::MessageDialog dialog;
-            dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
-                              "\nDo you want to continue ?");
+            dialog.setMessage(
+                "Folder '" + folder.string() + "' isn't empty, files can be overwritten."
+                                               "\nDo you want to continue ?"
+            );
             dialog.setTitle("Folder not empty.");
             dialog.setIcon(ui::base::dialog::MessageDialog::QUESTION);
-            dialog.addButton( sight::ui::base::dialog::MessageDialog::YES_NO );
+            dialog.addButton(sight::ui::base::dialog::MessageDialog::YES_NO);
             sight::ui::base::dialog::MessageDialog::Buttons button = dialog.show();
 
             if(button == sight::ui::base::dialog::MessageDialog::NO)
@@ -140,7 +141,7 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::service::s_DATA_KEY);
+        data::Vector::csptr vector = this->getInput<data::Vector>(sight::io::base::service::s_DATA_KEY);
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -166,34 +167,38 @@ void SSeriesDBWriter::updating()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::SeriesDB::sptr seriesDB )
+void SSeriesDBWriter::saveSeriesDB(const std::filesystem::path folder, data::SeriesDB::sptr seriesDB)
 {
     auto writer = sight::io::dicom::writer::SeriesDB::New();
     writer->setObject(seriesDB);
     writer->setFiducialsExportMode(m_fiducialsExportMode);
-    data::location::Folder::sptr loc = data::location::Folder::New();
-    loc->setFolder(folder);
-    writer->setLocation(loc);
+    writer->setFolder(folder);
 
     try
     {
         sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving series ");
-        writer->addHandler( progressMeterGUI );
+        writer->addHandler(progressMeterGUI);
         writer->write();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         sight::ui::base::dialog::MessageDialog::show(
-            "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
-    catch( ... )
+    catch(...)
     {
         m_writeFailed = true;
         sight::ui::base::dialog::MessageDialog::show(
-            "Warning", "Warning during saving", sight::ui::base::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during saving",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 }
 
@@ -209,7 +214,7 @@ sight::io::base::service::IOPathType SSeriesDBWriter::getIOPathType() const
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::service::s_DATA_KEY);
+    data::Vector::csptr vector = this->getInput<data::Vector>(sight::io::base::service::s_DATA_KEY);
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -232,15 +237,17 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
         static const std::string comprehensiveSRIOD   = "Comprehensive SR";
         static const std::string comprehensive3DSRIOD = "Comprehensive 3D SR";
 
-        std::vector< std::string > exportModes;
+        std::vector<std::string> exportModes;
         if(!containsDistances)
         {
             exportModes.push_back(fiducialIOD);
         }
+
         if(!contains3DDistances)
         {
             exportModes.push_back(comprehensiveSRIOD);
         }
+
         exportModes.push_back(comprehensive3DSRIOD);
 
         // Create selector

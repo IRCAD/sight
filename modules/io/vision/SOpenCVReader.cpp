@@ -23,10 +23,10 @@
 #include "SOpenCVReader.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/CameraSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
@@ -83,23 +83,22 @@ bool SOpenCVReader::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
 
-    data::location::SingleFile::sptr result
-        = data::location::SingleFile::dynamicCast( dialogFile.show() );
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
 
-    if (result)
+    if(result)
     {
-        _sDefaultPath = result->getPath();
-        this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
         ok = true;
     }
     else
@@ -114,24 +113,22 @@ bool SOpenCVReader::defineLocationGUI()
 
 void SOpenCVReader::starting()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SOpenCVReader::stopping()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SOpenCVReader::updating()
 {
-
-    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(sight::io::base::service::s_DATA_KEY);
+    data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>(sight::io::base::service::s_DATA_KEY);
 
     bool use_dialog = false;
+
     //use dialog only if no file was configured
     if(!this->hasLocationDefined())
     {
@@ -144,10 +141,10 @@ void SOpenCVReader::updating()
     }
 
     ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::READ); // Read the settings
-    if (!fs.isOpened())
+    if(!fs.isOpened())
     {
         this->m_readFailed = true;
-        SIGHT_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
+        SIGHT_ERROR("The file " + this->getFile().string() + " cannot be opened.");
     }
 
     //Remove all CameraSeries
@@ -155,17 +152,16 @@ void SOpenCVReader::updating()
     data::mt::ObjectReadToWriteLock lock(camSeries);
     const size_t cams = camSeries->getNumberOfCameras();
 
-    for(size_t c = 0; c < cams; ++c)
+    for(size_t c = 0 ; c < cams ; ++c)
     {
         data::Camera::sptr cam = camSeries->getCamera(0);
         lock.upgrade();
         camSeries->removeCamera(cam);
         lock.downgrade();
 
-        auto sig = camSeries->signal< data::CameraSeries::RemovedCameraSignalType >
+        auto sig = camSeries->signal<data::CameraSeries::RemovedCameraSignalType>
                        (data::CameraSeries::s_REMOVED_CAMERA_SIG);
         sig->asyncEmit(cam);
-
     }
 
     lock.unlock();
@@ -173,10 +169,10 @@ void SOpenCVReader::updating()
     int nbCameras;
     fs["nbCameras"] >> nbCameras;
 
-    for(int c = 0; c < nbCameras; ++c)
+    for(int c = 0 ; c < nbCameras ; ++c)
     {
         std::stringstream camNum;
-        camNum<<"camera_"<<c;
+        camNum << "camera_" << c;
 
         ::cv::FileNode n = fs[camNum.str()];
 
@@ -211,11 +207,13 @@ void SOpenCVReader::updating()
         cam->setWidth(static_cast<size_t>(width));
         cam->setHeight(static_cast<size_t>(height));
 
-        cam->setDistortionCoefficient(dist.at<double>(0),
-                                      dist.at<double>(1),
-                                      dist.at<double>(2),
-                                      dist.at<double>(3),
-                                      dist.at<double>(4));
+        cam->setDistortionCoefficient(
+            dist.at<double>(0),
+            dist.at<double>(1),
+            dist.at<double>(2),
+            dist.at<double>(3),
+            dist.at<double>(4)
+        );
 
         cam->setScale(scale);
         cam->setIsCalibrated(true);
@@ -224,8 +222,9 @@ void SOpenCVReader::updating()
         camSeries->addCamera(cam);
         writeLock.unlock();
 
-        auto sig = camSeries->signal< data::CameraSeries::AddedCameraSignalType >(
-            data::CameraSeries::s_ADDED_CAMERA_SIG);
+        auto sig = camSeries->signal<data::CameraSeries::AddedCameraSignalType>(
+            data::CameraSeries::s_ADDED_CAMERA_SIG
+        );
         sig->asyncEmit(cam);
 
         ::cv::Mat extrinsic;
@@ -235,25 +234,32 @@ void SOpenCVReader::updating()
         {
             data::Matrix4::sptr extMat = data::Matrix4::New();
 
-            for(size_t i = 0; i < 4; ++i)
+            for(size_t i = 0 ; i < 4 ; ++i)
             {
-                for(size_t j = 0; j < 4; ++j)
+                for(size_t j = 0 ; j < 4 ; ++j)
                 {
-                    extMat->setCoefficient(i, j, extrinsic.at< double >(static_cast<int>(i),
-                                                                        static_cast<int>(j)));
+                    extMat->setCoefficient(
+                        i,
+                        j,
+                        extrinsic.at<double>(
+                            static_cast<int>(i),
+                            static_cast<int>(j)
+                        )
+                    );
                 }
             }
+
             writeLock.lock();
             camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
             writeLock.unlock();
-            auto sig = camSeries->signal< data::CameraSeries::ExtrinsicCalibratedSignalType >
+            auto sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>
                            (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camSeries->signal< data::CameraSeries::ModifiedSignalType >(data::CameraSeries::s_MODIFIED_SIG);
+    auto sig = camSeries->signal<data::CameraSeries::ModifiedSignalType>(data::CameraSeries::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     //clear locations only if it was configured through GUI.
@@ -279,4 +285,5 @@ sight::io::base::service::IOPathType SOpenCVReader::getIOPathType() const
 }
 
 // ----------------------------------------------------------------------------
+
 } //namespace sight::module::io::vision

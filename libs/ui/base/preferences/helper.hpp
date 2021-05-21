@@ -25,6 +25,8 @@
 #include "ui/base/config.hpp"
 #include "ui/base/preferences/IPreferences.hpp"
 
+#include <core/crypto/secure_string.hpp>
+
 #include <data/Composite.hpp>
 
 #include <boost/lexical_cast.hpp>
@@ -76,17 +78,17 @@ template<typename T>
 T getValue(const std::string& var, const char delimiter = '%')
 {
     const std::string value = getValue(var, delimiter);
-    return ::boost::lexical_cast< T >(value);
+    return ::boost::lexical_cast<T>(value);
 }
 
 /// Sets the password to use in the application. If null or empty, erase it.
-UI_BASE_API void setPassword(const std::string& password);
+UI_BASE_API void setPassword(const core::crypto::secure_string& password);
 
 /// @Returns the password used in the application.
-UI_BASE_API const std::string getPassword();
+UI_BASE_API const core::crypto::secure_string getPassword();
 
 /// Checks if the given password match the hash stored in the preferences
-UI_BASE_API bool checkPassword(const std::string& password);
+UI_BASE_API bool checkPassword(const core::crypto::secure_string& password);
 
 /// Checks if a password hash is stored in the preferences
 UI_BASE_API bool hasPasswordHash();

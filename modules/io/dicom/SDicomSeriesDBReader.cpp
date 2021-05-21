@@ -85,8 +85,10 @@ void SDicomSeriesDBReader::configuring()
     if(dicomDir)
     {
         std::string dicomDirStr = dicomDir->getValue();
-        SIGHT_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
-                     dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
+        SIGHT_ASSERT(
+            "<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
+            dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection"
+        );
 
         if(dicomDirStr == "always")
         {
@@ -114,21 +116,20 @@ void SDicomSeriesDBReader::configureWithIHM()
 
 void SDicomSeriesDBReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setType(ui::base::dialog::LocationDialog::FOLDER);
 
-    data::location::Folder::sptr result;
-    result = data::location::Folder::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getFolder();
-        this->setFolder( result->getFolder() );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        this->setFolder(result->getFolder());
+        defaultDirectory->setFolder(result->getFolder());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
 }
 
@@ -146,7 +147,7 @@ void SDicomSeriesDBReader::stopping()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::info(std::ostream& _sstream )
+void SDicomSeriesDBReader::info(std::ostream& _sstream)
 {
     _sstream << "SDicomSeriesDBReader::info";
 }
@@ -174,8 +175,10 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
     {
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
-        messageBox.setMessage( "There is a dicomdir file in the root folder. "
-                               "Would you like to use it for the reading process ?" );
+        messageBox.setMessage(
+            "There is a dicomdir file in the root folder. "
+            "Would you like to use it for the reading process ?"
+        );
         messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
         sight::ui::base::dialog::IMessageDialog::Buttons button = messageBox.show();
@@ -206,19 +209,22 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
             if(seriesDB->size() > 1)
             {
                 ss << "The reading process is over : <b>" << seriesDB->size() << " series</b> have been found. "
-                    "<br>Please verify the log report to be informed of the potential errors.";
+                                                                                 "<br>Please verify the log report to be informed of the potential errors.";
             }
             else
             {
                 ss << "The reading process is over : <b>" << seriesDB->size() << " series</b> has been found. "
-                    "<br>Please verify the log report to be informed of the potential errors.";
+                                                                                 "<br>Please verify the log report to be informed of the potential errors.";
             }
 
             bool result = false;
             if(!reader->getJob()->cancelRequested())
             {
-                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog("Reading process over",
-                                                                                 ss.str(), logger);
+                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog(
+                    "Reading process over",
+                    ss.str(),
+                    logger
+                );
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -229,19 +235,25 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
             }
         }
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         sight::ui::base::dialog::MessageDialog::show(
-            "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
-    catch( ... )
+    catch(...)
     {
         m_readFailed = true;
         sight::ui::base::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", sight::ui::base::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 
     m_cancelled = job->cancelRequested();
@@ -253,24 +265,25 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
 
 void SDicomSeriesDBReader::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
-        data::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder() );
+        data::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder());
 
-        if( seriesDB->size() > 0 && !m_cancelled)
+        if(seriesDB->size() > 0 && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
+                this->getInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
             SIGHT_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
             data::helper::SeriesDB sDBhelper(associatedSeriesDB);
             data::mt::ObjectWriteLock lock(associatedSeriesDB);
             sDBhelper.clear();
+
             // Notify removal.
             sDBhelper.notify();
             {
@@ -280,10 +293,12 @@ void SDicomSeriesDBReader::updating()
 
             data::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
 
-            auto sig = associatedSeriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
-                data::SeriesDB::s_ADDED_SERIES_SIG);
+            auto sig = associatedSeriesDB->signal<data::SeriesDB::AddedSeriesSignalType>(
+                data::SeriesDB::s_ADDED_SERIES_SIG
+            );
             sig->asyncEmit(addedSeries);
         }
+
         cursor.setDefaultCursor();
     }
     else

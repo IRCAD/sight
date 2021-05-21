@@ -22,9 +22,10 @@
 
 #include "SCalibrationImagesWriter.hpp"
 
+#include <core/location/SingleFolder.hpp>
+
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
 
 #include <io/opencv/Image.hpp>
 
@@ -52,7 +53,6 @@ SCalibrationImagesWriter::SCalibrationImagesWriter() noexcept
 
 SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -73,21 +73,21 @@ void SCalibrationImagesWriter::configureWithIHM()
 
 void SCalibrationImagesWriter::openLocationDialog()
 {
-    static std::filesystem::path s_defaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
-    data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
 
-    if (result)
+    if(result)
     {
-        s_defaultPath = result->getFolder().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(s_defaultPath) );
         this->setFolder(result->getFolder());
+        defaultDirectory->setFolder(result->getFolder().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -115,10 +115,10 @@ void SCalibrationImagesWriter::starting()
 
 void SCalibrationImagesWriter::updating()
 {
-    if( !m_fileExtension.empty() && this->hasLocationDefined() )
+    if(!m_fileExtension.empty() && this->hasLocationDefined())
     {
         data::CalibrationInfo::csptr calibInfo =
-            this->getInput< data::CalibrationInfo >(sight::io::base::service::s_DATA_KEY);
+            this->getInput<data::CalibrationInfo>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("Missing calibration info input.", calibInfo);
 
         sight::ui::base::Cursor cursor;
@@ -143,7 +143,7 @@ void SCalibrationImagesWriter::updating()
 
             try
             {
-                if (cvImg.type() == CV_8UC3 || cvImg.type() == CV_8UC4)
+                if(cvImg.type() == CV_8UC3 || cvImg.type() == CV_8UC4)
                 {
                     // convert the image from BGR to RGB
                     const auto colConvType = cvImg.type() == CV_8UC3 ? ::cv::COLOR_BGR2RGB : ::cv::COLOR_BGRA2RGBA;
@@ -155,9 +155,11 @@ void SCalibrationImagesWriter::updating()
             catch(const ::cv::Exception& e)
             {
                 m_writeFailed = true;
-                sight::ui::base::dialog::MessageDialog::show("Error writing calibration images.",
-                                                             e.what(),
-                                                             sight::ui::base::dialog::MessageDialog::CRITICAL);
+                sight::ui::base::dialog::MessageDialog::show(
+                    "Error writing calibration images.",
+                    e.what(),
+                    sight::ui::base::dialog::MessageDialog::CRITICAL
+                );
             }
         }
 

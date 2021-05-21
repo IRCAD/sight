@@ -27,9 +27,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/jobs/IJob.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
 #include <io/vtk/MeshWriter.hpp>
@@ -54,7 +54,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SMeshWriter::SMeshWriter() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -75,11 +75,11 @@ void SMeshWriter::configureWithIHM()
 
 void SMeshWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
     dialogFile.addFilter("PLY File(.ply)", "*.ply");
     dialogFile.addFilter("STL File(.stl)", "*.stl");
@@ -87,14 +87,13 @@ void SMeshWriter::openLocationDialog()
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
+        this->setFile(result->getFile());
         m_selectedExtension = dialogFile.getCurrentSelection();
-        _sDefaultPath       = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        this->setFile(result->getPath());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -123,15 +122,15 @@ void SMeshWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::info(std::ostream& _sstream )
+void SMeshWriter::info(std::ostream& _sstream)
 {
     _sstream << "SMeshWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-template< typename WRITER >
-typename WRITER::sptr configureWriter(const std::filesystem::path& _file )
+template<typename WRITER>
+typename WRITER::sptr configureWriter(const std::filesystem::path& _file)
 {
     typename WRITER::sptr writer = WRITER::New();
     writer->setFile(_file);
@@ -142,10 +141,10 @@ typename WRITER::sptr configureWriter(const std::filesystem::path& _file )
 
 void SMeshWriter::updating()
 {
-    if(  this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(sight::io::base::service::s_DATA_KEY);
+        const auto meshlockedPtr = this->getLockedInput<const data::Mesh>(sight::io::base::service::s_DATA_KEY);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -170,28 +169,32 @@ void SMeshWriter::updating()
 
         if(extensionToUse == ".vtk")
         {
-            meshWriter = configureWriter< sight::io::vtk::MeshWriter >(fileToWrite);
+            meshWriter = configureWriter<sight::io::vtk::MeshWriter>(fileToWrite);
         }
         else if(extensionToUse == ".vtp")
         {
-            meshWriter = configureWriter< sight::io::vtk::VtpMeshWriter >(fileToWrite);
+            meshWriter = configureWriter<sight::io::vtk::VtpMeshWriter>(fileToWrite);
         }
         else if(extensionToUse == ".stl")
         {
-            meshWriter = configureWriter< sight::io::vtk::StlMeshWriter >(fileToWrite);
+            meshWriter = configureWriter<sight::io::vtk::StlMeshWriter>(fileToWrite);
         }
         else if(extensionToUse == ".ply")
         {
-            meshWriter = configureWriter< sight::io::vtk::PlyMeshWriter >(fileToWrite);
+            meshWriter = configureWriter<sight::io::vtk::PlyMeshWriter>(fileToWrite);
         }
         else if(extensionToUse == ".obj")
         {
-            meshWriter = configureWriter< sight::io::vtk::ObjMeshWriter >(fileToWrite);
+            meshWriter = configureWriter<sight::io::vtk::ObjMeshWriter>(fileToWrite);
         }
         else
         {
-            SIGHT_THROW_EXCEPTION(core::tools::Failed("Extension '"+ fileToWrite.extension().string() +
-                                                      "' is not managed by module::io::vtk::SMeshWriter."));
+            SIGHT_THROW_EXCEPTION(
+                core::tools::Failed(
+                    "Extension '" + fileToWrite.extension().string()
+                    + "' is not managed by module::io::vtk::SMeshWriter."
+                )
+            );
         }
 
         m_sigJobCreated->emit(meshWriter->getJob());
@@ -211,11 +214,13 @@ void SMeshWriter::updating()
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
+
             // Raise exception  for superior level
             SIGHT_THROW_EXCEPTION(e);
         }
-        catch (const std::exception& e)
+        catch(const std::exception& e)
         {
             m_writeFailed = true;
             std::stringstream ss;
@@ -224,15 +229,17 @@ void SMeshWriter::updating()
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
-        catch( ... )
+        catch(...)
         {
             m_writeFailed = true;
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during saving",
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
 
         cursor.setDefaultCursor();

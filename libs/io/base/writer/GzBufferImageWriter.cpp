@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::base::writer::GzBufferImageWriter);
+SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::GzBufferImageWriter);
 
 namespace sight::io::base
 {
@@ -40,8 +40,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this)
+GzBufferImageWriter::GzBufferImageWriter(io::base::writer::IObjectWriter::Key)
 {
 }
 
@@ -55,14 +54,14 @@ GzBufferImageWriter::~GzBufferImageWriter()
 
 void GzBufferImageWriter::write()
 {
-    assert( getFile().empty() == false );
+    SIGHT_ASSERT("File path is empty.", getFile().empty() == false);
 
     data::Image::csptr image = getConcreteObject();
 
     /// test if can open archive
-    gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");
+    gzFile rawFile = gzopen(getFile().string().c_str(), "wb1");
     SIGHT_ASSERT("rawFile not instanced", rawFile);
-    if ( rawFile == 0 )
+    if(rawFile == 0)
     {
         std::string str = "GzBufferImageWriter::write unable to open ";
         str += getFile().string();
@@ -80,18 +79,18 @@ void GzBufferImageWriter::write()
 
     int uncompressedbyteswrited = 0;
 
-    while ( writtenBytes < imageSizeInBytes
-            && (uncompressedbyteswrited =
-                    gzwrite(rawFile, ptr+writtenBytes, static_cast<unsigned int>(imageSizeInBytes-writtenBytes))) > 0 )
+    while(writtenBytes < imageSizeInBytes
+          && (uncompressedbyteswrited =
+                  gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
     {
         writtenBytes += static_cast<size_t>(uncompressedbyteswrited);
     }
 
     gzclose(rawFile);
 
-    assert( uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes);
+    assert(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes);
 
-    if ( uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes)
+    if(uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes)
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
         str += getFile().string();

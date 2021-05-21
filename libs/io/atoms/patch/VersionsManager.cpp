@@ -26,6 +26,7 @@
 #include "io/atoms/patch/exceptions/MissingInformation.hpp"
 #include "io/atoms/patch/types.hpp"
 
+#include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
 #include <boost/property_tree/exceptions.hpp>
@@ -42,18 +43,24 @@ namespace sight::io::atoms::patch
 
 //------------------------------------------------------------------------------
 
-std::string getValue(const ::boost::property_tree::ptree& node, const std::string& name,
-                     const std::filesystem::path& filePath )
+std::string getValue(
+    const ::boost::property_tree::ptree& node,
+    const std::string& name,
+    const std::filesystem::path& filePath
+)
 {
     std::string value;
     try
     {
-        value = node.get< std::string >(name);
+        value = node.get<std::string>(name);
     }
-    catch( ::boost::property_tree::ptree_bad_path& )
+    catch(::boost::property_tree::ptree_bad_path&)
     {
-        SIGHT_THROW_EXCEPTION(io::atoms::patch::exceptions::MissingInformation(
-                                  name + " information are missing in '"+ filePath.string() +"'."));
+        SIGHT_THROW_EXCEPTION(
+            io::atoms::patch::exceptions::MissingInformation(
+                name + " information are missing in '" + filePath.string() + "'."
+            )
+        );
     }
 
     return value;
@@ -78,10 +85,10 @@ VersionsManager::~VersionsManager()
 void VersionsManager::buildVersionTable(const std::string& dirPath)
 {
     core::mt::WriteLock lock(m_versionMutex);
-    for (std::filesystem::recursive_directory_iterator end, dir(dirPath); dir != end; ++dir)
+    for(std::filesystem::recursive_directory_iterator end, dir(dirPath) ; dir != end ; ++dir)
     {
-        if(  !std::filesystem::is_directory(*dir)
-             && dir->path().extension() == ".versions")
+        if(!std::filesystem::is_directory(*dir)
+           && dir->path().extension() == ".versions")
         {
             m_versionTable.push_back((*dir).path());
         }
@@ -93,11 +100,11 @@ void VersionsManager::buildVersionTable(const std::string& dirPath)
 void VersionsManager::buildLinkTable(const std::string& dirPath)
 {
     core::mt::WriteLock lock(m_linkMutex);
-    for ( std::filesystem::recursive_directory_iterator end, dir(dirPath);
-          dir != end; ++dir )
+    for(std::filesystem::recursive_directory_iterator end, dir(dirPath) ;
+        dir != end ; ++dir)
     {
-        if(  !std::filesystem::is_directory(*dir)
-             && dir->path().extension() == ".graphlink")
+        if(!std::filesystem::is_directory(*dir)
+           && dir->path().extension() == ".graphlink")
         {
             m_linkTable.push_back((*dir).path());
         }
@@ -106,11 +113,16 @@ void VersionsManager::buildLinkTable(const std::string& dirPath)
 
 // ----------------------------------------------------------------------------
 
-void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
-                                      const std::string& context, const std::string& versionName)
+void VersionsManager::generateNewFile(
+    const std::filesystem::path& filePath,
+    const std::string& context,
+    const std::string& versionName
+)
 {
-    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
-                              filePath.extension() != ".versions");
+    SIGHT_THROW_EXCEPTION_IF(
+        io::atoms::patch::exceptions::BadExtension(".versions file required"),
+        filePath.extension() != ".versions"
+    );
 
     namespace pt = ::boost::property_tree;
     std::size_t classCount = ::camp::classCount();
@@ -120,19 +132,19 @@ void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
     root.put("version_name", versionName);
 
     pt::ptree versions;
-    for (int i = 0; i < classCount; ++i)
+    for(int i = 0 ; i < classCount ; ++i)
     {
         const ::camp::Class& metaclass = ::camp::classByIndex(i);
         const std::string& className   = metaclass.name();
 
-        if (metaclass.hasTag(io::atoms::patch::s_OBJ_VERSION))
+        if(metaclass.hasTag(io::atoms::patch::s_OBJ_VERSION))
         {
             const ::camp::Value& value = metaclass.tag(io::atoms::patch::s_OBJ_VERSION);
             versions.put(className, value.to<std::string>());
         }
     }
 
-    root.push_back( pt::ptree::value_type("versions", pt::ptree(versions)));
+    root.push_back(pt::ptree::value_type("versions", pt::ptree(versions)));
     pt::json_parser::write_json(filePath.string(), root);
 }
 
@@ -140,8 +152,10 @@ void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
 
 io::atoms::patch::VersionDescriptor VersionsManager::getVersion(const std::filesystem::path& filePath)
 {
-    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
-                              filePath.extension() != ".versions");
+    SIGHT_THROW_EXCEPTION_IF(
+        io::atoms::patch::exceptions::BadExtension(".versions file required"),
+        filePath.extension() != ".versions"
+    );
 
     namespace pt = ::boost::property_tree;
     pt::ptree root;
@@ -154,7 +168,7 @@ io::atoms::patch::VersionDescriptor VersionsManager::getVersion(const std::files
     const std::string& context     = getValue(root, "context", filePath);
     const std::string& versionName = getValue(root, "version_name", filePath);
 
-    for(pt::ptree::value_type& node :  root.get_child("versions"))
+    for(pt::ptree::value_type& node : root.get_child("versions"))
     {
         versionids[node.first] = std::string(node.second.data().c_str());
     }
@@ -168,11 +182,13 @@ io::atoms::patch::VersionDescriptor VersionsManager::getVersion(const std::files
 
 io::atoms::patch::LinkDescriptor VersionsManager::getLink(const std::filesystem::path& filePath)
 {
-    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".graphlink file required"),
-                              filePath.extension() != ".graphlink");
+    SIGHT_THROW_EXCEPTION_IF(
+        io::atoms::patch::exceptions::BadExtension(".graphlink file required"),
+        filePath.extension() != ".graphlink"
+    );
 
     namespace pt = ::boost::property_tree;
-    typedef std::vector< std::pair< std::string, std::string > > LinkType;
+    typedef std::vector<std::pair<std::string, std::string> > LinkType;
 
     LinkType link;
     io::atoms::patch::LinkDescriptor::LinksType links;
@@ -188,16 +204,19 @@ io::atoms::patch::LinkDescriptor VersionsManager::getLink(const std::filesystem:
 
     const std::string& patcher = root.get("patcher", "DefaultPatcher");
 
-    for(pt::ptree::value_type& child :  root.get_child("links"))
+    for(pt::ptree::value_type& child : root.get_child("links"))
     {
-        for(pt::ptree::value_type& node :  (child.second).get_child(""))
+        for(pt::ptree::value_type& node : (child.second).get_child(""))
         {
             link.push_back(std::make_pair(node.first, node.second.data()));
         }
 
-        SIGHT_THROW_EXCEPTION_IF(io::atoms::patch::exceptions::MissingInformation(
-                                     "A link should contain an origin version and a target version."),
-                                 link.size() != 2);
+        SIGHT_THROW_EXCEPTION_IF(
+            io::atoms::patch::exceptions::MissingInformation(
+                "A link should contain an origin version and a target version."
+            ),
+            link.size() != 2
+        );
 
         links[link[0]] = link[1];
 
@@ -216,8 +235,9 @@ void VersionsManager::generateVersionsGraph()
 {
     {
         core::mt::ReadLock versionLock(m_versionMutex);
+
         //For every versions
-        for(VersionsManager::ListPathType::value_type elt :  m_versionTable)
+        for(VersionsManager::ListPathType::value_type elt : m_versionTable)
         {
             io::atoms::patch::VersionDescriptor version = VersionsManager::getVersion(elt);
 
@@ -232,13 +252,16 @@ void VersionsManager::generateVersionsGraph()
 
     {
         core::mt::ReadLock linkLock(m_linkMutex);
+
         //For every links
-        for(VersionsManager::ListPathType::value_type elt :  m_linkTable)
+        for(VersionsManager::ListPathType::value_type elt : m_linkTable)
         {
             io::atoms::patch::LinkDescriptor link = VersionsManager::getLink(elt);
 
-            SIGHT_ASSERT("There is no graph created for the context \"" << link.getContext() << "\".",
-                         m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end());
+            SIGHT_ASSERT(
+                "There is no graph created for the context \"" << link.getContext() << "\".",
+                m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end()
+            );
 
             m_versionsGraphMap[link.getContext()]->addEdge(link);
         }
@@ -252,14 +275,14 @@ VersionsGraph::sptr VersionsManager::getGraph(const std::string& context)
     VersionsGraph::sptr vg;
 
     core::mt::ReadToWriteLock lock(m_graphMutex);
-    if (m_versionsGraphMap.empty())
+    if(m_versionsGraphMap.empty())
     {
         core::mt::UpgradeToWriteLock writeLock(lock);
         VersionsManager::generateVersionsGraph();
     }
 
     VersionsGraphMapType::iterator elem = m_versionsGraphMap.find(context);
-    if (elem != m_versionsGraphMap.end())
+    if(elem != m_versionsGraphMap.end())
     {
         vg = elem->second;
     }

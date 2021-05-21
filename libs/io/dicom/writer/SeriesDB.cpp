@@ -41,7 +41,6 @@ namespace writer
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key key) :
-    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_fiducialsExportMode(io::dicom::writer::Series::SPATIAL_FIDUCIALS)
 {
 }
@@ -70,7 +69,7 @@ void SeriesDB::write()
     std::sort(seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
-    for( data::Series::sptr series : seriesContainer)
+    for(data::Series::sptr series : seriesContainer)
     {
         // Create a new directory
         const std::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
@@ -80,7 +79,7 @@ void SeriesDB::write()
 
         // Forward event progress to its parents
         core::tools::ProgressAdviser::ProgessHandler handler =
-            std::bind( &Series::notifyProgress, this, ::std::placeholders::_1, ::std::placeholders::_2);
+            std::bind(&Series::notifyProgress, this, ::std::placeholders::_1, ::std::placeholders::_2);
         writer->addHandler(handler);
 
         // Write a series
@@ -97,15 +96,18 @@ std::string SeriesDB::extension()
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::seriesComparator(const data::Series::csptr& a,
-                                const data::Series::csptr& b)
+bool SeriesDB::seriesComparator(
+    const data::Series::csptr& a,
+    const data::Series::csptr& b
+)
 {
     data::ModelSeries::csptr ma = data::ModelSeries::dynamicCast(a);
     data::ModelSeries::csptr mb = data::ModelSeries::dynamicCast(b);
-    return (mb && !ma);
+    return mb && !ma;
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace writer
+
 } // namespace sight::io::dicom

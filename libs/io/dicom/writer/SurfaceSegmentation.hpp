@@ -26,27 +26,32 @@
 #include "io/dicom/container/DicomInstance.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
+#include <core/location/SingleFile.hpp>
 #include <core/log/Logger.hpp>
 
 #include <data/ImageSeries.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/ModelSeries.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace fwDicomData
 {
+
 class DicomSeries;
+
 }
 
 namespace sight::core::jobs
 {
+
 class Aggregator;
 class Observer;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
 
@@ -54,14 +59,16 @@ namespace writer
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
 class IO_DICOM_CLASS_API SurfaceSegmentation :
-    public io::base::writer::GenericObjectWriter< data::ModelSeries >,
-    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+    public io::base::writer::GenericObjectWriter<data::ModelSeries>,
+    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SurfaceSegmentation, io::base::writer::GenericObjectWriter< data::ModelSeries >,
-                        io::base::writer::factory::New< SurfaceSegmentation >);
+    SIGHT_DECLARE_CLASS(
+        SurfaceSegmentation,
+        io::base::writer::GenericObjectWriter<data::ModelSeries>,
+        io::base::writer::factory::New<SurfaceSegmentation>
+    );
 
     /// Constructor
     IO_DICOM_API SurfaceSegmentation(io::base::writer::IObjectWriter::Key key);
@@ -88,8 +95,8 @@ private:
 
     /// Writer job
     SPTR(core::jobs::Observer) m_writerJob;
-
 };
 
 } // namespace writer
+
 } // namespace sight::io::dicom

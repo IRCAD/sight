@@ -45,15 +45,14 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::itk::JpgImageWriter );
+SIGHT_REGISTER_IO_WRITER(::sight::io::itk::JpgImageWriter);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key key) :
-    data::location::enableFolder< io::base::writer::IObjectWriter >(this)
+JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key key)
 {
 }
 
@@ -72,9 +71,10 @@ struct JpgITKSaverFunctor
         // force register/link_with JPEGImageIOFactory
         ::itk::JPEGImageIOFactory::RegisterOneFactory();
     }
+
     struct Parameter
     {
-        std::string m_filename;
+        std::string m_directoryPath;
         data::Image::csptr m_dataImage;
         io::itk::JpgImageWriter::sptr m_fwWriter;
     };
@@ -82,9 +82,9 @@ struct JpgITKSaverFunctor
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()( const Parameter& param )
+    void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
+        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::tools::Type::create<PIXELTYPE>().string());
 
         data::Image::csptr image = param.m_dataImage;
 
@@ -95,30 +95,30 @@ struct JpgITKSaverFunctor
         // reader (voir *3*)
 
         // Reader IO (*1*)
-        auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO( "image.jpg", ::itk::ImageIOFactory::WriteMode);
-        assert( imageIOWrite.IsNotNull() );
+        auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);
+        assert(imageIOWrite.IsNotNull());
 
         // create writer
-        typedef ::itk::Image< PIXELTYPE, 3> itkImageType;
-        typedef ::itk::Image< unsigned char, 2 > Image2DType;
-        typedef typename ::itk::ImageSeriesWriter< itkImageType, Image2DType > WriterType;
+        typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
+        typedef ::itk::Image<unsigned char, 2> Image2DType;
+        typedef typename ::itk::ImageSeriesWriter<itkImageType, Image2DType> WriterType;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
-        ::itk::LightProcessObject::Pointer castHelper = (::itk::LightProcessObject*)(imageIOWrite.GetPointer());
-        assert( castHelper.IsNotNull() );
-        Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
+        ::itk::LightProcessObject::Pointer castHelper = (::itk::LightProcessObject*) (imageIOWrite.GetPointer());
+        assert(castHelper.IsNotNull());
+        Progressor progress(castHelper, param.m_fwWriter, param.m_directoryPath);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>( image );
+        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>(image);
 
-        typedef ::itk::IntensityWindowingImageFilter< itkImageType, itkImageType > RescaleFilterType;
+        typedef ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType> RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
         double min, max;
         data::Composite::sptr poolTF;
         poolTF =
-            image->getField< data::Composite>( data::fieldHelper::Image::m_transferFunctionCompositeId );
+            image->getField<data::Composite>(data::fieldHelper::Image::m_transferFunctionCompositeId);
         if(poolTF)
         {
             data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
@@ -135,30 +135,30 @@ struct JpgITKSaverFunctor
             data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
 
-        rescaleFilter->SetWindowMinimum( min );
-        rescaleFilter->SetWindowMaximum( max );
-        rescaleFilter->SetOutputMinimum( 0 );
-        rescaleFilter->SetOutputMaximum( 255 );
+        rescaleFilter->SetWindowMinimum(min);
+        rescaleFilter->SetWindowMaximum(max);
+        rescaleFilter->SetOutputMinimum(0);
+        rescaleFilter->SetOutputMaximum(255);
         rescaleFilter->InPlaceOff();
-        rescaleFilter->SetInput( itkImage );
+        rescaleFilter->SetInput(itkImage);
         rescaleFilter->Update();
 
-        writer->SetInput( rescaleFilter->GetOutput() );
+        writer->SetInput(rescaleFilter->GetOutput());
 
         typedef ::itk::NumericSeriesFileNames NameGeneratorType;
 
         NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 
-        std::string format = param.m_filename;
+        std::string format = param.m_directoryPath;
         format += "/%04d.jpg";
-        nameGenerator->SetSeriesFormat( format.c_str() );
-        nameGenerator->SetStartIndex( 1 );
-        nameGenerator->SetEndIndex( image->getSize2()[2] );
-        nameGenerator->SetIncrementIndex( 1 );
+        nameGenerator->SetSeriesFormat(format.c_str());
+        nameGenerator->SetStartIndex(1);
+        nameGenerator->SetEndIndex(image->getSize2()[2]);
+        nameGenerator->SetIncrementIndex(1);
 
-        writer->SetFileNames( nameGenerator->GetFileNames() );
+        writer->SetFileNames(nameGenerator->GetFileNames());
 
-        writer->SetImageIO( imageIOWrite  );
+        writer->SetImageIO(imageIOWrite);
 
         // save image;
         writer->Update();
@@ -169,17 +169,19 @@ struct JpgITKSaverFunctor
 
 void JpgImageWriter::write()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
     JpgITKSaverFunctor::Parameter saverParam;
-    saverParam.m_filename  = this->getFolder().string();
-    saverParam.m_dataImage = this->getConcreteObject();
-    saverParam.m_fwWriter  = this->getSptr();
-    assert( saverParam.m_dataImage );
+    saverParam.m_directoryPath = this->getFolder().string();
+    saverParam.m_dataImage     = this->getConcreteObject();
+    saverParam.m_fwWriter      = this->getSptr();
+    assert(saverParam.m_dataImage);
 
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, JpgITKSaverFunctor >::invoke(
-        saverParam.m_dataImage->getType(), saverParam );
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, JpgITKSaverFunctor>::invoke(
+        saverParam.m_dataImage->getType(),
+        saverParam
+    );
 }
 
 //------------------------------------------------------------------------------

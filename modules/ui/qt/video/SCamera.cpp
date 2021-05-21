@@ -26,12 +26,12 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/tools/pathDifference.hpp>
 
 #include <data/CameraSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
@@ -52,6 +52,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -74,15 +75,15 @@ static const std::string s_LABEL_CONFIG                = "label";
 //------------------------------------------------------------------------------
 
 SCamera::SCamera() :
-    m_sigConfiguredCameras(newSignal< ConfiguredSignalType >(s_CONFIGURED_CAMERAS_SIG))
+    m_sigConfiguredCameras(newSignal<ConfiguredSignalType>(s_CONFIGURED_CAMERAS_SIG))
 {
-    newSignal< ConfiguredSignalType >(s_CONFIGURED_DEVICE_SIG);
-    newSignal< ConfiguredSignalType >(s_CONFIGURED_FILE_SIG);
-    newSignal< ConfiguredSignalType >(s_CONFIGURED_STREAM_SIG);
+    newSignal<ConfiguredSignalType>(s_CONFIGURED_DEVICE_SIG);
+    newSignal<ConfiguredSignalType>(s_CONFIGURED_FILE_SIG);
+    newSignal<ConfiguredSignalType>(s_CONFIGURED_STREAM_SIG);
 
-    newSlot(s_CONFIGURE_DEVICE_SLOT, &SCamera::onChooseDevice, this );
-    newSlot(s_CONFIGURE_FILE_SLOT, &SCamera::onChooseFile, this );
-    newSlot(s_CONFIGURE_STREAM_SLOT, &SCamera::onChooseStream, this );
+    newSlot(s_CONFIGURE_DEVICE_SLOT, &SCamera::onChooseDevice, this);
+    newSlot(s_CONFIGURE_FILE_SLOT, &SCamera::onChooseFile, this);
+    newSlot(s_CONFIGURE_STREAM_SLOT, &SCamera::onChooseStream, this);
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +112,8 @@ void SCamera::starting()
     this->create();
 
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
 
@@ -138,7 +140,7 @@ void SCamera::starting()
     ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = this->getInOut< data::CameraSeries >(s_CAMERA_SERIES_INOUT);
+    auto cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
         const data::mt::ObjectWriteLock lock(cameraSeries);
@@ -148,22 +150,27 @@ void SCamera::starting()
         {
             SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
 
-            for(size_t i = 0; i < m_numCreateCameras; ++i)
+            for(size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
                 data::Camera::sptr camera = data::Camera::New();
                 const size_t index        = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
-                const auto sig = cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG);
+                const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
+                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                );
                 sig->asyncEmit(camera);
             }
+
             SIGHT_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
         }
         else
         {
-            SIGHT_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
-                          m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
+            SIGHT_WARN_IF(
+                "CameraSeries contains camera data but the service is configured to create "
+                << m_numCreateCameras << " cameras.",
+                m_numCreateCameras != 0
+            );
         }
     }
 }
@@ -190,9 +197,11 @@ void SCamera::onApply(int _index)
         case 0:
             this->onChooseDevice();
             break;
+
         case 1:
             this->onChooseFile();
             break;
+
         case 2:
             this->onChooseStream();
             break;
@@ -203,15 +212,15 @@ void SCamera::onApply(int _index)
 
 void SCamera::onChooseFile()
 {
-    std::vector< data::Camera::sptr > cameras = this->getCameras();
+    std::vector<data::Camera::sptr> cameras = this->getCameras();
 
     // Check preferences
     const std::filesystem::path videoDirPreferencePath(sight::ui::base::preferences::getVideoDir());
 
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("All files", "*.*");
     dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
     dialogFile.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
@@ -234,6 +243,7 @@ void SCamera::onChooseFile()
                 file = videoDirPreferencePath / file;
                 file = file.lexically_normal();
             }
+
             const auto dir = file.parent_path();
 
             if(!dir.empty())
@@ -254,7 +264,7 @@ void SCamera::onChooseFile()
                                                             while(currentEntry != endEntry)
                                                             {
                                                                 std::filesystem::path entryPath = *currentEntry;
-                                                                if (entryPath.has_stem())
+                                                                if(entryPath.has_stem())
                                                                 {
                                                                     return entryPath;
                                                                 }
@@ -269,8 +279,8 @@ void SCamera::onChooseFile()
                                                     return std::filesystem::path();
                                                 };
 
-                static const std::set<std::string> s_DEPTH_FOLDERS = {{ "d", "D", "depth", "Depth", "DEPTH"}};
-                static const std::set<std::string> s_COLOR_FOLDERS = {{ "c", "C", "color", "Color", "COLOR", "RGB"}};
+                static const std::set<std::string> s_DEPTH_FOLDERS = {{"d", "D", "depth", "Depth", "DEPTH"}};
+                static const std::set<std::string> s_COLOR_FOLDERS = {{"c", "C", "color", "Color", "COLOR", "RGB"}};
 
                 if(s_DEPTH_FOLDERS.find(curDir.string()) != s_DEPTH_FOLDERS.end())
                 {
@@ -287,13 +297,12 @@ void SCamera::onChooseFile()
         {
             dialogFile.setTitle("Choose a file to load for video source #" + std::to_string(count++));
 
-            data::location::SingleFile::sptr result;
-            result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-            if (result)
+            auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+            if(result)
             {
-                _sDefaultPath = result->getPath().parent_path();
-                dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-                videoPath = result->getPath();
+                defaultDirectory->setFolder(result->getFile().parent_path());
+                dialogFile.saveDefaultLocation(defaultDirectory);
+                videoPath = result->getFile();
             }
         }
 
@@ -301,8 +310,8 @@ void SCamera::onChooseFile()
         {
             if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                const std::filesystem::path videoRelativePath
-                    = core::tools::getPathDifference(videoDirPreferencePath, videoPath);
+                const std::filesystem::path videoRelativePath =
+                    core::tools::getPathDifference(videoDirPreferencePath, videoPath);
 
                 const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
                 if(std::filesystem::exists(concatenatedPath))
@@ -311,13 +320,18 @@ void SCamera::onChooseFile()
                 }
                 else
                 {
-                    SIGHT_WARN("Relative path '"+videoRelativePath.string()+
-                               "' genrerated with preference is not valid.");
+                    SIGHT_WARN(
+                        "Relative path '" + videoRelativePath.string()
+                        + "' genrerated with preference is not valid."
+                    );
                 }
             }
             else
             {
-                SIGHT_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
+                SIGHT_WARN(
+                    "Video directory '" + videoDirPreferencePath.string()
+                    + "' stored in preference is not valid."
+                );
             }
 
             data::mt::ObjectWriteLock lock(camera);
@@ -325,13 +339,14 @@ void SCamera::onChooseFile()
             camera->setVideoFile(videoPath.string());
             lock.unlock();
 
-            const data::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig =
+                camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
             sig->asyncEmit();
 
-            this->signal< ConfiguredSignalType >(s_CONFIGURED_FILE_SIG)->asyncEmit();
+            this->signal<ConfiguredSignalType>(s_CONFIGURED_FILE_SIG)->asyncEmit();
         }
     }
+
     m_sigConfiguredCameras->asyncEmit();
 }
 
@@ -339,7 +354,7 @@ void SCamera::onChooseFile()
 
 void SCamera::onChooseStream()
 {
-    std::vector< data::Camera::sptr > cameras = this->getCameras();
+    std::vector<data::Camera::sptr> cameras = this->getCameras();
 
     size_t count = 0;
     for(auto& camera : cameras)
@@ -355,13 +370,14 @@ void SCamera::onChooseStream()
             camera->setStreamUrl(streamSource);
             lock.unlock();
 
-            const data::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig =
+                camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
             sig->asyncEmit();
 
-            this->signal< ConfiguredSignalType >(s_CONFIGURED_STREAM_SIG)->asyncEmit();
+            this->signal<ConfiguredSignalType>(s_CONFIGURED_STREAM_SIG)->asyncEmit();
         }
     }
+
     m_sigConfiguredCameras->asyncEmit();
 }
 
@@ -369,7 +385,7 @@ void SCamera::onChooseStream()
 
 void SCamera::onChooseDevice()
 {
-    std::vector< data::Camera::sptr > cameras = this->getCameras();
+    std::vector<data::Camera::sptr> cameras = this->getCameras();
 
     size_t count = 0;
     for(auto& camera : cameras)
@@ -388,35 +404,36 @@ void SCamera::onChooseDevice()
 
         if(isSelected)
         {
-            const data::Camera::ModifiedSignalType::sptr sig
-                = camera->signal< data::Camera::ModifiedSignalType >( data::Camera::s_MODIFIED_SIG );
+            const data::Camera::ModifiedSignalType::sptr sig =
+                camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
             sig->asyncEmit();
 
-            this->signal< ConfiguredSignalType >(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
+            this->signal<ConfiguredSignalType>(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
         }
     }
+
     m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< data::Camera::sptr > SCamera::getCameras() const
+std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
-    std::vector< data::Camera::sptr > cameras;
+    std::vector<data::Camera::sptr> cameras;
 
-    auto cameraSeries = this->getInOut< data::CameraSeries >(s_CAMERA_SERIES_INOUT);
+    auto cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
     if(cameraSeries)
     {
         const data::mt::ObjectReadLock lock(cameraSeries);
         const size_t numCameras = cameraSeries->getNumberOfCameras();
-        for(size_t i = 0; i < numCameras; ++i)
+        for(size_t i = 0 ; i < numCameras ; ++i)
         {
             cameras.push_back(cameraSeries->getCamera(i));
         }
     }
     else
     {
-        const auto camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
+        const auto camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
         SIGHT_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
         cameras.push_back(camera);
     }
@@ -427,4 +444,5 @@ std::vector< data::Camera::sptr > SCamera::getCameras() const
 //------------------------------------------------------------------------------
 
 } //namespace video
+
 } //namespace sight::module::ui::qt

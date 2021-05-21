@@ -25,9 +25,9 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/writer/Series.hpp"
 
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/ProgressAdviser.hpp>
 
-#include <data/location/Folder.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -42,15 +42,17 @@ namespace writer
 /**
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class SeriesDB : public io::base::writer::GenericObjectWriter< data::SeriesDB >,
-                 public data::location::enableFolder< io::base::writer::IObjectWriter >,
+class SeriesDB : public io::base::writer::GenericObjectWriter<data::SeriesDB>,
+                 public core::location::SingleFolder,
                  public core::tools::ProgressAdviser
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesDB, io::base::writer::GenericObjectWriter< data::SeriesDB >,
-                        io::base::writer::factory::New< SeriesDB >);
+    SIGHT_DECLARE_CLASS(
+        SeriesDB,
+        io::base::writer::GenericObjectWriter<data::SeriesDB>,
+        io::base::writer::factory::New<SeriesDB>
+    );
 
     /// Constructor
     IO_DICOM_API SeriesDB(io::base::writer::IObjectWriter::Key key);
@@ -82,13 +84,16 @@ public:
     }
 
 protected:
+
     /**
      * @brief Function used to sort Series
      * @param[in] a First Series
      * @param[in] b Second Series
      */
-    static bool seriesComparator(const data::Series::csptr& a,
-                                 const data::Series::csptr& b);
+    static bool seriesComparator(
+        const data::Series::csptr& a,
+        const data::Series::csptr& b
+    );
 
     /// Fiducials Export Mode
     io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode;

@@ -24,8 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/reader/GenericObjectReader.hpp>
 
@@ -33,7 +34,9 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::io::vtk
@@ -44,14 +47,16 @@ namespace sight::io::vtk
  *
  * Read a VTK Image using the VTK lib
  */
-class ImageReader : public io::base::reader::GenericObjectReader< data::Image >,
-                    public data::location::enableSingleFile< io::base::reader::IObjectReader >
+class ImageReader : public base::reader::GenericObjectReader<data::Image>,
+                    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ImageReader, io::base::reader::GenericObjectReader< data::Image >,
-                        io::base::reader::factory::New< ImageReader >);
+    SIGHT_DECLARE_CLASS(
+        ImageReader,
+        io::base::reader::GenericObjectReader<data::Image>,
+        io::base::reader::factory::New<ImageReader>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.

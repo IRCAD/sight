@@ -23,11 +23,11 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/Composite.hpp>
 #include <data/Integer.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
@@ -55,7 +55,7 @@ const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_
 
 SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 {
-    m_sigParametersModified = newSignal< ParametersModifiedSignalType >(s_PARAMETERS_MODIFIED_SIG);
+    m_sigParametersModified = newSignal<ParametersModifiedSignalType>(s_PARAMETERS_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::CHECKBOX;
         }
-        else if (typeCfg->getValue() == "text" )
+        else if(typeCfg->getValue() == "text")
         {
             pref.m_type = PreferenceType::TEXT;
         }
@@ -131,7 +131,7 @@ void SPreferencesConfiguration::configuring()
         }
         else
         {
-            SIGHT_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
+            SIGHT_ERROR("Preference type " << typeCfg->getValue() << " is not implemented");
         }
 
         ConfigurationType nameCfg = elt->findConfigurationElement("name");
@@ -146,8 +146,8 @@ void SPreferencesConfiguration::configuring()
         SIGHT_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
-        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
-           pref.m_type == PreferenceType::FILE)
+        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
+           || pref.m_type == PreferenceType::FILE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
         }
@@ -181,6 +181,7 @@ void SPreferencesConfiguration::configuring()
                 pref.m_comboBox->addItem(QString::fromStdString(value));
             }
         }
+
         m_preferences.push_back(pref);
     }
 }
@@ -197,8 +198,8 @@ void SPreferencesConfiguration::starting()
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            data::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
-            if ( iterPref != prefs->end() )
+            data::Composite::IteratorType iterPref = prefs->find(pref.m_preferenceKey);
+            if(iterPref != prefs->end())
             {
                 pref.m_dataPreference = data::String::dynamicCast(iterPref->second);
             }
@@ -238,7 +239,10 @@ void SPreferencesConfiguration::updating()
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
             layout->addWidget(pref.m_lineEdit, index, 1);
-            QObject::connect(pref.m_lineEdit, &QLineEdit::textEdited, [&]()
+            QObject::connect(
+                pref.m_lineEdit,
+                &QLineEdit::textEdited,
+                [&]()
                 {
                     int pos               = 0;
                     QLineEdit* const edit = pref.m_lineEdit;
@@ -261,7 +265,6 @@ void SPreferencesConfiguration::updating()
                         edit->style()->polish(edit);
                     }
                 });
-
         }
         else if(pref.m_type == PreferenceType::PATH)
         {
@@ -269,7 +272,10 @@ void SPreferencesConfiguration::updating()
             layout->addWidget(pref.m_lineEdit, index, 1);
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
-            QObject::connect(directorySelector.data(), &QPushButton::clicked, [this, pref]()
+            QObject::connect(
+                directorySelector.data(),
+                &QPushButton::clicked,
+                [this, pref]()
                 {
                     this->onSelectDir(pref.m_lineEdit);
                 });
@@ -280,7 +286,10 @@ void SPreferencesConfiguration::updating()
             layout->addWidget(pref.m_lineEdit, index, 1);
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
-            QObject::connect(directorySelector.data(), &QPushButton::clicked, [this, pref]()
+            QObject::connect(
+                directorySelector.data(),
+                &QPushButton::clicked,
+                [this, pref]()
                 {
                     this->onSelectFile(pref.m_lineEdit);
                 });
@@ -290,14 +299,17 @@ void SPreferencesConfiguration::updating()
             const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
             if(currentIndex < 0)
             {
-                SIGHT_WARN( "Preference '" + pref.m_dataPreference->value() +
-                            "' can't be find in combobox. The first one is selected.");
+                SIGHT_WARN(
+                    "Preference '" + pref.m_dataPreference->value()
+                    + "' can't be find in combobox. The first one is selected."
+                );
                 pref.m_comboBox->setCurrentIndex(0);
             }
             else
             {
                 pref.m_comboBox->setCurrentIndex(currentIndex);
             }
+
             layout->addWidget(pref.m_comboBox, index, 1);
         }
 
@@ -312,19 +324,19 @@ void SPreferencesConfiguration::updating()
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(okButton);
 
-    layout->addLayout(buttonLayout, index, 1, 4, 2 );
+    layout->addLayout(buttonLayout, index, 1, 4, 2);
 
     QObject::connect(cancelButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::reject);
     QObject::connect(okButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::accept);
 
     dialog->setLayout(layout);
 
-    if (dialog->exec() == QDialog::Accepted)
+    if(dialog->exec() == QDialog::Accepted)
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
-                pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
+            if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
+                || pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
             }
@@ -363,6 +375,7 @@ void SPreferencesConfiguration::updating()
                 pref.m_dataPreference->value() = pref.m_comboBox->currentText().toStdString();
             }
         }
+
         m_sigParametersModified->asyncEmit();
         sight::ui::base::preferences::savePreferences();
     }
@@ -379,20 +392,20 @@ void SPreferencesConfiguration::stopping()
 
 void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select Storage directory");
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(sight::ui::base::dialog::ILocationDialog::FOLDER);
 
-    const auto result = data::location::Folder::dynamicCast( dialogFile.show() );
-    if (result)
+    const auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getFolder();
-        lineEdit->setText( QString::fromStdString(result->getFolder().string()) );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        defaultDirectory->setFolder(result->getFolder());
+        lineEdit->setText(QString::fromStdString(result->getFolder().string()));
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
 }
 
@@ -400,20 +413,20 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 
 void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select File");
-    dialogFile.setDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
     dialogFile.setType(sight::ui::base::dialog::ILocationDialog::SINGLE_FILE);
 
-    const auto result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        lineEdit->setText( QString::fromStdString(result->getPath().string()) );
-        dialogFile.saveDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        lineEdit->setText(QString::fromStdString(result->getFile().string()));
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
 }
 
