@@ -66,7 +66,7 @@ public:
     static const core::com::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 
     /// Type of signal m_sigRenderRequested
-    typedef core::com::Signal< void () > RenderRequestedSignalType;
+    typedef core::com::Signal<void ()> RenderRequestedSignalType;
 
     /// Key in m_signals map of signal m_sigObjectModified
     static const core::com::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
@@ -92,7 +92,7 @@ protected:
     MODULE_SYNC_API void updating() override;
 
     /// Update frame slots
-    MODULE_SYNC_API virtual void updateFrame( core::HiResClock::HiResClockType timestamp );
+    MODULE_SYNC_API virtual void updateFrame(core::HiResClock::HiResClockType timestamp);
 
     /// Update the image according to the frame timeline.
     MODULE_SYNC_API virtual void updateImage();

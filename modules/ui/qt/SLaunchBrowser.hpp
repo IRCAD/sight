@@ -36,7 +36,6 @@ namespace sight::module::ui::qt
  */
 class MODULE_UI_QT_CLASS_API SLaunchBrowser : public ::sight::ui::base::IAction
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SLaunchBrowser, ::sight::ui::base::IAction)
@@ -69,14 +68,13 @@ protected:
     /// Stops action
     void stopping() override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
 private:
 
     std::string m_url;
-
 };
 
 } // sight::module::ui::qt

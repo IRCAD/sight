@@ -31,6 +31,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -39,7 +40,6 @@ namespace layoutManager
  */
 class UI_BASE_CLASS_API ToolboxLayoutManagerBase : public IViewLayoutManager
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(ToolboxLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
@@ -65,11 +65,12 @@ public:
         int m_topBorder {0};
         int m_rightBorder {0};
         int m_bottomBorder {0};
-        std::pair< int, int >  m_minSize;
+        std::pair<int, int> m_minSize;
         std::string m_caption;
         bool m_visible;
         bool m_expanded;
         bool m_useScrollBar;
+
         /// Background color. Use `default` to use the default background color, else, set an hexadecimal value.
         std::string m_backgroundColor;
     };
@@ -116,7 +117,7 @@ public:
      *   - \b expanded  {true | yes | false | no} : define if the view is expanded or not.
      *   - \b useScrollBar  {true | yes | false | no} : define if the view use scrollbar or not.
      */
-    UI_BASE_API void initialize( ConfigurationType configuration) override;
+    UI_BASE_API void initialize(ConfigurationType configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 
@@ -124,7 +125,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::list< ViewInfo> getViewsInfo()
+    std::list<ViewInfo> getViewsInfo()
     {
         return m_views;
     }
@@ -132,8 +133,9 @@ protected:
 private:
 
     /// Save layout configuration definition
-    std::list< ViewInfo>  m_views;
+    std::list<ViewInfo> m_views;
 };
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

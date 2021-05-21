@@ -36,7 +36,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API IMenu : public service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IMenu, service::IService)
@@ -117,7 +116,7 @@ protected:
 
 private:
 
-    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
+    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
 
     ui::base::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
     ui::base::registry::Menu::sptr m_registry;

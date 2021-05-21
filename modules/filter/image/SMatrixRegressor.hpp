@@ -95,7 +95,6 @@ protected:
      * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
-
 };
 
 } // namespace sight::module::filter::image.

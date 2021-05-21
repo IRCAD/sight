@@ -41,7 +41,6 @@ namespace layoutManager
  */
 class UI_BASE_CLASS_API CardinalLayoutManagerBase : public IViewLayoutManager
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
@@ -76,15 +75,16 @@ public:
         }
 
         Align m_align;
-        std::pair< int, int >            m_minSize;
+        std::pair<int, int> m_minSize;
         bool m_visible;
         bool m_isResizable;
         int m_position;
         int m_layer;
         int m_row;
-        std::pair< bool, std::string >   m_caption;
+        std::pair<bool, std::string> m_caption;
         bool m_useScrollBar;
         std::string m_toolTip;
+
         /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
         std::string m_backgroundColor;
     };
@@ -132,7 +132,7 @@ public:
      *   - \b backgroundColor (optional) : (hexa) background color.
      */
 
-    UI_BASE_API void initialize( ConfigurationType configuration) override;
+    UI_BASE_API void initialize(ConfigurationType configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 
@@ -140,7 +140,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::list< ViewInfo> getViewsInfo()
+    std::list<ViewInfo> getViewsInfo()
     {
         return m_views;
     }
@@ -150,9 +150,9 @@ private:
     static const std::map<std::string, Align> STRING_TO_ALIGN;
 
     /// Save layout configuration definition
-    std::list< ViewInfo>  m_views;
-
+    std::list<ViewInfo> m_views;
 };
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

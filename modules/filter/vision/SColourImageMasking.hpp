@@ -136,7 +136,7 @@ private:
     void clearMaskTL();
 
     /// Object performing the Expectation Maximization segmentation.
-    std::unique_ptr< sight::filter::vision::Masker > m_masker;
+    std::unique_ptr<sight::filter::vision::Masker> m_masker;
 
     /// Current timestamp.
     core::HiResClock::HiResClockType m_lastVideoTimestamp;

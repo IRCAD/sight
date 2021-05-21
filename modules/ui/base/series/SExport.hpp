@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace series
 {
 
@@ -63,6 +64,7 @@ namespace series
 class MODULE_UI_BASE_CLASS_API SExport : public ::sight::ui::base::IAction
 {
 public:
+
     SIGHT_DECLARE_SERVICE(SExport, ::sight::ui::base::IAction)
 
     /// Constructor
@@ -94,7 +96,7 @@ protected:
     /// Adds the series specified by m_seriesId in the SeriesDB.
     void updating() override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 
@@ -122,5 +124,7 @@ private:
     /// @deprecated appXml
     std::string m_seriesId;
 };
+
 } // namespace series
+
 } // namespace sight::module::ui::base

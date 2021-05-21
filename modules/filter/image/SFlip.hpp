@@ -95,8 +95,10 @@ private:
 
     /// Slot: flip the first axis
     void flipAxisX();
+
     /// Slot: flip the second axis
     void flipAxisY();
+
     /// Slot: flip the third axis
     void flipAxisZ();
 

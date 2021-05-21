@@ -30,6 +30,7 @@ namespace sight::utest
 class CORE_CLASS_API Slow
 {
 public:
+
     CORE_API static bool ignoreSlowTests();
 };
 

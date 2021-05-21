@@ -38,7 +38,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API IAction : public ::sight::service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IAction, service::IService)
@@ -48,20 +47,21 @@ public:
      * @name Signals
      * @{
      */
+
     /// Signal emitted when action is enabled
-    typedef core::com::Signal< void ()> EnabledSignalType;
+    typedef core::com::Signal<void ()> EnabledSignalType;
     static const core::com::Signals::SignalKeyType s_ENABLED_SIG;
 
     /// Signal emitted when action is disabled
-    typedef core::com::Signal< void ()> DisabledSignalType;
+    typedef core::com::Signal<void ()> DisabledSignalType;
     static const core::com::Signals::SignalKeyType s_DISABLED_SIG;
 
     /// Signal emitted when action is checked
-    typedef core::com::Signal< void ()> CheckedSignalType;
+    typedef core::com::Signal<void ()> CheckedSignalType;
     static const core::com::Signals::SignalKeyType s_CHECKED_SIG;
 
     /// Signal emitted when action is unchecked
-    typedef core::com::Signal< void ()> UncheckedSignalType;
+    typedef core::com::Signal<void ()> UncheckedSignalType;
     static const core::com::Signals::SignalKeyType s_UNCHECKED_SIG;
     /**
      * @}
@@ -71,6 +71,7 @@ public:
      * @name Slots Keys
      * @{
      */
+
     /// Slot to show/hide the action
     static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
 
@@ -200,20 +201,23 @@ private:
     ui::base::registry::Action::sptr m_registry;
 
     /// Handle the information of the action state inversion.
-    bool m_isInverted{false};
-    bool m_isActive{false};
-    bool m_isExecutable{true};
-    bool m_isVisible{true};
-    bool m_confirmAction{false};
+    bool m_isInverted {false};
+    bool m_isActive {false};
+    bool m_isExecutable {true};
+    bool m_isVisible {true};
+    bool m_confirmAction {false};
     std::string m_confirmMessage;
     std::string m_defaultButton;
 
     /// Signal emitted when action is enabled
     EnabledSignalType::sptr m_sigEnabled;
+
     /// Signal emitted when action is disabled
     DisabledSignalType::sptr m_sigDisabled;
+
     /// Signal emitted when action is checked
     CheckedSignalType::sptr m_sigChecked;
+
     /// Signal emitted when action is unchecked
     UncheckedSignalType::sptr m_sigUnchecked;
 };
@@ -223,16 +227,20 @@ private:
 class LockAction
 {
 public:
+
     LockAction(IAction::wptr action) :
         m_action(action)
     {
         m_action.lock()->setIsExecutable(false);
     }
+
     ~LockAction()
     {
         m_action.lock()->setIsExecutable(true);
     }
+
 private:
+
     IAction::wptr m_action;
 };
 

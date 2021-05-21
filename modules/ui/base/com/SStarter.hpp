@@ -32,6 +32,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -111,7 +112,6 @@ namespace com
 
 class MODULE_UI_BASE_CLASS_API SStarter : public ::sight::ui::base::IAction
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SStarter, ::sight::ui::base::IAction)
@@ -144,7 +144,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
@@ -166,8 +166,9 @@ protected:
     MODULE_UI_BASE_API void stopping() override;
 
 private:
+
     typedef core::tools::fwID::IDType IDSrvType;
-    typedef std::pair< IDSrvType, ActionType > PairIDActionType;
+    typedef std::pair<IDSrvType, ActionType> PairIDActionType;
     typedef std::vector<PairIDActionType> VectPairIDActionType;
     typedef std::set<IDSrvType> SetIDSrvType;
 
@@ -177,4 +178,5 @@ private:
 };
 
 } // namespace com
+
 } // namespace sight::module::ui::base

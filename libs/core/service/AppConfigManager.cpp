@@ -66,7 +66,7 @@ AppConfigManager::AppConfigManager() :
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
 
     auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
-    core::com::HasSlots::m_slots.setWorker( defaultWorker );
+    core::com::HasSlots::m_slots.setWorker(defaultWorker);
 }
 
 // ------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void AppConfigManager::setConfig(const std::string& _configId, const FieldAdapto
 {
     m_configId = _configId;
     m_cfgElem  =
-        extension::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
+        extension::AppConfig::getDefault()->getAdaptedTemplateConfig(_configId, _replaceFields, !m_isUnitTest);
 }
 
 // ------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void AppConfigManager::setConfig(const std::string& _configId, const data::Compo
 {
     m_configId = _configId;
     m_cfgElem  =
-        extension::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
+        extension::AppConfig::getDefault()->getAdaptedTemplateConfig(_configId, _replaceFields, !m_isUnitTest);
 }
 
 // ------------------------------------------------------------------------
@@ -119,12 +119,14 @@ void AppConfigManager::stopAndDestroy()
 void AppConfigManager::startModule()
 {
     SIGHT_ERROR_IF("Module is not specified, it can not be started.", m_configId.empty());
-    if (!m_configId.empty() && !m_isUnitTest)
+    if(!m_configId.empty() && !m_isUnitTest)
     {
-        std::shared_ptr< core::runtime::Module > module = extension::AppConfig::getDefault()->getModule(m_configId);
-        SIGHT_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
-                      module->isStarted());
-        if (!module->isStarted())
+        std::shared_ptr<core::runtime::Module> module = extension::AppConfig::getDefault()->getModule(m_configId);
+        SIGHT_INFO_IF(
+            "Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
+            module->isStarted()
+        );
+        if(!module->isStarted())
         {
             module->start();
         }
@@ -141,8 +143,8 @@ void AppConfigManager::create()
     // For now this dummy object will also contain all the "deferred" objects
     m_tmpRootObject = data::Composite::New();
 
-    m_addObjectConnection    = service::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECTS_SLOT) );
-    m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECTS_SLOT) );
+    m_addObjectConnection    = service::OSR::getRegisterSignal()->connect(this->slot(s_ADD_OBJECTS_SLOT));
+    m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect(this->slot(s_REMOVE_OBJECTS_SLOT));
 
     this->createObjects(m_cfgElem);
     this->createConnections();
@@ -184,8 +186,8 @@ void AppConfigManager::stop()
 {
     SIGHT_ASSERT("Manager is not started, cannot stop.", m_state == STATE_STARTED);
 
-    service::OSR::getRegisterSignal()->disconnect( this->slot(s_ADD_OBJECTS_SLOT) );
-    service::OSR::getUnregisterSignal()->disconnect( this->slot(s_REMOVE_OBJECTS_SLOT) );
+    service::OSR::getRegisterSignal()->disconnect(this->slot(s_ADD_OBJECTS_SLOT));
+    service::OSR::getUnregisterSignal()->disconnect(this->slot(s_REMOVE_OBJECTS_SLOT));
 
     // Disconnect configuration connections
     this->destroyProxies();
@@ -194,10 +196,13 @@ void AppConfigManager::stop()
     {
         createdObject.second.second->stopConfig();
     }
+
     this->stopStartedServices();
 
-    SIGHT_DEBUG("Parsing OSR after stopping the config :" << std::endl
-                                                          << service::OSR::getRegistryInformation());
+    SIGHT_DEBUG(
+        "Parsing OSR after stopping the config :" << std::endl
+        << service::OSR::getRegistryInformation()
+    );
     m_state = STATE_STOPPED;
 }
 
@@ -211,10 +216,13 @@ void AppConfigManager::destroy()
     {
         createdObject.second.second->destroyConfig();
     }
+
     this->destroyCreatedServices();
 
-    SIGHT_DEBUG("Parsing OSR after destroying the config :" << std::endl
-                                                            << service::OSR::getRegistryInformation());
+    SIGHT_DEBUG(
+        "Parsing OSR after destroying the config :" << std::endl
+        << service::OSR::getRegistryInformation()
+    );
 
     m_cfgElem.reset();
     m_createdObjects.clear();
@@ -240,7 +248,8 @@ void AppConfigManager::addExistingDeferredObject(const data::Object::sptr& _obj,
 {
     SIGHT_ASSERT(
         "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
-        m_state == STATE_DESTROYED);
+        m_state == STATE_DESTROYED
+    );
     DeferredObjectType deferredObject;
     deferredObject.m_object = _obj;
     m_deferredObjects.insert(std::make_pair(_uid, deferredObject));
@@ -250,10 +259,11 @@ void AppConfigManager::addExistingDeferredObject(const data::Object::sptr& _obj,
 
 data::Object::sptr AppConfigManager::getConfigRoot() const
 {
-    if (m_createdObjects.empty())
+    if(m_createdObjects.empty())
     {
         return m_tmpRootObject;
     }
+
     return m_createdObjects.begin()->second.first;
 }
 
@@ -277,10 +287,13 @@ data::Object::sptr AppConfigManager::findObject(const std::string& uid, const st
         // Not found, now look in the objects that were marked as "deferred"
         auto itDeferredObj = m_deferredObjects.find(uid);
 
-        SIGHT_ASSERT(this->msgHead() + "Object '" + uid + "' has not been found" + errMsgTail,
-                     itDeferredObj != m_deferredObjects.end());
+        SIGHT_ASSERT(
+            this->msgHead() + "Object '" + uid + "' has not been found" + errMsgTail,
+            itDeferredObj != m_deferredObjects.end()
+        );
         obj = itDeferredObj->second.m_object;
     }
+
     return obj;
 }
 
@@ -290,11 +303,13 @@ data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAt
 {
     // Building object structure
     SPTR(core::runtime::Extension) ext = core::runtime::findExtension(type.first);
-    if (ext)
+    if(ext)
     {
-        const std::string className = core::getClassname< data::Object >();
-        SIGHT_ASSERT("Extension and classname are different.",
-                     ext->getPoint() == className);
+        const std::string className = core::getClassname<data::Object>();
+        SIGHT_ASSERT(
+            "Extension and classname are different.",
+            ext->getPoint() == className
+        );
 
         // Start dll to retrieve proxy and register object
         ext->getModule()->start();
@@ -303,7 +318,7 @@ data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAt
     data::Object::sptr obj = data::factory::New(type.first);
     SIGHT_ASSERT("Factory failed to build object : " + type.first, obj);
 
-    if (uid.second)
+    if(uid.second)
     {
         SIGHT_ASSERT("Object already has an UID.", !obj->hasID());
         SIGHT_ASSERT("UID " << uid.first << " already exists.", !core::tools::fwID::exist(uid.first));
@@ -329,12 +344,15 @@ data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::
 
     SIGHT_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
-    if (type.second)
+    if(type.second)
     {
-        SIGHT_ASSERT(this->msgHead() + "Object with UID \"" + uid +
-                     "\" has a different type (\"" + obj->getClassname() + "\" != \"" + type.first + "\").",
-                     type.first == obj->getClassname());
+        SIGHT_ASSERT(
+            this->msgHead() + "Object with UID \"" + uid
+            + "\" has a different type (\"" + obj->getClassname() + "\" != \"" + type.first + "\").",
+            type.first == obj->getClassname()
+        );
     }
+
     return obj;
 }
 
@@ -350,7 +368,7 @@ service::IService::sptr AppConfigManager::getNewService(const std::string& uid, 
     SIGHT_ASSERT("Service already has an UID.", !srv->hasID());
 
     SIGHT_ASSERT(this->msgHead() + "UID " + uid + " already exists.", !core::tools::fwID::exist(uid));
-    if (!uid.empty())
+    if(!uid.empty())
     {
         srv->setID(uid);
     }
@@ -362,7 +380,7 @@ service::IService::sptr AppConfigManager::getNewService(const std::string& uid, 
 
 void AppConfigManager::stopStartedServices()
 {
-    std::vector< service::IService::SharedFutureType > futures;
+    std::vector<service::IService::SharedFutureType> futures;
 
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
     {
@@ -392,6 +410,7 @@ void AppConfigManager::destroyCreatedServices()
             SIGHT_WARN("Service " << srv->getID() << " is still running and will be stopped.")
             srv->stop().wait();
         }
+
         service::OSR::unregisterService(srv);
     }
     m_createdSrv.clear();
@@ -401,11 +420,11 @@ void AppConfigManager::destroyCreatedServices()
 
 void AppConfigManager::processStartItems()
 {
-    std::vector< service::IService::SharedFutureType > futures;
+    std::vector<service::IService::SharedFutureType> futures;
 
-    for(const auto& elem :  m_cfgElem->getElements())
+    for(const auto& elem : m_cfgElem->getElements())
     {
-        if (elem->getName() == "start")
+        if(elem->getName() == "start")
         {
             SIGHT_ASSERT("Missing attribute \"uid\".", elem->hasAttribute("uid"));
             const std::string uid = elem->getAttributeValue("uid");
@@ -418,13 +437,16 @@ void AppConfigManager::processStartItems()
                     m_deferredStartSrv.push_back(uid);
                     SIGHT_DEBUG(
                         this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
-                        "of its data is missing. With DEBUG log level, you can know which are the "
-                        "missing objects.");
+                                                                        "of its data is missing. With DEBUG log level, you can know which are the "
+                                                                        "missing objects."
+                    );
                 }
                 else
                 {
-                    SIGHT_FATAL( this->msgHead() + "Start is requested for service '" + uid +
-                                 "', but it does not exist.");
+                    SIGHT_FATAL(
+                        this->msgHead() + "Start is requested for service '" + uid
+                        + "', but it does not exist."
+                    );
                 }
             }
             else
@@ -432,13 +454,14 @@ void AppConfigManager::processStartItems()
                 const service::IService::sptr srv = service::get(uid);
                 SIGHT_FATAL_IF(
                     this->msgHead() + "Start is requested for service '" + uid + "', though this identifier "
-                    "exists, this is not a service.", !srv);
+                                                                                 "exists, this is not a service.",
+                    !srv
+                );
 
                 futures.emplace_back(srv->start());
 
                 m_startedSrv.push_back(srv);
             }
-
         }
     }
 
@@ -449,11 +472,11 @@ void AppConfigManager::processStartItems()
 
 void AppConfigManager::processUpdateItems()
 {
-    std::vector< service::IService::SharedFutureType > futures;
+    std::vector<service::IService::SharedFutureType> futures;
 
-    for(const auto& elem :  m_cfgElem->getElements())
+    for(const auto& elem : m_cfgElem->getElements())
     {
-        if (elem->getName() == "update")
+        if(elem->getName() == "update")
         {
             const std::string uid = elem->getAttributeValue("uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
@@ -465,20 +488,26 @@ void AppConfigManager::processUpdateItems()
                     m_deferredUpdateSrv.push_back(uid);
                     SIGHT_DEBUG(
                         this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
-                        "of its data is missing. With DEBUG log level, you can know which are the "
-                        "missing objects.");
+                                                                         "of its data is missing. With DEBUG log level, you can know which are the "
+                                                                         "missing objects."
+                    );
                 }
                 else
                 {
-                    SIGHT_FATAL( this->msgHead() + "Update is requested for service '" + uid +
-                                 "', but it does not exist.");
+                    SIGHT_FATAL(
+                        this->msgHead() + "Update is requested for service '" + uid
+                        + "', but it does not exist."
+                    );
                 }
             }
             else
             {
                 const service::IService::sptr srv = service::get(uid);
-                SIGHT_FATAL_IF( this->msgHead() + "Update is requested for service '" + uid +
-                                "', though this identifier exists, this is not a service.", !srv);
+                SIGHT_FATAL_IF(
+                    this->msgHead() + "Update is requested for service '" + uid
+                    + "', though this identifier exists, this is not a service.",
+                    !srv
+                );
 
                 futures.emplace_back(srv->update());
             }
@@ -492,15 +521,15 @@ void AppConfigManager::processUpdateItems()
 
 void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr cfgElem)
 {
-    for(const auto& elem :  cfgElem->getElements())
+    for(const auto& elem : cfgElem->getElements())
     {
-        if (elem->getName() == "object")
+        if(elem->getName() == "object")
         {
             // Get attributes
 
             // Id
             ConfigAttribute id("", false);
-            if (elem->hasAttribute("uid"))
+            if(elem->hasAttribute("uid"))
             {
                 id.first = elem->getAttributeValue("uid");
                 SIGHT_ASSERT(this->msgHead() + "\"uid\" attribute is empty.", !id.first.empty());
@@ -509,7 +538,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
             // Type
             ConfigAttribute type("", false);
-            if (elem->hasAttribute("type"))
+            if(elem->hasAttribute("type"))
             {
                 type.first = elem->getAttributeValue("type");
                 SIGHT_ASSERT(this->msgHead() + "\"type\" attribute is empty.", !type.first.empty());
@@ -518,23 +547,27 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
             // Build mode
             ConfigAttribute buildMode("", false);
-            if (elem->hasAttribute("src"))
+            if(elem->hasAttribute("src"))
             {
                 buildMode.first = elem->getAttributeValue("src");
                 SIGHT_ASSERT("this->msgHead() + \"src\" attribute is empty.", !buildMode.first.empty());
 
-                SIGHT_ASSERT("Unhandled build mode (bad \"src\" attribute). Must be \"new\", \"deferred\" or \"ref\".",
-                             buildMode.first == "ref" || buildMode.first == "src" || buildMode.first == "deferred");
+                SIGHT_ASSERT(
+                    "Unhandled build mode (bad \"src\" attribute). Must be \"new\", \"deferred\" or \"ref\".",
+                    buildMode.first == "ref" || buildMode.first == "src" || buildMode.first == "deferred"
+                );
                 buildMode.second = true;
             }
 
             if(buildMode.first == "deferred")
             {
                 SIGHT_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
-                const auto ret = m_deferredObjects.insert( std::make_pair(id.first, DeferredObjectType()));
+                const auto ret = m_deferredObjects.insert(std::make_pair(id.first, DeferredObjectType()));
                 SIGHT_NOT_USED(ret);
-                SIGHT_DEBUG_IF(this->msgHead() + "Object '" + id.first + "' already exists in this config.",
-                               !ret.second);
+                SIGHT_DEBUG_IF(
+                    this->msgHead() + "Object '" + id.first + "' already exists in this config.",
+                    !ret.second
+                );
             }
             else
             {
@@ -542,7 +575,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
                 data::Object::sptr obj;
 
                 // Create new or get the referenced object
-                if (buildMode.second && buildMode.first == "ref")
+                if(buildMode.second && buildMode.first == "ref")
                 {
                     SIGHT_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
                     obj = this->getObject(type, id.first);
@@ -556,14 +589,16 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
                 const auto srvFactory = service::extension::Factory::getDefault();
 
                 std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
-                    obj->getClassname(), "::sight::service::IXMLParser");
+                    obj->getClassname(),
+                    "::sight::service::IXMLParser"
+                );
 
                 service::IService::sptr srv = srvFactory->create("::sight::service::IXMLParser", srvImpl);
                 auto objectParser           = service::IXMLParser::dynamicCast(srv);
                 objectParser->setObjectConfig(elem);
                 objectParser->createConfig(obj);
 
-                m_createdObjects[id.first] = std::make_pair( obj, objectParser);
+                m_createdObjects[id.first] = std::make_pair(obj, objectParser);
             }
         }
     }
@@ -574,7 +609,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem)
 {
     auto serviceCfg = cfgElem.equal_range("service");
-    for (auto itCfg = serviceCfg.first; itCfg != serviceCfg.second; ++itCfg)
+    for(auto itCfg = serviceCfg.first ; itCfg != serviceCfg.second ; ++itCfg)
     {
         // Parse the service configuration
         Config srvConfig = service::helper::Config::parseService(itCfg->second, this->msgHead());
@@ -603,16 +638,20 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
             {
                 SIGHT_ERROR_IF(
                     this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
-                    "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
-                    "intended to use a deferred object instead ?", objectCfg.m_optional);
+                                                                     "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
+                                                                                                                           "intended to use a deferred object instead ?",
+                    objectCfg.m_optional
+                );
             }
 
             // Extra check to warn the user that an object is used as output but not marked as deferred
             if(objectCfg.m_access == service::IService::AccessType::OUTPUT)
             {
-                SIGHT_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
-                               srvConfig.m_uid + "' but it not declared as 'deferred'.",
-                               it == m_deferredObjects.end());
+                SIGHT_ERROR_IF(
+                    this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '"
+                    + srvConfig.m_uid + "' but it not declared as 'deferred'.",
+                    it == m_deferredObjects.end()
+                );
             }
         }
 
@@ -623,17 +662,21 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
         else
         {
             // Check if a service hasn't been already created with this uid
-            SIGHT_ASSERT(this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
-                         !core::tools::fwID::exist(srvConfig.m_uid));
+            SIGHT_ASSERT(
+                this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
+                !core::tools::fwID::exist(srvConfig.m_uid)
+            );
 
             const std::string msg = AppConfigManager::getUIDListAsString(uids);
-            SIGHT_DEBUG(this->msgHead() + "Service '" + srvConfig.m_uid +
-                        "' has not been created because the object" + msg + "not available.");
+            SIGHT_DEBUG(
+                this->msgHead() + "Service '" + srvConfig.m_uid
+                + "' has not been created because the object" + msg + "not available."
+            );
         }
     }
 
     serviceCfg = cfgElem.equal_range("serviceList");
-    for (auto itCfg = serviceCfg.first; itCfg != serviceCfg.second; ++itCfg)
+    for(auto itCfg = serviceCfg.first ; itCfg != serviceCfg.second ; ++itCfg)
     {
         this->createServices(itCfg->second);
     }
@@ -648,16 +691,17 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
     service::OSR::registerService(srv);
     m_createdSrv.push_back(srv);
 
-    if (!srvConfig.m_worker.empty())
+    if(!srvConfig.m_worker.empty())
     {
         core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
         core::thread::Worker::sptr worker;
         worker = activeWorkers->getWorker(srvConfig.m_worker);
-        if (!worker)
+        if(!worker)
         {
             worker = core::thread::Worker::New();
             activeWorkers->addWorker(srvConfig.m_worker, worker);
         }
+
         srv->setWorker(worker);
     }
 
@@ -670,12 +714,19 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
 
         data::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 
-        SIGHT_ASSERT(this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
-                     (!objectCfg.m_optional && obj) || objectCfg.m_optional);
+        SIGHT_ASSERT(
+            this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
+            (!objectCfg.m_optional && obj) || objectCfg.m_optional
+        );
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != service::IService::AccessType::OUTPUT)
         {
-            srv->registerObject(obj, objectCfg.m_key, objectCfg.m_access, objectCfg.m_autoConnect,
-                                objectCfg.m_optional);
+            srv->registerObject(
+                obj,
+                objectCfg.m_key,
+                objectCfg.m_access,
+                objectCfg.m_autoConnect,
+                objectCfg.m_optional
+            );
         }
     }
 
@@ -704,7 +755,7 @@ void AppConfigManager::createConnections()
 {
     for(const auto& elem : m_cfgElem->getElements())
     {
-        if (elem->getName() == "connect")
+        if(elem->getName() == "connect")
         {
             // Parse all connections
             auto genIdFn = [this]()
@@ -712,8 +763,12 @@ void AppConfigManager::createConnections()
                                return "Proxy_" + this->getID() + "_" + std::to_string(m_proxyID++);
                            };
 
-            ProxyConnections connectionInfos = service::helper::Config::parseConnections2(elem, this->msgHead(),
-                                                                                          genIdFn);
+            ProxyConnections connectionInfos = service::helper::Config::parseConnections2(
+                elem,
+                this->msgHead(),
+                genIdFn
+            );
+
             // Proxy that is used for non-deferred connections
             ProxyConnections createdObjectsProxy(connectionInfos.m_channel);
 
@@ -721,7 +776,7 @@ void AppConfigManager::createConnections()
             for(const auto& signalInfo : connectionInfos.m_signals)
             {
                 auto itDeferredObj = m_deferredObjects.find(signalInfo.first);
-                if( itDeferredObj != m_deferredObjects.end() )
+                if(itDeferredObj != m_deferredObjects.end())
                 {
                     // Deferred Object
                     ProxyConnections& proxy = itDeferredObj->second.m_proxyCnt[connectionInfos.m_channel];
@@ -730,7 +785,7 @@ void AppConfigManager::createConnections()
                 else
                 {
                     auto itObj = m_createdObjects.find(signalInfo.first);
-                    if( itObj != m_createdObjects.end() )
+                    if(itObj != m_createdObjects.end())
                     {
                         // Regular object
                         createdObjectsProxy.addSignalConnection(signalInfo);
@@ -750,7 +805,7 @@ void AppConfigManager::createConnections()
             for(const auto& slotInfo : connectionInfos.m_slots)
             {
                 auto itDeferredObj = m_deferredObjects.find(slotInfo.first);
-                if( itDeferredObj != m_deferredObjects.end() )
+                if(itDeferredObj != m_deferredObjects.end())
                 {
                     // Deferred Object
                     ProxyConnections& proxy = itDeferredObj->second.m_proxyCnt[connectionInfos.m_channel];
@@ -759,7 +814,7 @@ void AppConfigManager::createConnections()
                 else
                 {
                     auto itObj = m_createdObjects.find(slotInfo.first);
-                    if( itObj != m_createdObjects.end() )
+                    if(itObj != m_createdObjects.end())
                     {
                         // Regular object
                         createdObjectsProxy.addSlotConnection(slotInfo);
@@ -783,8 +838,12 @@ void AppConfigManager::createConnections()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg,
-                                    const std::string& _key, data::Object::csptr _hintObj)
+void AppConfigManager::destroyProxy(
+    const std::string& _channel,
+    const ProxyConnections& _proxyCfg,
+    const std::string& _key,
+    data::Object::csptr _hintObj
+)
 {
     service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
 
@@ -797,7 +856,8 @@ void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConn
             {
                 obj = core::tools::fwID::getObject(signalElt.first);
             }
-            core::com::HasSignals::csptr hasSignals = std::dynamic_pointer_cast< const core::com::HasSignals >(obj);
+
+            core::com::HasSignals::csptr hasSignals = std::dynamic_pointer_cast<const core::com::HasSignals>(obj);
             SIGHT_ASSERT(this->msgHead() + "Signal source not found '" + signalElt.first + "'", obj);
 
             core::com::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
@@ -806,19 +866,24 @@ void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConn
             {
                 proxy->disconnect(_channel, sig);
             }
-            catch (const std::exception& e)
+            catch(const std::exception& e)
             {
-                SIGHT_ERROR("Signal '" + signalElt.second + "' from '" + signalElt.first + "' can not be disconnected "
-                            "from the channel '" + _channel + "': " + std::string(e.what()));
+                SIGHT_ERROR(
+                    "Signal '" + signalElt.second + "' from '" + signalElt.first + "' can not be disconnected "
+                                                                                   "from the channel '" + _channel + "': " + std::string(
+                        e.what()
+                                                                                   )
+                );
             }
         }
     }
+
     for(const ProxyConnections::ProxyEltType& slotElt : _proxyCfg.m_slots)
     {
         if(_key.empty() || slotElt.first == _key)
         {
             core::tools::Object::sptr obj      = core::tools::fwID::getObject(slotElt.first);
-            core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
+            core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast<core::com::HasSlots>(obj);
             SIGHT_ASSERT(this->msgHead() + "Slot destination not found '" + slotElt.first + "'", hasSlots);
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
@@ -827,11 +892,14 @@ void AppConfigManager::destroyProxy(const std::string& _channel, const ProxyConn
             {
                 proxy->disconnect(_channel, slot);
             }
-            catch (const std::exception& e)
+            catch(const std::exception& e)
             {
-                SIGHT_ERROR("Slot '" + slotElt.second + "' from '" + slotElt.first + "' can not be disconnected from the "
-                            "channel '" + _channel + "': " + std::string(
-                                e.what()));
+                SIGHT_ERROR(
+                    "Slot '" + slotElt.second + "' from '" + slotElt.first + "' can not be disconnected from the "
+                                                                             "channel '" + _channel + "': " + std::string(
+                        e.what()
+                                                                             )
+                );
             }
         }
     }
@@ -850,6 +918,7 @@ void AppConfigManager::destroyProxies()
             {
                 this->destroyProxy(itProxy.first, itProxy.second, itDeferredObj.first, itDeferredObj.second.m_object);
             }
+
             itDeferredObj.second.m_object.reset();
         }
     }
@@ -870,11 +939,11 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
     FW_PROFILE("addObjects");
 
     // Local map used to process services only once
-    std::map< std::string, const Config* > servicesMapCfg;
+    std::map<std::string, const Config*> servicesMapCfg;
 
     // Local vector used to store services and keep the declare order (we could use only this one but the map is used
     // to speedup the search
-    std::vector< const Config* > servicesCfg;
+    std::vector<const Config*> servicesCfg;
 
     // Are there services that were waiting for this object ?
     auto itDeferredObj = m_deferredObjects.find(_id);
@@ -917,9 +986,11 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
             {
                 // Not found, now look in the objects that were marked as "deferred"
                 const auto itLocalDeferredObj = m_deferredObjects.find(objCfg.m_uid);
-                SIGHT_ASSERT( this->msgHead() + "Object '" + objCfg.m_uid + "' used by service '" + uid +
-                              "' has not been declared in this AppConfig.",
-                              itLocalDeferredObj != m_deferredObjects.end());
+                SIGHT_ASSERT(
+                    this->msgHead() + "Object '" + objCfg.m_uid + "' used by service '" + uid
+                    + "' has not been declared in this AppConfig.",
+                    itLocalDeferredObj != m_deferredObjects.end()
+                );
 
                 const auto object = itLocalDeferredObj->second.m_object;
                 if(object == nullptr)
@@ -928,8 +999,10 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                     {
                         createService = false;
 
-                        SIGHT_INFO( this->msgHead() + "Service '" + uid + "' has not been created because the "
-                                    "object" + objCfg.m_uid + " is not available.");
+                        SIGHT_INFO(
+                            this->msgHead() + "Service '" + uid + "' has not been created because the "
+                                                                  "object" + objCfg.m_uid + " is not available."
+                        );
                     }
                 }
                 else if(core::tools::fwID::exist(uid))
@@ -954,8 +1027,13 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            srv->registerObject(object, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect,
-                                                objCfg.m_optional);
+                            srv->registerObject(
+                                object,
+                                objCfg.m_key,
+                                objCfg.m_access,
+                                objCfg.m_autoConnect,
+                                objCfg.m_optional
+                            );
 
                             if(srv->isStarted())
                             {
@@ -977,25 +1055,29 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
             newServices.emplace(std::make_pair(uid, this->createService(*srvCfg)));
 
             // Debug message
-            SIGHT_INFO( this->msgHead() + "Service '" + uid + "' has been automatically created because its "
-                        "objects are all available.");
+            SIGHT_INFO(
+                this->msgHead() + "Service '" + uid + "' has been automatically created because its "
+                                                      "objects are all available."
+            );
         }
     }
 
-    std::vector< service::IService::SharedFutureType > futures;
+    std::vector<service::IService::SharedFutureType> futures;
 
     // Start services according to the order given in the configuration
     for(const auto& uid : m_deferredStartSrv)
     {
         auto itSrv = newServices.find(uid);
-        if( itSrv != newServices.end())
+        if(itSrv != newServices.end())
         {
             futures.push_back(itSrv->second->start());
             m_startedSrv.push_back(itSrv->second);
 
             // Debug message
-            SIGHT_INFO( this->msgHead() + "Service '" + uid + "' has been automatically started because its "
-                        "objects are all available.");
+            SIGHT_INFO(
+                this->msgHead() + "Service '" + uid + "' has been automatically started because its "
+                                                      "objects are all available."
+            );
         }
     }
 
@@ -1006,13 +1088,15 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
     for(const auto& uid : m_deferredUpdateSrv)
     {
         auto itSrv = newServices.find(uid);
-        if( itSrv != newServices.end())
+        if(itSrv != newServices.end())
         {
             futures.push_back(itSrv->second->update());
 
             // Debug message
-            SIGHT_INFO( this->msgHead() + "Service '" + uid + "' has been automatically update because its "
-                        "objects are all available.");
+            SIGHT_INFO(
+                this->msgHead() + "Service '" + uid + "' has been automatically update because its "
+                                                      "objects are all available."
+            );
         }
     }
 
@@ -1039,7 +1123,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
         // Are there services that were using this object ?
         for(const auto& srvCfg : itDeferredObj->second.m_servicesCfg)
         {
-            if( core::tools::fwID::exist(srvCfg.m_uid) )
+            if(core::tools::fwID::exist(srvCfg.m_uid))
             {
                 // Check all objects, to know if this object is optional
                 bool optional = true;
@@ -1076,7 +1160,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     SIGHT_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
                     srv->stop().wait();
 
-                    for(auto it = m_startedSrv.begin(); it != m_startedSrv.end(); ++it)
+                    for(auto it = m_startedSrv.begin() ; it != m_startedSrv.end() ; ++it)
                     {
                         if(it->lock() == srv)
                         {
@@ -1086,11 +1170,13 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     }
 
                     // 2. Destroy the service
-                    SIGHT_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
-                                 srv->isStopped());
+                    SIGHT_ASSERT(
+                        "Service " << srv->getID() << " must be stopped before destruction.",
+                        srv->isStopped()
+                    );
                     service::OSR::unregisterService(srv);
 
-                    for(auto it = m_createdSrv.begin(); it != m_createdSrv.end(); ++it)
+                    for(auto it = m_createdSrv.begin() ; it != m_createdSrv.end() ; ++it)
                     {
                         if(it->lock() == srv)
                         {
@@ -1102,14 +1188,18 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     service::IService::wptr checkSrv = srv;
                     srv.reset();
 
-                    SIGHT_ASSERT( this->msgHead() + "The service '" + srvCfg.m_uid +
-                                  "'' should have been destroyed, but someone "
-                                  "still holds a reference which prevents to destroy it properly.",
-                                  checkSrv.expired());
+                    SIGHT_ASSERT(
+                        this->msgHead() + "The service '" + srvCfg.m_uid
+                        + "'' should have been destroyed, but someone "
+                          "still holds a reference which prevents to destroy it properly.",
+                        checkSrv.expired()
+                    );
 
-                    SIGHT_INFO( this->msgHead() + "Service '" + srvCfg.m_uid +
-                                "' has been stopped because the object " +
-                                _id + " is no longer available.");
+                    SIGHT_INFO(
+                        this->msgHead() + "Service '" + srvCfg.m_uid
+                        + "' has been stopped because the object "
+                        + _id + " is no longer available."
+                    );
                 }
                 else
                 {
@@ -1138,12 +1228,15 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
         {
             // We didn't found the object or service globally, let's try with local deferred objects
             auto itDeferredObj = m_deferredObjects.find(signalCfg.first);
-            SIGHT_ASSERT( this->msgHead() + "Object '" + signalCfg.first + "' not found.",
-                          itDeferredObj != m_deferredObjects.end());
+            SIGHT_ASSERT(
+                this->msgHead() + "Object '" + signalCfg.first + "' not found.",
+                itDeferredObj != m_deferredObjects.end()
+            );
 
             sigSource = itDeferredObj->second.m_object;
         }
-        core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(sigSource);
+
+        core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast<core::com::HasSignals>(sigSource);
         SIGHT_ASSERT(this->msgHead() + "Signal source not found '" + signalCfg.first + "'", hasSignals);
 
         core::com::SignalBase::sptr sig = hasSignals->signal(signalCfg.second);
@@ -1153,17 +1246,21 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
         {
             proxy->connect(_channel, sig);
         }
-        catch (const std::exception& e)
+        catch(const std::exception& e)
         {
-            SIGHT_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the "
-                        "channel '" + _channel + "': " + std::string(e.what()));
+            SIGHT_ERROR(
+                "Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the "
+                                                                               "channel '" + _channel + "': " + std::string(
+                    e.what()
+                                                                               )
+            );
         }
     }
 
     for(const auto& slotCfg : _connectCfg.m_slots)
     {
         core::tools::Object::sptr slotDest = core::tools::fwID::getObject(slotCfg.first);
-        core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(slotDest);
+        core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast<core::com::HasSlots>(slotDest);
         SIGHT_ASSERT(this->msgHead() + "Slot destination not found '" + slotCfg.first + "'", hasSlots);
 
         core::com::SlotBase::sptr slot = hasSlots->slot(slotCfg.second);
@@ -1173,10 +1270,13 @@ void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConn
         {
             proxy->connect(_channel, slot);
         }
-        catch (const std::exception& e)
+        catch(const std::exception& e)
         {
-            SIGHT_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
-                        "channel '" + _channel + "': " + std::string(e.what()));
+            SIGHT_ERROR(
+                "Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
+                                                                         "channel '" + _channel + "': "
+                + std::string(e.what())
+            );
         }
     }
 }
@@ -1187,10 +1287,11 @@ std::string AppConfigManager::getUIDListAsString(const std::vector<std::string>&
 {
     std::string msg = uidList.size() == 1 ? " '" : "s '";
     msg += uidList[0];
-    for(auto it = uidList.begin() + 1; it < uidList.end(); ++it)
+    for(auto it = uidList.begin() + 1 ; it < uidList.end() ; ++it)
     {
         msg += "', '" + *it;
     }
+
     msg = uidList.size() == 1 ? msg + "' is " : msg + "' are ";
 
     return msg;

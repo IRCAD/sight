@@ -110,10 +110,13 @@ service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
 
-    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
-    connections.push( s_CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG,
-                      s_UPDATE_CLIPPING_BOX_SLOT );
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT);
+    connections.push(
+        s_CLIPPING_MATRIX_INOUT,
+        data::Matrix4::s_MODIFIED_SIG,
+        s_UPDATE_CLIPPING_BOX_SLOT
+    );
 
     return connections;
 }
@@ -147,8 +150,12 @@ void SVolumeRender::configuring()
     m_colorBleeding       = config.get<bool>(s_COLOR_BLEEDING_CONFIG, false);
     m_shadows             = config.get<bool>(s_SHADOES_CONFIG, false);
 
-    this->setTransformId(config.get<std::string>(sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                 this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -160,12 +167,12 @@ void SVolumeRender::starting()
     auto renderService = this->getRenderService();
     renderService->makeCurrent();
 
-    m_gpuVolumeTF = std::make_shared< sight::viz::scene3d::TransferFunction>();
+    m_gpuVolumeTF = std::make_shared<sight::viz::scene3d::TransferFunction>();
 
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
+        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -174,7 +181,7 @@ void SVolumeRender::starting()
 
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
     ::Ogre::SceneNode* transformNode = this->getTransformNode(rootSceneNode);
-    m_volumeSceneNode                = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+    m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
 
     m_camera = this->getLayer()->getDefaultCamera();
 
@@ -182,14 +189,16 @@ void SVolumeRender::starting()
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         sight::viz::scene3d::RESOURCE_GROUP,
-        true);
+        true
+    );
 
     if(m_dynamic)
     {
         m_bufferingTexture = ::Ogre::TextureManager::getSingleton().create(
             this->getID() + "_Texture2",
             sight::viz::scene3d::RESOURCE_GROUP,
-            true);
+            true
+        );
     }
 
     m_gpuVolumeTF->createTexture(this->getID() + "_VolumeGpuTF");
@@ -198,14 +207,16 @@ void SVolumeRender::starting()
 
     sight::viz::scene3d::Layer::sptr layer = renderService->getLayer(m_layerID);
 
-    m_volumeRenderer = new sight::viz::scene3d::vr::RayTracingVolumeRenderer(this->getID(),
-                                                                             layer,
-                                                                             m_volumeSceneNode,
-                                                                             m_3DOgreTexture,
-                                                                             m_gpuVolumeTF,
-                                                                             m_preIntegrationTable,
-                                                                             m_ambientOcclusion,
-                                                                             m_colorBleeding);
+    m_volumeRenderer = new sight::viz::scene3d::vr::RayTracingVolumeRenderer(
+        this->getID(),
+        layer,
+        m_volumeSceneNode,
+        m_3DOgreTexture,
+        m_gpuVolumeTF,
+        m_preIntegrationTable,
+        m_ambientOcclusion,
+        m_colorBleeding
+    );
 
     m_volumeSceneNode->setVisible(m_isVisible);
 
@@ -219,7 +230,7 @@ void SVolumeRender::starting()
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
         isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
     if(isValid)
@@ -246,9 +257,9 @@ void SVolumeRender::swapping(const KeyType& _key)
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-            const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
+            const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
             const auto tf  = tfW.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
         }
@@ -273,7 +284,7 @@ void SVolumeRender::stopping()
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();
-    auto transformNode = this->getTransformNode(rootSceneNode);
+    auto transformNode               = this->getTransformNode(rootSceneNode);
 
     m_sceneManager->getRootSceneNode()->removeChild(transformNode);
     this->getSceneManager()->destroySceneNode(static_cast< ::Ogre::SceneNode*>(transformNode));
@@ -337,14 +348,14 @@ void SVolumeRender::newImage()
             m_bufferingWorker.reset();
 
             auto* newWorker = renderService->getInteractorManager()->createGraphicsWorker();
-            m_bufferingWorker = std::unique_ptr< sight::viz::scene3d::IGraphicsWorker >(newWorker);
+            m_bufferingWorker = std::unique_ptr<sight::viz::scene3d::IGraphicsWorker>(newWorker);
         }
 
         renderService->makeCurrent();
         {
-            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-            const auto tfW = this->getWeakInOut< data::TransferFunction>(s_VOLUME_TF_INOUT);
+            const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
             const auto tf  = tfW.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -364,10 +375,12 @@ void SVolumeRender::bufferImage()
     {
         auto bufferingFn = [this]()
                            {
-                               const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+                               const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-                               sight::viz::scene3d::Utils::convertImageForNegato(m_bufferingTexture.get(),
-                                                                                 image.get_shared());
+                               sight::viz::scene3d::Utils::convertImageForNegato(
+                                   m_bufferingTexture.get(),
+                                   image.get_shared()
+                               );
 
                                // Swap texture pointers.
                                {
@@ -386,7 +399,7 @@ void SVolumeRender::bufferImage()
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
             sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
         }
         this->updateImage();
@@ -397,7 +410,7 @@ void SVolumeRender::bufferImage()
 
 void SVolumeRender::updateImage()
 {
-    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -417,16 +430,21 @@ void SVolumeRender::updateImage()
         {
             if(m_ambientOcclusionSAT == nullptr)
             {
-                m_ambientOcclusionSAT = std::make_shared< sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
-                    this->getID(), m_sceneManager,
+                m_ambientOcclusionSAT = std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
+                    this->getID(),
+                    m_sceneManager,
                     m_satSizeRatio,
                     (
-                        m_ambientOcclusion ||
-                        m_colorBleeding), m_shadows,
-                    m_satShells, m_satShellRadius,
+                        m_ambientOcclusion
+                        || m_colorBleeding),
+                    m_shadows,
+                    m_satShells,
+                    m_satShellRadius,
                     m_satConeAngle,
-                    m_satConeSamples);
+                    m_satConeSamples
+                );
             }
+
             this->updateVolumeIllumination();
         }
 
@@ -443,6 +461,7 @@ void SVolumeRender::updateImage()
     {
         this->getLayer()->computeCameraParameters();
     }
+
     this->requestRender();
 }
 
@@ -525,7 +544,7 @@ void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
             const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
             const data::mt::locked_ptr lock(volumeTF);
@@ -620,7 +639,7 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 
     if(m_preIntegratedRendering)
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
         const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
         const data::mt::locked_ptr lock(volumeTF);
@@ -674,8 +693,8 @@ void SVolumeRender::toggleWidgets(bool _visible)
 
 void SVolumeRender::setFocalDistance(int _focalDistance)
 {
-    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() !=
-       sight::viz::scene3d::compositor::Core::StereoModeType::NONE)
+    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode()
+       != sight::viz::scene3d::compositor::Core::StereoModeType::NONE)
     {
         m_volumeRenderer->setFocalLength(static_cast<float>(_focalDistance) / 100);
     }
@@ -776,8 +795,8 @@ void SVolumeRender::createWidget()
 
     ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
 
-    const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    const auto clippingMatrix = wClippingMatrix.lock();
+    const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix  = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         ogreClippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
@@ -786,10 +805,16 @@ void SVolumeRender::createWidget()
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
     this->destroyWidget(); // Destroys the old widgets if they were created.
-    m_widget = std::make_shared< sight::viz::scene3d::interactor::ClippingBoxInteractor>(layer, m_layerOrderDependant,
-                                                                                         this->getID(), m_volumeSceneNode,
-                                                                                         ogreClippingMx, clippingMxUpdate,
-                                                                                         "BasicAmbient", "BasicPhong");
+    m_widget = std::make_shared<sight::viz::scene3d::interactor::ClippingBoxInteractor>(
+        layer,
+        m_layerOrderDependant,
+        this->getID(),
+        m_volumeSceneNode,
+        ogreClippingMx,
+        clippingMxUpdate,
+        "BasicAmbient",
+        "BasicPhong"
+    );
 
     layer->addInteractor(m_widget, m_priority);
 
@@ -829,7 +854,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
         isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
 
@@ -838,14 +863,17 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_ambientOcclusionSAT)
         {
-            m_ambientOcclusionSAT = ::std::make_shared< sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
-                this->getID(), m_sceneManager,
+            m_ambientOcclusionSAT = ::std::make_shared<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT>(
+                this->getID(),
+                m_sceneManager,
                 m_satSizeRatio,
                 (
-                    m_ambientOcclusion ||
-                    m_colorBleeding), m_shadows,
+                    m_ambientOcclusion
+                    || m_colorBleeding),
+                m_shadows,
                 m_satShells,
-                m_satShellRadius);
+                m_satShellRadius
+            );
             this->updateVolumeIllumination();
         }
         else if(m_ambientOcclusionSAT)
@@ -856,11 +884,11 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
                 case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
                     m_ambientOcclusionSAT->setAO(m_ambientOcclusion || m_colorBleeding);
                     break;
+
                 case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
                     m_ambientOcclusionSAT->setShadows(m_shadows);
                     break;
             }
-
         }
 
         switch(_vrEffect)
@@ -868,9 +896,11 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
             case module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 m_volumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
                 break;
+
             case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
                 m_volumeRenderer->setColorBleeding(m_colorBleeding);
                 break;
+
             case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
                 m_volumeRenderer->setShadows(m_shadows);
                 break;
@@ -885,7 +915,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
             const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
             const data::mt::locked_ptr lock(volumeTF);
@@ -902,11 +932,11 @@ void SVolumeRender::updateClippingBox()
 {
     if(m_widget)
     {
-        const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-        const auto clippingMatrix = wClippingMatrix.lock();
+        const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+        const auto clippingMatrix  = wClippingMatrix.lock();
         if(clippingMatrix)
         {
-                this->getRenderService()->makeCurrent();
+            this->getRenderService()->makeCurrent();
 
             ::Ogre::Matrix4 clippingMx;
             {
@@ -922,14 +952,14 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    auto clippingMatrix = wClippingMatrix.lock();
+    auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+    auto clippingMatrix  = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         sight::viz::scene3d::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());
 
         const auto sig =
-            clippingMatrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+            clippingMatrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
         core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
 

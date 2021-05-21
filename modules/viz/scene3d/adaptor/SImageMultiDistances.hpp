@@ -77,7 +77,6 @@ class SImageMultiDistances final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::interactor::IInteractor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -147,7 +146,7 @@ private:
     struct DistanceData
     {
         data::PointList::sptr m_pointList;
-        ::Ogre::SceneNode*  m_node1;
+        ::Ogre::SceneNode* m_node1;
         ::Ogre::ManualObject* m_sphere1;
         ::Ogre::SceneNode* m_node2;
         ::Ogre::ManualObject* m_sphere2;
@@ -165,7 +164,7 @@ private:
     };
 
     /// Map each distances to there related list ID.
-    typedef std::map< core::tools::fwID::IDType, DistanceData > DistanceMap;
+    typedef std::map<core::tools::fwID::IDType, DistanceData> DistanceMap;
 
     /**
      * @brief Generates a color from a distance ID.
@@ -181,10 +180,12 @@ private:
      * @param _end End position of the line.
      * @param _thickness Thickness of dash.
      */
-    static void generateDashedLine(::Ogre::ManualObject* const _object,
-                                   const ::Ogre::Vector3& _begin,
-                                   const ::Ogre::Vector3& _end,
-                                   float _thickness);
+    static void generateDashedLine(
+        ::Ogre::ManualObject* const _object,
+        const ::Ogre::Vector3& _begin,
+        const ::Ogre::Vector3& _end,
+        float _thickness
+    );
 
     /**
      * @brief Gets the formated string used to display the length of a distance.
@@ -213,7 +214,7 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
+    std::optional< ::Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
 
     /**
      * @brief Creates a distance and add it into m_distances.
@@ -236,28 +237,28 @@ private:
     void destroyDistance(core::tools::fwID::IDType _id);
 
     /// Defines the radius of distances spheres.
-    float m_distanceSphereRadius { 3.5f };
+    float m_distanceSphereRadius {3.5f};
 
     /// Defines the TrueType font source file.
-    std::string m_fontSource { "DejaVuSans.ttf" };
+    std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    size_t m_fontSize { 16 };
+    size_t m_fontSize {16};
 
     /// Defines whether or not interactions are enabled with distances.
-    bool m_interactive { true };
+    bool m_interactive {true};
 
     /// Defines the priority of the interactor.
-    int m_priority { 2 };
+    int m_priority {2};
 
     /// Defines the current picked data, reseted by buttonReleaseEvent(MouseButton, int, int).
-    PickedData m_pickedData { nullptr, true };
+    PickedData m_pickedData {nullptr, true};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask { 0xFFFFFFFF };
+    std::uint32_t m_queryMask {0xFFFFFFFF};
 
     /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_distanceQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
+    std::uint32_t m_distanceQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines the material name with no depth check for spheres.
     std::string m_sphereMaterialName;
@@ -279,7 +280,6 @@ private:
 
     /// Stores all generatesd distances.
     DistanceMap m_distances;
-
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

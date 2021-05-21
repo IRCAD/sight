@@ -31,6 +31,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -74,7 +75,6 @@ class MODULE_VIZ_SCENE2D_CLASS_API STransferFunction :
     public QObject,
     public sight::viz::scene2d::IAdaptor
 {
-
 Q_OBJECT
 
 public:
@@ -140,9 +140,11 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildLinearPolygons(QVector<QPointF>& _position,
-                             QLinearGradient& _grad,
-                             double _distanceMax);
+    void buildLinearPolygons(
+        QVector<QPointF>& _position,
+        QLinearGradient& _grad,
+        double _distanceMax
+    );
 
     /**
      * @brief Creates lines and nearest gradient polygons of the TF.
@@ -150,9 +152,11 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildNearestPolygons(QVector<QPointF>& _position,
-                              QLinearGradient& _grad,
-                              double _distanceMax);
+    void buildNearestPolygons(
+        QVector<QPointF>& _position,
+        QLinearGradient& _grad,
+        double _distanceMax
+    );
 
     /// Adds graphic items to @ref m_layer.
     void buildLayer();
@@ -171,13 +175,13 @@ private:
      *                      to manage multiple actions which are 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /**
      * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void leftButtonClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the TF.
@@ -200,13 +204,13 @@ private:
      * @brief Changes the TF point color by opening a color dialog and update the TF.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonDoubleClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void leftButtonDoubleClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Removes a TF point from the TF.
      * @param _TFPoint the selected TF point.
      */
-    void rightButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void rightButtonClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Adds a new TF point to the TF.
@@ -262,7 +266,7 @@ private:
     void toggleLinearTF(bool _linear);
 
     /// Defines the size of TF points in a ratio relative to the window.
-    float m_pointSize { 0.03f };
+    float m_pointSize {0.03f};
 
     /// Defines the pen used by gradients.
     QPen m_polygonsPen;
@@ -271,29 +275,29 @@ private:
     QPen m_pointsPen;
 
     /// Sets if interactions are enable or not.
-    bool m_interactive { true };
+    bool m_interactive {true};
 
     /// Stores the main layer.
     QGraphicsItemGroup* m_layer;
 
     /// Contains a set of graphic point and it coordinate in the window/level space.
-    std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > > m_TFPoints;
+    std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> > m_TFPoints;
 
     /// Contains the graphic gradient.
-    QGraphicsPolygonItem* m_TFPolygon { nullptr };
+    QGraphicsPolygonItem* m_TFPolygon {nullptr};
 
     /// Stores the captured clicked point.
-    std::pair< Point2DType, QGraphicsEllipseItem* >* m_capturedTFPoint { nullptr };
+    std::pair<Point2DType, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
 
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair< data::TransferFunction::sptr, sight::viz::scene2d::data::Coord > m_capturedTF;
+    std::pair<data::TransferFunction::sptr, sight::viz::scene2d::data::Coord> m_capturedTF;
 
     /// Stores the current TF id and its unclamped alpha color value map.
-    std::pair< core::tools::fwID::IDType, data::TransferFunction::TFDataType > m_unclampedTFData;
-
+    std::pair<core::tools::fwID::IDType, data::TransferFunction::TFDataType> m_unclampedTFData;
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

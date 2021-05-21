@@ -68,8 +68,8 @@ namespace sight::module::ui::qt::series
  */
 class MODULE_UI_QT_CLASS_API SViewer : public service::IController
 {
-
 public:
+
     SIGHT_DECLARE_SERVICE(SViewer, service::IController)
 
     /// Constructor
@@ -108,7 +108,7 @@ protected:
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 
@@ -138,4 +138,5 @@ private:
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
+
 } // namespace sight::module::ui::qt::series

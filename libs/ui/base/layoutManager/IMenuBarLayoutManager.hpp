@@ -35,6 +35,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -44,6 +45,7 @@ namespace layoutManager
 class UI_BASE_CLASS_API IMenuBarLayoutManager : public ui::base::GuiBaseObject
 {
 public:
+
     SIGHT_DECLARE_CLASS(IMenuBarLayoutManager, ui::base::GuiBaseObject)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
@@ -60,7 +62,7 @@ public:
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
      */
-    UI_BASE_API virtual std::vector< ui::base::container::fwMenu::sptr > getMenus();
+    UI_BASE_API virtual std::vector<ui::base::container::fwMenu::sptr> getMenus();
 
     /**
      * @brief Initialize layout managers.
@@ -88,14 +90,14 @@ public:
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 
-    UI_BASE_API virtual void initialize( ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(ConfigurationType configuration);
 
     /**
      * @brief Instantiate menu with parent menuBar.
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_BASE_API virtual void createLayout( ui::base::container::fwMenuBar::sptr parent ) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwMenuBar::sptr parent) = 0;
 
     /**
      * @brief Destroy local menus.
@@ -121,12 +123,12 @@ protected:
     UI_BASE_API virtual void destroyMenus();
 
     /// All sub containers managed by this layout.
-    std::vector< ui::base::container::fwMenu::sptr > m_menus;
+    std::vector<ui::base::container::fwMenu::sptr> m_menus;
 
     /// Save menu name from configuration.
-    std::vector< std::string > m_menuNames;
-
+    std::vector<std::string> m_menuNames;
 };
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

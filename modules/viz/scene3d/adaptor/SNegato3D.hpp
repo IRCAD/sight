@@ -91,7 +91,6 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato3D final :
     public sight::viz::scene3d::ITransformable,
     public sight::viz::scene3d::interactor::IInteractor
 {
-
 public:
 
     typedef data::helper::MedicalImage::Orientation OrientationMode;
@@ -226,66 +225,65 @@ private:
     void setPlanesQueryFlags(std::uint32_t _flags);
 
     /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
-    std::optional< ::Ogre::Vector3 > getPickedSlices(int _x, int _y);
+    std::optional< ::Ogre::Vector3> getPickedSlices(int _x, int _y);
 
     /// Updates the intensity picking widget's position.
     void updatePickingCross(const ::Ogre::Vector3& _pickedPos, const ::Ogre::Vector3& _imgOrigin);
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera { true };
+    bool m_autoResetCamera {true};
 
     /// Enables the opacity to that of the transfer function.
-    bool m_enableAlpha { false };
+    bool m_enableAlpha {false};
 
     /// Enables whether or not interactions are enabled on the negato.
-    bool m_interactive { false };
+    bool m_interactive {false};
 
     /// Sets the order in which interactions take place in the scene.
-    int m_priority { 1 };
+    int m_priority {1};
 
     /// Contains the ogre texture which will be displayed on the negato.
-    ::Ogre::TexturePtr m_3DOgreTexture { nullptr };
+    ::Ogre::TexturePtr m_3DOgreTexture {nullptr};
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    std::unique_ptr< sight::viz::scene3d::TransferFunction> m_gpuTF { nullptr };
+    std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF {nullptr};
 
     /// Stores the planes on which we will apply our texture.
-    std::array< sight::viz::scene3d::Plane::sptr, 3> m_planes;
+    std::array<sight::viz::scene3d::Plane::sptr, 3> m_planes;
 
     /// Contains the plane that the user is currently interacting with.
-    sight::viz::scene3d::Plane::sptr m_pickedPlane { nullptr };
+    sight::viz::scene3d::Plane::sptr m_pickedPlane {nullptr};
 
     /// Contains the widget displayed to pick intensities.
-    ::Ogre::ManualObject* m_pickingCross { nullptr };
+    ::Ogre::ManualObject* m_pickingCross {nullptr};
 
     /// Contains the scene node allowing to move the entire negato.
-    ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
+    ::Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
-    sight::viz::scene3d::Plane::FilteringEnumType m_filtering { sight::viz::scene3d::Plane::FilteringEnumType::NONE };
+    sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
 
     /// Helps interfacing with the transfer function input.
     data::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
-    double m_initialWindow { 0.f };
+    double m_initialWindow {0.f};
 
     /// Defines the transfer function level value at the time the interaction started.
-    double m_initialLevel { 0.f };
+    double m_initialLevel {0.f};
 
     /// Defines the mouse position at the time the windowing interaction started.
-    ::Ogre::Vector2i m_initialPos { -1, -1 };
+    ::Ogre::Vector2i m_initialPos {-1, -1};
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines if the plane border is used or not.
-    bool m_border { true };
+    bool m_border {true};
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using PickedVoxelSigType = core::com::Signal< void (std::string) >;
-    PickedVoxelSigType::sptr m_pickedVoxelSignal { nullptr };
-
+    using PickedVoxelSigType = core::com::Signal<void (std::string)>;
+    PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 };
 
 //------------------------------------------------------------------------------

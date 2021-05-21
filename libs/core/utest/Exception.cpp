@@ -25,8 +25,8 @@
 namespace sight::utest
 {
 
-Exception::Exception ( const std::string& err ) :
-    std::runtime_error( err )
+Exception::Exception(const std::string& err) :
+    std::runtime_error(err)
 {
 }
 

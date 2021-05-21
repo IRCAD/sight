@@ -131,7 +131,6 @@ class Layer;
  */
 class VIZ_SCENE3D_CLASS_API SRender final : public viz::base::IRender
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -155,7 +154,7 @@ public:
     typedef std::string SceneIdType;
 
     /// Defines actives layouts in the scene.
-    typedef std::map< SceneIdType, SPTR(viz::scene3d::Layer) > LayerMapType;
+    typedef std::map<SceneIdType, SPTR(viz::scene3d::Layer)> LayerMapType;
 
     /// Contains the signal sent when the compositor chain has been modified.
     VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
@@ -163,7 +162,7 @@ public:
 
     /// Contains the signal sent when fullscreen was enabled/disabled.
     VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
-    using FullscreenSetSignalType = core::com::Signal< void(bool) >;
+    using FullscreenSetSignalType = core::com::Signal<void (bool)>;
 
     /// Contains the slot name that computes the parameters to reset the camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
@@ -281,30 +280,29 @@ private:
     overlay::ViewportListener::ViewportOverlaysMapType m_viewportOverlaysMap;
 
     /// Listens for render target updates for all viewports and enables the required overlays.
-    overlay::ViewportListener m_viewportListener { m_viewportOverlaysMap };
+    overlay::ViewportListener m_viewportListener {m_viewportOverlaysMap};
 
     /// Contains the Ogre root.
-    ::Ogre::Root* m_ogreRoot { nullptr };
+    ::Ogre::Root* m_ogreRoot {nullptr};
 
     /// Defines how the rendering is triggered.
-    RenderMode m_renderMode { RenderMode::AUTO };
+    RenderMode m_renderMode {RenderMode::AUTO};
 
     /// Defines if the render window is in fullscreen.
-    bool m_fullscreen { false };
+    bool m_fullscreen {false};
 
     /// Defines the width for off-screen rendering.
-    unsigned int m_width { 0 };
+    unsigned int m_width {0};
 
     /// Defines the height for off-screen rendering.
-    unsigned int m_height { 0 };
+    unsigned int m_height {0};
 
     /// Defines if the scene is rendered off-screen.
-    bool m_offScreen { false };
+    bool m_offScreen {false};
 
     /// Defines if the scene will be rendered upside down.
     /// @warning the scene must be rendered off-screen.
-    bool m_flip { false };
-
+    bool m_flip {false};
 };
 
 //-----------------------------------------------------------------------------
@@ -318,9 +316,9 @@ std::vector<SPTR(T)> SRender::getAdaptors() const
     for(auto& sceneAdaptor : servicesVector)
     {
         SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
-        if( adaptor )
+        if(adaptor)
         {
-            if( adaptor->getRenderService() == this->getConstSptr())
+            if(adaptor->getRenderService() == this->getConstSptr())
             {
                 resultVector.push_back(adaptor);
             }
@@ -339,4 +337,4 @@ inline SRender::RenderMode SRender::getRenderMode() const
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::viz

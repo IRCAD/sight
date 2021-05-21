@@ -71,7 +71,6 @@ namespace sight::module::filter::image
 
 class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IOperator
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IOperator)

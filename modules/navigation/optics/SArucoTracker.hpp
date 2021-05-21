@@ -115,15 +115,17 @@ public:
 
     SIGHT_DECLARE_SERVICE(SArucoTracker, service::ITracker)
 
-    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
-    typedef core::com::Signal< void (bool) > MarkerDetectedSignalType;
+    typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> DetectionDoneSignalType;
+    typedef core::com::Signal<void (bool)> MarkerDetectedSignalType;
 
     /**
      * @name Signal API
      * @{
      */
+
     /// Key in m_signals map of signal m_sigDetectionDone
     MODULE_NAVIGATION_OPTICS_API static const core::com::Signals::SignalKeyType s_DETECTION_DONE_SIG;
+
     /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
     MODULE_NAVIGATION_OPTICS_API static const core::com::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
     /** @} */
@@ -136,8 +138,8 @@ public:
     MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     /** @} */
 
-    typedef std::vector< int >          MarkerIDType;
-    typedef std::vector< MarkerIDType > MarkerIDVectorType;
+    typedef std::vector<int> MarkerIDType;
+    typedef std::vector<MarkerIDType> MarkerIDVectorType;
 
     /**
      * @brief Constructor.
@@ -150,6 +152,7 @@ public:
     MODULE_NAVIGATION_OPTICS_API ~SArucoTracker() noexcept override;
 
 protected:
+
     /// Depending on the configuration this connects:
     /// - the input timeline to the tracking() slot
     /// - the input frame modifications to the update() slot
@@ -190,23 +193,31 @@ private:
 
     /// Slot called when a integer value is changed
     void setIntParameter(int _val, std::string _key);
+
     /// Slot called when a double value is changed
     void setDoubleParameter(double _val, std::string _key);
+
     /// Slot called when a boolean value is changed
     void setBoolParameter(bool _val, std::string _key);
 
     /// Camera parameters
     Camera m_cameraParams;
+
     /// Marker vector [[0,1,2],[4,5,6]]
     MarkerIDVectorType m_markers;
+
     /// True if tracker is initialized
     bool m_isInitialized;
+
     /// Display markers in the image or not
     bool m_debugMarkers;
+
     /// aruco detector parameters structure
-    ::cv::Ptr< ::cv::aruco::DetectorParameters > m_detectorParams;
+    ::cv::Ptr< ::cv::aruco::DetectorParameters> m_detectorParams;
+
     /// Dictionary/Set of markers. It contains the inner codification
-    ::cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
+    ::cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
+
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 };

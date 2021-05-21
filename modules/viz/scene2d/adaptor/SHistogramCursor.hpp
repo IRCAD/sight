@@ -31,6 +31,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -68,8 +69,8 @@ namespace adaptor
  */
 class SHistogramCursor : public sight::viz::scene2d::IAdaptor
 {
-
 public:
+
     SIGHT_DECLARE_SERVICE(SHistogramCursor, ::sight::viz::scene2d::IAdaptor)
 
     MODULE_VIZ_SCENE2D_API SHistogramCursor() noexcept;
@@ -78,12 +79,13 @@ public:
     MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
+
     MODULE_VIZ_SCENE2D_API void configuring() override;
     MODULE_VIZ_SCENE2D_API void starting() override;
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /// Color used for graphic item's inner color
     QPen m_color;
@@ -106,5 +108,6 @@ protected:
     QGraphicsItemGroup* m_layer;
 };
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

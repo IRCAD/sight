@@ -46,14 +46,18 @@
 
 namespace openvslam
 {
+
 class system;
 class config;
 
 namespace publish
 {
+
 class map_publisher;
 class frame_publisher;
+
 }
+
 }
 
 /// The module openvslamTracker contains SOpenvslam service to manage instance of OpenVSLAM.
@@ -137,7 +141,6 @@ namespace sight::module::navigation::openvslam
  */
 class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracker
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SOpenvslam, service::ITracker)
@@ -182,6 +185,7 @@ private:
      *
      * @{
      */
+
     /// Slot: called to start the tracking.
     void startTracking() final;
 
@@ -225,16 +229,17 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void  tracking(core::HiResClock::HiResClockType&) final;
+    void tracking(core::HiResClock::HiResClockType&) final;
     /** @} */
 
     /**
      * @name Signals API
      * @{
      */
+
     /// Type of the signals.
 
-    using SignalType = core::com::Signal<void()>;
+    using SignalType = core::com::Signal<void ()>;
     /** @} */
 
     /**
@@ -242,6 +247,7 @@ private:
      *
      * @{
      */
+
     /// Signal: sent when the tracking is initialized.
     SignalType::sptr m_sigTrackingInitialized;
 
@@ -312,10 +318,11 @@ private:
     bool m_localization {false};
 
     /// Unique pointer to SLAM system.
-    std::unique_ptr< ::openvslam::system > m_slamSystem {nullptr};
+    std::unique_ptr< ::openvslam::system> m_slamSystem {nullptr};
 
     /// Pointer to a publisher class to get current frame.
     std::shared_ptr< ::openvslam::publish::frame_publisher> m_ovsFramePublisher {nullptr};
+
     /// Pointer to a publisher class to get current map.
     std::shared_ptr< ::openvslam::publish::map_publisher> m_ovsMapPublisher {nullptr};
 
@@ -326,13 +333,13 @@ private:
     bool m_showFeatures {false};
 
     /// Switch between local or global map (pushed in m_pointcloud).
-    bool m_localMap{false};
+    bool m_localMap {false};
 
     ///Calls asynchronously updatePointCloud each 1sec.
     core::thread::Timer::sptr m_timer;
 
     /// Matrix and points scale
-    std::atomic< float > m_scale{1.0f};
+    std::atomic<float> m_scale {1.0f};
 
     /// Worker for pointcloud update
     core::thread::Worker::sptr m_pointcloudWorker;
@@ -349,11 +356,10 @@ private:
     /// Stores the trajectories format ("KITTI" or "TUM" are internal formats in openvslam).
     /// This is only used when saving trajectories at stop.
     /// KITTI = matrices , TUM = vectors & quaternions.
-    std::string m_trajectoriesFormat{"KITTI"};
+    std::string m_trajectoriesFormat {"KITTI"};
 
     /// Stores the current number of landmarks in the map. (Only used in updatePointCloud thread).
     unsigned int m_numberOfLandmarks {0};
-
 };
 
 } // openvslamTracker

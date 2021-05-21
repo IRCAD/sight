@@ -32,10 +32,9 @@ namespace sight::utest
 
 class CORE_CLASS_API Exception : public std::runtime_error
 {
-
 public:
-    CORE_API Exception ( const std::string& err );
 
+    CORE_API Exception(const std::string& err);
 };
 
 } // namespace sight::utest

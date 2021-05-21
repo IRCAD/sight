@@ -64,7 +64,6 @@ namespace sight::module::io::video
  */
 class MODULE_IO_VIDEO_CLASS_API SFrameWriter : public sight::io::base::service::IWriter
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SFrameWriter, sight::io::base::service::IWriter)
@@ -129,7 +128,7 @@ private:
 
     bool m_isRecording; ///< flag if the service is recording.
 
-    std::string m_format;  ///< file format (.tiff by default)
+    std::string m_format; ///< file format (.tiff by default)
 };
 
 } // videoOpenCV

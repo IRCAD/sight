@@ -65,6 +65,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public service::IController
 {
 public:
+
     SIGHT_DECLARE_SERVICE(SOpticalFlow, sight::service::IController)
 
     typedef core::com::Signal<void ()> MotionSignalType;
@@ -94,25 +95,35 @@ protected:
     MODULE_FILTER_VISION_CLASS_API void stopping() override;
 
 private:
+
     /// Handles concurrency.
     std::mutex m_mainMutex;
+
     /// Signal send when motion is detected.
     MotionSignalType::sptr m_motionSignal;
+
     /// Signal send when no motion is detected.
     NoMotionSignalType::sptr m_noMotionSignal;
+
     /// Stores last image.
     ::cv::Mat m_lastGrayImg;
+
     /// Stores last corners.
     ::cv::Mat m_lastCorners;
+
     /// Waiting time between to frames.
     unsigned int m_latency;
+
     /// Factor of re-scale: resize image to keep good balance between computation time and feature tracking quality.
     float m_imageScaleFactor;
+
     /// Optical flow can only be computed if a frame is already present (see: m_lastGrayImg).
     /// True if it is, False otherwise
     bool m_initialization;
+
     /// Stores last behavior (true if motion, false otherwise).
     bool m_motion;
+
     /// Stores last processed frame timestamp.
     core::HiResClock::HiResClockType m_lastTimestamp;
 };

@@ -184,7 +184,6 @@ private:
 
     /// Set to 'true' if we currently drawing in the image.
     bool m_drawing;
-
 };
 
 } // namespace sight::module::filter::image.

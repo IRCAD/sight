@@ -45,10 +45,14 @@ class QSignalMapper;
 
 namespace sight::ui::qt
 {
+
 namespace widget
 {
+
 class QRangeSlider;
+
 }
+
 }
 
 namespace sight::module::ui::qt::image
@@ -83,7 +87,6 @@ namespace sight::module::ui::qt::image
 class MODULE_UI_QT_CLASS_API WindowLevel final : public QObject,
                                                  public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
@@ -167,15 +170,15 @@ protected:
 
 private:
 
-    QPointer< QLineEdit >   m_valueTextMin;
-    QPointer< QLineEdit >   m_valueTextMax;
-    QPointer< QToolButton > m_toggleTFButton;
-    QPointer< QToolButton > m_toggleAutoButton;
-    QPointer< QToolButton >   m_dynamicRangeSelection;
-    QPointer< QMenu >         m_dynamicRangeMenu;
-    QPointer< QSignalMapper > m_dynamicRangeSignalMapper;
+    QPointer<QLineEdit> m_valueTextMin;
+    QPointer<QLineEdit> m_valueTextMax;
+    QPointer<QToolButton> m_toggleTFButton;
+    QPointer<QToolButton> m_toggleAutoButton;
+    QPointer<QToolButton> m_dynamicRangeSelection;
+    QPointer<QMenu> m_dynamicRangeMenu;
+    QPointer<QSignalMapper> m_dynamicRangeSignalMapper;
 
-    QPointer< sight::ui::qt::widget::QRangeSlider > m_rangeSlider;
+    QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
@@ -186,7 +189,6 @@ private:
     data::TransferFunction::sptr m_previousTF;
 
     data::helper::TransferFunction m_helperTF;
-
 };
 
 } // uiImageQt

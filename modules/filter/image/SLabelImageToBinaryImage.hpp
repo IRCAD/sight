@@ -102,8 +102,7 @@ protected:
 
 private:
 
-    ::boost::optional< std::string > m_labelSetFieldName;
-
+    ::boost::optional<std::string> m_labelSetFieldName;
 };
 
 } // namespace sight::module::filter::image.

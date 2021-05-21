@@ -85,7 +85,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API IFrame : public service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IFrame, service::IService)
@@ -97,9 +96,10 @@ public:
      * @name Signals
      * @{
      */
+
     /// Signal emitted when frame is closed and onclose policy is notify
     static const core::com::Signals::SignalKeyType s_CLOSED_SIG;
-    typedef core::com::Signal< void ()> ClosedSignalType;
+    typedef core::com::Signal<void ()> ClosedSignalType;
     /**
      * @}
      */
@@ -117,9 +117,9 @@ public:
 
     /// Slot to hide the container
     static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -154,17 +154,19 @@ private:
 
     /// SLOT: show/hide the container
     void setVisible(bool isVisible);
+
     /// SLOT: show the container
     void show();
+
     /// SLOT: hide the container
     void hide();
 
     void onCloseExit();
     void onCloseNotify();
     void onCloseMessage();
-    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
-    void initializeMenuBarBuilder( core::runtime::ConfigurationElement::sptr menuBarConfig );
-    void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
+    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
+    void initializeMenuBarBuilder(core::runtime::ConfigurationElement::sptr menuBarConfig);
+    void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
 
     ui::base::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
     ui::base::registry::View::sptr m_viewRegistry;

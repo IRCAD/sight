@@ -132,7 +132,7 @@ protected:
 
     /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
     /// already used, it will return blabla_1.
-    MODULE_UI_QT_API std::string createTransferFunctionName( const std::string& _sBasename ) const;
+    MODULE_UI_QT_API std::string createTransferFunctionName(const std::string& _sBasename) const;
 
     /// Update the output transferFunction with the selected TF in the ComboBox.
     MODULE_UI_QT_API void updateTransferFunction();
@@ -152,7 +152,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef std::vector< std::filesystem::path > PathContainerType;
+    typedef std::vector<std::filesystem::path> PathContainerType;
 
     QComboBox* m_pTransferFunctionPreset;
     QPushButton* m_deleteButton;
@@ -168,4 +168,4 @@ private:
     PathContainerType m_paths;
 };
 
-}
+} // namespace sight::module

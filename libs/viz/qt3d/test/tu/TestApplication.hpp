@@ -26,12 +26,14 @@
 class TestApplication : QGuiApplication
 {
 public:
+
     TestApplication() :
         QGuiApplication(s_argc, s_argv)
     {
     }
 
 private:
+
 #if defined(__linux)
     static inline char* s_argv[] = {"TestApplication", "-platform", "offscreen", nullptr};
     static inline int s_argc = 3;

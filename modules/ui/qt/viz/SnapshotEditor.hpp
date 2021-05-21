@@ -47,7 +47,6 @@ namespace sight::module::ui::qt::viz
 class MODULE_UI_QT_CLASS_API SnapshotEditor : public QObject,
                                               public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
@@ -91,23 +90,26 @@ protected:
     void configuring() override;
 
     /// Overrides
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
 protected Q_SLOTS:
+
     /**
      * @brief Show a file dialog and notify the scene must be printed.
      */
     void onSnapButton();
 
 private:
+
     std::string requestFileName();
 
     /**
      * @name Signals
      * @{
      */
+
     /// Type of signal to snap shot
-    typedef core::com::Signal< void (std::string) > SnappedSignalType;
+    typedef core::com::Signal<void (std::string)> SnappedSignalType;
     static const core::com::Signals::SignalKeyType s_SNAPPED_SIG;
 
     SnappedSignalType::sptr m_sigSnapped; ///< snap shot signal
@@ -115,8 +117,7 @@ private:
      * @}
      */
 
-    QPointer< QPushButton > m_snapButton;
-
+    QPointer<QPushButton> m_snapButton;
 };
 
 } // uiVisuQt

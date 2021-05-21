@@ -52,23 +52,26 @@ CORE_API void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr
  * the previous "config" attribute value
  *
  */
-CORE_API ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr _config,
-                                                         std::string _extension_pt );
+CORE_API ConfigurationElement::sptr getCfgAsAnExtension(
+    ConfigurationElement::sptr _config,
+    std::string _extension_pt
+);
 
 /**
  * @brief   Returns configuration elements extending the _extension_pt extension point
  *
 
  */
-CORE_API std::vector< ConfigurationElement::sptr > getAllCfgForPoint( std::string _extension_pt );
+CORE_API std::vector<ConfigurationElement::sptr> getAllCfgForPoint(std::string _extension_pt);
 
 /**
  * @brief   Returns extensions extending the _extension_pt extension point
  *
 
  */
-CORE_API std::vector< std::shared_ptr< core::runtime::Extension > > getAllExtensionsForPoint(
-    std::string extension_pt);
+CORE_API std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint(
+    std::string extension_pt
+);
 
 /**
  * @brief       Returns contribution ids and configuration elements related to a given extension point
@@ -78,8 +81,9 @@ CORE_API std::vector< std::shared_ptr< core::runtime::Extension > > getAllExtens
  * @note        Configuration element identifiers are value of attributes "id".
  *
  */
-CORE_API std::map< std::string, ConfigurationElement::sptr > getAllIdAndConfigurationElementsForPoint(
-    std::string _extension_pt  );
+CORE_API std::map<std::string, ConfigurationElement::sptr> getAllIdAndConfigurationElementsForPoint(
+    std::string _extension_pt
+);
 /**
  * @brief       Returns contribution ids to a given extension point
  * @param[in]   _extension_pt : identifier of the extension point to which configuration elements contribute
@@ -88,13 +92,13 @@ CORE_API std::map< std::string, ConfigurationElement::sptr > getAllIdAndConfigur
  * @note        Configuration element identifiers are value of attributes "id".
  *
  */
-CORE_API std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  );
+CORE_API std::vector<std::string> getAllIdsForPoint(std::string _extension_pt);
 
 /**
  * @brief   Get information for the point
  * @return  a string with the information of the extension point
  */
-CORE_API std::string getInfoForPoint( std::string _extension_pt);
+CORE_API std::string getInfoForPoint(std::string _extension_pt);
 
 /**
  * @brief   Returns the value of a path in a boost::property::tree.

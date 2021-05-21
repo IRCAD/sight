@@ -34,7 +34,6 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenu
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SMenu, ::sight::ui::base::IMenu)
@@ -100,8 +99,8 @@ protected:
 
     /// Updating service, do nothing.
     MODULE_UI_BASE_API void updating() override;
-    ///@}
 
+    ///@}
 };
 
 }

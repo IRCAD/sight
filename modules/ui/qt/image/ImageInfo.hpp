@@ -84,7 +84,7 @@ protected:
     /// Initializes the editor
     void configuring() override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -101,8 +101,7 @@ private:
     void getInteraction(data::tools::PickingInfo info);
 
     /// Label to display the pixel value
-    QPointer< QLineEdit >   m_valueText;
-
+    QPointer<QLineEdit> m_valueText;
 };
 
 } // uiImageQt

@@ -54,7 +54,6 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public service::IOperator
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SDecomposeMatrix, ::sight::service::IOperator)

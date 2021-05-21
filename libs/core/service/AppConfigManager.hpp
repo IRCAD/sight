@@ -42,7 +42,9 @@
 
 namespace sight::data
 {
+
 class Composite;
+
 }
 
 namespace sight::service
@@ -55,12 +57,12 @@ namespace sight::service
  * - \b addObject(data::Object::sptr, const std::string&): adds objects to the configuration.
  * - \b removeObject(data::Object::sptr, const std::string&): removes objects from the configuration.
  */
-class SERVICE_CLASS_API AppConfigManager :  public service::IAppConfigManager,
-                                            public core::com::HasSlots
+class SERVICE_CLASS_API AppConfigManager : public service::IAppConfigManager,
+                                           public core::com::HasSlots
 {
 public:
 
-    SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared< AppConfigManager >)
+    SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared<AppConfigManager>)
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
@@ -75,16 +77,20 @@ public:
      * @param _configId The identifier of the requested config.
      * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(const std::string& _configId,
-                                       const FieldAdaptorType& _replaceFields = FieldAdaptorType()) override;
+    SERVICE_API virtual void setConfig(
+        const std::string& _configId,
+        const FieldAdaptorType& _replaceFields = FieldAdaptorType()
+    ) override;
 
     /**
      * @brief Sets configuration.
      * @param _configId The identifier of the requested config.
      * @param _replaceFields Composite of association between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(const std::string& _configId,
-                                       const data::Composite::csptr& _replaceFields) override;
+    SERVICE_API virtual void setConfig(
+        const std::string& _configId,
+        const data::Composite::csptr& _replaceFields
+    ) override;
 
     /**
      * @brief Get the configuraton root.
@@ -135,7 +141,7 @@ public:
 
 private:
 
-    typedef ::std::pair< std::string, bool > ConfigAttribute;
+    typedef ::std::pair<std::string, bool> ConfigAttribute;
     typedef service::helper::ProxyConnections ProxyConnections;
     typedef service::IService::Config Config;
 
@@ -150,8 +156,10 @@ private:
 
     data::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
 
-    data::Object::sptr getNewObject(ConfigAttribute type,
-                                    ConfigAttribute uid = ConfigAttribute("", false)) const;
+    data::Object::sptr getNewObject(
+        ConfigAttribute type,
+        ConfigAttribute uid = ConfigAttribute("", false)
+    ) const;
 
     data::Object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
 
@@ -198,29 +206,34 @@ private:
 
     void connectProxy(const std::string& _channel, const ProxyConnections& _connectCfg);
 
-    void destroyProxy(const std::string& _channel, const ProxyConnections& _proxyCfg, const std::string& _key = "",
-                      data::Object::csptr _hintObj = nullptr);
+    void destroyProxy(
+        const std::string& _channel,
+        const ProxyConnections& _proxyCfg,
+        const std::string& _key      = "",
+        data::Object::csptr _hintObj = nullptr
+    );
 
     void destroyProxies();
 
     /// Gets a list of UIDs or WIDs, get a friendly printable message.
     static std::string getUIDListAsString(const std::vector<std::string>& uidList);
 
-    typedef std::pair< data::Object::sptr, service::IXMLParser::sptr> CreatedObjectType;
+    typedef std::pair<data::Object::sptr, service::IXMLParser::sptr> CreatedObjectType;
 
     /// Map containing the object and its XML parser.
     std::unordered_map<std::string, CreatedObjectType> m_createdObjects;
 
     struct DeferredObjectType
     {
-        std::vector< Config > m_servicesCfg;
-        std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
+        std::vector<Config> m_servicesCfg;
+        std::unordered_map<std::string, ProxyConnections> m_proxyCnt;
+
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
         data::Object::sptr m_object;
     };
 
     /// Map indexed by the object uid, containing all the service configurations that depend on this object.
-    std::unordered_map<std::string, DeferredObjectType > m_deferredObjects;
+    std::unordered_map<std::string, DeferredObjectType> m_deferredObjects;
 
     /// All the identifiers of the deferred services.
     std::unordered_set<std::string> m_deferredServices;
@@ -230,14 +243,14 @@ private:
 
     struct ServiceProxyType
     {
-        std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
+        std::unordered_map<std::string, ProxyConnections> m_proxyCnt;
     };
-    std::unordered_map< std::string, ServiceProxyType > m_servicesProxies;
+    std::unordered_map<std::string, ServiceProxyType> m_servicesProxies;
 
     /// Identifier of this configuration.
     std::string m_configId;
 
-    typedef std::vector< service::IService::wptr > ServiceContainer;
+    typedef std::vector<service::IService::wptr> ServiceContainer;
 
     /// List of services created in this configuration.
     ServiceContainer m_createdSrv;

@@ -37,6 +37,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -135,4 +136,5 @@ private:
 };
 
 } // video
+
 } // sight::module::ui::qt

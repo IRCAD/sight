@@ -62,7 +62,6 @@ namespace sight::module::io::matrix
  */
 class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::base::service::IWriter
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SMatrixWriter, sight::io::base::service::IWriter)

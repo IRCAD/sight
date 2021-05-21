@@ -86,7 +86,6 @@ protected:
      * - Update service when the target image is modified.
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
-
 };
 
 } // namespace sight::module::filter::image

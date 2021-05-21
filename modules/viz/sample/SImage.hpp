@@ -27,8 +27,8 @@
 #include <ui/base/IGuiContainer.hpp>
 
 namespace sight::module::viz::sample
-
 {
+
 /**
  * @brief Render a 3D negatoscope of a medical image.
  *
@@ -43,7 +43,6 @@ namespace sight::module::viz::sample
  */
 class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainer
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -82,17 +81,16 @@ protected:
 private:
 
     /// Contains the render service.
-    service::IService::sptr m_renderSrv { nullptr };
+    service::IService::sptr m_renderSrv {nullptr};
 
     /// Contains the trackball interactor adaptor.
-    service::IService::sptr m_interactorSrv { nullptr };
+    service::IService::sptr m_interactorSrv {nullptr};
 
     /// Contains the negato adaptor.
-    service::IService::sptr m_negatoSrv { nullptr };
+    service::IService::sptr m_negatoSrv {nullptr};
 
     /// Defines whether or not to autoConnect to the image, needed for the purpose of tutorials.
-    bool m_imageAutoConnect { false };
-
+    bool m_imageAutoConnect {false};
 };
 
 } // namespace sight::module::viz::sample.
