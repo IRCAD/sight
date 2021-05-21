@@ -932,17 +932,23 @@ void SVolumeRender::updateClippingBox()
 {
     if(m_widget)
     {
-        const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-        const auto clippingMatrix  = wClippingMatrix.lock();
-        if(clippingMatrix)
+        bool matrixSet = false;
+        ::Ogre::Matrix4 clippingMx;
+        {
+            const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+            const auto clippingMatrix  = wClippingMatrix.lock();
+            if(clippingMatrix)
+            {
+                clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
+                matrixSet  = true;
+            }
+        }
+
+        if(matrixSet)
         {
             this->getRenderService()->makeCurrent();
 
-            ::Ogre::Matrix4 clippingMx;
-            {
-                clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
-            }
-
+            // updateFromTransform is called outside of the lock of the InOut data to prevent a deadlock
             m_widget->updateFromTransform(clippingMx);
         }
     }

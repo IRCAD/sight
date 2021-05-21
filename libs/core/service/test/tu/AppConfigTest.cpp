@@ -22,6 +22,7 @@
 
 #include "AppConfigTest.hpp"
 
+#include "core/com/Slot.hxx"
 #include "core/thread/ActiveWorkers.hpp"
 
 #include "service/extension/AppConfig.hpp"
@@ -1157,6 +1158,18 @@ void AppConfigTest::keyGroupTest()
         // Create data 3
         data3 = data::Image::New();
 
+        srv1->resetIsUpdated();
+
+        // Create a slot to wait for the swap to be completed
+        bool srv1Swapped = false;
+        std::function fn = [&]()
+                           {
+                               srv1Swapped = true;
+                           };
+        auto swappedSlot = core::com::newSlot(fn);
+        swappedSlot->setWorker(core::thread::ActiveWorkers::getDefaultWorker());
+        core::com::Connection connection = srv1->signal(IService::s_SWAPPED_SIG)->connect(swappedSlot);
+
         service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
         fwTestWaitMacro(
@@ -1173,12 +1186,16 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT(data2b == srv1->getLockedInput<data::Object>("dataGroup", 0).get_shared());
         CPPUNIT_ASSERT(data3 == srv1->getLockedInput<data::Object>("dataGroup", 1).get_shared());
 
+        fwTestWaitMacro(srv1Swapped);
+        CPPUNIT_ASSERT(srv1Swapped);
+
         // Check connection with data 3
-        srv1->resetIsUpdated();
         auto sig3 = data3->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
         fwTestWaitMacro(srv1->getIsUpdated());
         CPPUNIT_ASSERT(srv1->getIsUpdated());
+
+        connection.disconnect();
     }
 
     // Remove data 2

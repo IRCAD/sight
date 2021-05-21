@@ -1,4 +1,4 @@
-sight_add_target( data TYPE LIBRARY WARNINGS_AS_ERRORS ON )
+sight_add_target(data TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 
 find_package(CAMP QUIET REQUIRED)
 target_include_directories(data SYSTEM PRIVATE ${CAMP_INCLUDE_DIR})

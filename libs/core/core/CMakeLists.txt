@@ -1,4 +1,4 @@
-sight_add_target( core TYPE LIBRARY OBJECT_LIBRARY ON WARNINGS_AS_ERRORS ON )
+sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON WARNINGS_AS_ERRORS ON)
 
 find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 
@@ -10,7 +10,6 @@ target_include_directories(${TARGET_OBJECT_LIB} SYSTEM PUBLIC ${CAMP_INCLUDE_DIR
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${CAMP_LIBRARIES})
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE "-DWIN32_LEAN_AND_MEAN")
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE psapi)
     # Boost >= 1.67 changes the default random provider on Windows to use BCrypt
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE bcrypt)

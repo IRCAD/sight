@@ -32,6 +32,7 @@
 #include <vtkCellType.h>
 #include <vtkDataArray.h>
 #include <vtkDataSetAttributes.h>
+#include <vtkFileOutputWindow.h>
 #include <vtkImageData.h>
 #include <vtkImageExport.h>
 #include <vtkImageImport.h>
@@ -47,13 +48,43 @@
 #include <vtkType.h>
 #include <vtkUnstructuredGrid.h>
 
+#include <chrono>
 #include <cstring>
+#include <ctime>
 #include <functional>
 #include <numeric>
 #include <stdexcept>
 
 namespace sight::io::vtk
 {
+
+//------------------------------------------------------------------------------
+
+// Function to initialize VTK Log file, where VTK message will be printed in.
+static bool initVTKLogFile()
+{
+    SIGHT_INFO("Creating VTK Log file");
+
+    // Get current date.
+    const auto timenow =
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+    // Create VTK.log in current folder.
+    // TODO: Gather all .log file together in Session.
+    vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
+    outwin->SetFileName("VTK.log");
+
+    // Print header.
+    std::string header = "# VTK LOG File " + std::string(ctime(&timenow));
+    outwin->DisplayText(header.c_str());
+
+    vtkFileOutputWindow::SetInstance(outwin);
+
+    return true;
+}
+
+// static variable to call initVTKLogFile();
+static bool s_enableLog = initVTKLogFile();
 
 // ------------------------------------------------------------------------------
 

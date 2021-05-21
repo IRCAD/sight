@@ -117,7 +117,7 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     {
         element = tree.get_child(path);
     }
-    catch(const boost::property_tree::ptree_bad_path& e)
+    catch(const boost::property_tree::ptree_bad_path&)
     {
         // 3.
         return defaultValue;

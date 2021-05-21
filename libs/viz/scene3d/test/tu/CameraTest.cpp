@@ -228,11 +228,12 @@ void CameraTest::convertPixelToWorldSpace()
     auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 
     // Use a size > 120 because windows will anyway switch to a larger size
-    const ::Ogre::Vector2 screenSize(200, 200);
-    auto* const renderWindow = root->createRenderWindow(
+    const unsigned int width  = 200;
+    const unsigned int height = 200;
+    auto* const renderWindow  = root->createRenderWindow(
         "TestRenderWindow",
-        screenSize.x,
-        screenSize.y,
+        width,
+        height,
         false,
         nullptr
     );
@@ -261,7 +262,7 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(screenSize.x, screenSize.y, 1);
+        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
         const ::Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
@@ -282,7 +283,7 @@ void CameraTest::convertPixelToWorldSpace()
         const ::Ogre::Vector3 viewportPoint(fX, fY, fZ);
 
         // Unproject the projected point
-        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(screenSize.x, screenSize.y, 1);
+        const ::Ogre::Vector3 point            = viewportPoint * Ogre::Vector3(width, height, 1);
         const ::Ogre::Vector3 unprojectedPoint =
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 

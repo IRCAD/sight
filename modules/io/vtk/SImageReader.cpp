@@ -161,7 +161,7 @@ void SImageReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        data::Image::sptr image = this->getInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto image = this->getLockedInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
@@ -209,7 +209,7 @@ typename READER::sptr configureReader(const std::filesystem::path& imgFile)
 
 bool SImageReader::loadImage(
     const std::filesystem::path& imgFile,
-    const data::Image::sptr& img,
+    const data::mt::locked_ptr<data::Image>& img,
     const SPTR(JobCreatedSignalType)& sigJobCreated
 )
 {
@@ -268,8 +268,7 @@ bool SImageReader::loadImage(
     }
 
     // Set the image (already created, but empty) that will be modified
-    data::mt::ObjectWriteLock lock(img);
-    imageReader->setObject(img);
+    imageReader->setObject(img.get_shared());
 
     sigJobCreated->emit(imageReader->getJob());
 

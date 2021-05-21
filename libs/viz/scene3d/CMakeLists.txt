@@ -1,4 +1,4 @@
-sight_add_target( viz_scene3d TYPE LIBRARY PCH pchServicesOmp WARNINGS_AS_ERRORS ON )
+sight_add_target(viz_scene3d TYPE LIBRARY PCH pchServicesOmp WARNINGS_AS_ERRORS OFF)
 
 # include first to be taken into account in the PCH compile flags
 find_package(OpenMP QUIET)

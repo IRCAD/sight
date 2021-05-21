@@ -38,7 +38,6 @@
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
 #include <vtkPNGWriter.h>
-#include <vtkPNMWriter.h>
 #include <vtkSmartPointer.h>
 #include <vtkTIFFWriter.h>
 
@@ -86,10 +85,6 @@ void BitmapImageWriter::write()
     else if(ext == ".png")
     {
         writer = vtkSmartPointer<vtkPNGWriter>::New();
-    }
-    else if(ext == ".pnm")
-    {
-        writer = vtkSmartPointer<vtkPNMWriter>::New();
     }
     else if(ext == ".tiff")
     {

@@ -111,7 +111,7 @@ public:
      */
     MODULE_IO_VTK_API static bool loadImage(
         const std::filesystem::path& vtkFile,
-        const SPTR(data::Image)& image,
+        const data::mt::locked_ptr<data::Image>& img,
         const SPTR(JobCreatedSignalType)& sigJobCreated
     );
 
