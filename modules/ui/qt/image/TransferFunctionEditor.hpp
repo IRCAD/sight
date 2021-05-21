@@ -51,7 +51,7 @@ namespace sight::module::ui::qt::image
  *
  * @code{.xml}
    <service type="sight::module::ui::qt::image::TransferFunctionEditor">
-       <in key="currentTF" uid="..." optional="yes" />
+       <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="yes">
@@ -67,7 +67,7 @@ namespace sight::module::ui::qt::image
  * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *      TF in another service. Don't forget to set 'optional="true"' when you use this input, otherwise the service will
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
  * - \b tfPool [sight::data::Composite]: composite containing the transfer function.
@@ -132,7 +132,7 @@ protected:
 
     /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
     /// already used, it will return blabla_1.
-    MODULE_UI_QT_API std::string createTransferFunctionName( const std::string& _sBasename ) const;
+    MODULE_UI_QT_API std::string createTransferFunctionName(const std::string& _sBasename) const;
 
     /// Update the output transferFunction with the selected TF in the ComboBox.
     MODULE_UI_QT_API void updateTransferFunction();
@@ -152,7 +152,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef std::vector< std::filesystem::path > PathContainerType;
+    typedef std::vector<std::filesystem::path> PathContainerType;
 
     QComboBox* m_pTransferFunctionPreset;
     QPushButton* m_deleteButton;
@@ -168,4 +168,4 @@ private:
     PathContainerType m_paths;
 };
 
-}
+} // namespace sight::module

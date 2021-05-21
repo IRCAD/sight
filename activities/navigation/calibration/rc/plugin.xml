@@ -12,7 +12,6 @@
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/rgbdCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationCharuco.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -56,20 +55,6 @@
             </parameters>
         </appConfig>
     </extension>
-
-    <extension implements="::sight::activity::extension::Activity">
-        <id>RGBDCalibration</id>
-        <title>RGBD camera calibration</title>
-        <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
-        <requirements>
-        </requirements>
-        <appConfig id="RGBDCalibration">
-            <parameters>
-            </parameters>
-        </appConfig>
-    </extension>
-
     <extension implements="::sight::activity::extension::Activity">
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>

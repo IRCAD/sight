@@ -28,6 +28,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -50,7 +51,7 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="viewportRange" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector"
- * autoConnect="yes">
+ * autoConnect="true">
        <inout key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1000" initialPos="-100" />
    </service>
@@ -73,7 +74,6 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::scene2d::IAdaptor
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SViewportRangeSelector, ::sight::viz::scene2d::IAdaptor)
@@ -111,7 +111,7 @@ private:
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
@@ -165,5 +165,6 @@ private:
     QPen m_color;
 };
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

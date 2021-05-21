@@ -37,6 +37,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -101,7 +102,7 @@ protected:
      *
      * @code{.xml}
         <service uid="..." type="ui::base::editor::IEditor" impl="::sight::module::ui::qt::video::SSlider"
-     * autoConnect="no"/>
+     * autoConnect="false"/>
        @endcode
      */
     void configuring() override;
@@ -135,4 +136,5 @@ private:
 };
 
 } // video
+
 } // sight::module::ui::qt

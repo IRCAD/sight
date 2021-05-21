@@ -80,8 +80,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-        <inout key="image" uid="..." autoConnect="yes" />
-        <inout key="tf" uid="..." optional="yes" />
+        <inout key="image" uid="..." autoConnect="true" />
+        <inout key="tf" uid="..." optional="true" />
         <inout key="clippingMatrix" uid="..." />
         <config layer="default"
                 samples="1024" preintegration="yes" dynamic="false" ao="no" colorBleeding="no" shadows="no"
@@ -124,7 +124,6 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVolumeRender final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -364,7 +363,7 @@ private:
     data::helper::TransferFunction m_helperVolumeTF;
 
     /// Implements a simple GPU ray-tracing renderer.
-    sight::viz::scene3d::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };
+    sight::viz::scene3d::vr::RayTracingVolumeRenderer* m_volumeRenderer {nullptr};
 
     /// Contains the GPU 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -376,7 +375,7 @@ private:
     std::mutex m_bufferSwapMutex;
 
     /// Fills the incoming image texture in a parallel thread.
-    std::unique_ptr< sight::viz::scene3d::IGraphicsWorker > m_bufferingWorker;
+    std::unique_ptr<sight::viz::scene3d::IGraphicsWorker> m_bufferingWorker;
 
     /// Contains the GPU TF texture used for rendering.
     sight::viz::scene3d::TransferFunction::sptr m_gpuVolumeTF;
@@ -385,71 +384,70 @@ private:
     sight::viz::scene3d::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// Stores the scene manager.
-    ::Ogre::SceneManager* m_sceneManager { nullptr };
+    ::Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Stores the scene node of the volume.
-    ::Ogre::SceneNode* m_volumeSceneNode { nullptr };
+    ::Ogre::SceneNode* m_volumeSceneNode {nullptr};
 
     /// Stores the camera used for rendering.
-    ::Ogre::Camera* m_camera { nullptr };
+    ::Ogre::Camera* m_camera {nullptr};
 
     /// Stores the widgets used for clipping.
-    std::shared_ptr< sight::viz::scene3d::interactor::ClippingBoxInteractor > m_widget;
+    std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;
 
     /// Stores the priority of the widget interactor.
-    int m_priority { 2 };
+    int m_priority {2};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant { true };
+    bool m_layerOrderDependant {true};
 
     /// Stores the sampling rate.
-    std::uint16_t m_nbSamples { 512 };
+    std::uint16_t m_nbSamples {512};
 
     /// Enables the pre-integration usage.
-    bool m_preIntegratedRendering { false };
+    bool m_preIntegratedRendering {false};
 
     /// Enables background buffering for dynamic images.
-    bool m_dynamic { false };
+    bool m_dynamic {false};
 
     /// Defines the usage of ambient occlusion.
-    bool m_ambientOcclusion { false };
+    bool m_ambientOcclusion {false};
 
     /// Defines the usage of color bleeding.
-    bool m_colorBleeding { false };
+    bool m_colorBleeding {false};
 
     /// Defines the usage of soft shadows.
-    bool m_shadows { false };
+    bool m_shadows {false};
 
     /// Toggles widget visibility.
-    bool m_widgetVisibilty { true };
+    bool m_widgetVisibilty {true};
 
     /// Contains the ilumination volume used to render shadows and ambient occlusion.
-    std::shared_ptr< sight::viz::scene3d::vr::IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
+    std::shared_ptr<sight::viz::scene3d::vr::IllumAmbientOcclusionSAT> m_ambientOcclusionSAT;
 
     /// Stores the ratio used to determine the size of the SAT regarding of the associated image size.
-    float m_satSizeRatio {0.25f };
+    float m_satSizeRatio {0.25f};
 
     /// Stores the number of shells used to compute the volume illumination from the SAT.
-    int m_satShells { 4 };
+    int m_satShells {4};
 
     /// Stores the radius of the shells used to compute the volume illumination from the SAT.
-    int m_satShellRadius { 4 };
+    int m_satShellRadius {4};
 
     /// Stores the angle used to define the soft shadows cones.
-    float m_satConeAngle { 0.1f };
+    float m_satConeAngle {0.1f};
 
     /// Number of samples along the soft shadows cones.
-    int m_satConeSamples { 50 };
+    int m_satConeSamples {50};
 
     /// Stores the factor parameter used to weight the ambient occlusion.
-    double m_aoFactor { 1. };
+    double m_aoFactor {1.};
 
     /// Stores the factor parameter used to weight the color bleeding.
-    double m_colorBleedingFactor { 1. };
+    double m_colorBleedingFactor {1.};
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera { true };
-
+    bool m_autoResetCamera {true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

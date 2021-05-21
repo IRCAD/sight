@@ -33,17 +33,23 @@
 
 namespace fwTools
 {
+
 class Object;
+
 }
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace fwRuntime
 {
+
 struct ConfigurationElement;
+
 }
 
 namespace sight::service
@@ -59,16 +65,15 @@ class SigSlotConnection;
  */
 class Config
 {
-
 public:
 
-    typedef std::pair< std::string, core::com::Signals::SignalKeyType > SignalInfoType;
-    typedef std::pair< std::string, core::com::Slots::SlotKeyType > SlotInfoType;
-    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+    typedef std::pair<std::string, core::com::Signals::SignalKeyType> SignalInfoType;
+    typedef std::pair<std::string, core::com::Slots::SlotKeyType> SlotInfoType;
+    typedef std::vector<SlotInfoType> SlotInfoContainerType;
 
     typedef std::string ObjectIdType;
     typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
-    typedef std::map< ObjectIdType, ProxyConnectionsVectType > ProxyConnectionsMapType;
+    typedef std::map<ObjectIdType, ProxyConnectionsVectType> ProxyConnectionsMapType;
 
     struct ConnectionInfo
     {
@@ -83,9 +88,11 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
-    SERVICE_API static ConnectionInfo parseConnections(const CSPTR(core::runtime::ConfigurationElement)& cfg,
-                                                       const CSPTR(core::tools::Object)& obj =
-                                                           CSPTR(core::tools::Object)());
+    SERVICE_API static ConnectionInfo parseConnections(
+        const CSPTR(core::runtime::ConfigurationElement)& cfg,
+        const CSPTR(core::tools::Object)& obj =
+        CSPTR(core::tools::Object)()
+    );
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -96,7 +103,8 @@ public:
     SERVICE_API static ProxyConnections parseConnections2(
         const CSPTR(core::runtime::ConfigurationElement)& connectionCfg,
         const std::string& errMsgHead,
-        std::function<std::string()> generateChannelNameFn);
+        std::function<std::string()> generateChannelNameFn
+    );
 
     /**
      * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
@@ -108,7 +116,8 @@ public:
     SERVICE_API static void createConnections(
         const CSPTR(core::runtime::ConfigurationElement)& cfg,
         core::com::helper::SigSlotConnection& helper,
-        const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)());
+        const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)()
+    );
 
     /**
      * @brief Parses "<proxy>" tags from given configuration to connect signals and slots using proxies.
@@ -122,16 +131,20 @@ public:
         const std::string& objectKey,
         const CSPTR(core::runtime::ConfigurationElement)& cfg,
         ProxyConnectionsMapType& proxyMap,
-        const CSPTR(data::Object)& obj = CSPTR(data::Object)());
+        const CSPTR(data::Object)& obj = CSPTR(data::Object)()
+    );
 
     /// Disconnects all proxies associated to objectKey
-    SERVICE_API static void disconnectProxies(const std::string& objectKey,
-                                              Config::ProxyConnectionsMapType& proxyMap);
+    SERVICE_API static void disconnectProxies(
+        const std::string& objectKey,
+        Config::ProxyConnectionsMapType& proxyMap
+    );
 
     /// Parse a service and return a service configuration
     SERVICE_API static service::IService::Config parseService(
-        const CSPTR(core::runtime::ConfigurationElement)& srvElem,
-        const std::string& errMsgHead);
+        const boost::property_tree::ptree& srvElem,
+        const std::string& errMsgHead
+    );
 };
 
 } // namespace helper

@@ -1,9 +1,8 @@
 sight_add_target( Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON )
 
-
-
 add_dependencies(Tuto04MeshGeneratorCpp 
                  sightrun
+                 data
                  module_appXml
                  module_ui_base
                  module_ui_qt

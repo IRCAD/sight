@@ -56,7 +56,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SImageWriter::SImageWriter() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void SImageWriter::openLocationDialog()
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(data::location::Folder::New(_sDefaultPath));
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -92,18 +92,17 @@ void SImageWriter::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    result = data::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation(data::location::Folder::New(_sDefaultPath));
         this->setFile(result->getPath());
     }
     else
     {
         this->clearLocations();
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -127,16 +126,18 @@ void SImageWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::info(std::ostream& _sstream )
+void SImageWriter::info(std::ostream& _sstream)
 {
     _sstream << "SImageWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
-                              const CSPTR(data::Image)& image,
-                              const SPTR(JobCreatedSignalType)& sigJobCreated )
+bool SImageWriter::saveImage(
+    const std::filesystem::path& imgFile,
+    const CSPTR(data::Image)& image,
+    const SPTR(JobCreatedSignalType)& sigJobCreated
+)
 {
     bool bValue = true;
 
@@ -148,6 +149,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     if(ext == ".vtk")
     {
         auto vtkWriter = sight::io::vtk::ImageWriter::New();
+
         // Set the file system path
         vtkWriter->setFile(imgFile);
         myWriter = vtkWriter;
@@ -177,7 +179,8 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
             return false;
         }
 
@@ -186,9 +189,10 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         {
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
-                "Unsupported number of components (" + std::to_string(noc) + ") for " +
-                ext + " export.\n The image will not be exported.",
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                "Unsupported number of components (" + std::to_string(noc) + ") for "
+                + ext + " export.\n The image will not be exported.",
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
             return false;
         }
 
@@ -198,8 +202,12 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     }
     else
     {
-        SIGHT_THROW_EXCEPTION(core::tools::Failed("Unsupported " + ext + " format (Available formats: " +
-                                                  ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .tiff)"));
+        SIGHT_THROW_EXCEPTION(
+            core::tools::Failed(
+                "Unsupported " + ext + " format (Available formats: "
+                + ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .tiff)"
+            )
+        );
     }
 
     myWriter->setObject(image);
@@ -211,7 +219,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         // Launch writing process
         myWriter->write();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
@@ -219,15 +227,17 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         bValue = false;
     }
-    catch( ... )
+    catch(...)
     {
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during saving.",
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         bValue = false;
     }
     return bValue;
@@ -237,11 +247,10 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
 
 void SImageWriter::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto pImage = this->getLockedInput< data::Image >(sight::io::base::service::s_DATA_KEY);
+        const auto pImage = this->getLockedInput<data::Image>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
 
         sight::ui::base::Cursor cursor;

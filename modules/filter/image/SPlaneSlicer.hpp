@@ -47,7 +47,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
+   <service type="sight::module::filter::image::SPlaneSlicer" autoConnect="true">
        <in key="image" uid="..." />
        <in key="imageExtent" uid="..." />
        <in key="axes" uid="..." />
@@ -71,7 +71,6 @@ namespace sight::module::filter::image
 
 class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IOperator
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IOperator)

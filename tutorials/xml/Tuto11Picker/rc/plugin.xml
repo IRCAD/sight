@@ -139,12 +139,12 @@
                 <config layer="default" mode="3D" priority="1" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -187,11 +187,11 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageConverterSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>

@@ -111,7 +111,7 @@
             </scene>
         </service>
 
-        <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes" >
+        <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true" >
             <in key="viewport" uid="viewport" />
             <config xAxis="xAxis" yAxis="yAxis"/>
         </service>
@@ -132,48 +132,48 @@
             <config x1="-1200" x2="1500" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="TFScaleValuesLeftAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
+        <service uid="TFScaleValuesLeftAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
             <in key="viewport"  uid="viewport" />
             <config min="0.0" max="1.0" interval="0.1" fontSize="10" align="left" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
         </service>
 
-        <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes">
+        <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
              <in key="viewport"  uid="viewport" />
             <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="7" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
         </service>
 
-        <service uid="TFScaleValuesBottomAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
+        <service uid="TFScaleValuesBottomAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
             <in key="viewport"  uid="viewport" />
             <config min="-1100" max="1300" interval="200" fontSize="10" align="bottom" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
         </service>
 
-        <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes">
+        <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
             <in key="viewport"  uid="viewport" />
             <config min="-1100" max="1300" interval="100" align="bottom" tickSize="7" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
         </service>
 
-        <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::SMultipleTF" autoConnect="yes">
+        <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::SMultipleTF" autoConnect="true">
             <in key="viewport" uid="viewport" />
-            <in key="currentTF" uid="${currentTF}" optional="yes" />
+            <in key="currentTF" uid="${currentTF}" optional="true" />
             <inout key="tfPool" uid="${currentTFPool}" />
             <out key="tf" uid="${currentTF}" />
             <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="6" />
         </service>
 
-        <service uid="TFCurvedHistogramAdp" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="yes">
+        <service uid="TFCurvedHistogramAdp" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <inout key="point" uid="histogramPoint" />
             <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="#B66F00" innerColor="#FFC66D" opacity="0.9" zValue="5" borderWidth="2.0" />
         </service>
 
-        <service uid="TFHistogramCursorAdp" type="sight::module::viz::scene2d::adaptor::SHistogramCursor" autoConnect="yes">
+        <service uid="TFHistogramCursorAdp" type="sight::module::viz::scene2d::adaptor::SHistogramCursor" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <in key="point"     uid="histogramPoint" />
             <in key="viewport"  uid="viewport" />
             <config xAxis="xAxis" yAxis="axeHistogramY" color="#6897BB" borderColor="#2E4C64" zValue="6" pointSize="16" />
         </service>
 
-        <service uid="TFHistogramValueAdp" type="sight::module::viz::scene2d::adaptor::SHistogramValue" autoConnect="yes">
+        <service uid="TFHistogramValueAdp" type="sight::module::viz::scene2d::adaptor::SHistogramValue" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <in key="point" uid="histogramPoint" />
             <in key="viewport" uid="viewport" />
@@ -199,13 +199,13 @@
             </scene>
         </service>
 
-        <service uid="VSHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="yes">
+        <service uid="VSHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
             <in key="histogram" uid="${histogram}" />
             <inout key="point" uid="histogramPoint" />
             <config color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="1" />
         </service>
 
-        <service uid="VSTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="yes">
+        <service uid="VSTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="true">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${mergedTF}" />
             <inout key="viewport" uid="viewport" />
@@ -216,7 +216,7 @@
             <config x1="-1200" x2="1500" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="yes">
+        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="true">
             <inout key="viewport"  uid="viewport" />
             <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1200" initialPos="-700" />
         </service>
@@ -224,8 +224,8 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::SMultipleTF" >
-            <in key="currentTFPool" uid="${currentTFPool}" optional="yes" />
-            <inout key="tfPools" uid="${tfPools}" autoConnect="yes" />
+            <in key="currentTFPool" uid="${currentTFPool}" optional="true" />
+            <inout key="tfPools" uid="${tfPools}" autoConnect="true" />
             <out key="tfPool" uid="${currentTFPool}" />
             <config deleteicon="sight::module::ui::flaticons/RedDeleteFile.svg"
             newicon="sight::module::ui::flaticons/GreenNewFile.svg"
@@ -236,7 +236,7 @@
             exporticon="sight::module::ui::flaticons/BlueSave.svg"/>
         </service>
 
-        <service uid="tfMergerSvr" type="sight::module::data::SMergeTF" autoConnect="yes" >
+        <service uid="tfMergerSvr" type="sight::module::data::SMergeTF" autoConnect="true" >
             <in key="tfPool" uid="${currentTFPool}" />
             <inout key="tf" uid="${mergedTF}" />
         </service>

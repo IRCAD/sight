@@ -244,12 +244,12 @@
             </scene>
         </service>
 
-        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
@@ -267,7 +267,7 @@
             </scene>
         </service>
 
-        <service uid="lNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="lNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
             <inout key="image" uid="localImage" />
             <config layer="defaultLayer" priority="1" sliceIndex="axial" interactive="true" />
         </service>
@@ -397,12 +397,12 @@
             <start uid="lNegatoAdp" />
         </service>
 
-        <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+        <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
             <inout key="image" uid="localImage" />
         </service>
 
         <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::SPacsConfigurationInitializer" >
-            <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
+            <inout key="config" uid="pacsConfiguration" autoConnect="true" />
             <config
                 localApplicationTitle="SightViewer"
                 pacsHostName="localhost"
@@ -432,7 +432,7 @@
             <config icon="sight::module::ui::flaticons/BlueMagnifyingGlass.svg" />
         </service>
 
-        <service uid="previewSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="previewSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
@@ -449,21 +449,21 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="sliderIndexDicomPullerEditorSrv" type="sight::module::io::dimse::SSliceIndexDicomEditor" autoConnect="yes" >
+        <service uid="sliderIndexDicomPullerEditorSrv" type="sight::module::io::dimse::SSliceIndexDicomEditor" autoConnect="true" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="series" uid="previewDicom" />
             <inout key="image" uid="previewImage" />
             <config dicomReader="sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
-        <service uid="seriesPullerSrv" type="sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
+        <service uid="seriesPullerSrv" type="sight::module::io::dimse::SSeriesPuller" autoConnect="true">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="SightViewerDicomReaderConfig" />
         </service>
 
-        <service uid="localSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="localSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>

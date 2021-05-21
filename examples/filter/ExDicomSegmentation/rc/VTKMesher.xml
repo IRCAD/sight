@@ -106,7 +106,7 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="yes" >
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="series" uid="modelSeries" />
         </service>
@@ -124,12 +124,12 @@
             </scene>
         </service>
 
-        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="modelSeries" />
             <config layer="default" picker="" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="default" sliceIndex="axial" />
         </service>
@@ -158,16 +158,16 @@
             </config>
         </service>
 
-        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
+        <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true" >
             <inout key="modelSeries" uid="modelSeries" />
             <columns>
                 <organ_name>@organ_name</organ_name>
@@ -178,11 +178,11 @@
             <out key="object" uid="reconstructionUID" />
         </service>
 
-        <service uid="materialEditorSrv" type="sight::module::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
+        <service uid="materialEditorSrv" type="sight::module::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="true" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
-        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
+        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="true" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 

@@ -47,7 +47,7 @@ namespace sight::module::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="sight::module::geometry::base::SSwitchMatrices" autoConnect="yes">
+        <service uid="..." type="sight::module::geometry::base::SSwitchMatrices" autoConnect="true">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." />
@@ -63,7 +63,6 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SSwitchMatrices : public service::IController
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SSwitchMatrices, service::IController)
@@ -81,7 +80,7 @@ public:
     }
 
     MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_SLOT;
-    typedef core::com::Slot< void () > SwitchSlotType;
+    typedef core::com::Slot<void ()> SwitchSlotType;
 
     MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_TO_SLOT;
     typedef core::com::Slot<void (size_t)> SwitchToSlotType;

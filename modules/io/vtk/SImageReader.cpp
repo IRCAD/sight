@@ -92,7 +92,7 @@ void SImageReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1; i < ext.size(); i++)
+        for(size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -100,7 +100,7 @@ void SImageReader::openLocationDialog()
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(data::location::Folder::New(_sDefaultPath));
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -109,11 +109,11 @@ void SImageReader::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    result = data::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation(data::location::Folder::New(_sDefaultPath));
         this->setFile(result->getPath());
     }
     else
@@ -126,7 +126,7 @@ void SImageReader::openLocationDialog()
 
 SImageReader::SImageReader() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void SImageReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageReader::info( std::ostream& _sstream )
+void SImageReader::info(std::ostream& _sstream)
 {
     _sstream << "SImageReader::info";
 }
@@ -159,9 +159,9 @@ void SImageReader::info( std::ostream& _sstream )
 
 void SImageReader::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
-        const auto image = this->getLockedInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+        const auto image = this->getLockedInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
@@ -172,9 +172,9 @@ void SImageReader::updating()
         try
         {
             // Notify other image services that a new image has been loaded.
-            if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
+            if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
             {
-                auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
@@ -197,7 +197,8 @@ void SImageReader::updating()
 
 //------------------------------------------------------------------------------
 
-template< typename READER > typename READER::sptr configureReader(const std::filesystem::path& imgFile )
+template<typename READER>
+typename READER::sptr configureReader(const std::filesystem::path& imgFile)
 {
     typename READER::sptr reader = READER::New();
     reader->setFile(imgFile);
@@ -206,9 +207,11 @@ template< typename READER > typename READER::sptr configureReader(const std::fil
 
 //------------------------------------------------------------------------------
 
-bool SImageReader::loadImage( const std::filesystem::path& imgFile,
-                              const data::mt::locked_ptr< data::Image>& img,
-                              const SPTR(JobCreatedSignalType)& sigJobCreated)
+bool SImageReader::loadImage(
+    const std::filesystem::path& imgFile,
+    const data::mt::locked_ptr<data::Image>& img,
+    const SPTR(JobCreatedSignalType)& sigJobCreated
+)
 {
     bool ok = true;
 
@@ -218,15 +221,15 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
     sight::io::base::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")
     {
-        imageReader = configureReader< sight::io::vtk::ImageReader >( imgFile );
+        imageReader = configureReader<sight::io::vtk::ImageReader>(imgFile);
     }
     else if(ext == ".vti")
     {
-        imageReader = configureReader< sight::io::vtk::VtiImageReader >( imgFile );
+        imageReader = configureReader<sight::io::vtk::VtiImageReader>(imgFile);
     }
     else if(ext == ".mhd")
     {
-        imageReader = configureReader< sight::io::vtk::MetaImageReader >( imgFile );
+        imageReader = configureReader<sight::io::vtk::MetaImageReader>(imgFile);
     }
     else
     {
@@ -236,11 +239,11 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
 
         /* If we find the current extensions in the available readers, we use it */
         size_t i = 0;
-        for(; i < availableExtensions.size(); i++)
+        for( ; i < availableExtensions.size() ; i++)
         {
             if(availableExtensions.at(i) == ext)
             {
-                imageReader = configureReader< sight::io::vtk::BitmapImageReader >( imgFile );
+                imageReader = configureReader<sight::io::vtk::BitmapImageReader>(imgFile);
                 break;
             }
         }
@@ -250,12 +253,17 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         {
             i = 0;
             std::string bitmapExtensions = "";
-            for(; i < availableExtensions.size(); i++)
+            for( ; i < availableExtensions.size() ; i++)
             {
                 bitmapExtensions = bitmapExtensions + availableExtensions.at(i) + ", ";
             }
-            SIGHT_THROW_EXCEPTION(core::tools::Failed("Only " + bitmapExtensions +
-                                                      ".vtk, .vti and .mhd are supported."));
+
+            SIGHT_THROW_EXCEPTION(
+                core::tools::Failed(
+                    "Only " + bitmapExtensions
+                    + ".vtk, .vti and .mhd are supported."
+                )
+            );
         }
     }
 
@@ -276,12 +284,14 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
+
         // Raise exception  for superior level
         SIGHT_THROW_EXCEPTION(e);
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -289,15 +299,17 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
-    catch( ... )
+    catch(...)
     {
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
 

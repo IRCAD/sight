@@ -202,17 +202,17 @@ Detail of the ToolBar
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="myImage" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="meshOnNegato1" />
                 <config layer="default" picker="negato1default" />
             </service>
 
-            <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+            <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="pointList" uid="pointList1" />
                 <config layer="default" color="#619647" radius="5.0" />
             </service>
@@ -240,12 +240,12 @@ Detail of the ToolBar
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="meshOnNegato2" />
                 <config layer="default" picker="negato2default" />
             </service>
 
-            <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+            <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="pointList" uid="pointList2" />
                 <config layer="default" color="#619647" radius="5.0" />
             </service>
@@ -274,22 +274,22 @@ Detail of the ToolBar
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="meshOnNegato1" />
                 <config layer="default" />
             </service>
 
-            <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="meshOnNegato2" />
                 <config layer="default" transform="registrationMatrix" />
             </service>
 
-            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="myImage" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
                 <inout key="transform" uid="registrationMatrix" />
                 <config layer="default" transform="registrationMatrix" />
             </service>
@@ -314,7 +314,7 @@ Detail of the ToolBar
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="myImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>

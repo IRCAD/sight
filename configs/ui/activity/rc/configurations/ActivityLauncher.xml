@@ -179,7 +179,7 @@
 
         <!-- Launch the activity sequentially -->
         <service uid="activitySequencer" type="sight::module::ui::qt::activity::SSequencer" config="${SEQUENCER_CONFIG}" >
-            <inout key="seriesDB" uid="${seriesDB}" autoConnect="yes" />
+            <inout key="seriesDB" uid="${seriesDB}" autoConnect="true" />
         </service>
 
         <!-- ************************************ Begin connection declaration ************************************* -->

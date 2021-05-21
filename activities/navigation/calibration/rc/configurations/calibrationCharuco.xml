@@ -117,7 +117,7 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="yes">
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
         </service>

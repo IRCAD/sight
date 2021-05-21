@@ -89,82 +89,90 @@ static bool s_enableLog = initVTKLogFile();
 // ------------------------------------------------------------------------------
 
 TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::fwToolsToVtkMap::key_type& key )
+    const TypeTranslator::fwToolsToVtkMap::key_type& key
+)
 {
-    fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
-    SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end() );
+    fwToolsToVtkMap::const_iterator it = s_toVtk.find(key);
+    SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end());
     return it->second;
 }
 
 // ------------------------------------------------------------------------------
 
 TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::VtkTofwToolsMap::key_type& key )
+    const TypeTranslator::VtkTofwToolsMap::key_type& key
+)
 {
-    VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
-    SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end() );
+    VtkTofwToolsMap::const_iterator it = s_fromVtk.find(key);
+    SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end());
     return it->second;
 }
 
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    { core::tools::Type::create("int8" ), VTK_CHAR },
-    { core::tools::Type::create("uint8" ), VTK_UNSIGNED_CHAR },
+    {core::tools::Type::create("int8"), VTK_CHAR},
+    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR},
 
-    { core::tools::Type::create("int16"), VTK_SHORT },
-    { core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT },
+    {core::tools::Type::create("int16"), VTK_SHORT},
+    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT},
 
-    { core::tools::Type::create("int32"), VTK_INT },
-    { core::tools::Type::create("uint32"), VTK_UNSIGNED_INT },
+    {core::tools::Type::create("int32"), VTK_INT},
+    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT},
 
-    { core::tools::Type::create("float" ), VTK_FLOAT },
-    { core::tools::Type::create("double"), VTK_DOUBLE },
+    {core::tools::Type::create("float"), VTK_FLOAT},
+    {core::tools::Type::create("double"), VTK_DOUBLE},
 
-#if ( INT_MAX < LONG_MAX )
-    { core::tools::Type::create("int64"), VTK_LONG },
-    { core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG }
+#if (INT_MAX < LONG_MAX)
+    {
+        core::tools::Type::create("int64"), VTK_LONG
+    },
+    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG}
 #endif
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    { VTK_SIGNED_CHAR, core::tools::Type::create("int8" )  },
-    { VTK_CHAR, core::tools::Type::create("int8" )  },
-    { VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8" ) },
+    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")},
+    {VTK_CHAR, core::tools::Type::create("int8")},
+    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")},
 
-    { VTK_SHORT, core::tools::Type::create("int16")  },
-    { VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16") },
+    {VTK_SHORT, core::tools::Type::create("int16")},
+    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")},
 
-    { VTK_INT, core::tools::Type::create("int32") },
-    { VTK_UNSIGNED_INT, core::tools::Type::create("uint32") },
+    {VTK_INT, core::tools::Type::create("int32")},
+    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
 
-    { VTK_FLOAT, core::tools::Type::create("float" ) },
-    { VTK_DOUBLE, core::tools::Type::create("double") },
+    {VTK_FLOAT, core::tools::Type::create("float")},
+    {VTK_DOUBLE, core::tools::Type::create("double")},
 
-#if ( INT_MAX < LONG_MAX )
-    { VTK_LONG, core::tools::Type::create("int64") },
-    { VTK_UNSIGNED_LONG, core::tools::Type::create("uint64") },
+#if (INT_MAX < LONG_MAX)
+    {
+        VTK_LONG, core::tools::Type::create("int64")
+    },
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")},
 
-    { VTK___INT64, core::tools::Type::create("int64") },
-    { VTK_LONG_LONG, core::tools::Type::create("int64") },
+    {VTK___INT64, core::tools::Type::create("int64")},
+    {VTK_LONG_LONG, core::tools::Type::create("int64")},
 
-    { VTK_UNSIGNED___INT64, core::tools::Type::create("uint64") },
-    { VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64") },
+    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")},
+    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
 #else
-    { VTK_LONG, core::tools::Type::create("int32") },
-    { VTK_UNSIGNED_LONG, core::tools::Type::create("uint32") },
+    {
+        VTK_LONG, core::tools::Type::create("int32")
+    },
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")},
 #endif
 };
 
 // -----------------------------------------------------------------------------
 
-void toVTKImage( data::Image::csptr data,  vtkImageData* dst)
+void toVTKImage(data::Image::csptr data, vtkImageData* dst)
 {
-    vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
+    vtkSmartPointer<vtkImageImport> importer = vtkSmartPointer<vtkImageImport>::New();
 
-    configureVTKImageImport( importer, data );
+    configureVTKImageImport(importer, data);
 
     importer->Update();
 
@@ -173,20 +181,22 @@ void toVTKImage( data::Image::csptr data,  vtkImageData* dst)
 
 // -----------------------------------------------------------------------------
 
-template< typename IMAGETYPE >
+template<typename IMAGETYPE>
 void* newBuffer(size_t size)
 {
     IMAGETYPE* destBuffer;
     try
     {
-        destBuffer = new IMAGETYPE[ size ];
+        destBuffer = new IMAGETYPE[size];
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
-        SIGHT_ERROR("No enough memory to allocate an image of type "
-                    << core::tools::Type::create<IMAGETYPE>().string()
-                    << " and of size "<< size << "." << std::endl
-                    << e.what() );
+        SIGHT_ERROR(
+            "No enough memory to allocate an image of type "
+            << core::tools::Type::create<IMAGETYPE>().string()
+            << " and of size " << size << "." << std::endl
+            << e.what()
+        );
         throw;
     }
     return destBuffer;
@@ -194,8 +204,8 @@ void* newBuffer(size_t size)
 
 // -----------------------------------------------------------------------------
 
-template< typename IMAGETYPE >
-void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
+template<typename IMAGETYPE>
+void fromRGBBuffer(void* input, size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
@@ -207,7 +217,7 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
     IMAGETYPE* finalPtr = static_cast<IMAGETYPE*>(destBuffer) + size;
     IMAGETYPE valR, valG, valB;
 
-    while (destBufferTyped < finalPtr)
+    while(destBufferTyped < finalPtr)
     {
         valR                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.30));
         valG                 = static_cast<IMAGETYPE>(float((*(inputTyped++)) * 0.59));
@@ -218,8 +228,8 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
 
 // -----------------------------------------------------------------------------
 
-template< typename IMAGETYPE >
-void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
+template<typename IMAGETYPE>
+void fromRGBBufferColor(void* input, size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
@@ -230,7 +240,7 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
     IMAGETYPE* inputTyped      = static_cast<IMAGETYPE*>(input);
     IMAGETYPE* finalPtr        = static_cast<IMAGETYPE*>(destBuffer) + size;
 
-    while (destBufferTyped < finalPtr)
+    while(destBufferTyped < finalPtr)
     {
         (*destBufferTyped++) = (*(inputTyped++));
     }
@@ -238,9 +248,9 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
 
 // -----------------------------------------------------------------------------
 
-void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
+void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 {
-    SIGHT_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source );
+    SIGHT_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source);
 
     // ensure image size correct
 //    source->UpdateInformation();
@@ -251,7 +261,8 @@ void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
     if(dim == 2)
     {
         const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                        static_cast<size_t>(source->GetDimensions()[1]), 0};
+                                        static_cast<size_t>(source->GetDimensions()[1]), 0
+        };
         destination->setSize2(size);
 
         const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
@@ -264,7 +275,8 @@ void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
     {
         const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
                                         static_cast<size_t>(source->GetDimensions()[1]),
-                                        static_cast<size_t>(source->GetDimensions()[2])};
+                                        static_cast<size_t>(source->GetDimensions()[2])
+        };
         destination->setSize2(size);
 
         const data::Image::Spacing spacing =
@@ -277,31 +289,34 @@ void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
 
     const int nbComponents = source->GetNumberOfScalarComponents();
     const size_t size      = static_cast<size_t>(
-        std::accumulate(source->GetDimensions(),
-                        source->GetDimensions()+static_cast<size_t>(dim),
-                        std::max(static_cast<size_t>(3), static_cast<size_t>(nbComponents)),
-                        std::multiplies<size_t>())
-        );
+        std::accumulate(
+            source->GetDimensions(),
+            source->GetDimensions() + static_cast<size_t>(dim),
+            std::max(static_cast<size_t>(3), static_cast<size_t>(nbComponents)),
+            std::multiplies<size_t>()
+        )
+    );
     const void* input = source->GetScalarPointer();
 
-    if (size != 0)
+    if(size != 0)
     {
         void* destBuffer;
 
-        destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
+        destination->setType(TypeTranslator::translate(source->GetScalarType()));
         destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
-        if (nbComponents == 1)
+        if(nbComponents == 1)
         {
             destination->setPixelFormat(data::Image::PixelFormat::GRAY_SCALE);
         }
-        else if (nbComponents == 3)
+        else if(nbComponents == 3)
         {
             destination->setPixelFormat(data::Image::PixelFormat::RGB);
         }
-        else if (nbComponents == 4)
+        else if(nbComponents == 4)
         {
             destination->setPixelFormat(data::Image::PixelFormat::RGBA);
         }
+
         destination->resize();
 
         const auto dumpLock = destination->lock();
@@ -314,82 +329,98 @@ void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
 
 // ------------------------------------------------------------------------------
 
-void configureVTKImageImport( ::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage )
+void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage)
 {
     const auto dumpLock = _pDataImage->lock();
 
     if(_pDataImage->getNumberOfDimensions() == 2)
     {
-        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing2()[0],
-                                        _pDataImage->getSpacing2()[1],
-                                        0
-                                        );
+        _pImageImport->SetDataSpacing(
+            _pDataImage->getSpacing2()[0],
+            _pDataImage->getSpacing2()[1],
+            0
+        );
 
-        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin2()[0],
-                                        _pDataImage->getOrigin2()[1],
-                                        0
-                                        );
+        _pImageImport->SetDataOrigin(
+            _pDataImage->getOrigin2()[0],
+            _pDataImage->getOrigin2()[1],
+            0
+        );
 
-        _pImageImport->SetWholeExtent(  0, static_cast<int>(_pDataImage->getSize2()[0]) - 1,
-                                        0, static_cast<int>(_pDataImage->getSize2()[1]) - 1,
-                                        0, 0
-                                        );
+        _pImageImport->SetWholeExtent(
+            0,
+            static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+            0,
+            static_cast<int>(_pDataImage->getSize2()[1]) - 1,
+            0,
+            0
+        );
     }
     else
     {
-        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing2()[0],
-                                        _pDataImage->getSpacing2()[1],
-                                        _pDataImage->getSpacing2()[2]
-                                        );
+        _pImageImport->SetDataSpacing(
+            _pDataImage->getSpacing2()[0],
+            _pDataImage->getSpacing2()[1],
+            _pDataImage->getSpacing2()[2]
+        );
 
-        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin2()[0],
-                                        _pDataImage->getOrigin2()[1],
-                                        _pDataImage->getOrigin2()[2]
-                                        );
+        _pImageImport->SetDataOrigin(
+            _pDataImage->getOrigin2()[0],
+            _pDataImage->getOrigin2()[1],
+            _pDataImage->getOrigin2()[2]
+        );
 
-        _pImageImport->SetWholeExtent(  0, static_cast<int>(_pDataImage->getSize2()[0]) - 1,
-                                        0, static_cast<int>(_pDataImage->getSize2()[1]) - 1,
-                                        0, static_cast<int>(_pDataImage->getSize2()[2]) - 1
-                                        );
+        _pImageImport->SetWholeExtent(
+            0,
+            static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+            0,
+            static_cast<int>(_pDataImage->getSize2()[1]) - 1,
+            0,
+            static_cast<int>(_pDataImage->getSize2()[2]) - 1
+        );
     }
 
-    _pImageImport->SetNumberOfScalarComponents(static_cast<int>( _pDataImage->getNumberOfComponents() ));
+    _pImageImport->SetNumberOfScalarComponents(static_cast<int>(_pDataImage->getNumberOfComponents()));
 
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();
+
     // no copy, no buffer destruction/management
-    _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
+    _pImageImport->SetImportVoidPointer(_pDataImage->getBuffer());
+
     // used to set correct pixeltype to VtkImage
-    _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
+    _pImageImport->SetDataScalarType(TypeTranslator::translate(_pDataImage->getType()));
 }
 
 // -----------------------------------------------------------------------------
 
-vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( data::Matrix4::csptr _transfoMatrix )
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::Matrix4::csptr _transfoMatrix)
 {
     auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-    for(std::uint8_t l = 0; l < 4; l++)
+    for(std::uint8_t l = 0 ; l < 4 ; l++)
     {
-        for(std::uint8_t c = 0; c < 4; c++)
+        for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
             matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
         }
     }
+
     return matrix;
 }
 
 // -----------------------------------------------------------------------------
 
-bool fromVTKMatrix( vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix)
+bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix)
 {
     bool res = true;
-    for(std::uint8_t l = 0; l < 4; l++)
+    for(std::uint8_t l = 0 ; l < 4 ; l++)
     {
-        for(std::uint8_t c = 0; c < 4; c++)
+        for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
             _transfoMatrix->setCoefficient(l, c, _matrix->GetElement(l, c));
         }
     }
+
     return res;
 }
 

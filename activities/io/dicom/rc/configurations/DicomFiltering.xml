@@ -123,12 +123,12 @@
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
-        <service uid="readingSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="readingSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="readingSelection" />
             <inout key="seriesDB" uid="readingSeriesDB" />
         </service>
 
-        <service uid="readingViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="readingViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="readingSelection" />
             <parentView wid="readingPreview" />
             <configs>
@@ -154,12 +154,12 @@
         </service>
 
         <!-- LOADED SELECTION -->
-        <service uid="loadedSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="loadedSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="loadedSelection" />
             <inout key="seriesDB" uid="loadedSeriesDB" />
         </service>
 
-        <service uid="loadedViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="loadedViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>

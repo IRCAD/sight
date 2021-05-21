@@ -36,7 +36,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API IToolBar : public service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IToolBar, service::IService)
@@ -70,7 +69,7 @@ protected:
      * Example of configuration
      * @code{.xml}
        <service uid="toolbar2" type="ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
-     * autoConnect="no"
+     * autoConnect="false"
      *>
            <gui>
                <layout hideActions="false" style="ToolButtonIconOnly">
@@ -123,7 +122,7 @@ protected:
 
 private:
 
-    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
+    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
 
     ui::base::layoutManager::IToolBarLayoutManager::sptr m_layoutManager;
     ui::base::registry::ToolBar::sptr m_registry;

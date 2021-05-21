@@ -37,12 +37,13 @@
 
 namespace sight::module::ui::qt::calibration
 {
+
 /**
  * @brief   SCameraInformationEditor service is used to display the intrinsic calibration of a camera.
  *
  * @subsection Configuration XML
  * @code
-    <service uid="..." type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+    <service uid="..." type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
         <in key="camera" uid="..." />
     </service>
    @endcode
@@ -59,6 +60,7 @@ class MODULE_UI_QT_CLASS_API SCameraInformationEditor : public QObject,
 Q_OBJECT;
 
 public:
+
     SIGHT_DECLARE_SERVICE(SCameraInformationEditor, sight::ui::base::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
@@ -185,6 +187,6 @@ protected:
      * @brief Camera skew.
      */
     QLabel* m_skew;
-
 };
+
 } // namespace uiCameraSelectorQt

@@ -50,7 +50,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="yes" >
+        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true" >
             <in key="image" uid="${image}" />
         </service>
 

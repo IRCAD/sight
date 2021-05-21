@@ -103,7 +103,7 @@ namespace sight::module::io::realsense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::sight::module::io::realsense::SScan" autoConnect="no">
+   <service uid="videoGrabber" type ="::sight::module::io::realsense::SScan" autoConnect="false">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
@@ -183,13 +183,13 @@ public:
     SIGHT_DECLARE_SERVICE(SScan, ::sight::service::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
-    typedef core::com::Signal< void (double) > DistanceComputedSignalType;
+    typedef core::com::Signal<void (double)> DistanceComputedSignalType;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef core::com::Signal< void (void) > DevicePlayedSignalType;
+    typedef core::com::Signal<void (void)> DevicePlayedSignalType;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef core::com::Signal< void (void) > FilePlayedSignalType;
+    typedef core::com::Signal<void (void)> FilePlayedSignalType;
 
     /// Constructor. Initializes signals/slots.
     MODULE_IO_REALSENSE_API SScan() noexcept;
@@ -254,7 +254,6 @@ private:
             minRange        = s_MIN_DEPTH_RANGE;
             needHardReset   = false;
             streamToAlignTo = RS2_STREAM_COUNT;
-
         }
     };
 
@@ -262,33 +261,37 @@ private:
     /// (see https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md)
     struct FilterSettings
     {
-        bool enableSpacial{false}; ///< Enable Spatial Edge-Preserving filter
-        bool enableTemporal{false}; ///< Enable Temporal filter
-        bool enableHolesFilling{false}; ///< Enable Holes Filling filter
+        bool enableSpacial {false}; ///< Enable Spatial Edge-Preserving filter
+        bool enableTemporal {false}; ///< Enable Temporal filter
+        bool enableHolesFilling {false}; ///< Enable Holes Filling filter
 
         // spacial filter settings
-        std::uint8_t spacialMagnitude{2}; ///<  Number of filter iterations [1-5]
+        std::uint8_t spacialMagnitude {2}; ///<  Number of filter iterations [1-5]
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter. Alpha = 0 - infinite filter [0.25-1]
-        float spacialSmoothAlpha{0.5f};
+        float spacialSmoothAlpha {0.5f};
+
         /// Step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
-        std::uint8_t spacialSmoothDelta{20};
+        std::uint8_t spacialSmoothDelta {20};
+
         /// An in-place heuristic symmetric hole-filling mode applied horizontally during the filter passes. Intended to
         /// rectify minor artefacts with minimal performance impact
         /// [0-5] range mapped to [none,2,4,8,16,unlimited] pixels.
-        std::uint8_t spacialHoleFilling{0};
+        std::uint8_t spacialHoleFilling {0};
 
         // temporal filter settings
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter . Alpha = 0 - infinite filter [0-1]
-        float temporalSmoothAlpha{0.4f};
+        float temporalSmoothAlpha {0.4f};
+
         /// Step-size boundary. Establishes the threshold used to preserve surfaces (edges) [1-100]
-        std::uint8_t temporalSmoothDelta{20};
+        std::uint8_t temporalSmoothDelta {20};
+
         /// Persistency index [0-8]: set of predefined rules (masks) that govern when missing pixels will be replace
         /// with the last valid value so that the data will remain persistent over time.
-        std::uint8_t temporalPersistency{3};
+        std::uint8_t temporalPersistency {3};
 
         // holes filling settings
         /// Control the data that will be used to fill the invalid pixels [0-2]
-        std::uint8_t holeFilling{1};
+        std::uint8_t holeFilling {1};
     };
 
     /// On which frame map the pointcloud.
@@ -296,27 +299,28 @@ private:
     {
         COLOR,
         DEPTH,
-        INFRARED,
+        INFRARED
     } PointcloudColormapEnumType;
 
     // Overriden functions/slots
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
     void startCamera() override;
+
     /// SLOT : Stops to grab frames.
     void stopCamera() override;
+
     /// SLOT : Pause the grabbing
     void pauseCamera() override;
 
     /// Does nothing (re-implemented from IGrabber)
     void toggleLoopMode() override
     {
-
     }
+
     /// Does nothing (re-implemented from IGrabber)
     void setPosition(int64_t) override
     {
-
     }
 
     ///SLOT: Start recording session, also open dialog to select filename if m_recordingFileName is not set.
@@ -437,25 +441,25 @@ private:
     ::rs2::device m_currentDevice;
 
     /// Map of json presets (in RC folder).
-    std::map< std::string, ::fs::path > m_jsonPresets;
+    std::map<std::string, ::fs::path> m_jsonPresets;
 
     /// Current device ID (to sort cameras if multiple realsense are plugged-in).
     std::string m_deviceID;
 
     /// True when grabbing thread is running, set to false to stop the thread.
-    std::atomic_bool m_running { false };
+    std::atomic_bool m_running {false};
 
     /// True to pause the streaming, false otherwise
-    std::atomic_bool m_pause { false };
+    std::atomic_bool m_pause {false};
 
     /// True to push infrared frames in color TL.
-    std::atomic_bool m_switchInfra2Color { false };
+    std::atomic_bool m_switchInfra2Color {false};
 
     /// True when the first real frame has been grabbed. Set the point cloud output.
-    std::atomic_bool m_grabbingStarted { false };
+    std::atomic_bool m_grabbingStarted {false};
 
     /// True if device needs to be recorded.
-    bool m_record { false };
+    bool m_record {false};
 
     /// Name of the recording file.
     std::string m_recordingFileName;
@@ -464,7 +468,7 @@ private:
     std::string m_playbackFileName;
 
     /// Enable if camera source = FILE, enable playing from .bag files.
-    bool m_playbackMode { false };
+    bool m_playbackMode {false};
 
     /// Condition Variable used to pause grabbing thread
     std::condition_variable m_pauseConditionVariable;
@@ -472,4 +476,5 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 };
+
 } //namespace sight::module::io::realsense

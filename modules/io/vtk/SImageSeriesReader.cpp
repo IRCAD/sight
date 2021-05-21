@@ -64,7 +64,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SImageSeriesReader::SImageSeriesReader() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void SImageSeriesReader::openLocationDialog()
     if(ext.size() > 0)
     {
         availableExtensions = "*" + ext.at(0);
-        for(size_t i = 1; i < ext.size(); i++)
+        for(size_t i = 1 ; i < ext.size() ; i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
         }
@@ -103,7 +103,7 @@ void SImageSeriesReader::openLocationDialog()
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an ImageSeries" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(data::location::Folder::New(_sDefaultPath));
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
@@ -112,11 +112,11 @@ void SImageSeriesReader::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    result = data::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
         _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        dialogFile.saveDefaultLocation(data::location::Folder::New(_sDefaultPath));
         this->setFile(result->getPath());
     }
     else
@@ -146,7 +146,7 @@ void SImageSeriesReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesReader::info(std::ostream& _sstream )
+void SImageSeriesReader::info(std::ostream& _sstream)
 {
     _sstream << "SImageSeriesReader::info";
 }
@@ -170,6 +170,7 @@ void initSeries(data::Series::sptr series)
         const std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
         physicians.push_back(username);
     }
+
     series->setPerformingPhysiciansName(physicians);
     series->getStudy()->setInstanceUID(instanceUID);
     series->getStudy()->setDate(date);
@@ -180,20 +181,20 @@ void initSeries(data::Series::sptr series)
 
 void SImageSeriesReader::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
         const auto imageSeries =
-            this->getLockedInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
+            this->getLockedInOut<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {
-            data::mt::locked_ptr< data::Image> image(data::Image::New());
+            data::mt::locked_ptr<data::Image> image(data::Image::New());
 
-            if ( SImageReader::loadImage( this->getFile(), image, m_sigJobCreated ) )
+            if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
             {
                 imageSeries->setImage(image.get_shared());
                 initSeries(imageSeries.get_shared());
@@ -212,9 +213,9 @@ void SImageSeriesReader::updating()
 
 void SImageSeriesReader::notificationOfDBUpdate()
 {
-    const auto imageSeries = this->getLockedInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
+    const auto imageSeries = this->getLockedInOut<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
 
-    auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

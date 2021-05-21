@@ -36,6 +36,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -51,7 +52,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="negato" type="sight::module::viz::scene2d::adaptor::SNegato" autoConnect="yes">
+   <service uid="negato" type="sight::module::viz::scene2d::adaptor::SNegato" autoConnect="true">
        <inout key="image" uid="..." />
        <inout key="tf" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" />
@@ -74,7 +75,6 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SNegato : public sight::viz::scene2d::IAdaptor
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SNegato, ::sight::viz::scene2d::IAdaptor)
@@ -108,7 +108,7 @@ protected:
     /// Retrives the current transfer function
     MODULE_VIZ_SCENE2D_API void swapping(const KeyType& key) override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /// Slot: updates the TF
     MODULE_VIZ_SCENE2D_API void updateTF();
@@ -119,6 +119,7 @@ private:
      * @name Slots
      * @{
      */
+
     /// Slot: update image slice index
     void updateSliceIndex(int axial, int frontal, int sagittal);
 
@@ -136,13 +137,20 @@ private:
 
     QImage* createQImage();
 
-    void updateBufferFromImage( QImage* qimg );
+    void updateBufferFromImage(QImage* qimg);
 
-    void changeImageMinMaxFromCoord( sight::viz::scene2d::data::Coord& oldCoord,
-                                     sight::viz::scene2d::data::Coord& newCoord );
+    void changeImageMinMaxFromCoord(
+        sight::viz::scene2d::data::Coord& oldCoord,
+        sight::viz::scene2d::data::Coord& newCoord
+    );
 
-    static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
-                             double tfWin, const data::TransferFunction::csptr& tf);
+    static QRgb getQImageVal(
+        const size_t index,
+        const short* buffer,
+        double wlMin,
+        double tfWin,
+        const data::TransferFunction::csptr& tf
+    );
 
     QImage* m_qimg;
 
@@ -168,4 +176,5 @@ private:
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

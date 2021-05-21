@@ -170,7 +170,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
             </service>
@@ -201,12 +201,12 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater" >
-                <in key="frameTL" uid="frameTL" autoConnect="yes" />
+                <in key="frameTL" uid="frameTL" autoConnect="true" />
                 <inout key="frame" uid="videoImage" />
             </service>
 
             <service uid="opticalFlowSrv" type="sight::module::io::video::SOpticalFlow" worker="ofWorker" >
-                <in key="timeline" uid="frameTL" autoConnect="yes" />
+                <in key="timeline" uid="frameTL" autoConnect="true" />
                 <config scaleFactor="3.6" />
             </service>
 
@@ -260,4 +260,3 @@
         </config>
     </extension>
 </plugin>
-

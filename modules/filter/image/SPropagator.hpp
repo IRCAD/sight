@@ -58,7 +58,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::SPropagator">
-       <in key="imageIn" uid="..." autoConnect="yes" />
+       <in key="imageIn" uid="..." autoConnect="true" />
        <inout key="imageOut" uid="..." />
        <value>1</value>
        <radius>50</radius>
@@ -184,7 +184,6 @@ private:
 
     /// Set to 'true' if we currently drawing in the image.
     bool m_drawing;
-
 };
 
 } // namespace sight::module::filter::image.

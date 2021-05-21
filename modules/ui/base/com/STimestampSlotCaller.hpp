@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -41,7 +42,7 @@ namespace com
  *
  *
  * @code{.xml}
-   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="no">
+   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="false">
         <slots>
             <slot>hasSlotsId/slotKey</slot>
             <slot>hasSlots2Id/slot2Key</slot>
@@ -68,8 +69,8 @@ protected:
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string HasSlotIDType;
-    typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
-    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+    typedef std::pair<HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
+    typedef std::vector<SlotInfoType> SlotInfoContainerType;
 
     /// Does nothing
     MODULE_UI_BASE_API void starting() override;
@@ -90,4 +91,5 @@ protected:
 };
 
 } // namespace com
+
 } // namespace sight::module::ui::base

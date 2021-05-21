@@ -35,6 +35,7 @@
 
 namespace sight::ui::base
 {
+
 namespace view
 {
 
@@ -49,7 +50,7 @@ namespace view
  *
  *  * @section XML XML Configuration
  * @code{.xml}
-   <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="yes" >
+   <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="true" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -81,7 +82,7 @@ protected:
 
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
-    typedef std::map< std::string, std::string> ReplaceMapType;
+    typedef std::map<std::string, std::string> ReplaceMapType;
 
     /// Constructor. Do nothing.
     UI_BASE_API IActivityView();
@@ -112,8 +113,8 @@ protected:
 
     /// Create the activity series given in 'mainActivity' configuration
     UI_BASE_API data::ActivitySeries::sptr createMainActivity() const override;
-
 };
 
 } // namespace view
+
 } // namespace sight::ui::base

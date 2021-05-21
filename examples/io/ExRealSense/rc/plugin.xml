@@ -318,13 +318,13 @@
                 </scene>
             </service>
 
-            <service uid="DMDepthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="DMDepthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="video" />
             </service>
 
-            <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
@@ -350,12 +350,12 @@
                 </scene>
             </service>
 
-            <service uid="VVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="VVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="imageVideo" />
                 <config layer="video" />
             </service>
 
-            <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
@@ -378,7 +378,7 @@
                 </scene>
             </service>
 
-            <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="default" autoresetcamera="no" radius="1" />
             </service>
@@ -501,7 +501,7 @@
 
             <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
              <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
-                 <inout key="source" uid="RGBDCameraSeries" autoConnect="yes" >
+                 <inout key="source" uid="RGBDCameraSeries" autoConnect="true" >
                      <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
                      <extract from="@cameras.1" /> <!-- Camp path of the first camera in cameraSeries -->
                      <extract from="@extrinsic_matrices.1" />

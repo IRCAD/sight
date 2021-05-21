@@ -34,7 +34,6 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SMenuBar : public ::sight::ui::base::IMenuBar
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SMenuBar, ::sight::ui::base::IMenuBar)
@@ -56,7 +55,7 @@ protected:
      * Example of configuration
      * @code{.xml}
        <service uid="menuBar" type="ui::base::IMenuBar" impl="::sight::module::ui::base::SMenuBar"
-     * autoConnect="no"
+     * autoConnect="false"
      *>
           <gui>
               <layout>

@@ -36,7 +36,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API IMenu : public service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IMenu, service::IService)
@@ -70,7 +69,7 @@ protected:
      * Example of configuration
      * @code{.xml}
         <service uid="myMenu" type="ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
-     * autoConnect="no" >
+     * autoConnect="false" >
             <gui>
                 <layout hideAction="false">
                     <menuItem name="My item 1" shortcut="1" style="check" />
@@ -117,7 +116,7 @@ protected:
 
 private:
 
-    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
+    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
 
     ui::base::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
     ui::base::registry::Menu::sptr m_registry;

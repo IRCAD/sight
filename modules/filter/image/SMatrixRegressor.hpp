@@ -42,7 +42,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::filter::image::SMatrixRegressor">
-       <in key="matrixList" uid="..." autoConnect="yes" />
+       <in key="matrixList" uid="..." autoConnect="true" />
        <in key="pointList" uid="..." />
        <inout key="optimalMatrix" uid="..." />
    </service>
@@ -95,7 +95,6 @@ protected:
      * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
-
 };
 
 } // namespace sight::module::filter::image.

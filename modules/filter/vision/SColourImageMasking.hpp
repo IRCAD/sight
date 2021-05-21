@@ -51,7 +51,7 @@ namespace sight::module::filter::vision
  * @section XML XML Configuration
  * @code{.xml}
         <service uid="..." type="sight::module::filter::vision::SColourImageMasking" >
-            <in key="videoTL" uid="..." autoConnect="yes" />
+            <in key="videoTL" uid="..." autoConnect="true" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
             <config scaleFactor="0.5" noise="30" foregroundComponents="5" backgroundComponents="5"/>
@@ -136,7 +136,7 @@ private:
     void clearMaskTL();
 
     /// Object performing the Expectation Maximization segmentation.
-    std::unique_ptr< sight::filter::vision::Masker > m_masker;
+    std::unique_ptr<sight::filter::vision::Masker> m_masker;
 
     /// Current timestamp.
     core::HiResClock::HiResClockType m_lastVideoTimestamp;

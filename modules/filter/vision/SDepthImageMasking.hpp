@@ -47,7 +47,7 @@ namespace sight::module::filter::vision
     <service uid="..." type="sight::module::filter::vision::SDepthImageMasking" worker="...">
         <in key="maskImage" uid="..." />
         <in key="videoImage" uid="..." />
-        <in key="depthImage" uid="..." autoConnect="yes" />
+        <in key="depthImage" uid="..." autoConnect="true" />
         <inout key="foregroundImage" uid="..." />
     </service>
    @endcode
@@ -69,6 +69,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::IOperator
 {
 public:
+
     SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::IOperator)
 
     /// Initializes slots
@@ -106,10 +107,12 @@ private:
 
     /// Mask image to perform computation only inside this mask.
     ::cv::Mat m_cvMaskImage;
+
     /// Depth image inside the mask to compute the depth difference with the current image.
     ::cv::Mat m_cvDepthMaskImage;
+
     /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
-    int m_threshold{10};
+    int m_threshold {10};
 };
 
 } // namespace sight::module::filter::vision

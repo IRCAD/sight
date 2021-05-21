@@ -34,6 +34,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -67,7 +68,7 @@ namespace activity
  * @section XML XML Configuration
  * @code{.xml}
     <service  type="sight::module::ui::qt::activity::SSequencer">
-        <inout key="seriesDB" uid=""  autoConnect="yes" />
+        <inout key="seriesDB" uid=""  autoConnect="true" />
         <in    key="requirementOverrides" uid="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
@@ -124,13 +125,13 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr) > DataRequiredSignalType;
-    typedef core::com::Signal<void (bool) > EnabledPreviousSignalType;
-    typedef core::com::Signal<void (bool) > EnabledNextSignalType;
-    /**
-     * @}
-     */
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> DataRequiredSignalType;
+    typedef core::com::Signal<void (bool)> EnabledPreviousSignalType;
+    typedef core::com::Signal<void (bool)> EnabledNextSignalType;
+/**
+ * @}
+ */
 
 public Q_SLOTS:
 
@@ -196,4 +197,5 @@ private:
 };
 
 } // namespace activity
+
 } // namespace sight::module::ui::qt

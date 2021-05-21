@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/io/vtk/config.hpp"  // Declaration of class and function export
+#include "modules/io/vtk/config.hpp" // Declaration of class and function export
 
 #include <io/base/service/IReader.hpp> // Definition of abstract reader class
 
@@ -31,12 +31,16 @@
 // Pre-definition of data::Image to avoid inclusion file
 namespace sight::data
 {
+
 class Image;
+
 }
 
 namespace sight::core::jobs
 {
+
 class IJob;
+
 }
 
 namespace sight::module::io::vtk
@@ -68,15 +72,15 @@ namespace sight::module::io::vtk
  */
 class MODULE_IO_VTK_CLASS_API SImageReader : public sight::io::base::service::IReader
 {
-
 public:
+
     ~SImageReader() noexcept
     {
     }
 
     SIGHT_DECLARE_SERVICE(SImageReader, sight::io::base::service::IReader)
 
-    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
 
     /**
      * @brief Configure the image path with a dialogBox.
@@ -105,9 +109,11 @@ public:
      * @param[out] image new empty image that will contain image loaded, if reading process is a success.
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
-    MODULE_IO_VTK_API static bool loadImage( const std::filesystem::path& vtkFile,
-                                             const data::mt::locked_ptr< data::Image>& img,
-                                             const SPTR(JobCreatedSignalType)& sigJobCreated);
+    MODULE_IO_VTK_API static bool loadImage(
+        const std::filesystem::path& vtkFile,
+        const data::mt::locked_ptr<data::Image>& img,
+        const SPTR(JobCreatedSignalType)& sigJobCreated
+    );
 
 protected:
 
@@ -131,7 +137,7 @@ protected:
     MODULE_IO_VTK_API void updating() override;
 
     /// Info method gives some informations on service.
-    MODULE_IO_VTK_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -142,7 +148,6 @@ private:
     std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
-
 };
 
 } // namespace sight::module::io::vtk

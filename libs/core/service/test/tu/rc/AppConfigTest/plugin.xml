@@ -10,7 +10,7 @@
         <config>
             <object uid="${TEST_IMAGE}" type="sight::data::Image" />
 
-            <service uid="myTestService1" type="sight::service::ut::TestServiceImplementationImage" autoConnect="no">
+            <service uid="myTestService1" type="sight::service::ut::TestServiceImplementationImage" autoConnect="false">
                 <in key="data" uid="${TEST_IMAGE}" />
             </service>
 
@@ -48,7 +48,7 @@
             <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation" />
             <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" />
             <service uid="TestService3Uid" type="sight::service::ut::TestServiceImplementation">
-                <in key="data" uid="data2Id" optional="yes" />
+                <in key="data" uid="data2Id" optional="true" />
             </service>
             <service uid="TestService4Uid" type="sight::service::ut::TestServiceImplementation">
                 <in key="data" uid="data2Id" />
@@ -91,18 +91,18 @@
             <service uid="TestService1Uid" type="sight::service::ut::TestSrvAutoconnect">
                 <in key="data1" uid="data1Id" />
             </service>
-            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" autoConnect="yes">
+            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" autoConnect="true">
                 <in key="data1" uid="data1Id" />
                 <inout key="data2" uid="data2Id" />
             </service>
             <service uid="TestService3Uid" type="sight::service::ut::TestSrvAutoconnect">
-                <in key="data1" uid="data1Id" autoConnect="yes" />
-                <inout key="data2" uid="data2Id" autoConnect="yes" />
+                <in key="data1" uid="data1Id" autoConnect="true" />
+                <inout key="data2" uid="data2Id" autoConnect="true" />
             </service>
             <service uid="TestService4Uid" type="sight::service::ut::TestSrvAutoconnect">
                 <in key="data3" uid="data3Id" />
             </service>
-            <service uid="TestService5Uid" type="sight::service::ut::TestSrvAutoconnect" autoConnect="yes">
+            <service uid="TestService5Uid" type="sight::service::ut::TestSrvAutoconnect" autoConnect="true">
                 <in key="data1" uid="data1Id" />
                 <in key="data3" uid="data3Id" />
             </service>
@@ -213,16 +213,16 @@
             </service>
 
             <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation">
-                <in key="data1" uid="data1Id" autoConnect="yes" />
-                <in key="data2" uid="data2Id" autoConnect="no"  optional="yes" />
-                <in key="data3" uid="data3Id" autoConnect="no"  optional="yes" />
-                <in key="data4" uid="data4Id" autoConnect="yes" optional="yes" />
+                <in key="data1" uid="data1Id" autoConnect="true" />
+                <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
+                <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
+                <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
             </service>
             <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" >
-                <in key="data5" uid="data5Id" autoConnect="yes" />
-                <in key="data2" uid="data2Id" autoConnect="no"  optional="yes" />
-                <in key="data3" uid="data3Id" autoConnect="no"  optional="yes" />
-                <in key="data4" uid="data4Id" autoConnect="yes" optional="yes" />
+                <in key="data5" uid="data5Id" autoConnect="true" />
+                <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
+                <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
+                <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
             </service>
 
             <connect>
@@ -259,20 +259,20 @@
             </service>
 
             <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation">
-                <in key="data1" uid="data1Id" autoConnect="yes" />
-                <in group="dataGroup" autoConnect="yes">
+                <in key="data1" uid="data1Id" autoConnect="true" />
+                <in group="dataGroup" autoConnect="true">
                     <key uid="data2Id" />
-                    <key uid="data3Id" optional="yes" />
+                    <key uid="data3Id" optional="true" />
                 </in>
             </service>
             <service uid="TestService2Uid" type="sight::service::ut::TestSrvAutoconnect" >
                 <in group="dataGroup0">
                     <key uid="data1Id" />
-                    <key uid="data2Id" autoConnect="yes" optional="yes" />
+                    <key uid="data2Id" autoConnect="true" optional="true" />
                 </in>
                 <in group="dataGroup1">
                     <key uid="data3Id" />
-                    <key uid="data4Id" autoConnect="yes" />
+                    <key uid="data4Id" autoConnect="true" />
                     <key uid="data5Id" />
                 </in>
             </service>

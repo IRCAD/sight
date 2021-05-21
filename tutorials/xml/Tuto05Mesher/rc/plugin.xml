@@ -136,7 +136,7 @@
                 Visualization, reading and writing service creation.
             -->
             <service uid="imageSrv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="myImage" autoConnect="yes" />
+                <in key="image" uid="myImage" autoConnect="true" />
             </service>
 
             <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
@@ -154,7 +154,7 @@
                 Visualization, reading and writing service creation.
             -->
             <service uid="meshSrv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="myMesh" autoConnect="yes" />
+                <in key="mesh" uid="myMesh" autoConnect="true" />
             </service>
 
             <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >

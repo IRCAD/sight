@@ -35,18 +35,23 @@
 
 namespace sight::data
 {
+
 class FrameTL;
 class MatrixTL;
+
 }
 
 namespace sight::data
 {
+
 class Image;
 class Matrix4;
+
 }
 
 namespace sight::module::sync
 {
+
 /**
  * @brief   SMatrixTLSynchronizer service synchronizes tracking matrices.
  *
@@ -58,7 +63,7 @@ namespace sight::module::sync
  *
  * @code{.xml}
      <service uid="matrixToolsSynchronizer" type="sight::module::sync::SMatrixTLSynchronizer">
-         <in key="matrixTL" uid="matrixToolsTL" autoConnect="yes" />
+         <in key="matrixTL" uid="matrixToolsTL" autoConnect="true" />
          <inout group="matrices">
              <key uid="markerEndoMX" />
              <key uid="tipEndoMX" />
@@ -76,13 +81,12 @@ namespace sight::module::sync
  */
 class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public service::ISynchronizer
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SMatrixTLSynchronizer, service::ISynchronizer)
 
-    typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
-    typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    typedef core::com::Signal<void (int)> MatrixSynchronizedSignalType;
+    typedef core::com::Signal<void (int)> MatrixUnsynchronizedSignalType;
 
     /**
      * @brief Constructor.
@@ -96,7 +100,7 @@ public:
     {
     }
 
-    typedef std::map< unsigned long, std::string > MatrixIndexNameType;
+    typedef std::map<unsigned long, std::string> MatrixIndexNameType;
 
 protected:
 

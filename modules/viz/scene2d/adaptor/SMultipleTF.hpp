@@ -33,6 +33,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -53,7 +54,7 @@ namespace adaptor
  * @code{.xml}
    <service uid="..." type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
-       <in key="currentTF" uid="..." optional="yes" />
+       <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
@@ -144,13 +145,13 @@ private:
     struct SubTF
     {
         /// Contains the TF data.
-        data::TransferFunction::sptr m_tf { nullptr };
+        data::TransferFunction::sptr m_tf {nullptr};
 
         /// Sets the z value in the local layer.
-        int m_zIndex { 0 };
+        int m_zIndex {0};
 
         /// Contains a set of graphic point and its coordinates in the window/level space.
-        std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > > m_TFPoints;
+        std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> > m_TFPoints;
 
         /// Contains the graphic gradient.
         QGraphicsPolygonItem* m_TFPolygon;
@@ -201,10 +202,12 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildLinearPolygons(SubTF* const _subTF,
-                             QVector<QPointF>& _position,
-                             QLinearGradient& _grad,
-                             double _distanceMax);
+    void buildLinearPolygons(
+        SubTF* const _subTF,
+        QVector<QPointF>& _position,
+        QLinearGradient& _grad,
+        double _distanceMax
+    );
 
     /**
      * @brief Creates lines and nearest gradient polygons of a subTF.
@@ -213,10 +216,12 @@ private:
      * @param _grad the gradient to create.
      * @param _distanceMax the maximum distance used by the gradient.
      */
-    void buildNearestPolygons(SubTF* const _subTF,
-                              QVector<QPointF>& _position,
-                              QLinearGradient& _grad,
-                              double _distanceMax);
+    void buildNearestPolygons(
+        SubTF* const _subTF,
+        QVector<QPointF>& _position,
+        QLinearGradient& _grad,
+        double _distanceMax
+    );
 
     /// Adds graphic items of @ref m_subTF to @ref m_layer at the right z-index.
     void buildLayer();
@@ -235,7 +240,7 @@ private:
      * @param _event the 2D scene event.
      * @return A list of subTF.
      */
-    std::vector< SubTF* > getMatchingSubTF(const sight::viz::scene2d::data::Event& _event) const;
+    std::vector<SubTF*> getMatchingSubTF(const sight::viz::scene2d::data::Event& _event) const;
 
     /**
      * @brief Filters the event to call the right methods from mouse informations.
@@ -251,7 +256,7 @@ private:
      *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /**
      * @brief Finds the nearest subTF and set it a the current one.
@@ -266,7 +271,7 @@ private:
      * @param _subTF the selected subTF.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonClickOnPointEvent(SubTF* const _subTF, std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void leftButtonClickOnPointEvent(SubTF* const _subTF, std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint);
 
     /**
      * @brief Move @ref m_capturedTFPoint to the new mouse position and update the related TF.
@@ -290,16 +295,20 @@ private:
      * @param _subTF the selected subTF.
      * @param _TFPoint the selected TF point.
      */
-    void rightButtonClickOnPointEvent(SubTF* const _subTF,
-                                      std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void rightButtonClickOnPointEvent(
+        SubTF* const _subTF,
+        std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+    );
 
     /**
      * @brief Changes the TF point color by opening a color dialog and update the related TF.
      * @param _subTF the selected subTF.
      * @param _TFPoint the selected TF point.
      */
-    void leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
-                                           std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint);
+    void leftButtonDoubleClickOnPointEvent(
+        SubTF* const _subTF,
+        std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+    );
 
     /**
      * @brief Adds a new TF point to the current subTF and update the related TF.
@@ -395,7 +404,7 @@ private:
     void addTrapeze(const sight::viz::scene2d::data::Event& _event);
 
     /// Defines the size of TF points in a ratio relative to the window.
-    float m_pointSize { 0.03f };
+    float m_pointSize {0.03f};
 
     /// Defines the pen used by gradients.
     QPen m_polygonsPen;
@@ -404,13 +413,13 @@ private:
     QPen m_pointsPen;
 
     /// Defines the opacity used for TF exepted the current one.
-    float m_secondOpacity { 0.0f };
+    float m_secondOpacity {0.0f};
 
     /// Sets if interactions are enable or not.
-    bool m_interactive { true };
+    bool m_interactive {true};
 
     /// Stores all created subTF.
-    std::vector< SubTF* > m_subTF;
+    std::vector<SubTF*> m_subTF;
 
     /// Handles all connections between this adaptor and all TF.
     core::com::helper::SigSlotConnection m_connections;
@@ -425,23 +434,23 @@ private:
      * We must differentiate them correctly. We do it with an additional timer that needs to be a bit longer than the
      * inbuilt Qt timer for detecting double clicks.
      */
-    QTimer* m_eventFilter { nullptr };
+    QTimer* m_eventFilter {nullptr};
 
     /// Stores the current working TF.
-    data::TransferFunction::csptr m_currentTF { nullptr };
+    data::TransferFunction::csptr m_currentTF {nullptr};
 
     /// Stores the captured clicked point.
-    std::pair< Point2DType, QGraphicsEllipseItem* >* m_capturedTFPoint { nullptr };
+    std::pair<Point2DType, QGraphicsEllipseItem*>* m_capturedTFPoint {nullptr};
 
     /// Stores the captured clicked TF and the current mouse position,
     /// the first coord is in the window/level space and the second in screen space,
     /// it allows to adjust the window/level of the current TF.
-    std::pair< data::TransferFunction::sptr, sight::viz::scene2d::data::Coord > m_capturedTF;
+    std::pair<data::TransferFunction::sptr, sight::viz::scene2d::data::Coord> m_capturedTF;
 
     /// Stores for each TF id, its unclamped alpha color value map.
-    std::map< core::tools::fwID::IDType, data::TransferFunction::TFDataType > m_unclampedTFData;
-
+    std::map<core::tools::fwID::IDType, data::TransferFunction::TFDataType> m_unclampedTFData;
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

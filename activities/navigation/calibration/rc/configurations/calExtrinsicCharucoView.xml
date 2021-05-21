@@ -226,7 +226,7 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="Frame1" />
             <config layer="default" />
         </service>
@@ -242,7 +242,7 @@
             </scene>
         </service>
 
-        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="Frame2" />
             <config layer="default" />
         </service>
@@ -263,7 +263,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="ExtrinsicCalibrationInfoEditor" type="sight::module::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="ExtrinsicCalibrationInfoEditor" type="sight::module::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="true">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
@@ -319,16 +319,16 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE"/>
         </service>
 
-        <service uid="cameraSeriesInfo" type="sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
+        <service uid="cameraSeriesInfo" type="sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="true">
             <in key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 
-        <service uid="cameraInfo1" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
             <in key="camera" uid="${camera1}" />
         </service>
 
-        <service uid="cameraInfo2" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
             <in key="camera" uid="${camera2}" />
         </service>
 

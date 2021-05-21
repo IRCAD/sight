@@ -41,9 +41,9 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="yes">
+   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="true">
        <in key="histogram" uid="..." />
-       <inout key="point" uid="..." optional="yes" />
+       <inout key="point" uid="..." optional="true" />
        <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"
                opacity="0.25" zValue="6" borderWidth="2.0" />
    </service>
@@ -71,21 +71,23 @@ namespace adaptor
 class MODULE_VIZ_SCENE2D_CLASS_API SCurvedHistogram : public sight::viz::scene2d::IAdaptor
 {
 public:
+
     SIGHT_DECLARE_SERVICE(SCurvedHistogram, sight::viz::scene2d::IAdaptor)
 
     typedef sight::viz::scene2d::IAdaptor::Point2DType Point;
-    typedef std::vector< Point > Points;
+    typedef std::vector<Point> Points;
 
     MODULE_VIZ_SCENE2D_API SCurvedHistogram() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SCurvedHistogram() noexcept;
 
 protected:
+
     MODULE_VIZ_SCENE2D_API void configuring() override;
     MODULE_VIZ_SCENE2D_API void starting() override;
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -103,32 +105,32 @@ protected:
 
 private:
 
-    Points getControlPoints(const data::Histogram::csptr& _histogram ) const;
+    Points getControlPoints(const data::Histogram::csptr& _histogram) const;
 
-    Points getBSplinePoints( const Points& _controlPoints ) const;
+    Points getBSplinePoints(const Points& _controlPoints) const;
 
-    Points getResampledBSplinePoints( const Points& _bSplinePoints ) const;
+    Points getResampledBSplinePoints(const Points& _bSplinePoints) const;
 
-    void buildBSplineFromPoints( Points& _bSplinePoints );
+    void buildBSplineFromPoints(Points& _bSplinePoints);
 
-    void computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints );
+    void computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints);
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint(const sight::viz::scene2d::data::Event& _event, const data::Point::sptr& point );
+    void updateCurrentPoint(const sight::viz::scene2d::data::Event& _event, const data::Point::sptr& point);
 
     /// Build and add a part of histogram's border, according to the given path.
-    void addBorderItem( const QPainterPath& _path );
+    void addBorderItem(const QPainterPath& _path);
 
     /// Build and add a part of the histogram, according to the given path.
-    void addInnerItem( const QPainterPath& _path );
+    void addInnerItem(const QPainterPath& _path);
 
-    Points linearInterpolation( const Point _p1, const Point _p2 );
+    Points linearInterpolation(const Point _p1, const Point _p2);
 
-    Points cosinusInterpolation( const Point _p0, const Point _p1 );
+    Points cosinusInterpolation(const Point _p0, const Point _p1);
 
-    Points quadraticInterpolation( const Point _p0, const Point _p1, const Point _p2 );
+    Points quadraticInterpolation(const Point _p0, const Point _p1, const Point _p2);
 
-    Points cubicInterpolation(const Point _p0, const Point _p1, const Point _p2, const Point _p3 );
+    Points cubicInterpolation(const Point _p0, const Point _p1, const Point _p2, const Point _p3);
 
     // Map the absciss of the points to the corresponding length within the path.
     std::map<double, double> m_positionsToPathLength;
@@ -164,6 +166,6 @@ private:
     QGraphicsItemGroup* m_layer;
 };
 
-}   // namespace adaptor
+} // namespace adaptor
 
-}   // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d

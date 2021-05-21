@@ -41,6 +41,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -50,11 +51,12 @@ namespace layoutManager
 class UI_BASE_CLASS_API IToolBarLayoutManager : public ui::base::GuiBaseObject
 {
 public:
+
     SIGHT_DECLARE_CLASS(IToolBarLayoutManager, ui::base::GuiBaseObject)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
-    typedef std::vector< ui::base::IMenuItemCallback::sptr > CallbacksType;
+    typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
     class ActionInfo
     {
@@ -99,17 +101,17 @@ public:
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
      */
-    UI_BASE_API virtual std::vector< ui::base::container::fwMenuItem::sptr > getMenuItems();
+    UI_BASE_API virtual std::vector<ui::base::container::fwMenuItem::sptr> getMenuItems();
 
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
      */
-    UI_BASE_API virtual std::vector< ui::base::container::fwMenu::sptr > getMenus();
+    UI_BASE_API virtual std::vector<ui::base::container::fwMenu::sptr> getMenus();
 
     /**
      * @brief Returns the vector of fwContainer managed by this layout.
      */
-    UI_BASE_API virtual std::vector< ui::base::container::fwContainer::sptr > getContainers();
+    UI_BASE_API virtual std::vector<ui::base::container::fwContainer::sptr> getContainers();
 
     /**
      * @brief Initialize layout managers.
@@ -117,7 +119,7 @@ public:
      * Example of configuration
      * @code{.xml}
        <service uid="toolbar2" type="ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
-     * autoConnect="no"
+     * autoConnect="false"
      *>
            <gui>
                <layout style="ToolButtonIconOnly">
@@ -160,12 +162,12 @@ public:
      *  - \<editor\> : to add an editor in the toolbar
      *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
      */
-    UI_BASE_API virtual void initialize( ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(ConfigurationType configuration);
 
     /**
      * @brief Instantiate actions with parent toolBar.
      */
-    UI_BASE_API virtual void createLayout( ui::base::container::fwToolBar::sptr parent) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwToolBar::sptr parent) = 0;
 
     /**
      * @brief Destroy local actions.
@@ -204,23 +206,24 @@ protected:
     UI_BASE_API virtual void destroyActions();
 
     /// All actions managed by this layout.
-    std::vector< ui::base::container::fwMenuItem::sptr > m_menuItems;
+    std::vector<ui::base::container::fwMenuItem::sptr> m_menuItems;
 
     /// All menus managed by this layout.
-    std::vector< ui::base::container::fwMenu::sptr > m_menus;
+    std::vector<ui::base::container::fwMenu::sptr> m_menus;
 
     /// All editors managed by this layout.
-    std::vector< ui::base::container::fwContainer::sptr > m_containers;
+    std::vector<ui::base::container::fwContainer::sptr> m_containers;
 
     /// Save action informations from configuration.
-    std::vector< ActionInfo > m_actionInfo;
+    std::vector<ActionInfo> m_actionInfo;
 
     /// Callbacks associate with toolBar items
     CallbacksType m_callbacks;
 
     /// String to describe the tool button style
-    std::string m_style{"ToolButtonIconOnly"};
+    std::string m_style {"ToolButtonIconOnly"};
 };
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

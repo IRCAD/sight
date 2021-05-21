@@ -49,7 +49,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
-       <in key="currentTF" uid="..." optional="yes" />
+       <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="true">
@@ -65,7 +65,7 @@ namespace sight::module::ui::qt::image
  * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
- *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *      TF in another service. Don't forget to set 'optional="true"' when you use this input, otherwise the service will
  *
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
@@ -89,7 +89,6 @@ namespace sight::module::ui::qt::image
 class MODULE_UI_QT_CLASS_API STransferFunction final : public QObject,
                                                        public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
@@ -158,7 +157,7 @@ private:
      * @param _basename the name of the TF to create.
      * @return The new name of the TF.
      */
-    std::string createTransferFunctionName( const std::string& _basename) const;
+    std::string createTransferFunctionName(const std::string& _basename) const;
 
     /// Updates the output transferFunction with the selected TF in the ComboBox.
     void updateTransferFunction();
@@ -192,31 +191,31 @@ private Q_SLOTS:
 private:
 
     /// Contains the list of all TF preset.
-    QComboBox* m_transferFunctionPreset { nullptr };
+    QComboBox* m_transferFunctionPreset {nullptr};
 
     /// Contains the delete TF button.
-    QPushButton* m_deleteButton { nullptr };
+    QPushButton* m_deleteButton {nullptr};
 
     /// Contains the new TF button.
-    QPushButton* m_newButton { nullptr };
+    QPushButton* m_newButton {nullptr};
 
     /// Contains the reset TF button.
-    QPushButton* m_reinitializeButton { nullptr };
+    QPushButton* m_reinitializeButton {nullptr};
 
     /// Contains the rename TF button.
-    QPushButton* m_renameButton { nullptr };
+    QPushButton* m_renameButton {nullptr};
 
     /// Contains the import TF button.
-    QPushButton* m_importButton { nullptr };
+    QPushButton* m_importButton {nullptr};
 
     /// Contains the export TF button.
-    QPushButton* m_exportButton { nullptr };
+    QPushButton* m_exportButton {nullptr};
 
     /// Contains the current selected TF.
-    data::TransferFunction::sptr m_selectedTF { nullptr };
+    data::TransferFunction::sptr m_selectedTF {nullptr};
 
     /// Stores path were looking for TF presets.
-    typedef std::vector< std::filesystem::path > PathContainerType;
+    typedef std::vector<std::filesystem::path> PathContainerType;
     PathContainerType m_paths;
 
     /// Defines the path of the delete button icon.
@@ -238,11 +237,10 @@ private:
     std::filesystem::path m_exportIcon;
 
     /// Defines icons width.
-    unsigned int m_iconWidth { 16 };
+    unsigned int m_iconWidth {16};
 
     /// Defines icons height.
-    unsigned int m_iconHeight { 16 };
-
+    unsigned int m_iconHeight {16};
 };
 
 } // namespace sight::module::ui::qt::image.

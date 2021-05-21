@@ -22,14 +22,14 @@
 
 #include "data/DicomSeries.hpp"
 
-#include <core/memory/stream/in/Raw.hpp>
-
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
+#include <core/memory/stream/in/Raw.hpp>
+
 #include <filesystem>
 
-SIGHT_REGISTER_DATA( sight::data::DicomSeries )
+SIGHT_REGISTER_DATA(sight::data::DicomSeries)
 
 namespace sight::data
 {
@@ -52,9 +52,13 @@ DicomSeries::~DicomSeries()
 void DicomSeries::shallowCopy(const data::Object::csptr& _source)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
     this->data::Series::shallowCopy(_source);
 
@@ -70,9 +74,13 @@ void DicomSeries::shallowCopy(const data::Object::csptr& _source)
 void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
     this->data::Series::cachedDeepCopy(_source, cache);
 
@@ -87,16 +95,16 @@ void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
         const core::memory::BufferObject::sptr& bufferSrc = elt.second;
         core::memory::BufferObject::Lock lockerSource(bufferSrc);
 
-        if( !bufferSrc->isEmpty() )
+        if(!bufferSrc->isEmpty())
         {
             core::memory::BufferObject::sptr bufferDest = core::memory::BufferObject::New();
             core::memory::BufferObject::Lock lockerDest(bufferDest);
 
             bufferDest->allocate(bufferSrc->getSize());
 
-            char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
-            char* buffSrc  = static_cast< char* >( lockerSource.getBuffer() );
-            std::copy(buffSrc, buffSrc + bufferSrc->getSize(), buffDest );
+            char* buffDest = static_cast<char*>(lockerDest.getBuffer());
+            char* buffSrc  = static_cast<char*>(lockerSource.getBuffer());
+            std::copy(buffSrc, buffSrc + bufferSrc->getSize(), buffDest);
 
             m_dicomContainer[elt.first] = bufferDest;
         }
@@ -107,15 +115,25 @@ void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
 
 void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem::path& _path)
 {
-    SIGHT_THROW_EXCEPTION_IF(std::filesystem::filesystem_error(std::string("Dicom path can not be found: "), _path,
-                                                               std::make_error_code(
-                                                                   std::errc::no_such_file_or_directory)),
-                             !std::filesystem::exists(_path) );
+    SIGHT_THROW_EXCEPTION_IF(
+        std::filesystem::filesystem_error(
+            std::string("Dicom path can not be found: "),
+            _path,
+            std::make_error_code(
+                std::errc::no_such_file_or_directory
+            )
+        ),
+        !std::filesystem::exists(_path)
+    );
 
     core::memory::BufferObject::sptr buffer = core::memory::BufferObject::New();
     const auto buffSize                     = std::filesystem::file_size(_path);
-    buffer->setIStreamFactory( std::make_shared< core::memory::stream::in::Raw >(_path),
-                               static_cast< core::memory::BufferObject::SizeType>(buffSize), _path, core::memory::RAW);
+    buffer->setIStreamFactory(
+        std::make_shared<core::memory::stream::in::Raw>(_path),
+        static_cast<core::memory::BufferObject::SizeType>(buffSize),
+        _path,
+        core::memory::RAW
+    );
     m_dicomContainer[_instanceIndex] = buffer;
 }
 
@@ -131,7 +149,7 @@ void DicomSeries::addBinary(std::size_t _instanceIndex, const core::memory::Buff
 bool DicomSeries::isInstanceAvailable(std::size_t _instanceIndex) const
 {
     const auto& dicomContainerIter = m_dicomContainer.find(_instanceIndex);
-    return (dicomContainerIter != m_dicomContainer.end());
+    return dicomContainerIter != m_dicomContainer.end();
 }
 
 //------------------------------------------------------------------------------

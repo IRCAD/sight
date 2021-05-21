@@ -29,7 +29,6 @@
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
 #include "core/runtime/detail/Runtime.hpp"
-
 #include <core/spyLog.hpp>
 
 #include <algorithm>
@@ -51,14 +50,14 @@ namespace
  */
 struct ConfigurationElementIdentifierPredicate
 {
-    ConfigurationElementIdentifierPredicate( const std::string& identifier ) :
-        m_identifier( identifier )
+    ConfigurationElementIdentifierPredicate(const std::string& identifier) :
+        m_identifier(identifier)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator() ( std::shared_ptr< ConfigurationElement > element )
+    bool operator()(std::shared_ptr<ConfigurationElement> element)
     {
         return element->getAttributeValue("id") == m_identifier;
     }
@@ -66,7 +65,6 @@ struct ConfigurationElementIdentifierPredicate
     private:
 
         std::string m_identifier;
-
 };
 
 }
@@ -77,8 +75,10 @@ void init(const std::filesystem::path& directory)
 {
     if(!directory.empty())
     {
-        FW_DEPRECATED_MSG("Specifying a directory for Sight installation is now deprecated, the path will be ignored",
-                          "22.0");
+        FW_DEPRECATED_MSG(
+            "Specifying a directory for Sight installation is now deprecated, the path will be ignored",
+            "22.0"
+        );
     }
 
     // Load default modules
@@ -99,26 +99,32 @@ void init(const std::filesystem::path& directory)
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::sptr findConfigurationElement( const std::string& identifier,
-                                                     const std::string& pointIdentifier )
+ConfigurationElement::sptr findConfigurationElement(
+    const std::string& identifier,
+    const std::string& pointIdentifier
+)
 {
     ConfigurationElement::sptr resultConfig;
-    const auto elements     = getAllConfigurationElementsForPoint( pointIdentifier );
-    const auto foundElement = ::std::find_if( elements.begin(), elements.end(),
-                                              ConfigurationElementIdentifierPredicate(identifier) );
+    const auto elements     = getAllConfigurationElementsForPoint(pointIdentifier);
+    const auto foundElement = ::std::find_if(
+        elements.begin(),
+        elements.end(),
+        ConfigurationElementIdentifierPredicate(identifier)
+    );
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;
     }
+
     return resultConfig;
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Extension > findExtension( const std::string& identifier )
+std::shared_ptr<Extension> findExtension(const std::string& identifier)
 {
     core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
-    return rntm->findExtension( identifier );
+    return rntm->findExtension(identifier);
 }
 
 //------------------------------------------------------------------------------
@@ -126,29 +132,33 @@ std::shared_ptr< Extension > findExtension( const std::string& identifier )
 std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier) noexcept
 {
     Runtime* rntm                  = Runtime::getDefault();
-    std::shared_ptr<Module> module = rntm->findModule( moduleIdentifier );
+    std::shared_ptr<Module> module = rntm->findModule(moduleIdentifier);
 
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module " + moduleIdentifier + "'");
         return std::filesystem::path();
     }
+
     return module->getResourcesLocation();
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentifier,
-                                                const std::filesystem::path& path) noexcept
+std::filesystem::path getModuleResourceFilePath(
+    const std::string& moduleIdentifier,
+    const std::filesystem::path& path
+) noexcept
 {
-    Runtime* rntm                     = Runtime::getDefault();
-    std::shared_ptr<Module>    module = rntm->findModule( moduleIdentifier );
+    Runtime* rntm                  = Runtime::getDefault();
+    std::shared_ptr<Module> module = rntm->findModule(moduleIdentifier);
 
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module '" + moduleIdentifier + "'");
         return std::filesystem::path();
     }
+
     return getModuleResourcePath(module, path);
 }
 
@@ -163,7 +173,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
     // Strip the module name
     std::filesystem::path pathWithoutModule;
-    for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
+    for(auto itPath = ++path.begin() ; itPath != path.end() ; itPath++)
     {
         pathWithoutModule /= *itPath;
     }
@@ -171,14 +181,15 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     try
     {
         Runtime* rntm                  = Runtime::getDefault();
-        std::shared_ptr<Module> module = rntm->findModule( moduleFolder );
+        std::shared_ptr<Module> module = rntm->findModule(moduleFolder);
 
         if(module == nullptr)
         {
             SIGHT_DEBUG("Could not find module '" + moduleFolder + "'");
             return std::filesystem::path();
         }
-        return getModuleResourcePath(module, pathWithoutModule );
+
+        return getModuleResourcePath(module, pathWithoutModule);
     }
     catch(...)
     {
@@ -208,48 +219,55 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
         file = core::runtime::getLibraryResourceFilePath(path);
         SIGHT_ERROR_IF("Resource '" + path.string() + "' has not been found in any module or library", file.empty());
     }
+
     return file;
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
-                                             const std::filesystem::path& path) noexcept
+std::filesystem::path getModuleResourcePath(
+    std::shared_ptr<Module> module,
+    const std::filesystem::path& path
+) noexcept
 {
     return module->getResourcesLocation() / path;
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourcePath( ConfigurationElement::sptr element,
-                                             const std::filesystem::path& path) noexcept
+std::filesystem::path getModuleResourcePath(
+    ConfigurationElement::sptr element,
+    const std::filesystem::path& path
+) noexcept
 {
     return getModuleResourcePath(element->getModule(), path);
 }
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getModuleResourcePath(const IExecutable* executable,
-                                            const std::filesystem::path& path) noexcept
+std::filesystem::path getModuleResourcePath(
+    const IExecutable* executable,
+    const std::filesystem::path& path
+) noexcept
 {
     return getModuleResourcePath(executable->getModule(), path);
 }
 
 //------------------------------------------------------------------------------
 
-void addModules( const std::filesystem::path& directory)
+void addModules(const std::filesystem::path& directory)
 {
     SIGHT_INFO("Loading modules from: " + directory.string());
 
     Runtime& rntm = Runtime::get();
-    rntm.addModules( directory );
+    rntm.addModules(directory);
 }
 
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Module> loadModule(const std::string& identifier)
 {
-    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier));
+    auto module = std::dynamic_pointer_cast<detail::Module>(Runtime::get().findModule(identifier));
 
     if(module)
     {
@@ -270,7 +288,7 @@ bool loadLibrary(const std::string& identifier)
     static std::map<std::string, std::shared_ptr<detail::dl::Library> > s_LIBRARIES;
 
     // Even if dlopen does not actually load twice the same library, we avoid this
-    if( s_LIBRARIES.find(identifier) != std::end(s_LIBRARIES) )
+    if(s_LIBRARIES.find(identifier) != std::end(s_LIBRARIES))
     {
         return true;
     }
@@ -289,11 +307,12 @@ bool loadLibrary(const std::string& identifier)
             s_LIBRARIES[identifier] = library;
             return true;
         }
-        catch (const RuntimeException& )
+        catch(const RuntimeException&)
         {
             // Fail silently and potentially try in the next repository
         }
     }
+
     SIGHT_ERROR("Could not load library '" + identifier);
 
     return false;
@@ -301,7 +320,7 @@ bool loadLibrary(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-core::runtime::Profile::sptr startProfile( const std::filesystem::path& path )
+core::runtime::Profile::sptr startProfile(const std::filesystem::path& path)
 {
     try
     {
@@ -309,24 +328,24 @@ core::runtime::Profile::sptr startProfile( const std::filesystem::path& path )
         profile->start();
         return profile;
     }
-    catch( const std::exception& exception )
+    catch(const std::exception& exception)
     {
-        throw RuntimeException( std::string(path.string() + ": invalid profile file. ") + exception.what() );
+        throw RuntimeException(std::string(path.string() + ": invalid profile file. ") + exception.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Module > findModule( const std::string& identifier )
+std::shared_ptr<Module> findModule(const std::string& identifier)
 {
-    return Runtime::getDefault()->findModule( identifier );
+    return Runtime::getDefault()->findModule(identifier);
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< detail::ExtensionPoint > findExtensionPoint(const std::string& identifier)
+std::shared_ptr<detail::ExtensionPoint> findExtensionPoint(const std::string& identifier)
 {
-    return detail::Runtime::get().findExtensionPoint( identifier );
+    return detail::Runtime::get().findExtensionPoint(identifier);
 }
 
 //------------------------------------------------------------------------------
@@ -334,11 +353,12 @@ std::shared_ptr< detail::ExtensionPoint > findExtensionPoint(const std::string& 
 void startModule(const std::string& identifier)
 {
     // Retrieves the specified module.
-    std::shared_ptr<Module> module = detail::Runtime::get().findModule( identifier );
-    if( module == nullptr )
+    std::shared_ptr<Module> module = detail::Runtime::get().findModule(identifier);
+    if(module == nullptr)
     {
         throw RuntimeException(identifier + ": module not found.");
     }
+
     // Starts the found module.
     module->start();
 }
@@ -347,21 +367,21 @@ void startModule(const std::string& identifier)
 
 std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(const std::string& identifier)
 {
-    std::vector< ConfigurationElement::sptr > elements;
-    std::shared_ptr< detail::ExtensionPoint >  point = findExtensionPoint(identifier);
+    std::vector<ConfigurationElement::sptr> elements;
+    std::shared_ptr<detail::ExtensionPoint> point = findExtensionPoint(identifier);
 
-    if( !point )
+    if(!point)
     {
-        throw RuntimeException( identifier + ": invalid extension point identifier." );
+        throw RuntimeException(identifier + ": invalid extension point identifier.");
     }
 
-    if ( point->isEnabled() )
+    if(point->isEnabled())
     {
         elements = point->getAllConfigurationElements();
     }
     else
     {
-        SIGHT_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+        SIGHT_DEBUG("Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
     }
 
     // The job is done!

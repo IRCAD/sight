@@ -46,7 +46,7 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
-         <in group="markerTL" autoConnect="yes">
+         <in group="markerTL" autoConnect="true">
              <key uid="..." />
              <key uid="..." />
          </in>
@@ -63,7 +63,7 @@ namespace sight::module::geometry::vision
      or
 
      <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
-         <in group="markerMap" autoConnect="yes">
+         <in group="markerMap" autoConnect="true">
              <key uid="..." />
              <key uid="..." />
          </in>
@@ -97,6 +97,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public service::IRegisterer
 {
 public:
+
     SIGHT_DECLARE_SERVICE(SPoseFrom2d, service::IRegisterer)
 
     typedef std::vector<std::string> VectKeyType;
@@ -115,6 +116,7 @@ public:
     service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
+
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
@@ -146,7 +148,7 @@ private:
      */
     struct Marker
     {
-        std::vector< ::cv::Point2f > corners2D;
+        std::vector< ::cv::Point2f> corners2D;
         ::cv::Point3f centroid;
     };
 
@@ -194,16 +196,16 @@ private:
     bool m_isInitialized;
 
     /// 3d model
-    std::vector< ::cv::Point3f > m_3dModel;
+    std::vector< ::cv::Point3f> m_3dModel;
 
     /// std::vector of cameras
-    std::vector < Camera > m_cameras;
+    std::vector<Camera> m_cameras;
 
     /// Extrinsic matrix
     Extrinsic m_extrinsic;
 
     /// List of tags associated with each inout matrix
-    std::vector< data::MarkerMap::KeyType> m_matricesTag;
+    std::vector<data::MarkerMap::KeyType> m_matricesTag;
 };
 
 } // namespace sight::module::geometry::vision

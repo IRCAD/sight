@@ -35,23 +35,28 @@
 
 namespace sight::data
 {
+
 class FrameTL;
 class MatrixTL;
+
 }
 
 namespace sight::data
 {
+
 class Image;
 class Matrix4;
+
 }
 
 namespace sight::module::sync
 {
+
 /**
  * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  *
  * @note
- * `autoConnect="yes"` is required in order to play nice with streams whose timelines might get reset, e.g. when
+ * `autoConnect="true"` is required in order to play nice with streams whose timelines might get reset, e.g. when
  * replaying a recorded video several times.
  *
  * @section Signals Signals
@@ -72,7 +77,7 @@ namespace sight::module::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
+        <service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="true">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />
@@ -130,19 +135,19 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
+    typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> SynchronizationDoneSignalType;
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
 
-    typedef core::com::Signal< void (void) > synchronizationSkippedSignalType;
+    typedef core::com::Signal<void (void)> synchronizationSkippedSignalType;
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_SYNCHRONIZATION_SKIPPED_SIG;
 
-    typedef core::com::Signal< void (bool) > AllMatricesFoundSignalType;
+    typedef core::com::Signal<void (bool)> AllMatricesFoundSignalType;
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
 
-    typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
+    typedef core::com::Signal<void (int)> MatrixSynchronizedSignalType;
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_MATRIX_SYNCHRONIZED_SIG;
 
-    typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;
+    typedef core::com::Signal<void (int)> MatrixUnsynchronizedSignalType;
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_MATRIX_UNSYNCHRONIZED_SIG;
     /** @} */
 
@@ -173,6 +178,7 @@ public:
     MODULE_SYNC_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
+
     /**
      * @brief This method is used to configure the service.
      */
@@ -204,7 +210,7 @@ private:
         SYNC_REQUESTED  = 0x2
     };
 
-    std::uint8_t m_updateMask { SYNC_REQUESTED };
+    std::uint8_t m_updateMask {SYNC_REQUESTED};
 
     /// Tolerance to take into account matrix
     core::HiResClock::HiResClockType m_tolerance;
@@ -213,13 +219,17 @@ private:
     bool m_imagesInitialized;
 
     /// Contains the input video timelines.
-    std::vector< data::mt::weak_ptr<const data::FrameTL> > m_frameTLs;
+    std::vector<data::mt::weak_ptr<const data::FrameTL> > m_frameTLs;
+
     /// Contains the input matrix timelines.
-    std::vector< data::mt::weak_ptr<const data::MatrixTL> > m_matrixTLs;
+    std::vector<data::mt::weak_ptr<const data::MatrixTL> > m_matrixTLs;
+
     /// Contains the output images.
-    std::vector< data::mt::weak_ptr< data::Image > > m_images;
+    std::vector<data::mt::weak_ptr<data::Image> > m_images;
+
     /// registers matrices with associated timeline key
-    std::vector<std::vector< data::mt::weak_ptr< data::Matrix4> > > m_matrices;
+    std::vector<std::vector<data::mt::weak_ptr<data::Matrix4> > > m_matrices;
+
     /// registers index of matrices that need to send their status through signals
     std::vector<std::vector<int> > m_sendMatricesStatus;
 
@@ -230,7 +240,7 @@ private:
     size_t m_totalOutputMatrices;
 
     /// Delay in milliseconds between frames and matrices
-    int m_delay { 0 };
+    int m_delay {0};
 
     /// Timer used for the update
     core::thread::Timer::sptr m_timer;
