@@ -49,7 +49,7 @@
 
 #include <stack>
 
-SIGHT_REGISTER_SERVICE( ::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite )
+SIGHT_REGISTER_SERVICE(::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite)
 
 namespace sight::viz::scene3d
 {
@@ -121,12 +121,11 @@ void SRender::configuring()
         const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
-        SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
+        SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT + "' is accepted.", m_offScreen);
 
         m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
         m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
         m_flip   = sceneCfg.get<bool>("<xmlattr>.flip", m_flip);
-
     }
     else // no offscreen rendering.
     {
@@ -137,21 +136,23 @@ void SRender::configuring()
 
 #ifdef __APPLE__
     // TODO: fix fullscreen rendering on macOS.
-    SIGHT_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
-                "it is therefore disabled.");
+    SIGHT_ERROR(
+        "Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
+        "it is therefore disabled."
+    );
     m_fullscreen = false;
 #endif
 
     const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
-    if (renderMode == "auto")
+    if(renderMode == "auto")
     {
         m_renderMode = RenderMode::AUTO;
     }
-    else if (renderMode == "always")
+    else if(renderMode == "always")
     {
         m_renderMode = RenderMode::ALWAYS;
     }
-    else if (renderMode == "sync")
+    else if(renderMode == "sync")
     {
         m_renderMode = RenderMode::SYNC;
     }
@@ -161,7 +162,7 @@ void SRender::configuring()
     }
 
     auto adaptorConfigs = sceneCfg.equal_range("adaptor");
-    for( auto it = adaptorConfigs.first; it != adaptorConfigs.second; ++it )
+    for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
     {
         const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
         auto& registry        = viz::scene3d::registry::getAdaptorRegistry();
@@ -173,13 +174,13 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-
     bool bHasBackground = false;
 
-    if (!m_offScreen)
+    if(!m_offScreen)
     {
         this->create();
     }
+
     const ConfigType config = this->getConfigTree();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
@@ -189,19 +190,20 @@ void SRender::starting()
     SIGHT_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
 
     auto layerConfigs = sceneCfg.equal_range("layer");
-    for( auto it = layerConfigs.first; it != layerConfigs.second; ++it )
+    for(auto it = layerConfigs.first ; it != layerConfigs.second ; ++it)
     {
         this->configureLayer(it->second);
     }
+
     auto bkgConfigs = sceneCfg.equal_range("background");
-    for( auto it = bkgConfigs.first; it != bkgConfigs.second; ++it )
+    for(auto it = bkgConfigs.first ; it != bkgConfigs.second ; ++it)
     {
         SIGHT_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
         try
         {
             this->configureBackgroundLayer(it->second);
         }
-        catch (std::exception& e)
+        catch(std::exception& e)
         {
             SIGHT_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
         }
@@ -230,14 +232,14 @@ void SRender::starting()
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen );
+        m_interactorManager->createContainer(nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen);
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer( this->getContainer(), m_renderMode != RenderMode::ALWAYS, m_fullscreen );
+        m_interactorManager->createContainer(this->getContainer(), m_renderMode != RenderMode::ALWAYS, m_fullscreen);
     }
 
     // Initialize resources to load overlay scripts.
@@ -245,7 +247,7 @@ void SRender::starting()
 
     m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
-    for (auto it : m_layers)
+    for(auto it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->setRenderTarget(m_interactorManager->getRenderTarget());
@@ -268,11 +270,12 @@ void SRender::stopping()
     m_interactorManager->getRenderTarget()->removeAllListeners();
     m_viewportOverlaysMap.clear();
 
-    for (auto it : m_layers)
+    for(auto it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->destroyScene();
     }
+
     m_layers.clear();
 
     m_interactorManager->disconnectInteractor();
@@ -299,28 +302,30 @@ void SRender::makeCurrent()
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureLayer(const ConfigType& _cfg )
+void SRender::configureLayer(const ConfigType& _cfg)
 {
     const ConfigType attributes             = _cfg.get_child("<xmlattr>");
     const std::string id                    = attributes.get<std::string>("id", "");
     const std::string compositors           = attributes.get<std::string>("compositors", "");
-    const std::string transparencyTechnique = attributes.get<std::string>("transparency", "");
-    const std::string numPeels              = attributes.get<std::string>("numPeels", "");
+    const std::string transparencyTechnique = attributes.get<std::string>("transparency", "HybridTransparency");
+    const std::string numPeels              = attributes.get<std::string>("numPeels", "4");
     const std::string stereoMode            = attributes.get<std::string>("stereoMode", "");
     const std::string defaultLight          = attributes.get<std::string>("defaultLight", "");
     const auto viewportConfig               = configureLayerViewport(_cfg);
 
     auto overlays = std::istringstream(attributes.get<std::string>("overlays", ""));
-    std::vector< std::string > enabledOverlays;
-    for(std::string overlayName; std::getline(overlays, overlayName, ';'); )
+    std::vector<std::string> enabledOverlays;
+    for(std::string overlayName ; std::getline(overlays, overlayName, ';') ; )
     {
         enabledOverlays.push_back(overlayName);
     }
 
-    SIGHT_ASSERT( "'id' required attribute missing or empty", !id.empty() );
-    SIGHT_ASSERT( "Unknown 3D mode : " << stereoMode,
-                  stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8" ||
-                  stereoMode == "Stereo");
+    SIGHT_ASSERT("'id' required attribute missing or empty", !id.empty());
+    SIGHT_ASSERT(
+        "Unknown 3D mode : " << stereoMode,
+        stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8"
+        || stereoMode == "Stereo"
+    );
 
     int layerOrder        = 0;
     const auto layerDepth = attributes.get_optional<int>("depth");
@@ -333,14 +338,17 @@ void SRender::configureLayer(const ConfigType& _cfg )
     {
         layerOrder = attributes.get<int>("order");
     }
+
     SIGHT_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
 
     viz::scene3d::Layer::sptr ogreLayer              = viz::scene3d::Layer::New();
     compositor::Core::StereoModeType layerStereoMode =
-        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5 :
-        stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8 :
-        stereoMode == "Stereo"      ? compositor::Core::StereoModeType::STEREO :
-        compositor::Core::StereoModeType::NONE;
+        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5
+                                    : stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8
+                                                                  : stereoMode
+        == "Stereo" ? compositor::Core::StereoModeType::STEREO
+                    : compositor::Core::
+        StereoModeType::NONE;
 
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
@@ -362,9 +370,9 @@ void SRender::configureLayer(const ConfigType& _cfg )
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureBackgroundLayer(const ConfigType& _cfg )
+void SRender::configureBackgroundLayer(const ConfigType& _cfg)
 {
-    SIGHT_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
+    SIGHT_ASSERT("'id' required attribute missing or empty", !this->getID().empty());
     const ConfigType attributes = _cfg.get_child("<xmlattr>");
 
     viz::scene3d::Layer::sptr ogreLayer = viz::scene3d::Layer::New();
@@ -374,12 +382,12 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);
 
-    if (attributes.count("color") )
+    if(attributes.count("color"))
     {
         const std::string color = attributes.get<std::string>("color");
         ogreLayer->setBackgroundColor(color, color);
     }
-    else if (attributes.count("topColor") && attributes.count("bottomColor"))
+    else if(attributes.count("topColor") && attributes.count("bottomColor"))
     {
         const std::string topColor = attributes.get<std::string>("topColor");
         const std::string botColor = attributes.get<std::string>("bottomColor");
@@ -387,7 +395,7 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
         ogreLayer->setBackgroundColor(topColor, botColor);
     }
 
-    if (attributes.count("topScale") && attributes.count("bottomScale"))
+    if(attributes.count("topScale") && attributes.count("bottomScale"))
     {
         const float topScaleVal = attributes.get<float>("topScale");
         const float botScaleVal = attributes.get<float>("bottomScale");
@@ -404,10 +412,9 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg )
 
 //-----------------------------------------------------------------------------
 
-Layer::ViewportConfigType
-SRender::configureLayerViewport(const service::IService::ConfigType& _cfg)
+Layer::ViewportConfigType SRender::configureLayerViewport(const service::IService::ConfigType& _cfg)
 {
-    Layer::ViewportConfigType cfgType { 0.f, 0.f, 1.f, 1.f };
+    Layer::ViewportConfigType cfgType {0.f, 0.f, 1.f, 1.f};
     const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
     if(_vpConfig.has_value())
     {
@@ -419,16 +426,16 @@ SRender::configureLayerViewport(const service::IService::ConfigType& _cfg)
         const float width  = cfg.get<float>("width");
         const float height = cfg.get<float>("height");
 
-        const std::map< std::string, float > horizAlignToX {
-            { "left", xPos },
-            { "center", 0.5f - width * 0.5f + xPos},
-            { "right", 1.f - width - xPos }
+        const std::map<std::string, float> horizAlignToX {
+            {"left", xPos},
+            {"center", 0.5f - width * 0.5f + xPos},
+            {"right", 1.f - width - xPos}
         };
 
-        const std::map< std::string, float > vertAlignToY {
-            { "bottom", 1.f -height - yPos },
-            { "center", 0.5f - height * 0.5f + yPos },
-            { "top", yPos }
+        const std::map<std::string, float> vertAlignToY {
+            {"bottom", 1.f - height - yPos},
+            {"center", 0.5f - height * 0.5f + yPos},
+            {"top", yPos}
         };
 
         const std::string hAlign = cfg.get("hAlign", "left");
@@ -447,7 +454,7 @@ SRender::configureLayerViewport(const service::IService::ConfigType& _cfg)
 
 void SRender::requestRender()
 {
-    if ( m_renderMode == RenderMode::SYNC )
+    if(m_renderMode == RenderMode::SYNC)
     {
         m_interactorManager->renderNow();
     }
@@ -460,7 +467,7 @@ void SRender::requestRender()
     {
         FW_PROFILE("Offscreen rendering");
 
-        const auto image = this->getLockedInOut< data::Image >(s_OFFSCREEN_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_OFFSCREEN_INOUT);
         {
             this->makeCurrent();
             ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
@@ -468,7 +475,7 @@ void SRender::requestRender()
             viz::scene3d::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
 
-        auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
@@ -503,7 +510,7 @@ void SRender::resetCameras()
 
 void SRender::computeCameraClipping()
 {
-    for (auto it : m_layers)
+    for(auto it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();
@@ -537,7 +544,7 @@ bool SRender::isShownOnScreen()
 viz::scene3d::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
     SIGHT_ASSERT("Empty sceneID", !sceneID.empty());
-    SIGHT_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
+    SIGHT_ASSERT("Layer ID " << sceneID << " does not exist", m_layers.find(sceneID) != m_layers.end());
 
     viz::scene3d::Layer::sptr layer = m_layers.at(sceneID);
 

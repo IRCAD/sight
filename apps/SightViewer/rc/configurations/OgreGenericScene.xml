@@ -170,7 +170,7 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
+                <layer id="defaultLayer" order="1"/>
                 <adaptor uid="globalCameraAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
