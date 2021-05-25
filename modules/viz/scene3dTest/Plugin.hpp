@@ -35,6 +35,7 @@ namespace sight::module::viz::scene3d::test
 class Plugin : public core::runtime::Plugin
 {
 public:
+
     /// Destructor. Do nothing.
     ~Plugin() noexcept;
 
@@ -45,6 +46,7 @@ public:
     void stop() noexcept;
 
 private:
+
     /// Ogre root to setup the scene and instantiate 'Text' objects.
     Ogre::Root* m_ogreRoot {nullptr};
 };
