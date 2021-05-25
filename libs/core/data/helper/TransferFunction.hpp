@@ -23,13 +23,12 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <core/com/Connection.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
-
-#include <data/Image.hpp>
-#include <data/TransferFunction.hpp>
 
 namespace sight::data
 {
@@ -48,7 +47,6 @@ namespace helper
  */
 class DATA_CLASS_API TransferFunction
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(TransferFunction)
@@ -65,11 +63,11 @@ public:
     /**
      * @brief Create and set the default transfer function.
      *
-     * Create the image's transfer function pool if if does not exist and then create the defaut transfer function.
+     * Create the image's transfer function pool if it does not exist and then create the default transfer function.
      * Set the current transfer function to the default grey-level if no transfer function was set (using
      * setTransferFunction() ).
      */
-    DATA_API void createTransferFunction( data::Image::sptr image );
+    DATA_API void createTransferFunction(data::Image::sptr image);
 
     /// Set the current TransferFunction
     DATA_API void setTransferFunction(const data::TransferFunction::sptr&);
@@ -116,9 +114,9 @@ protected:
 
     /// Slot called when transfer function windowing is modified
     UpdateTFWindowingSlotType::sptr m_slotUpdateTFWindowing;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
@@ -131,7 +129,6 @@ private:
     std::function<void()> m_updateTFPoints;
 
     std::function<void(double, double)> m_updateTFWindowing;
-
 };
 
 } //namespace helper

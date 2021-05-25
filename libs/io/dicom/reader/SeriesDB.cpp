@@ -46,7 +46,7 @@
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::dicom::reader::SeriesDB );
+SIGHT_REGISTER_IO_READER(::sight::io::dicom::reader::SeriesDB);
 
 namespace sight::io::dicom
 {
@@ -57,8 +57,6 @@ namespace reader
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key key) :
-    data::location::enableFolder< IObjectReader >(this),
-    data::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false),
     m_dicomFilterType(""),
     m_logger(core::log::Logger::New()),
@@ -95,7 +93,7 @@ void SeriesDB::read()
     {
         this->readDicom();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_logger->clear();
         m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
@@ -134,11 +132,11 @@ void SeriesDB::read()
         // .get() throws exception that might have occurred
         m_job->run().get();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
-    catch( ... )
+    catch(...)
     {
         m_logger->critical("An unknown error has occurred during the reading process.");
     }
@@ -165,7 +163,7 @@ void SeriesDB::readDicomSeries()
     {
         this->readDicom();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_logger->clear();
         m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
@@ -196,11 +194,11 @@ void SeriesDB::readDicomSeries()
         // .get() throws exception that might have occurred
         m_job->run().get();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
-    catch( ... )
+    catch(...)
     {
         m_logger->critical("An unknown error has occurred during the reading process.");
     }
@@ -209,31 +207,28 @@ void SeriesDB::readDicomSeries()
     {
         m_logger->critical("Unable to retrieve series from the selected folder.");
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesDB::readDicom()
 {
-    SIGHT_ASSERT("This reader only work on folder selection.",
-                 (data::location::have < data::location::Folder, io::base::reader::IObjectReader > (this)));
-
     // DICOMDIR
     auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->getFolder());
     if(m_isDicomdirActivated && std::filesystem::exists(dicomdir))
     {
         // Create Dicom Series
-        io::dicom::helper::DicomDir::retrieveDicomSeries(dicomdir,
-                                                         m_dicomSeriesContainer,
-                                                         m_logger,
-                                                         m_readerJob->progressCallback(),
-                                                         m_readerJob->cancelRequestedCallback()
-                                                         );
+        io::dicom::helper::DicomDir::retrieveDicomSeries(
+            dicomdir,
+            m_dicomSeriesContainer,
+            m_logger,
+            m_readerJob->progressCallback(),
+            m_readerJob->cancelRequestedCallback()
+        );
+
         // Fill Dicom Series
         io::dicom::helper::DicomSeries helper;
         helper.complete(m_dicomSeriesContainer, m_completeDicomSeriesJob);
-
     }
 
     // Finish DICOMDIR lookup
@@ -246,9 +241,13 @@ void SeriesDB::readDicom()
         m_readerJob->doneWork(0);
 
         // Recursively search for dicom files
-        std::vector< std::filesystem::path > filenames;
+        std::vector<std::filesystem::path> filenames;
         io::dicom::helper::DicomSearch::searchRecursively(
-            this->getFolder(), filenames, true, m_regularFileLookupJob);
+            this->getFolder(),
+            filenames,
+            true,
+            m_regularFileLookupJob
+        );
 
         // Read Dicom Series
         io::dicom::helper::DicomSeries helper;
@@ -266,13 +265,14 @@ void SeriesDB::readDicom()
     // Finish completing series
     m_completeDicomSeriesJob->done();
     m_completeDicomSeriesJob->finish();
-
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                     const service::IService::sptr& notifier)
+void SeriesDB::readFromDicomSeriesDB(
+    const data::SeriesDB::csptr& dicomSeriesDB,
+    const service::IService::sptr& notifier
+)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -311,15 +311,14 @@ void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
         // .get() throws exception that might have occurred
         m_job->run().get();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
-    catch( ... )
+    catch(...)
     {
         m_logger->critical("An unknown error has occurred during the reading process.");
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -340,7 +339,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
     std::sort(m_dicomSeriesContainer.begin(), m_dicomSeriesContainer.end(), SeriesDB::dicomSeriesComparator);
 
     // Create reader
-    SPTR(io::dicom::reader::Series) seriesReader = std::make_shared< io::dicom::reader::Series >();
+    SPTR(io::dicom::reader::Series) seriesReader = std::make_shared<io::dicom::reader::Series>();
     seriesReader->setBufferRotationEnabled(m_enableBufferRotation);
     seriesReader->setLogger(m_logger);
 
@@ -354,6 +353,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
     {
         totalWorkUnits += dicomSeries->getDicomContainer().size();
     }
+
     m_converterJob->setTotalWorkUnits(totalWorkUnits);
 
     std::uint64_t completedProgress = 0;
@@ -366,8 +366,10 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
     for(const data::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
     {
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-        SIGHT_THROW_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
-                       sopClassUIDContainer.size() != 1);
+        SIGHT_THROW_IF(
+            "The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
+            sopClassUIDContainer.size() != 1
+        );
         const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
 
         const SupportedSOPClassContainerType::iterator bIt = m_supportedSOPClassContainer.begin();
@@ -393,7 +395,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
                     }
                 }
             }
-            catch (io::dicom::exception::Failed& e)
+            catch(io::dicom::exception::Failed& e)
             {
                 m_logger->critical("Unable to read series : " + dicomSeries->getInstanceUID());
             }
@@ -401,7 +403,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
         else
         {
             const std::string sopClassName = io::dicom::helper::SOPClass::getSOPClassName(sopClassUID);
-            m_logger->critical("DICOM SOP Class \"" + sopClassName +"\" is not supported by the selected reader.");
+            m_logger->critical("DICOM SOP Class \"" + sopClassName + "\" is not supported by the selected reader.");
         }
 
         if(m_job->cancelRequested())
@@ -414,13 +416,14 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
 
     m_converterJob->done();
     m_converterJob->finish();
-
 }
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::dicomSeriesComparator(const SPTR(data::DicomSeries)& a,
-                                     const SPTR(data::DicomSeries)& b)
+bool SeriesDB::dicomSeriesComparator(
+    const SPTR(data::DicomSeries)& a,
+    const SPTR(data::DicomSeries)& b
+)
 {
     const data::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
     const std::string aSOPClassUID                                          = *(aSOPClassUIDContainer.begin());
@@ -429,22 +432,22 @@ bool SeriesDB::dicomSeriesComparator(const SPTR(data::DicomSeries)& a,
 
     // a > b if a contains a SR and not b
     const bool aIsAnImage =
-        (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-         aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by
-                                                            // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
-         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+        (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
+         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
+         || aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
+         || // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
+            // ::gdcm::MediaStorage::Comprehensive3DSR"
+         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
+         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     const bool bIsAnImage =
-        (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-         bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by
-                                                            // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
-                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
-         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+        (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
+         || ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
+         || bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
+         || // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
+            // ::gdcm::MediaStorage::Comprehensive3DSR"
+         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
+         || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     return bIsAnImage && !aIsAnImage;
 }
@@ -465,6 +468,6 @@ SPTR(core::jobs::IJob) SeriesDB::getJob() const
 
 //------------------------------------------------------------------------------
 
-}  // namespace reader
+} // namespace reader
 
-}  // namespace sight::io::dicom
+} // namespace sight::io::dicom

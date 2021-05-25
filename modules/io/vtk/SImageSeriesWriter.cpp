@@ -30,12 +30,12 @@
 #include <core/com/Signal.hxx>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/Failed.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IWriter.hpp>
@@ -59,7 +59,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SImageSeriesWriter::SImageSeriesWriter() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -80,23 +80,22 @@ void SImageSeriesWriter::configureWithIHM()
 
 void SImageSeriesWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        this->setFile(result->getPath());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
+        this->setFile(result->getFile());
     }
     else
     {
@@ -125,7 +124,7 @@ void SImageSeriesWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::info(std::ostream& _sstream )
+void SImageSeriesWriter::info(std::ostream& _sstream)
 {
     _sstream << "SImageSeriesWriter::info";
 }
@@ -134,12 +133,11 @@ void SImageSeriesWriter::info(std::ostream& _sstream )
 
 void SImageSeriesWriter::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
         data::ImageSeries::csptr imageSeries =
-            this->getInput< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
+            this->getInput<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SIGHT_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());

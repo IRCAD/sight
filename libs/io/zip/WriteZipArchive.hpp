@@ -25,6 +25,7 @@
 #include "io/zip/config.hpp"
 #include "io/zip/IWriteArchive.hpp"
 
+#include <core/crypto/secure_string.hpp>
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -38,14 +39,17 @@ namespace sight::io::zip
  */
 class IO_ZIP_CLASS_API WriteZipArchive : public IWriteArchive
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(WriteZipArchive, IWriteArchive)
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive, const std::string& comment = "", const std::string& key = "")
+    static sptr New(
+        const std::filesystem::path& archive,
+        const std::string& comment             = "",
+        const core::crypto::secure_string& key = ""
+)
     {
         return std::make_shared<WriteZipArchive>(archive, comment, key);
     }
@@ -54,10 +58,18 @@ public:
      * @brief Constructors. Initializes archive path, comment and key.
      *
      */
-    IO_ZIP_API WriteZipArchive(const std::filesystem::path& archive, const std::string& comment = "",
-                               const std::string& key = "");
+    WriteZipArchive(
+        const std::filesystem::path& archive,
+        const std::string& comment             = "",
+        const core::crypto::secure_string& key = ""
+    ) :
+        m_archive(archive),
+        m_comment(comment),
+        m_key(key)
+    {
+    }
 
-    IO_ZIP_API ~WriteZipArchive();
+    IO_ZIP_API ~WriteZipArchive() = default;
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
@@ -76,8 +88,10 @@ public:
      *
      * @throw io::zip::exception::Read if source file cannot be opened.
      */
-    IO_ZIP_API void putFile(const std::filesystem::path& sourceFile,
-                            const std::filesystem::path& path) override;
+    IO_ZIP_API void putFile(
+        const std::filesystem::path& sourceFile,
+        const std::filesystem::path& path
+    ) override;
 
     /**
      * @brief Creates a folder in archive.
@@ -104,4 +118,4 @@ private:
     std::string m_key;
 };
 
-}
+} // namespace sight::io

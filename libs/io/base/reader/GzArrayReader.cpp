@@ -28,7 +28,7 @@
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::GzArrayReader );
+SIGHT_REGISTER_IO_READER(::sight::io::base::reader::GzArrayReader);
 
 namespace sight::io::base
 {
@@ -38,8 +38,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzArrayReader::GzArrayReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< IObjectReader >(this)
+GzArrayReader::GzArrayReader(io::base::reader::IObjectReader::Key)
 {
 }
 
@@ -53,10 +52,9 @@ GzArrayReader::~GzArrayReader()
 
 void GzArrayReader::read()
 {
-    assert( data::location::SingleFile::dynamicCast(m_location) );
-    std::filesystem::path file = data::location::SingleFile::dynamicCast(m_location)->getPath();
+    std::filesystem::path file = this->getFile();
 
-    assert( file.empty() == false );
+    assert(file.empty() == false);
 
     data::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());
@@ -65,7 +63,7 @@ void GzArrayReader::read()
     void* buff = array->getBuffer();
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
-    if ( rawFile == 0 )
+    if(rawFile == 0)
     {
         gzclose(rawFile);
         std::string str = "Unable to open ";
@@ -75,7 +73,7 @@ void GzArrayReader::read()
 
     const int uncompressedBytesReaded = gzread(rawFile, buff, static_cast<unsigned int>(arraySizeInBytes));
     gzclose(rawFile);
-    if ( uncompressedBytesReaded != static_cast<int>(arraySizeInBytes) )
+    if(uncompressedBytesReaded != static_cast<int>(arraySizeInBytes))
     {
         std::string str = "Unable to read ";
         str += file.string();
@@ -87,10 +85,11 @@ void GzArrayReader::read()
 
 std::string GzArrayReader::extension()
 {
-    return (".raw.gz");
+    return ".raw.gz";
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace reader
+
 } // namespace sight::io::base

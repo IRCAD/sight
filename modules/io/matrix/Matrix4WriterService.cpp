@@ -25,9 +25,9 @@
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/Matrix4.hpp>
 
 #include <io/base/writer/Matrix4Writer.hpp>
@@ -47,15 +47,15 @@ namespace sight::module::io::matrix
 
 //-----------------------------------------------------------------------------
 
-void Matrix4WriterService::info(std::ostream& _sstream )
+void Matrix4WriterService::info(std::ostream& _sstream)
 {
-    this->SuperClass::info( _sstream );
+    this->SuperClass::info(_sstream);
     _sstream << std::endl << " Matrix4 object writer";
 }
 
 //-----------------------------------------------------------------------------
 
-void Matrix4WriterService::starting( )
+void Matrix4WriterService::starting()
 {
 }
 
@@ -84,27 +84,25 @@ void Matrix4WriterService::configureWithIHM()
 
 void Matrix4WriterService::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save a transformation matrix" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("TRF files", "*.trf");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        this->setFile(result->getPath());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
+        this->setFile(result->getFile());
     }
     else
     {
         this->clearLocations();
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -121,12 +119,11 @@ void Matrix4WriterService::updating()
     {
         // Retrieve object
         data::Matrix4::csptr matrix =
-            this->getInput< data::Matrix4 >(sight::io::base::service::s_DATA_KEY);
+            this->getInput<data::Matrix4>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
-        sight::io::base::writer::Matrix4Writer::sptr writer =
-            sight::io::base::writer::Matrix4Writer::New();
-        writer->setObject( matrix );
+        auto writer = sight::io::base::writer::Matrix4Writer::New();
+        writer->setObject(matrix);
         writer->setFile(this->getFile());
         writer->write();
     }
@@ -138,4 +135,4 @@ void Matrix4WriterService::updating()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module

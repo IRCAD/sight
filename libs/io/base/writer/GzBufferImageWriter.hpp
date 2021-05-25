@@ -25,8 +25,9 @@
 #include "io/base/config.hpp"
 #include "io/base/writer/GenericObjectWriter.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
@@ -43,15 +44,16 @@ namespace writer
  * Writes `sight::data::Image` into a `.raw.gz` file.
  * The buffer is written in a file using zlib.
  */
-class IO_BASE_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< data::Image >,
-                                               public data::location::enableSingleFile< io::base::writer::
-                                                                                        IObjectWriter >
+class IO_BASE_CLASS_API GzBufferImageWriter : public GenericObjectWriter<data::Image>,
+                                              public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(GzBufferImageWriter, GenericObjectWriter< data::Image>,
-                        io::base::writer::factory::New< GzBufferImageWriter >)
+    SIGHT_DECLARE_CLASS(
+        GzBufferImageWriter,
+        GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<GzBufferImageWriter>
+    )
 
     /// Constructor. Does nothing.
     IO_BASE_API GzBufferImageWriter(io::base::writer::IObjectWriter::Key key);
@@ -64,7 +66,6 @@ public:
 
     /// Defines the extensions supported by this writer. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
-
 };
 
 } // namespace writer

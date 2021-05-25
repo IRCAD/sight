@@ -24,10 +24,10 @@
 
 #include "io/itk/config.hpp"
 
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/ProgressAdviser.hpp>
 
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -36,15 +36,17 @@
 namespace sight::io::itk
 {
 
-class JpgImageWriter :  public io::base::writer::GenericObjectWriter< data::Image >,
-                        public data::location::enableFolder< io::base::writer::IObjectWriter >,
-                        public core::tools::ProgressAdviser
+class JpgImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                       public core::location::SingleFolder,
+                       public core::tools::ProgressAdviser
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(JpgImageWriter, io::base::writer::GenericObjectWriter< data::Image>,
-                        io::base::writer::factory::New< JpgImageWriter >);
+    SIGHT_DECLARE_CLASS(
+        JpgImageWriter,
+        io::base::writer::GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<JpgImageWriter>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_ITK_API JpgImageWriter(io::base::writer::IObjectWriter::Key key);

@@ -44,7 +44,7 @@ IObjectWriter::~IObjectWriter()
 
 //------------------------------------------------------------------------------
 
-void IObjectWriter::setObject( core::tools::Object::csptr object )
+void IObjectWriter::setObject(core::tools::Object::csptr object)
 {
     m_object = object;
 }
@@ -53,22 +53,9 @@ void IObjectWriter::setObject( core::tools::Object::csptr object )
 
 core::tools::Object::csptr IObjectWriter::getObject() const
 {
-    assert( !m_object.expired() );
-    return m_object.lock();
-}
-
-//------------------------------------------------------------------------------
-
-void IObjectWriter::setLocation( const data::location::ILocation::sptr _location )
-{
-    m_location = _location;
-}
-
-//------------------------------------------------------------------------------
-
-data::location::ILocation::sptr IObjectWriter::getLocation()
-{
-    return m_location;
+    const auto object = m_object.lock();
+    SIGHT_ASSERT("Object expired.", object);
+    return object;
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +70,7 @@ std::string IObjectWriter::extension()
 void IObjectWriter::cancel()
 {
     auto job = this->getJob();
-    if ( job )
+    if(job)
     {
         job->cancel();
     }

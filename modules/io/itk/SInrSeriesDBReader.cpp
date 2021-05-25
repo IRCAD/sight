@@ -23,6 +23,8 @@
 #include "SInrSeriesDBReader.hpp"
 
 #include <core/base.hpp>
+#include <core/location/MultipleFiles.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -30,8 +32,6 @@
 #include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/MultiFiles.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
@@ -89,26 +89,26 @@ void SInrSeriesDBReader::configureWithIHM()
 
 void SInrSeriesDBReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    data::location::MultiFiles::sptr result;
-    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::MultipleFiles::dynamicCast(dialogFile.show());
+    if(result)
     {
-        const data::location::ILocation::VectPathType paths = result->getPaths();
+        const std::vector<std::filesystem::path> paths = result->getFiles();
         if(!paths.empty())
         {
-            _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+            defaultDirectory->setFolder(paths[0].parent_path());
+            dialogFile.saveDefaultLocation(defaultDirectory);
         }
+
         this->setFiles(paths);
     }
     else
@@ -119,7 +119,7 @@ void SInrSeriesDBReader::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data::Image::sptr image )
+bool SInrSeriesDBReader::createImage(const std::filesystem::path inrFile, data::Image::sptr image)
 {
     auto myLoader = sight::io::itk::ImageReader::New();
     bool ok       = true;
@@ -130,23 +130,27 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data:
     try
     {
         sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myLoader->addHandler( progressMeterGUI );
+        myLoader->addHandler(progressMeterGUI);
         myLoader->read();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     ss.str(),
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            ss.str(),
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
-    catch( ... )
+    catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     "Warning during loading",
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            "Warning during loading",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
     return ok;
@@ -156,11 +160,10 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data:
 
 void SInrSeriesDBReader::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
+        data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
@@ -170,16 +173,17 @@ void SInrSeriesDBReader::updating()
 
         const std::string instanceUID = core::tools::UUID::generateUUID();
 
-        for(const std::filesystem::path& path :  this->getFiles())
+        for(const std::filesystem::path& path : this->getFiles())
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);
 
             data::Image::sptr image = data::Image::New();
-            if(!this->createImage( path, image ))
+            if(!this->createImage(path, image))
             {
                 m_readFailed = true;
             }
+
             imgSeries->setImage(image);
 
             localSeriesDB->getContainer().push_back(imgSeries);
@@ -205,8 +209,8 @@ void SInrSeriesDBReader::initSeries(data::Series::sptr series, const std::string
 {
     series->setModality("OT");
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    const std::string date = core::tools::getDate(now);
-    const std::string time = core::tools::getTime(now);
+    const std::string date         = core::tools::getDate(now);
+    const std::string time         = core::tools::getTime(now);
     series->setDate(date);
     series->setTime(time);
 

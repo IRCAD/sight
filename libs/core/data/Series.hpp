@@ -24,11 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/types.hpp"
-
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Series))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Series))
 
 namespace sight::data
 {
@@ -42,11 +41,11 @@ class Equipment;
  */
 class DATA_CLASS_API Series : public data::Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Series, data::Object)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Series))
+    SIGHT_DECLARE_CLASS(Series, data::Object, data::factory::New<Series>)
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Series))
 
     /**
      * @brief Creates the series.
@@ -61,14 +60,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the referring patient.
     SPTR(data::Patient) getPatient() const;
@@ -89,16 +88,16 @@ public:
     void setEquipment(const SPTR(data::Equipment)& _val);
 
     /// Gets the type of equipment that originally acquired the data used to create this series.
-    const DicomValueType& getModality () const;
+    const DicomValueType& getModality() const;
 
     /// Sets the type of equipment that originally acquired the data used to create this series.
-    void setModality (const DicomValueType& _val);
+    void setModality(const DicomValueType& _val);
 
     /// Gets the unique identifier of the series.
-    const DicomValueType& getInstanceUID () const;
+    const DicomValueType& getInstanceUID() const;
 
     /// Sets the unique identifier of the series.
-    void setInstanceUID (const DicomValueType& _val);
+    void setInstanceUID(const DicomValueType& _val);
 
     // Gets the number that identify this series.
     DicomValueType getNumber() const;
@@ -113,16 +112,16 @@ public:
     void setLaterality(const DicomValueType& _val);
 
     /// Gets the date the series started.
-    const DicomValueType& getDate () const;
+    const DicomValueType& getDate() const;
 
     /// Sets the date the series started.
-    void setDate (const DicomValueType& _val);
+    void setDate(const DicomValueType& _val);
 
     /// Gets the time the series started.
-    const DicomValueType& getTime () const;
+    const DicomValueType& getTime() const;
 
     /// Sets the time the series started.
-    void setTime (const DicomValueType& _val);
+    void setTime(const DicomValueType& _val);
 
     /// Gets the name of the physician(s) administering the series.
     const DicomValuesType& getPerformingPhysiciansName() const;
@@ -269,7 +268,6 @@ protected:
 
     /// Defines the user-defined comments on the performed procedure step.
     DicomValueType m_performedProcedureComments;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -330,7 +328,7 @@ inline void Series::setModality(const DicomValueType& _val)
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Series::getInstanceUID () const
+inline const DicomValueType& Series::getInstanceUID() const
 {
     return m_instanceUID;
 }

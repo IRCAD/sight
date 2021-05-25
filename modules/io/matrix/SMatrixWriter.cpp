@@ -26,9 +26,8 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <service/macros.hpp>
 
@@ -100,27 +99,25 @@ void SMatrixWriter::configureWithIHM()
 
 void SMatrixWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter(".csv file", "*.csv");
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
     if(result)
     {
-        _sDefaultPath = result->getPath();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        this->setFile(_sDefaultPath);
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
+        this->setFile(result->getFile());
     }
     else
     {
         this->clearLocations();
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +131,6 @@ void SMatrixWriter::stopping()
 
 void SMatrixWriter::updating()
 {
-
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
     this->saveMatrix(timestamp);
 }
@@ -154,7 +150,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(sight::io::base::service::s_DATA_KEY);
+        data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>(sight::io::base::service::s_DATA_KEY);
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
@@ -163,21 +159,22 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
         if(object)
         {
             CSPTR(data::MatrixTL::BufferType) buffer =
-                std::dynamic_pointer_cast< const data::MatrixTL::BufferType >(object);
+                std::dynamic_pointer_cast<const data::MatrixTL::BufferType>(object);
             if(buffer)
             {
                 timestamp = object->getTimestamp();
                 const size_t time = static_cast<size_t>(timestamp);
-                m_filestream << time <<";";
-                for(unsigned int i = 0; i < numberOfMat; ++i)
+                m_filestream << time << ";";
+                for(unsigned int i = 0 ; i < numberOfMat ; ++i)
                 {
                     const float* values = buffer->getElement(i);
 
-                    for(unsigned int v = 0; v < 16; ++v)
+                    for(unsigned int v = 0 ; v < 16 ; ++v)
                     {
                         m_filestream << values[v] << ";";
                     }
                 }
+
                 m_filestream << std::endl;
             }
         }
@@ -193,6 +190,7 @@ void SMatrixWriter::startRecord()
     if(!this->hasLocationDefined())
     {
         this->openLocationDialog();
+
         // In trunc mode, any contents that existed in the file before it is open are discarded.
         // This is the needed behavior when opening the file for the first time.
         openMode = std::ofstream::trunc;
@@ -210,8 +208,9 @@ void SMatrixWriter::startRecord()
         else
         {
             SIGHT_WARN(
-                "The file " + this->getFile().string() +
-                " can't be open. Please check if it is already open in another program.");
+                "The file " + this->getFile().string()
+                + " can't be open. Please check if it is already open in another program."
+            );
         }
     }
 }

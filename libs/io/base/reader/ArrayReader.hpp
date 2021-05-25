@@ -25,13 +25,15 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/GenericObjectReader.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Array.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
 namespace sight::io::base
 {
+
 namespace reader
 {
 
@@ -41,13 +43,12 @@ namespace reader
  *
  * Reads '.raw' files and converts them into a 'sight::data::Array'.
  */
-class IO_BASE_CLASS_API ArrayReader :  public GenericObjectReader< data::Array >,
-                                       public data::location::enableSingleFile< IObjectReader >
+class IO_BASE_CLASS_API ArrayReader : public GenericObjectReader<data::Array>,
+                                      public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ArrayReader, GenericObjectReader< data::Array>, io::base::reader::factory::New<ArrayReader>)
+    SIGHT_DECLARE_CLASS(ArrayReader, GenericObjectReader<data::Array>, io::base::reader::factory::New<ArrayReader>)
 
     /// Constructor. Does nothing.
     IO_BASE_API ArrayReader(io::base::reader::IObjectReader::Key key);
@@ -60,8 +61,8 @@ public:
 
     /// Defines extension supported by this reader ".raw"
     IO_BASE_API std::string extension() override;
-
 };
 
 } // namespace reader
+
 } // namespace sight::io::base

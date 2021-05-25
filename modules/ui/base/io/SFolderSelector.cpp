@@ -23,8 +23,7 @@
 #include "SFolderSelector.hpp"
 
 #include <core/com/Signal.hxx>
-
-#include <data/location/Folder.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <service/macros.hpp>
 
@@ -32,17 +31,17 @@
 
 namespace sight::module::ui::base
 {
+
 namespace io
 {
-
 
 const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
 
 //------------------------------------------------------------------------------
 
-SFolderSelector::SFolderSelector( ) noexcept
+SFolderSelector::SFolderSelector() noexcept
 {
-    newSignal< FolderSelectedSignalType >( s_FOLDER_SELECTED_SIG );
+    newSignal<FolderSelectedSignalType>(s_FOLDER_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -67,18 +66,17 @@ void SFolderSelector::starting()
 
 //------------------------------------------------------------------------------
 
-void SFolderSelector::updating( )
+void SFolderSelector::updating()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_dialogTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
     dialogFile.setType(sight::ui::base::dialog::ILocationDialog::FOLDER);
 
-    data::location::Folder::sptr result;
-    result = data::location::Folder::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    if(result)
     {
         auto sig = this->signal<FolderSelectedSignalType>(s_FOLDER_SELECTED_SIG);
         sig->asyncEmit(result->getFolder());
@@ -93,5 +91,7 @@ void SFolderSelector::stopping()
 
 //------------------------------------------------------------------------------
 //
+
 } // namespace io
+
 } // namespace sight::module::ui::base

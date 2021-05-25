@@ -27,12 +27,12 @@
 #include <core/com/Signal.hxx>
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/atoms/filter/factory/new.hpp>
 #include <io/atoms/filter/IFilter.hpp>
@@ -59,11 +59,13 @@ namespace sight::module::io::atoms
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
-const SReader::FileExtension2NameType SReader::s_EXTENSIONS = { {".xml", "XML"},
-                                                                { ".xmlz", "Zipped XML"},
-                                                                { ".json", "JSON"},
-                                                                { ".jsonz", "Zipped JSON"},
-                                                                { ".cpz", "Crypted JSON"} };
+const SReader::FileExtension2NameType SReader::s_EXTENSIONS = {{".xml", "XML"},
+    {".xmlz", "Zipped XML"},
+    {".json", "JSON"},
+    {".jsonz", "Zipped JSON"},
+    {".cpz", "Crypted JSON"
+    }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -75,9 +77,9 @@ SReader::SReader() :
     m_version("Undefined"),
     m_filter("")
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 
-    for(SReader::FileExtension2NameType::value_type ext :  s_EXTENSIONS)
+    for(SReader::FileExtension2NameType::value_type ext : s_EXTENSIONS)
     {
         m_allowedExts.insert(m_allowedExts.end(), ext.first);
     }
@@ -93,7 +95,7 @@ void SReader::starting()
 
 void SReader::stopping()
 {
-    if (m_outputMode)
+    if(m_outputMode)
     {
         this->setOutput(sight::io::base::service::s_DATA_KEY, nullptr);
     }
@@ -112,7 +114,7 @@ void SReader::configuring()
 
     const auto archiveCfgs = config.equal_range("archive");
 
-    for (auto it = archiveCfgs.first; it != archiveCfgs.second; ++it)
+    for(auto it = archiveCfgs.first ; it != archiveCfgs.second ; ++it)
     {
         const std::string backend = it->second.get<std::string>("<xmlattr>.backend");
         SIGHT_ASSERT("No backend attribute given in archive tag", backend != "");
@@ -120,7 +122,7 @@ void SReader::configuring()
 
         const auto extCfgs = it->second.equal_range("extension");
 
-        for (auto itExt = extCfgs.first; itExt != extCfgs.second; ++itExt)
+        for(auto itExt = extCfgs.first ; itExt != extCfgs.second ; ++itExt)
         {
             const std::string extension = itExt->second.get<std::string>("");
             SIGHT_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
@@ -133,12 +135,12 @@ void SReader::configuring()
 
     const auto extensionsCfg = config.get_child_optional("extensions");
 
-    if (extensionsCfg)
+    if(extensionsCfg)
     {
         m_allowedExts.clear();
 
         const auto extCfgs = extensionsCfg->equal_range("extension");
-        for (auto it = extCfgs.first; it != extCfgs.second; ++it)
+        for(auto it = extCfgs.first ; it != extCfgs.second ; ++it)
         {
             const std::string ext = it->second.get<std::string>("");
 
@@ -160,12 +162,12 @@ void SReader::configuring()
     {
         m_allowedExts.clear();
 
-        for(FileExtension2NameType::value_type ext :  m_customExts)
+        for(FileExtension2NameType::value_type ext : m_customExts)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
         }
 
-        for(SReader::FileExtension2NameType::value_type ext :  SReader::s_EXTENSIONS)
+        for(SReader::FileExtension2NameType::value_type ext : SReader::s_EXTENSIONS)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
             m_allowedExtLabels[ext.first] = ext.second;
@@ -175,23 +177,27 @@ void SReader::configuring()
     m_filter     = config.get("filter", "");
     m_uuidPolicy = config.get("uuidPolicy", m_uuidPolicy);
 
-    SIGHT_ASSERT("Unknown policy : '"
-                 + m_uuidPolicy +
-                 "', available policies : 'Strict','Change' or 'Reuse'.",
-                 "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
+    SIGHT_ASSERT(
+        "Unknown policy : '"
+        + m_uuidPolicy
+        + "', available policies : 'Strict','Change' or 'Reuse'.",
+        "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy
+    );
 
     const auto patcherCfg = config.get_child_optional("patcher");
 
-    if (patcherCfg)
+    if(patcherCfg)
     {
         m_context = patcherCfg->get<std::string>("<xmlattr>.context", "MedicalData");
-        m_version = patcherCfg->get<std::string>("<xmlattr>.version",
-                                                 sight::io::patch::semantic::PatchLoader::getCurrentVersion());
+        m_version = patcherCfg->get<std::string>(
+            "<xmlattr>.version",
+            sight::io::patch::semantic::PatchLoader::getCurrentVersion()
+        );
         m_useAtomsPatcher = true;
     }
 
     const std::string output = config.get<std::string>("out.<xmlattr>.key", "");
-    if (output == sight::io::base::service::s_DATA_KEY )
+    if(output == sight::io::base::service::s_DATA_KEY)
     {
         m_outputMode = true;
     }
@@ -205,9 +211,11 @@ void SReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        data::Object::sptr data = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
-                     m_outputMode || data);
+        data::Object::sptr data = this->getInOut<data::Object>(sight::io::base::service::s_DATA_KEY);
+        SIGHT_ASSERT(
+            "The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+            m_outputMode || data
+        );
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -219,7 +227,7 @@ void SReader::updating()
             const std::filesystem::path filename   = filePath.filename();
             std::string extension                  = filePath.extension().string();
 
-            SIGHT_THROW_IF( "Unable to guess file format (missing extension)", extension.empty() );
+            SIGHT_THROW_IF("Unable to guess file format (missing extension)", extension.empty());
 
             if(m_customExts.find(extension) != m_customExts.end())
             {
@@ -231,8 +239,9 @@ void SReader::updating()
             const unsigned int progressBarOffset = 10;
 
             // Reading file : job 1
-            core::jobs::Job::sptr fileReadingJob = core::jobs::Job::New("Reading " + extension + " file",
-                                                                        [ =, &atom](core::jobs::Job& runningJob)
+            core::jobs::Job::sptr fileReadingJob = core::jobs::Job::New(
+                "Reading " + extension + " file",
+                [ =, &atom](core::jobs::Job& runningJob)
                 {
                     runningJob.doneWork(progressBarOffset);
 
@@ -241,32 +250,34 @@ void SReader::updating()
                     std::filesystem::path archiveRootName;
                     sight::io::atoms::FormatType format = sight::io::atoms::UNSPECIFIED;
 
-                    if ( extension == ".json" )
+                    if(extension == ".json")
                     {
                         readArchive     = sight::io::zip::ReadDirArchive::New(folderPath.string());
                         archiveRootName = filename;
                         format          = sight::io::atoms::JSON;
                     }
-                    else if ( extension == ".jsonz" )
+                    else if(extension == ".jsonz")
                     {
                         readArchive     = sight::io::zip::ReadZipArchive::New(filePath.string());
                         archiveRootName = "root.json";
                         format          = sight::io::atoms::JSON;
                     }
-                    else if ( extension == ".cpz" )
+                    else if(extension == ".cpz")
                     {
-                        readArchive = sight::io::zip::ReadZipArchive::New(filePath.string(),
-                                                                          sight::ui::base::preferences::getPassword());
+                        readArchive = sight::io::zip::ReadZipArchive::New(
+                            filePath.string(),
+                            sight::ui::base::preferences::getPassword()
+                        );
                         archiveRootName = "root.json";
                         format          = sight::io::atoms::JSON;
                     }
-                    else if ( extension == ".xml" )
+                    else if(extension == ".xml")
                     {
                         readArchive     = sight::io::zip::ReadDirArchive::New(folderPath.string());
                         archiveRootName = filename;
                         format          = sight::io::atoms::XML;
                     }
-                    else if ( extension == ".xmlz" )
+                    else if(extension == ".xmlz")
                     {
                         readArchive     = sight::io::zip::ReadZipArchive::New(filePath.string());
                         archiveRootName = "root.xml";
@@ -274,23 +285,25 @@ void SReader::updating()
                     }
                     else
                     {
-                        SIGHT_THROW( "This file extension '" << extension << "' is not managed" );
+                        SIGHT_THROW("This file extension '" << extension << "' is not managed");
                     }
 
                     sight::io::atoms::Reader reader;
-                    atom = sight::atoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
+                    atom = sight::atoms::Object::dynamicCast(reader.read(readArchive, archiveRootName, format));
 
-                    SIGHT_THROW_IF( "Invalid atoms file :'" << filePath << "'", !atom );
+                    SIGHT_THROW_IF("Invalid atoms file :'" << filePath << "'", !atom);
 
                     runningJob.doneWork(progressBarOffset);
 
                     runningJob.done();
-
-                }, m_associatedWorker);
+                },
+                m_associatedWorker
+            );
 
             // patching atom : job 2
-            core::jobs::Job::sptr patchingJob = core::jobs::Job::New("Reading " + extension + " file",
-                                                                     [ =, &atom](core::jobs::Job& runningJob)
+            core::jobs::Job::sptr patchingJob = core::jobs::Job::New(
+                "Reading " + extension + " file",
+                [ =, &atom](core::jobs::Job& runningJob)
                 {
                     if(runningJob.cancelRequested())
                     {
@@ -301,59 +314,74 @@ void SReader::updating()
                     runningJob.doneWork(progressBarOffset);
 
                     /// patch atom
-                    if ( m_useAtomsPatcher )
+                    if(m_useAtomsPatcher)
                     {
-                        SIGHT_THROW_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
-                                                                       << "' context, but '" << m_context <<
-                                        "' was excepted.",
-                                        atom->getMetaInfo("context") != m_context);
+                        SIGHT_THROW_IF(
+                            "Unable to load data, found '" << atom->getMetaInfo("context")
+                            << "' context, but '" << m_context
+                            << "' was excepted.",
+                            atom->getMetaInfo("context") != m_context
+                        );
 
                         sight::io::atoms::patch::PatchingManager globalPatcher(atom);
-                        atom = globalPatcher.transformTo( m_version );
+                        atom = globalPatcher.transformTo(m_version);
                     }
 
                     if(!m_filter.empty())
                     {
-                        auto filter = sight:: io::atoms::filter::factory::New(m_filter);
+                        auto filter = sight::io::atoms::filter::factory::New(m_filter);
                         SIGHT_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
                         filter->apply(atom);
                     }
+
                     runningJob.done();
-                }, m_associatedWorker);
+                },
+                m_associatedWorker
+            );
 
             data::Object::sptr newData;
 
             // convert to fwData : job 3
-            core::jobs::Job::sptr atomToDataJob = core::jobs::Job::New("Reading " + extension + " file",
-                                                                       [ =, &newData, &atom](
-                                                                           core::jobs::Job& runningJob)
+            core::jobs::Job::sptr atomToDataJob = core::jobs::Job::New(
+                "Reading " + extension + " file",
+                [ =, &newData, &atom](
+                    core::jobs::Job& runningJob)
                 {
                     runningJob.doneWork(progressBarOffset);
                     if(runningJob.cancelRequested())
                     {
                         return;
                     }
+
                     if("Strict" == m_uuidPolicy)
                     {
                         newData =
-                            sight::atoms::conversion::convert(atom,
-                                                              sight::atoms::conversion::AtomVisitor::StrictPolicy());
+                            sight::atoms::conversion::convert(
+                                atom,
+                                sight::atoms::conversion::AtomVisitor::StrictPolicy()
+                            );
                     }
                     else if("Reuse" == m_uuidPolicy)
                     {
                         newData =
-                            sight::atoms::conversion::convert(atom,
-                                                              sight::atoms::conversion::AtomVisitor::ReusePolicy());
+                            sight::atoms::conversion::convert(
+                                atom,
+                                sight::atoms::conversion::AtomVisitor::ReusePolicy()
+                            );
                     }
                     else
                     {
                         newData =
-                            sight::atoms::conversion::convert(atom,
-                                                              sight::atoms::conversion::AtomVisitor::ChangePolicy());
+                            sight::atoms::conversion::convert(
+                                atom,
+                                sight::atoms::conversion::AtomVisitor::ChangePolicy()
+                            );
                     }
 
                     runningJob.done();
-                }, m_associatedWorker);
+                },
+                m_associatedWorker
+            );
 
             core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(extension + " reader");
             jobs->add(fileReadingJob);
@@ -370,9 +398,9 @@ void SReader::updating()
                 return;
             }
 
-            SIGHT_THROW_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );
+            SIGHT_THROW_IF("Unable to load '" << filePath << "' : invalid data.", !newData);
 
-            if (m_outputMode)
+            if(m_outputMode)
             {
                 this->setOutput(sight::io::base::service::s_DATA_KEY, newData);
             }
@@ -382,19 +410,22 @@ void SReader::updating()
                 {
                     m_readFailed = true;
                 }
+
                 SIGHT_ASSERT("'" + sight::io::base::service::s_DATA_KEY + "' key is not defined", data);
 
-                SIGHT_THROW_IF( "Unable to load '" << filePath
-                                                   << "' : trying to load a '" << newData->getClassname()
-                                                   << "' where a '" << data->getClassname() << "' was expected",
-                                newData->getClassname() != data->getClassname() );
+                SIGHT_THROW_IF(
+                    "Unable to load '" << filePath
+                    << "' : trying to load a '" << newData->getClassname()
+                    << "' where a '" << data->getClassname() << "' was expected",
+                    newData->getClassname() != data->getClassname()
+                );
 
                 // Workaround to read a data::Array.
                 // The shallowCopy of a data::Array is not allowed due to unknown buffer owner.
                 // So in the case of reading an Array we swap buffers.
                 if(newData->getClassname() == data::Array::classname())
                 {
-                    data::Array::dynamicCast(data)->swap( data::Array::dynamicCast(newData) );
+                    data::Array::dynamicCast(data)->swap(data::Array::dynamicCast(newData));
                 }
                 else
                 {
@@ -404,22 +435,27 @@ void SReader::updating()
                 this->notificationOfUpdate();
             }
         }
-        catch( std::exception& e )
+        catch(std::exception& e)
         {
             m_readFailed = true;
-            SIGHT_ERROR( e.what() );
-            sight::ui::base::dialog::MessageDialog::show("Atoms reader failed", e.what(),
-                                                         sight::ui::base::dialog::MessageDialog::CRITICAL);
+            SIGHT_ERROR(e.what());
+            sight::ui::base::dialog::MessageDialog::show(
+                "Atoms reader failed",
+                e.what(),
+                sight::ui::base::dialog::MessageDialog::CRITICAL
+            );
         }
-        catch( ... )
+        catch(...)
         {
             m_readFailed = true;
-            sight::ui::base::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
-                                                         sight::ui::base::dialog::MessageDialog::CRITICAL);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Atoms reader failed",
+                "Aborting operation.",
+                sight::ui::base::dialog::MessageDialog::CRITICAL
+            );
         }
 
         cursor.setDefaultCursor();
-
     }
     else
     {
@@ -438,10 +474,10 @@ sight::io::base::service::IOPathType SReader::getIOPathType() const
 
 void SReader::notificationOfUpdate()
 {
-    data::Object::sptr object = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
+    data::Object::sptr object = this->getInOut<data::Object>(sight::io::base::service::s_DATA_KEY);
     SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", object);
 
-    auto sig = object->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = object->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -459,30 +495,29 @@ void SReader::configureWithIHM()
 
 void SReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::LocationDialog::FILE_MUST_EXIST);
 
     dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-    for(const std::string& ext :  m_allowedExts)
+    for(const std::string& ext : m_allowedExts)
     {
         dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
     }
 
-    data::location::SingleFile::sptr result
-        = data::location::SingleFile::dynamicCast( dialogFile.show() );
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
 
-    if (result)
+    if(result)
     {
-        _sDefaultPath = result->getPath();
-        this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {

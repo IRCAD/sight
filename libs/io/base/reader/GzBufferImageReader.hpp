@@ -25,8 +25,9 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/GenericObjectReader.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
@@ -42,14 +43,16 @@ namespace reader
  * Reads 'raw.gz' files and converts them into a 'sight::data::Image'.
  * The buffer is written in a file using zlib.
  */
-class IO_BASE_CLASS_API GzBufferImageReader :  public GenericObjectReader< data::Image >,
-                                               public data::location::enableSingleFile< IObjectReader >
+class IO_BASE_CLASS_API GzBufferImageReader : public GenericObjectReader<data::Image>,
+                                              public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(GzBufferImageReader, GenericObjectReader< data::Image>,
-                        io::base::reader::factory::New< GzBufferImageReader >)
+    SIGHT_DECLARE_CLASS(
+        GzBufferImageReader,
+        GenericObjectReader<data::Image>,
+        io::base::reader::factory::New<GzBufferImageReader>
+    )
 
     /// Constructor. Does nothing.
     IO_BASE_API GzBufferImageReader(io::base::reader::IObjectReader::Key key);
@@ -62,7 +65,6 @@ public:
 
     /// Defines the extensions supported by this reader. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
-
 };
 
 } // namespace reader

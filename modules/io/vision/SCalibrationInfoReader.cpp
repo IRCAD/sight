@@ -23,10 +23,10 @@
 #include "SCalibrationInfoReader.hpp"
 
 #include <core/com/Slots.hxx>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <geometry/vision/helper.hpp>
@@ -51,14 +51,13 @@ static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "upda
 
 SCalibrationInfoReader::SCalibrationInfoReader() noexcept
 {
-    newSlot( s_UPDATE_CHESSBOARD_SIZE_SLOT, &SCalibrationInfoReader::updateChessboardSize, this );
+    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SCalibrationInfoReader::updateChessboardSize, this);
 }
 
 //------------------------------------------------------------------------------
 
 SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -79,21 +78,21 @@ void SCalibrationInfoReader::configureWithIHM()
 
 void SCalibrationInfoReader::openLocationDialog()
 {
-    static std::filesystem::path s_defaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
-    data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
+    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
 
-    if (result)
+    if(result)
     {
-        s_defaultPath = result->getFolder().parent_path();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(s_defaultPath) );
         this->setFolder(result->getFolder());
+        defaultDirectory->setFolder(result->getFolder().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -128,10 +127,10 @@ void SCalibrationInfoReader::starting()
 
 void SCalibrationInfoReader::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         data::CalibrationInfo::sptr calibInfo =
-            this->getInOut< data::CalibrationInfo >(sight::io::base::service::s_DATA_KEY);
+            this->getInOut<data::CalibrationInfo>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
@@ -139,7 +138,7 @@ void SCalibrationInfoReader::updating()
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
-        using DetectionPairType = std::pair< data::Image::sptr, data::PointList::sptr >;
+        using DetectionPairType = std::pair<data::Image::sptr, data::PointList::sptr>;
 
         const std::filesystem::path folder = this->getFolder();
 
@@ -155,9 +154,12 @@ void SCalibrationInfoReader::updating()
             {
                 ::cv::cvtColor(img, img, ::cv::COLOR_BGR2RGB);
 
-                data::PointList::sptr chessboardPts = geometry::vision::helper::detectChessboard(img,
-                                                                                                 m_width, m_height,
-                                                                                                 m_scale);
+                data::PointList::sptr chessboardPts = geometry::vision::helper::detectChessboard(
+                    img,
+                    m_width,
+                    m_height,
+                    m_scale
+                );
 
                 if(chessboardPts)
                 {
@@ -173,14 +175,14 @@ void SCalibrationInfoReader::updating()
                 }
                 else
                 {
-                    errorMessage = "Couldn't detect a chessboard in '" +  dirEntry.string() + "'.\n\n"
-                                   "Please make sure that the right chessboard parameters are set.";
+                    errorMessage = "Couldn't detect a chessboard in '" + dirEntry.string() + "'.\n\n"
+                                                                                             "Please make sure that the right chessboard parameters are set.";
                 }
             }
             else
             {
-                errorMessage = "Couldn't read '" +  dirEntry.string() + "'.\n\n"
-                               "Make sure it is a valid image format.";
+                errorMessage = "Couldn't read '" + dirEntry.string() + "'.\n\n"
+                                                                       "Make sure it is a valid image format.";
             }
 
             if(!errorMessage.empty())
@@ -197,6 +199,7 @@ void SCalibrationInfoReader::updating()
                     m_readFailed = true;
                     break;
                 }
+
                 errorMessage.clear();
             }
         }
@@ -211,7 +214,7 @@ void SCalibrationInfoReader::updating()
                 calibInfo->addRecord(img, chessboard);
             }
 
-            auto sig = calibInfo->signal< data::CalibrationInfo::AddedRecordSignalType >
+            auto sig = calibInfo->signal<data::CalibrationInfo::AddedRecordSignalType>
                            (data::CalibrationInfo::s_MODIFIED_SIG);
 
             sig->asyncEmit();
@@ -246,7 +249,7 @@ void SCalibrationInfoReader::updateChessboardSize()
     }
 
     const std::string scaleStr = ui::base::preferences::getPreference(m_scaleKey);
-    if (!scaleStr.empty())
+    if(!scaleStr.empty())
     {
         m_scale = std::stof(scaleStr);
 

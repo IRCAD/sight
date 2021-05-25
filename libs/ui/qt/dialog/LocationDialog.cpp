@@ -22,9 +22,9 @@
 
 #include "ui/qt/dialog/LocationDialog.hpp"
 
-#include <data/location/Folder.hpp>
-#include <data/location/MultiFiles.hpp>
-#include <data/location/SingleFile.hpp>
+#include <core/location/MultipleFiles.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <ui/base/dialog/ILocationDialog.hpp>
 #include <ui/base/registry/macros.hpp>
@@ -38,10 +38,11 @@
 #include <filesystem>
 #include <functional>
 
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::LocationDialog, ::sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::sight::ui::qt::dialog::LocationDialog, ::sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
@@ -55,21 +56,20 @@ LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key key) :
 
 //------------------------------------------------------------------------------
 
-data::location::ILocation::sptr LocationDialog::show()
+core::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget* parent                         = qApp->activeWindow();
-    QString caption                         = QString::fromStdString(this->getTitle());
-    const std::filesystem::path defaultPath = this->getDefaultLocation();
-    QString path                            = QString::fromStdString(defaultPath.string());
-    QString filter                          = this->fileFilters();
-    data::location::ILocation::sptr location;
+    QWidget* parent = qApp->activeWindow();
+    QString caption = QString::fromStdString(this->getTitle());
+    QString path    = QString::fromStdString(this->getDefaultLocation()->toString());
+    QString filter  = this->fileFilters();
+    core::location::ILocation::sptr location;
 
     QFileDialog dialog;
     dialog.setDirectory(path);
     dialog.setNameFilter(filter);
     dialog.setWindowTitle(caption);
 
-    if (m_style & ui::base::dialog::ILocationDialog::READ)
+    if(m_style & ui::base::dialog::ILocationDialog::READ)
     {
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
     }
@@ -78,107 +78,111 @@ data::location::ILocation::sptr LocationDialog::show()
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
     }
 
-    if (m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
+    if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
     {
         SIGHT_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
 
         dialog.setFilter(QDir::Filter::Files);
         dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
         QStringList files;
-        if (dialog.exec())
+        if(dialog.exec())
         {
             files      = dialog.selectedFiles();
             m_wildcard = dialog.selectedNameFilter().toStdString();
-
         }
+
         if(!files.isEmpty())
         {
-            data::location::MultiFiles::sptr multifiles = data::location::MultiFiles::New();
-            std::vector< std::filesystem::path > paths;
-            for (QString filename : files)
+            std::vector<std::filesystem::path> paths;
+            for(QString filename : files)
             {
-                std::filesystem::path bpath( filename.toStdString() );
+                std::filesystem::path bpath(filename.toStdString());
                 paths.push_back(bpath);
             }
-            multifiles->setPaths(paths);
-            location = multifiles;
+
+            const auto& multipleFiles = std::make_shared<core::location::MultipleFiles>();
+            multipleFiles->setFiles(paths);
+            location = multipleFiles;
         }
     }
-    else if (m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
+    else if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
     {
         QString fileName;
-        if ( (m_style& ui::base::dialog::ILocationDialog::READ) ||
-             (m_style & ui::base::dialog::ILocationDialog::FILE_MUST_EXIST) )
+        if((m_style & ui::base::dialog::ILocationDialog::READ)
+           || (m_style & ui::base::dialog::ILocationDialog::FILE_MUST_EXIST))
         {
             dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
-            if (dialog.exec() && !dialog.selectedFiles().empty())
+            if(dialog.exec() && !dialog.selectedFiles().empty())
             {
                 fileName   = dialog.selectedFiles()[0];
                 m_wildcard = dialog.selectedNameFilter().toStdString();
             }
         }
-        else if ( m_style & ui::base::dialog::ILocationDialog::WRITE )
+        else if(m_style & ui::base::dialog::ILocationDialog::WRITE)
         {
-            if (dialog.exec() && !dialog.selectedFiles().empty())
+            if(dialog.exec() && !dialog.selectedFiles().empty())
             {
                 fileName   = dialog.selectedFiles()[0];
                 m_wildcard = dialog.selectedNameFilter().toStdString();
             }
-
         }
+
         if(!fileName.isNull())
         {
-            std::filesystem::path bpath( fileName.toStdString());
-            location = data::location::SingleFile::New(bpath);
+            const auto& singleFile = std::make_shared<core::location::SingleFile>();
+            singleFile->setFile(fileName.toStdString());
+            location = singleFile;
         }
     }
-    else if (m_type == ui::base::dialog::ILocationDialog::FOLDER)
+    else if(m_type == ui::base::dialog::ILocationDialog::FOLDER)
     {
         dialog.setFilter(QDir::Filter::Dirs);
         dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
         dialog.setFileMode(QFileDialog::FileMode::Directory);
 
         QString dir;
-        if (dialog.exec() && !dialog.selectedFiles().empty())
+        if(dialog.exec() && !dialog.selectedFiles().empty())
         {
             dir = dialog.selectedFiles()[0];
         }
 
         if(!dir.isNull())
         {
-            std::filesystem::path bpath( dir.toStdString()  );
-            location = data::location::Folder::New(bpath);
+            const auto& singleDirectory = std::make_shared<core::location::SingleFolder>();
+            singleDirectory->setFolder(dir.toStdString());
+            location = singleDirectory;
         }
     }
+
     return location;
 }
 
 //------------------------------------------------------------------------------
 
-void LocationDialog::setType( ui::base::dialog::ILocationDialog::Types type )
+void LocationDialog::setType(ui::base::dialog::ILocationDialog::Types type)
 {
     m_type = type;
 }
 
 //------------------------------------------------------------------------------
 
-ui::base::dialog::ILocationDialog&  LocationDialog::setOption( ui::base::dialog::ILocationDialog::Options option)
+ui::base::dialog::ILocationDialog& LocationDialog::setOption(ui::base::dialog::ILocationDialog::Options option)
 {
-    if ( option == ui::base::dialog::ILocationDialog::WRITE )
+    if(option == ui::base::dialog::ILocationDialog::WRITE)
     {
         m_style = (ui::base::dialog::ILocationDialog::Options) (m_style & ~ui::base::dialog::ILocationDialog::READ);
         m_style = (ui::base::dialog::ILocationDialog::Options) (m_style | ui::base::dialog::ILocationDialog::WRITE);
     }
-    else if ( option == ui::base::dialog::ILocationDialog::READ )
+    else if(option == ui::base::dialog::ILocationDialog::READ)
     {
         m_style = (ui::base::dialog::ILocationDialog::Options) (m_style & ~ui::base::dialog::ILocationDialog::WRITE);
         m_style = (ui::base::dialog::ILocationDialog::Options) (m_style | ui::base::dialog::ILocationDialog::READ);
     }
-    else if ( option == ui::base::dialog::ILocationDialog::FILE_MUST_EXIST )
+    else if(option == ui::base::dialog::ILocationDialog::FILE_MUST_EXIST)
     {
         m_style =
-            (ui::base::dialog::ILocationDialog::Options) (m_style |
-                                                          ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+            (ui::base::dialog::ILocationDialog::Options) (m_style
+                                                          | ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
     }
 
     return *this;
@@ -187,9 +191,9 @@ ui::base::dialog::ILocationDialog&  LocationDialog::setOption( ui::base::dialog:
 //------------------------------------------------------------------------------
 
 // exemple ( addFilter("images","*.png *.jpg");
-void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList )
+void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList)
 {
-    m_filters.push_back( std::make_pair( filterName, wildcardList ));
+    m_filters.push_back(std::make_pair(filterName, wildcardList));
 }
 
 //------------------------------------------------------------------------------
@@ -198,18 +202,20 @@ void LocationDialog::addFilter(const std::string& filterName, const std::string&
 QString LocationDialog::fileFilters()
 {
     std::string result;
-    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
-    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
+    std::vector<std::pair<std::string, std::string> >::const_iterator iter;
+    for(iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
     {
         std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
 
-        if (iter != m_filters.begin() )
+        if(iter != m_filters.begin())
         {
             result += ";;";
         }
-        result += filterName +" (" +  rawWildcards +")";
+
+        result += filterName + " (" + rawWildcards + ")";
     }
+
     return QString::fromStdString(result);
 }
 
@@ -218,13 +224,13 @@ QString LocationDialog::fileFilters()
 std::string LocationDialog::getCurrentSelection() const
 {
     std::string extension;
-    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
-    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
+    std::vector<std::pair<std::string, std::string> >::const_iterator iter;
+    for(iter = m_filters.begin() ; iter != m_filters.end() ; ++iter)
     {
         const std::string& filterName       = iter->first;
         const std::string& rawWildcards     = iter->second;
-        const std::string& availableFilters = filterName + " (" +  rawWildcards + ")";
-        if (!m_wildcard.compare(availableFilters))
+        const std::string& availableFilters = filterName + " (" + rawWildcards + ")";
+        if(!m_wildcard.compare(availableFilters))
         {
             extension = &rawWildcards[1];
             break;
@@ -235,5 +241,7 @@ std::string LocationDialog::getCurrentSelection() const
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace dialog
+
 } //namespace sight::ui::qt

@@ -49,7 +49,6 @@ namespace sight::io::vtk
 //------------------------------------------------------------------------------
 
 BitmapImageWriter::BitmapImageWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile<io::base::writer::IObjectWriter>(this),
     m_job(core::jobs::Observer::New("Bitmap image writer"))
 {
 }

@@ -24,8 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -33,8 +34,10 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
 class IJob;
+
 }
 
 namespace sight::io::vtk
@@ -45,14 +48,16 @@ namespace sight::io::vtk
  *
  * Write a Bitmap Image using the VTK library
  */
-class BitmapImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
-                          public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+class BitmapImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                          public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(BitmapImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                        io::base::writer::factory::New< BitmapImageWriter >);
+    SIGHT_DECLARE_CLASS(
+        BitmapImageWriter,
+        io::base::writer::GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<BitmapImageWriter>
+    );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 

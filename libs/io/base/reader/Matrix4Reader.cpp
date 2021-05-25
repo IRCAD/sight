@@ -24,21 +24,19 @@
 
 #include "io/base/reader/registry/macros.hpp"
 
-#include <data/location/SingleFile.hpp>
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::Matrix4Reader );
+SIGHT_REGISTER_IO_READER(::sight::io::base::reader::Matrix4Reader);
 
 namespace sight::io::base
 {
+
 namespace reader
 {
 
-Matrix4Reader::Matrix4Reader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< IObjectReader >(this)
+Matrix4Reader::Matrix4Reader(io::base::reader::IObjectReader::Key)
 {
 }
 
@@ -52,36 +50,35 @@ Matrix4Reader::~Matrix4Reader()
 
 void Matrix4Reader::read()
 {
-    assert( ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
-    std::filesystem::path file =
-        ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
+    std::filesystem::path file = this->getFile();
 
-    assert( std::filesystem::exists(file) );
+    assert(std::filesystem::exists(file));
 
-    std::ifstream inFile(file.string().c_str(), std::ifstream::in );
-    assert( inFile.good() );
+    std::ifstream inFile(file.string().c_str(), std::ifstream::in);
+    assert(inFile.good());
 
     char readValue = 0;
     double value;
 
-    while ( !inFile.eof() && readValue < 16 )
+    while(!inFile.eof() && readValue < 16)
     {
         inFile >> value;
         this->getConcreteObject()->getCoefficients()[static_cast<size_t>(readValue)] = value;
         readValue++;
     }
 
-    assert(this->getConcreteObject()->getCoefficients().size() == 16 );
+    assert(this->getConcreteObject()->getCoefficients().size() == 16);
 }
 
 //------------------------------------------------------------------------------
 
 std::string Matrix4Reader::extension()
 {
-    return (".trf");
+    return ".trf";
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace reader
+
 } // namespace sight::io::base

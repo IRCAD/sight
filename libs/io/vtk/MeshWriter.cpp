@@ -35,14 +35,14 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::MeshWriter );
+SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::MeshWriter);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 MeshWriter::MeshWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("VTK Mesh writer"))
 {
 }
@@ -63,14 +63,14 @@ void MeshWriter::write()
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock);
 
     const data::Mesh::csptr pMesh = getConcreteObject();
 
-    vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
-    vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();
-    io::vtk::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
-    writer->SetInputData( vtkMesh );
+    vtkSmartPointer<vtkGenericDataObjectWriter> writer = vtkSmartPointer<vtkGenericDataObjectWriter>::New();
+    vtkSmartPointer<vtkPolyData> vtkMesh               = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
+    writer->SetInputData(vtkMesh);
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 
@@ -78,15 +78,14 @@ void MeshWriter::write()
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void* )
+        [&](vtkObject* caller, long unsigned int, void*)
         {
             const auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { writer->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
 

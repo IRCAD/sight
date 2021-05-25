@@ -26,10 +26,9 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/runtime/operations.hpp>
-
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <service/macros.hpp>
 
@@ -56,7 +55,7 @@ const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped
 
 SnapshotEditor::SnapshotEditor() noexcept
 {
-    m_sigSnapped = newSignal< SnappedSignalType >(s_SNAPPED_SIG);
+    m_sigSnapped = newSignal<SnappedSignalType>(s_SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ void SnapshotEditor::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     std::filesystem::path path = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
@@ -85,7 +84,6 @@ void SnapshotEditor::starting()
     qtContainer->setLayout(hlayout);
 
     QObject::connect(m_snapButton, SIGNAL(clicked()), this, SLOT(onSnapButton()));
-
 }
 
 //------------------------------------------------------------------------------
@@ -112,12 +110,11 @@ void SnapshotEditor::updating()
 
 void SnapshotEditor::swapping()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::info( std::ostream& _sstream )
+void SnapshotEditor::info(std::ostream& _sstream)
 {
 }
 
@@ -126,10 +123,11 @@ void SnapshotEditor::info( std::ostream& _sstream )
 void SnapshotEditor::onSnapButton()
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
     QWidget* container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
-    if( container->isVisible() )
+    if(container->isVisible())
     {
         std::string filename = this->requestFileName();
 
@@ -143,7 +141,7 @@ void SnapshotEditor::onSnapButton()
         std::string msgInfo("It is not possible to snapshot the negato view. This view is not shown on screen.");
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Negato view snapshot");
-        messageBox.setMessage( msgInfo );
+        messageBox.setMessage(msgInfo);
         messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
         messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
@@ -154,10 +152,12 @@ void SnapshotEditor::onSnapButton()
 
 std::string SnapshotEditor::requestFileName()
 {
-    std::string fileName = "";
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    std::string fileName         = "";
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
     dialogFile.addFilter("bmp", "*.bmp");
@@ -166,16 +166,17 @@ std::string SnapshotEditor::requestFileName()
     dialogFile.addFilter("all", "*.*");
     dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        fileName = result->getPath().string();
-        dialogFile.saveDefaultLocation( data::location::Folder::New(result->getPath().parent_path()) );
+        fileName = result->getFile().string();
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
 
     return fileName;
 }
+
 //------------------------------------------------------------------------------
 
 } // namespace sight::module::ui::qt::viz

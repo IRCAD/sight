@@ -36,14 +36,14 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLGenericDataObjectReader.h>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::vtk::MeshReader );
+SIGHT_REGISTER_IO_READER(::sight::io::vtk::MeshReader);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 MeshReader::MeshReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("VTK Mesh reader"))
 {
 }
@@ -62,34 +62,33 @@ void MeshReader::read()
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock);
 
     const data::Mesh::sptr pMesh = getConcreteObject();
 
     using namespace sight::io::vtk::helper;
 
-    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
+    vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName(this->getFile().string().c_str());
 
-    vtkSmartPointer< vtkLambdaCommand > progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
-    progressCallback = vtkSmartPointer< vtkLambdaCommand >::New();
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
-            const auto filter = static_cast< vtkGenericDataObjectReader* >(caller);
+            const auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
 
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
-    SIGHT_THROW_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
+    SIGHT_THROW_IF("MeshReader cannot read VTK Mesh file : " << this->getFile().string(), !mesh);
     io::vtk::helper::Mesh::fromVTKMesh(mesh, pMesh);
 
     m_job->finish();

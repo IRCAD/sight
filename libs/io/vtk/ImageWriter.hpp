@@ -24,8 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Image.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -35,7 +36,9 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::io::vtk
@@ -46,14 +49,16 @@ namespace sight::io::vtk
  *
  * Write a VTK Image using the VTK lib
  */
-class ImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
-                    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+class ImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                        io::base::writer::factory::New< ImageWriter >);
+    SIGHT_DECLARE_CLASS(
+        ImageWriter,
+        io::base::writer::GenericObjectWriter<data::Image>,
+        io::base::writer::factory::New<ImageWriter>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
@@ -75,7 +80,6 @@ private:
 
     ///Internal job
     SPTR(core::jobs::Observer) m_job;
-
 };
 
 } // namespace sight::io::vtk

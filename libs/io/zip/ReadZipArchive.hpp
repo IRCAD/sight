@@ -25,6 +25,7 @@
 #include "io/zip/config.hpp"
 #include "io/zip/IReadArchive.hpp"
 
+#include <core/crypto/secure_string.hpp>
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -38,15 +39,15 @@ namespace sight::io::zip
  */
 class IO_ZIP_CLASS_API ReadZipArchive : public IReadArchive
 {
-
 public:
+
     SIGHT_DECLARE_CLASS(ReadZipArchive, IReadArchive)
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive, const std::string& key = "")
+    static sptr New(const std::filesystem::path& archive, const core::crypto::secure_string& key = "")
     {
-        return std::make_shared< ReadZipArchive >(archive, key);
+        return std::make_shared<ReadZipArchive>(archive, key);
     }
 
     /*
@@ -55,7 +56,7 @@ public:
      * @throw io::zip::exception::Read if archive doesn't exist.
      * @throw io::zip::exception::Read if archive cannot be opened.
      */
-    IO_ZIP_API ReadZipArchive( const std::filesystem::path& archive, const std::string& key = "");
+    IO_ZIP_API ReadZipArchive(const std::filesystem::path& archive, const core::crypto::secure_string& key = "");
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
@@ -69,7 +70,6 @@ public:
 
     /**
      * @brief Returns comment from the current archive (zip).
-     * @param path file in archive.
      * @return comment
      */
     IO_ZIP_API std::string getComment();
@@ -92,7 +92,7 @@ private:
     std::filesystem::path m_archive;
 
     /// Key used to decrypt encrypted files
-    std::string m_key;
+    core::crypto::secure_string m_key;
 };
 
 }

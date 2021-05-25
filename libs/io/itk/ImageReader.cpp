@@ -41,16 +41,14 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::itk::ImageReader );
+SIGHT_REGISTER_IO_READER(::sight::io::itk::ImageReader);
 
 namespace sight::io::itk
 {
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(io::base::reader::IObjectReader::Key )  :
-    data::location::enableSingleFile<
-        IObjectReader >(this)
+ImageReader::ImageReader(io::base::reader::IObjectReader::Key)
 {
 }
 
@@ -76,8 +74,10 @@ struct ITKLoaderFunctor
     template<class PIXELTYPE>
     void operator()(Parameter& param)
     {
-        SIGHT_INFO( "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
-                    core::tools::Type::create<PIXELTYPE>().string());
+        SIGHT_INFO(
+            "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "
+            << core::tools::Type::create<PIXELTYPE>().string()
+        );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -87,40 +87,45 @@ struct ITKLoaderFunctor
 
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIORead = ::itk::ImageIOFactory::CreateImageIO(
-            param.m_filename.c_str(), ::itk::ImageIOFactory::ReadMode);
+            param.m_filename.c_str(),
+            ::itk::ImageIOFactory::ReadMode
+        );
 
         // set observation (*2*)
         Progressor progress(imageIORead, param.m_fwReader, param.m_filename);
 
         // the reader
-        typedef ::itk::Image< PIXELTYPE, 3 >              ImageType;
-        typedef ::itk::ImageFileReader< ImageType >       ReaderType;
+        typedef ::itk::Image<PIXELTYPE, 3> ImageType;
+        typedef ::itk::ImageFileReader<ImageType> ReaderType;
         typename ReaderType::Pointer reader = ReaderType::New();
-        reader->SetFileName( param.m_filename.c_str() );
+        reader->SetFileName(param.m_filename.c_str());
+
         // attach its IO (*3*)
-        reader->SetImageIO( imageIORead );
+        reader->SetImageIO(imageIORead);
 
         reader->Update();
         typename ImageType::Pointer itkimage = reader->GetOutput();
-        io::itk::dataImageFactory< ImageType>( itkimage, param.m_dataImage );
+        io::itk::dataImageFactory<ImageType>(itkimage, param.m_dataImage);
     }
 
     //// get pixel type from Header
-    static const std::type_info& getImageType( const std::string& imageFileName )
+    static const std::type_info& getImageType(const std::string& imageFileName)
     {
         ::itk::ImageIOBase::Pointer imageIO = ::itk::ImageIOFactory::CreateImageIO(
-            imageFileName.c_str(), ::itk::ImageIOFactory::ReadMode);
+            imageFileName.c_str(),
+            ::itk::ImageIOFactory::ReadMode
+        );
 
-        if( !imageIO )
+        if(!imageIO)
         {
             std::string errMsg;
             errMsg = "no ImageIOFactory found to read header of file : ";
-            errMsg.append( imageFileName );
+            errMsg.append(imageFileName);
 
-            throw( std::ios_base::failure( errMsg ) );
+            throw(std::ios_base::failure(errMsg));
         }
 
-        imageIO->SetFileName( imageFileName.c_str() );
+        imageIO->SetFileName(imageFileName.c_str());
         imageIO->ReadImageInformation();
         return imageIO->GetComponentTypeInfo();
     }
@@ -131,24 +136,26 @@ struct ITKLoaderFunctor
 void ImageReader::read()
 {
     std::filesystem::path file = getFile();
-    SIGHT_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
-    const std::type_info& ti = ITKLoaderFunctor::getImageType( file.string() );
+    const std::type_info& ti = ITKLoaderFunctor::getImageType(file.string());
 
     ITKLoaderFunctor::Parameter param;
     param.m_filename  = file.string();
     param.m_dataImage = this->getConcreteObject();
     param.m_fwReader  = this->getSptr();
 
-    core::tools::Dispatcher< core::tools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
+    core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(ti, param);
 
-    SIGHT_ASSERT("::sight::data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
+    SIGHT_ASSERT("::sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
-    SIGHT_ASSERT("Image has an unspecified type",
-                 getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
+    SIGHT_ASSERT(
+        "Image has an unspecified type",
+        getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE
+    );
 }
 
 //------------------------------------------------------------------------------

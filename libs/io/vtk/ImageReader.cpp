@@ -35,14 +35,14 @@
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::vtk::ImageReader );
+SIGHT_REGISTER_IO_READER(::sight::io::vtk::ImageReader);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 ImageReader::ImageReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("VTK Image reader"))
 {
 }
@@ -59,29 +59,29 @@ void ImageReader::read()
 {
     using namespace sight::io::vtk::helper;
 
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
     data::Image::sptr pImage = getConcreteObject();
 
-    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
+    vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [this](vtkObject* caller, long unsigned int, void* )
+        [this](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook( [&]()
+    m_job->addSimpleCancelHook(
+        [&]()
         {
             reader->AbortExecuteOn();
-        } );
+        });
 
     reader->Update();
     reader->UpdateInformation();
@@ -92,14 +92,14 @@ void ImageReader::read()
 
     m_job->finish();
 
-    SIGHT_THROW_IF("ImageReader cannot read VTK image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("ImageReader cannot read VTK image file :" << this->getFile().string(), !img);
     try
     {
-        io::vtk::fromVTKImage( img, pImage);
+        io::vtk::fromVTKImage(img, pImage);
     }
-    catch( std::exception& e)
+    catch(std::exception& e)
     {
-        SIGHT_THROW("VTKImage to data::Image failed "<<e.what());
+        SIGHT_THROW("VTKImage to data::Image failed " << e.what());
     }
 }
 

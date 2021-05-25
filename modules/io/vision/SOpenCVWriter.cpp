@@ -22,9 +22,10 @@
 
 #include "SOpenCVWriter.hpp"
 
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
+
 #include <data/CameraSeries.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
 #include <service/macros.hpp>
@@ -37,18 +38,17 @@
 
 namespace sight::module::io::vision
 {
+
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::SOpenCVWriter()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::~SOpenCVWriter()
 {
-
 }
 
 // ----------------------------------------------------------------------------
@@ -71,6 +71,7 @@ void SOpenCVWriter::openLocationDialog()
 {
     this->defineLocationGUI();
 }
+
 //----------------------------------------------------------------------------
 
 bool SOpenCVWriter::defineLocationGUI()
@@ -78,24 +79,23 @@ bool SOpenCVWriter::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML file", "*.xml");
     dialogFile.addFilter("YAML file", "*.yaml *.yml");
 
-    data::location::SingleFile::sptr result
-        = data::location::SingleFile::dynamicCast( dialogFile.show() );
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
 
-    if (result)
+    if(result)
     {
-        _sDefaultPath = result->getPath();
-        this->setFile( _sDefaultPath );
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath.parent_path()) );
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
         ok = true;
     }
     else
@@ -110,22 +110,19 @@ bool SOpenCVWriter::defineLocationGUI()
 
 void SOpenCVWriter::starting()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SOpenCVWriter::stopping()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SOpenCVWriter::updating()
 {
-
-    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(sight::io::base::service::s_DATA_KEY);
+    data::CameraSeries::csptr camSeries = this->getInput<data::CameraSeries>(sight::io::base::service::s_DATA_KEY);
 
     if(!camSeries)
     {
@@ -148,9 +145,9 @@ void SOpenCVWriter::updating()
     data::mt::ObjectReadLock lock(camSeries);
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
-    std::vector< data::Camera::sptr > cameras;
-    std::vector< ::cv::Mat > cameraMatrices;
-    std::vector< ::cv::Mat > cameraDistCoefs;
+    std::vector<data::Camera::sptr> cameras;
+    std::vector< ::cv::Mat> cameraMatrices;
+    std::vector< ::cv::Mat> cameraDistCoefs;
 
     // Set the cameras
     data::Matrix4::sptr extrinsicMatrix;
@@ -158,7 +155,7 @@ void SOpenCVWriter::updating()
 
     data::mt::ObjectReadLock camSeriesLock(camSeries);
 
-    for(size_t i = 0; i < numberOfCameras; ++i)
+    for(size_t i = 0 ; i < numberOfCameras ; ++i)
     {
         cameras.push_back(camSeries->getCamera(i));
         cameraMatrices.push_back(::cv::Mat::eye(3, 3, CV_64F));
@@ -169,7 +166,7 @@ void SOpenCVWriter::updating()
         cameraMatrices[i].at<double>(0, 2) = cameras[i]->getCx();
         cameraMatrices[i].at<double>(1, 2) = cameras[i]->getCy();
 
-        for(std::uint8_t c = 0; c < 5; ++c)
+        for(std::uint8_t c = 0 ; c < 5 ; ++c)
         {
             cameraDistCoefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[c];
         }
@@ -177,18 +174,18 @@ void SOpenCVWriter::updating()
 
     ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::WRITE);
 
-    fs << "nbCameras"<< static_cast<int>(numberOfCameras);
+    fs << "nbCameras" << static_cast<int>(numberOfCameras);
 
-    for( size_t c = 0; c < numberOfCameras; ++c)
+    for(size_t c = 0 ; c < numberOfCameras ; ++c)
     {
         std::stringstream camNum;
-        camNum << "camera_"<< c;
+        camNum << "camera_" << c;
 
         fs << camNum.str() << "{";
-        fs << "id"<<camSeries->getCamera(c)->getCameraID().c_str();
+        fs << "id" << camSeries->getCamera(c)->getCameraID().c_str();
         fs << "description" << camSeries->getCamera(c)->getDescription().c_str();
-        fs << "imageWidth" << static_cast< int> (camSeries->getCamera(c)->getWidth());
-        fs << "imageHeight" << static_cast< int >(camSeries->getCamera(c)->getHeight());
+        fs << "imageWidth" << static_cast<int>(camSeries->getCamera(c)->getWidth());
+        fs << "imageHeight" << static_cast<int>(camSeries->getCamera(c)->getHeight());
         fs << "matrix" << cameraMatrices[c];
         fs << "distortion" << cameraDistCoefs[c];
         fs << "scale" << camSeries->getCamera(c)->getScale();
@@ -196,15 +193,17 @@ void SOpenCVWriter::updating()
         extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
         if(extrinsicMatrix)
         {
-            for(std::uint8_t i = 0; i < 4; ++i)
+            for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
-                for(std::uint8_t j = 0; j < 4; ++j)
+                for(std::uint8_t j = 0 ; j < 4 ; ++j)
                 {
-                    extrinsic.at< double >(i, j) = extrinsicMatrix->getCoefficient(i, j);
+                    extrinsic.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
                 }
             }
-            fs << "extrinsic"<< extrinsic;
+
+            fs << "extrinsic" << extrinsic;
         }
+
         fs << "}";
     }
 
@@ -233,4 +232,5 @@ sight::io::base::service::IOPathType SOpenCVWriter::getIOPathType() const
 }
 
 // ----------------------------------------------------------------------------
+
 } //namespace sight::module::io::vision

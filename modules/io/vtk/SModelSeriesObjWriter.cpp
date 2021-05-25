@@ -25,9 +25,9 @@
 #include "modules/io/vtk/SMeshWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/location/Folder.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
@@ -53,7 +53,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SModelSeriesObjWriter::SModelSeriesObjWriter() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -74,22 +74,23 @@ void SModelSeriesObjWriter::configureWithIHM()
 
 void SModelSeriesObjWriter::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
-    dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialog.setDefaultLocation(defaultDirectory);
     dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
     dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
-    data::location::Folder::sptr result;
+    core::location::SingleFolder::sptr result;
 
-    while (result = data::location::Folder::dynamicCast( dialog.show() ))
+    while((result = core::location::SingleFolder::dynamicCast(dialog.show())))
     {
-        if( std::filesystem::is_empty(result->getFolder()) )
+        if(std::filesystem::is_empty(result->getFolder()))
         {
             break;
         }
+
         // message box
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
@@ -97,17 +98,17 @@ void SModelSeriesObjWriter::openLocationDialog()
         messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
         messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == sight::ui::base::dialog::IMessageDialog::YES)
+        if(messageBox.show() == sight::ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
     }
 
-    if (result)
+    if(result)
     {
-        _sDefaultPath = result->getFolder().parent_path();
-        dialog.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         this->setFolder(result->getFolder());
+        defaultDirectory->setFolder(result->getFolder().parent_path());
+        dialog.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -136,7 +137,7 @@ void SModelSeriesObjWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesObjWriter::info(std::ostream& _sstream )
+void SModelSeriesObjWriter::info(std::ostream& _sstream)
 {
     _sstream << "SModelSeriesObjWriter::info";
 }
@@ -145,12 +146,11 @@ void SModelSeriesObjWriter::info(std::ostream& _sstream )
 
 void SModelSeriesObjWriter::updating()
 {
-
-    if(  this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
         data::ModelSeries::csptr modelSeries =
-            this->getInput< data::ModelSeries >(sight::io::base::service::s_DATA_KEY);
+            this->getInput<data::ModelSeries>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         auto writer = sight::io::vtk::ModelSeriesObjWriter::New();
@@ -165,7 +165,7 @@ void SModelSeriesObjWriter::updating()
             m_sigJobCreated->emit(writer->getJob());
             writer->write();
         }
-        catch (const std::exception& e)
+        catch(const std::exception& e)
         {
             m_writeFailed = true;
             std::stringstream ss;
@@ -173,12 +173,12 @@ void SModelSeriesObjWriter::updating()
 
             sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
-            messageBox.setMessage( ss.str() );
+            messageBox.setMessage(ss.str());
             messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
             messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
-        catch( ... )
+        catch(...)
         {
             m_writeFailed = true;
             std::stringstream ss;
@@ -186,7 +186,7 @@ void SModelSeriesObjWriter::updating()
 
             sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
-            messageBox.setMessage( ss.str() );
+            messageBox.setMessage(ss.str());
             messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
             messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
             messageBox.show();

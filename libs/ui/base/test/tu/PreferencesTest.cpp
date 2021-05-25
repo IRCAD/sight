@@ -22,6 +22,7 @@
 
 #include "PreferencesTest.hpp"
 
+#include <core/crypto/secure_string.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Profile.hpp>
 #include <core/tools/Os.hpp>
@@ -35,10 +36,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::ui::base::preferences::ut::PreferencesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::preferences::ut::PreferencesTest);
 
 namespace sight::ui::base::preferences
 {
+
 namespace ut
 {
 
@@ -99,7 +101,7 @@ void PreferencesTest::helperTest()
     data::Composite::sptr prefs = ui::base::preferences::getPreferences();
     CPPUNIT_ASSERT(prefs);
 
-    data::String::sptr prefStr = prefs->at< data::String >(preferenceKey);
+    data::String::sptr prefStr = prefs->at<data::String>(preferenceKey);
     CPPUNIT_ASSERT_EQUAL(preferenceValue, prefStr->value());
 
     //Check get value
@@ -112,7 +114,7 @@ void PreferencesTest::helperTest()
     std::string resValue = ui::base::preferences::getValue(preferenceKey2);
     CPPUNIT_ASSERT_EQUAL(preferenceKey2, resValue);
 
-    std::uint32_t resValueInt = ui::base::preferences::getValue< std::uint32_t >(preferenceValue2);
+    std::uint32_t resValueInt = ui::base::preferences::getValue<std::uint32_t>(preferenceValue2);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
 
     const char delimiter                = '%';
@@ -121,7 +123,7 @@ void PreferencesTest::helperTest()
     resValue = ui::base::preferences::getValue(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValue2, resValue);
 
-    resValueInt = ui::base::preferences::getValue< std::uint32_t >(prefKeySubstitute);
+    resValueInt = ui::base::preferences::getValue<std::uint32_t>(prefKeySubstitute);
     CPPUNIT_ASSERT_EQUAL(preferenceValueInt2, resValueInt);
 }
 
@@ -130,16 +132,16 @@ void PreferencesTest::helperTest()
 void PreferencesTest::passwordTest()
 {
     // Reset password field in settings
-    ui::base::preferences::setPassword(std::string());
+    ui::base::preferences::setPassword(core::crypto::secure_string());
 
     // Test default empty password (means no password)
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::getPassword(), std::string());
+    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::getPassword(), core::crypto::secure_string());
 
     // Test if there is no hash in preferences (means no password)
     CPPUNIT_ASSERT_EQUAL(ui::base::preferences::hasPasswordHash(), false);
 
     // Test with a real password
-    const std::string password = "You are the one for me, for me, for me, formidable";
+    const core::crypto::secure_string password = "You are the one for me, for me, for me, formidable";
     ui::base::preferences::setPassword(password);
     CPPUNIT_ASSERT_EQUAL(password, ui::base::preferences::getPassword());
 
@@ -167,4 +169,5 @@ void PreferencesTest::cleanup()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::ui::base::preferences

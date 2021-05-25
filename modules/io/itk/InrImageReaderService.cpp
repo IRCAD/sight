@@ -25,10 +25,10 @@
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <data/Image.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/itk/ImageReader.hpp>
@@ -61,6 +61,7 @@ sight::io::base::service::IOPathType InrImageReaderService::getIOPathType() cons
 {
     return sight::io::base::service::FILE;
 }
+
 //
 //------------------------------------------------------------------------------
 
@@ -80,22 +81,21 @@ void InrImageReaderService::configureWithIHM()
 
 void InrImageReaderService::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath;
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    data::location::SingleFile::sptr result;
-    result = data::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    if(result)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        this->setFile(result->getPath());
-        dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getFile());
+        defaultDirectory->setFolder(result->getFile().parent_path());
+        dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
     {
@@ -105,15 +105,17 @@ void InrImageReaderService::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::info(std::ostream& _sstream )
+void InrImageReaderService::info(std::ostream& _sstream)
 {
     _sstream << "InrImageReaderService::info";
 }
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
-                                         const data::Image::sptr& _pImg )
+bool InrImageReaderService::createImage(
+    const std::filesystem::path& inrFileDir,
+    const data::Image::sptr& _pImg
+)
 {
     auto myLoader = sight::io::itk::ImageReader::New();
     bool ok       = true;
@@ -124,23 +126,27 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
     try
     {
         sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-        myLoader->addHandler( progressMeterGUI );
+        myLoader->addHandler(progressMeterGUI);
         myLoader->read();
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     ss.str(),
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            ss.str(),
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
-    catch( ... )
+    catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     "Warning during loading",
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            "Warning during loading",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         ok = false;
     }
     return ok;
@@ -150,13 +156,12 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
 
 void InrImageReaderService::updating()
 {
-
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
-        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+        data::Image::sptr image = this->getInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
-        if ( this->createImage( this->getFile(), image) )
+        if(this->createImage(this->getFile(), image))
         {
             sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
@@ -178,10 +183,10 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+    data::Image::sptr image = this->getInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
     SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
-    auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

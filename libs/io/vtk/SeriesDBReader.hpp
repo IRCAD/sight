@@ -24,7 +24,8 @@
 
 #include "io/vtk/config.hpp"
 
-#include <data/location/MultiFiles.hpp>
+#include <core/location/MultipleFiles.hpp>
+
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -34,7 +35,9 @@
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::io::vtk
@@ -46,14 +49,16 @@ namespace sight::io::vtk
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
 class IO_VTK_CLASS_API SeriesDBReader :
-    public io::base::reader::GenericObjectReader< data::SeriesDB >,
-    public data::location::enableMultiFiles< io::base::reader::IObjectReader >
+    public io::base::reader::GenericObjectReader<data::SeriesDB>,
+    public core::location::MultipleFiles
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesDBReader, io::base::reader::GenericObjectReader< data::SeriesDB >,
-                        io::base::reader::factory::New< SeriesDBReader >)
+    SIGHT_DECLARE_CLASS(
+        SeriesDBReader,
+        io::base::reader::GenericObjectReader<data::SeriesDB>,
+        io::base::reader::factory::New<SeriesDBReader>
+    )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.

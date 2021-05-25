@@ -25,11 +25,13 @@
 #include "io/base/config.hpp"
 #include "io/base/writer/GenericObjectWriter.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Array.hpp>
-#include <data/location/SingleFile.hpp>
 
 namespace sight::io::base
 {
+
 namespace writer
 {
 
@@ -40,14 +42,16 @@ namespace writer
  * Writes 'sight::data::Array' into a '.raw.gz' file.
  * The buffer is written in a file using zlib.
  */
-class IO_BASE_CLASS_API GzArrayWriter :  public GenericObjectWriter< data::Array >,
-                                         public data::location::enableSingleFile< io::base::writer::IObjectWriter >
+class IO_BASE_CLASS_API GzArrayWriter : public GenericObjectWriter<data::Array>,
+                                        public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(GzArrayWriter, GenericObjectWriter< data::Array>,
-                        io::base::writer::factory::New< GzArrayWriter >)
+    SIGHT_DECLARE_CLASS(
+        GzArrayWriter,
+        GenericObjectWriter<data::Array>,
+        io::base::writer::factory::New<GzArrayWriter>
+    )
 
     /// Constructor. Does nothing.
     IO_BASE_API GzArrayWriter(io::base::writer::IObjectWriter::Key key);
@@ -60,8 +64,8 @@ public:
 
     /// Defines the extensions supported by this writer. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
-
 };
 
 } // namespace writer
+
 } // namespace sight::io::base

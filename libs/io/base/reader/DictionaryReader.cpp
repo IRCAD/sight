@@ -65,7 +65,7 @@ static std::stringstream spiritDebugStream;
 #include "io/base/reader/DictionaryReader.hpp"
 #include "io/base/reader/registry/macros.hpp"
 
-SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::DictionaryReader );
+SIGHT_REGISTER_IO_READER(::sight::io::base::reader::DictionaryReader);
 
 namespace sight::io::base
 {
@@ -86,6 +86,7 @@ struct line
     std::string propertyCategory;
     std::string propertyType;
 };
+
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -103,11 +104,11 @@ BOOST_FUSION_ADAPT_STRUCT(
         (std::string, anatomicRegion)
         (std::string, propertyCategory)
         (std::string, propertyType)
-    )
+)
 
 //------------------------------------------------------------------------------
 
-inline std::string trim ( std::string& s )
+inline std::string trim(std::string& s)
 {
     return ::boost::algorithm::trim_copy(s);
 }
@@ -115,31 +116,33 @@ inline std::string trim ( std::string& s )
 //------------------------------------------------------------------------------
 
 /// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
-std::string  reformatString(std::string& expr)
+std::string reformatString(std::string& expr)
 {
     std::string trimStr = ::boost::algorithm::trim_copy(expr);
     std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
                           + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
-    return (result);
+    return result;
 }
 
 //------------------------------------------------------------------------------
 /// Return the list of availabe value for the key of the map m.
 
-template< typename MapType >
+template<typename MapType>
 std::string getValues(const MapType& m)
 {
     std::stringstream str;
     typedef typename MapType::const_iterator const_iterator;
     const_iterator iter = m.begin();
     str << "( " << iter->first;
-    for(; iter != m.end(); ++iter )
+    for( ; iter != m.end() ; ++iter)
     {
         str << ", " << iter->first;
     }
+
     str << ") ";
     return str.str();
 }
+
 //------------------------------------------------------------------------------
 
 namespace sight::io::base
@@ -148,8 +151,9 @@ namespace sight::io::base
 namespace qi    = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-template <typename Iterator>
-struct line_parser : qi::grammar<Iterator, std::vector <line>() >
+template<typename Iterator>
+struct line_parser : qi::grammar<Iterator,
+                                 std::vector<line>()>
 {
     line_parser() :
         line_parser::base_type(lines)
@@ -169,35 +173,35 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
         error.clear();
 
-        lines   = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi;
-        comment = *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
+        lines   = +(line[phx::push_back(qi::_val, qi::_1)] | comment) >> eoi;
+        comment = *blank >> lit('#') >> *(char_ - eol) >> +qi::eol;
 
         line = trimmedString >> lit(';')
-               >> omit[*blank]>> lit('(')
-               >>  dbl   >> lit(',')
-               >>  dbl   >> lit(',')
-               >>  dbl   >> lit(',')
-               >>  dbl
+               >> omit[*blank] >> lit('(')
+               >> dbl >> lit(',')
+               >> dbl >> lit(',')
+               >> dbl >> lit(',')
+               >> dbl
                >> lit(')') >> omit[*blank]
                >> lit(';')
-               >>  stringSet >> lit(';')
-               >>  trimmedString >> lit(';')
-               >>  trimmedString >> lit(';')
-               >>  trimmedStringExpr >> lit(';')
-               >>  trimmedStringExpr >> lit(';')
-               >>  trimmedString >> lit(';')
-               >>  trimmedString >> lit(';')
-               >>  trimmedString
+               >> stringSet >> lit(';')
+               >> trimmedString >> lit(';')
+               >> trimmedString >> lit(';')
+               >> trimmedStringExpr >> lit(';')
+               >> trimmedStringExpr >> lit(';')
+               >> trimmedString >> lit(';')
+               >> trimmedString >> lit(';')
+               >> trimmedString
                >> +qi::eol;
 
         trimmedString = str[qi::_val = phx::bind(trim, qi::_1)];
-        str           = *( (alnum|char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
+        str           = *((alnum | char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
         trimmedStringExpr = stringExpr[qi::_val = phx::bind(trim, qi::_1)];
-        stringExpr        = *( (alnum|char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "] );
+        stringExpr        = *((alnum | char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
         stringSet       = stringWithComma[qi::_val = phx::bind(trim, qi::_1)];
-        stringWithComma = *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] );
+        stringWithComma = *((alnum | char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
 
@@ -210,21 +214,21 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         BOOST_SPIRIT_DEBUG_NODE(line);
         BOOST_SPIRIT_DEBUG_NODE(lines);
         SIGHT_DEBUG(spiritDebugStream.str());
-        spiritDebugStream.str( std::string() );
+        spiritDebugStream.str(std::string());
     #endif
 
-        qi::on_error< qi::fail>
+        qi::on_error<qi::fail>
         (
             line
-            , phx::ref( (std::ostream&)error )
-                << phx::val("Error! Expecting ")
-                << qi::_4                          // what failed?
-                << phx::val(" here: \"")
-                << phx::construct<std::string>(qi::_3, qi::_2)       // iterators to error-pos, end
-                << phx::val("\"")
-                << std::endl
+            ,
+            phx::ref((std::ostream&) error)
+            << phx::val("Error! Expecting ")
+            << qi::_4 // what failed?
+            << phx::val(" here: \"")
+            << phx::construct<std::string>(qi::_3, qi::_2) // iterators to error-pos, end
+            << phx::val("\"")
+            << std::endl
         );
-
     }
 
     qi::rule<Iterator, double()> dbl;
@@ -238,12 +242,13 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
     qi::rule<Iterator, std::string()> stringSet;
 
     qi::rule<Iterator, io::base::line()> line;
-    qi::rule<Iterator, std::vector< io::base::line >() > lines;
+    qi::rule<Iterator, std::vector<io::base::line>()> lines;
     std::stringstream error;
 };
 
 namespace reader
 {
+
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::line>& lines)
@@ -262,16 +267,15 @@ std::pair<bool, std::string> parse(std::string& buf, std::vector<io::base::line>
 
     line_parser grammar; // Our grammar
 
-    bool result     = phrase_parse(iter, end, grammar,  space - blank - eol, lines);
+    bool result     = phrase_parse(iter, end, grammar, space - blank - eol, lines);
     bool success    = result && (iter == end);
     std::string msg = grammar.error.str();
-    return std::make_pair( success, msg );
+    return std::make_pair(success, msg);
 }
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< IObjectReader >(this)
+DictionaryReader::DictionaryReader(io::base::reader::IObjectReader::Key)
 {
 }
 
@@ -285,16 +289,15 @@ DictionaryReader::~DictionaryReader()
 
 void DictionaryReader::read()
 {
-    assert( std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
-    std::filesystem::path path = std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
+    std::filesystem::path path = this->getFile();
 
-    SIGHT_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
+    SIGHT_INFO("[DictionaryReader::read] dictionary file: " << path.string());
     SIGHT_ASSERT("Empty path for dictionary file", !path.empty());
 
     // Reading of the file
     std::string buf;
     std::ifstream file;
-    file.open(path.string().c_str(), std::ios::binary );
+    file.open(path.string().c_str(), std::ios::binary);
 
     std::string errorOpen = "Unable to open " + path.string();
     SIGHT_THROW_IF(errorOpen, !file.is_open());
@@ -309,7 +312,7 @@ void DictionaryReader::read()
     file.read(buffer, static_cast<std::streamsize>(length));
     file.close();
 
-    std::vector < io::base::line > dicolines;
+    std::vector<io::base::line> dicolines;
     std::pair<bool, std::string> result = parse(buf, dicolines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
@@ -318,13 +321,14 @@ void DictionaryReader::read()
     // File the dictionary Structure
     data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    for(io::base::line line :  dicolines)
+    for(io::base::line line : dicolines)
     {
         data::StructureTraits::sptr newOrgan = data::StructureTraits::New();
         newOrgan->setType(line.type);
 
         std::string classReformated = reformatString(
-            line.organClass);
+            line.organClass
+        );
         data::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter =
             data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
         std::string availableValues = getValues(data::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
@@ -332,26 +336,33 @@ void DictionaryReader::read()
         SIGHT_THROW_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
-        newOrgan->setColor(data::Color::New(static_cast<float>(line.red)/255.0f,
-                                            static_cast<float>(line.green)/255.0f,
-                                            static_cast<float>(line.blue)/255.0f,
-                                            static_cast<float>(line.alpha)/100.0f));
+        newOrgan->setColor(
+            data::Color::New(
+                static_cast<float>(line.red) / 255.0f,
+                static_cast<float>(line.green) / 255.0f,
+                static_cast<float>(line.blue) / 255.0f,
+                static_cast<float>(line.alpha) / 100.0f
+            )
+        );
         std::vector<std::string> categorylist;
-        ::boost::algorithm::split( categorylist, line.catgegory, ::boost::algorithm::is_any_of(",") );
+        ::boost::algorithm::split(categorylist, line.catgegory, ::boost::algorithm::is_any_of(","));
         data::StructureTraits::CategoryContainer categories;
-        for(std::string category :  categorylist)
+        for(std::string category : categorylist)
         {
             std::string catReformated = reformatString(
-                category);
+                category
+            );
             data::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter =
                 data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
             availableValues = getValues(
-                data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
+                data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right
+            );
             error =
                 "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
             SIGHT_THROW_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }
+
         newOrgan->setCategories(categories);
         newOrgan->setAttachmentType(line.attachment);
         newOrgan->setNativeExp(line.nativeExp);
@@ -367,7 +378,7 @@ void DictionaryReader::read()
 
 std::string DictionaryReader::extension()
 {
-    return (".dic");
+    return ".dic";
 }
 
 //------------------------------------------------------------------------------
@@ -380,4 +391,5 @@ std::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 //------------------------------------------------------------------------------
 
 } // namespace reader
+
 } // namespace sight::io::base

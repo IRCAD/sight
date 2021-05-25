@@ -34,9 +34,6 @@
 #include <data/Integer.hpp>
 #include <data/Line.hpp>
 #include <data/List.hpp>
-#include <data/location/Folder.hpp>
-#include <data/location/MultiFiles.hpp>
-#include <data/location/SingleFile.hpp>
 #include <data/Material.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
@@ -60,10 +57,11 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::CopyTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CopyTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -72,7 +70,6 @@ namespace ut
 void CopyTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 //-----------------------------------------------------------------------------
@@ -97,8 +94,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(data::Integer);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Line);
     __FWDATA_UT_FIELD_COPY_MACRO(data::List);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::location::Folder);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::location::SingleFile);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Material);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Mesh);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Plane);
@@ -125,7 +120,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(data::StructureTraitsDictionary);
 //    __FWDATA_UT_FIELD_COPY_MACRO(data::Tag);
 //    __FWDATA_UT_FIELD_COPY_MACRO(data::location::MultiFiles);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +137,7 @@ void CopyTest::severalReferencesCopyTest()
 
     data::Composite::sptr compositeCopy = data::Object::copy(composite);
 
-    CPPUNIT_ASSERT( integer != data::Integer::dynamicCast((*compositeCopy)["A"]) );
+    CPPUNIT_ASSERT(integer != data::Integer::dynamicCast((*compositeCopy)["A"]));
     CPPUNIT_ASSERT_EQUAL(value, data::Integer::dynamicCast((*compositeCopy)["A"])->getValue());
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F2"));
@@ -157,7 +151,7 @@ void CopyTest::severalReferencesCopyTest()
     vector->setField("F2", composite);
 
     data::Vector::sptr vectorCopy = data::Object::copy(vector);
-    CPPUNIT_ASSERT( composite != (*vectorCopy)[0] );
+    CPPUNIT_ASSERT(composite != (*vectorCopy)[0]);
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], (*vectorCopy)[1]);
@@ -170,11 +164,10 @@ void CopyTest::severalReferencesCopyTest()
     list->setField("F2", vector);
 
     data::List::sptr listCopy = data::Object::copy(list);
-    CPPUNIT_ASSERT( vector != (*listCopy).front() );
+    CPPUNIT_ASSERT(vector != (*listCopy).front());
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), (*listCopy).back());
-
 }
 
 //-----------------------------------------------------------------------------
@@ -207,7 +200,7 @@ void CopyTest::recursiveCopyTest()
     vector->setField("F2", vector);
 
     vectorCopy = data::Object::copy(vector);
-    CPPUNIT_ASSERT( vector != (*vectorCopy)[0] );
+    CPPUNIT_ASSERT(vector != (*vectorCopy)[0]);
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], (*vectorCopy)[1]);
@@ -218,7 +211,7 @@ void CopyTest::recursiveCopyTest()
     list->setField("F2", list);
 
     listCopy = data::Object::copy(list);
-    CPPUNIT_ASSERT( list != (*listCopy).front() );
+    CPPUNIT_ASSERT(list != (*listCopy).front());
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), (*listCopy).back());
@@ -251,24 +244,24 @@ void CopyTest::recursiveCopyTest()
     vectorCopy    = data::Object::copy(vector);
     listCopy      = data::Object::copy(list);
 
-    CPPUNIT_ASSERT( list != compositeCopy->getField("F1") );
-    CPPUNIT_ASSERT( list != (*compositeCopy)["A"] );
-    CPPUNIT_ASSERT( vector != listCopy->getField("F1") );
-    CPPUNIT_ASSERT( vector != (*listCopy).front() );
-    CPPUNIT_ASSERT( composite != vectorCopy->getField("F1") );
-    CPPUNIT_ASSERT( composite != (*vectorCopy)[0] );
+    CPPUNIT_ASSERT(list != compositeCopy->getField("F1"));
+    CPPUNIT_ASSERT(list != (*compositeCopy)["A"]);
+    CPPUNIT_ASSERT(vector != listCopy->getField("F1"));
+    CPPUNIT_ASSERT(vector != (*listCopy).front());
+    CPPUNIT_ASSERT(composite != vectorCopy->getField("F1"));
+    CPPUNIT_ASSERT(composite != (*vectorCopy)[0]);
 
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F1"));
 
     //ensures copy cache is not persistant
-    CPPUNIT_ASSERT( listCopy != compositeCopy->getField("F1") );
-    CPPUNIT_ASSERT( listCopy != (*composite)["A"] );
-    CPPUNIT_ASSERT( vectorCopy != listCopy->getField("F1") );
-    CPPUNIT_ASSERT( vectorCopy != (*listCopy).front() );
-    CPPUNIT_ASSERT( compositeCopy != vectorCopy->getField("F1") );
-    CPPUNIT_ASSERT( compositeCopy != (*vectorCopy)[0] );
+    CPPUNIT_ASSERT(listCopy != compositeCopy->getField("F1"));
+    CPPUNIT_ASSERT(listCopy != (*composite)["A"]);
+    CPPUNIT_ASSERT(vectorCopy != listCopy->getField("F1"));
+    CPPUNIT_ASSERT(vectorCopy != (*listCopy).front());
+    CPPUNIT_ASSERT(compositeCopy != vectorCopy->getField("F1"));
+    CPPUNIT_ASSERT(compositeCopy != (*vectorCopy)[0]);
 
     #define C(obj) data::Composite::dynamicCast(obj)
     #define L(obj) data::List::dynamicCast(obj)
@@ -280,8 +273,8 @@ void CopyTest::recursiveCopyTest()
         data::Vector::sptr insideVector       = V(insideList->front());
         data::Composite::sptr insideComposite = C(insideVector->front());
 
-        CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite );
-        CPPUNIT_ASSERT_EQUAL(insideList, L((*insideComposite)["A"]) );
+        CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite);
+        CPPUNIT_ASSERT_EQUAL(insideList, L((*insideComposite)["A"]));
         CPPUNIT_ASSERT_EQUAL(compositeCopy, C(compositeCopy->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideList, L(insideList->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideVector, V(insideVector->getField("F1")->getField("F1")->getField("F1")));
@@ -294,8 +287,8 @@ void CopyTest::recursiveCopyTest()
         data::Composite::sptr insideComposite = C(insideVector->front());
         data::List::sptr insideList           = L((*insideComposite)["A"]);
 
-        CPPUNIT_ASSERT_EQUAL(listCopy, insideList );
-        CPPUNIT_ASSERT_EQUAL(insideVector, V(insideList->front()) );
+        CPPUNIT_ASSERT_EQUAL(listCopy, insideList);
+        CPPUNIT_ASSERT_EQUAL(insideVector, V(insideList->front()));
         CPPUNIT_ASSERT_EQUAL(listCopy, L(listCopy->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideList, L(insideList->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideVector, V(insideVector->getField("F1")->getField("F1")->getField("F1")));
@@ -308,8 +301,8 @@ void CopyTest::recursiveCopyTest()
         data::List::sptr insideList           = L((*insideComposite)["A"]);
         data::Vector::sptr insideVector       = V(insideList->front());
 
-        CPPUNIT_ASSERT_EQUAL(vectorCopy, insideVector );
-        CPPUNIT_ASSERT_EQUAL(insideComposite, C(insideVector->front()) );
+        CPPUNIT_ASSERT_EQUAL(vectorCopy, insideVector);
+        CPPUNIT_ASSERT_EQUAL(insideComposite, C(insideVector->front()));
         CPPUNIT_ASSERT_EQUAL(vectorCopy, V(vectorCopy->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideList, L(insideList->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideVector, V(insideVector->getField("F1")->getField("F1")->getField("F1")));
@@ -346,10 +339,10 @@ void CopyTest::recursiveCopyTest()
         data::Vector::sptr insideVector      = V(fieldList->front());
         data::Composite::sptr fieldComposite = C(fieldList->getField("F1"));
 
-        CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite );
-        CPPUNIT_ASSERT_EQUAL(insideComposite, fieldComposite );
-        CPPUNIT_ASSERT_EQUAL(fieldVector, insideVector );
-        CPPUNIT_ASSERT_EQUAL(fieldList, insideList );
+        CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite);
+        CPPUNIT_ASSERT_EQUAL(insideComposite, fieldComposite);
+        CPPUNIT_ASSERT_EQUAL(fieldVector, insideVector);
+        CPPUNIT_ASSERT_EQUAL(fieldList, insideList);
     }
 
     //get rid of circular references
@@ -372,4 +365,5 @@ void CopyTest::recursiveCopyTest()
 }
 
 } //namespace ut
+
 } //namespace sight::data

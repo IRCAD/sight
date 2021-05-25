@@ -37,15 +37,18 @@ namespace sight::atoms::conversion
 
 data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid, const std::string& classname) const
 {
-    data::Object::sptr obj = data::Object::dynamicCast(core::tools::UUID::get(uuid));
+    data::Object::sptr obj = data::Object::dynamicCast(core::tools::Object::fromUUID(uuid));
 
     SIGHT_THROW_EXCEPTION_IF(
-        exception::ClassnameMismatch("Loaded object classname (" + classname
-                                     + ") for UUID '" + uuid
-                                     + "' does not match existing classname (" + obj->classname() + ")"  ),
-        classname != obj->getClassname());
+        exception::ClassnameMismatch(
+            "Loaded object classname (" + classname
+            + ") for UUID '" + uuid
+            + "' does not match existing classname (" + obj->classname() + ")"
+        ),
+        classname != obj->getClassname()
+    );
 
-    if (!obj)
+    if(!obj)
     {
         try
         {
@@ -57,13 +60,13 @@ data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid,
         }
         SIGHT_THROW_EXCEPTION_IF(
             exception::DataFactoryNotFound(
-                std::string("Unable to build '") + classname + "': the data factory may be missing.")
-            , !obj
-            );
+                std::string("Unable to build '") + classname + "': the data factory may be missing."
+            )
+            ,
+            !obj
+        );
 
-        bool uuidIsSet = core::tools::UUID::set(obj, uuid);
-
-        SIGHT_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
+        obj->setUUID(uuid);
     }
 
     return obj;
@@ -71,13 +74,16 @@ data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid,
 
 //------------------------------------------------------------------------------
 
-data::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid,
-                                                         const std::string& classname) const
+data::Object::sptr AtomVisitor::ChangePolicy::operator()(
+    const std::string& uuid,
+    const std::string& classname
+) const
 {
     data::Object::sptr obj;
     try
     {
         obj = data::factory::New(classname);
+
         // uuid is set only if the given uuid is available
     }
     catch(const core::Exception& e)
@@ -86,18 +92,26 @@ data::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid
     }
     SIGHT_THROW_EXCEPTION_IF(
         exception::DataFactoryNotFound(
-            std::string("Unable to build '") + classname + "': the data factory may be missing.")
-        , !obj
-        );
+            std::string("Unable to build '") + classname + "': the data factory may be missing."
+        )
+        ,
+        !obj
+    );
 
-    core::tools::UUID::set(obj, uuid);
+    if(!data::Object::fromUUID(uuid))
+    {
+        obj->setUUID(uuid);
+    }
+
     return obj;
 }
 
 //------------------------------------------------------------------------------
 
-data::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid,
-                                                         const std::string& classname) const
+data::Object::sptr AtomVisitor::StrictPolicy::operator()(
+    const std::string& uuid,
+    const std::string& classname
+) const
 {
     data::Object::sptr obj;
     try
@@ -110,24 +124,28 @@ data::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid
     }
     SIGHT_THROW_EXCEPTION_IF(
         exception::DataFactoryNotFound(
-            std::string("Unable to build '") + classname + "': the data factory may be missing.")
-        , !obj
-        );
-    const bool uuidIsSet = core::tools::UUID::set(obj, uuid);
+            std::string("Unable to build '") + classname + "': the data factory may be missing."
+        )
+        ,
+        !obj
+    );
 
     SIGHT_THROW_EXCEPTION_IF(
         exception::DuplicatedDataUUID(
-            std::string( "Try to create new data object '") + classname + "' with uuid '"
+            std::string("Try to create new data object '") + classname + "' with uuid '"
             + uuid + "' but this uuid is already used."
-            ), !uuidIsSet );
+        ),
+        data::Object::fromUUID(uuid)
+    );
+
+    obj->setUUID(uuid);
 
     return obj;
-
 }
 
 AtomVisitor::AtomVisitor(const atoms::Object::sptr& atomObj, DataCacheType& cache, const IReadPolicy& uuidPolicy) :
-    m_atomObj( atomObj ),
-    m_cache( cache ),
+    m_atomObj(atomObj),
+    m_cache(cache),
     m_uuidPolicy(uuidPolicy)
 {
 }
@@ -140,16 +158,16 @@ AtomVisitor::~AtomVisitor()
 
 void AtomVisitor::visit()
 {
-    this->processMetaInfos( m_atomObj->getMetaInfos() );
-    this->processAttributes( m_atomObj->getAttributes() );
+    this->processMetaInfos(m_atomObj->getMetaInfos());
+    this->processAttributes(m_atomObj->getAttributes());
 }
 
 //------------------------------------------------------------------------------
 
-void AtomVisitor::processMetaInfos( const atoms::Object::MetaInfosType& metaInfos )
+void AtomVisitor::processMetaInfos(const atoms::Object::MetaInfosType& metaInfos)
 {
-    const DataVisitor::ClassnameType& classname = metaInfos.find( DataVisitor::CLASSNAME_METAINFO )->second;
-    const core::tools::UUID::UUIDType& uuid     = metaInfos.find( DataVisitor::ID_METAINFO )->second;
+    const DataVisitor::ClassnameType& classname = metaInfos.find(DataVisitor::CLASSNAME_METAINFO)->second;
+    const std::string& uuid                     = metaInfos.find(DataVisitor::ID_METAINFO)->second;
 
     m_dataObj     = m_uuidPolicy(uuid, classname);
     m_cache[uuid] = m_dataObj;
@@ -157,10 +175,10 @@ void AtomVisitor::processMetaInfos( const atoms::Object::MetaInfosType& metaInfo
 
 //------------------------------------------------------------------------------
 
-void AtomVisitor::processAttributes( const atoms::Object::AttributesType& attributes )
+void AtomVisitor::processAttributes(const atoms::Object::AttributesType& attributes)
 {
-    const camp::Class& metaclass = ::camp::classByName( m_dataObj->getClassname() );
-    atoms::conversion::AtomToDataMappingVisitor visitor( m_dataObj, m_atomObj, m_cache, m_uuidPolicy );
+    const camp::Class& metaclass = ::camp::classByName(m_dataObj->getClassname());
+    atoms::conversion::AtomToDataMappingVisitor visitor(m_dataObj, m_atomObj, m_cache, m_uuidPolicy);
     metaclass.visit(visitor);
 }
 

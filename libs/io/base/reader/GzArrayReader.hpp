@@ -25,13 +25,15 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/GenericObjectReader.hpp"
 
+#include <core/location/SingleFile.hpp>
+
 #include <data/Array.hpp>
-#include <data/location/SingleFile.hpp>
 
 #include <filesystem>
 
 namespace sight::io::base
 {
+
 namespace reader
 {
 
@@ -42,14 +44,16 @@ namespace reader
  *  Reads '.raw.gz' files and converts them into a 'sight::data::Array'.
  *  The buffer is writen in a file using zlib.
  */
-class IO_BASE_CLASS_API GzArrayReader :  public GenericObjectReader< data::Array >,
-                                         public data::location::enableSingleFile< IObjectReader >
+class IO_BASE_CLASS_API GzArrayReader : public GenericObjectReader<data::Array>,
+                                        public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(GzArrayReader, GenericObjectReader< data::Array>,
-                        io::base::reader::factory::New< GzArrayReader >)
+    SIGHT_DECLARE_CLASS(
+        GzArrayReader,
+        GenericObjectReader<data::Array>,
+        io::base::reader::factory::New<GzArrayReader>
+    )
 
     /// Constructor. Does nothing.
     IO_BASE_API GzArrayReader(io::base::reader::IObjectReader::Key key);
@@ -62,8 +66,8 @@ public:
 
     /// Defines extensions supported by this reader. Here: ".raw.gz"
     IO_BASE_API std::string extension() override;
-
 };
 
 } // namespace reader
+
 } // namespace sight::io::base
