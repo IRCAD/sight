@@ -363,7 +363,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
                             };
 
     // Read series
-    for(const data::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
+    for(const data::DicomSeries::csptr dicomSeries : m_dicomSeriesContainer)
     {
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
         SIGHT_THROW_IF(

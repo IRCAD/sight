@@ -166,22 +166,22 @@ private:
     int m_id;
 
     /// Contains the Ogre root.
-    Ogre::Root* m_ogreRoot{nullptr};
+    Ogre::Root* m_ogreRoot {nullptr};
 
     /// Contains the Ogre render window.
-    Ogre::RenderWindow* m_ogreRenderWindow{nullptr};
+    Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
 
     /// Tells if an update is requested
-    bool m_update_pending{false};
+    bool m_update_pending {false};
 
     /// Tells if the window is currently showed
-    bool m_animating{false};
+    bool m_animating {false};
 
     /// Stores previous mouse positions.
     std::optional<QPoint> m_lastMousePosition;
 
     /// Counts the number of frames rendered since the window's creation.
-    int m_frameId{0};
+    int m_frameId {0};
 
     /// Contains the OpenGL context used for offscreen rendering.
     std::shared_ptr<QOpenGLContext> m_glContext;

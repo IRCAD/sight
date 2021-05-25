@@ -46,10 +46,11 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
-//Series
+// Series
 static const ::gdcm::Tag s_MediaStorageSOPClassUID(0x0002, 0x0002);
 static const ::gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
 static const ::gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
@@ -59,14 +60,18 @@ static const ::gdcm::Tag s_ModalityTag(0x0008, 0x0060);
 static const ::gdcm::Tag s_SeriesDescriptionTag(0x0008, 0x103e);
 static const ::gdcm::Tag s_PerformingPhysicianNameTag(0x0008, 0x1050);
 static const ::gdcm::Tag s_SOPClassUIDTag(0x0008, 0x0016);
-//Equipment
+static const ::gdcm::Tag s_SOPInstanceUIDTag(0x0008, 0x0018);
+
+// Equipment
 static const ::gdcm::Tag s_InstitutionNameTag(0x0008, 0x0080);
-//Patient
+
+// Patient
 static const ::gdcm::Tag s_PatientNameTag(0x0010, 0x0010);
 static const ::gdcm::Tag s_PatientIDTag(0x0010, 0x0020);
 static const ::gdcm::Tag s_PatientBirthDateTag(0x0010, 0x0030);
 static const ::gdcm::Tag s_PatientSexTag(0x0010, 0x0040);
-//Study
+
+// Study
 static const ::gdcm::Tag s_StudyInstanceUIDTag(0x0020, 0x000d);
 static const ::gdcm::Tag s_StudyDateTag(0x0008, 0x0020);
 static const ::gdcm::Tag s_StudyTimeTag(0x0008, 0x0030);
@@ -76,42 +81,49 @@ static const ::gdcm::Tag s_PatientAgeTag(0x0010, 0x1010);
 
 //------------------------------------------------------------------------------
 
-std::string getStringValue(const ::gdcm::Scanner& scanner,
-                           const std::string& filename,
-                           const gdcm::Tag& tag)
+std::string getStringValue(
+    const ::gdcm::Scanner& scanner,
+    const std::string& filename,
+    const gdcm::Tag& tag
+)
 {
     std::string result = "";
-    const char* value  = scanner.GetValue( filename.c_str(), tag );
+    const char* value  = scanner.GetValue(filename.c_str(), tag);
     if(value)
     {
         // Trim buffer
         result = ::gdcm::LOComp::Trim(value);
     }
+
     return result;
 }
 
 //------------------------------------------------------------------------------
 
-std::string getStringValue(const ::gdcm::DataSet& dataset,
-                           const gdcm::Tag& tag)
+std::string getStringValue(
+    const ::gdcm::DataSet& dataset,
+    const gdcm::Tag& tag
+)
 {
     std::string result = "";
-    if (dataset.FindDataElement(tag))
+    if(dataset.FindDataElement(tag))
     {
         const ::gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
 
-        if (!dataElement.IsEmpty())
+        if(!dataElement.IsEmpty())
         {
             // Retrieve buffer
             const ::gdcm::ByteValue* bv = dataElement.GetByteValue();
             if(bv)
             {
                 std::string buffer(bv->GetPointer(), bv->GetLength());
+
                 // Trim buffer
                 result = ::gdcm::LOComp::Trim(buffer.c_str());
             }
         }
     }
+
     return result;
 }
 
@@ -129,9 +141,11 @@ DicomSeries::~DicomSeries()
 
 // ----------------------------------------------------------------------------
 
-DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& filenames,
-                                                        const SPTR(core::jobs::Observer)& readerObserver,
-                                                        const SPTR(core::jobs::Observer)& completeSeriesObserver)
+DicomSeries::DicomSeriesContainerType DicomSeries::read(
+    FilenameContainerType& filenames,
+    const SPTR(core::jobs::Observer)& readerObserver,
+    const SPTR(core::jobs::Observer)& completeSeriesObserver
+)
 {
     DicomSeriesContainerType seriesDB = DicomSeries::splitFiles(filenames, readerObserver);
     DicomSeries::fillSeries(seriesDB, completeSeriesObserver);
@@ -142,15 +156,16 @@ DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& f
 
 void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver)
 {
-    std::set< ::gdcm::Tag > selectedtags;
-    selectedtags.insert( s_SpecificCharacterSetTag);
-    selectedtags.insert( s_SeriesInstanceUIDTag);
-    selectedtags.insert( s_ModalityTag);
-    selectedtags.insert( s_SeriesDateTag);
-    selectedtags.insert( s_SeriesTimeTag);
-    selectedtags.insert( s_SeriesDescriptionTag);
-    selectedtags.insert( s_PerformingPhysicianNameTag);
-    selectedtags.insert( s_SOPClassUIDTag);
+    std::set< ::gdcm::Tag> selectedtags;
+    selectedtags.insert(s_SpecificCharacterSetTag);
+    selectedtags.insert(s_SeriesInstanceUIDTag);
+    selectedtags.insert(s_ModalityTag);
+    selectedtags.insert(s_SeriesDateTag);
+    selectedtags.insert(s_SeriesTimeTag);
+    selectedtags.insert(s_SeriesDescriptionTag);
+    selectedtags.insert(s_PerformingPhysicianNameTag);
+    selectedtags.insert(s_SOPClassUIDTag);
+    selectedtags.insert(s_SOPInstanceUIDTag);
 
     for(const auto& series : seriesDB)
     {
@@ -159,6 +174,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
             SIGHT_ERROR("DicomSeries doesn't not contain any instance.");
             break;
         }
+
         const auto& firstItem                                    = series->getDicomContainer().begin();
         const core::memory::BufferObject::sptr bufferObj         = firstItem->second;
         const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
@@ -169,42 +185,43 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
 
         if(!reader.ReadSelectedTags(selectedtags))
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << firstItem->first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << firstItem->first << "')"
+            );
         }
+
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
         //Modality
-        std::string modality = getStringValue( dataset, s_ModalityTag );
+        std::string modality = getStringValue(dataset, s_ModalityTag);
         series->setModality(modality);
 
         //Date
-        std::string seriesDate = getStringValue( dataset, s_SeriesDateTag );
+        std::string seriesDate = getStringValue(dataset, s_SeriesDateTag);
         series->setDate(seriesDate);
 
         //Time
-        std::string seriesTime = getStringValue( dataset, s_SeriesTimeTag );
+        std::string seriesTime = getStringValue(dataset, s_SeriesTimeTag);
         series->setTime(seriesTime);
 
         //Description
-        std::string seriesDescription = getStringValue( dataset, s_SeriesDescriptionTag );
+        std::string seriesDescription = getStringValue(dataset, s_SeriesDescriptionTag);
         series->setDescription(seriesDescription);
 
         //Performing Physicians Name
-        std::string performingPhysicianNamesStr = getStringValue( dataset, s_PerformingPhysicianNameTag );
+        std::string performingPhysicianNamesStr = getStringValue(dataset, s_PerformingPhysicianNameTag);
 
         if(!performingPhysicianNamesStr.empty())
         {
             data::DicomValuesType performingPhysicianNames;
-            ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
+            ::boost::split(performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
 
         // Add the SOPClassUID to the series
-        std::string sopClassUID                                          = getStringValue( dataset, s_SOPClassUIDTag );
-        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
-        sopClassUIDContainer.insert(sopClassUID);
-        series->setSOPClassUIDs(sopClassUIDContainer);
+        const std::string& sopClassUID = getStringValue(dataset, s_SOPClassUIDTag);
+        series->getSOPClassUIDs().insert(sopClassUID);
     }
 
     this->fillSeries(seriesDB, completeSeriesObserver);
@@ -212,8 +229,10 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
 
 //------------------------------------------------------------------------------
 
-DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerType& filenames,
-                                                              const core::jobs::Observer::sptr& readerObserver)
+DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
+    FilenameContainerType& filenames,
+    const core::jobs::Observer::sptr& readerObserver
+)
 {
     ::gdcm::Scanner seriesScanner;
     seriesScanner.AddTag(s_SpecificCharacterSetTag);
@@ -224,57 +243,74 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     seriesScanner.AddTag(s_SeriesDescriptionTag);
     seriesScanner.AddTag(s_PerformingPhysicianNameTag);
     seriesScanner.AddTag(s_SOPClassUIDTag);
+    seriesScanner.AddTag(s_SOPInstanceUIDTag);
     seriesScanner.AddTag(s_MediaStorageSOPClassUID);
-
     readerObserver->setTotalWorkUnits(filenames.size());
     readerObserver->doneWork(0);
 
-    std::vector< std::string > fileVec;
+    std::vector<std::string> fileVec;
     for(auto file : filenames)
     {
         fileVec.push_back(file.string());
     }
 
-    bool status = seriesScanner.Scan( fileVec );
+    bool status = seriesScanner.Scan(fileVec);
     SIGHT_THROW_IF("Unable to read the files.", !status);
 
     ::gdcm::Directory::FilenamesType keys = seriesScanner.GetKeys();
-    ::gdcm::Directory::FilenamesType::const_iterator it;
 
     unsigned int progress = 0;
 
     DicomSeriesContainerType seriesDB;
 
     //Loop through every files available in the scanner
-    std::map< std::string, std::filesystem::path > orderedFilenames;
+    std::map<std::string, std::filesystem::path> orderedFilenames;
     for(const std::filesystem::path& dicomFile : filenames)
     {
         orderedFilenames[dicomFile.filename().string()] = dicomFile;
     }
+
+    std::set<std::string> previousSOPInstanceUIDs;
+
     for(const auto& dicomFile : orderedFilenames)
     {
         auto filename = dicomFile.second.string();
 
-        SIGHT_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
-                     seriesScanner.IsKey(filename.c_str()));
+        SIGHT_ASSERT(
+            "The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
+            seriesScanner.IsKey(filename.c_str())
+        );
 
-        const std::string sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
-        const std::string mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
+        const std::string& sopInstanceUID = getStringValue(seriesScanner, filename, s_SOPInstanceUIDTag);
+
+        if(previousSOPInstanceUIDs.find(sopInstanceUID) != previousSOPInstanceUIDs.end())
+        {
+            SIGHT_WARN(
+                "The instance "
+                << sopInstanceUID
+                << " has already been read, which usually means DICOM files are corrupted."
+            );
+
+            continue;
+        }
+
+        const std::string& sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
+        const std::string& mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
 
         if(sopClassUID != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage)
            && mediaStorageSopClassUID
            != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
-
             this->createSeries(seriesDB, seriesScanner, dicomFile.second);
+            previousSOPInstanceUIDs.insert(sopInstanceUID);
         }
 
-        if (!readerObserver || readerObserver->cancelRequested())
+        if(!readerObserver || readerObserver->cancelRequested())
         {
             break;
         }
 
-        readerObserver->doneWork(static_cast< std::uint64_t >(++progress * 100 / keys.size()));
+        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / keys.size()));
     }
 
     return seriesDB;
@@ -282,14 +318,16 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
-                             const core::jobs::Observer::sptr& completeSeriesObserver)
+void DicomSeries::fillSeries(
+    DicomSeriesContainerType& seriesDB,
+    const core::jobs::Observer::sptr& completeSeriesObserver
+)
 {
     m_patientMap.clear();
     m_studyMap.clear();
     m_equipmentMap.clear();
 
-    std::set< ::gdcm::Tag > selectedtags;
+    std::set< ::gdcm::Tag> selectedtags;
     selectedtags.insert(s_SpecificCharacterSetTag);
     selectedtags.insert(s_PatientIDTag);
     selectedtags.insert(s_PatientNameTag);
@@ -330,9 +368,12 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
         if(!reader.ReadSelectedTags(selectedtags))
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << firstItem->first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << firstItem->first << "')"
+            );
         }
+
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
         // Create data objects from first instance
@@ -347,7 +388,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
         if(completeSeriesObserver)
         {
-            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / seriesDB.size() ));
+            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / seriesDB.size()));
 
             if(completeSeriesObserver->cancelRequested())
             {
@@ -359,16 +400,18 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
-                               const ::gdcm::Scanner& scanner,
-                               const std::filesystem::path& filename)
+void DicomSeries::createSeries(
+    DicomSeriesContainerType& seriesDB,
+    const ::gdcm::Scanner& scanner,
+    const std::filesystem::path& filename
+)
 {
     data::DicomSeries::sptr series = data::DicomSeries::sptr();
 
     const std::string stringFilename = filename.string();
 
     // Get Series Instance UID
-    std::string seriesInstanceUID = getStringValue( scanner, stringFilename, s_SeriesInstanceUIDTag );
+    std::string seriesInstanceUID = getStringValue(scanner, stringFilename, s_SeriesInstanceUIDTag);
 
     // Check if the series already exists
     for(data::DicomSeries::sptr dicomSeries : seriesDB)
@@ -391,43 +434,41 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
         series->setInstanceUID(seriesInstanceUID);
 
         //Modality
-        std::string modality = getStringValue( scanner, stringFilename, s_ModalityTag );
+        std::string modality = getStringValue(scanner, stringFilename, s_ModalityTag);
         series->setModality(modality);
 
         //Date
-        std::string seriesDate = getStringValue( scanner, stringFilename, s_SeriesDateTag );
+        std::string seriesDate = getStringValue(scanner, stringFilename, s_SeriesDateTag);
         series->setDate(seriesDate);
 
         //Time
-        std::string seriesTime = getStringValue( scanner, stringFilename, s_SeriesTimeTag );
+        std::string seriesTime = getStringValue(scanner, stringFilename, s_SeriesTimeTag);
         series->setTime(seriesTime);
 
         //Description
-        std::string seriesDescription = getStringValue( scanner, stringFilename, s_SeriesDescriptionTag );
+        std::string seriesDescription = getStringValue(scanner, stringFilename, s_SeriesDescriptionTag);
         series->setDescription(seriesDescription);
 
         //Performing Physicians Name
-        std::string performingPhysicianNamesStr = getStringValue( scanner, stringFilename,
-                                                                  s_PerformingPhysicianNameTag );
+        std::string performingPhysicianNamesStr = getStringValue(scanner, stringFilename, s_PerformingPhysicianNameTag);
 
         if(!performingPhysicianNamesStr.empty())
         {
             data::DicomValuesType performingPhysicianNames;
-            ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
+            ::boost::split(performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
             series->setPerformingPhysiciansName(performingPhysicianNames);
         }
     }
 
     // Add the SOPClassUID to the series
-    std::string sopClassUID = getStringValue( scanner, stringFilename,
-                                              s_SOPClassUIDTag );
-    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
-    sopClassUIDContainer.insert(sopClassUID);
-    series->setSOPClassUIDs(sopClassUIDContainer);
+    const std::string& sopClassUID = getStringValue(
+        scanner,
+        stringFilename,
+        s_SOPClassUIDTag
+    );
 
-    // Add the instance to the series
-    const size_t instanceNumber = series->getDicomContainer().size();
-    series->addDicomPath(instanceNumber, filename);
+    series->getSOPClassUIDs().insert(sopClassUID);
+    series->addDicomPath(series->getDicomContainer().size(), filename);
 }
 
 //------------------------------------------------------------------------------
@@ -437,7 +478,7 @@ data::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
     data::Patient::sptr result;
 
     // Get Patient ID
-    std::string patientID = getStringValue( dataset, s_PatientIDTag );
+    std::string patientID = getStringValue(dataset, s_PatientIDTag);
 
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
@@ -449,17 +490,16 @@ data::Patient::sptr DicomSeries::createPatient(const ::gdcm::DataSet& dataset)
         result->setPatientId(patientID);
 
         //Patient Name
-        std::string patientName = getStringValue( dataset, s_PatientNameTag );
+        std::string patientName = getStringValue(dataset, s_PatientNameTag);
         result->setName(patientName);
 
         //Patient Birthdate
-        std::string patientBirthDate = getStringValue( dataset, s_PatientBirthDateTag );
+        std::string patientBirthDate = getStringValue(dataset, s_PatientBirthDateTag);
         result->setBirthdate(patientBirthDate);
 
         //Patient Sex
-        std::string patientSex = getStringValue( dataset, s_PatientSexTag );
+        std::string patientSex = getStringValue(dataset, s_PatientSexTag);
         result->setSex(patientSex);
-
     }
     else
     {
@@ -477,7 +517,7 @@ data::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
     data::Study::sptr result;
 
     // Get Study ID
-    std::string studyInstanceUID = getStringValue( dataset, s_StudyInstanceUIDTag );
+    std::string studyInstanceUID = getStringValue(dataset, s_StudyInstanceUIDTag);
 
     // Check if the study already exists
     if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
@@ -489,25 +529,24 @@ data::Study::sptr DicomSeries::createStudy(const ::gdcm::DataSet& dataset)
         result->setInstanceUID(studyInstanceUID);
 
         //Study Date
-        std::string studyDate = getStringValue( dataset, s_StudyDateTag );
+        std::string studyDate = getStringValue(dataset, s_StudyDateTag);
         result->setDate(studyDate);
 
         //Study Time
-        std::string studyTime = getStringValue( dataset, s_StudyTimeTag );
+        std::string studyTime = getStringValue(dataset, s_StudyTimeTag);
         result->setTime(studyTime);
 
         //Referring Physician Name
-        std::string referringPhysicianName = getStringValue( dataset, s_ReferringPhysicianNameTag );
+        std::string referringPhysicianName = getStringValue(dataset, s_ReferringPhysicianNameTag);
         result->setReferringPhysicianName(referringPhysicianName);
 
         //Study Description
-        std::string studyDescription = getStringValue( dataset, s_StudyDescriptionTag );
+        std::string studyDescription = getStringValue(dataset, s_StudyDescriptionTag);
         result->setDescription(studyDescription);
 
         //Study Patient Age
-        std::string patientAge = getStringValue( dataset, s_PatientAgeTag );
+        std::string patientAge = getStringValue(dataset, s_PatientAgeTag);
         result->setPatientAge(patientAge);
-
     }
     else
     {
@@ -525,7 +564,7 @@ data::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& datase
     data::Equipment::sptr result;
 
     // Get Institution Name
-    std::string institutionName = getStringValue( dataset, s_InstitutionNameTag );
+    std::string institutionName = getStringValue(dataset, s_InstitutionNameTag);
 
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
@@ -535,7 +574,6 @@ data::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& datase
 
         //Institution Name
         result->setInstitutionName(institutionName);
-
     }
     else
     {
@@ -549,4 +587,5 @@ data::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::DataSet& datase
 //------------------------------------------------------------------------------
 
 } //helper
+
 } //fwGdcmIO

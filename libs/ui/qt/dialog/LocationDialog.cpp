@@ -59,9 +59,9 @@ LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key key) :
 core::location::ILocation::sptr LocationDialog::show()
 {
     const QString& caption = QString::fromStdString(this->getTitle());
-    const QString& path    = QString::fromStdString(this->getDefaultLocation().toString());
+    const QString& path    = QString::fromStdString(this->getDefaultLocation()->toString());
     const QString& filter  = this->fileFilters();
-    data::location::ILocation::sptr location;
+    core::location::ILocation::sptr location;
 
     QFileDialog dialog;
     dialog.setDirectory(path);
@@ -116,7 +116,9 @@ core::location::ILocation::sptr LocationDialog::show()
             if(m_type == ui::base::dialog::ILocationDialog::SINGLE_FILE)
             {
                 const auto& selectedFile = selectedFiles.constFirst();
-                location = data::location::SingleFile::New(selectedFile.toStdString());
+                auto file                = std::make_shared<core::location::SingleFile>();
+                file->setFile(selectedFile.toStdString());
+                location = file;
             }
             else if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
             {
@@ -126,14 +128,16 @@ core::location::ILocation::sptr LocationDialog::show()
                     paths.push_back(file.toStdString());
                 }
 
-                auto multifiles = data::location::MultiFiles::New();
-                multifiles->setPaths(paths);
+                auto multifiles = std::make_shared<core::location::MultipleFiles>();
+                multifiles->setFiles(paths);
                 location = multifiles;
             }
             else if(m_type == ui::base::dialog::ILocationDialog::FOLDER)
             {
                 const auto& selectedDirectory = selectedFiles.constFirst();
-                location = data::location::Folder::New(selectedDirectory.toStdString());
+                auto folder                   = std::make_shared<core::location::SingleFolder>();
+                folder->setFolder(selectedDirectory.toStdString());
+                location = folder;
             }
         }
     }

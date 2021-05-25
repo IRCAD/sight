@@ -25,14 +25,13 @@
 #include "data/config.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
+#include <data/factory/new.hpp>
 
 #include <core/memory/BufferObject.hpp>
 
-#include <data/factory/new.hpp>
-
 #include <filesystem>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(DicomSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (DicomSeries))
 
 namespace sight::data
 {
@@ -42,18 +41,17 @@ namespace sight::data
  */
 class DATA_CLASS_API DicomSeries : public data::Series
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New< DicomSeries >)
+    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New<DicomSeries>)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(DicomSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (DicomSeries))
 
-    typedef std::map < std::size_t, core::memory::BufferObject::sptr > DicomContainerType;
+    typedef std::map<std::size_t, core::memory::BufferObject::sptr> DicomContainerType;
 
-    typedef std::set < std::string > SOPClassUIDContainerType;
+    typedef std::set<std::string> SOPClassUIDContainerType;
 
-    typedef std::map < std::string, std::string > ComputedTagValueContainerType;
+    typedef std::map<std::string, std::string> ComputedTagValueContainerType;
 
     /**
      * @brief Creates the DICOM series.
@@ -68,14 +66,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a DICOM path.
@@ -122,7 +120,7 @@ public:
      * @brief Gets the number of instances in the series.
      * @return The number of instances in the series.
      */
-    size_t  getNumberOfInstances() const
+    size_t getNumberOfInstances() const
     {
         return m_numberOfInstances;
     }
@@ -134,7 +132,7 @@ public:
     }
 
     /// Gets the DICOM container.
-    const DicomContainerType& getDicomContainer () const
+    const DicomContainerType& getDicomContainer() const
     {
         return m_dicomContainer;
     }
@@ -153,6 +151,13 @@ public:
 
     /// Gets the SOP Class UID.
     const SOPClassUIDContainerType& getSOPClassUIDs() const
+    {
+        return m_SOPClassUIDs;
+    }
+
+    //------------------------------------------------------------------------------
+
+    SOPClassUIDContainerType& getSOPClassUIDs()
     {
         return m_SOPClassUIDs;
     }

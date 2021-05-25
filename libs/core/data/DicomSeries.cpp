@@ -54,7 +54,7 @@ void DicomSeries::shallowCopy(const data::Object::csptr& _source)
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
         !bool(other)
@@ -76,7 +76,7 @@ void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            "Unable to copy " + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
         !bool(other)
