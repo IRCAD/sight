@@ -95,18 +95,45 @@ lint:sheldon:
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
         ninja doc
       fi
+    - >
+      if [ "${SIGHT_BUILD_PACKAGE}" == "ON" ]; then
+        ninja SightViewer_package
+        ninja install
+        ninja package
+      fi
 
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/.build/ctest.log
-      - $CI_PROJECT_DIR/.build/Documentation/Doxygen/
+      - .build/ctest.log
+      - .build/Documentation/Doxygen/
+      - .build/SightViewer*.tar.gz
+      - .build/packages/sight-*.tar.gz
+
+deploy:linux:
+  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  stage: deploy
+  dependencies:
+    - build:linux-release-gcc
+  script:
+    - ls .build
+    - cd .build/
+    - name=$(ls -1 SightViewer*)
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+    - cd packages
+    - name=$(ls -1 sight-*)
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+  artifacts:
+    paths:
+      - .build/SightViewer*.tar.gz
+      - .build/packages/sight-*.tar.gz
 
 build:linux-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "OFF"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -115,6 +142,7 @@ build:linux-release-gcc:
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "ON"
+    SIGHT_BUILD_PACKAGE: "OFF"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -123,6 +151,7 @@ build:linux-debug-clang:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "OFF"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
@@ -131,6 +160,7 @@ build:linux-release-clang:
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "ON"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
@@ -200,22 +230,52 @@ prebuild:windows:
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6
+    - |
+      if ("${SIGHT_BUILD_PACKAGE}" -eq "ON") {
+        ninja SightViewer_package
+        ninja install
+        ninja package
+      }
   artifacts:
     when: always
     name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
     paths:
       - build/ctest.log
       - build/fwTest.log
+      - build/packages/SightViewer*.exe
+      - build/packages/sight-*.tar.gz
+
+deploy:windows:
+  stage: deploy
+  dependencies:
+    - build:windows-release
+  script:
+    - cd build/packages
+    - $archive=ls SightViewer* | Select-Object -First 1
+    - $archive=$archive.name
+    - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
+    - $archive=ls sight-* | Select-Object -First 1
+    - $archive=$archive.name
+    - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
+  artifacts:
+    paths:
+      - build/packages/SightViewer*.exe
+      - build/packages/sight-*.tar.gz
+  tags:
+    - conan
+    - windows
 
 build:windows-debug:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Debug"
+    SIGHT_BUILD_PACKAGE: "OFF"
 
 build:windows-release:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Release"
+    SIGHT_BUILD_PACKAGE: "ON"
 
 deploy:pages:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
@@ -229,37 +289,3 @@ deploy:pages:
       - public
   only:
     - dev
-
-deploy:linux:
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
-  stage: deploy
-  dependencies:
-    - build:linux-release-gcc
-  script:
-    # Package SightViewer
-    - ninja SightViewer_package
-    - name=$(ls -1 SightViewer*)
-    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
-    # Package Sight SDK
-    - ninja install
-    - ninja package
-    - name=$(ls -1 sight-*)
-    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
-
-deploy:windows:
-  stage: deploy
-  dependencies:
-    - build:windows-release
-  script:
-    # Package SightViewer
-    - ninja SightViewer_package
-    - name=$(ls -1 SightViewer*)
-    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
-    # Package Sight SDK
-    - ninja install
-    - ninja package
-    - name=$(ls -1 sight-*)
-    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
-  tags:
-    - conan
-    - windows
