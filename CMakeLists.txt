@@ -428,15 +428,19 @@ foreach(APP ${SIGHT_APPS})
 
 endforeach()
 
+if(UNIX)
+  execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+  set(ARCHITECTURE linux_${ARCHITECTURE})
+else()
+  set(ARCHITECTURE win64)
+endif()
+
 # Whole library packaging    
 set(CPACK_OUTPUT_FILE_PREFIX packages)
 set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
-
-execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-
 set(CPACK_GENERATOR TGZ)
 set(CPACK_SOURCE_GENERATOR TGZ)
-set(CPACK_PACKAGE_FILE_NAME "Sight-${SIGHT_VERSION}-linux_${ARCHITECTURE}-${GIT_TAG}")
+set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${ARCHITECTURE}")
 set(CPACK_PACKAGE_VENDOR "IRCAD")
 set(CPACK_PACKAGE_NAME "Sight")
 set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")

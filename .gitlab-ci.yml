@@ -229,3 +229,37 @@ deploy:pages:
       - public
   only:
     - dev
+
+deploy:linux:
+  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  stage: deploy
+  dependencies:
+    - build:linux-release-gcc
+  script:
+    # Package SightViewer
+    - ninja SightViewer_package
+    - name=$(ls -1 SightViewer*)
+    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+    # Package Sight SDK
+    - ninja install
+    - ninja package
+    - name=$(ls -1 sight-*)
+    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+
+deploy:windows:
+  stage: deploy
+  dependencies:
+    - build:windows-release
+  script:
+    # Package SightViewer
+    - ninja SightViewer_package
+    - name=$(ls -1 SightViewer*)
+    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+    # Package Sight SDK
+    - ninja install
+    - ninja package
+    - name=$(ls -1 sight-*)
+    - curl -X PUT -u '${OWNCLOUD_UID}:{OWNCLOUD_PWD}' "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+  tags:
+    - conan
+    - windows

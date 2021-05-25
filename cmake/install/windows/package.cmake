@@ -39,7 +39,7 @@ macro(win_package PRJ_NAME)
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${SIGHT_VERSION}-win64-Sight_${GIT_TAG}")
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-win64")
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
@@ -48,6 +48,10 @@ macro(win_package PRJ_NAME)
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
     set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
+
+    # CPackComponent doesn't work properly with the 'single project' packaging mechanism we hacked here
+    # As a workaround, this script allows to remove the dev component files before packing
+    set(CPACK_PRE_BUILD_SCRIPTS ${FWCMAKE_RESOURCE_PATH}/install/pre_package.cmake)
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
     
