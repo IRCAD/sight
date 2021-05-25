@@ -47,6 +47,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
+
+include(CPackComponent)
+cpack_add_component(runtime REQUIRED)
+cpack_add_component(dev DEPENDS runtime)
+
 ########################################################################################################################
 # User options
 ########################################################################################################################
@@ -313,7 +318,7 @@ elseif(UNIX)
     )
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux/package.cmake"
         
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install

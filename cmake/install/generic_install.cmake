@@ -3,7 +3,7 @@ if(WIN32)
 elseif(UNIX)
     #Don't use rpath at install step
     set(CMAKE_SKIP_INSTALL_RPATH ON)
-    include(${FWCMAKE_INSTALL_FILES_DIR}/linux_install.cmake)
+    include(${FWCMAKE_INSTALL_FILES_DIR}/linux/package.cmake)
 endif()
 
 function(generic_install)
@@ -14,7 +14,7 @@ function(generic_install)
     if(WIN32)
         win_package(${FWPROJECT_NAME})
     elseif(UNIX)
-        linux_install(${FWPROJECT_NAME})
+        linux_package(${FWPROJECT_NAME})
     endif()
 
 endfunction()
