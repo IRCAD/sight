@@ -113,22 +113,22 @@
             <inout key="target" uid="${landmarks}"/>
         </service>
 
-        <service uid="ActionExportActivity" type="sight::module::ui::base::series::SExport" autoConnect="yes">
+        <service uid="ActionExportActivity" type="sight::module::ui::base::series::SExport" autoConnect="true">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="landmarksEditor" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes">
+        <service uid="landmarksEditor" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true">
             <inout key="landmarks" uid="${landmarks}" />
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>
 
-        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="true">
             <inout key="image" uid="${image}" />
         </service>
 
         <!-- <service uid="ActionSFocusLandmark" type="sight::module::ui::base::metrics::SFocusLandmark" >
-            <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
+            <in key="landmarks" uid="${landmarks}" autoConnect="true" />
             <inout key="image" uid="${image}" />
         </service> -->
 
@@ -155,7 +155,7 @@
         <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance" >
             <inout key="image" uid="${image}" />
         </service>
-        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="yes" >
+        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
             <inout key="image" uid="${image}" />
         </service>
 

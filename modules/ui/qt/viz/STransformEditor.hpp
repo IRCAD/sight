@@ -35,13 +35,14 @@ class QLineEdit;
 
 namespace sight::module::ui::qt::viz
 {
+
 /**
  * @brief   This editor regulates the position and rotation defined in a transformation matrix.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::viz::STransformEditor" autoConnect="no">
+    <service uid="..." type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false">
         <inout key="matrix" uid="..."/>
         <translation enabled="no" min="-300"/>
         <rotation enabled="yes" min="-180" max="180" />
@@ -61,7 +62,9 @@ class MODULE_UI_QT_CLASS_API STransformEditor : public QObject,
                                                 public sight::ui::base::IEditor
 {
 Q_OBJECT;
+
 public:
+
     SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
@@ -127,7 +130,7 @@ private:
     };
 
     /// Array containing the different structs to regulate the transformation matrix entries.
-    SliderWidget m_sliders[ MAX_SLIDER_INDEX ];
+    SliderWidget m_sliders[MAX_SLIDER_INDEX];
 
     /// Contains a string identifying which axes [xyz] are displayed for rotation
     std::string m_rotation;

@@ -24,8 +24,8 @@
 
 #include "io/dicom/config.hpp"
 
-#include <data/location/Folder.hpp>
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
+#include <core/location/SingleFolder.hpp>
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
@@ -33,12 +33,16 @@
 
 namespace sight::data
 {
+
 class SeriesDB;
+
 }
 
 namespace sight::core::jobs
 {
+
 class Aggregator;
+
 }
 
 namespace sight::io::dicom
@@ -50,15 +54,17 @@ namespace helper
 class DicomAnonymizer;
 
 class IO_DICOM_CLASS_API DicomSeriesDBWriter :
-    public io::base::writer::GenericObjectWriter< data::SeriesDB >,
-    public data::location::enableFolder< io::base::writer::IObjectWriter >,
-    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
-
+    public io::base::writer::GenericObjectWriter<data::SeriesDB>,
+    public core::location::SingleFolder,
+    public core::location::SingleFile
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeriesDBWriter, io::base::writer::GenericObjectWriter< data::SeriesDB>,
-                        io::base::writer::factory::New< DicomSeriesDBWriter >);
+    SIGHT_DECLARE_CLASS(
+        DicomSeriesDBWriter,
+        io::base::writer::GenericObjectWriter<data::SeriesDB>,
+        io::base::writer::factory::New<DicomSeriesDBWriter>
+    );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
@@ -99,8 +105,8 @@ private:
 
     /// Producer
     std::string m_producer;
-
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

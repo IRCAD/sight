@@ -99,15 +99,15 @@
                 shown in the windows defines in 'view' service.
             -->
             <service uid="rendering1Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="yes" />
+                <in key="mesh" uid="mesh" autoConnect="true" />
             </service>
 
             <service uid="rendering2Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="yes" />
+                <in key="mesh" uid="mesh" autoConnect="true" />
             </service>
 
             <service uid="rendering3Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="yes" />
+                <in key="mesh" uid="mesh" autoConnect="true" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

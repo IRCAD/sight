@@ -25,14 +25,17 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/GenericObjectReader.hpp"
 
-#include <data/location/SingleFile.hpp>
+#include <core/location/SingleFile.hpp>
+
 #include <data/StructureTraitsDictionary.hpp>
 
 #include <filesystem>
 
 namespace sight::data
 {
+
 class StructureTraitsDictionary;
+
 }
 
 namespace sight::io::base
@@ -49,15 +52,16 @@ namespace reader
  * This is an ASCII file. The structure of each line is defined on the first line of this file.
  */
 class IO_BASE_CLASS_API DictionaryReader :
-    public GenericObjectReader< data::StructureTraitsDictionary>,
-    public data::location::enableSingleFile< IObjectReader >
-
+    public GenericObjectReader<data::StructureTraitsDictionary>,
+    public core::location::SingleFile
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(DictionaryReader, GenericObjectReader< data::StructureTraitsDictionary >,
-                        io::base::reader::factory::New< DictionaryReader >)
+    SIGHT_DECLARE_CLASS(
+        DictionaryReader,
+        GenericObjectReader<data::StructureTraitsDictionary>,
+        io::base::reader::factory::New<DictionaryReader>
+    )
 
     /// Constructor. Do nothing .
     IO_BASE_API DictionaryReader(io::base::reader::IObjectReader::Key key);
@@ -71,7 +75,7 @@ public:
     IO_BASE_API std::string extension() override;
 
     /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
-    IO_BASE_API static std::filesystem::path  getDefaultDictionaryPath();
+    IO_BASE_API static std::filesystem::path getDefaultDictionaryPath();
 };
 
 } // namespace reader

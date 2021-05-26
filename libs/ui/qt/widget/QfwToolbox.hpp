@@ -36,42 +36,49 @@
 
 namespace sight::ui::qt
 {
+
 namespace widget
 {
 
 class Page
 {
 public:
+
     //------------------------------------------------------------------------------
 
     void setText(const QString& text)
     {
         button->setText(text);
     }
+
     //------------------------------------------------------------------------------
 
     void setIcon(const QIcon& is)
     {
         button->setIcon(is);
     }
+
     //------------------------------------------------------------------------------
 
     void setToolTip(const QString& tip)
     {
         button->setToolTip(tip);
     }
+
     //------------------------------------------------------------------------------
 
     QString toolTip() const
     {
         return button->toolTip();
     }
+
     //------------------------------------------------------------------------------
 
     QString text() const
     {
         return button->text();
     }
+
     //------------------------------------------------------------------------------
 
     QIcon icon() const
@@ -96,7 +103,8 @@ class UI_QT_CLASS_API QfwToolBox : public QFrame
 Q_OBJECT
 
 public:
-    UI_QT_API QfwToolBox(QWidget* parent = 0, Qt::WindowFlags f = 0);
+
+    UI_QT_API QfwToolBox(QWidget* parent = 0);
     UI_QT_API virtual ~QfwToolBox();
 
     UI_QT_API int addItem(QWidget* widget, const QString& text);
@@ -123,9 +131,10 @@ public:
 
 protected:
 
-    typedef QList< ui::qt::widget::Page > PageList;
+    typedef QList<ui::qt::widget::Page> PageList;
 
 private Q_SLOTS:
+
     void buttonToggled(bool checked);
     void widgetDestroyed(QObject*);
 
@@ -142,4 +151,5 @@ private:
 };
 
 } // namespace widget
+
 } // namespace sight::ui::qt

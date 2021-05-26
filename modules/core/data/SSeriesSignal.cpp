@@ -22,6 +22,9 @@
 
 #include "SSeriesSignal.hpp"
 
+#include <data/ActivitySeries.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
@@ -29,9 +32,6 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
-
-#include <data/ActivitySeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 
 #include <service/macros.hpp>
 
@@ -54,7 +54,7 @@ static const std::string s_SERIES_DB_INPUT = "seriesDB";
 
 SSeriesSignal::SSeriesSignal() noexcept
 {
-    m_sigSeriesAdded = newSignal< SeriesAddedSignalType >(s_SERIES_ADDED_SIG);
+    m_sigSeriesAdded = newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG);
 
     newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeries, this);
 }
@@ -81,24 +81,26 @@ void SSeriesSignal::stopping()
 
 void SSeriesSignal::configuring()
 {
-
     const service::IService::ConfigType srvconfig = this->getConfigTree();
 
-    if(srvconfig.count("filter") == 1 )
+    if(srvconfig.count("filter") == 1)
     {
         const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-        const std::string mode = configFilter.get< std::string >("mode");
-        SIGHT_ASSERT("'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
-                     mode == "include" || mode == "exclude");
+        const std::string mode = configFilter.get<std::string>("mode");
+        SIGHT_ASSERT(
+            "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+            mode == "include" || mode == "exclude"
+        );
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("type") )
+        BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("type"))
         {
             m_types.push_back(v.second.get<std::string>(""));
         }
     }
+
     SIGHT_ASSERT("A maximum of 1 <filter> tag is allowed", srvconfig.count("filter") < 2);
 }
 
@@ -128,7 +130,7 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
 
 void SSeriesSignal::updating()
 {
-    const auto seriesDB = this->getInput< sight::data::SeriesDB >(s_SERIES_DB_INPUT);
+    const auto seriesDB = this->getInput<sight::data::SeriesDB>(s_SERIES_DB_INPUT);
     SIGHT_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
     sight::data::mt::ObjectReadLock lock(seriesDB);
 

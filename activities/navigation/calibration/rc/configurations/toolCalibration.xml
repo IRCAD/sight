@@ -118,7 +118,7 @@
         </service>
 
         <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::SMatrixTLSynchronizer">
-            <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+            <in key="matrixTL" uid="matrixTL" autoConnect="true" />
             <inout group="matrices">
                 <key uid="trackerMatrix0" />
             </inout>
@@ -173,8 +173,8 @@
 
         <service uid="concatenateMatrices" type="sight::module::geometry::base::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="trackerMatrix0" autoConnect="yes"/>
-                <key uid="matrixCalibration" autoConnect="yes"/>
+                <key uid="trackerMatrix0" autoConnect="true"/>
+                <key uid="matrixCalibration" autoConnect="true"/>
             </in>
             <inout key="output" uid="calibrationAxisMatrix" />
        </service>
@@ -199,17 +199,17 @@
             </scene>
         </service>
 
-        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
             <inout key="transform" uid="trackerMatrix0" />
             <config layer="default" transform="trackerMatrix0Trf" />
         </service>
 
-         <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+         <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
             <inout key="transform" uid="matrixCalibration" />
             <config layer="default" transform="calibrationTrf" />
         </service>
 
-        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
             <inout key="transform" uid="calibrationAxisMatrix" />
             <config layer="default" transform="calibrationAxisTrf" />
         </service>
@@ -218,7 +218,7 @@
             <config layer="default" length="20" transform="calibrationAxisTrf" label="no" origin="yes" originColor="#0000FF" />
         </service>
 
-        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes">
+        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
             <inout key="transform" uid="toolMatrix" />
             <config layer="default" transform="toolCalibrationTrf" />
         </service>
@@ -235,7 +235,7 @@
             <config layer="default" length="20" transform="trackerMatrix0Trf" label="no" origin="yes" originColor="#00FF00" />
         </service>
 
-        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes">
+        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
             <in key="pointList" uid="pointlist" />
             <config layer="default" radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16"
                 labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>

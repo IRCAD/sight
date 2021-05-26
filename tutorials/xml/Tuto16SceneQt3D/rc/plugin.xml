@@ -84,12 +84,12 @@
                 </scene>
             </service>
 
-            <service uid="materialAdp" type="sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
+            <service uid="materialAdp" type="sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="true">
                 <inout key="material" uid="material" />
                 <config materialName="mat"/>
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::qt3d::adaptor::SMesh" autoConnect="yes">
+            <service uid="meshAdp" type="sight::module::viz::qt3d::adaptor::SMesh" autoConnect="true">
                 <inout key="mesh" uid="mesh" />
                 <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>

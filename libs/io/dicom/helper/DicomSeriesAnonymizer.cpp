@@ -35,6 +35,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -60,15 +61,18 @@ void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source,
-                                      const data::DicomSeries::sptr& destination)
+void DicomSeriesAnonymizer::anonymize(
+    const data::DicomSeries::sptr& source,
+    const data::DicomSeries::sptr& destination
+)
 {
     auto writerObserver     = m_writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
     auto readerObserver     = m_reader->getJob();
 
     // Set up observer cancel callback
-    m_job->addSimpleCancelHook([&]
+    m_job->addSimpleCancelHook(
+        [&]
             {
                 writerObserver->cancel();
                 anonymizerObserver->cancel();
@@ -83,13 +87,11 @@ void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source,
 
     // Create destination directory
     const std::filesystem::path destPath = core::tools::System::getTemporaryFolder("AnonymizedSeries");
-    std::filesystem::create_directories( destPath );
+    std::filesystem::create_directories(destPath);
 
     // Write DicomSeries (Copy files)
     m_writer->setObject(source);
-    data::location::Folder::sptr loc = data::location::Folder::New();
-    loc->setFolder(destPath);
-    m_writer->setLocation(loc);
+    m_writer->setFolder(destPath);
     m_writer->write();
 
     if(m_job->cancelRequested())
@@ -135,4 +137,5 @@ core::jobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
 //------------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::io::dicom

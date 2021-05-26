@@ -24,13 +24,13 @@
 
 #include "modules/data/config.hpp"
 
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
-
-#include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
 
 #include <service/IController.hpp>
 
@@ -54,7 +54,7 @@ namespace sight::module::data
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="sight::module::activity::action::SSeriesSignal" autoConnect="yes" >
+    <service uid="action_newActivity" type="sight::module::activity::action::SSeriesSignal" autoConnect="true" >
         <in key="seriesDB" uid="..." />
         <!-- Filter mode 'include' allows all given types.
              Filter mode 'exclude' allows all series excepted given ones. -->
@@ -75,7 +75,6 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API SSeriesSignal : public service::IController
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SSeriesSignal, service::IController)
@@ -88,7 +87,7 @@ public:
 
     MODULE_DATA_API static const core::com::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
 
-    typedef core::com::Signal< void ( sight::data::Series::sptr ) > SeriesAddedSignalType;
+    typedef core::com::Signal<void (sight::data::Series::sptr)> SeriesAddedSignalType;
     MODULE_DATA_API static const core::com::Signals::SignalKeyType s_SERIES_ADDED_SIG;
 
 protected:
@@ -116,7 +115,7 @@ protected:
 
 private:
 
-    typedef std::vector< std::string > TypesType;
+    typedef std::vector<std::string> TypesType;
 
     /**
      * @brief This slot is called when a series is added in the SeriesDB.
@@ -135,7 +134,6 @@ private:
 
     /// Signal emitted when the added series correspond to the configured type.
     SeriesAddedSignalType::sptr m_sigSeriesAdded;
-
 };
 
 } // gui

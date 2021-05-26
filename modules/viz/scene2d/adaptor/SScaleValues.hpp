@@ -28,6 +28,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -37,7 +38,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="scaleValues" class="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
+   <service uid="scaleValues" class="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true">
         <in key="viewport"  uid="..." />
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
@@ -65,8 +66,8 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SScaleValues : public sight::viz::scene2d::IAdaptor
 {
-
 public:
+
     SIGHT_DECLARE_SERVICE(SScaleValues, ::sight::viz::scene2d::IAdaptor)
 
     /// Constructor, set the x and y spacing to 10
@@ -89,7 +90,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -149,4 +150,5 @@ private:
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

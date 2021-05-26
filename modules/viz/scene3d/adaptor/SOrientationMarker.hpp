@@ -39,7 +39,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="yes">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
         <in key="matrix" uid="..." />
         <config layer="default" resource="..." depth="-32.0" />
     </service>
@@ -57,7 +57,6 @@ class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
@@ -92,23 +91,22 @@ protected:
 private:
 
     /// Contains the material data.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Updates the internal camera matrix from the input transform
     void updateCameraMatrix();
 
     /// Contains the scene node where all of manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode { nullptr };
+    ::Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores the entity associated to the marker mesh
-    ::Ogre::Entity* m_patientMesh { nullptr };
+    ::Ogre::Entity* m_patientMesh {nullptr};
 
     /// Resource used for the marker
-    std::string m_patientMeshRc { "human.mesh" };
+    std::string m_patientMeshRc {"human.mesh"};
 
     /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
     float m_markerDepth = -32.f;
-
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

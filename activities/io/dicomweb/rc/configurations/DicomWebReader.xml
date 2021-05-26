@@ -105,7 +105,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
@@ -122,7 +122,7 @@
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
-        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
@@ -131,12 +131,12 @@
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="seriesDB" uid="localSeriesDB" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>

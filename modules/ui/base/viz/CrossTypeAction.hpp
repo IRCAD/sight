@@ -41,7 +41,6 @@ namespace sight::module::ui::base::viz
  */
 class MODULE_UI_BASE_CLASS_API CrossTypeAction : public ::sight::ui::base::IAction
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(CrossTypeAction, ::sight::ui::base::IAction)
@@ -71,7 +70,7 @@ protected:
     /**
      * @brief Configure action.
      * @code{.xml}
-       <service type="ui::base::IAction" impl="::uiData::CrossTypeAction" autoConnect="no">
+       <service type="ui::base::IAction" impl="::uiData::CrossTypeAction" autoConnect="false">
         <crossType>hide</crossType>
        </service>
        @endcode
@@ -79,14 +78,14 @@ protected:
      */
     void configuring() override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 
-    static std::map< std::string, float > m_scaleConversion;
+    static std::map<std::string, float> m_scaleConversion;
     std::string m_crossType;
 
-    typedef core::com::Signal< void (double) > CrossTypeModifiedSignalType;
+    typedef core::com::Signal<void (double)> CrossTypeModifiedSignalType;
     CrossTypeModifiedSignalType::sptr m_sigCrossTypeModified; ///< Signal emitted when cross type is modified
 };
 

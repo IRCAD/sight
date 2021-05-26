@@ -29,7 +29,7 @@
 #include <iostream>
 #include <vector>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::base::writer::Matrix4Writer);
+SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::Matrix4Writer);
 
 namespace sight::io::base
 {
@@ -39,8 +39,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-Matrix4Writer::Matrix4Writer(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this)
+Matrix4Writer::Matrix4Writer(io::base::writer::IObjectWriter::Key)
 {
 }
 
@@ -56,18 +55,19 @@ void Matrix4Writer::write()
 {
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
-    if (!file.is_open())
+    if(!file.is_open())
     {
-        SIGHT_ERROR( "Trf file writing error for " << getFile());
+        SIGHT_ERROR("Trf file writing error for " << getFile());
         return;
     }
+
     data::Matrix4::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
     int i                          = 0;
-    for (auto val : mat)
+    for(auto val : mat)
     {
         file << val;
         i++;
-        if (i%4 == 0 && i != 16)
+        if(i % 4 == 0 && i != 16)
         {
             file << std::endl;
         }

@@ -42,6 +42,7 @@ class TestApplication : private ArgV,
                         public QGuiApplication
 {
 public:
+
     TestApplication() :
         ArgV(),
         QGuiApplication(m_argc, m_argv)

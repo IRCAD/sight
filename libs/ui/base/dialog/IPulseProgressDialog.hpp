@@ -25,22 +25,21 @@
 #include "ui/base/config.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <data/location/ILocation.hpp>
-
 #include <functional>
 #include <string>
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
 class UI_BASE_CLASS_API IPulseProgressDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(IPulseProgressDialog, ui::base::GuiBaseObject)
@@ -73,9 +72,11 @@ public:
     UI_BASE_API virtual void show() = 0;
 
 protected:
+
     Stuff m_stuff;
     MilliSecond m_frequence;
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

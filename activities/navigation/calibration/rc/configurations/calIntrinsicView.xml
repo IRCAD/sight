@@ -302,7 +302,7 @@
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="true">
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
@@ -320,7 +320,7 @@
             <config inverse="false" />
         </service>
 
-        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
             <in key="camera" uid="${camera}" />
         </service>
 
@@ -351,7 +351,7 @@
 
         <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer">
             <in group="frameTL">
-                <key uid="frameTL" autoConnect="yes" />
+                <key uid="frameTL" autoConnect="true" />
             </in>
             <inout group="image">
                 <key uid="videoFrame" />
@@ -361,14 +361,14 @@
         </service>
 
         <service uid="distorterSrv" type="sight::module::geometry::vision::SDistortion" >
-            <in key="camera" uid="${camera}" autoConnect="yes" />
+            <in key="camera" uid="${camera}" autoConnect="true" />
             <in key="input" uid="videoFrame" />
             <inout key="output" uid="distortedFrame" />
             <mode>undistort</mode>
         </service>
 
         <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::SChessBoardDetector" worker="intr_chess_checker">
-            <in group="image" autoConnect="yes">
+            <in group="image" autoConnect="true">
                 <key uid="videoFrame" />
             </in>
             <inout group="calInfo">

@@ -54,7 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SNegato2D">
         <inout key="image" uid="..." />
-        <inout key="tf" uid="..." optional="yes" />
+        <inout key="tf" uid="..." optional="true" />
         <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" visible="true" />
    </service>
    @endcode
@@ -74,7 +74,6 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
     typedef data::helper::MedicalImage::Orientation OrientationMode;
@@ -165,39 +164,39 @@ private:
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    std::unique_ptr< sight::viz::scene3d::TransferFunction> m_gpuTF;
+    std::unique_ptr<sight::viz::scene3d::TransferFunction> m_gpuTF;
 
     /// Contains the plane on which we will apply our texture.
-    std::unique_ptr< sight::viz::scene3d::Plane > m_plane { nullptr };
+    std::unique_ptr<sight::viz::scene3d::Plane> m_plane {nullptr};
 
     /// Enables/disables the usage of the transfer function alpha channel.
-    bool m_enableAlpha { false };
+    bool m_enableAlpha {false};
 
     /// Contains the scene node allowing to move the entire negato.
-    ::Ogre::SceneNode* m_negatoSceneNode { nullptr };
+    ::Ogre::SceneNode* m_negatoSceneNode {nullptr};
 
     /// Defines the filtering type for this negato.
-    sight::viz::scene3d::Plane::FilteringEnumType m_filtering { sight::viz::scene3d::Plane::FilteringEnumType::NONE };
+    sight::viz::scene3d::Plane::FilteringEnumType m_filtering {sight::viz::scene3d::Plane::FilteringEnumType::NONE};
 
     /// Stores the current slice index for each axis.
-    std::vector<float> m_currentSliceIndex { 0.f, 0.f, 0.f };
+    std::vector<float> m_currentSliceIndex {0.f, 0.f, 0.f};
 
     /// Defines the image orientation.
-    OrientationMode m_orientation { OrientationMode::Z_AXIS };
+    OrientationMode m_orientation {OrientationMode::Z_AXIS};
 
     /// Helps interfacing with the transfer function input.
     data::helper::TransferFunction m_helperTF;
 
     /// Defines if the plane border is used or not.
-    bool m_border { true };
+    bool m_border {true};
 
-    using SliceIndexChangedSignalType = core::com::Signal<void()>;
+    using SliceIndexChangedSignalType = core::com::Signal<void ()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 };
 
 //------------------------------------------------------------------------------
 
-inline void SNegato2D::setFiltering( sight::viz::scene3d::Plane::FilteringEnumType _filtering )
+inline void SNegato2D::setFiltering(sight::viz::scene3d::Plane::FilteringEnumType _filtering)
 {
     m_filtering = _filtering;
 }

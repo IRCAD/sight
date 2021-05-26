@@ -28,28 +28,30 @@
 
 #include <core/exceptionmacros.hpp>
 
-#include <boost/iostreams/categories.hpp>  // source_tag
+#include <boost/iostreams/categories.hpp> // source_tag
 #include <boost/iostreams/stream.hpp>
 
 #include <filesystem>
-#include <iosfwd>    // streamsize
+#include <iosfwd> // streamsize
 
 namespace sight::io::zip
 {
 
 //------------------------------------------------------------------------------
 
-void* openReadZipArchive( const std::filesystem::path& archive )
+void* openReadZipArchive(const std::filesystem::path& archive)
 {
     SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Read("Archive '" + archive.string() + "' doesn't exist."),
-        !std::filesystem::exists(archive));
+        !std::filesystem::exists(archive)
+    );
 
     void* zip = unzOpen(archive.string().c_str());
 
     SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Read("Archive '" + archive.string() + "' cannot be opened."),
-        zip == NULL);
+        zip == NULL
+    );
 
     return zip;
 }
@@ -59,18 +61,23 @@ void* openReadZipArchive( const std::filesystem::path& archive )
 class ZipSource
 {
 public:
+
     typedef char char_type;
     typedef ::boost::iostreams::source_tag category;
 
-    ZipSource( const std::filesystem::path& archive, const std::string& key = "") :
-        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
+    ZipSource(const std::filesystem::path& archive, const core::crypto::secure_string& key = "") :
+        m_zipDescriptor(openReadZipArchive(archive), &unzClose),
         m_archive(archive),
         m_key(key)
     {
     }
 
-    ZipSource( const std::filesystem::path& archive, const std::filesystem::path& path, const std::string& key = "") :
-        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
+    ZipSource(
+        const std::filesystem::path& archive,
+        const std::filesystem::path& path,
+        const core::crypto::secure_string& key = ""
+    ) :
+        m_zipDescriptor(openReadZipArchive(archive), &unzClose),
         m_archive(archive),
         m_path(path),
         m_key(key)
@@ -84,8 +91,9 @@ public:
                 + "' in archive '"
                 + m_archive.string()
                 + "' doesn't exist."
-                ),
-            nRet != UNZ_OK);
+            ),
+            nRet != UNZ_OK
+        );
 
         if(key.empty())
         {
@@ -103,15 +111,16 @@ public:
                 + "' in archive '"
                 + m_archive.string()
                 + "'."
-                ),
-            nRet != UNZ_OK);
+            ),
+            nRet != UNZ_OK
+        );
     }
 
     //------------------------------------------------------------------------------
 
     std::streamsize read(char* s, std::streamsize n)
     {
-        const int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
+        const int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast<unsigned int>(n));
         SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Error occurred while reading archive '"
@@ -119,8 +128,9 @@ public:
                 + ":"
                 + m_path.string()
                 + "'."
-                ),
-            nRet < 0);
+            ),
+            nRet < 0
+        );
         return nRet;
     }
 
@@ -136,34 +146,44 @@ public:
             io::zip::exception::Read(
                 "Error occurred while reading information archive '"
                 + m_archive.string()
-                + "'."),
-            nRet < 0);
+                + "'."
+            ),
+            nRet < 0
+        );
 
         std::string comment;
-        comment.resize(info.size_comment);
+
+        // We must take into account the final \0
+        comment.resize(info.size_comment + 1);
 
         nRet = unzGetGlobalComment(m_zipDescriptor.get(), comment.data(), static_cast<uint16_t>(comment.size()));
+
+        // ...but we don't want it ourselves
+        comment.resize(info.size_comment);
 
         SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Error occurred while reading archive's global comment '"
                 + m_archive.string()
-                + "'."),
-            nRet < 0);
+                + "'."
+            ),
+            nRet < 0
+        );
 
         return comment;
     }
 
 private:
+
     SPTR(void) m_zipDescriptor;
     std::filesystem::path m_archive;
     std::filesystem::path m_path;
-    std::string m_key;
+    core::crypto::secure_string m_key;
 };
 
 //-----------------------------------------------------------------------------
 
-ReadZipArchive::ReadZipArchive(const std::filesystem::path& archive, const std::string& key) :
+ReadZipArchive::ReadZipArchive(const std::filesystem::path& archive, const core::crypto::secure_string& key) :
     m_archive(archive),
     m_key(key)
 {
@@ -192,4 +212,4 @@ const std::filesystem::path ReadZipArchive::getArchivePath() const
     return m_archive;
 }
 
-}
+} // namespace sight::io

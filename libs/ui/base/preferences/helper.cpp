@@ -22,17 +22,17 @@
 
 #include "ui/base/preferences/helper.hpp"
 
+#include <core/crypto/SHA256.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
+#include <io/session/PasswordKeeper.hpp>
+
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
-
-#include <openssl/rand.h>
-#include <openssl/sha.h>
 
 #include <iomanip>
 #include <shared_mutex>
@@ -40,125 +40,60 @@
 namespace sight::ui::base::preferences
 {
 
-const std::string s_PREFERENCES_KEY = "preferences";
-
-// Password management static variables
-// @todo: The std::string can be replaced with a map to manage multiple user and multiple password (later)
-static std::shared_mutex s_passwordMutex;
-static std::string s_password;
-
+const std::string s_PREFERENCES_KEY          = "preferences";
 static const std::string s_PASSWORD_HASH_KEY = "~~Private~~";
-static unsigned char s_scramble_key[SHA256_DIGEST_LENGTH] {0};
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-// Compute a sha256 paswword hash using openSSL
-inline static std::string computePasswordHash( const std::string& password )
+void setPassword(const core::crypto::secure_string& password)
 {
-    // Compute SHA256 using openssl
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, password.c_str(), password.length());
-    SHA256_Final(hash, &sha256);
-
-    // Convert the hash to an hexadecimal string
-    std::stringstream stream;
-    stream << std::setfill('0') << std::setw(2) << std::hex;
-
-    for(std::uint8_t i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        // Cast to int to avoid ASCII code interpretation.
-        stream << static_cast<int>(hash[i]);
-    }
-
-    return stream.str();
-}
-
-//----------------------------------------------------------------------------
-
-// Quick and simple xor encryption
-inline static std::string scramble( const std::string& original )
-{
-    std::string scrambled;
-    scrambled.resize(original.size());
-
-    for (size_t i = 0; i < original.size(); i++ )
-    {
-        scrambled[i] = original[i] ^ s_scramble_key[i%sizeof(s_scramble_key)];
-    }
-
-    return scrambled;
-}
-
-//----------------------------------------------------------------------------
-
-void setPassword(const std::string& password)
-{
-    // Protect for writing
-    std::unique_lock writeLock(s_passwordMutex);
-
     if(password.empty())
     {
         // Remove the password
-        s_password = password;
+        io::session::PasswordKeeper::setGlobalPassword("");
 
         // Remove the password hash
         data::Composite::sptr prefs = getPreferences();
-        if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end() )
+        if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end())
         {
-            setPreference(s_PASSWORD_HASH_KEY, password);
+            setPreference(s_PASSWORD_HASH_KEY, "");
             savePreferences();
         }
     }
     else
     {
+        // Save the global password
+        io::session::PasswordKeeper::setGlobalPassword(password);
+
         // Save the password hash to preferences
-        setPreference(s_PASSWORD_HASH_KEY, computePasswordHash(password));
+        setPreference(s_PASSWORD_HASH_KEY, std::string(io::session::PasswordKeeper::getGlobalPasswordHash()));
         savePreferences();
-
-        // Scramble the scramble key
-        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
-
-        // Scramble the password
-        s_password = scramble(password);
     }
 }
 
 //----------------------------------------------------------------------------
 
-const std::string getPassword()
+const core::crypto::secure_string getPassword()
 {
-    // Protect for reading
-    std::shared_lock readLock(s_passwordMutex);
-
-    // Return it
-    return scramble(s_password);
+    return io::session::PasswordKeeper::getGlobalPassword();
 }
 
 //----------------------------------------------------------------------------
 
-bool checkPassword(const std::string& password)
+bool checkPassword(const core::crypto::secure_string& password)
 {
-    // Protect for writing
-    std::unique_lock writeLock(s_passwordMutex);
-
-    const std::string& passwordHash = getPreference(s_PASSWORD_HASH_KEY);
+    const core::crypto::secure_string passwordHash(getPreference(s_PASSWORD_HASH_KEY));
 
     if(passwordHash.empty())
     {
         // No password hash is stored in the preferences or there is no preferences
         // We must check against s_password
-        return password == scramble(s_password);
+        return io::session::PasswordKeeper::checkGlobalPassword(password);
     }
-    else if(computePasswordHash(password) == passwordHash)
+    else if(core::crypto::hash(password) == passwordHash)
     {
         // Store the verified password
-        // Scramble the scramble key
-        RAND_bytes(s_scramble_key, sizeof(s_scramble_key));
-
-        // Scramble the password
-        s_password = scramble(password);
+        io::session::PasswordKeeper::setGlobalPassword(password);
 
         return true;
     }
@@ -180,23 +115,25 @@ bool hasPasswordHash()
 bool setPreference(const std::string& key, const std::string& value)
 {
     bool isModified = false;
-    // Check preferences
 
+    // Check preferences
     data::Composite::sptr prefs = getPreferences();
     if(prefs)
     {
         data::Composite::IteratorType iterPref = prefs->find(key);
-        if ( iterPref != prefs->end() )
+        if(iterPref != prefs->end())
         {
             data::String::sptr preferences = data::String::dynamicCast(iterPref->second);
             preferences->value() = value;
         }
         else
         {
-            (*prefs)[key] = data::String::New(value);
+            (*prefs)[key] = data::String::New(std::string(value));
         }
+
         isModified = true;
     }
+
     return isModified;
 }
 
@@ -205,17 +142,19 @@ bool setPreference(const std::string& key, const std::string& value)
 std::string getPreference(const std::string& preferenceKey)
 {
     std::string value;
+
     // Check preferences
     data::Composite::sptr prefs = getPreferences();
     if(prefs)
     {
-        data::Composite::IteratorType iterPref = prefs->find( preferenceKey );
-        if ( iterPref != prefs->end() )
+        data::Composite::IteratorType iterPref = prefs->find(preferenceKey);
+        if(iterPref != prefs->end())
         {
             data::String::sptr prefString = data::String::dynamicCast(iterPref->second);
             value = prefString->value();
         }
     }
+
     return value;
 }
 
@@ -234,13 +173,15 @@ std::filesystem::path getPreferencesFile()
 
     SIGHT_THROW_IF("Unable to define user data directory", appPrefDir.empty());
 
-    if (!bfile::exists(appPrefDir))
+    if(!bfile::exists(appPrefDir))
     {
         bfile::create_directories(appPrefDir);
     }
 
-    SIGHT_THROW_IF("Preferences file '"+appPrefFile.string()+"' already exists and is not a regular file.",
-                   bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile));
+    SIGHT_THROW_IF(
+        "Preferences file '" + appPrefFile.string() + "' already exists and is not a regular file.",
+        bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile)
+    );
 
     return appPrefFile;
 }
@@ -258,6 +199,7 @@ ui::base::preferences::IPreferences::sptr getPreferencesSrv()
         service::IService::sptr prefService = *preferencesServicesList.begin();
         srv = ui::base::preferences::IPreferences::dynamicCast(prefService);
     }
+
     SIGHT_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
 
     return srv;
@@ -273,8 +215,9 @@ data::Composite::sptr getPreferences()
 
     if(prefService)
     {
-        prefs = prefService->getInOut< data::Composite >(s_PREFERENCES_KEY);
+        prefs = prefService->getInOut<data::Composite>(s_PREFERENCES_KEY);
     }
+
     SIGHT_DEBUG_IF("The preferences are not found", !prefs);
 
     return prefs;
@@ -286,8 +229,10 @@ void savePreferences()
 {
     const auto prefService = getPreferencesSrv();
     SIGHT_WARN_IF("The preferences service is not found, the preferences can not be saved", !prefService);
-    SIGHT_WARN_IF("The preferences service is not started, the preferences can not be saved",
-                  prefService && !prefService->isStarted());
+    SIGHT_WARN_IF(
+        "The preferences service is not started, the preferences can not be saved",
+        prefService && !prefService->isStarted()
+    );
     if(prefService && prefService->isStarted())
     {
         prefService->update();
@@ -301,10 +246,11 @@ std::string getValue(const std::string& var, const char delimiter)
     std::string value(var);
     const size_t first = var.find(delimiter);
     const size_t last  = var.rfind(delimiter);
-    if (first == 0 && last == var.size() - 1)
+    if(first == 0 && last == var.size() - 1)
     {
-        value = ui::base::preferences::getPreference( var.substr(1, var.size() - 2) );
+        value = ui::base::preferences::getPreference(var.substr(1, var.size() - 2));
     }
+
     return value;
 }
 

@@ -32,13 +32,12 @@ namespace sight::utest
 
 class CORE_CLASS_API Exception : public std::runtime_error
 {
-
 public:
-    inline Exception ( const std::string& err ) :
-        std::runtime_error( err )
+
+    inline Exception(const std::string& err) :
+        std::runtime_error(err)
     {
     }
-
 };
 
 } // namespace sight::utest

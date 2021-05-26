@@ -230,23 +230,23 @@
                 <config layer="video" layerOrderDependant="false" />
             </service>
 
-            <service uid="ARVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="ARVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
-            <service uid="ARPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+            <service uid="ARPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="pointList" uid="2dPoints" />
                 <config layer="video" color="#619647" radius="0.01" />
             </service>
 
-            <service uid="ARCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="ARCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
                 <inout key="transform" uid="registrationMatrix" />
                 <in key="camera" uid="camera" />
                 <config layer="default" />
             </service>
 
-            <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cube" />
                 <config layer="default" autoresetcamera="no" />
             </service>
@@ -278,12 +278,12 @@
                 <config layer="default" length="0.3" origin="false" label="false" />
             </service>
 
-            <service uid="VRPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+            <service uid="VRPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
                 <in key="pointList" uid="3dPoints" />
                 <config layer="default" color="#619647" radius="0.01" />
             </service>
 
-            <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cube" />
                 <config layer="default"/>
             </service>
@@ -323,7 +323,7 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater" >
-                <in key="frameTL" uid="frameTL" autoConnect="yes" />
+                <in key="frameTL" uid="frameTL" autoConnect="true" />
                 <inout key="frame" uid="videoImage" />
             </service>
 
@@ -421,4 +421,3 @@
         </config>
     </extension>
 </plugin>
-

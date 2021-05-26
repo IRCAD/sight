@@ -35,17 +35,17 @@
 
 #include <boost/foreach.hpp>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::dicom::helper::DicomSeriesWriter );
+SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::helper::DicomSeriesWriter);
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
 //------------------------------------------------------------------------------
 
 DicomSeriesWriter::DicomSeriesWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_writeCount(0),
     m_job(core::jobs::Observer::New("Writing DICOM files"))
 {
@@ -128,7 +128,7 @@ void DicomSeriesWriter::processWrite()
         folder /= ss.str();
     }
 
-    if (!std::filesystem::exists(folder))
+    if(!std::filesystem::exists(folder))
     {
         std::filesystem::create_directories(folder);
     }
@@ -153,7 +153,7 @@ void DicomSeriesWriter::processWrite()
         const core::memory::BufferManager::StreamInfo& streamInfo = sourceBuffer->getStreamInfo();
         SPTR(std::istream) stream = streamInfo.stream;
 
-        const std::filesystem::path& dest_dir = m_anonymizer ? folder/m_subPath : folder;
+        const std::filesystem::path& dest_dir = m_anonymizer ? folder / m_subPath : folder;
 
         if(!std::filesystem::exists(dest_dir))
         {
@@ -162,8 +162,8 @@ void DicomSeriesWriter::processWrite()
 
         const std::filesystem::path& dest_file = dest_dir / filename;
 
-        std::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
-        SIGHT_THROW_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
+        std::ofstream fs(dest_file, std::ios::binary | std::ios::trunc);
+        SIGHT_THROW_IF("Can't open '" << dest_file.string() << "' for write.", !fs.good());
 
         this->processStream(*(stream.get()), fs);
 
@@ -235,4 +235,5 @@ SPTR(core::jobs::IJob) DicomSeriesWriter::getJob() const
 //------------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::io::dicom

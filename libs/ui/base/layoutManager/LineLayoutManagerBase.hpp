@@ -31,6 +31,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -39,7 +40,6 @@ namespace layoutManager
  */
 class UI_BASE_CLASS_API LineLayoutManagerBase : public IViewLayoutManager
 {
-
 public:
 
     SIGHT_DECLARE_CLASS(LineLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
@@ -75,12 +75,13 @@ public:
         int m_rightBorder {0};
         int m_bottomBorder {0};
         int m_spacing {-1};
-        std::pair< int, int >          m_minSize;
-        std::pair< bool, std::string > m_caption;
+        std::pair<int, int> m_minSize;
+        std::pair<bool, std::string> m_caption;
         bool m_visible;
         bool m_isSpacer;
         bool m_useScrollBar;
         std::string m_toolTip;
+
         /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
         std::string m_backgroundColor;
     };
@@ -96,7 +97,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="sight::module::ui::base::SView" autoConnect="no" >
+       <service uid="subView2" type="sight::module::ui::base::SView" autoConnect="false" >
            <gui>
               <layout type="ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -132,7 +133,7 @@ public:
      *   - \b backgroundColor (optional) : (hexa) background color.
      */
 
-    UI_BASE_API void initialize( ConfigurationType configuration) override;
+    UI_BASE_API void initialize(ConfigurationType configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 
@@ -147,7 +148,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    std::list< ViewInfo> getViewsInfo()
+    std::list<ViewInfo> getViewsInfo()
     {
         return m_views;
     }
@@ -155,10 +156,11 @@ protected:
 private:
 
     /// Save layout configuration definition
-    std::list< ViewInfo>  m_views;
+    std::list<ViewInfo> m_views;
 
     Orientation m_orientation;
 };
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

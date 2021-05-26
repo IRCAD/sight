@@ -173,7 +173,7 @@
                 </scene>
             </service>
 
-            <service uid="depthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="depthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="default" />
@@ -188,7 +188,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="imageVideo" />
                 <config layer="default" />
             </service>
@@ -233,34 +233,34 @@
                 <config x1="-20" x2="5020" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
             </service>
 
-            <service uid="TFTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="yes" >
+            <service uid="TFTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="true" >
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
                 <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
-            <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes" >
+            <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true" >
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
 
-            <service uid="TFScaleValuesLeftAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesLeftAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFScaleValuesBottomAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesBottomAdp" type="sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="true" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
@@ -290,7 +290,7 @@
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="yes" >
+            <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="true" >
                 <inout key="viewport" uid="viewport" />
                 <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>
@@ -317,8 +317,8 @@
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer" >
                 <in group="frameTL" >
-                <key uid="frameTLVideo" autoConnect="yes" />
-                <key uid="frameTLDepth" autoConnect="yes" />
+                <key uid="frameTLVideo" autoConnect="true" />
+                <key uid="frameTLDepth" autoConnect="true" />
                 </in>
                 <inout group="image" >
                     <key uid="imageVideo" />

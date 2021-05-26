@@ -27,15 +27,15 @@
 #include <core/com/Signal.hxx>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/location/SingleFolder.hpp>
 
-#include <data/location/Folder.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
 
 #include <io/vtk/SeriesDBReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -47,14 +47,13 @@
 namespace sight::module::io::vtk
 {
 
-
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::SSeriesDBReader() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -70,14 +69,15 @@ void SSeriesDBReader::configureWithIHM()
 {
     this->openLocationDialog();
 }
+
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
@@ -92,16 +92,16 @@ void SSeriesDBReader::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    data::location::MultiFiles::sptr result;
-    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::MultipleFiles::dynamicCast(dialogFile.show());
+    if(result)
     {
-        const data::location::ILocation::VectPathType paths = result->getPaths();
+        const std::vector<std::filesystem::path> paths = result->getFiles();
         if(!paths.empty())
         {
-            _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+            defaultDirectory->setFolder(paths[0].parent_path());
+            dialogFile.saveDefaultLocation(defaultDirectory);
         }
+
         this->setFiles(paths);
     }
     else
@@ -131,15 +131,17 @@ void SSeriesDBReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::info(std::ostream& _sstream )
+void SSeriesDBReader::info(std::ostream& _sstream)
 {
     _sstream << "SSeriesDBReader::info";
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathType& vtkFiles,
-                                    const data::SeriesDB::sptr& seriesDB )
+void SSeriesDBReader::loadSeriesDB(
+    const std::vector<std::filesystem::path>& vtkFiles,
+    const data::SeriesDB::sptr& seriesDB
+)
 {
     auto reader = sight::io::vtk::SeriesDBReader::New();
     reader->setObject(seriesDB);
@@ -152,7 +154,7 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
         reader->read();
         m_readFailed = false;
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         m_readFailed = true;
         std::stringstream ss;
@@ -161,9 +163,10 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
-    catch( ... )
+    catch(...)
     {
         m_readFailed = true;
         std::stringstream ss;
@@ -171,7 +174,8 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 }
 
@@ -179,10 +183,10 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
 
 void SSeriesDBReader::updating()
 {
-    if( this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
+        auto lockedSeriesDB = this->getLockedInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
@@ -193,6 +197,7 @@ void SSeriesDBReader::updating()
 
         data::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
         sdbHelper.clear();
+
         // Notify removal.
         sdbHelper.notify();
 
@@ -202,8 +207,9 @@ void SSeriesDBReader::updating()
 
         data::SeriesDB::ContainerType addedSeries = lockedSeriesDB->getContainer();
 
-        auto sig = lockedSeriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(
-            data::SeriesDB::s_ADDED_SERIES_SIG);
+        auto sig = lockedSeriesDB->signal<data::SeriesDB::AddedSeriesSignalType>(
+            data::SeriesDB::s_ADDED_SERIES_SIG
+        );
         sig->asyncEmit(addedSeries);
 
         cursor.setDefaultCursor();

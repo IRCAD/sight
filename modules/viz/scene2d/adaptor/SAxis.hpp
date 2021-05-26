@@ -38,7 +38,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="axis" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes">
+   <service uid="axis" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
       <in key="viewport" uid="..." />
       <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" align="left" min="0" max="1" step="0.1" />
    </service>
@@ -62,8 +62,8 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SAxis : public sight::viz::scene2d::IAdaptor
 {
-
 public:
+
     SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene2d::IAdaptor)
 
     MODULE_VIZ_SCENE2D_API SAxis() noexcept;
@@ -77,9 +77,10 @@ protected:
     void configuring() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
+
 private:
 
     /// Builds axis graphic items.
@@ -96,32 +97,33 @@ private:
     std::string m_align;
 
     /// The required interval between two consecutive values of the axis.
-    float m_interval{1.f};
+    float m_interval {1.f};
 
     /// Minimal value of the axis.
-    float m_min{0.f};
+    float m_min {0.f};
 
     /// Maximal value of the axis.
-    float m_max{0.f};
+    float m_max {0.f};
 
     /// Size of a tick.
-    float m_tickSize{1.0f};
+    float m_tickSize {1.0f};
 
     /// Color.
-    QPen m_color{Qt::white};
+    QPen m_color {Qt::white};
 
     /// Tells if the line of the axis must be displayed in addition to ticks.
-    bool m_showLine{true};
+    bool m_showLine {true};
 
     /// A layer that gathers all the graphic items.
-    QGraphicsItemGroup* m_layer{nullptr};
+    QGraphicsItemGroup* m_layer {nullptr};
 
     /// The line of the axis.
-    QGraphicsLineItem* m_line{nullptr};
+    QGraphicsLineItem* m_line {nullptr};
 
     /// The graphic items that refer to ticks of the axis.
-    std::vector< QGraphicsLineItem* > m_ticks;
+    std::vector<QGraphicsLineItem*> m_ticks;
 };
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

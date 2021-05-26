@@ -35,14 +35,14 @@
 #include <vtkMetaImageReader.h>
 #include <vtkSmartPointer.h>
 
-SIGHT_REGISTER_IO_READER( ::sight::io::vtk::MetaImageReader );
+SIGHT_REGISTER_IO_READER(::sight::io::vtk::MetaImageReader);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 MetaImageReader::MetaImageReader(io::base::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("Meta image reader"))
 {
 }
@@ -58,27 +58,26 @@ MetaImageReader::~MetaImageReader()
 void MetaImageReader::read()
 {
     using namespace sight::io::vtk::helper;
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
     data::Image::sptr pImage = this->getConcreteObject();
 
-    vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
+    vtkSmartPointer<vtkMetaImageReader> reader = vtkSmartPointer<vtkMetaImageReader>::New();
     reader->SetFileName(this->getFile().string().c_str());
 
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void* )
+        [&](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkMetaImageReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     reader->UpdateInformation();
@@ -89,14 +88,14 @@ void MetaImageReader::read()
 
     m_job->finish();
 
-    SIGHT_THROW_IF("MetaImageReader cannot read mhd image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("MetaImageReader cannot read mhd image file :" << this->getFile().string(), !img);
     try
     {
-        io::vtk::fromVTKImage( img, pImage);
+        io::vtk::fromVTKImage(img, pImage);
     }
-    catch( std::exception& e)
+    catch(std::exception& e)
     {
-        SIGHT_THROW("MetaImage to data::Image failed : "<<e.what());
+        SIGHT_THROW("MetaImage to data::Image failed : " << e.what());
     }
 }
 

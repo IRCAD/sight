@@ -44,7 +44,7 @@ namespace sight::module::filter::image
  *
  * @code{.xml}
        <service type="sight::module::filter::image::SFlip">
-           <in key="source" uid="..." autoConnect="yes" />
+           <in key="source" uid="..." autoConnect="true" />
            <out key="target" uid="..." />
        </service>
    @endcode
@@ -95,8 +95,10 @@ private:
 
     /// Slot: flip the first axis
     void flipAxisX();
+
     /// Slot: flip the second axis
     void flipAxisY();
+
     /// Slot: flip the third axis
     void flipAxisZ();
 

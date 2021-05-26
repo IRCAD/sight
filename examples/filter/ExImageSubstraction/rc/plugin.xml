@@ -269,7 +269,7 @@
                 <config layer="default" />
             </service>
 
-            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="image1" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -296,7 +296,7 @@
                 <config layer="default" />
             </service>
 
-            <service uid="N2NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N2NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="image2" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -323,7 +323,7 @@
                 <config layer="default" />
             </service>
 
-            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
                 <inout key="image" uid="imageResult" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -351,7 +351,7 @@
                 </config>
             </service>
 
-            <service uid="medicalImage1Srv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage1Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
                 <inout key="image" uid="image1" />
             </service>
 
@@ -361,12 +361,12 @@
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegato1Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato1Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="medicalImage2Srv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage2Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
                 <inout key="image" uid="image2" />
             </service>
 
@@ -376,7 +376,7 @@
             </service>
 
             <!-- Editors for Negato2 -->
-            <service uid="sliderNegato2Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato2Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="image2" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -387,12 +387,12 @@
                 <inout key="result" uid="imageResult" />
             </service>
 
-            <service uid="medicalImage3Srv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage3Srv" type="sight::module::data::MedicalImageSrv" autoConnect="true" >
                 <inout key="image" uid="imageResult" />
             </service>
 
             <!-- Editors for Negato3 -->
-            <service uid="sliderNegato3Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato3Srv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>

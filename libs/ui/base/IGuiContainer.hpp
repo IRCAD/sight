@@ -31,24 +31,33 @@
 
 namespace sight::ui::base
 {
+
 // Forward declarations
 namespace container
 {
+
 class fwContainer;
+
 }
 namespace layoutManager
 {
+
 class IViewLayoutManager;
+
 }
 namespace registry
 {
+
 class View;
+
 }
 namespace builder
 {
+
 class IToolBarBuilder;
 class IContainerBuilder;
 class ISlideViewBuilder;
+
 }
 
 /**
@@ -66,7 +75,7 @@ class ISlideViewBuilder;
  * @section XML Example of XML configuration
  *
  * @code{.xml}
-   <service uid="subView1" type="sight::module::ui::base::SView" autoConnect="no" >
+   <service uid="subView1" type="sight::module::ui::base::SView" autoConnect="false" >
        <gui>
            <layout type="ui::base::LineLayoutManager" >
                <orientation value="horizontal" />
@@ -120,7 +129,6 @@ class ISlideViewBuilder;
  */
 class UI_BASE_CLASS_API IGuiContainer : public service::IService
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(IGuiContainer, service::IService)
@@ -159,6 +167,7 @@ protected:
      * @name Slots
      * @{
      */
+
     /// Slot to enable/disable the action
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
 
@@ -179,35 +188,40 @@ protected:
 
     /// SLOT: enable/disable the container
     UI_BASE_API void setEnabled(bool isEnabled);
+
     /// SLOT: enable the container
     UI_BASE_API void enable();
+
     /// SLOT: disable the container
     UI_BASE_API void disable();
+
     /// SLOT: show/hide the container
     UI_BASE_API void setVisible(bool isVisible);
+
     /// SLOT: show the container
     UI_BASE_API void show();
+
     /// SLOT: hide the container
     UI_BASE_API void hide();
 
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
-    typedef std::vector< SPTR(ui::base::builder::ISlideViewBuilder) > SlideViewContainerType;
+    typedef std::vector<SPTR(ui::base::builder::ISlideViewBuilder)> SlideViewContainerType;
 
-    void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
-    void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
-    void initializeSlideViewBuilder( core::runtime::ConfigurationElement::sptr slideViewConfig );
+    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
+    void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
+    void initializeSlideViewBuilder(core::runtime::ConfigurationElement::sptr slideViewConfig);
 
     bool m_viewLayoutManagerIsCreated;
-    SPTR( ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
+    SPTR(ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
 
-    SPTR( ui::base::registry::View) m_viewRegistry;
-    SPTR( ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
-    SPTR( ui::base::builder::IContainerBuilder) m_containerBuilder;
+    SPTR(ui::base::registry::View) m_viewRegistry;
+    SPTR(ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
+    SPTR(ui::base::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;
 
     ConfigurationType m_viewRegistryConfig;

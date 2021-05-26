@@ -30,11 +30,10 @@
 #include <core/com/Signals.hpp>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/location/MultipleFiles.hpp>
+#include <core/location/SingleFolder.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/location/Folder.hpp>
-#include <data/location/ILocation.hpp>
-#include <data/location/MultiFiles.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
@@ -65,7 +64,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SModelSeriesReader::SModelSeriesReader() noexcept
 {
-    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -86,10 +85,10 @@ void SModelSeriesReader::configureWithIHM()
 
 void SModelSeriesReader::openLocationDialog()
 {
-    static std::filesystem::path _sDefaultPath("");
+    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+    dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
@@ -101,16 +100,16 @@ void SModelSeriesReader::openLocationDialog()
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
     dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    data::location::MultiFiles::sptr result;
-    result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
-    if (result)
+    auto result = core::location::MultipleFiles::dynamicCast(dialogFile.show());
+    if(result)
     {
-        const data::location::ILocation::VectPathType paths = result->getPaths();
+        const std::vector<std::filesystem::path> paths = result->getFiles();
         if(!paths.empty())
         {
-            _sDefaultPath = paths[0].parent_path();
-            dialogFile.saveDefaultLocation( data::location::Folder::New(_sDefaultPath) );
+            defaultDirectory->setFolder(paths[0].parent_path());
+            dialogFile.saveDefaultLocation(defaultDirectory);
         }
+
         this->setFiles(paths);
     }
     else
@@ -140,7 +139,7 @@ void SModelSeriesReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::info(std::ostream& _sstream )
+void SModelSeriesReader::info(std::ostream& _sstream)
 {
     _sstream << "SModelSeriesReader::info";
 }
@@ -149,11 +148,12 @@ void SModelSeriesReader::info(std::ostream& _sstream )
 
 void SModelSeriesReader::updating()
 {
-    if(  this->hasLocationDefined() )
+    if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(
-            sight::io::base::service::s_DATA_KEY);
+        const auto modelSeriesLockedPtr = this->getLockedInOut<data::ModelSeries>(
+            sight::io::base::service::s_DATA_KEY
+        );
         const auto modelSeries = modelSeriesLockedPtr.get_shared();
 
         sight::ui::base::Cursor cursor;
@@ -161,7 +161,7 @@ void SModelSeriesReader::updating()
 
         data::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
         data::ModelSeries::ReconstructionVectorType addedRecs;
-        for(const data::location::ILocation::PathType& file :  this->getFiles())
+        for(const auto& file : this->getFiles())
         {
             data::Mesh::sptr mesh = data::Mesh::New();
             this->loadMesh(file, mesh);
@@ -173,11 +173,13 @@ void SModelSeriesReader::updating()
             recDB.push_back(rec);
             addedRecs.push_back(rec);
         }
+
         cursor.setDefaultCursor();
         modelSeries->setReconstructionDB(recDB);
 
-        auto sig = modelSeries->signal< data::ModelSeries::ReconstructionsAddedSignalType >(
-            data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+        auto sig = modelSeries->signal<data::ModelSeries::ReconstructionsAddedSignalType>(
+            data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
+        );
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(addedRecs);
@@ -187,8 +189,8 @@ void SModelSeriesReader::updating()
 
 //------------------------------------------------------------------------------
 
-template< typename READER >
-typename READER::sptr configureReader(const std::filesystem::path& _file )
+template<typename READER>
+typename READER::sptr configureReader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = READER::New();
     reader->setFile(_file);
@@ -197,7 +199,7 @@ typename READER::sptr configureReader(const std::filesystem::path& _file )
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mesh::sptr _mesh)
+void SModelSeriesReader::loadMesh(const std::filesystem::path& _file, data::Mesh::sptr _mesh)
 {
     // Test extension to provide the reader
 
@@ -205,28 +207,32 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
 
     if(_file.extension() == ".vtk")
     {
-        meshReader = configureReader< sight::io::vtk::MeshReader >(_file);
+        meshReader = configureReader<sight::io::vtk::MeshReader>(_file);
     }
     else if(_file.extension() == ".vtp")
     {
-        meshReader = configureReader< sight::io::vtk::VtpMeshReader >(_file);
+        meshReader = configureReader<sight::io::vtk::VtpMeshReader>(_file);
     }
     else if(_file.extension() == ".obj")
     {
-        meshReader = configureReader< sight::io::vtk::ObjMeshReader >(_file);
+        meshReader = configureReader<sight::io::vtk::ObjMeshReader>(_file);
     }
     else if(_file.extension() == ".stl")
     {
-        meshReader = configureReader< sight::io::vtk::StlMeshReader >(_file);
+        meshReader = configureReader<sight::io::vtk::StlMeshReader>(_file);
     }
     else if(_file.extension() == ".ply")
     {
-        meshReader = configureReader< sight::io::vtk::PlyMeshReader >(_file);
+        meshReader = configureReader<sight::io::vtk::PlyMeshReader>(_file);
     }
     else
     {
-        SIGHT_THROW_EXCEPTION(core::tools::Failed("Extension '"+ _file.extension().string() +
-                                                  "' is not managed by module::io::vtk::SMeshReader."));
+        SIGHT_THROW_EXCEPTION(
+            core::tools::Failed(
+                "Extension '" + _file.extension().string()
+                + "' is not managed by module::io::vtk::SMeshReader."
+            )
+        );
     }
 
     m_sigJobCreated->emit(meshReader->getJob());
@@ -245,11 +251,13 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
+
         // Raise exception  for superior level
         SIGHT_THROW_EXCEPTION(e);
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -257,16 +265,18 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
-    catch( ... )
+    catch(...)
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
         sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 }
 

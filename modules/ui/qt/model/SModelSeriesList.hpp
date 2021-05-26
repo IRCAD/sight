@@ -46,6 +46,7 @@ class QTreeWidgetItem;
 
 namespace sight::module::ui::qt
 {
+
 namespace model
 {
 
@@ -71,7 +72,7 @@ class ValueView;
  * @section XML XML Configuration
  * @code{.xml}
    <service module::ui::qt::editor::SModelSeriesList">
-       <inout key="modelSeries" uid="..." autoConnect="yes" />
+       <inout key="modelSeries" uid="..." autoConnect="true" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
          <organ_name>@organ_name</organ_name>
@@ -98,7 +99,6 @@ class MODULE_UI_QT_CLASS_API SModelSeriesList final :
     public QObject,
     public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
@@ -146,7 +146,7 @@ private:
     void updateReconstructions();
 
     /// Fills the editor tree.
-    void fillTree(const data::mt::locked_ptr< data::ModelSeries >& _modelSeries);
+    void fillTree(const data::mt::locked_ptr<data::ModelSeries>& _modelSeries);
 
     /// SLOT: Shows (or hide) reconstructions.
     void showReconstructions(bool _show);
@@ -200,37 +200,37 @@ private:
     QPointer<QPushButton> m_deleteAllButton;
 
     /// Contains the button to hide or show all reconstructions.
-    QPointer< QCheckBox > m_showCheckBox;
+    QPointer<QCheckBox> m_showCheckBox;
 
     /// Contains the reconstructions tree:
-    QPointer< QTreeWidget > m_tree;
+    QPointer<QTreeWidget> m_tree;
 
     /// Defines informations.
-    typedef std::map< std::string, ValueView* > DisplayedInformation;
+    typedef std::map<std::string, ValueView*> DisplayedInformation;
     DisplayedInformation m_displayedInfo;
 
     /// Enables m_showCheckBox.
-    bool m_enableHideAll { true };
+    bool m_enableHideAll {true};
 
     /// Enables m_deleteAllButton.
-    bool m_enableDelete { false };
+    bool m_enableDelete {false};
 
     /// Defines the header of the tree.
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef core::com::Signal< void (data::Object::sptr) > ReconstructionSelectedSignalType;
+    typedef core::com::Signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 
     /// Contains the signal emitted when we clean the list.
-    typedef core::com::Signal< void () > EmptiedSelectionSignalType;
+    typedef core::com::Signal<void ()> EmptiedSelectionSignalType;
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     /// Contains the slot to show (or hide) reconstructions.
-    typedef core::com::Slot< void (bool) > ShowReconstructionsSlotType;
+    typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
-
 };
 
 } // namespace model.
+
 } // namespace sight::module::ui::qt.

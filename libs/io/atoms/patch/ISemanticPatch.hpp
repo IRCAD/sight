@@ -33,7 +33,9 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 
 namespace sight::io::atoms::patch
@@ -44,16 +46,16 @@ namespace sight::io::atoms::patch
  */
 class IO_ATOMS_CLASS_API ISemanticPatch : public IPatch
 {
-
 public:
-    SIGHT_DECLARE_CLASS(ISemanticPatch)
+
+    SIGHT_DECLARE_CLASS(ISemanticPatch, IPatch)
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor
     IO_ATOMS_API ISemanticPatch();
 
     /// Copy constructor
-    IO_ATOMS_API ISemanticPatch( const ISemanticPatch& cpy );
+    IO_ATOMS_API ISemanticPatch(const ISemanticPatch& cpy);
 
     /// Destructor
     IO_ATOMS_API virtual ~ISemanticPatch();
@@ -67,9 +69,11 @@ public:
      *
      * @pre previous and current objects must have the same classname and version.
      */
-    IO_ATOMS_API virtual void apply(const SPTR(sight::atoms::Object)& previous,
-                                    const SPTR(sight::atoms::Object)& current,
-                                    io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
+    IO_ATOMS_API virtual void apply(
+        const SPTR(sight::atoms::Object)& previous,
+        const SPTR(sight::atoms::Object)& current,
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 
     /**
      * @brief Returns true if patch is applicable into the context from origin to target versions.
@@ -78,7 +82,8 @@ public:
     IO_ATOMS_API virtual bool isApplicable(
         const std::string& context,
         const std::string& originVersion,
-        const std::string& targetVersion) const;
+        const std::string& targetVersion
+    ) const;
 
 protected:
 
@@ -110,14 +115,16 @@ protected:
      * @brief Add a context where the patch can be applied
      * @note This method is thread safe.
      */
-    IO_ATOMS_API virtual void addContext(const std::string& context,
-                                         const std::string& originVersion,
-                                         const std::string& targetVersion);
+    IO_ATOMS_API virtual void addContext(
+        const std::string& context,
+        const std::string& originVersion,
+        const std::string& targetVersion
+    );
 
     /**
      * @name Typedefs
      * @{ */
-    typedef std::vector< Context > ContextVectorType;
+    typedef std::vector<Context> ContextVectorType;
     /**  @} */
 
     /// Mutex to protect concurrent access for m_contexts
@@ -125,7 +132,6 @@ protected:
 
     ///Vector used to store the contexts where the patch can be applied
     ContextVectorType m_contexts;
-
 };
 
 } //fwAtomsPatch

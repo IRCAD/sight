@@ -25,116 +25,19 @@
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
+#include <mutex>
+
 namespace sight::core::tools
 {
 
-UUID::UUIDContainer UUID::s_uuidMap;
+static boost::uuids::random_generator s_generator;
+static std::mutex s_generator_mutex;
 
-core::mt::ReadWriteMutex UUID::s_uuidMapMutex;
-core::mt::Mutex UUID::s_generateUUIDMutex;
-
-//-----------------------------------------------------------------------------
-
-UUID::UUID()
+/// generate a uuid
+std::string UUID::generateUUID()
 {
+    std::lock_guard guard(s_generator_mutex);
+    return boost::uuids::to_string(s_generator());
 }
-
-//-----------------------------------------------------------------------------
-
-UUID::~UUID()
-{
-    core::mt::ReadLock uuidLock(m_uuidMutex);
-    core::mt::ReadToWriteLock lock(s_uuidMapMutex);
-    UUID::UUIDContainer::iterator iter = UUID::s_uuidMap.find(m_uuid);
-    if( iter != UUID::s_uuidMap.end())
-    {
-        core::mt::UpgradeToWriteLock writeLock(lock);
-        UUID::s_uuidMap.erase(iter);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool UUID::exist( const UUID::UUIDType& uuid)
-{
-    core::mt::ReadLock lock(s_uuidMapMutex);
-    return ( UUID::s_uuidMap.find(uuid) != UUID::s_uuidMap.end() );
-}
-
-//-----------------------------------------------------------------------------
-
-const UUID::UUIDType& UUID::get(core::tools::Object::sptr object)
-{
-    SIGHT_ASSERT("Object expired", object);
-
-    UUID::sptr uuidObject = object->m_uuid;
-    core::mt::ReadToWriteLock uuidLock(uuidObject->m_uuidMutex);
-    if(uuidObject->m_uuid.empty())
-    {
-        UUIDType uuid = UUID::generateUUID();
-
-        {
-            core::mt::UpgradeToWriteLock writeLock(uuidLock);
-            uuidObject->m_uuid = uuid;
-        }
-        {
-            core::mt::WriteLock lock(s_uuidMapMutex);
-            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuid, object));
-        }
-    }
-    return uuidObject->m_uuid;
-}
-
-//-----------------------------------------------------------------------------
-
-core::tools::Object::sptr UUID::get( const UUID::UUIDType& uuid )
-{
-    core::mt::ReadLock lock(s_uuidMapMutex);
-    core::tools::Object::sptr obj;
-    UUID::UUIDContainer::iterator iter = UUID::s_uuidMap.find(uuid);
-    if( iter != UUID::s_uuidMap.end() )
-    {
-        obj = iter->second.lock();
-    }
-    return obj;
-}
-
-//-----------------------------------------------------------------------------
-
-bool UUID::set(core::tools::Object::sptr object, const UUID::UUIDType& uuid )
-{
-    core::mt::ReadToWriteLock lock(s_uuidMapMutex);
-
-    bool isSet = false;
-
-    if(UUID::s_uuidMap.find(uuid) == UUID::s_uuidMap.end())
-    {
-        UUID::sptr uuidObject = object->m_uuid;
-
-        {
-            core::mt::WriteLock uuidLock(uuidObject->m_uuidMutex);
-            uuidObject->m_uuid = uuid;
-        }
-        {
-            core::mt::UpgradeToWriteLock writeLock(lock);
-            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuid, object));
-        }
-        isSet = true;
-    }
-
-    return isSet;
-}
-
-//-----------------------------------------------------------------------------
-
-UUID::UUIDType UUID::generateUUID()
-{
-    static ::boost::uuids::random_generator gen;
-    core::mt::ScopedLock lock(s_generateUUIDMutex);
-    ::boost::uuids::uuid uuid = gen();
-    return ::boost::uuids::to_string(uuid);
-}
-
-//-----------------------------------------------------------------------------
 
 }

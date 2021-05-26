@@ -170,7 +170,7 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
+                <layer id="defaultLayer" order="1"/>
                 <adaptor uid="globalCameraAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
@@ -258,35 +258,35 @@
             <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="${modelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
-        <service uid="extrudedMeshesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="extrudedMeshesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="${extrudedModelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-            <inout key="image" uid="extrudedImage" autoConnect="yes" />
+            <inout key="image" uid="extrudedImage" autoConnect="true" />
             <inout key="tf" uid="${volumeTF}" />
-            <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="yes" />
+            <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="true" />
             <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="no" samples="1024" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
-            <inout key="image" uid="${image}" autoConnect="yes" />
+            <inout key="image" uid="${image}" autoConnect="true" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
             <inout key="landmarks" uid="${landmarks}" />
             <config layer="defaultLayer" priority="4" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
@@ -314,13 +314,13 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="yes">
+        <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
             <in key="matrix" uid="globalCamera" />
             <config layer="orientationMarkerLayer" />
         </service>
 
         <!-- Axial -->
-        <service uid="axialBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="axialBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
         </service>
@@ -334,18 +334,18 @@
             <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="axialNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="axialNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" priority="0" orientation="axial" />
@@ -359,7 +359,7 @@
             <config layer="axialNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="axialLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="axialLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
@@ -367,7 +367,7 @@
 
         <!-- Sagittal -->
 
-        <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="background" />
             <config layer="sagittalBackgroundNegatoLayer" />
         </service>
@@ -381,18 +381,18 @@
             <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
         </service>
 
-        <service uid="sagittalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="sagittalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
@@ -406,7 +406,7 @@
             <config layer="sagittalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="sagittalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="sagittalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
@@ -414,7 +414,7 @@
 
         <!-- Frontal -->
 
-        <service uid="frontalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="frontalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="background" />
             <config layer="frontalBackgroundNegatoLayer" />
         </service>
@@ -428,18 +428,18 @@
             <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
         </service>
 
-        <service uid="frontalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="frontalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
@@ -453,7 +453,7 @@
             <config layer="frontalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="frontalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="frontalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
@@ -461,17 +461,17 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="axialNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="axialNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Axial</sliceIndex>
         </service>
 
-        <service uid="sagittalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sagittalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
-        <service uid="frontalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="frontalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Frontal</sliceIndex>
         </service>
@@ -492,11 +492,11 @@
         <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
-            <selection mode="exclude" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
+            <selection mode="include" />
+            <addSelection service="sight::module::io::vtk::SImageWriter" />
         </service>
 
-        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="true" worker="EXTRUSION_THREAD" >
             <in key="meshes" uid="${extrudedModelSeries}" />
             <in key="image" uid="${image}" />
             <inout key="extrudedImage" uid="extrudedImage" />

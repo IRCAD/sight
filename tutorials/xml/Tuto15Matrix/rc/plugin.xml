@@ -99,7 +99,7 @@
             </registry>
         </service>
 
-        <service uid="matrixView" type="sight::module::ui::qt::viz::STransformEditor" autoConnect="no" >
+        <service uid="matrixView" type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false" >
             <inout key="matrix" uid="matrix" />
             <translation enabled="yes" min="-300" />
             <rotation enabled="yes" min="-180" max="180" />
@@ -142,12 +142,12 @@
         </service>
 
         <!-- Mesh adaptors -->
-        <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh"  autoConnect="yes" >
+        <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh"  autoConnect="true" >
             <inout key="mesh" uid="mesh" />
             <config layer="default" transform="transRotMat" />
         </service>
 
-        <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh"  autoConnect="yes" >
+        <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh"  autoConnect="true" >
             <inout key="mesh" uid="mesh" />
             <config layer="default" transform="rotTransMat" />
         </service>
@@ -158,12 +158,12 @@
             the ::sight::data::Matrix4 is modified, it updates the vtkTransform, and vice
             versa.
         -->
-        <service uid="matrix1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="matrix1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
             <inout key="transform" uid="transRotMatrix" />
             <config layer="default" transform="transRotMat" />
         </service>
 
-        <service uid="matrix2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="matrix2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
             <inout key="transform" uid="rotTransMatrix" />
             <config layer="default" transform="rotTransMat" />
         </service>
@@ -203,13 +203,13 @@
             This service decompose a matrix into a rotation matrix and a translation matrix
         -->
         <service uid="matrixDecomposerAdp" type="sight::module::geometry::base::SDecomposeMatrix" >
-            <in key="source" uid="matrix" autoConnect="yes" />
+            <in key="source" uid="matrix" autoConnect="true" />
             <inout key="translation" uid="translationMatrix" />
             <inout key="rotation" uid="rotationMatrix" />
         </service>
 
         <!-- to multiply matrices -->
-        <service uid="concatenateTranslationAndRotationArv" type="sight::module::geometry::base::SConcatenateMatrices" autoConnect="yes" >
+        <service uid="concatenateTranslationAndRotationArv" type="sight::module::geometry::base::SConcatenateMatrices" autoConnect="true" >
             <in group="matrix" >
                 <key uid="translationMatrix" />
                 <key uid="rotationMatrix" />
@@ -218,7 +218,7 @@
         </service>
 
         <!-- to multiply matrices -->
-        <service uid="concatenateRotationAndTranslationSrv" type="sight::module::geometry::base::SConcatenateMatrices" autoConnect="yes" >
+        <service uid="concatenateRotationAndTranslationSrv" type="sight::module::geometry::base::SConcatenateMatrices" autoConnect="true" >
             <in group="matrix" >
                 <key uid="rotationMatrix" />
                 <key uid="translationMatrix" />

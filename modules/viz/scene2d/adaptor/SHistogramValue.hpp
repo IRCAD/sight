@@ -31,6 +31,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -40,7 +41,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SHistogramValue" autoConnect="yes">
+   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SHistogramValue" autoConnect="true">
        <in key="histogram" uid="..." />
        <in key="point" uid="..." />
        <in key="viewport"  uid="..." />
@@ -66,7 +67,6 @@ namespace adaptor
  */
 class SHistogramValue : public sight::viz::scene2d::IAdaptor
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SHistogramValue, ::sight::viz::scene2d::IAdaptor)
@@ -106,7 +106,7 @@ private:
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     /// Defines the color used for graphic item's inner color.
     QPen m_color;
@@ -128,8 +128,8 @@ private:
 
     /// Stores the main layer.
     QGraphicsItemGroup* m_layer;
-
 };
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

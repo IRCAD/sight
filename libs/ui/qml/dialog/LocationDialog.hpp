@@ -34,8 +34,10 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic file/folder dialog for IHM.
  *
@@ -48,23 +50,26 @@ Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
 
 public:
 
-    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New< LocationDialog >)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>)
 
     UI_QML_API LocationDialog(ui::base::GuiBaseObject::Key key);
 
     /// show the locationDialog to the user and wait selection from the user
-    UI_QML_API data::location::ILocation::sptr show() override;
+    UI_QML_API core::location::ILocation::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
-    UI_QML_API void setType( ui::base::dialog::ILocationDialog::Types type ) override;
+    UI_QML_API void setType(ui::base::dialog::ILocationDialog::Types type) override;
 
     /// Set the type of locationDialog to open (read, write...)
     UI_QML_API ui::base::dialog::ILocationDialog& setOption(
-        ui::base::dialog::ILocationDialog::Options option) override;
+        ui::base::dialog::ILocationDialog::Options option
+    ) override;
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
-    UI_QML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
+    UI_QML_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+
 protected Q_SLOTS:
+
     /// slot getting the result of the dialog when a button is pressed
     void resultDialog(const QVariant& msg);
 
@@ -72,13 +77,13 @@ private:
 
     ui::base::dialog::ILocationDialog::Options m_style {ui::base::dialog::ILocationDialog::NONE};
     ui::base::dialog::ILocationDialog::Types m_type {ui::base::dialog::ILocationDialog::SINGLE_FILE};
-    std::vector< std::pair< std::string, std::string > > m_filters;
+    std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
     const QStringList fileFilters();
 
     std::string m_wildcard;
-    data::location::ILocation::sptr m_location;
+    core::location::ILocation::sptr m_location;
 
     /// the filter list and the current filter selected
     QString m_filterSelected;
@@ -88,5 +93,7 @@ private:
     /// event filter for Mac
     bool eventFilter(QObject* watched, QEvent* event) override;
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qml

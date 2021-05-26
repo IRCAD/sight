@@ -36,6 +36,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -66,7 +67,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+    <service uid="action_newActivity" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true" >
         <in key="series" uid="..." />
         <config>
             <!-- SLauncher mode : immediate or message(default)
@@ -131,7 +132,6 @@ namespace activity
  */
 class MODULE_UI_QT_CLASS_API SLauncher : public ::sight::ui::base::IAction
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SLauncher, ::sight::ui::base::IAction)
@@ -149,16 +149,18 @@ public:
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
+
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void ( sight::activity::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal<void (sight::activity::ActivityMsg)> ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+
     /// @}
 
 protected:
@@ -191,9 +193,9 @@ protected:
 
     typedef sight::activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
-    typedef std::vector< std::string > KeysType;
+    typedef std::vector<std::string> KeysType;
 
-    typedef std::map< std::string, std::string > QuickLaunchType;
+    typedef std::map<std::string, std::string> QuickLaunchType;
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
@@ -201,7 +203,7 @@ protected:
     /**
      * @brief Interpret configuration parameters.
      */
-    ParametersType translateParameters( const ParametersType& parameters);
+    ParametersType translateParameters(const ParametersType& parameters);
 
 private:
 
@@ -233,7 +235,7 @@ private:
      *
      * @param info activity information
      */
-    void sendConfig( const sight::activity::extension::ActivityInfo& info );
+    void sendConfig(const sight::activity::extension::ActivityInfo& info);
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -246,7 +248,7 @@ private:
     typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    sight::activity::extension::ActivityInfo show( const ActivityInfoContainer& infos );
+    sight::activity::extension::ActivityInfo show(const ActivityInfoContainer& infos);
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -273,4 +275,5 @@ private:
 };
 
 } //action
+
 } // gui

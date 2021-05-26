@@ -52,14 +52,13 @@
                 <mode>include</mode>
                 <id>Calibration</id>
                 <id>CalibrationCharuco</id>
-                <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
                 <id>ToolCalibration</id>
             </filter>
         </service>
 
-        <service uid="seriesSignalSrv" type="sight::module::data::SSeriesSignal" autoConnect="yes">
+        <service uid="seriesSignalSrv" type="sight::module::data::SSeriesSignal" autoConnect="true">
             <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>

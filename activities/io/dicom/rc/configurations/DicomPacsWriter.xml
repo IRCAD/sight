@@ -77,7 +77,7 @@
 
         <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController"  />
 
-        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
@@ -97,7 +97,7 @@
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="viewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

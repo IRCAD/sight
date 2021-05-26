@@ -277,12 +277,12 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="sourceFrame" />
                 <config layer="video" />
             </service>
 
-            <service uid="undistortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="undistortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="true" >
                 <inout key="parameter" uid="undistortMap" />
                 <config layer="video" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
@@ -292,19 +292,19 @@
             </service>
 
             <!-- Camera for the 3D layer -->
-            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
                 <inout key="transform" uid="cameraToMarker" />
                 <in key="calibration" uid="camera" />
                 <config layer="default" />
             </service>
 
             <!-- Cube displayed on top of the marker plane -->
-            <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cubeMesh" />
                 <config layer="default" autoresetcamera="no" />
             </service>
 
-            <service uid="distortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="distortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="true" >
                 <inout key="parameter" uid="distortMap" />
                 <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
@@ -422,7 +422,7 @@
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
             <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" >
                 <in group="frameTL" >
-                    <key uid="frameTL" autoConnect="yes" />
+                    <key uid="frameTL" autoConnect="true" />
                 </in>
                 <inout group="image" >
                     <key uid="sourceFrame" />
@@ -434,7 +434,7 @@
             <!-- Aruco tracker service -->
             <service uid="trackerSrv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking" >
                 <in key="camera" uid="camera" />
-                <inout key="frame" uid="sourceFrame" autoConnect="yes" />
+                <inout key="frame" uid="sourceFrame" autoConnect="true" />
                 <inout group="markerMap" >
                     <key uid="markerMap" /> <!-- timeline of detected tag(s) -->
                 </inout>
@@ -447,7 +447,7 @@
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
             <service uid="registrationSrv" type="sight::module::geometry::vision::SPoseFrom2d" worker="tracking" >
-                <in group="markerMap" autoConnect="yes" >
+                <in group="markerMap" autoConnect="true" >
                     <key uid="markerMap" />
                 </in>
                 <in group="camera" >
@@ -461,7 +461,7 @@
 
             <!-- Computes the reprojection error -->
             <service uid="errorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error" >
-                <in group="matrix" autoConnect="yes" >
+                <in group="matrix" autoConnect="true" >
                     <key uid="markerToCamera" id="104" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
@@ -473,19 +473,19 @@
             <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
             <service uid="matrixReverserSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
-                    <key uid="markerToCamera" autoConnect="yes" inverse="true" />
+                    <key uid="markerToCamera" autoConnect="true" inverse="true" />
                 </in>
                 <inout key="output" uid="cameraToMarker" />
             </service>
 
             <service uid="undistorterSrv" type="sight::module::geometry::vision::SDistortion" >
-                <in key="camera" uid="camera" autoConnect="yes" />
+                <in key="camera" uid="camera" autoConnect="true" />
                 <inout key="map" uid="undistortMap" />
                 <mode>undistort</mode>
             </service>
 
             <service uid="distorterSrv" type="sight::module::geometry::vision::SDistortion" >
-                <in key="camera" uid="camera" autoConnect="yes" />
+                <in key="camera" uid="camera" autoConnect="true" />
                 <inout key="map" uid="distortMap" />
                 <mode>distort</mode>
             </service>

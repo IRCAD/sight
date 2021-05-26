@@ -51,30 +51,27 @@
 #include <vtkRenderer.h>
 #endif
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::ObjMeshWriter );
+SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::ObjMeshWriter);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 ObjMeshWriter::ObjMeshWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("OBJ Mesh writer"))
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 ObjMeshWriter::~ObjMeshWriter()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 #ifdef USE_OBJ_WRITER
-
 void ObjMeshWriter::write()
 {
     using namespace sight::io::vtk::helper;
@@ -83,37 +80,34 @@ void ObjMeshWriter::write()
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock);
 
     const data::Mesh::csptr pMesh = getConcreteObject();
 
-    vtkSmartPointer< vtkOBJWriter > writer = vtkSmartPointer< vtkOBJWriter >::New();
-    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
-    io::vtk::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
-    writer->SetInputData( vtkMesh );
+    vtkSmartPointer<vtkOBJWriter> writer = vtkSmartPointer<vtkOBJWriter>::New();
+    vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
+    writer->SetInputData(vtkMesh);
     writer->SetFileName(this->getFile().string().c_str());
 
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void* )
+        [&](vtkObject* caller, long unsigned int, void*)
         {
             const auto filter = static_cast<vtkOBJWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        }
-        );
+        });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
 
-    m_job->addSimpleCancelHook([&] { writer->AbortExecuteOn(); });
+    m_job->addSimpleCancelHook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
 
     m_job->finish();
 }
-
 #else
-
 //------------------------------------------------------------------------------
 
 void ObjMeshWriter::write()
@@ -124,14 +118,14 @@ void ObjMeshWriter::write()
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SIGHT_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const data::Mesh::csptr pMesh          = getConcreteObject();
-    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
-    io::vtk::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
+    const data::Mesh::csptr pMesh        = getConcreteObject();
+    vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
 
-    vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
-    vtkSmartPointer< vtkActor >  actor      = vtkSmartPointer< vtkActor >::New();
+    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkActor> actor       = vtkSmartPointer<vtkActor>::New();
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(vtkMesh);
@@ -146,22 +140,22 @@ void ObjMeshWriter::write()
 
     renderer->AddActor(actor);
 
-    vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
+    vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
     renderWindow->AddRenderer(renderer);
 
-    data::location::ILocation::PathType file = this->getFile();
-    const std::string filename               = file.extension() == ".obj"
-                                               ? file.replace_extension().string()
-                                               : file.string();
+    std::filesystem::path file = this->getFile();
+    const std::string filename = file.extension() == ".obj"
+                                 ? file.replace_extension().string()
+                                 : file.string();
 
-    vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
+    vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
     exporter->SetRenderWindow(renderWindow);
     exporter->SetFilePrefix(filename.c_str());
     exporter->Write();
     m_job->finish();
 }
+#endif // ifdef USE_OBJ_WRITER
 
-#endif
 //------------------------------------------------------------------------------
 
 std::string ObjMeshWriter::extension()

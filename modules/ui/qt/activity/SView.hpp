@@ -36,6 +36,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -56,7 +57,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="sight::module::ui::qt::activity::SView" autoConnect="yes" >
+   <service type="sight::module::ui::qt::activity::SView" autoConnect="true" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -79,7 +80,6 @@ namespace activity
  */
 class MODULE_UI_QT_CLASS_API SView : public sight::ui::base::view::IActivityView
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IActivityView)
@@ -95,10 +95,10 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void (data::ActivitySeries::sptr ) > ActivityLaunchedSignalType;
-    /**
-     * @}
-     */
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityLaunchedSignalType;
+/**
+ * @}
+ */
 
 protected:
 
@@ -134,4 +134,5 @@ private:
 };
 
 } //namespace activity
+
 } // guiQt

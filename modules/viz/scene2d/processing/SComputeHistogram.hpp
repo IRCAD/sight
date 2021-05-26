@@ -42,7 +42,7 @@ namespace processing
  *
  * @code{.xml}
    <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram"
- * autoConnect="yes">
+ * autoConnect="true">
     <inout key="histogram" uid="..." />
     <in key="image" uid="..." />
     <binsWidth>5.0</binsWidth>
@@ -60,7 +60,6 @@ namespace processing
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SComputeHistogram : public service::IController
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SComputeHistogram, service::IController)
@@ -100,7 +99,8 @@ private:
 
     /// Desired bins width used to classified pixel.
     float m_binsWidth;
-
 };
+
 } // namespace processing
+
 } // namespace sight::module::viz::scene2d

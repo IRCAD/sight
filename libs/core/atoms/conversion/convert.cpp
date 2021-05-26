@@ -25,7 +25,6 @@
 #include "atoms/conversion/AtomVisitor.hpp"
 #include "atoms/conversion/DataVisitor.hpp"
 #include "atoms/conversion/mapper/Base.hpp"
-
 #include <atoms/Object.hpp>
 
 #include <data/Object.hpp>
@@ -35,31 +34,31 @@ namespace sight::atoms::conversion
 
 //------------------------------------------------------------------------------
 
-atoms::Object::sptr convert(const data::Object::sptr& data )
+atoms::Object::sptr convert(const data::Object::sptr& data)
 {
     DataVisitor::AtomCacheType cache;
-    return convert( data, cache );
+    return convert(data, cache);
 }
 
 //-----------------------------------------------------------------------------
 
-atoms::Object::sptr convert(const data::Object::sptr& dataObj, DataVisitor::AtomCacheType& cache )
+atoms::Object::sptr convert(const data::Object::sptr& dataObj, DataVisitor::AtomCacheType& cache)
 {
     atoms::Object::sptr atom;
 
-    DataVisitor::AtomCacheType::iterator elem = cache.find( core::tools::UUID::get( dataObj ) );
+    DataVisitor::AtomCacheType::iterator elem = cache.find(dataObj->getUUID());
 
-    if ( elem == cache.end() )
+    if(elem == cache.end())
     {
-        SPTR(mapper::Base) mapper = mapper::factory::New( dataObj->getClassname() );
-        if ( mapper )
+        SPTR(mapper::Base) mapper = mapper::factory::New(dataObj->getClassname());
+        if(mapper)
         {
-            atom = mapper->convert( dataObj, cache );
+            atom = mapper->convert(dataObj, cache);
         }
         else
         {
-            const camp::Class& metaclass = ::camp::classByName( dataObj->getClassname() );
-            atoms::conversion::DataVisitor visitor( dataObj, cache );
+            const camp::Class& metaclass = ::camp::classByName(dataObj->getClassname());
+            atoms::conversion::DataVisitor visitor(dataObj, cache);
             metaclass.visit(visitor);
             atom = visitor.getAtomObject();
         }
@@ -74,34 +73,37 @@ atoms::Object::sptr convert(const data::Object::sptr& dataObj, DataVisitor::Atom
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr convert( const atoms::Object::sptr& atom,
-                            const AtomVisitor::IReadPolicy& uuidPolicy
-                            )
+data::Object::sptr convert(
+    const atoms::Object::sptr& atom,
+    const AtomVisitor::IReadPolicy& uuidPolicy
+)
 {
     AtomVisitor::DataCacheType cache;
-    return convert( atom, cache, uuidPolicy );
+    return convert(atom, cache, uuidPolicy);
 }
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr convert( const atoms::Object::sptr& atomObj, AtomVisitor::DataCacheType& cache,
-                            const AtomVisitor::IReadPolicy& uuidPolicy
-                            )
+data::Object::sptr convert(
+    const atoms::Object::sptr& atomObj,
+    AtomVisitor::DataCacheType& cache,
+    const AtomVisitor::IReadPolicy& uuidPolicy
+)
 {
     data::Object::sptr data;
 
-    AtomVisitor::DataCacheType::iterator elem = cache.find( atomObj->getMetaInfo( DataVisitor::ID_METAINFO ) );
+    AtomVisitor::DataCacheType::iterator elem = cache.find(atomObj->getMetaInfo(DataVisitor::ID_METAINFO));
 
-    if ( elem == cache.end() )
+    if(elem == cache.end())
     {
-        SPTR(mapper::Base) mapper = mapper::factory::New( atomObj->getMetaInfo( DataVisitor::CLASSNAME_METAINFO ) );
-        if ( mapper )
+        SPTR(mapper::Base) mapper = mapper::factory::New(atomObj->getMetaInfo(DataVisitor::CLASSNAME_METAINFO));
+        if(mapper)
         {
-            data = mapper->convert( atomObj, cache, uuidPolicy );
+            data = mapper->convert(atomObj, cache, uuidPolicy);
         }
         else
         {
-            atoms::conversion::AtomVisitor visitor( atomObj, cache, uuidPolicy );
+            atoms::conversion::AtomVisitor visitor(atomObj, cache, uuidPolicy);
             visitor.visit();
             data = visitor.getDataObject();
         }

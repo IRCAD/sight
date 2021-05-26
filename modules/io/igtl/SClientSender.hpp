@@ -35,7 +35,7 @@ namespace sight::module::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="sight::module::io::igtl::SClientSender" autoConnect="yes">
+ * <service uid="..." type="sight::module::io::igtl::SClientSender" autoConnect="true">
  *      <server>127.0.0.1:4242</server>
  *      <in group="objects">
  *           <key uid="..." deviceName="device01" />
@@ -54,7 +54,6 @@ namespace sight::module::io::igtl
  */
 class MODULE_IO_IGTL_CLASS_API SClientSender : public module::io::igtl::INetworkSender
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SClientSender, module::io::igtl::INetworkSender)
@@ -100,7 +99,7 @@ private:
     std::string m_portConfig;
 
     /// Vector of device name used
-    std::vector< std::string > m_deviceNames;
+    std::vector<std::string> m_deviceNames;
 };
 
 } // namespace sight::module::io::igtl

@@ -153,7 +153,7 @@
                 This is the source image for the filtering.
             -->
             <service uid="image1Srv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="myImage1" autoConnect="yes" />
+                <in key="image" uid="myImage1" autoConnect="true" />
             </service>
 
             <!--
@@ -161,7 +161,7 @@
                 This is the output image for the filtering.
             -->
             <service uid="image2Srv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="myImage2" autoConnect="yes" />
+                <in key="image" uid="myImage2" autoConnect="true" />
             </service>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -55,8 +55,8 @@ Example:
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
-            <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
-            <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
+            <inout key="tfPool" uid="TFSet" autoConnect="true"/>
+            <in key="currentTF" uid="${transferFunctionOutput}" optional="true"/>
             <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="no">
                 <path>${TFPath}</path>
@@ -80,7 +80,7 @@ Example:
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <inout key="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="yes" />
+            <inout key="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
             <parameter replace="WID_PARENT" by="negatoView" />
         </service>
 

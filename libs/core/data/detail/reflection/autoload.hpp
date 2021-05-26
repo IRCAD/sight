@@ -52,8 +52,6 @@
 #include "data/Landmarks.hpp"
 #include "data/Line.hpp"
 #include "data/List.hpp"
-#include "data/location/Folder.hpp"
-#include "data/location/SingleFile.hpp"
 #include "data/Material.hpp"
 #include "data/Matrix4.hpp"
 #include "data/Mesh.hpp"
@@ -83,8 +81,10 @@
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
 
@@ -126,7 +126,6 @@ struct runner
         localDeclaresightdataStructureTraitsDictionary();
         localDeclaresightdataReconstructionTraits();
         localDeclaresightdataROITraits();
-        localDeclaresightdatalocationFolder();
         localDeclaresightdataPlane();
         localDeclaresightdataPlaneList();
         localDeclaresightdataResection();
@@ -134,7 +133,6 @@ struct runner
         localDeclaresightdataHistogram();
         localDeclaresightdataLine();
         localDeclaresightdataList();
-        localDeclaresightdatalocationSingleFile();
         localDeclaresightdataProcessObject();
         localDeclaresightdataTag();
         localDeclaresightdataLandmarks();
@@ -156,6 +154,9 @@ struct runner
 
     static runner r;
 };
+
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace sight::data

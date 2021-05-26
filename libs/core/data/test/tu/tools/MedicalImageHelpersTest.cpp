@@ -31,10 +31,11 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::tools::ut::MedicalImageHelpersTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::tools::ut::MedicalImageHelpersTest);
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
@@ -56,7 +57,6 @@ void MedicalImageHelpersTest::tearDown()
 
 void MedicalImageHelpersTest::getMinMaxTest()
 {
-
     {
         // Test on 3D image of type 'int16'
         typedef std::int16_t Type;
@@ -68,19 +68,25 @@ void MedicalImageHelpersTest::getMinMaxTest()
         data::Image::sptr image = data::Image::New();
 
         const data::Image::Size size       = {125, 110, 45};
-        const data::Image::Spacing spacing = { 1., 1., 1.};
+        const data::Image::Spacing spacing = {1., 1., 1.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                   data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(
+            image,
+            size,
+            spacing,
+            origin,
+            core::tools::Type::create<Type>(),
+            data::Image::PixelFormat::GRAY_SCALE
+        );
 
         const auto dumpLock = image->lock();
 
         auto itr    = image->begin<Type>();
         auto itrEnd = image->end<Type>();
 
-        for (; itr != itrEnd; ++itr)
+        for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand()%static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -103,19 +109,25 @@ void MedicalImageHelpersTest::getMinMaxTest()
         data::Image::sptr image = data::Image::New();
 
         const data::Image::Size size       = {42, 34, 75};
-        const data::Image::Spacing spacing = { 1., 1., 1.};
+        const data::Image::Spacing spacing = {1., 1., 1.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                   data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(
+            image,
+            size,
+            spacing,
+            origin,
+            core::tools::Type::create<Type>(),
+            data::Image::PixelFormat::GRAY_SCALE
+        );
 
         const auto dumpLock = image->lock();
 
         auto itr          = image->begin<Type>();
         const auto itrEnd = image->end<Type>();
 
-        for (; itr != itrEnd; ++itr)
+        for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand()%static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -124,10 +136,18 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(286) = MAX;
 
         data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("min values are not equal",
-                                             static_cast<double>(MIN), static_cast<double>(resMin), 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("max values are not equal",
-                                             static_cast<double>(MAX), static_cast<double>(resMax), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "min values are not equal",
+            static_cast<double>(MIN),
+            static_cast<double>(resMin),
+            0.00001
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "max values are not equal",
+            static_cast<double>(MAX),
+            static_cast<double>(resMax),
+            0.00001
+        );
     }
 
     {
@@ -142,19 +162,25 @@ void MedicalImageHelpersTest::getMinMaxTest()
         data::Image::sptr image = data::Image::New();
 
         const data::Image::Size size       = {156, 208, 0};
-        const data::Image::Spacing spacing = { 1., 1., 0.};
+        const data::Image::Spacing spacing = {1., 1., 0.};
         const data::Image::Origin origin   = {0., 0., 0.};
-        utestData::generator::Image::generateImage(image, size, spacing, origin, core::tools::Type::create<Type>(),
-                                                   data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(
+            image,
+            size,
+            spacing,
+            origin,
+            core::tools::Type::create<Type>(),
+            data::Image::PixelFormat::GRAY_SCALE
+        );
 
         const auto dumpLock = image->lock();
 
         auto itr          = image->begin<Type>();
         const auto itrEnd = image->end<Type>();
 
-        for (; itr != itrEnd; ++itr)
+        for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand()%static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -170,7 +196,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
 // ------------------------------------------------------------------------------
 
-template <class P>
+template<class P>
 data::Image::sptr createImageFromPixelBuffer()
 {
     constexpr size_t IMG_DIMENSIONS = 100;
@@ -198,7 +224,7 @@ data::Image::sptr createImageFromPixelBuffer()
 
 //------------------------------------------------------------------------------
 
-template <class P>
+template<class P>
 void getPixelBufferTestHelper(const P& pixelValue)
 {
     using SubPixel = typename P::value_type;
@@ -208,28 +234,30 @@ void getPixelBufferTestHelper(const P& pixelValue)
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
+    std::generate_n(coords, 3, [&](){return static_cast<size_t>(rand()) % size[0];});
     const auto dumpLock = image->lock();
     auto imageBufferPtr = image->getBuffer();
-    SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr) +
-                          ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
+    SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
+                          + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
     std::copy(pixelValue.begin(), pixelValue.end(), pixelPtr);
 
     // Test that the helper returned pixel value is correct
     P value = image->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
+        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
-                                                 static_cast<double>(pixelValue[i]),
-                                                 static_cast<double>(value[i]),
-                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "Pixel values are not equal",
+                static_cast<double>(pixelValue[i]),
+                static_cast<double>(value[i]),
+                0.00001
+            );
         }
     }
     else
     {
-        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
+        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
@@ -241,26 +269,26 @@ void getPixelBufferTestHelper(const P& pixelValue)
 void MedicalImageHelpersTest::getPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {{ 84 }};
-        std::array<uint8_t, 3> pRGB  = {{ 42, 24, 21 }};
+        std::array<uint8_t, 1> pGray = {{84}};
+        std::array<uint8_t, 3> pRGB  = {{42, 24, 21}};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {{ 0xDEADBEEF }};
-        std::array<uint32_t, 3> pRGB  = {{ 0xC0FFEE, 0xF100D, 0xDE7EC7ED }};
+        std::array<uint32_t, 1> pGray = {{0xDEADBEEF}};
+        std::array<uint32_t, 3> pRGB  = {{0xC0FFEE, 0xF100D, 0xDE7EC7ED}};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {{ 5423.2f }};
-        std::array<float, 3> pRGB  = {{ 42.0f, 1487.4f, 0.1445f }};
+        std::array<float, 1> pGray = {{5423.2f}};
+        std::array<float, 3> pRGB  = {{42.0f, 1487.4f, 0.1445f}};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {{ 541.254981 }};
-        std::array<double, 3> pRGB  = {{ 841.567, 6476.874, 0.187487 }};
+        std::array<double, 1> pGray = {{541.254981}};
+        std::array<double, 3> pRGB  = {{841.567, 6476.874, 0.187487}};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
@@ -268,7 +296,7 @@ void MedicalImageHelpersTest::getPixelBufferTest()
 
 // ------------------------------------------------------------------------------
 
-template <class P>
+template<class P>
 void setPixelBufferTestHelper(P& pixelValue)
 {
     using SubPixel = typename P::value_type;
@@ -277,7 +305,7 @@ void setPixelBufferTestHelper(P& pixelValue)
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % size[0]; });
+    std::generate_n(coords, 3, [&](){return static_cast<size_t>(rand()) % size[0];});
     const size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dumpLock     = image->lock();
     image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
@@ -287,17 +315,19 @@ void setPixelBufferTestHelper(P& pixelValue)
     const P value                 = constImage->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
+        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
-                                                 static_cast<double>(pixelValue[i]),
-                                                 static_cast<double>(value[i]),
-                                                 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "Pixel values are not equal",
+                static_cast<double>(pixelValue[i]),
+                static_cast<double>(value[i]),
+                0.00001
+            );
         }
     }
     else
     {
-        for(std::uint8_t i = 0; i != image->getNumberOfComponents(); ++i)
+        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
@@ -309,26 +339,26 @@ void setPixelBufferTestHelper(P& pixelValue)
 void MedicalImageHelpersTest::setPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {{ 84 }};
-        std::array<uint8_t, 3> pRGB  = {{ 42, 24, 21 }};
+        std::array<uint8_t, 1> pGray = {{84}};
+        std::array<uint8_t, 3> pRGB  = {{42, 24, 21}};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {{ 0xDEADBEEF }};
-        std::array<uint32_t, 3> pRGB  = {{ 0xC0FFEE, 0xF100D, 0xDE7EC7ED }};
+        std::array<uint32_t, 1> pGray = {{0xDEADBEEF}};
+        std::array<uint32_t, 3> pRGB  = {{0xC0FFEE, 0xF100D, 0xDE7EC7ED}};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {{ 5423.2f }};
-        std::array<float, 3> pRGB  = {{ 42.0f, 1487.4f, 0.1445f }};
+        std::array<float, 1> pGray = {{5423.2f}};
+        std::array<float, 3> pRGB  = {{42.0f, 1487.4f, 0.1445f}};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {{ 541.254981 }};
-        std::array<double, 3> pRGB  = {{ 841.567, 6476.874, 0.187487 }};
+        std::array<double, 1> pGray = {{541.254981}};
+        std::array<double, 3> pRGB  = {{841.567, 6476.874, 0.187487}};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
@@ -343,7 +373,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
     {
         const auto dumpLock                   = image->lock();
         const data::Image::BufferType* pixBuf =
-            static_cast< data::Image::BufferType* >(image->getPixelBuffer(0));
+            static_cast<data::Image::BufferType*>(image->getPixelBuffer(0));
 
         bool isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
@@ -352,22 +382,22 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
-            std::array<float, 3> pixelValue = {{ 42.0f, 1487.4f, 0.1445f }};
+            std::array<float, 3> pixelValue = {{42.0f, 1487.4f, 0.1445f}};
             image->setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
             const data::Image::BufferType* pixBuf2 =
-                static_cast< data::Image::BufferType* >(image->getPixelBuffer(10));
+                static_cast<data::Image::BufferType*>(image->getPixelBuffer(10));
 
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
             image->setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 5*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 5 * 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 6*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 6 * 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
         }
     }
@@ -376,4 +406,5 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::data::tools

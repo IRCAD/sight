@@ -36,14 +36,14 @@
 #include <vtkXMLImageDataWriter.h>
 #include <vtkZLibDataCompressor.h>
 
-SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::VtiImageWriter );
+SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::VtiImageWriter);
 
 namespace sight::io::vtk
 {
+
 //------------------------------------------------------------------------------
 
 VtiImageWriter::VtiImageWriter(io::base::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("VTK Image Writer"))
 {
 }
@@ -60,33 +60,35 @@ void VtiImageWriter::write()
 {
     using namespace sight::io::vtk::helper;
 
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    assert(!m_object.expired());
+    assert(m_object.lock());
 
     data::Image::csptr pImage = getConcreteObject();
 
-    vtkSmartPointer< vtkXMLImageDataWriter > writer = vtkSmartPointer< vtkXMLImageDataWriter >::New();
-    vtkSmartPointer< vtkImageData > vtkImage        = vtkSmartPointer< vtkImageData >::New();
-    io::vtk::toVTKImage( pImage, vtkImage );
-    writer->SetInputData( vtkImage );
-    writer->SetFileName( this->getFile().string().c_str() );
+    vtkSmartPointer<vtkXMLImageDataWriter> writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+    vtkSmartPointer<vtkImageData> vtkImage        = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::toVTKImage(pImage, vtkImage);
+    writer->SetInputData(vtkImage);
+    writer->SetFileName(this->getFile().string().c_str());
     writer->SetDataModeToAppended();
 
-    vtkSmartPointer< vtkZLibDataCompressor > compressor = vtkSmartPointer< vtkZLibDataCompressor >::New();
+    vtkSmartPointer<vtkZLibDataCompressor> compressor = vtkSmartPointer<vtkZLibDataCompressor>::New();
     compressor->SetCompressionLevel(1);
-    writer->SetCompressor( compressor );
+    writer->SetCompressor(compressor);
     writer->EncodeAppendedDataOff();
 
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+    progressCallback->SetCallback(
+        [this](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkXMLImageDataWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
 
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
-    m_job->addSimpleCancelHook( [&]()
+    m_job->addSimpleCancelHook(
+        [&]()
         {
             writer->AbortExecuteOn();
         });
