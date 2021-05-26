@@ -426,15 +426,18 @@ endforeach()
 if(UNIX)
   execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
   set(ARCHITECTURE linux_${ARCHITECTURE})
+  set(CPACK_GENERATOR TZST)
+  set(CPACK_SOURCE_GENERATOR TZST)
 else()
   set(ARCHITECTURE win64)
+  set(CPACK_GENERATOR ZIP)
+  set(CPACK_SOURCE_GENERATOR ZIP)
 endif()
 
 # Whole library packaging    
 set(CPACK_OUTPUT_FILE_PREFIX packages)
 set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
-set(CPACK_GENERATOR TGZ)
-set(CPACK_SOURCE_GENERATOR TGZ)
+
 set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${ARCHITECTURE}")
 set(CPACK_PACKAGE_VENDOR "IRCAD")
 set(CPACK_PACKAGE_NAME "Sight")

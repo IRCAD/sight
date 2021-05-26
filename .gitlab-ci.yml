@@ -107,8 +107,8 @@ lint:sheldon:
     paths:
       - .build/ctest.log
       - .build/Documentation/Doxygen/
-      - .build/SightViewer*.tar.gz
-      - .build/packages/sight-*.tar.gz
+      - .build/SightViewer*.tar.zst
+      - .build/packages/sight-*.tar.zst
 
 .linux_deploy:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
@@ -120,7 +120,7 @@ lint:sheldon:
     - archive=$(ls -1 SightViewer*)
     - >
       if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name="SightViewer-dev-linux_x86_64.tar.gz"
+        new_name="SightViewer-dev-linux_x86_64.tar.zst"
         mv $archive $new_name
         archive=$new_name
       fi
@@ -129,15 +129,15 @@ lint:sheldon:
     - archive=$(ls -1 sight-*)
     - >
       if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name="sight-dev-linux_x86_64.tar.gz"
+        new_name="sight-dev-linux_x86_64.tar.zst"
         mv $archive $new_name
         archive=$new_name
       fi
     - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
   artifacts:
     paths:
-      - .build/SightViewer*.tar.gz
-      - .build/packages/sight-*.tar.gz
+      - .build/SightViewer*.tar.zst
+      - .build/packages/sight-*.tar.zst
 
 deploy:linux:
   extends: .linux_deploy
@@ -265,7 +265,7 @@ prebuild:windows:
       - build/ctest.log
       - build/fwTest.log
       - build/SightViewer*.exe
-      - build/packages/sight-*.tar.gz
+      - build/packages/sight-*.zip
 
 .windows_deploy:
   stage: deploy
@@ -277,7 +277,7 @@ prebuild:windows:
     - $archive=$archive.name
     - |            
       if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-        $new_name=SightViewer-dev-win64.tar.gz
+        $new_name="SightViewer-dev-win64.exe"
         mv $archive $new_name
         $archive=$new_name
       }
@@ -287,7 +287,7 @@ prebuild:windows:
     - $archive=$archive.name
     - |            
       if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-        $new_name=sight-dev-win64.tar.gz
+        $new_name="sight-dev-win64.zip"
         mv $archive $new_name
         $archive=$new_name
       }
@@ -295,7 +295,7 @@ prebuild:windows:
   artifacts:
     paths:
       - build/SightViewer*.exe
-      - build/packages/sight-*.tar.gz
+      - build/packages/sight-*.zip
   tags:
     - conan
     - windows
