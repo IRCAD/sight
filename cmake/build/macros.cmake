@@ -111,8 +111,7 @@ macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
         IMMEDIATE @ONLY)
 
     install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            COMPONENT dev)
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL})
 endmacro()
 
 macro(initProject PRJ_NAME PRJ_TYPE)
@@ -219,7 +218,7 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
 endmacro()
 
 macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
-    install(DIRECTORY "${CONFIGURED_FILES_DIR}/" DESTINATION "${DESTINATION}/" COMPONENT runtime)
+    install(DIRECTORY "${CONFIGURED_FILES_DIR}/" DESTINATION "${DESTINATION}/")
 endmacro()
 
 
@@ -312,7 +311,6 @@ macro(fwExec FWPROJECT_NAME)
     install(
         TARGETS ${FWPROJECT_NAME}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        COMPONENT runtime
         )
 
     # Adds project into folder exec
@@ -535,7 +533,6 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
 
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            COMPONENT dev
             FILES_MATCHING PATTERN "*.h"
                             PATTERN "*.hpp"
                             PATTERN "*.hxx"
@@ -548,7 +545,6 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     install(
         TARGETS ${TARGETS_TO_EXPORT} 
         EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-        COMPONENT runtime
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -558,7 +554,6 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     if(WIN32)
         install(
             FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL
-            COMPONENT runtime
         )
     endif()
 
@@ -575,8 +570,6 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
                 ${SIGHT_REPOSITORY}::
             DESTINATION
                 ${FWCONFIG_PACKAGE_LOCATION}
-            COMPONENT
-                dev
     )
     get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
     set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )
@@ -598,8 +591,6 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
                 ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Dependencies.cmake
             DESTINATION
                 ${FWCONFIG_PACKAGE_LOCATION}
-            COMPONENT
-                dev
     )
 
     # Adds project into folder lib
@@ -764,7 +755,6 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
             ARCHIVE DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
             LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            COMPONENT dev
         )
                 
         # Add all targets to the build-tree export set
@@ -780,8 +770,6 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
                     ${SIGHT_REPOSITORY}::
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
-                COMPONENT
-                    dev
         )
         get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
         set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )

@@ -114,9 +114,8 @@ deploy:linux:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   stage: deploy
   dependencies:
-    - build:linux-release-gcc
+    - build:linux-release-clang
   script:
-    - ls .build
     - cd .build/
     - name=$(ls -1 SightViewer*)
     - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
@@ -242,7 +241,7 @@ prebuild:windows:
     paths:
       - build/ctest.log
       - build/fwTest.log
-      - build/packages/SightViewer*.exe
+      - build/SightViewer*.exe
       - build/packages/sight-*.tar.gz
 
 deploy:windows:
@@ -259,7 +258,7 @@ deploy:windows:
     - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
   artifacts:
     paths:
-      - build/packages/SightViewer*.exe
+      - build/SightViewer*.exe
       - build/packages/sight-*.tar.gz
   tags:
     - conan

@@ -14,7 +14,7 @@ macro(linux_package PRJ_NAME)
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin" COMPONENT runtime)
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
     elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
 
@@ -40,14 +40,14 @@ macro(linux_package PRJ_NAME)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} 
                 DESTINATION ${CMAKE_INSTALL_PREFIX}/bin 
-                COMPONENT runtime)
+        )
 
     elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
                 DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-                COMPONENT runtime)
+        )
     endif()
 
     execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )

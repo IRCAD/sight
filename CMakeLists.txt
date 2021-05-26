@@ -47,11 +47,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
-
-include(CPackComponent)
-cpack_add_component(runtime REQUIRED)
-cpack_add_component(dev DEPENDS runtime)
-
 ########################################################################################################################
 # User options
 ########################################################################################################################
@@ -420,7 +415,7 @@ foreach(APP ${SIGHT_APPS})
 
   # Add a package target for every app
   add_custom_target(${APP}_package
-                    cpack --config ${APP_BINARY_DIR}/CPackConfig.cmake)
+                    ${CMAKE_CPACK_COMMAND} --config ${APP_BINARY_DIR}/CPackConfig.cmake)
   add_dependencies(${APP}_package ${APP}_install)
   if(WIN32)
     add_dependencies(${APP}_package ${APP}_fixup)
