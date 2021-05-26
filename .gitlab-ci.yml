@@ -110,22 +110,45 @@ lint:sheldon:
       - .build/SightViewer*.tar.gz
       - .build/packages/sight-*.tar.gz
 
-deploy:linux:
+.linux_deploy:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   stage: deploy
   dependencies:
     - build:linux-release-clang
   script:
     - cd .build/
-    - name=$(ls -1 SightViewer*)
-    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+    - archive=$(ls -1 SightViewer*)
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        new_name="SightViewer-dev-linux_x86_64.tar.gz"
+        mv $archive $new_name
+        archive=$new_name
+      fi
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
     - cd packages
-    - name=$(ls -1 sight-*)
-    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$name" --data-binary @"$name"
+    - archive=$(ls -1 sight-*)
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        new_name="sight-dev-linux_x86_64.tar.gz"
+        mv $archive $new_name
+        archive=$new_name
+      fi
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
   artifacts:
     paths:
       - .build/SightViewer*.tar.gz
       - .build/packages/sight-*.tar.gz
+
+deploy:linux:
+  extends: .linux_deploy
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:linux:
+  extends: .linux_deploy
+  when: manual
 
 build:linux-debug-gcc:
   extends: .linux_build
@@ -244,17 +267,30 @@ prebuild:windows:
       - build/SightViewer*.exe
       - build/packages/sight-*.tar.gz
 
-deploy:windows:
+.windows_deploy:
   stage: deploy
   dependencies:
     - build:windows-release
   script:
-    - cd build/packages
+    - cd build
     - $archive=ls SightViewer* | Select-Object -First 1
     - $archive=$archive.name
+    - |            
+      if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
+        $new_name=SightViewer-dev-win64.tar.gz
+        mv $archive $new_name
+        $archive=$new_name
+      }
     - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
+    - cd packages
     - $archive=ls sight-* | Select-Object -First 1
     - $archive=$archive.name
+    - |            
+      if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
+        $new_name=sight-dev-win64.tar.gz
+        mv $archive $new_name
+        $archive=$new_name
+      }
     - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
   artifacts:
     paths:
@@ -263,6 +299,17 @@ deploy:windows:
   tags:
     - conan
     - windows
+
+deploy:windows:
+  extends: .windows_deploy
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:windows:
+  extends: .windows_deploy
+  when: manual
 
 build:windows-debug:
   extends: .windows_build
