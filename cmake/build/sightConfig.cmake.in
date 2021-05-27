@@ -44,6 +44,7 @@ foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
         include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
     endif()
     include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Targets.cmake")
+    list(APPEND SIGHT_COMPONENTS sight::${sight_comp})
 endforeach()
 
 foreach(sight_comp ${sight_FIND_COMPONENTS})

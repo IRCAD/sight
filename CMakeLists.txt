@@ -249,8 +249,10 @@ install(
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/cmake/install/generic_install.cmake"
-    "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/install/get_git_rev.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/install/install_imported.cmake.in"
+    "${CMAKE_SOURCE_DIR}/cmake/install/pre_package.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}/install
   COMPONENT
@@ -370,4 +372,4 @@ if(SIGHT_GENERATE_VSCODE_WS)
     vscodeGenerator(${PROJECT_LIST})
 endif()
 
-sight_create_package_targets("${SIGHT_COMPONENTS}")
+sight_create_package_targets("${SIGHT_COMPONENTS}" "")

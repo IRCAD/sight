@@ -6,11 +6,11 @@ macro(linux_package PRJ_NAME)
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} SIGHT_TARGET_TYPE)
 
-    if("$TARGET_TYPE}" STREQUAL  "APP")
+    if("${TARGET_TYPE}" STREQUAL  "APP")
 
-        set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
-        set(LAUNCHER "sightrun.bin-${sightrun_VERSION}")
-        set(PROFILE_PATH "${PRJ_NAME}-${PROJECT_VERSION}/profile.xml")
+        set(LAUNCHER_PATH "bin/sightrun.bin-${SIGHT_VERSION}")
+        set(LAUNCHER "sightrun.bin-${SIGHT_VERSION}")
+        set(PROFILE_PATH "${PRJ_NAME}/profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
@@ -18,8 +18,8 @@ macro(linux_package PRJ_NAME)
         endif()
     elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
 
-        set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
-        set(LAUNCHER "${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin-${SIGHT_VERSION}")
+        set(LAUNCHER "${PRJ_NAME}.bin-${SIGHT_VERSION}")
         set(PROFILE_PATH "")
 
     elseif()
@@ -28,7 +28,7 @@ macro(linux_package PRJ_NAME)
 
     if(${PRJ_NAME} STREQUAL "sight")
         # Needed for fixup_bundle first argument
-        set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
+        set(LAUNCHER_PATH "bin/sightrun.bin-${SIGHT_VERSION}")
     endif()
 
     # TODO: Re-enable the fixup for sight-deps only
