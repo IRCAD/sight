@@ -38,7 +38,7 @@ namespace layoutManager
 {
 
 /**
- * @brief   Defines the tool bar layout manager for the GUI.
+ * @brief Defines the tool bar layout manager for the GUI.
  */
 class UI_QT_CLASS_API ToolBarLayoutManager : public ui::base::layoutManager::IToolBarLayoutManager
 {
