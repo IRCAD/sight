@@ -45,7 +45,7 @@ public:
 
     SIGHT_DECLARE_CLASS(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
 
-    /// Defines all possible position for a CardinalLayout
+    /// Defines all possible positions for a CardinalLayout
     typedef enum
     {
         CENTER,
@@ -85,18 +85,19 @@ public:
         bool m_useScrollBar;
         std::string m_toolTip;
 
-        /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
+        /// Background color. When given an empty string, a default background is used. To use another color, set an
+        /// hexadecimal value (it has to start with "#").
         std::string m_backgroundColor;
     };
 
-    /// Constructor. Do nothing.
+    /// Constructor. Does nothing.
     UI_BASE_API CardinalLayoutManagerBase();
 
-    /// Destructor. Do nothing.
+    /// Destructor. Does nothing.
     UI_BASE_API virtual ~CardinalLayoutManagerBase();
 
     /**
-     * @brief Initialize cardinal layout manager before the creation of layout.
+     * @brief Initializes cardinal layout manager. Must be called before the layout creation.
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
@@ -122,14 +123,15 @@ public:
      *   - \b minWidth : minimal width of the view
      *   - \b minHeight : minimal height of the view
      *   - \b resizable  {yes | no}: define if the view can be resized.
-     *   - \b position : indicates the sequential position, starting with zero. It uses if more than one view as the
-     * same align value (available only with wxWidget see wxAuiManager in wxWidgets documenattion for more details).
-     *   - \b layer : available only with wxWidget. See wxAuiManager in wxWidgets documenattion for more details
-     *   - \b row : use to place several view next to each other (available only with wxWidget). See wxAuiManager in
-     * wxWidgets documenattion for more details
+     *   - \b position : indicates the sequential position, starting with zero. It is used if more than one view have
+     * the
+     * same align value (available only with wxWidget see wxAuiManager in wxWidgets documentation for more details).
+     *   - \b layer : available only with wxWidget. See wxAuiManager in wxWidgets documentation for more details
+     *   - \b row : used to place several views next to each other (available only with wxWidget). See wxAuiManager in
+     * wxWidgets documentation for more details
      *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
      *   - \b toolTip : string that will be displayed next to the mouse pointer when it lies over the view.
-     *   - \b backgroundColor (optional) : (hexa) background color.
+     *   - \b backgroundColor (optional) : (hexadecimal format starting with "#") background color.
      */
 
     UI_BASE_API void initialize(ConfigurationType configuration) override;
@@ -149,7 +151,7 @@ private:
 
     static const std::map<std::string, Align> STRING_TO_ALIGN;
 
-    /// Save layout configuration definition
+    /// Saves layout configuration definition
     std::list<ViewInfo> m_views;
 };
 
