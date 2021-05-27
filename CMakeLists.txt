@@ -177,7 +177,7 @@ setExternalLibrariesDir()
 get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
 
 # For now, use a hardcoded list, we may compute this later from SIGHT_COMPONENTS 
-set(SIGHT_COMPONENTS "core;data;activity;service;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_zip;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_vtk;io_opencv;io_dimse;io_session;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_icons;module_ui_flaticons;module_io_activity;config_ui_activity;config_ui_datamanager;config_viz_scene2d;config_viz_scene3d;activity_navigation_calibration;geometry_vtk;activity_io_dicom;activity_io_dicomweb;activity_viz_negato")
+set(SIGHT_COMPONENTS "core;data;activity;service;atoms;geometry_eigen;geometry_data;geometry_glm;geometry_vision;io_base;io_itk;io_zip;io_vtk;io_session;filter_vision;filter_image;filter_dicom;ui_history;ui_base;ui_qml;ui_qt;ui_dicom;io_dicom;io_atoms;io_igtl;io_http;io_patch;io_opencv;io_dimse;viz_base;viz_qt3d;viz_scene2d;viz_scene3d;module_memory;module_appXml;module_sync;module_activity;module_debug;module_service;module_data;module_filter_image;module_filter_point;module_filter_vision;module_filter_mesh;module_geometry_vision;module_geometry_base;module_geometry_generator;module_io_video;module_io_dimse;module_io_itk;module_io_vtk;module_io_vision;module_io_atoms;module_io_igtl;module_io_dicomweb;module_io_document;module_io_matrix;module_io_dicom;module_io_realsense;module_navigation_calibration;module_navigation_optics;module_ui_debug;module_ui_viz;module_ui_dicom;module_ui_console;module_ui_base;module_ui_qml;module_ui_qt;module_ui_history;module_viz_scene3dQt;module_viz_scene2d;module_viz_scene3d;module_viz_sample;module_viz_qt3d;module_ui_icons;module_ui_flaticons;module_io_activity;config_ui_activity;config_ui_datamanager;config_viz_scene2d;config_viz_scene3d;activity_navigation_calibration;geometry_vtk;activity_io_dicom;activity_io_dicomweb;activity_viz_negato")
 if(NOT WIN32)
   list(APPEND SIGHT_COMPONENTS "module_io_pcl")
 endif()
@@ -270,7 +270,7 @@ if(WIN32)
       FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/package.cmake"
       DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows
       COMPONENT
         dev
     )
@@ -316,7 +316,7 @@ elseif(UNIX)
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/package.cmake"
         
       DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/install
+        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
       COMPONENT
         dev
     )
@@ -370,78 +370,4 @@ if(SIGHT_GENERATE_VSCODE_WS)
     vscodeGenerator(${PROJECT_LIST})
 endif()
 
-  # Add an install target for every component
-foreach(COMPONENT ${SIGHT_COMPONENTS})
-  get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
-  add_custom_target(${COMPONENT}_install
-                    ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${COMPONENT_BINARY_DIR}/cmake_install.cmake)
-  add_dependencies(${COMPONENT}_install ${COMPONENT})
-endforeach()
-
-get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
-foreach(APP ${SIGHT_APPS})
-  get_target_property(APP_BINARY_DIR ${APP} BINARY_DIR)
-  
-  # Add an install target for every app
-  add_custom_target(${APP}_install
-                    ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${APP_BINARY_DIR}/cmake_install.cmake)
-  add_dependencies(${APP}_install ${APP})
-  findTargetDependencies(${APP} DEPENDS)
-  
-  foreach(DEP ${DEPENDS})
-    add_dependencies(${APP}_install ${DEP}_install) 
-  endforeach()
-
-  # Used in windows_fixup.cmake.in
-  if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}/debug")
-  else()
-    set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}")
-    set(EXCLUDE_PATTERN ".*/debug/.*")
-  endif()
-
-  # Add a fixup target for every app
-  if(WIN32)
-    set(VCPKG_ROOT_DIR ${Boost_INCLUDE_DIR}/..)
-    # Use sightrun as the entry app
-    set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe") # For windows_fixup.cmake.in
-
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake @ONLY)
-    add_custom_target(${APP}_fixup
-                      ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
-                      COMMENT "Fixup before packaging...")
-    add_dependencies(${APP}_fixup ${APP}_install)
-  endif()
-
-  # Add a package target for every app
-  add_custom_target(${APP}_package
-                    ${CMAKE_CPACK_COMMAND} --config ${APP_BINARY_DIR}/CPackConfig.cmake)
-  add_dependencies(${APP}_package ${APP}_install)
-  if(WIN32)
-    add_dependencies(${APP}_package ${APP}_fixup)
-  endif()
-
-endforeach()
-
-if(UNIX)
-  execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-  set(ARCHITECTURE linux_${ARCHITECTURE})
-  set(CPACK_GENERATOR TZST)
-  set(CPACK_SOURCE_GENERATOR TZST)
-else()
-  set(ARCHITECTURE win64)
-  set(CPACK_GENERATOR ZIP)
-  set(CPACK_SOURCE_GENERATOR ZIP)
-endif()
-
-# Whole library packaging    
-set(CPACK_OUTPUT_FILE_PREFIX packages)
-set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
-
-set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${ARCHITECTURE}")
-set(CPACK_PACKAGE_VENDOR "IRCAD")
-set(CPACK_PACKAGE_NAME "Sight")
-set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
-set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
-set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
-include(CPack)
+sight_create_package_targets("${SIGHT_COMPONENTS}")
