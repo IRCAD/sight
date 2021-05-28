@@ -171,8 +171,11 @@ build:linux-release-clang:
         mv $archive $new_name
         archive=$new_name
       fi
+    - >
       if [ "$BUILD_TYPE" == "debug" ]; then
-        archive=${archive/linux/dbg-linux}
+        new_name=${archive/linux/dbg-linux}
+        mv $archive $new_name
+        archive=$new_name
       fi
     - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
   artifacts:
@@ -302,7 +305,7 @@ build:windows-debug:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Debug"
-    SIGHT_BUILD_PACKAGE: "OFF"
+    SIGHT_BUILD_PACKAGE: "ON"
 
 build:windows-release:
   extends: .windows_build
@@ -312,25 +315,31 @@ build:windows-release:
 
 .windows_deploy:
   stage: deploy
-  dependencies:
-    - build:windows-release
   script:
     - cd build
-    - $archive=ls SightViewer* | Select-Object -First 1
-    - $archive=$archive.name
-    - |            
-      if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-        $new_name="SightViewer-dev-win64.exe"
-        mv $archive $new_name
-        $archive=$new_name
+    - |
+      if ("$BUILD_TYPE" -eq "release" ) {
+        $archive=ls SightViewer* | Select-Object -First 1
+        $archive=$archive.name
+        if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
+          $new_name="SightViewer-dev-win64.exe"
+          mv $archive $new_name
+          $archive=$new_name
+        }
+        curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
       }
-    - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
     - cd packages
     - $archive=ls sight-* | Select-Object -First 1
     - $archive=$archive.name
     - |            
       if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
         $new_name="sight-dev-win64.zip"
+        mv $archive $new_name
+        $archive=$new_name
+      }
+    - |
+      if ("$BUILD_TYPE" -eq "debug") {
+        $new_name=$archive.replace("win64", "dbg-win64")
         mv $archive $new_name
         $archive=$new_name
       }
@@ -343,15 +352,42 @@ build:windows-release:
     - conan
     - windows
 
-deploy:windows:
+deploy:windows-debug:
   extends: .windows_deploy
+  dependencies:
+    - build:windows-debug
+  variables:
+    BUILD_TYPE: "debug"
   only:
     refs:
       - master
       - dev
 
-deploy_manual:windows:
+deploy_manual:windows-debug:
   extends: .windows_deploy
+  dependencies:
+    - build:windows-debug
+  variables:
+    BUILD_TYPE: "debug"
+  when: manual
+
+deploy:windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    BUILD_TYPE: "release"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    BUILD_TYPE: "release"
   when: manual
 
 deploy:pages:
