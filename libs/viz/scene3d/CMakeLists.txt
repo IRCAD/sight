@@ -32,9 +32,6 @@ if(WIN32)
 
     # This copies the plugins into the build directory
     file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-
-    # This copies the plugins into the install directory
-    install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "ogrePlugins/")
 endif()
 
 

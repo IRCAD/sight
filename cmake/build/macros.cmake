@@ -976,25 +976,30 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     # Add an install target for every component
     foreach(COMPONENT ${SIGHT_COMPONENTS})
-        get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
-        add_custom_target(${COMPONENT}_install
-                            ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${COMPONENT_BINARY_DIR}/cmake_install.cmake)
-        add_dependencies(${COMPONENT}_install ${COMPONENT})
-
+        if(NOT ${COMPONENT} MATCHES "_obj")
+            get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
+            add_custom_target(${COMPONENT}_install
+                                ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${COMPONENT_BINARY_DIR}/cmake_install.cmake)
+            add_dependencies(${COMPONENT}_install ${COMPONENT})
+        endif()
         get_target_property(DEPENDENCIES ${COMPONENT} MANUALLY_ADDED_DEPENDENCIES)
         list(FILTER DEPENDENCIES EXCLUDE REGEX "_rc")
         list(TRANSFORM DEPENDENCIES PREPEND ${SIGHT_REPOSITORY}::)
         set_target_properties(${COMPONENT} PROPERTIES SIGHT_MODULE_DEPENDENCIES "${DEPENDENCIES}")
     endforeach()
 
+    if(WIN32)
+        # Might be needed later to get ${OGRE_PLUGIN_DIR}
+        find_package(OGRE REQUIRED)
+    endif()
     get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
     foreach(APP ${SIGHT_APPS})
         get_target_property(APP_BINARY_DIR ${APP} BINARY_DIR)
         set(IMPORTED_RC_DIRS "")
         set(IMPORTED_LIBS "")
         
-        findTargetDependencies(${APP} "${SIGHT_IMPORTED_COMPONENTS}" DEPENDS)
-        foreach(DEP ${DEPENDS})
+        findTargetDependencies(${APP} "${SIGHT_IMPORTED_COMPONENTS}" IMPORTED_DEPENDS)
+        foreach(DEP ${IMPORTED_DEPENDS})
             get_target_property(CONFIG ${DEP} IMPORTED_CONFIGURATIONS)
             get_target_property(LIB ${DEP} IMPORTED_LOCATION_${CONFIG})
             if(LIB)
@@ -1029,16 +1034,31 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
         findTargetDependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
         foreach(DEP ${DEPENDS})
-            add_dependencies(${APP}_install ${DEP}_install) 
+            if(NOT ${DEP} MATCHES "_obj")
+                add_dependencies(${APP}_install ${DEP}_install) 
+            endif()
         endforeach()
-
+        
         # Add a fixup target for every app
         if(WIN32)
+            list(APPEND DEPENDS ${IMPORTED_DEPENDS})
+            add_custom_target(${APP}_install_plugins
+                ${CMAKE_COMMAND} -DDEPENDS="${DEPENDS}"
+                                 -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
+                                 -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins" 
+                                 -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/qt5"
+                                 -DOGRE_PLUGIN_DIR="${OGRE_PLUGIN_DIR}"
+                                 -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+                                 -P "${FWCMAKE_RESOURCE_PATH}/install/windows/install_plugins.cmake"
+                COMMENT "Install plugins..."
+            )
+            add_dependencies(${APP}_install_plugins ${APP}_install)
+
             # Used in windows_fixup.cmake.in
             if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-                set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}/debug")
+                set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
             else()
-                set(SIGHT_VCPKG_ROOT_DIR "${VCPKG_ROOT_DIR}")
+                set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
                 set(EXCLUDE_PATTERN ".*/debug/.*")
             endif()
             set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
@@ -1047,7 +1067,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             add_custom_target(${APP}_fixup
                             ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
                             COMMENT "Fixup before packaging...")
-            add_dependencies(${APP}_fixup ${APP}_install)
+            add_dependencies(${APP}_fixup ${APP}_install ${APP}_install_plugins)
         endif()
 
         # Add a package target for every app

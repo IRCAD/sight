@@ -278,6 +278,7 @@ if(WIN32)
     )
     install(
       FILES
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/install_plugins.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"

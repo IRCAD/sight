@@ -14,11 +14,6 @@ target_link_libraries(ui_qt PUBLIC
                       service
 )
 
-if(WIN32)
-    # install all Qt5 plugins
-    install(DIRECTORY "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins" DESTINATION "${CMAKE_INSTALL_BINDIR}/qt5")
-endif()
-
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
 endif(SIGHT_BUILD_TESTS)
