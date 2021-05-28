@@ -110,46 +110,6 @@ lint:sheldon:
       - .build/SightViewer*.tar.zst
       - .build/packages/sight-*.tar.zst
 
-.linux_deploy:
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
-  stage: deploy
-  dependencies:
-    - build:linux-release-clang
-  script:
-    - cd .build/
-    - archive=$(ls -1 SightViewer*)
-    - >
-      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name="SightViewer-dev-linux_x86_64.tar.zst"
-        mv $archive $new_name
-        archive=$new_name
-      fi
-    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
-    - cd packages
-    - archive=$(ls -1 sight-*)
-    - >
-      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name="sight-dev-linux_x86_64.tar.zst"
-        mv $archive $new_name
-        archive=$new_name
-      fi
-    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
-  artifacts:
-    paths:
-      - .build/SightViewer*.tar.zst
-      - .build/packages/sight-*.tar.zst
-
-deploy:linux:
-  extends: .linux_deploy
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:linux:
-  extends: .linux_deploy
-  when: manual
-
 build:linux-debug-gcc:
   extends: .linux_build
   variables:
@@ -173,7 +133,7 @@ build:linux-debug-clang:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "OFF"
+    SIGHT_BUILD_PACKAGE: "ON"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
@@ -186,6 +146,77 @@ build:linux-release-clang:
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
+.linux_deploy:
+  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  variables:
+    BUILD_TYPE: "release"
+  stage: deploy
+  script:
+    - cd .build/
+    - >
+      if [ "$BUILD_TYPE" == "release" ]; then
+        archive=$(ls -1 SightViewer*)
+        if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+          new_name="SightViewer-dev-linux_x86_64.tar.zst"
+          mv $archive $new_name
+          archive=$new_name
+        fi
+        curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
+      fi
+    - cd packages
+    - archive=$(ls -1 sight-*)
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        new_name="sight-dev-linux_x86_64.tar.zst"
+        mv $archive $new_name
+        archive=$new_name
+      fi
+      if [ "$BUILD_TYPE" == "debug" ]; then
+        archive=${archive/linux/dbg-linux}
+      fi
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
+  artifacts:
+    paths:
+      - .build/SightViewer*.tar.zst
+      - .build/packages/sight-*.tar.zst
+
+deploy:linux-debug:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-debug-clang
+  variables:
+    BUILD_TYPE: "debug"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:linux-debug:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-debug-clang
+  variables:
+    BUILD_TYPE: "debug"
+  when: manual
+
+deploy:linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-release-clang
+  variables:
+    BUILD_TYPE: "release"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-release-clang
+  variables:
+    BUILD_TYPE: "release"
+  when: manual
 
 .windows_before:
   dependencies: []
@@ -267,6 +298,18 @@ prebuild:windows:
       - build/SightViewer*.exe
       - build/packages/sight-*.zip
 
+build:windows-debug:
+  extends: .windows_build
+  variables:
+    BUILD_TYPE: "Debug"
+    SIGHT_BUILD_PACKAGE: "OFF"
+
+build:windows-release:
+  extends: .windows_build
+  variables:
+    BUILD_TYPE: "Release"
+    SIGHT_BUILD_PACKAGE: "ON"
+
 .windows_deploy:
   stage: deploy
   dependencies:
@@ -310,18 +353,6 @@ deploy:windows:
 deploy_manual:windows:
   extends: .windows_deploy
   when: manual
-
-build:windows-debug:
-  extends: .windows_build
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_BUILD_PACKAGE: "OFF"
-
-build:windows-release:
-  extends: .windows_build
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_PACKAGE: "ON"
 
 deploy:pages:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
