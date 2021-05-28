@@ -1,7 +1,7 @@
 if(WIN32)
     include(${FWCMAKE_INSTALL_FILES_DIR}/windows/package.cmake)
 elseif(UNIX)
-    #Don't use rpath at install step
+    #Don't use rpath at install step to be relocatable
     set(CMAKE_SKIP_INSTALL_RPATH ON)
     include(${FWCMAKE_INSTALL_FILES_DIR}/linux/package.cmake)
 endif()

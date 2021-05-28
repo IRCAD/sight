@@ -40,10 +40,12 @@ file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULE
 file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
 
 foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
-        include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+    if(NOT ${sight_comp} MATCHES "_obj")
+        if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+            include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+        endif()
+        include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Targets.cmake")
     endif()
-    include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Targets.cmake")
     list(APPEND SIGHT_COMPONENTS sight::${sight_comp})
 endforeach()
 
