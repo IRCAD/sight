@@ -35,6 +35,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -90,10 +91,11 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
-    typedef core::com::Signal< void (std::string) > ActivityIDSelectedSignalType;
+    typedef core::com::Signal<void (std::string)> ActivityIDSelectedSignalType;
 
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_LOAD_REQUESTED_SIG;
-    typedef core::com::Signal< void () > LoadRequestedSignalType;
+    typedef core::com::Signal<void ()> LoadRequestedSignalType;
+
     /// @}
 
 protected:
@@ -110,7 +112,7 @@ protected:
     /// Show activity selector.
     void updating() override;
 
-    typedef std::vector< std::string > KeysType;
+    typedef std::vector<std::string> KeysType;
 
 private Q_SLOTS:
 
@@ -146,4 +148,5 @@ private:
 };
 
 } // namespace activity
+
 } // namespace sight::module::ui::qt

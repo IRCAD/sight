@@ -58,8 +58,11 @@ static const service::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
 
 SSeriesPuller::SSeriesPuller() noexcept
 {
-    m_slotStoreInstance = this->newSlot(sight::io::dimse::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
-                                        &SSeriesPuller::storeInstanceCallback, this);
+    m_slotStoreInstance = this->newSlot(
+        sight::io::dimse::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
+        &SSeriesPuller::storeInstanceCallback,
+        this
+    );
 
     m_sigProgressed      = this->newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
     m_sigProgressStarted = this->newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
@@ -96,7 +99,7 @@ void SSeriesPuller::starting()
     // Create the DICOM reader.
     m_seriesDB = data::SeriesDB::New();
 
-    m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
@@ -104,12 +107,16 @@ void SSeriesPuller::starting()
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
-                m_readerConfig, "sight::io::base::service::IReader");
+                m_readerConfig,
+                "sight::io::base::service::IReader"
+            );
 
-        SIGHT_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-                     readerConfig);
+        SIGHT_ASSERT(
+            "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+            readerConfig
+        );
 
-        m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
+        m_dicomReader->setConfiguration(core::runtime::ConfigurationElement::constCast(readerConfig));
     }
 
     m_dicomReader->configure();
@@ -121,12 +128,13 @@ void SSeriesPuller::starting()
 
 void SSeriesPuller::updating()
 {
-    const auto selectedSeries = this->getLockedInput< const data::Vector >(s_SELECTED_INPUT);
+    const auto selectedSeries = this->getLockedInput<const data::Vector>(s_SELECTED_INPUT);
 
     if(selectedSeries->empty())
     {
-        const auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
-            service::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
+            service::IService::s_INFO_NOTIFIED_SIG
+        );
         notif->asyncEmit("No series selected");
     }
     else
@@ -161,7 +169,7 @@ void SSeriesPuller::pullSeries()
     m_instanceCount = 0;
 
     // Retrieve data.
-    const auto selectedSeries = this->getLockedInput< const data::Vector >(s_SELECTED_INPUT);
+    const auto selectedSeries = this->getLockedInput<const data::Vector>(s_SELECTED_INPUT);
     const auto localEnd       = m_localSeries.end();
 
     // Find which selected series must be pulled.
@@ -169,7 +177,7 @@ void SSeriesPuller::pullSeries()
     DicomSeriesContainerType selectedSeriesVector;
     data::Vector::ConstIteratorType it          = selectedSeries->begin();
     const data::Vector::ConstIteratorType itEnd = selectedSeries->end();
-    for(; it != itEnd; ++it)
+    for( ; it != itEnd ; ++it)
     {
         // Check that the series is a DICOM series.
         data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
@@ -183,21 +191,23 @@ void SSeriesPuller::pullSeries()
             pullSeriesVector.push_back(series);
             m_instanceCount += series->getNumberOfInstances();
         }
+
         selectedSeriesVector.push_back(series);
     }
 
     // Pull series.
     if(!pullSeriesVector.empty())
     {
-        const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
-            service::IService::s_INFO_NOTIFIED_SIG);
+        const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
+            service::IService::s_INFO_NOTIFIED_SIG
+        );
         infoNotif->asyncEmit("Downloading series...");
 
         // Notify Progress Dialog.
         m_sigProgressStarted->asyncEmit(m_progressbarId);
 
         // Retrieve informations.
-        const auto pacsConfig = this->getLockedInput< const sight::io::dimse::data::PacsConfiguration >(s_PACS_INPUT);
+        const auto pacsConfig = this->getLockedInput<const sight::io::dimse::data::PacsConfiguration>(s_PACS_INPUT);
 
         auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -209,14 +219,16 @@ void SSeriesPuller::pullSeries()
                 pacsConfig->getPacsHostName(),
                 pacsConfig->getPacsApplicationPort(),
                 pacsConfig->getPacsApplicationTitle(),
-                pacsConfig->getMoveApplicationTitle());
+                pacsConfig->getMoveApplicationTitle()
+            );
             seriesEnquirer->connect();
         }
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
-                service::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto failureNotif = this->signal<service::IService::FailureNotifiedSignalType>(
+                service::IService::s_FAILURE_NOTIFIED_SIG
+            );
             failureNotif->asyncEmit("Unable to connect to the PACS");
             return;
         }
@@ -228,38 +240,49 @@ void SSeriesPuller::pullSeries()
             using sight::io::dimse::helper::Series;
             if(pacsConfig->getRetrieveMethod() == sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD)
             {
-                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(Series::toSeriesInstanceUIDContainer(
-                                                                     pullSeriesVector));
+                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(
+                    Series::toSeriesInstanceUIDContainer(
+                        pullSeriesVector
+                    )
+                );
             }
-            else if(pacsConfig->getRetrieveMethod() ==
-                    sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
+            else if(pacsConfig->getRetrieveMethod()
+                    == sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
             {
                 auto seriesRetriever = sight::io::dimse::SeriesRetriever::New();
                 seriesRetriever->initialize(
                     pacsConfig->getMoveApplicationTitle(),
                     pacsConfig->getMoveApplicationPort(),
                     1,
-                    m_slotStoreInstance);
+                    m_slotStoreInstance
+                );
 
                 // Start series retriever in a worker.
                 worker->post(std::bind(&sight::io::dimse::SeriesRetriever::start, seriesRetriever));
 
                 // Pull Selected Series.
-                seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(Series::toSeriesInstanceUIDContainer(
-                                                                      pullSeriesVector));
+                seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(
+                    Series::toSeriesInstanceUIDContainer(
+                        pullSeriesVector
+                    )
+                );
             }
             else
             {
                 SIGHT_ERROR("Unknown retrieve method, 'get' will be used");
-                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(Series::toSeriesInstanceUIDContainer(
-                                                                     pullSeriesVector));
+                seriesEnquirer->pullSeriesUsingGetRetrieveMethod(
+                    Series::toSeriesInstanceUIDContainer(
+                        pullSeriesVector
+                    )
+                );
             }
         }
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
-                service::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto failureNotif = this->signal<service::IService::FailureNotifiedSignalType>(
+                service::IService::s_FAILURE_NOTIFIED_SIG
+            );
             failureNotif->asyncEmit("Unable to execute query");
 
             success = false;
@@ -277,8 +300,9 @@ void SSeriesPuller::pullSeries()
     }
     else
     {
-        const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
-            service::IService::s_INFO_NOTIFIED_SIG);
+        const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
+            service::IService::s_INFO_NOTIFIED_SIG
+        );
         infoNotif->asyncEmit("Series already downloaded");
 
         return;
@@ -287,16 +311,18 @@ void SSeriesPuller::pullSeries()
     // Read series if there is no error.
     if(success)
     {
-        const auto sucessNotif = this->signal< service::IService::SuccessNotifiedSignalType >(
-            service::IService::s_SUCCESS_NOTIFIED_SIG);
+        const auto sucessNotif = this->signal<service::IService::SuccessNotifiedSignalType>(
+            service::IService::s_SUCCESS_NOTIFIED_SIG
+        );
         sucessNotif->asyncEmit("Series downloaded");
 
         this->readLocalSeries(selectedSeriesVector);
     }
     else
     {
-        const auto failNotif = this->signal< service::IService::FailureNotifiedSignalType >(
-            service::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto failNotif = this->signal<service::IService::FailureNotifiedSignalType>(
+            service::IService::s_FAILURE_NOTIFIED_SIG
+        );
         failNotif->asyncEmit("Series download failed");
     }
 
@@ -308,23 +334,26 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 {
-    const auto destinationSeriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
+    const auto destinationSeriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIES_DB_INOUT);
 
     // Read only series that are not in the series DB.
-    std::vector< std::string > alreadyLoadedSeries =
+    std::vector<std::string> alreadyLoadedSeries =
         sight::io::dimse::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
     // Create temporary series helper.
     data::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
-    const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
-        service::IService::s_INFO_NOTIFIED_SIG);
-    const auto failNotif = this->signal< service::IService::FailureNotifiedSignalType >(
-        service::IService::s_FAILURE_NOTIFIED_SIG);
-    const auto sucessNotif = this->signal< service::IService::SuccessNotifiedSignalType >(
-        service::IService::s_SUCCESS_NOTIFIED_SIG);
+    const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
+        service::IService::s_INFO_NOTIFIED_SIG
+    );
+    const auto failNotif = this->signal<service::IService::FailureNotifiedSignalType>(
+        service::IService::s_FAILURE_NOTIFIED_SIG
+    );
+    const auto sucessNotif = this->signal<service::IService::SuccessNotifiedSignalType>(
+        service::IService::s_SUCCESS_NOTIFIED_SIG
+    );
 
-    for(const data::Series::sptr& series: _selectedSeries)
+    for(const data::Series::sptr& series : _selectedSeries)
     {
         const std::string modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
@@ -336,8 +365,11 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         const std::string selectedSeriesUID = series->getInstanceUID();
 
         // Check if the series is loaded.
-        if(std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
-                     selectedSeriesUID) == alreadyLoadedSeries.end())
+        if(std::find(
+               alreadyLoadedSeries.begin(),
+               alreadyLoadedSeries.end(),
+               selectedSeriesUID
+           ) == alreadyLoadedSeries.end())
         {
             infoNotif->asyncEmit("Reading serie...");
 
@@ -373,7 +405,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::removeSeries( data::SeriesDB::ContainerType _removedSeries)
+void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 {
     // Find which series to delete
     if(!m_localSeries.empty())
@@ -385,8 +417,9 @@ void SSeriesPuller::removeSeries( data::SeriesDB::ContainerType _removedSeries)
             {
                 m_localSeries.erase(it);
 
-                const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
-                    service::IService::s_INFO_NOTIFIED_SIG);
+                const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
+                    service::IService::s_INFO_NOTIFIED_SIG
+                );
                 infoNotif->asyncEmit("Local series deleted");
             }
         }
@@ -395,8 +428,11 @@ void SSeriesPuller::removeSeries( data::SeriesDB::ContainerType _removedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUID, unsigned int _instanceNumber,
-                                          const ::std::string& _filePath)
+void SSeriesPuller::storeInstanceCallback(
+    const ::std::string& _seriesInstanceUID,
+    unsigned int _instanceNumber,
+    const ::std::string& _filePath
+)
 {
     // Add path in the DICOM series.
     if(!m_pullingDicomSeriesMap[_seriesInstanceUID].expired())
@@ -412,7 +448,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
     // Notify progress dialog.
     ::std::stringstream ss;
     ss << "Downloading file " << _instanceNumber << "/" << m_instanceCount;
-    float percentage = static_cast<float>(_instanceNumber)/static_cast<float>(m_instanceCount);
+    float percentage = static_cast<float>(_instanceNumber) / static_cast<float>(m_instanceCount);
     m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
 }
 

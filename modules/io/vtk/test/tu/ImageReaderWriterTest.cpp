@@ -316,8 +316,10 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 
     // Use standard information for spacing and origin
     // As the data will be lost in the file format
-    const data::Image::Spacing spacingExpected = {1., 1., 0};
-    const data::Image::Origin originExpected   = {0., 0., 0.};
+    const data::Image::Spacing spacingExpected = {1., 1., 0
+    };
+    const data::Image::Origin originExpected = {0., 0., 0.
+    };
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(
@@ -389,10 +391,13 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    core::tools::Type type                     = core::tools::Type::s_UINT8;
-    const data::Image::Size sizeExpected       = {10, 20, 30};
-    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type               = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected = {10, 20, 30
+    };
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
+    };
+    const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
+    };
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(
@@ -479,10 +484,13 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    core::tools::Type type                     = core::tools::Type::s_UINT8;
-    const data::Image::Size sizeExpected       = {10, 20, 30};
-    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type               = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected = {10, 20, 30
+    };
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
+    };
+    const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
+    };
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(
@@ -540,10 +548,13 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    core::tools::Type type                     = core::tools::Type::s_UINT8;
-    const data::Image::Size sizeExpected       = {10, 20, 30};
-    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type               = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected = {10, 20, 30
+    };
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
+    };
+    const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
+    };
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(
@@ -601,10 +612,13 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    core::tools::Type type                     = core::tools::Type::s_UINT8;
-    const data::Image::Size sizeExpected       = {10, 20, 30};
-    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21};
-    const data::Image::Origin originExpected   = {-5.6, 15.16, 11.11};
+    core::tools::Type type               = core::tools::Type::s_UINT8;
+    const data::Image::Size sizeExpected = {10, 20, 30
+    };
+    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
+    };
+    const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
+    };
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(

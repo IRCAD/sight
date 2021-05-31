@@ -48,7 +48,6 @@ const core::com::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "
 SeriesEnquirer::SeriesEnquirer() :
     m_progressCallback(ProgressCallbackSlotType::sptr())
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -59,12 +58,14 @@ SeriesEnquirer::~SeriesEnquirer()
 
 //------------------------------------------------------------------------------
 
-void SeriesEnquirer::initialize(const std::string& _applicationTitle,
-                                const std::string& _peerHostName,
-                                unsigned short _peerPort,
-                                const std::string& _peerApplicationTitle,
-                                const std::string& _moveApplicationTitle,
-                                ProgressCallbackSlotType::sptr _progressCallback)
+void SeriesEnquirer::initialize(
+    const std::string& _applicationTitle,
+    const std::string& _peerHostName,
+    unsigned short _peerPort,
+    const std::string& _peerApplicationTitle,
+    const std::string& _moveApplicationTitle,
+    ProgressCallbackSlotType::sptr _progressCallback
+)
 {
     // Save move application title for move requests.
     m_moveApplicationTitle = _moveApplicationTitle;
@@ -74,7 +75,7 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
 
     // Creating folder.
     m_path = core::tools::System::getTemporaryFolder() / "dicom/";
-    if (!m_path.empty() && !std::filesystem::exists(m_path))
+    if(!m_path.empty() && !std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);
     }
@@ -85,16 +86,18 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     this->setPeerPort(_peerPort);
     this->setPeerAETitle(_peerApplicationTitle.c_str());
 
-    SIGHT_INFO("Initialize connection to (" +
-               std::string(this->getPeerAETitle().c_str()) + ") " +
-               std::string(this->getPeerHostName().c_str()) + ":" +
-               std::to_string(this->getPeerPort()))
+    SIGHT_INFO(
+        "Initialize connection to ("
+        + std::string(this->getPeerAETitle().c_str()) + ") "
+        + std::string(this->getPeerHostName().c_str()) + ":"
+        + std::to_string(this->getPeerPort())
+    )
 
     // Clear presentation context.
     this->clearPresentationContexts();
 
     // Use presentation context for C-FIND/C-MOVE in study root, propose all uncompressed transfer syntaxes.
-    OFList < OFString > transferSyntaxes;
+    OFList<OFString> transferSyntaxes;
     transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
     transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
     transferSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
@@ -140,7 +143,7 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     this->addPresentationContext(UID_GETStudyRootQueryRetrieveInformationModel, transferSyntaxes);
 
     // Add presentation context for C-GET store requests.
-    for (Uint16 j = 0; j < numberOfDcmLongSCUStorageSOPClassUIDs; j++)
+    for(Uint16 j = 0 ; j < numberOfDcmLongSCUStorageSOPClassUIDs ; j++)
     {
         this->addPresentationContext(dcmLongSCUStorageSOPClassUIDs[j], transferSyntaxes, ASC_SC_ROLE_SCP);
     }
@@ -150,14 +153,16 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
 
 bool SeriesEnquirer::connect()
 {
-    SIGHT_INFO("Connect to (" +
-               std::string(this->getPeerAETitle().c_str()) + ") " +
-               std::string(this->getPeerHostName().c_str()) + ":" +
-               std::to_string(this->getPeerPort()))
+    SIGHT_INFO(
+        "Connect to ("
+        + std::string(this->getPeerAETitle().c_str()) + ") "
+        + std::string(this->getPeerHostName().c_str()) + ":"
+        + std::to_string(this->getPeerPort())
+    )
 
     // Initialize network.
     OFCondition result = this->initNetwork();
-    if (result.bad())
+    if(result.bad())
     {
         const std::string msg = "Unable to set up the network: " + std::string(result.text());
         throw io::dimse::exceptions::NetworkInitializationFailure(msg);
@@ -165,14 +170,13 @@ bool SeriesEnquirer::connect()
 
     // Negotiate association.
     result = this->negotiateAssociation();
-    if (result.bad())
+    if(result.bad())
     {
         const std::string msg = "Unable to negotiate association: " + std::string(result.text());
         throw io::dimse::exceptions::NegociateAssociationFailure(msg);
     }
 
     return true;
-
 }
 
 //------------------------------------------------------------------------------
@@ -194,22 +198,24 @@ bool SeriesEnquirer::pingPacs()
 
 void SeriesEnquirer::disconnect()
 {
-    SIGHT_INFO("Disconnect from (" +
-               std::string(this->getPeerAETitle().c_str()) + ") " +
-               std::string(this->getPeerHostName().c_str()) + ":" +
-               std::to_string(this->getPeerPort()))
+    SIGHT_INFO(
+        "Disconnect from ("
+        + std::string(this->getPeerAETitle().c_str()) + ") "
+        + std::string(this->getPeerHostName().c_str()) + ":"
+        + std::to_string(this->getPeerPort())
+    )
     this->releaseAssociation();
 }
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
+OFList<QRResponse*> SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
 {
-    OFList< QRResponse* > findResponses;
+    OFList<QRResponse*> findResponses;
 
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_FINDStudyRootQueryRetrieveInformationModel);
-    if (presID == 0)
+    if(presID == 0)
     {
         const std::string msg = "There is no uncompressed presentation context for Study Root FIND";
         throw io::dimse::exceptions::PresentationContextMissing(msg);
@@ -237,7 +243,7 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
     SIGHT_WARN_IF("There is no uncompressed presentation context for Study Root MOVE", presID == 0);
 
     // Fetches all images of this particular study.
-    OFList< RetrieveResponse* > dataResponse;
+    OFList<RetrieveResponse*> dataResponse;
     std::ostringstream stream;
     _dataset.print(stream);
     SIGHT_INFO("Send C-MOVE request : " + stream.str())
@@ -254,13 +260,13 @@ OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_GETStudyRootQueryRetrieveInformationModel);
 
-    if (presID == 0)
+    if(presID == 0)
     {
         SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
     // Fetches all images of this particular study.
-    OFList< RetrieveResponse* > dataResponse;
+    OFList<RetrieveResponse*> dataResponse;
     std::ostringstream stream;
     _dataset.print(stream);
     SIGHT_INFO("Send C-GET request : " + stream.str())
@@ -274,7 +280,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
 
-    if (presID == 0)
+    if(presID == 0)
     {
         SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
@@ -292,12 +298,13 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
 
-    if (presID == 0)
+    if(presID == 0)
     {
         SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
     Uint16 rspStatusCode;
+
     // const_cast required to use bad DCMTK sendSTORERequest API
     DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
     SIGHT_INFO("Send C-STORE request")
@@ -307,7 +314,7 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string& _name)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByPatientName(const std::string& _name)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -367,7 +374,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientName(const std::string&
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& _uid)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByPatientUID(const std::string& _uid)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -427,7 +434,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientUID(const std::string& 
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientBirthDate(const std::string& _birthDate)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByPatientBirthDate(const std::string& _birthDate)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -486,14 +493,14 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByPatientBirthDate(const std::st
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromDate, const std::string& _toDate)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByDate(const std::string& _fromDate, const std::string& _toDate)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
     dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
 
     // Search by series UID.
-    const std::string searchString = _fromDate +"-" + _toDate;
+    const std::string searchString = _fromDate + "-" + _toDate;
     dataset.putAndInsertOFStringArray(DCM_StudyDate, searchString.c_str());
 
     // Fields needed by Series.
@@ -546,7 +553,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByDate(const std::string& _fromD
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByUID(const std::string& _uid)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -606,7 +613,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByUID(const std::string& _uid)
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _modality)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByModality(const std::string& _modality)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -666,7 +673,7 @@ OFList< QRResponse* > SeriesEnquirer::findSeriesByModality(const std::string& _m
 
 //------------------------------------------------------------------------------
 
-OFList< QRResponse* > SeriesEnquirer::findSeriesByDescription(const std::string& _description)
+OFList<QRResponse*> SeriesEnquirer::findSeriesByDescription(const std::string& _description)
 {
     // Dataset used to store query informations.
     DcmDataset dataset;
@@ -737,9 +744,9 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
     ss << _instanceNumber;
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, ss.str().c_str());
 
-    OFList< QRResponse* > responses = this->sendFindRequest(dataset);
-    OFIterator< QRResponse* > it    = responses.begin();
-    std::string sopInstanceUID      = "";
+    OFList<QRResponse*> responses = this->sendFindRequest(dataset);
+    OFIterator<QRResponse*> it    = responses.begin();
+    std::string sopInstanceUID    = "";
     if(it != responses.end() && (*it)->m_dataset)
     {
         OFString sop;
@@ -748,14 +755,13 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
     }
 
     //Release responses.
-    while (!responses.empty())
+    while(!responses.empty())
     {
         delete responses.front();
         responses.pop_front();
     }
 
     return sopInstanceUID;
-
 }
 
 //------------------------------------------------------------------------------
@@ -768,7 +774,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
     DcmDataset dataset;
     OFCondition result;
 
-    for( std::string seriesInstanceUID: _instanceUIDContainer )
+    for(std::string seriesInstanceUID : _instanceUIDContainer)
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
@@ -776,18 +782,17 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
         // Fetches all images of this particular study.
         result = this->sendMoveRequest(dataset);
 
-        if (result.good())
+        if(result.good())
         {
         }
         else
         {
             const std::string msg = "Unable to send a C-MOVE request to the server. "
-                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) + ") : "
                                     + std::string(result.text());
             throw io::dimse::exceptions::RequestFailure(msg);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -800,7 +805,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
     DcmDataset dataset;
     OFCondition result;
 
-    for( std::string seriesInstanceUID: _instanceUIDContainer )
+    for(std::string seriesInstanceUID : _instanceUIDContainer)
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
@@ -808,13 +813,13 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
         // Fetches all images of this particular study.
         result = this->sendGetRequest(dataset);
 
-        if (result.good())
+        if(result.good())
         {
         }
         else
         {
             const std::string msg = "Unable to send a C-GET request to the server. "
-                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) + ") : "
                                     + std::string(result.text());
             throw io::dimse::exceptions::RequestFailure(msg);
         }
@@ -823,8 +828,10 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
 
 //------------------------------------------------------------------------------
 
-void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
-                                                         const std::string& _sopInstanceUID)
+void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(
+    const std::string& _seriesInstanceUID,
+    const std::string& _sopInstanceUID
+)
 {
     // Reset instance count.
     m_instanceIndex = 0;
@@ -840,13 +847,13 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
     // Fetches all images of this particular study.
     result = this->sendMoveRequest(dataset);
 
-    if (result.good())
+    if(result.good())
     {
     }
     else
     {
         const std::string msg = "Unable to send a C-MOVE request to the server. "
-                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) +") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) + ") : "
                                 + std::string(result.text());
         throw io::dimse::exceptions::RequestFailure(msg);
     }
@@ -854,8 +861,10 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& _ser
 
 //------------------------------------------------------------------------------
 
-void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
-                                                        const std::string& _sopInstanceUID)
+void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(
+    const std::string& _seriesInstanceUID,
+    const std::string& _sopInstanceUID
+)
 {
     // Reset instance count.
     m_instanceIndex = 0;
@@ -871,13 +880,13 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& _seri
     // Fetches all images of this particular study.
     result = this->sendGetRequest(dataset);
 
-    if (result.good())
+    if(result.good())
     {
     }
     else
     {
         const std::string msg = "Unable to send a C-GET request to the server. "
-                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) +") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) + ") : "
                                 + std::string(result.text());
         throw io::dimse::exceptions::RequestFailure(msg);
     }
@@ -893,11 +902,11 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
     OFCondition result;
 
     // Send images to pacs.
-    for(const std::filesystem::path& path: _pathContainer)
+    for(const std::filesystem::path& path : _pathContainer)
     {
         result = this->sendStoreRequest(path);
 
-        if (result.good())
+        if(result.good())
         {
         }
         else
@@ -911,7 +920,6 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
         {
             m_progressCallback->asyncRun("", ++m_instanceIndex, path.string());
         }
-
     }
 }
 
@@ -922,12 +930,13 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
     // Reset instance count.
     m_instanceIndex = 0;
     OFCondition result;
+
     // Send images to pacs.
     for(const auto& dataset : _datasetContainer)
     {
         result = this->sendStoreRequest(dataset);
 
-        if (result.good())
+        if(result.good())
         {
         }
         else
@@ -946,9 +955,11 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
 
 //------------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID _presID,
-                                               RetrieveResponse* _response,
-                                               OFBool& _waitForNextResponse)
+OFCondition SeriesEnquirer::handleMOVEResponse(
+    const T_ASC_PresentationContextID _presID,
+    RetrieveResponse* _response,
+    OFBool& _waitForNextResponse
+)
 {
     OFCondition result = DcmSCU::handleMOVEResponse(_presID, _response, _waitForNextResponse);
 
@@ -967,10 +978,12 @@ OFCondition SeriesEnquirer::handleMOVEResponse(const T_ASC_PresentationContextID
 
 //------------------------------------------------------------------------------
 
-OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID,
-                                               DcmDataset* _incomingObject,
-                                               OFBool&,
-                                               Uint16&)
+OFCondition SeriesEnquirer::handleSTORERequest(
+    const T_ASC_PresentationContextID,
+    DcmDataset* _incomingObject,
+    OFBool&,
+    Uint16&
+)
 {
     OFCondition result;
 
@@ -998,8 +1011,16 @@ OFCondition SeriesEnquirer::handleSTORERequest(const T_ASC_PresentationContextID
         // Save the file in the specified folder (Create new meta header for gdcm reader).
         std::string filePath = seriesPath.string() + iname.c_str();
         DcmFileFormat fileFormat(_incomingObject);
-        fileFormat.saveFile(filePath.c_str(), EXS_Unknown, EET_UndefinedLength,
-                            EGL_recalcGL, EPD_noChange, 0, 0, EWM_createNewMeta);
+        fileFormat.saveFile(
+            filePath.c_str(),
+            EXS_Unknown,
+            EET_UndefinedLength,
+            EGL_recalcGL,
+            EPD_noChange,
+            0,
+            0,
+            EWM_createNewMeta
+        );
 
         // Notify callback.
         if(m_progressCallback)
@@ -1017,14 +1038,16 @@ Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
 {
     Uint8 pc;
     pc = this->findPresentationContextID(sopClass, UID_LittleEndianExplicitTransferSyntax);
-    if (pc == 0)
+    if(pc == 0)
     {
         pc = this->findPresentationContextID(sopClass, UID_BigEndianExplicitTransferSyntax);
     }
-    if (pc == 0)
+
+    if(pc == 0)
     {
         pc = this->findPresentationContextID(sopClass, UID_LittleEndianImplicitTransferSyntax);
     }
+
     return pc;
 }
 
