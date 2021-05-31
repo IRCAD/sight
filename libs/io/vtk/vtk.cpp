@@ -111,58 +111,82 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {core::tools::Type::create("int8"), VTK_CHAR},
-    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR},
+    {core::tools::Type::create("int8"), VTK_CHAR
+    },
+    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR
+    },
 
-    {core::tools::Type::create("int16"), VTK_SHORT},
-    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT},
+    {core::tools::Type::create("int16"), VTK_SHORT
+    },
+    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT
+    },
 
-    {core::tools::Type::create("int32"), VTK_INT},
-    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT},
+    {core::tools::Type::create("int32"), VTK_INT
+    },
+    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT
+    },
 
-    {core::tools::Type::create("float"), VTK_FLOAT},
-    {core::tools::Type::create("double"), VTK_DOUBLE},
+    {core::tools::Type::create("float"), VTK_FLOAT
+    },
+    {core::tools::Type::create("double"), VTK_DOUBLE
+    },
 
 #if (INT_MAX < LONG_MAX)
     {
         core::tools::Type::create("int64"), VTK_LONG
     },
-    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG}
+    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG
+    }
 #endif
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")},
-    {VTK_CHAR, core::tools::Type::create("int8")},
-    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")},
+    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")
+    },
+    {VTK_CHAR, core::tools::Type::create("int8")
+    },
+    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")
+    },
 
-    {VTK_SHORT, core::tools::Type::create("int16")},
-    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")},
+    {VTK_SHORT, core::tools::Type::create("int16")
+    },
+    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")
+    },
 
-    {VTK_INT, core::tools::Type::create("int32")},
-    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
+    {VTK_INT, core::tools::Type::create("int32")
+    },
+    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")
+    },
 
-    {VTK_FLOAT, core::tools::Type::create("float")},
-    {VTK_DOUBLE, core::tools::Type::create("double")},
+    {VTK_FLOAT, core::tools::Type::create("float")
+    },
+    {VTK_DOUBLE, core::tools::Type::create("double")
+    },
 
 #if (INT_MAX < LONG_MAX)
     {
         VTK_LONG, core::tools::Type::create("int64")
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")},
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")
+    },
 
-    {VTK___INT64, core::tools::Type::create("int64")},
-    {VTK_LONG_LONG, core::tools::Type::create("int64")},
+    {VTK___INT64, core::tools::Type::create("int64")
+    },
+    {VTK_LONG_LONG, core::tools::Type::create("int64")
+    },
 
-    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")},
-    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
+    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")
+    },
+    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")
+    },
 #else
     {
         VTK_LONG, core::tools::Type::create("int32")
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")},
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")
+    },
 #endif
 };
 
@@ -265,10 +289,12 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         };
         destination->setSize2(size);
 
-        const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.};
+        const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
+        };
         destination->setSpacing2(spacing);
 
-        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.};
+        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.
+        };
         destination->setOrigin2(origin);
     }
     else
@@ -280,10 +306,12 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         destination->setSize2(size);
 
         const data::Image::Spacing spacing =
-        {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]};
+        {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]
+        };
         destination->setSpacing2(spacing);
 
-        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]};
+        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]
+        };
         destination->setOrigin2(origin);
     }
 

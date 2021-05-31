@@ -15,7 +15,6 @@ add_dependencies(SightCalibrator
                  module_io_vision
                  module_io_video
                  module_io_activity
-                 module_io_realsense
                  module_io_igtl
                  module_activity
                  activity_navigation_calibration
@@ -25,6 +24,10 @@ add_dependencies(SightCalibrator
                  module_geometry_base
                  module_navigation_calibration
 )
+
+if(SIGHT_ENABLE_REALSENSE)
+    add_dependencies( SightCalibrator module_io_realsense)
+endif()
 
 moduleParam(module_ui_qt
     PARAM_LIST

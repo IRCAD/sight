@@ -11,5 +11,15 @@
          <desc>RealSense Camera Grabber</desc>
          <tags>FILE, DEVICE</tags>
     </extension>
+    
+       <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
+    <extension implements="::sight::service::extension::Config">
+        <id>InfraredRealsenseGrabberConfig</id>
+        <service>sight::module::io::realsense::SScan</service>
+        <desc>Infrared grabber without IR emitter </desc>
+        <config>
+            <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />
+        </config>
+    </extension>
 
 </plugin>
