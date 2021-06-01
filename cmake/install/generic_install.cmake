@@ -18,3 +18,17 @@ function(generic_install)
     endif()
 
 endfunction()
+
+function(get_platform_package_suffix)
+
+    if(UNIX)
+        execute_process(COMMAND lsb_release -i -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_DISTRIBUTION)
+        execute_process(COMMAND lsb_release -r -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_VERSION)
+        execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+        set(PLATFORM_SUFFIX ${LINUX_DISTRIBUTION}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE})
+    else()
+        set(PLATFORM_SUFFIX ${CMAKE_BUILD_TYPE}-win64)
+    endif()
+    set(PLATFORM_SUFFIX ${PLATFORM_SUFFIX} PARENT_SCOPE)
+endfunction()

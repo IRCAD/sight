@@ -157,23 +157,20 @@ build:linux-release-clang:
       if [ "$BUILD_TYPE" == "release" ]; then
         archive=$(ls -1 SightViewer*)
         if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-          new_name="SightViewer-dev-linux_x86_64.tar.zst"
+          new_name=${archive/-[0-9]*-[a-z0-9]*/-latest}
           mv $archive $new_name
           archive=$new_name
         fi
+        new_name=${archive/-Release/}
+        mv $archive $new_name
+        archive=$new_name
         curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
       fi
     - cd packages
     - archive=$(ls -1 sight-*)
     - >
       if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-        new_name="sight-dev-linux_x86_64.tar.zst"
-        mv $archive $new_name
-        archive=$new_name
-      fi
-    - >
-      if [ "$BUILD_TYPE" == "debug" ]; then
-        new_name=${archive/linux/dbg-linux}
+        new_name=${archive/-[0-9]*-[a-z0-9]*/-latest}
         mv $archive $new_name
         archive=$new_name
       fi
@@ -322,10 +319,13 @@ build:windows-release:
         $archive=ls SightViewer* | Select-Object -First 1
         $archive=$archive.name
         if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-          $new_name="SightViewer-dev-win64.exe"
+          $new_name=[regex]::replace($archive, "-[0-9]*-[a-z0-9]*", "-latest")
           mv $archive $new_name
           $archive=$new_name
         }
+        $new_name=$archive.replace("-Release", "")
+        mv $archive $new_name
+        $archive=$new_name
         curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
       }
     - cd packages
@@ -333,13 +333,7 @@ build:windows-release:
     - $archive=$archive.name
     - |            
       if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
-        $new_name="sight-dev-win64.zip"
-        mv $archive $new_name
-        $archive=$new_name
-      }
-    - |
-      if ("$BUILD_TYPE" -eq "debug") {
-        $new_name=$archive.replace("win64", "dbg-win64")
+        $new_name=[regex]::replace($archive, "-[0-9]*-[a-z0-9]*", "-latest")
         mv $archive $new_name
         $archive=$new_name
       }

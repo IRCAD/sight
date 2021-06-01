@@ -1080,13 +1080,11 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     endforeach()
 
+    get_platform_package_suffix()
     if(UNIX)
-        execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
-        set(ARCHITECTURE linux_${ARCHITECTURE})
         set(CPACK_GENERATOR TZST)
         set(CPACK_SOURCE_GENERATOR TZST)
     else()
-        set(ARCHITECTURE win64)
         set(CPACK_GENERATOR ZIP)
         set(CPACK_SOURCE_GENERATOR ZIP)
     endif()
@@ -1095,7 +1093,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
     set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
 
-    set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${ARCHITECTURE}")
+    set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
     set(CPACK_PACKAGE_NAME "Sight")
     set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")

@@ -34,10 +34,12 @@ macro(win_package PRJ_NAME)
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
+    get_platform_package_suffix()
+
     set(CPACK_GENERATOR NSIS)
     set(CPACK_SOURCE_GENERATOR ZIP)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-win64")
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
