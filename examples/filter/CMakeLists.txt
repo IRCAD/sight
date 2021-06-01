@@ -1,5 +1,7 @@
 add_subdirectory(ExDetectCamMotion)
 add_subdirectory(ExImageSubstraction)
 add_subdirectory(ExRegistration)
-add_subdirectory(ExRGBDImageMasking)
+if(SIGHT_ENABLE_REALSENSE)
+    add_subdirectory(ExRGBDImageMasking)
+endif()
 add_subdirectory(ExDicomSegmentation)

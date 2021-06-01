@@ -90,7 +90,7 @@ void SSliceIndexDicomEditor::starting()
     // Create the DICOM reader.
     m_seriesDB = data::SeriesDB::New();
 
-    m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
@@ -99,12 +99,16 @@ void SSliceIndexDicomEditor::starting()
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
-                m_readerConfig, "::io::base::service::IReader");
+                m_readerConfig,
+                "::io::base::service::IReader"
+            );
 
-        SIGHT_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-                     readerConfig);
+        SIGHT_ASSERT(
+            "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+            readerConfig
+        );
 
-        m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
+        m_dicomReader->setConfiguration(core::runtime::ConfigurationElement::constCast(readerConfig));
     }
 
     m_dicomReader->configure();
@@ -113,7 +117,8 @@ void SSliceIndexDicomEditor::starting()
 
     // Create the timer used to retrieve a slice.
     m_sliceTriggerer = m_associatedWorker->createTimer();
-    m_sliceTriggerer->setFunction([&]()
+    m_sliceTriggerer->setFunction(
+        [&]()
         {
             this->retrieveSlice();
         });
@@ -137,8 +142,12 @@ void SSliceIndexDicomEditor::starting()
     qtContainer->setLayout(layout);
 
     // Connect the slider to the slot.
-    QObject::connect(m_slider, &QSlider::valueChanged, this,
-                     &module::io::dimse::SSliceIndexDicomEditor::changeSliceIndex);
+    QObject::connect(
+        m_slider,
+        &QSlider::valueChanged,
+        this,
+        &module::io::dimse::SSliceIndexDicomEditor::changeSliceIndex
+    );
 
     // Update informations.
     this->updating();
@@ -159,7 +168,7 @@ service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections(
 void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
-    const auto dicomSeries   = this->getLockedInOut< const data::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries   = this->getLockedInOut<const data::DicomSeries>(s_DICOMSERIES_INOUT);
     const size_t sliceNumber = dicomSeries->getNumberOfInstances();
 
     if(sliceNumber > 0)
@@ -167,17 +176,17 @@ void SSliceIndexDicomEditor::updating()
         // If the current slice index is the initial value of the slider, we just send a signal to trigger other
         // services.
         const int currentSlice = m_slider->value();
-        if(currentSlice == static_cast<int>(sliceNumber/2))
+        if(currentSlice == static_cast<int>(sliceNumber / 2))
         {
             this->changeSliceIndex(currentSlice);
         }
         else
         {
             // Fill slider informations.
-            m_slider->setRange(0, static_cast<int>(sliceNumber-1));
-            m_slider->setValue(static_cast<int>(sliceNumber/2));
+            m_slider->setRange(0, static_cast<int>(sliceNumber - 1));
+            m_slider->setValue(static_cast<int>(sliceNumber / 2));
 
-            this->setSliderInformation(static_cast<unsigned int>(sliceNumber/2));
+            this->setSliderInformation(static_cast<unsigned int>(sliceNumber / 2));
         }
     }
 }
@@ -219,7 +228,7 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
-    const auto dicomSeries          = this->getLockedInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries          = this->getLockedInOut<data::DicomSeries>(s_DICOMSERIES_INOUT);
     const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
@@ -241,7 +250,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     bool success = false;
 
     // Retrieve informations.
-    const auto pacsConfig = this->getLockedInput< const sight::io::dimse::data::PacsConfiguration >(s_PACS_INPUT);
+    const auto pacsConfig = this->getLockedInput<const sight::io::dimse::data::PacsConfiguration>(s_PACS_INPUT);
 
     auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -253,18 +262,20 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             pacsConfig->getPacsHostName(),
             pacsConfig->getPacsApplicationPort(),
             pacsConfig->getPacsApplicationTitle(),
-            pacsConfig->getMoveApplicationTitle());
+            pacsConfig->getMoveApplicationTitle()
+        );
         seriesEnquirer->connect();
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-            service::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+            service::IService::s_FAILURE_NOTIFIED_SIG
+        );
         notif->asyncEmit("Unable to connect to PACS");
     }
 
-    const auto dicomSeries = this->getLockedInOut< data::DicomSeries >(s_DICOMSERIES_INOUT);
+    const auto dicomSeries = this->getLockedInOut<data::DicomSeries>(s_DICOMSERIES_INOUT);
 
     // Get selected slice.
     try
@@ -277,14 +288,16 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         if(!sopInstanceUID.empty())
         {
             // Pull selected series and save it to the temporary folder.
-            switch (pacsConfig->getRetrieveMethod())
+            switch(pacsConfig->getRetrieveMethod())
             {
                 case sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD:
                     seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
+
                 case sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD:
                     seriesEnquirer->pullInstanceUsingMoveRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
+
                 default:
                     SIGHT_ERROR("Unknown retrieve method, 'get' will be used");
                     seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
@@ -300,17 +313,18 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-                service::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+                service::IService::s_FAILURE_NOTIFIED_SIG
+            );
             notif->asyncEmit("No instance found");
         }
-
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-            service::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+            service::IService::s_FAILURE_NOTIFIED_SIG
+        );
         notif->asyncEmit("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& _e)
@@ -332,15 +346,18 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSeries >& _dicomSeries,
-                                       std::size_t _selectedSliceIndex) const
+void SSliceIndexDicomEditor::readSlice(
+    const data::mt::locked_ptr<data::DicomSeries>& _dicomSeries,
+    std::size_t _selectedSliceIndex
+) const
 {
     // Retrieve informations.
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        const auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
-            service::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
+            service::IService::s_INFO_NOTIFIED_SIG
+        );
         notif->asyncEmit("Unable to read the modality '" + modality + "'");
         return;
     }
@@ -360,12 +377,13 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
 
     // Open the temporary folder and write the buffer.
     std::filesystem::path path = tmpPath / std::to_string(_selectedSliceIndex);
-    std::ofstream fs(path, std::ios::binary|std::ios::trunc);
+    std::ofstream fs(path, std::ios::binary | std::ios::trunc);
     if(!fs.good())
     {
         SIGHT_ERROR("Unable to open '" << path << "' for write.");
         return;
     }
+
     fs.write(buffer, bufferSize);
     fs.close();
 
@@ -380,26 +398,27 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
             data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const data::Image::sptr newImage = imageSeries->getImage();
 
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
         image->deepCopy(newImage);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0]/2);
-        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1]/2);
+        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0] / 2);
+        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1] / 2);
 
         image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
         image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
         image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
 
         // Send the signal
-        const auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
+        const auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-            service::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+            service::IService::s_FAILURE_NOTIFIED_SIG
+        );
         notif->asyncEmit("Unable to read the image");
     }
 }

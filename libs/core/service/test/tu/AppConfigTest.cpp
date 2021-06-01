@@ -1277,8 +1277,6 @@ void AppConfigTest::keyGroupTest()
         fwTestWaitMacro(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
-
-    return;
 }
 
 //-----------------------------------------------------------------------------

@@ -269,26 +269,26 @@ void getPixelBufferTestHelper(const P& pixelValue)
 void MedicalImageHelpersTest::getPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {{84}};
-        std::array<uint8_t, 3> pRGB  = {{42, 24, 21}};
+        std::array<uint8_t, 1> pGray = {84};
+        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {{0xDEADBEEF}};
-        std::array<uint32_t, 3> pRGB  = {{0xC0FFEE, 0xF100D, 0xDE7EC7ED}};
+        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
+        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {{5423.2f}};
-        std::array<float, 3> pRGB  = {{42.0f, 1487.4f, 0.1445f}};
+        std::array<float, 1> pGray = {5423.2f};
+        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {{541.254981}};
-        std::array<double, 3> pRGB  = {{841.567, 6476.874, 0.187487}};
+        std::array<double, 1> pGray = {541.254981};
+        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
@@ -339,26 +339,26 @@ void setPixelBufferTestHelper(P& pixelValue)
 void MedicalImageHelpersTest::setPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {{84}};
-        std::array<uint8_t, 3> pRGB  = {{42, 24, 21}};
+        std::array<uint8_t, 1> pGray = {84};
+        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {{0xDEADBEEF}};
-        std::array<uint32_t, 3> pRGB  = {{0xC0FFEE, 0xF100D, 0xDE7EC7ED}};
+        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
+        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {{5423.2f}};
-        std::array<float, 3> pRGB  = {{42.0f, 1487.4f, 0.1445f}};
+        std::array<float, 1> pGray = {5423.2f};
+        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {{541.254981}};
-        std::array<double, 3> pRGB  = {{841.567, 6476.874, 0.187487}};
+        std::array<double, 1> pGray = {541.254981};
+        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
@@ -382,7 +382,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
-            std::array<float, 3> pixelValue = {{42.0f, 1487.4f, 0.1445f}};
+            std::array<float, 3> pixelValue = {42.0f, 1487.4f, 0.1445f};
             image->setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);

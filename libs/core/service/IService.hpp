@@ -180,25 +180,32 @@ public:
     /// Defines all possible global status for a service, including transitions
     typedef enum
     {
-        STARTED, /**< state after start */
-        STARTING, /**< state during start */
-        SWAPPING, /**< state during swap */
-        STOPPED, /**< state after stop */
+        STARTED,
+        /**< state after start */
+        STARTING,
+        /**< state during start */
+        SWAPPING,
+        /**< state during swap */
+        STOPPED,
+        /**< state after stop */
         STOPPING /**< state during stop */
     } GlobalStatus;
 
     /// Defines all possible status for an update process
     typedef enum
     {
-        UPDATING, /**< state during update */
+        UPDATING,
+        /**< state during update */
         NOTUPDATING /**< state during when the service is not updating */
     } UpdatingStatus;
 
     /// Defines all possible status for a configuration process
     typedef enum
     {
-        CONFIGURING, /**< state during configuration */
-        CONFIGURED, /**< state after configuration */
+        CONFIGURING,
+        /**< state during configuration */
+        CONFIGURED,
+        /**< state after configuration */
         UNCONFIGURED /**< state when the service is not configured */
     } ConfigurationStatus;
 

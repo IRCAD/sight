@@ -28,11 +28,9 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/opencv/Image.hpp>
 
-#include <librealsense2/rs.hpp>
+#include <service/macros.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -45,13 +43,12 @@ static const service::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
 static const service::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
 static const service::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-
 // ------------------------------------------------------------------------------
 
 SDepthImageMasking::SDepthImageMasking() noexcept
 {
-    newSlot( s_SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this );
-    newSlot( s_SET_THRESHOLD_SLOT, &SDepthImageMasking::setThreshold, this );
+    newSlot(s_SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this);
+    newSlot(s_SET_THRESHOLD_SLOT, &SDepthImageMasking::setThreshold, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -95,8 +92,8 @@ void SDepthImageMasking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        const data::Image::csptr videoImage = this->getInput< data::Image >(s_VIDEO_IMAGE_KEY);
-        const data::Image::csptr depthImage = this->getInput< data::Image >(s_DEPTH_IMAGE_KEY);
+        const data::Image::csptr videoImage = this->getInput<data::Image>(s_VIDEO_IMAGE_KEY);
+        const data::Image::csptr depthImage = this->getInput<data::Image>(s_DEPTH_IMAGE_KEY);
 
         if(videoImage && depthImage)
         {
@@ -118,14 +115,15 @@ void SDepthImageMasking::updating()
             ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
             cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
-            data::Image::sptr foregroundImage = this->getInOut< data::Image >(s_FOREGROUND_IMAGE_KEY);
+            data::Image::sptr foregroundImage = this->getInOut<data::Image>(s_FOREGROUND_IMAGE_KEY);
 
             data::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
 
             io::opencv::Image::copyFromCv(foregroundImage, cvMaskedVideo);
 
-            const auto sig = foregroundImage->signal< data::Image::BufferModifiedSignalType >(
-                data::Image::s_BUFFER_MODIFIED_SIG);
+            const auto sig = foregroundImage->signal<data::Image::BufferModifiedSignalType>(
+                data::Image::s_BUFFER_MODIFIED_SIG
+            );
             sig->asyncEmit();
 
             m_sigComputed->asyncEmit();
@@ -137,10 +135,10 @@ void SDepthImageMasking::updating()
 
 void SDepthImageMasking::setBackground()
 {
-    const data::Image::csptr maskImage  = this->getInput< data::Image >(s_MASK_IMAGE_KEY);
-    const data::Image::csptr depthImage = this->getInput< data::Image >(s_DEPTH_IMAGE_KEY);
-    if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE) &&
-       (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
+    const data::Image::csptr maskImage  = this->getInput<data::Image>(s_MASK_IMAGE_KEY);
+    const data::Image::csptr depthImage = this->getInput<data::Image>(s_DEPTH_IMAGE_KEY);
+    if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE)
+       && (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
     {
         data::mt::ObjectReadLock lockMaskImage(maskImage);
         data::mt::ObjectReadLock lockDepthImage(depthImage);
@@ -162,6 +160,7 @@ void SDepthImageMasking::setBackground()
         {
             m_cvDepthMaskImage = ::cv::Mat::zeros(cvDepthImage.rows, cvDepthImage.cols, cvDepthImage.type());
         }
+
         cvDepthImage.copyTo(m_cvDepthMaskImage, m_cvMaskImage);
     }
 }
