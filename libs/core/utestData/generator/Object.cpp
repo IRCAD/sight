@@ -38,6 +38,7 @@
 
 namespace sight::utestData
 {
+
 namespace generator
 {
 
@@ -50,7 +51,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     std::string skinType                             = "Skin";
     skin->setType(skinType);
     skin->setClass(data::StructureTraits::ENVIRONMENT);
-    data::Color::sptr skinColor = data::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 1.0f);
+    data::Color::sptr skinColor = data::Color::New(255.0f / 255.0f, 179.0f / 255.0f, 140.0f / 255.0f, 1.0f);
     skin->setColor(skinColor);
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
@@ -60,7 +61,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr liver = data::StructureTraits::New();
     liver->setType("Liver");
     liver->setClass(data::StructureTraits::ORGAN);
-    liver->setColor(data::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));
+    liver->setColor(data::Color::New(204.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f, 1.0));
     data::StructureTraits::CategoryContainer liverCat(1);
     liverCat[0] = data::StructureTraits::ABDOMEN;
     liver->setCategories(liverCat);
@@ -71,7 +72,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr liverTumor = data::StructureTraits::New();
     liverTumor->setType("Liver_Tumor");
     liverTumor->setClass(data::StructureTraits::LESION);
-    liverTumor->setColor(data::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
+    liverTumor->setColor(data::Color::New(0.0f, 179.0f / 255.0f, 0.0f, 1.0f));
     data::StructureTraits::CategoryContainer liverTumorCat(1);
     liverTumorCat[0] = data::StructureTraits::ABDOMEN;
     liverTumor->setCategories(liverTumorCat);
@@ -96,7 +97,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr colon = data::StructureTraits::New();
     colon->setType("Colon");
     colon->setClass(data::StructureTraits::ORGAN);
-    colon->setColor(data::Color::New(1.0f, 179.0f/255.0f, 128.0f/255.0f, 1.0f));
+    colon->setColor(data::Color::New(1.0f, 179.0f / 255.0f, 128.0f / 255.0f, 1.0f));
     data::StructureTraits::CategoryContainer colonCat(1);
     colonCat[0] = data::StructureTraits::ABDOMEN;
     colon->setCategories(colonCat);
@@ -105,7 +106,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     data::StructureTraits::sptr caecum = data::StructureTraits::New();
     caecum->setType("Caecum");
     caecum->setClass(data::StructureTraits::FUNCTIONAL);
-    caecum->setColor(data::Color::New(1.0f, 179.0f/255.0f, 128.0f/255.0f, 1.0f));
+    caecum->setColor(data::Color::New(1.0f, 179.0f / 255.0f, 128.0f / 255.0f, 1.0f));
     data::StructureTraits::CategoryContainer caecumCat(1);
     caecumCat[0] = data::StructureTraits::ABDOMEN;
     caecum->setCategories(caecumCat);
@@ -132,10 +133,12 @@ data::StructureTraits::sptr Object::createStructureTraits()
     pStructureTraits->setNativeGeometricExp(nativeGeoExp);
 
     data::Color::sptr color = data::Color::New();
-    color->setRGBA(static_cast<float>(rand()%100) / 100.f,
-                   static_cast<float>(rand()%100) / 100.f,
-                   static_cast<float>(rand()%100) / 100.f,
-                   static_cast<float>(rand()%100) / 100.f);
+    color->setRGBA(
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f
+    );
     pStructureTraits->setColor(color);
 
     data::StructureTraits::CategoryContainer categories(2);
@@ -154,7 +157,7 @@ data::Composite::sptr Object::createROITraits()
 
     data::ROITraits::sptr roi = data::ROITraits::New();
     std::stringstream ss;
-    ss << "ID_" << rand()%100;
+    ss << "ID_" << rand() % 100;
     roi->setIdentifier(ss.str());
 
     roi->setEvaluatedExp("inter(skin),not(liver)");
@@ -180,7 +183,7 @@ data::Composite::sptr Object::createReconstructionTraits()
     data::ReconstructionTraits::sptr rec = data::ReconstructionTraits::New();
 
     std::stringstream ss;
-    ss << "ID_" << rand()%100;
+    ss << "ID_" << rand() % 100;
     rec->setIdentifier(ss.str());
 
     data::StructureTraits::sptr structure = Object::createStructureTraits();
@@ -206,15 +209,15 @@ data::Node::sptr Object::createNode()
 {
     data::Node::sptr node = data::Node::New();
 
-    unsigned int nbInputs  = rand()%5;
-    unsigned int nbOutputs = rand()%5;
+    int nbInputs  = rand() % 5;
+    int nbOutputs = rand() % 5;
 
-    for (unsigned int i = 0; i < nbInputs; ++i)
+    for(int i = 0 ; i < nbInputs ; ++i)
     {
         node->addInputPort(Object::createPort());
     }
 
-    for (unsigned int i = 0; i < nbOutputs; ++i)
+    for(int i = 0 ; i < nbOutputs ; ++i)
     {
         node->addOutputPort(Object::createPort());
     }
@@ -229,11 +232,11 @@ data::Port::sptr Object::createPort()
     data::Port::sptr port = data::Port::New();
 
     std::stringstream ssId;
-    ssId << "ID_" << rand()%100;
+    ssId << "ID_" << rand() % 100;
     port->setIdentifier(ssId.str());
 
     std::stringstream ssType;
-    ssType << "Type_" << rand()%100;
+    ssType << "Type_" << rand() % 100;
     port->setType(ssType.str());
 
     return port;
@@ -244,43 +247,55 @@ data::Port::sptr Object::createPort()
 data::Color::sptr Object::randomizeColor()
 {
     data::Color::sptr col = data::Color::New();
-    col->setRGBA(static_cast<float>(rand()%100) / 100.f,
-                 static_cast<float>(rand()%100) / 100.f,
-                 static_cast<float>(rand()%100) / 100.f,
-                 static_cast<float>(rand()%100) / 100.f);
+    col->setRGBA(
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f,
+        static_cast<float>(rand() % 100) / 100.f
+    );
     return col;
 }
 
 //------------------------------------------------------------------------------
 
-data::TransferFunction::sptr Object::createTFColor(const unsigned char nbPoints,
-                                                   const double window,
-                                                   const double level)
+data::TransferFunction::sptr Object::createTFColor(
+    const unsigned char nbPoints,
+    const double window,
+    const double level
+)
 {
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor( data::TransferFunction::TFColor( static_cast<float>(rand()%100) / 100.f,
-                                                             static_cast<float>(rand()%100) / 100.f,
-                                                             static_cast<float>(rand()%100) / 100.f,
-                                                             static_cast<float>(rand()%100) / 100.f) );
-    tf->setInterpolationMode( data::TransferFunction::NEAREST );
-    tf->setIsClamped( false );
+    tf->setBackgroundColor(
+        data::TransferFunction::TFColor(
+            static_cast<float>(rand() % 100) / 100.f,
+            static_cast<float>(rand() % 100) / 100.f,
+            static_cast<float>(rand() % 100) / 100.f,
+            static_cast<float>(rand() % 100) / 100.f
+        )
+    );
+    tf->setInterpolationMode(data::TransferFunction::NEAREST);
+    tf->setIsClamped(false);
     tf->setLevel(level);
-    tf->setName( "TFColor" );
-    tf->setWindow(window );
+    tf->setName("TFColor");
+    tf->setWindow(window);
 
-    for (unsigned char nb = 0; nb < nbPoints; ++nb)
+    for(unsigned char nb = 0 ; nb < nbPoints ; ++nb)
     {
-        double value = rand()%100 - level;
-        tf->addTFColor( value,
-                        data::TransferFunction::TFColor( static_cast<float>(rand()%100) / 100.f,
-                                                         static_cast<float>(rand()%100) / 100.f,
-                                                         static_cast<float>(rand()%100) / 100.f,
-                                                         static_cast<float>(rand()%100) / 100.f) );
+        double value = rand() % 100 - level;
+        tf->addTFColor(
+            value,
+            data::TransferFunction::TFColor(
+                static_cast<float>(rand() % 100) / 100.f,
+                static_cast<float>(rand() % 100) / 100.f,
+                static_cast<float>(rand() % 100) / 100.f,
+                static_cast<float>(rand() % 100) / 100.f
+            )
+        );
     }
 
     data::String::sptr myString = data::String::New("fieldStringValue");
-    tf->setField( "fieldStringKey", myString );
+    tf->setField("fieldStringKey", myString);
 
     return tf;
 }
@@ -289,24 +304,23 @@ data::TransferFunction::sptr Object::createTFColor(const unsigned char nbPoints,
 
 data::TransferFunction::sptr Object::createTFColor()
 {
-
     data::TransferFunction::sptr tf = data::TransferFunction::New();
 
-    tf->setBackgroundColor( data::TransferFunction::TFColor( 1.0f, 0.3f, 0.6f, 0.1f) );
-    tf->setInterpolationMode( data::TransferFunction::NEAREST );
-    tf->setIsClamped( false );
-    tf->setLevel( 900.6 );
-    tf->setName( "TFColor" );
-    tf->setWindow( -200.02 );
+    tf->setBackgroundColor(data::TransferFunction::TFColor(1.0f, 0.3f, 0.6f, 0.1f));
+    tf->setInterpolationMode(data::TransferFunction::NEAREST);
+    tf->setIsClamped(false);
+    tf->setLevel(900.6);
+    tf->setName("TFColor");
+    tf->setWindow(-200.02);
 
-    tf->addTFColor( -40.33, data::TransferFunction::TFColor( 0.9f, 0.2f, 0.3f, 0.4f) );
-    tf->addTFColor( 3,      data::TransferFunction::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2,
+    tf->addTFColor(-40.33, data::TransferFunction::TFColor(0.9f, 0.2f, 0.3f, 0.4f));
+    tf->addTFColor(3, data::TransferFunction::TFColor(0.1f, 0.2f, 0.9f, 0.4f)); // Invert point 3 <=> -0.2,
     // for tests
-    tf->addTFColor( -0.2,   data::TransferFunction::TFColor( 0.1f, 0.9f, 0.3f, 0.4f) );
-    tf->addTFColor( 150,    data::TransferFunction::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
+    tf->addTFColor(-0.2, data::TransferFunction::TFColor(0.1f, 0.9f, 0.3f, 0.4f));
+    tf->addTFColor(150, data::TransferFunction::TFColor(0.1f, 0.2f, 0.3f, 0.9f));
 
     data::String::sptr myString = data::String::New("fieldStringValue");
-    tf->setField( "fieldStringKey", myString );
+    tf->setField("fieldStringKey", myString);
 
     return tf;
 }
@@ -325,8 +339,8 @@ data::Material::sptr Object::createMaterial()
 
     data::Material::sptr material = data::Material::New();
 
-    material->setAmbient(data::Object::copy( ambient ));
-    material->setDiffuse(data::Object::copy( diffuse ));
+    material->setAmbient(data::Object::copy(ambient));
+    material->setDiffuse(data::Object::copy(diffuse));
 
     return material;
 }
@@ -357,9 +371,10 @@ data::ProcessObject::sptr Object::createProcessObject()
 
 data::Point::sptr Object::generatePoint()
 {
-    std::array< double, 3> coord = {static_cast<double>(rand()%300),
-                                    static_cast<double>(rand()%300),
-                                    static_cast<double>(rand()%300)};
+    std::array<double, 3> coord = {static_cast<double>(rand() % 300),
+                                   static_cast<double>(rand() % 300),
+                                   static_cast<double>(rand() % 300)
+    };
     data::Point::sptr point = data::Point::New();
     point->setCoord(coord);
     return point;
@@ -371,7 +386,7 @@ data::Plane::sptr Object::generatePlane()
 {
     data::Plane::sptr plane = data::Plane::New();
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((rand()%1) ? true : false));
+    plane->setIsIntersection(((rand() % 1) ? true : false));
     return plane;
 }
 
@@ -379,13 +394,12 @@ data::Plane::sptr Object::generatePlane()
 
 data::Resection::sptr Object::generateResection()
 {
-
     data::Resection::sptr resection = data::Resection::New();
 
     resection->setName("Resection1");
-    resection->setIsSafePart(((rand()%1) ? true : false));
-    resection->setIsValid(((rand()%1) ? true : false));
-    resection->setIsVisible(((rand()%1) ? true : false));
+    resection->setIsSafePart(((rand() % 1) ? true : false));
+    resection->setIsValid(((rand() % 1) ? true : false));
+    resection->setIsVisible(((rand() % 1) ? true : false));
     data::Reconstruction::sptr recInput = data::Reconstruction::New();
 
     utestData::generator::SeriesDB::generateReconstruction(recInput);
@@ -420,4 +434,5 @@ data::ResectionDB::sptr Object::generateResectionDB()
 //------------------------------------------------------------------------------
 
 } // namespace generator
+
 } // namespace sight::utestData

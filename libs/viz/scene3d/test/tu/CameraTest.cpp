@@ -26,6 +26,8 @@
 
 #include "viz/scene3d/Utils.hpp"
 
+#include <utest/Filter.hpp>
+
 #include <viz/scene3d/helper/Camera.hpp>
 
 #include <OgreLogManager.h>
@@ -49,6 +51,7 @@ namespace ut
 
 void CameraTest::setUp()
 {
+    // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
@@ -224,6 +227,13 @@ void CameraTest::computeProjectionMatrix()
 
 void CameraTest::convertPixelToWorldSpace()
 {
+    // On some platform / environment like Ubuntu 21.04 in a dockerized environment,
+    // this test will fail because opengl context cannot be acquired correctly
+    if(utest::Filter::ignoreUnstableTests())
+    {
+        return;
+    }
+
     auto* const root         = viz::scene3d::Utils::getOgreRoot();
     auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
 

@@ -674,7 +674,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             endif()
         endif()
     else()
-        add_library(${FWPROJECT_NAME} INTERFACE ${${FWPROJECT_NAME}_RC_FILES} ${${FWPROJECT_NAME}_CMAKE_FILES})
+        add_library(${FWPROJECT_NAME} INTERFACE)
     endif()
     
     if("${TARGET_TYPE}" STREQUAL "APP")

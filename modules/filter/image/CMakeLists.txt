@@ -1,24 +1,15 @@
 sight_add_target( module_filter_image TYPE MODULE )
 
-
 # Necessary only because of SPlaneSlicer, can be removed if rewritten as a visualisation adaptor
-find_package(VTK QUIET COMPONENTS
-    vtkImagingCore
-    REQUIRED
-)
+find_package(VTK QUIET REQUIRED COMPONENTS vtkImagingCore)
 
-if(VCPKG_TARGET_TRIPLET)
-    # VTK9
-    target_link_libraries(module_filter_image PUBLIC 
-        VTK::ImagingCore
-    )
-
+if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
+    target_include_directories(module_filter_image SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
+    target_link_libraries(module_filter_image PUBLIC vtkImagingCore)
 else()
-    include(${VTK_USE_FILE})
-    target_link_libraries(module_filter_image PUBLIC
-        vtkImagingCore
-    )
+    target_link_libraries(module_filter_image PUBLIC VTK::ImagingCore)
 endif()
+
 target_link_libraries(module_filter_image PUBLIC 
                       data
                       service

@@ -1,3 +1,5 @@
+cmake_minimum_required (VERSION 3.18)
+
 # Use new policy to use CMAKE_CXX_STANDARD in trysight_compile() macro
 cmake_policy(SET CMP0067 NEW)
 

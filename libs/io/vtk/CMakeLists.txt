@@ -1,24 +1,6 @@
 sight_add_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
 
-if(VCPKG_TARGET_TRIPLET)
-    # VTK9
-    target_link_libraries(io_vtk PUBLIC
-        VTK::FiltersGeometry
-        VTK::FiltersModeling
-        VTK::IOExport
-        VTK::IOGeometry
-        VTK::IOImage
-        VTK::IOLegacy
-        VTK::IOPLY
-        VTK::IOXML
-        VTK::RenderingFreeType
-        VTK::RenderingOpenGL2 
-    )
-
-else()
-# Necessary for all related unit-tests and utilities
-    find_package(GLEW)
-    # VTK7
+if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
     target_include_directories(io_vtk SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
     target_link_libraries(io_vtk PUBLIC  
         vtkFiltersGeometry
@@ -31,13 +13,24 @@ else()
         vtkIOXML
         vtkRenderingFreeType
         vtkRenderingOpenGL2
-        ${GLEW_LIBRARIES}
     )
 
+    #add vtk definitions instead of include(${VTK_USE_FILE})
+    target_compile_definitions(io_vtk PRIVATE ${VTK_DEFINITIONS})
+else()
+    target_link_libraries(io_vtk PUBLIC
+        VTK::FiltersGeometry
+        VTK::FiltersModeling
+        VTK::IOExport
+        VTK::IOGeometry
+        VTK::IOImage
+        VTK::IOLegacy
+        VTK::IOPLY
+        VTK::IOXML
+        VTK::RenderingFreeType
+        VTK::RenderingOpenGL2 
+    )
 endif()
-
-#add vtk definitions instead of include(${VTK_USE_FILE})
-target_compile_definitions(io_vtk PRIVATE ${VTK_DEFINITIONS})
 
 target_link_libraries(io_vtk PUBLIC core data io_base geometry_data)
 

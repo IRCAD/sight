@@ -25,6 +25,8 @@
 #include <core/tools/System.hpp>
 
 #include <data/Boolean.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
@@ -36,28 +38,27 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
-#include <utest/Slow.hpp>
+#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/writer/Series.hpp>
+#include <io/dicom/writer/SeriesDB.hpp>
+
+#include <utest/Filter.hpp>
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Object.hpp>
 #include <utestData/generator/SeriesDB.hpp>
 #include <utestData/helper/compare.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
-#include <io/dicom/writer/Series.hpp>
-#include <io/dicom/writer/SeriesDB.hpp>
-
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::dicom::ut::WriterReaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::WriterReaderTest);
 
 namespace sight::io::dicom
 {
+
 namespace ut
 {
 
@@ -82,7 +83,7 @@ void roundSpacing(data::Image::sptr image)
 void WriterReaderTest::setUp()
 {
     // Set up context before running a test.
-    if(utest::Slow::ignoreSlowTests())
+    if(utest::Filter::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -103,17 +104,18 @@ void WriterReaderTest::tearDown()
 
 void WriterReaderTest::writeReadImageSeriesTest()
 {
-    if(utest::Slow::ignoreSlowTests())
+    if(utest::Filter::ignoreSlowTests())
     {
         return;
     }
+
     utestData::generator::Image::initRand();
     data::ImageSeries::sptr imgSeries;
     imgSeries = utestData::generator::SeriesDB::createImageSeries();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
-    std::filesystem::create_directories( PATH );
+    std::filesystem::create_directories(PATH);
 
     io::dicom::writer::Series::sptr writer = io::dicom::writer::Series::New();
     writer->setObject(imgSeries);
@@ -128,7 +130,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    std::filesystem::remove_all( PATH );
+    std::filesystem::remove_all(PATH);
 
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
@@ -141,21 +143,23 @@ void WriterReaderTest::writeReadImageSeriesTest()
     // FIXME : GDCM reader trim string values so this test cannot pass.
 //    CPPUNIT_ASSERT(utestData::helper::compare(imgSeries, sdb->getContainer().front()));
 }
+
 //------------------------------------------------------------------------------
 
 void WriterReaderTest::writeReadSeriesDBTest()
 {
-    if(utest::Slow::ignoreSlowTests())
+    if(utest::Filter::ignoreSlowTests())
     {
         return;
     }
+
     utestData::generator::Image::initRand();
     data::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
-    std::filesystem::create_directories( PATH );
+    std::filesystem::create_directories(PATH);
 
     io::dicom::writer::SeriesDB::sptr writer = io::dicom::writer::SeriesDB::New();
     writer->setObject(seriesDB);
@@ -170,7 +174,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
-    std::filesystem::remove_all( PATH );
+    std::filesystem::remove_all(PATH);
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
 //    CPPUNIT_ASSERT(utestData::helper::compare(seriesDB, sdb));
@@ -193,38 +197,48 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     // Add landmarks
     data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     data::PointList::sptr landmarks =
-        image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
+        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
     const data::Image::Spacing spacing = image->getSpacing2();
     const data::Image::Origin origin   = image->getOrigin2();
-    const data::Point::sptr point      = data::Point::New(2.6 + origin[0],
-                                                          1.2 + origin[1],
-                                                          4.5 + origin[2]);
-    point->setField( data::fieldHelper::Image::m_labelId, data::String::New("Label1") );
+    const data::Point::sptr point      = data::Point::New(
+        2.6 + origin[0],
+        1.2 + origin[1],
+        4.5 + origin[2]
+    );
+    point->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label1"));
     landmarks->getPoints().push_back(point);
-    data::Point::sptr point2 = data::Point::New(1.2 + origin[0],
-                                                2.4 + origin[1],
-                                                0.3 + origin[2]);
-    point2->setField( data::fieldHelper::Image::m_labelId, data::String::New("Label2") );
+    data::Point::sptr point2 = data::Point::New(
+        1.2 + origin[0],
+        2.4 + origin[1],
+        0.3 + origin[2]
+    );
+    point2->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label2"));
     landmarks->getPoints().push_back(point2);
     const data::Image::Size size   = image->getSize2();
-    const data::Point::sptr point3 = data::Point::New(1.2 + origin[0],
-                                                      2.4 + origin[1],
-                                                      static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
-    point3->setField( data::fieldHelper::Image::m_labelId, data::String::New("Label3") );
+    const data::Point::sptr point3 = data::Point::New(
+        1.2 + origin[0],
+        2.4 + origin[1],
+        static_cast<double>(size[2] - 1) * spacing[2] + origin[2]
+    );
+    point3->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label3"));
     landmarks->getPoints().push_back(point3);
 
     // Add distance
     data::PointList::sptr pl    = data::PointList::New();
     const data::Point::sptr pt1 = data::Point::New(0., 0., 0.);
-    const data::Point::sptr pt2 = data::Point::New(static_cast<double>(size[0]-1) * spacing[0],
-                                                   static_cast<double>(size[1]-1) * spacing[1],
-                                                   static_cast<double>(size[2]-1) * spacing[2]);
-    pl->getPoints().push_back( pt1 );
-    pl->getPoints().push_back( pt2 );
+    const data::Point::sptr pt2 = data::Point::New(
+        static_cast<double>(size[0] - 1) * spacing[0],
+        static_cast<double>(size[1] - 1) * spacing[1],
+        static_cast<double>(size[2] - 1) * spacing[2]
+    );
+    pl->getPoints().push_back(pt1);
+    pl->getPoints().push_back(pt2);
 
     data::Vector::sptr vectDist;
-    vectDist = image->setDefaultField< data::Vector >(
-        data::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
+    vectDist = image->setDefaultField<data::Vector>(
+        data::fieldHelper::Image::m_imageDistancesId,
+        data::Vector::New()
+    );
     vectDist->getContainer().push_back(pl);
 
     image->setField("ShowLandmarks", data::Boolean::New(true));
@@ -252,4 +266,5 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::io::dicom

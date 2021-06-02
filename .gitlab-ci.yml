@@ -5,7 +5,7 @@ stages:
   - deploy
 
 .linux_before:
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  image: "${SIGHT_CI_UBUNTU21_04}:dev"
   dependencies: []
   variables:
     CCACHE_BASEDIR: $CI_PROJECT_DIR
@@ -16,8 +16,8 @@ stages:
     CCACHE_DIR: "/cache/ccache"
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "ON"
-    CC: "/usr/lib/ccache/gcc-10"
-    CXX: "/usr/lib/ccache/g++-10"
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
   before_script:
     # Prepare sight source
     - sudo chown -R sight:sight .
@@ -110,51 +110,55 @@ lint:sheldon:
       - .build/SightViewer*.tar.zst
       - .build/packages/sight-*.tar.zst
 
-build:linux-debug-gcc:
+build:linux-21.04-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "OFF"
-    CC: "/usr/lib/ccache/gcc-10"
-    CXX: "/usr/lib/ccache/g++-10"
+    SIGHT_BUILD_PACKAGE: "ON"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
 
-build:linux-release-gcc:
+build:linux-21.04-release-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "ON"
-    SIGHT_BUILD_PACKAGE: "OFF"
-    CC: "/usr/lib/ccache/gcc-10"
-    CXX: "/usr/lib/ccache/g++-10"
-
-build:linux-debug-clang:
-  extends: .linux_build
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGE: "ON"
-    CC: "/usr/lib/ccache/clang-11"
-    CXX: "/usr/lib/ccache/clang++-11"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
 
-build:linux-release-clang:
+build:linux-21.04-release-clang:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGE: "ON"
-    CC: "/usr/lib/ccache/clang-11"
-    CXX: "/usr/lib/ccache/clang++-11"
+    SIGHT_BUILD_PACKAGE: "OFF"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    CC: "/usr/lib/ccache/clang"
+    CXX: "/usr/lib/ccache/clang++"
 
-.linux_deploy:
+build:linux-20.10-release-gcc:
+  extends: .linux_build
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   variables:
-    BUILD_TYPE: "release"
+    BUILD_TYPE: "Release"
+    SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "OFF"
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
+
+.linux_deploy:
+  image: "${SIGHT_CI_UBUNTU21_04}:dev"
+  variables:
+    BUILD_TYPE: "Release"
   stage: deploy
   script:
     - cd .build/
     - >
-      if [ "$BUILD_TYPE" == "release" ]; then
+      if [ "$BUILD_TYPE" == "Release" ]; then
         package_name=$(ls -1 SightViewer*)
         if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
           new_name==`echo "$package_name" | sed -e 's/-[0-9]*-[a-z0-9]*/-latest/g'`
@@ -183,9 +187,9 @@ build:linux-release-clang:
 deploy:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-debug-clang
+    - build:linux-21.04-debug-gcc
   variables:
-    BUILD_TYPE: "debug"
+    BUILD_TYPE: "Debug"
   only:
     refs:
       - master
@@ -194,17 +198,17 @@ deploy:linux-debug:
 deploy_manual:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-debug-clang
+    - build:linux-21.04-debug-gcc
   variables:
-    BUILD_TYPE: "debug"
+    BUILD_TYPE: "Debug"
   when: manual
 
 deploy:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-release-clang
+    - build:linux-21.04-release-gcc
   variables:
-    BUILD_TYPE: "release"
+    BUILD_TYPE: "Release"
   only:
     refs:
       - master
@@ -213,9 +217,9 @@ deploy:linux-release:
 deploy_manual:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-release-clang
+    - build:linux-21.04-release-gcc
   variables:
-    BUILD_TYPE: "release"
+    BUILD_TYPE: "Release"
   when: manual
 
 .windows_before:
@@ -227,7 +231,7 @@ deploy_manual:linux-release:
     # Merge the branch into dev.
     - $EXTRA_BRANCH=${env:CI_COMMIT_REF_NAME}
     - Write-Warning "${env:CI_COMMIT_REF_NAME} ${env:CI_COMMIT_TAG}"
-    - |            
+    - |
       if ("${env:CI_COMMIT_REF_NAME}" -ne "dev" -and "${env:CI_COMMIT_REF_NAME}" -ne "master") {
         if ("${env:CI_COMMIT_TAG}" -eq "$null") {
           git config user.name $GITLAB_USER_ID
@@ -261,7 +265,7 @@ prebuild:windows:
   stage: prebuild
   script:
     # Checkout vcpkg packages, the script only downloads if necessary
-    - cmake -DOUTPUT="$CACHE" -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake"
+    - cmake -DSIGHT_DEPS_ROOT_DIRECTORY="${env:CACHE}" -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake"
 
 .windows_build:
   extends: .windows_before
@@ -351,7 +355,7 @@ deploy:windows-debug:
   dependencies:
     - build:windows-debug
   variables:
-    BUILD_TYPE: "debug"
+    BUILD_TYPE: "Debug"
   only:
     refs:
       - master
@@ -362,7 +366,7 @@ deploy_manual:windows-debug:
   dependencies:
     - build:windows-debug
   variables:
-    BUILD_TYPE: "debug"
+    BUILD_TYPE: "Debug"
   when: manual
 
 deploy:windows-release:
@@ -370,7 +374,7 @@ deploy:windows-release:
   dependencies:
     - build:windows-release
   variables:
-    BUILD_TYPE: "release"
+    BUILD_TYPE: "Release"
   only:
     refs:
       - master
@@ -381,14 +385,14 @@ deploy_manual:windows-release:
   dependencies:
     - build:windows-release
   variables:
-    BUILD_TYPE: "release"
+    BUILD_TYPE: "Release"
   when: manual
 
 deploy:pages:
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  image: "${SIGHT_CI_UBUNTU21_04}:dev"
   stage: deploy
   dependencies:
-    - build:linux-release-gcc
+    - build:linux-21.04-release-gcc
   script:
     - mv .build/Documentation/Doxygen/html/ public/
   artifacts:

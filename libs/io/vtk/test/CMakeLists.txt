@@ -3,17 +3,11 @@ sight_add_target( io_vtkTest TYPE TEST )
 
 find_package(VTK QUIET COMPONENTS vtkFiltersSources REQUIRED)
 
-if(WIN32)
-    # VTK9
-    target_link_libraries(io_vtkTest PRIVATE VTK::FiltersSources)
-else()
-    # VTK7
+if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
+    target_include_directories(io_vtkTest SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
     target_link_libraries(io_vtkTest PRIVATE vtkFiltersSources)
-
-    if(UNIX)
-        find_package(GLEW)
-        target_link_libraries(io_vtkTest PRIVATE ${GLEW_LIBRARIES})
-    endif()
+else()
+    target_link_libraries(io_vtkTest PRIVATE VTK::FiltersSources)
 endif()
 
 target_link_libraries(io_vtkTest PUBLIC 

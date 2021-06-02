@@ -304,7 +304,7 @@ function(add_precompiled_header _target _input)
     else()
       add_custom_command(
         OUTPUT "${_output_cxx}"
-        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+        COMMAND mkdir --parents "${_pch_binary_dir}/include/${_target}" && "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header  -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
         DEPENDS "${_pch_header}" "${_pch_flags_file}"
         IMPLICIT_DEPENDS CXX "${_pch_header}"
         COMMENT "Precompiling ${_name} for ${_target} (PCH)")

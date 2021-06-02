@@ -26,19 +26,20 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <utest/Slow.hpp>
+#include <io/dicom/helper/DicomDir.hpp>
+
+#include <utest/Filter.hpp>
 
 #include <utestData/Data.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
 
-#include <io/dicom/helper/DicomDir.hpp>
-
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::dicom::ut::DicomDirTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::DicomDirTest);
 
 namespace sight::io::dicom
 {
+
 namespace ut
 {
 
@@ -47,7 +48,7 @@ namespace ut
 void DicomDirTest::setUp()
 {
     // Set up context before running a test.
-    if(utest::Slow::ignoreSlowTests())
+    if(utest::Filter::ignoreSlowTests())
     {
         std::cout << std::endl << "Ignoring slow " << std::endl;
     }
@@ -68,28 +69,31 @@ void DicomDirTest::tearDown()
 
 void DicomDirTest::readDicomDir()
 {
-    if(utest::Slow::ignoreSlowTests())
+    if(utest::Filter::ignoreSlowTests())
     {
         return;
     }
-    const std::filesystem::path path = utestData::Data::dir() /
-                                       "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
+
+    const std::filesystem::path path = utestData::Data::dir()
+                                       / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
-    std::vector< data::DicomSeries::sptr > seriesDB;
+    std::vector<data::DicomSeries::sptr> seriesDB;
 
     core::log::Logger::sptr logger = core::log::Logger::New();
 
     // Read DICOMDIR file
     io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesDB, logger);
-    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB.size());
-    CPPUNIT_ASSERT( logger->empty() );
+    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB.size());
+    CPPUNIT_ASSERT(logger->empty());
 
     auto series = *seriesDB.begin();
-    CPPUNIT_ASSERT_EQUAL( size_t( 84 ), series->getDicomContainer().size());
+    CPPUNIT_ASSERT_EQUAL(size_t(84), series->getDicomContainer().size());
 }
 
 //------------------------------------------------------------------------------

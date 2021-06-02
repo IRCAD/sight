@@ -20,36 +20,27 @@
  *
  ***********************************************************************/
 
-#include "utest/Slow.hpp"
+#pragma once
 
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
+#include "utest/config.hpp"
 
 namespace sight::utest
 {
 
-//------------------------------------------------------------------------------
-
-static bool getIgnoreSlowTestsEnv()
+/// This allows filtering unstable or too slow unit tests that may give accurate results
+/// when executed manually but inaccurate in a CI context.
+/// This should be considered as a last ressort workaround, if the test could not be fixed
+class UTEST_CLASS_API Filter
 {
-    const char* slowTests = std::getenv( "FW_IGNORE_SLOW_TESTS" );
-    if(slowTests == nullptr || std::strlen(slowTests) == 0 || std::strcmp(slowTests, "0") == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
+public:
 
-//------------------------------------------------------------------------------
+    /// Returns true if we should ignore "slow" tests
+    /// Use SIGHT_IGNORE_SLOW_TESTS environment variable
+    UTEST_API static bool ignoreSlowTests();
 
-bool Slow::ignoreSlowTests()
-{
-    static const bool IGNORE_SLOW_TESTS = getIgnoreSlowTestsEnv();
-    return IGNORE_SLOW_TESTS;
-}
+    /// Returns true if we should ignore "unstable" tests
+    /// Use SIGHT_IGNORE_UNSTABLE_TESTS environment variable
+    UTEST_API static bool ignoreUnstableTests();
+};
 
 } // namespace sight::utest
