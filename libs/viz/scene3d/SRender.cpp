@@ -342,13 +342,13 @@ void SRender::configureLayer(const ConfigType& _cfg)
     SIGHT_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
 
     viz::scene3d::Layer::sptr ogreLayer              = viz::scene3d::Layer::New();
-    compositor::Core::StereoModeType layerStereoMode =
-        stereoMode == "AutoStereo5" ? compositor::Core::StereoModeType::AUTOSTEREO_5
-                                    : stereoMode == "AutoStereo8" ? compositor::Core::StereoModeType::AUTOSTEREO_8
-                                                                  : stereoMode
-        == "Stereo" ? compositor::Core::StereoModeType::STEREO
-                    : compositor::Core::
-        StereoModeType::NONE;
+    compositor::Core::StereoModeType layerStereoMode = stereoMode == "AutoStereo5"
+                                                       ? compositor::Core::StereoModeType::AUTOSTEREO_5
+                                                       : stereoMode == "AutoStereo8"
+                                                       ? compositor::Core::StereoModeType::AUTOSTEREO_8
+                                                       : stereoMode == "Stereo"
+                                                       ? compositor::Core::StereoModeType::STEREO
+                                                       : compositor::Core::StereoModeType::NONE;
 
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
