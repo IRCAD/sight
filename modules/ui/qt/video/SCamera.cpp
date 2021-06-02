@@ -29,7 +29,6 @@
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 #include <core/runtime/operations.hpp>
-#include <core/tools/pathDifference.hpp>
 
 #include <data/CameraSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
@@ -49,6 +48,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+
+#include <filesystem>
 
 namespace sight::module::ui::qt
 {
@@ -310,9 +311,10 @@ void SCamera::onChooseFile()
         {
             if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                const std::filesystem::path videoRelativePath =
-                    core::tools::getPathDifference(videoDirPreferencePath, videoPath);
-
+                const auto videoRelativePath = std::filesystem::relative(
+                    videoPath,
+                    videoDirPreferencePath
+                );
                 const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
                 if(std::filesystem::exists(concatenatedPath))
                 {
