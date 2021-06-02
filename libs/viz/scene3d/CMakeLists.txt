@@ -20,10 +20,6 @@ if(WIN32)
         if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
             get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
         endif()
-
-        if(EXISTS "${OGRE_CONFIG_DIR}/../debug/bin")
-            get_filename_component(OGRE_CONFIG_DIR "${OGRE_CONFIG_DIR}/../debug/bin" ABSOLUTE)
-        endif()
     endif()
 
     file(GLOB OGRE_PLUGINS
@@ -32,13 +28,10 @@ if(WIN32)
         "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
     )
 
-    set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/ogreplugins/")
+    set(FW_OGRE_PLUGINS_DIR "${CMAKE_BINARY_DIR}/ogreplugins/")
 
     # This copies the plugins into the build directory
     file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-
-    # This copies the plugins into the install directory
-    install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "ogrePlugins/")
 endif()
 
 

@@ -1,16 +1,16 @@
 #Windows install
-macro(win_install PRJ_NAME)
+macro(win_package PRJ_NAME)
 
-    set(CPACK_GENERATOR NSIS)
-    set(CPACK_SOURCE_GENERATOR ZIP)
+    # Magic line to make CPack NSIS generator find NSIS.template.in and NSIS.InstallOptions.ini.in
+    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
     #set app icon filename
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
-    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+    get_target_property(TYPE ${PRJ_NAME} SIGHT_TARGET_TYPE)
+    if("${TYPE}" STREQUAL "APP")
         set(LAUNCHER "sightrun.exe")
-        set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
         set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${FWPROJECT_NAME}\\\\profile.xml")
 
@@ -18,59 +18,44 @@ macro(win_install PRJ_NAME)
             # install the launcher
             install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
-    elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
-        set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe") # For windows_fixup.cmake.in
+    elseif("${TYPE}" STREQUAL "EXECUTABLE")
         set(CPACK_LAUNCHER_PATH "bin\\\\${PRJ_NAME}.exe")
         set(CPACK_PROFILE_PATH "")
     elseif()
-        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
+        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${TYPE})")
     endif()
-
-    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
-
-    #configure the 'fixup' script
-    set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
-
-    if(${FW_BUILD_EXTERNAL})
-        # install requirements
-        findAllDependencies("${PROJECT}" PROJECT_LIST)
-
-        # install requirements
-        foreach(REQUIREMENT ${PROJECT_LIST})
-            if(${REQUIREMENT}_EXTERNAL)
-                if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_LIB_PREFIX}")
-                endif()
-                if(EXISTS "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
-                    install(DIRECTORY "${Sight_MODULES_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_RC_PREFIX}")
-                endif()
-            endif()
-        endforeach()
-    endif()
-
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
 
     if(CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
     endif()
 
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD-IHU/sight")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
+    get_platform_package_suffix()
+
+    set(CPACK_GENERATOR NSIS)
+    set(CPACK_SOURCE_GENERATOR ZIP)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-win64-Sight_${GIT_TAG}")
-    set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
+    set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
+    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
+    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
+    set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
+    set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
+    set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
-    set(CPACK_PACKAGE_VERSION "${VERSION}")
     set(CPACK_SIGHT_MODULE_RC_PREFIX "${SIGHT_MODULE_RC_PREFIX}")
 
-    set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
+    # CPackComponent doesn't work properly with the 'single project' packaging mechanism we hacked here
+    # As a workaround, this script allows to remove the dev component files before packing
+    set(CPACK_PRE_BUILD_SCRIPTS ${FWCMAKE_RESOURCE_PATH}/install/pre_package.cmake)
 
+    set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
+    
     # Clear variables otherwise they are not evaluated when we modify PROJECTS_TO_INSTALL
     unset(CPACK_PACKAGE_ICON CACHE)
     unset(CPACK_NSIS_WELCOMEFINISH_IMAGE CACHE)
@@ -97,6 +82,12 @@ macro(win_install PRJ_NAME)
     # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)
     # The output variable is used in our NSIS.template
     string(REGEX REPLACE ".*\/(.*)" "\\1" CPACK_NSIS_SIGHT_APP_ICON ${CPACK_NSIS_MUI_ICON})
+    string(REPLACE "/" "\\\\" CPACK_SIGHT_MODULE_RC_PREFIX ${CPACK_SIGHT_MODULE_RC_PREFIX})
+
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${CPACK_NSIS_SIGHT_APP_ICON}")
+        install(FILES ${CPACK_NSIS_MUI_ICON}
+                DESTINATION "${CPACK_SIGHT_MODULE_RC_PREFIX}/${CPACK_NSIS_PACKAGE_NAME}")
+    endif()
 
     string(REPLACE "/" "\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON})
     string(REPLACE "/" "\\\\" CPACK_NSIS_WELCOMEFINISH_IMAGE ${CPACK_NSIS_WELCOMEFINISH_IMAGE})
@@ -104,6 +95,7 @@ macro(win_install PRJ_NAME)
     string(REPLACE "/" "\\\\" CPACK_NSIS_MUI_UNIICON ${CPACK_NSIS_MUI_UNIICON})
     string(REPLACE "/" "\\\\" CPACK_RESOURCE_FILE_LICENSE ${CPACK_RESOURCE_FILE_LICENSE})
 
+    # Avoid a useless warning
     include(CPack)
 
 endmacro()

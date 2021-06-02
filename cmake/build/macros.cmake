@@ -1,4 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
@@ -48,9 +49,7 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
-if(NOT FW_BUILD_EXTERNAL)
-    include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
-endif()
+include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -114,9 +113,8 @@ macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
 endmacro()
 
 macro(initProject PRJ_NAME PRJ_TYPE)
-    if(CREATE_SUBPROJECTS)
-        project( ${PRJ_NAME} )
-    endif()
+    project( ${PRJ_NAME} )
+
     set(FWPROJECT_NAME ${PRJ_NAME})
     set(PRJ_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -310,8 +308,7 @@ macro(fwExec FWPROJECT_NAME)
 
     install(
         TARGETS ${FWPROJECT_NAME}
-        RUNTIME DESTINATION bin
-        OPTIONAL
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         )
 
     # Adds project into folder exec
@@ -524,6 +521,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}" )
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_MODULE_RC_DIR "\${_IMPORT_PREFIX}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
     endif()
 
     # create the config.hpp for the current library
@@ -596,6 +594,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
 
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_MODULE_RC_DIR")
 
     if(SIGHT_ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
@@ -739,12 +738,11 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY)
+            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION bin)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "MODULE")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "module")                 
-
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START")
 
         # Only prefix with the repository name for modules
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
@@ -755,8 +753,8 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
             ARCHIVE DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
             LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-        )
-                
+            
+            )
         # Add all targets to the build-tree export set
         export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
                 FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
@@ -782,6 +780,9 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
     endif()
 
     createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}" )
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_MODULE_RC_DIR "\${_IMPORT_PREFIX}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
+
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES")
 
     if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)
         message(WARNING "Module ${FWPROJECT_NAME} links with other modules (${${FWPROJECT_NAME}_MODULE_DEPENDENCIES}), "
@@ -919,10 +920,12 @@ macro(fwDirList result curdir)
     set(${result} ${dirlist})
 endmacro()
 
-function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
+# Find link and manual dependencies for a target
+# All targets that do not appear in FILTERED_COMPONENTS is excluded
+function(findTargetDependencies TARGET TARGETS_FILTER RESULT_VAR)
     set(DEPENDENCY_LIST)
     set(RESULT "")
-    list(APPEND DEPENDENCY_LIST ${FWPROJECT_NAMES})
+    list(APPEND DEPENDENCY_LIST ${TARGET})
     while(DEPENDENCY_LIST)
 
         list(GET DEPENDENCY_LIST 0 DEPENDENCY)
@@ -930,14 +933,32 @@ function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
 
         if(NOT PROCESSED_${DEPENDENCY})
             get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
+            get_target_property(INTERFACE_DEPENDS ${DEPENDENCY} INTERFACE_LINK_LIBRARIES)
+            list(APPEND DEPENDS ${INTERFACE_DEPENDS})
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST FWPROJECT_NAMES)
+                if(NOT ${dep} IN_LIST TARGETS_FILTER)
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
             
             list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
+
+            get_target_property(DEPENDS ${DEPENDENCY} MANUALLY_ADDED_DEPENDENCIES) 
+            get_target_property(MODULE_DEPENDS ${DEPENDENCY} SIGHT_MODULE_DEPENDENCIES)
+            list(APPEND DEPENDS ${MODULE_DEPENDS})
+            list(FILTER DEPENDS EXCLUDE REGEX "-NOTFOUND")
+            list(REMOVE_DUPLICATES DEPENDS)
+            set(DEPENDS_COPY ${DEPENDS})
+            foreach(dep ${DEPENDS})
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun")
+                    list(REMOVE_ITEM DEPENDS_COPY ${dep})
+                endif()
+            endforeach()
+            if(DEPENDS)
+                list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
+            endif()
+
             set(PROCESSED_${DEPENDENCY} 1)
         endif()
 
@@ -945,5 +966,139 @@ function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
     endwhile()
 
     list(REMOVE_DUPLICATES RESULT)
+    list(REMOVE_ITEM RESULT ${TARGET})
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
+endfunction()
+
+# This function must be called at the end of the main CMakeLists.txt 
+# in order to create an APP_install and APP_package for each Sight target of type APP or EXEC
+function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS)
+
+    # Add an install target for every component
+    foreach(COMPONENT ${SIGHT_COMPONENTS})
+        if(NOT ${COMPONENT} MATCHES "_obj")
+            get_target_property(COMPONENT_BINARY_DIR ${COMPONENT} BINARY_DIR)
+            add_custom_target(${COMPONENT}_install
+                                ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${COMPONENT_BINARY_DIR}/cmake_install.cmake)
+            add_dependencies(${COMPONENT}_install ${COMPONENT})
+        endif()
+        get_target_property(DEPENDENCIES ${COMPONENT} MANUALLY_ADDED_DEPENDENCIES)
+        list(FILTER DEPENDENCIES EXCLUDE REGEX "_rc")
+        list(TRANSFORM DEPENDENCIES PREPEND ${SIGHT_REPOSITORY}::)
+        set_target_properties(${COMPONENT} PROPERTIES SIGHT_MODULE_DEPENDENCIES "${DEPENDENCIES}")
+    endforeach()
+
+    if(WIN32)
+        # Might be needed later to get ${OGRE_PLUGIN_DIR}
+        find_package(OGRE REQUIRED)
+    endif()
+    get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
+    foreach(APP ${SIGHT_APPS})
+        get_target_property(APP_BINARY_DIR ${APP} BINARY_DIR)
+        set(IMPORTED_RC_DIRS "")
+        set(IMPORTED_LIBS "")
+        
+        findTargetDependencies(${APP} "${SIGHT_IMPORTED_COMPONENTS}" IMPORTED_DEPENDS)
+        foreach(DEP ${IMPORTED_DEPENDS})
+            get_target_property(CONFIG ${DEP} IMPORTED_CONFIGURATIONS)
+            get_target_property(LIB ${DEP} IMPORTED_LOCATION_${CONFIG})
+            if(LIB)
+                list(APPEND IMPORTED_LIBS ${LIB})
+            endif()
+
+            get_target_property(RC_DIR ${DEP} SIGHT_MODULE_RC_DIR)
+            if(RC_DIR)
+                list(APPEND IMPORTED_RC_DIRS ${RC_DIR})
+            endif()
+        endforeach()
+
+        list(REMOVE_DUPLICATES IMPORTED_RC_DIRS)
+        list(REMOVE_DUPLICATES IMPORTED_LIBS)
+
+        # Add an install target for every app
+        add_custom_target(${APP}_install
+                          ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${APP_BINARY_DIR}/cmake_install.cmake
+        )
+        add_dependencies(${APP}_install ${APP})
+        
+        if(IMPORTED_RC_DIRS OR IMPORTED_LIBS)
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/install_imported.cmake.in ${APP_BINARY_DIR}/install_imported.cmake @ONLY)
+
+            # Add an install target that installs imported components
+            add_custom_target(${APP}_install_imported
+                            ${CMAKE_COMMAND} -P ${APP_BINARY_DIR}/install_imported.cmake
+                            COMMENT "Install imported targets..."
+            )
+            add_dependencies(${APP}_install ${APP}_install_imported)
+        endif()
+
+        findTargetDependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
+        foreach(DEP ${DEPENDS})
+            if(NOT ${DEP} MATCHES "_obj")
+                add_dependencies(${APP}_install ${DEP}_install) 
+            endif()
+        endforeach()
+        
+        # Add a fixup target for every app
+        if(WIN32)
+            list(APPEND DEPENDS ${IMPORTED_DEPENDS})
+            add_custom_target(${APP}_install_plugins
+                ${CMAKE_COMMAND} -DDEPENDS="${DEPENDS}"
+                                 -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
+                                 -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins" 
+                                 -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/qt5"
+                                 -DOGRE_PLUGIN_DIR="${OGRE_PLUGIN_DIR}"
+                                 -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
+                                 -P "${FWCMAKE_RESOURCE_PATH}/install/windows/install_plugins.cmake"
+                COMMENT "Install plugins..."
+            )
+            add_dependencies(${APP}_install_plugins ${APP}_install)
+
+            # Used in windows_fixup.cmake.in
+            if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+                set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
+            else()
+                set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+                set(EXCLUDE_PATTERN ".*/debug/.*")
+            endif()
+            set(LAUNCHER_PATH "${CMAKE_INSTALL_BINDIR}/sightrun.exe")
+
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_BINARY_DIR}/windows_fixup.cmake @ONLY)
+            add_custom_target(${APP}_fixup
+                            ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/windows_fixup.cmake
+                            COMMENT "Fixup before packaging...")
+            add_dependencies(${APP}_fixup ${APP}_install ${APP}_install_plugins)
+        endif()
+
+        # Add a package target for every app
+        add_custom_target(${APP}_package
+                          ${CMAKE_CPACK_COMMAND} --config ${APP_BINARY_DIR}/CPackConfig.cmake)
+        add_dependencies(${APP}_package ${APP}_install)
+        if(WIN32)
+            add_dependencies(${APP}_package ${APP}_fixup)
+        endif()
+
+    endforeach()
+
+    get_platform_package_suffix()
+    if(UNIX)
+        set(CPACK_GENERATOR TZST)
+        set(CPACK_SOURCE_GENERATOR TZST)
+    else()
+        set(CPACK_GENERATOR ZIP)
+        set(CPACK_SOURCE_GENERATOR ZIP)
+    endif()
+
+    # Whole library packaging    
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
+    set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") # look inside install dir for packaging
+
+    set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${PLATFORM_SUFFIX}")
+    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_PACKAGE_NAME "Sight")
+    set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
+    set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
+    set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
+    include(CPack)
+
 endfunction()

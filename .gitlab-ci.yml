@@ -95,18 +95,27 @@ lint:sheldon:
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
         ninja doc
       fi
+    - >
+      if [ "${SIGHT_BUILD_PACKAGE}" == "ON" ]; then
+        ninja SightViewer_package
+        ninja install
+        ninja package
+      fi
 
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/.build/ctest.log
-      - $CI_PROJECT_DIR/.build/Documentation/Doxygen/
+      - .build/ctest.log
+      - .build/Documentation/Doxygen/
+      - .build/SightViewer*.tar.zst
+      - .build/packages/sight-*.tar.zst
 
 build:linux-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "OFF"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -115,6 +124,7 @@ build:linux-release-gcc:
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "ON"
+    SIGHT_BUILD_PACKAGE: "OFF"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -123,6 +133,7 @@ build:linux-debug-clang:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "ON"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
@@ -131,9 +142,81 @@ build:linux-release-clang:
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_PACKAGE: "ON"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
+.linux_deploy:
+  image: "${SIGHT_CI_UBUNTU20_10}:dev"
+  variables:
+    BUILD_TYPE: "release"
+  stage: deploy
+  script:
+    - cd .build/
+    - >
+      if [ "$BUILD_TYPE" == "release" ]; then
+        archive=$(ls -1 SightViewer*)
+        if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+          new_name=${archive/-[0-9]*-[a-z0-9]*/-latest}
+          mv $archive $new_name
+          archive=$new_name
+        fi
+        new_name=${archive/-Release/}
+        mv $archive $new_name
+        archive=$new_name
+        curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
+      fi
+    - cd packages
+    - archive=$(ls -1 sight-*)
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        new_name=${archive/-[0-9]*-[a-z0-9]*/-latest}
+        mv $archive $new_name
+        archive=$new_name
+      fi
+    - curl -X PUT -u "${OWNCLOUD_UID}:${OWNCLOUD_PWD}" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive" --data-binary @"$archive"
+  artifacts:
+    paths:
+      - .build/SightViewer*.tar.zst
+      - .build/packages/sight-*.tar.zst
+
+deploy:linux-debug:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-debug-clang
+  variables:
+    BUILD_TYPE: "debug"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:linux-debug:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-debug-clang
+  variables:
+    BUILD_TYPE: "debug"
+  when: manual
+
+deploy:linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-release-clang
+  variables:
+    BUILD_TYPE: "release"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:linux-release:
+  extends: .linux_deploy
+  dependencies:
+    - build:linux-release-clang
+  variables:
+    BUILD_TYPE: "release"
+  when: manual
 
 .windows_before:
   dependencies: []
@@ -200,22 +283,106 @@ prebuild:windows:
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6
+    - |
+      if ("${SIGHT_BUILD_PACKAGE}" -eq "ON") {
+        ninja SightViewer_package
+        ninja install
+        ninja package
+      }
   artifacts:
     when: always
     name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
     paths:
       - build/ctest.log
       - build/fwTest.log
+      - build/SightViewer*.exe
+      - build/packages/sight-*.zip
 
 build:windows-debug:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Debug"
+    SIGHT_BUILD_PACKAGE: "ON"
 
 build:windows-release:
   extends: .windows_build
   variables:
     BUILD_TYPE: "Release"
+    SIGHT_BUILD_PACKAGE: "ON"
+
+.windows_deploy:
+  stage: deploy
+  script:
+    - cd build
+    - |
+      if ("$BUILD_TYPE" -eq "release" ) {
+        $archive=ls SightViewer* | Select-Object -First 1
+        $archive=$archive.name
+        if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
+          $new_name=[regex]::replace($archive, "-[0-9]*-[a-z0-9]*", "-latest")
+          mv $archive $new_name
+          $archive=$new_name
+        }
+        $new_name=$archive.replace("-Release", "")
+        mv $archive $new_name
+        $archive=$new_name
+        curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
+      }
+    - cd packages
+    - $archive=ls sight-* | Select-Object -First 1
+    - $archive=$archive.name
+    - |            
+      if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
+        $new_name=[regex]::replace($archive, "-[0-9]*-[a-z0-9]*", "-latest")
+        mv $archive $new_name
+        $archive=$new_name
+      }
+    - curl.exe -X PUT -u ${OWNCLOUD_UID}:${OWNCLOUD_PWD} --data-binary "@$archive" "https://owncloud.ircad.fr/remote.php/webdav/IRCAD%20-%20Open/Binaries/$archive"
+  artifacts:
+    paths:
+      - build/SightViewer*.exe
+      - build/packages/sight-*.zip
+  tags:
+    - conan
+    - windows
+
+deploy:windows-debug:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-debug
+  variables:
+    BUILD_TYPE: "debug"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:windows-debug:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-debug
+  variables:
+    BUILD_TYPE: "debug"
+  when: manual
+
+deploy:windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    BUILD_TYPE: "release"
+  only:
+    refs:
+      - master
+      - dev
+
+deploy_manual:windows-release:
+  extends: .windows_deploy
+  dependencies:
+    - build:windows-release
+  variables:
+    BUILD_TYPE: "release"
+  when: manual
 
 deploy:pages:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"

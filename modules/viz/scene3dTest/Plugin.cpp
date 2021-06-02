@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/viz/scene3d/test/Plugin.hpp"
+#include "modules/viz/scene3dTest/Plugin.hpp"
 
 #include <viz/scene3d/Utils.hpp>
 
