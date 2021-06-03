@@ -123,6 +123,7 @@ core::location::ILocation::sptr LocationDialog::show()
             else if(m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
             {
                 std::vector<std::filesystem::path> paths;
+                paths.reserve(selectedFiles.size());
                 for(const QString& file : selectedFiles)
                 {
                     paths.push_back(file.toStdString());
