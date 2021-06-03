@@ -161,7 +161,7 @@ build:linux-20.10-release-gcc:
       if [ "$BUILD_TYPE" == "Release" ]; then
         package_name=$(ls -1 SightViewer*)
         if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
-          new_name==`echo "$package_name" | sed -e 's/-[0-9]*-[a-z0-9]*/-latest/g'`
+          new_name=`echo "$package_name" | sed -e 's/-[0-9]*-[a-z0-9]*/-latest/g'`
           mv $package_name $new_name
           package_name=$new_name
         fi
