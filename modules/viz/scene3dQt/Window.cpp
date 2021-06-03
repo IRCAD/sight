@@ -50,18 +50,17 @@ static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModi
 
 // ----------------------------------------------------------------------------
 
-static inline std::optional<QPoint> getCursorPosition(const QWindow* const _w)
+static inline QPoint getCursorPosition(const QWindow* const _w)
 {
     const auto globalCursorPosition = QCursor::pos();
     const auto widgetCursorPosition = _w->mapFromGlobal(globalCursorPosition);
 
-    std::optional<QPoint> res;
-    if (_w->geometry().contains(widgetCursorPosition))
+    if(_w->geometry().contains(widgetCursorPosition))
     {
-        res = widgetCursorPosition;
+        return widgetCursorPosition;
     }
 
-    return res;
+    return QPoint();
 }
 
 // ----------------------------------------------------------------------------
@@ -96,7 +95,7 @@ void Window::setAnimating(bool _animating)
 {
     m_animating = _animating;
 
-    if (_animating)
+    if(_animating)
     {
         renderLater();
     }
@@ -108,21 +107,23 @@ void Window::initialize()
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
-    SIGHT_ASSERT("OpenGL RenderSystem not found",
-                 m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
+    SIGHT_ASSERT(
+        "OpenGL RenderSystem not found",
+        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
+    );
 
     Ogre::NameValuePairList parameters;
 
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
     parameters["currentGLContext"]  = "true";
-    parameters["externalGLControl"] = "true";     // Let us handle buffer swapping and vsync.
+    parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
 
     /*
        We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
        the scene. Below is a cross-platform method on how to do this.
      */
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_WIN)
     {
         const size_t winId = static_cast<size_t>(this->winId());
         parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
@@ -138,11 +139,16 @@ void Window::initialize()
     m_glContext = module::viz::scene3dQt::OpenGLContext::getGlobalOgreOpenGLContext();
     this->makeCurrent();
 
-    m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
-                                                        static_cast<unsigned int>(this->width()),
-                                                        static_cast<unsigned int>(this->height()),
-                                                        false,
-                                                        &parameters);
+    const int width  = static_cast<int>(this->width() * this->devicePixelRatio());
+    const int height = static_cast<int>(this->height() * this->devicePixelRatio());
+
+    m_ogreRenderWindow = m_ogreRoot->createRenderWindow(
+        "Widget-RenderWindow_" + std::to_string(m_id),
+        static_cast<unsigned int>(width),
+        static_cast<unsigned int>(height),
+        false,
+        &parameters
+    );
 
     m_ogreRenderWindow->setVisible(true);
     m_ogreRenderWindow->setAutoUpdated(false);
@@ -151,10 +157,11 @@ void Window::initialize()
     mgr->registerWindow(m_ogreRenderWindow);
 
     sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
-    info.interactionType     = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
-    std::tie(info.x, info.y) = Window::getDeviceCoordinates(this->width(), this->height());
-    info.dx                  = 0;
-    info.dy                  = 0;
+    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
+    info.x               = width;
+    info.y               = height;
+    info.dx              = 0;
+    info.dy              = 0;
     Q_EMIT interacted(info);
 }
 
@@ -183,7 +190,7 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if (m_glContext)
+    if(m_glContext)
     {
         m_glContext->makeCurrent(this);
     }
@@ -193,7 +200,7 @@ void Window::makeCurrent()
 
 void Window::destroyWindow()
 {
-    if (m_ogreRenderWindow)
+    if(m_ogreRenderWindow)
     {
         m_ogreRenderWindow->removeListener(this);
         sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
@@ -206,7 +213,7 @@ void Window::destroyWindow()
 
 void Window::render()
 {
-    if (m_ogreRenderWindow == nullptr)
+    if(m_ogreRenderWindow == nullptr)
     {
         return;
     }
@@ -237,26 +244,10 @@ void Window::render()
 
         m_glContext->swapBuffers(this);
     }
-    catch (const std::exception& e)
+    catch(const std::exception& e)
     {
         SIGHT_ERROR("Exception occured during Ogre rendering" << e.what());
     }
-}
-
-// ----------------------------------------------------------------------------
-
-std::pair<int, int> Window::getDeviceCoordinates(int _x, int _y) const
-{
-#ifdef Q_OS_MAC
-    const qreal pixelRatio = this->devicePixelRatio();
-    const int x            = static_cast<int>(std::ceil(_x * pixelRatio));
-    const int y            = static_cast<int>(std::ceil(_y * pixelRatio));
-#else
-    const int x = _x;
-    const int y = _y;
-#endif
-
-    return std::make_pair(x, y);
 }
 
 // ----------------------------------------------------------------------------
@@ -268,7 +259,7 @@ void Window::renderLater()
        only get called when the window is resized, moved, etc. as opposed to all of the time; which is
        generally what we need.
      */
-    if (!m_update_pending)
+    if(!m_update_pending)
     {
         m_update_pending = true;
         QApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
@@ -287,7 +278,7 @@ bool Window::event(QEvent* _event)
        before calling the render() function.
      */
 
-    switch (_event->type())
+    switch(_event->type())
     {
         case QEvent::UpdateRequest:
             m_update_pending = false;
@@ -298,7 +289,7 @@ bool Window::event(QEvent* _event)
         {
             bool result = QWindow::event(_event);
 
-            if (m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
+            if(m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
             {
                 this->ogreResize(this->size());
             }
@@ -312,6 +303,7 @@ bool Window::event(QEvent* _event)
 
     return QWindow::event(_event);
 }
+
 // ----------------------------------------------------------------------------
 
 void Window::exposeEvent(QExposeEvent*)
@@ -324,7 +316,7 @@ void Window::exposeEvent(QExposeEvent*)
 
 void Window::moveEvent(QMoveEvent*)
 {
-    if (m_ogreRenderWindow != nullptr)
+    if(m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->reposition(x(), y());
     }
@@ -335,12 +327,12 @@ void Window::moveEvent(QMoveEvent*)
 void Window::renderNow()
 {
     // Small optimization to not render when not visible
-    if (!this->isExposed())
+    if(!this->isExposed())
     {
         return;
     }
 
-    if (m_ogreSize != this->size())
+    if(m_ogreSize != this->size())
     {
         this->ogreResize(this->size());
         return;
@@ -348,7 +340,7 @@ void Window::renderNow()
 
     this->render();
 
-    if (m_animating)
+    if(m_animating)
     {
         this->renderLater();
     }
@@ -363,9 +355,9 @@ void Window::keyPressEvent(QKeyEvent* _e)
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
 
-    auto cursorPos = getCursorPosition(this);
-    info.x = cursorPos ? cursorPos.value().x() : 0;
-    info.y = cursorPos ? cursorPos.value().y() : 0;
+    auto cursorPosition = getCursorPosition(this);
+    info.x = static_cast<int>(cursorPosition.x() * this->devicePixelRatio());
+    info.y = static_cast<int>(cursorPosition.y() * this->devicePixelRatio());
 
     Q_EMIT interacted(info);
 }
@@ -379,57 +371,80 @@ void Window::keyReleaseEvent(QKeyEvent* _e)
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
 
-    auto cursorPos = getCursorPosition(this);
-    info.x = cursorPos ? cursorPos.value().x() : 0;
-    info.y = cursorPos ? cursorPos.value().y() : 0;
+    auto cursorPosition = getCursorPosition(this);
+    info.x = static_cast<int>(cursorPosition.x() * this->devicePixelRatio());
+    info.y = static_cast<int>(cursorPosition.y() * this->devicePixelRatio());
 
     Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
-Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
-                                                  InteractionInfo::InteractionEnum _interactionType) const
+Window::InteractionInfo Window::convertMouseEvent(
+    const QMouseEvent* const _evt,
+    InteractionInfo::InteractionEnum _interactionType
+) const
 {
     InteractionInfo info;
     const auto button        = _evt->button();
     const auto activeButtons = _evt->buttons();
 
-    switch (button)
+    switch(button)
     {
         case Qt::NoButton:
-            info.button =
-                (activeButtons& Qt::LeftButton) ? sight::viz::scene3d::interactor::IInteractor::LEFT : (activeButtons&
-                                                                                                        Qt::
-                                                                                                        MiddleButton) ?
-                ::
-                sight::viz::scene3d::interactor::IInteractor::MIDDLE : (activeButtons& Qt::RightButton) ? ::
-                sight::viz::scene3d::interactor::IInteractor::RIGHT : sight::viz::scene3d::interactor::IInteractor::
-                UNKNOWN;
+            if((activeButtons& Qt::LeftButton) == Qt::LeftButton)
+            {
+                info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
+            }
+            else if((activeButtons& Qt::MiddleButton) == Qt::MiddleButton)
+            {
+                info.button = sight::viz::scene3d::interactor::IInteractor::MIDDLE;
+            }
+            else if((activeButtons& Qt::RightButton) == Qt::RightButton)
+            {
+                info.button = sight::viz::scene3d::interactor::IInteractor::RIGHT;
+            }
+            else
+            {
+                info.button = sight::viz::scene3d::interactor::IInteractor::UNKNOWN;
+            }
+
             break;
+
         case Qt::LeftButton:
             info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
             break;
+
         case Qt::MiddleButton:
             info.button = sight::viz::scene3d::interactor::IInteractor::MIDDLE;
             break;
+
         case Qt::RightButton:
             info.button = sight::viz::scene3d::interactor::IInteractor::RIGHT;
             break;
+
         default:
             info.button = sight::viz::scene3d::interactor::IInteractor::UNKNOWN;
             break;
     }
 
-    const int x  = _evt->x();
-    const int y  = _evt->y();
-    const int dx = m_lastMousePosition ? m_lastMousePosition.value().x() - x : 0;
-    const int dy = m_lastMousePosition ? m_lastMousePosition.value().y() - y : 0;
+    info.interactionType = _interactionType;
+    info.x               = static_cast<int>(_evt->x() * this->devicePixelRatio());
+    info.y               = static_cast<int>(_evt->y() * this->devicePixelRatio());
 
-    info.interactionType       = _interactionType;
-    std::tie(info.x, info.y)   = Window::getDeviceCoordinates(x, y);
-    std::tie(info.dx, info.dy) = Window::getDeviceCoordinates(dx, dy);
-    info.modifiers             = convertModifiers(_evt->modifiers());
+    if(m_lastMousePosition)
+    {
+        const auto& point = m_lastMousePosition.value();
+        info.dx = static_cast<int>((point.x() - _evt->x()) * this->devicePixelRatio());
+        info.dy = static_cast<int>((point.y() - _evt->y()) * this->devicePixelRatio());
+    }
+    else
+    {
+        info.dx = 0;
+        info.dy = 0;
+    }
+
+    info.modifiers = convertModifiers(_evt->modifiers());
 
     return info;
 }
@@ -439,7 +454,11 @@ Window::InteractionInfo Window::convertMouseEvent(const QMouseEvent* const _evt,
 void Window::mouseMoveEvent(QMouseEvent* _e)
 {
     const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
-    m_lastMousePosition = QPoint(info.x, info.y);
+
+    if(m_lastMousePosition)
+    {
+        m_lastMousePosition = _e->pos();
+    }
 
     Q_EMIT interacted(info);
 
@@ -451,12 +470,16 @@ void Window::mouseMoveEvent(QMouseEvent* _e)
 void Window::wheelEvent(QWheelEvent* _e)
 {
     sight::viz::scene3d::IWindowInteractor::InteractionInfo info;
-    info.interactionType     = sight::viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE;
-    info.delta               = _e->angleDelta().y(); // Assume we only have a 1D mouse wheel scrolling vertically.
-    std::tie(info.x, info.y) = Window::getDeviceCoordinates(_e->x(), _e->y());
-    info.dx                  = 0;
-    info.dy                  = 0;
-    info.modifiers           = convertModifiers(_e->modifiers());
+    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE;
+
+    // Only manage vertical wheel scroll.
+    info.delta = static_cast<int>(_e->angleDelta().y() * this->devicePixelRatio());
+
+    info.x         = static_cast<int>(_e->x() * this->devicePixelRatio());
+    info.y         = static_cast<int>(_e->y() * this->devicePixelRatio());
+    info.dx        = 0;
+    info.dy        = 0;
+    info.modifiers = convertModifiers(_e->modifiers());
 
     Q_EMIT interacted(info);
 
@@ -467,6 +490,8 @@ void Window::wheelEvent(QWheelEvent* _e)
 
 void Window::mousePressEvent(QMouseEvent* _e)
 {
+    m_lastMousePosition = _e->pos();
+
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
     Q_EMIT interacted(info);
 
@@ -487,9 +512,9 @@ void Window::mouseDoubleClickEvent(QMouseEvent* _e)
 
 void Window::mouseReleaseEvent(QMouseEvent* _e)
 {
-    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
     m_lastMousePosition.reset();
 
+    const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
     Q_EMIT interacted(info);
 
     this->requestRender();
@@ -499,15 +524,15 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
 
 void Window::ogreResize(const QSize& _newSize)
 {
-    if (!_newSize.isValid())
+    if(!_newSize.isValid())
     {
         return;
     }
 
     m_ogreSize = _newSize;
 
-    int newWidth, newHeight;
-    std::tie(newWidth, newHeight) = Window::getDeviceCoordinates(m_ogreSize.width(), m_ogreSize.height());
+    const int newWidth  = static_cast<int>(this->devicePixelRatio() * m_ogreSize.width());
+    const int newHeight = static_cast<int>(this->devicePixelRatio() * m_ogreSize.height());
 
     this->makeCurrent();
 
@@ -519,7 +544,7 @@ void Window::ogreResize(const QSize& _newSize)
     const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
     ::Ogre::Viewport* viewport = nullptr;
-    for (unsigned short i = 0; i < numViewports; i++)
+    for(unsigned short i = 0 ; i < numViewports ; i++)
     {
         viewport = m_ogreRenderWindow->getViewport(i);
 
@@ -529,14 +554,15 @@ void Window::ogreResize(const QSize& _newSize)
         viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
     }
 
-    if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+    if(viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
     {
         ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-            viewport);
+            viewport
+        );
 
-        for (auto instance : chain->getCompositorInstances())
+        for(auto instance : chain->getCompositorInstances())
         {
-            if (instance->getEnabled())
+            if(instance->getEnabled())
             {
                 instance->setEnabled(false);
                 instance->setEnabled(true);
@@ -559,7 +585,7 @@ void Window::ogreResize(const QSize& _newSize)
 
 void Window::onScreenChanged(QScreen*)
 {
-    if (m_ogreRenderWindow != nullptr)
+    if(m_ogreRenderWindow != nullptr)
     {
         this->ogreResize(this->size());
     }
