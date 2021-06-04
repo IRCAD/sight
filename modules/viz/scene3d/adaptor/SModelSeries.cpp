@@ -40,6 +40,7 @@
 
 namespace sight::module::viz::scene3d::adaptor
 {
+
 //-----------------------------------------------------------------------------
 
 static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
@@ -74,8 +75,12 @@ void SModelSeries::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
     m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
 
@@ -89,9 +94,10 @@ void SModelSeries::configuring()
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
-            hexaMask.length() > 2 &&
-            hexaMask.substr(0, 2) == "0x");
-        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+            hexaMask.length() > 2
+            && hexaMask.substr(0, 2) == "0x"
+        );
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
 
     if(config.get_optional<bool>("visible"))
@@ -128,7 +134,7 @@ service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = this->getLockedInput< data::ModelSeries >(s_MODEL_INPUT);
+    const auto modelSeries = this->getLockedInput<data::ModelSeries>(s_MODEL_INPUT);
 
     this->stopping();
 
@@ -137,8 +143,9 @@ void SModelSeries::updating()
 
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
-        auto adaptor = this->registerService< module::viz::scene3d::adaptor::SReconstruction>(
-            "::sight::module::viz::scene3d::adaptor::SReconstruction");
+        auto adaptor = this->registerService<module::viz::scene3d::adaptor::SReconstruction>(
+            "::sight::module::viz::scene3d::adaptor::SReconstruction"
+        );
         adaptor->registerInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
@@ -192,7 +199,7 @@ void SModelSeries::setVisible(bool _visible)
 
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = this->getLockedInput< data::ModelSeries >(s_MODEL_INPUT);
+    const auto modelSeries = this->getLockedInput<data::ModelSeries>(s_MODEL_INPUT);
 
     const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 

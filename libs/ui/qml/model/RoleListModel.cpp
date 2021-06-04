@@ -28,12 +28,13 @@
 
 namespace sight::ui::qml
 {
+
 namespace model
 {
+
 RoleListModel::RoleListModel(QObject* parent) :
     QAbstractListModel(parent)
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -49,14 +50,15 @@ int RoleListModel::rowCount(const QModelIndex& parent) const
 QVariant RoleListModel::data(const QModelIndex& index, int role) const
 {
     // check if the role exist
-    if (!m_roles.contains(role))
+    if(!m_roles.contains(role))
     {
         return QVariant();
     }
+
     // Check boudaries
-    if(index.column() < 0 ||
-       index.row() < 0 ||
-       rowCount() <= index.row())
+    if(index.column() < 0
+       || index.row() < 0
+       || rowCount() <= index.row())
     {
         return QVariant();
     }
@@ -70,7 +72,6 @@ QVariant RoleListModel::data(const QModelIndex& index, int role) const
 QHash<int, QByteArray> RoleListModel::roleNames() const
 {
     return m_roles;
-
 }
 
 //------------------------------------------------------------------------------
@@ -96,10 +97,11 @@ void RoleListModel::addRole(const int& enumNb, const QByteArray& role)
 
 bool RoleListModel::isEmpty() noexcept
 {
-    return (m_data.isEmpty());
+    return m_data.isEmpty();
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace model
+
 } // namespace sight::ui::qml

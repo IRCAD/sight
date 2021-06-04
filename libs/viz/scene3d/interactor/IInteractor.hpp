@@ -33,8 +33,8 @@
 #include <viz/scene3d/config.hpp>
 #include <viz/scene3d/factory/new.hpp>
 
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/Ogre.h>
+#include <OGRE/OgreSceneManager.h>
 
 namespace sight::viz::scene3d
 {
@@ -49,12 +49,11 @@ namespace interactor
  */
 class VIZ_SCENE3D_CLASS_API IInteractor
 {
-
 public:
 
-    typedef std::weak_ptr< IInteractor > wptr;
+    typedef std::weak_ptr<IInteractor> wptr;
 
-    typedef std::shared_ptr< IInteractor > sptr;
+    typedef std::shared_ptr<IInteractor> sptr;
 
     /// Defines the list of recognized mouse buttons.
     enum MouseButton
@@ -69,11 +68,11 @@ public:
     /// Defines the list of recognized mouse modifier.
     enum class Modifier : std::uint8_t
     {
-        NONE     = 0x0,
-        SHIFT    = 0x1,
-        CONTROL  = SHIFT << 1,
-            META = SHIFT << 2,
-            ALT  = SHIFT << 3
+        NONE    = 0x0,
+        SHIFT   = 0x1,
+        CONTROL = SHIFT << 1,
+        META    = SHIFT << 2,
+        ALT     = SHIFT << 3
     };
 
     /**
@@ -177,13 +176,12 @@ protected:
     WPTR(Layer) m_layer;
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant { true };
+    bool m_layerOrderDependant {true};
 
 private:
 
     /// Checks if the cursor is on top of the given viewport.
     static bool isInViewport(int _mouseX, int _mouseY, const ::Ogre::Viewport* const _vp);
-
 };
 
 //------------------------------------------------------------------------------
@@ -209,9 +207,9 @@ static inline bool operator==(IInteractor::Modifier _m, INT_TYPE _i)
 static inline IInteractor::Modifier operator&(IInteractor::Modifier _m1, IInteractor::Modifier _m2)
 {
     return static_cast<IInteractor::Modifier>(
-        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1) &
-        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
-        );
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1)
+        & static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -219,9 +217,9 @@ static inline IInteractor::Modifier operator&(IInteractor::Modifier _m1, IIntera
 static inline IInteractor::Modifier operator|(IInteractor::Modifier _m1, IInteractor::Modifier _m2)
 {
     return static_cast<IInteractor::Modifier>(
-        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1) |
-        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
-        );
+        static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m1)
+        | static_cast<std::underlying_type<IInteractor::Modifier>::type>(_m2)
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -232,4 +230,5 @@ static inline IInteractor::Modifier operator|=(IInteractor::Modifier& _m1, IInte
 }
 
 } // namespace interactor.
+
 } // namespace sight::viz::scene3d.

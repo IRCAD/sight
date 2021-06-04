@@ -43,7 +43,6 @@ V1ToV2::V1ToV2() :
     m_targetClassname = "data::Camera";
     m_originVersion   = "1";
     m_targetVersion   = "2";
-
 }
 
 // ----------------------------------------------------------------------------
@@ -54,7 +53,7 @@ V1ToV2::~V1ToV2()
 
 // ----------------------------------------------------------------------------
 
-V1ToV2::V1ToV2( const V1ToV2& cpy ) :
+V1ToV2::V1ToV2(const V1ToV2& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
@@ -64,7 +63,8 @@ V1ToV2::V1ToV2( const V1ToV2& cpy ) :
 void V1ToV2::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -74,8 +74,11 @@ void V1ToV2::apply(
     // Create helper
     io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::Sequence::sptr intrinsicParam = sight::atoms::Sequence::dynamicCast(previous->getAttribute(
-                                                                                          "intrinsic"));
+    sight::atoms::Sequence::sptr intrinsicParam = sight::atoms::Sequence::dynamicCast(
+        previous->getAttribute(
+            "intrinsic"
+        )
+    );
     sight::atoms::Numeric::sptr width  = sight::atoms::Numeric::dynamicCast((*intrinsicParam)[4]);
     sight::atoms::Numeric::sptr height = sight::atoms::Numeric::dynamicCast((*intrinsicParam)[5]);
 
@@ -85,24 +88,24 @@ void V1ToV2::apply(
     std::string camSource = "UNKNOWN";
     std::string videoFile;
     std::string streamUrl;
-    if (camID->getString() == "file")
+    if(camID->getString() == "file")
     {
         camSource = "FILE";
         videoFile = description->getString();
     }
-    else if (camID->getString() == "stream")
+    else if(camID->getString() == "stream")
     {
         camSource = "STREAM";
         streamUrl = description->getString();
     }
-    else if (!camID->getString().empty())
+    else if(!camID->getString().empty())
     {
         camSource = "DEVICE";
     }
 
     sight::atoms::Sequence::sptr newIntrinsic = sight::atoms::Sequence::New();
 
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
         newIntrinsic->push_back((*intrinsicParam)[i]->clone());
     }

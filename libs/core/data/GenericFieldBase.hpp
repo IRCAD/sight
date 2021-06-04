@@ -40,21 +40,22 @@ class DATA_CLASS_API GenericFieldBase : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericFieldBase)
+    SIGHT_DECLARE_CLASS(GenericFieldBase);
 
-    DATA_API virtual bool operator== (const GenericFieldBase& lf ) = 0;
-    DATA_API virtual bool operator!= (const GenericFieldBase& lf ) = 0;
-    DATA_API virtual bool operator<  (const GenericFieldBase& lf ) = 0;
-    DATA_API virtual bool operator>  (const GenericFieldBase& lf ) = 0;
-    DATA_API virtual bool operator<= (const GenericFieldBase& lf ) = 0;
-    DATA_API virtual bool operator>= (const GenericFieldBase& lf ) = 0;
-    DATA_API friend std::ostream& operator<<( std::ostream&, const GenericFieldBase& );
+    DATA_API virtual bool operator==(const GenericFieldBase& lf) = 0;
+    DATA_API virtual bool operator!=(const GenericFieldBase& lf) = 0;
+    DATA_API virtual bool operator<(const GenericFieldBase& lf)  = 0;
+    DATA_API virtual bool operator>(const GenericFieldBase& lf)  = 0;
+    DATA_API virtual bool operator<=(const GenericFieldBase& lf) = 0;
+    DATA_API virtual bool operator>=(const GenericFieldBase& lf) = 0;
+    DATA_API friend std::ostream& operator<<(std::ostream&, const GenericFieldBase&);
 
-    DATA_API virtual ::std::string toString() const = 0;
+    DATA_API virtual ::std::string toString() const               = 0;
     DATA_API virtual void fromString(const ::std::string& _value) = 0;
 
 private:
-    DATA_API virtual std::ostream& toOStream( std::ostream& _os ) const = 0;
+
+    DATA_API virtual std::ostream& toOStream(std::ostream& _os) const = 0;
 };
 
 } // namespace sight::data

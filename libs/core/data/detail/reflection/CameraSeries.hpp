@@ -25,10 +25,9 @@
 #include "data/Camera.hpp"
 #include "data/CameraSeries.hpp"
 #include "data/config.hpp"
+#include <data/Matrix4.hpp>
 
 #include <core/reflection/macros.hpp>
 
-#include <data/Matrix4.hpp>
-
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(CameraSeries), (sight)(data)(Camera));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(CameraSeries), (sight)(data)(Matrix4));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (CameraSeries), (sight) (data) (Camera));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (CameraSeries), (sight) (data) (Matrix4));

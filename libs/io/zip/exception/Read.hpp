@@ -35,7 +35,7 @@ namespace exception
 /// Read exception.
 struct Read : core::Exception
 {
-    IO_ZIP_API Read ( const std::string& err );
+    IO_ZIP_API Read(const std::string& err);
 };
 
 } // namespace exception

@@ -29,8 +29,8 @@
 namespace camp_ext
 {
 
-template <>
-struct ValueMapper< sight::core::tools::Type >
+template<>
+struct ValueMapper<sight::core::tools::Type>
 {
     typedef sight::core::tools::Type ReturnType;
     static const int type = camp::stringType;
@@ -43,40 +43,45 @@ struct ValueMapper< sight::core::tools::Type >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool )
+    static ReturnType from(bool)
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long )
+    static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double )
+    static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
     {
         return sight::core::tools::Type::create(source);
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& )
+    static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::UserObject& )
+    static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
 };
 
-}  // namespace camp_ext
+} // namespace camp_ext

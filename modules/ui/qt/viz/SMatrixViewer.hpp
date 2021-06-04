@@ -61,7 +61,8 @@ class MODULE_UI_QT_CLASS_API SMatrixViewer : public QObject,
                                              public sight::ui::base::IEditor
 {
 public:
-    SIGHT_DECLARE_SERVICE(SMatrixViewer, sight::ui::base::IEditor)
+
+    SIGHT_DECLARE_SERVICE(SMatrixViewer, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SMatrixViewer() noexcept;
@@ -101,7 +102,7 @@ private:
 
     std::string m_title; ///< Title of the matrix that will be displayed
 
-    QVector< QPointer< QLabel > > m_matrixLabels; ///< Labels for matrix's elements
+    QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
 };
 
 } //namespace viz

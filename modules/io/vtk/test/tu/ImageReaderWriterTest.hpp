@@ -26,6 +26,7 @@
 
 namespace sight::module::io::vtk
 {
+
 namespace ut
 {
 
@@ -34,20 +35,21 @@ namespace ut
  */
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageReaderWriterTest );
-CPPUNIT_TEST( testVtkImageReader );
-CPPUNIT_TEST( testVtiImageReader );
-CPPUNIT_TEST( testMhdImageReader );
-CPPUNIT_TEST( testImageReaderExtension);
-CPPUNIT_TEST( testBitmapImageWriter );
-CPPUNIT_TEST( testVtkImageWriter );
-CPPUNIT_TEST( testVtkImageSeriesWriter );
-CPPUNIT_TEST( testVtiImageWriter );
-CPPUNIT_TEST( testMhdImageWriter );
-CPPUNIT_TEST( testImageWriterExtension );
+CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
+CPPUNIT_TEST(testVtkImageReader);
+CPPUNIT_TEST(testVtiImageReader);
+CPPUNIT_TEST(testMhdImageReader);
+CPPUNIT_TEST(testImageReaderExtension);
+CPPUNIT_TEST(testBitmapImageWriter);
+CPPUNIT_TEST(testVtkImageWriter);
+CPPUNIT_TEST(testVtkImageSeriesWriter);
+CPPUNIT_TEST(testVtiImageWriter);
+CPPUNIT_TEST(testMhdImageWriter);
+CPPUNIT_TEST(testImageWriterExtension);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -62,8 +64,8 @@ public:
     void testVtiImageWriter();
     void testMhdImageWriter();
     void testImageWriterExtension();
-
 };
 
 } //namespace ut
+
 } //namespace sight::module::io::vtk

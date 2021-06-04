@@ -37,6 +37,7 @@ namespace sight::module::appXml
 class MODULE_APPXML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
+
     /// Constructor.
     MODULE_APPXML_API Plugin() noexcept;
 
@@ -54,6 +55,7 @@ public:
     MODULE_APPXML_API void uninitialize() noexcept;
 
 private:
+
     std::string m_configurationName;
     std::string m_parametersName;
     service::AppConfigManager::sptr m_appConfigMng;

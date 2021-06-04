@@ -33,6 +33,7 @@
 
 namespace sight::service
 {
+
 namespace extension
 {
 
@@ -56,7 +57,7 @@ AppConfigParameters::~AppConfigParameters()
 void AppConfigParameters::parseBundleInformation()
 {
     auto extensions = core::runtime::getAllExtensionsForPoint("sight::service::extension::AppConfigParameters");
-    for( std::shared_ptr< core::runtime::Extension > ext :  extensions )
+    for(std::shared_ptr<core::runtime::Extension> ext : extensions)
     {
         // Get id
         const std::string extensionId = core::runtime::filterID(ext->findConfigurationElement("id")->getValue());
@@ -66,19 +67,22 @@ void AppConfigParameters::parseBundleInformation()
         // Get parmeters
         core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
         core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-        for( core::runtime::ConfigurationElement::sptr paramConfig :  elements )
+        for(core::runtime::ConfigurationElement::sptr paramConfig : elements)
         {
             std::string name = paramConfig->getExistingAttributeValue("name");
             std::string val  = paramConfig->getExistingAttributeValue("value");
             parameters[name] = val;
         }
+
         core::mt::WriteLock lock(m_registryMutex);
 #ifdef _DEBUG
-        Registry::const_iterator iter = m_reg.find( extensionId );
+        Registry::const_iterator iter = m_reg.find(extensionId);
 #endif
-        SIGHT_ASSERT("The id " <<  extensionId
-                               << " already exists in the application configuration parameter registry",
-                     iter == m_reg.end());
+        SIGHT_ASSERT(
+            "The id " << extensionId
+            << " already exists in the application configuration parameter registry",
+            iter == m_reg.end()
+        );
         m_reg[extensionId] = parameters;
     }
 }
@@ -99,12 +103,14 @@ void AppConfigParameters::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& extensionId ) const
+const FieldAdaptorType& AppConfigParameters::getParameters(const std::string& extensionId) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find( core::runtime::filterID(extensionId) );
-    SIGHT_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
-                 iter != m_reg.end());
+    Registry::const_iterator iter = m_reg.find(core::runtime::filterID(extensionId));
+    SIGHT_ASSERT(
+        "The id " << extensionId << " is not found in the application configuration parameter registry",
+        iter != m_reg.end()
+    );
     return iter->second;
 }
 

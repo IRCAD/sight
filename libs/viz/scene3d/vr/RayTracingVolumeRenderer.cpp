@@ -52,6 +52,7 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace vr
 {
 
@@ -90,10 +91,14 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     if(!closestLights.empty())
                     {
                         ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
-                            closestLights[0]->getDerivedDirection(), true);
+                            closestLights[0]->getDerivedDirection(),
+                            true
+                        );
 
                         const ::Ogre::Pass* const satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
-                            m_currentMtlName, RESOURCE_GROUP)->getTechnique(0)->getPass(0);
+                            m_currentMtlName,
+                            RESOURCE_GROUP
+                        )->getTechnique(0)->getPass(0);
                         ::Ogre::GpuProgramParametersSharedPtr satIllumParams =
                             satIllumPass->getFragmentProgramParameters();
 
@@ -129,21 +134,23 @@ static const std::string s_VOLUME_TF_TEXUNIT_NAME = "volumeTransferFunction";
 
 //-----------------------------------------------------------------------------
 
-RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
-                                                   Layer::sptr layer,
-                                                   ::Ogre::SceneNode* const parentNode,
-                                                   ::Ogre::TexturePtr imageTexture,
-                                                   const TransferFunction::sptr& gpuVolumeTF,
-                                                   PreIntegrationTable& preintegrationTable,
-                                                   bool ambientOcclusion,
-                                                   bool colorBleeding,
-                                                   bool shadows,
-                                                   double aoFactor,
-                                                   double colorBleedingFactor) :
+RayTracingVolumeRenderer::RayTracingVolumeRenderer(
+    std::string parentId,
+    Layer::sptr layer,
+    ::Ogre::SceneNode* const parentNode,
+    ::Ogre::TexturePtr imageTexture,
+    const TransferFunction::sptr& gpuVolumeTF,
+    PreIntegrationTable& preintegrationTable,
+    bool ambientOcclusion,
+    bool colorBleeding,
+    bool shadows,
+    double aoFactor,
+    double colorBleedingFactor
+) :
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
-    m_imageSize(data::Image::Size({ 1, 1, 1 })),
+    m_imageSize(data::Image::Size({1, 1, 1})),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
@@ -168,13 +175,17 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto* const viewport = layer->getViewport();
+    auto* const viewport                         = layer->getViewport();
 
     const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
     const auto stereoMode             = layer->getStereoMode();
     const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
-    m_rayEntryCompositor = std::make_unique<RayEntryCompositor> (rayEntryCompositorName, s_PROXY_GEOMETRY_RQ_GROUP,
-                                                                 stereoMode, true);
+    m_rayEntryCompositor = std::make_unique<RayEntryCompositor>(
+        rayEntryCompositorName,
+        s_PROXY_GEOMETRY_RQ_GROUP,
+        stereoMode,
+        true
+    );
 
     auto* const compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
     SIGHT_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
@@ -227,7 +238,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     m_sceneManager->destroyMovableObject(m_proxyGeometry);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto* const viewport = this->getLayer()->getViewport();
+    auto* const viewport                         = this->getLayer()->getViewport();
 
     const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
     compositorManager.setCompositorEnabled(viewport, rayEntryCompositorName, false);
@@ -380,7 +391,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
 void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor)
 {
     ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(colorBleedingFactor);
-    m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
+    m_volIllumFactor = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
 
     // Update the shader parameter
     m_RTVSharedParameters->setNamedConstant("u_f4VolIllumFactor", m_volIllumFactor);
@@ -482,8 +493,10 @@ bool RayTracingVolumeRenderer::isVisible() const
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _rayCastingPass,
-                                                             const std::string& _fpPPDefines) const
+void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(
+    Ogre::Pass* const _rayCastingPass,
+    const std::string& _fpPPDefines
+) const
 {
     ::Ogre::GpuProgramParametersSharedPtr fpParams = _rayCastingPass->getFragmentProgramParameters();
 
@@ -576,8 +589,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     const ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
     if(!gpm.resourceExists(vpName, RESOURCE_GROUP))
     {
-        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, RESOURCE_GROUP, "glsl",
-                                                               ::Ogre::GPT_VERTEX_PROGRAM);
+        ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(
+            vpName,
+            RESOURCE_GROUP,
+            "glsl",
+            ::Ogre::GPT_VERTEX_PROGRAM
+        );
         vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
         if(vpPPDefines.size() > 0)
@@ -594,7 +611,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
             gpm.createProgram(fpName, RESOURCE_GROUP, "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
         fsp->setSourceFile(_sourceFile);
 
-        for(const std::string& attachement: m_fragmentShaderAttachements)
+        for(const std::string& attachement : m_fragmentShaderAttachements)
         {
             fsp->setParameter("attach", attachement);
         }
@@ -613,10 +630,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         {
             lightingShaderName += "ColorBleeding";
         }
+
         if(m_ambientOcclusion || m_shadows)
         {
             lightingShaderName += "Advanced";
         }
+
         lightingShaderName += "Lighting_FP";
 
         fsp->setParameter("attach", lightingShaderName);
@@ -640,8 +659,12 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         ::Ogre::Pass* const pass = tech->getPass(0);
         pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
         pass->setSeparateSceneBlendingOperation(::Ogre::SBO_ADD, ::Ogre::SBO_ADD);
-        pass->setSeparateSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA,
-                                       ::Ogre::SBF_ONE, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+        pass->setSeparateSceneBlending(
+            ::Ogre::SBF_SOURCE_ALPHA,
+            ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA,
+            ::Ogre::SBF_ONE,
+            ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA
+        );
         pass->setDepthCheckEnabled(true);
         pass->setDepthWriteEnabled(true);
 
@@ -659,14 +682,25 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fpParams->setNamedAutoConstant("u_fShininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
         fpParams->setNamedAutoConstant("u_fNumLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
-        fpParams->setNamedAutoConstant("u_f4LightPos",
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 10);
-        fpParams->setNamedAutoConstant("u_f3LightDiffuseCol",
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 10);
-        fpParams->setNamedAutoConstant("u_f3LightSpecularCol",
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR_ARRAY, 10);
-        fpParams->setNamedAutoConstant("u_invWorldViewProj",
-                                       ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+        fpParams->setNamedAutoConstant(
+            "u_f4LightPos",
+            ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY,
+            10
+        );
+        fpParams->setNamedAutoConstant(
+            "u_f3LightDiffuseCol",
+            ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY,
+            10
+        );
+        fpParams->setNamedAutoConstant(
+            "u_f3LightSpecularCol",
+            ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR_ARRAY,
+            10
+        );
+        fpParams->setNamedAutoConstant(
+            "u_invWorldViewProj",
+            ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX
+        );
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
         fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
@@ -678,16 +712,21 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
     const ::Ogre::String fpDepthName("RTVD_FP_" + std::to_string(hash));
     if(!gpm.resourceExists(fpDepthName, RESOURCE_GROUP))
     {
-        ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpDepthName, RESOURCE_GROUP, "glsl",
-                                                               ::Ogre::GPT_FRAGMENT_PROGRAM);
+        ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(
+            fpDepthName,
+            RESOURCE_GROUP,
+            "glsl",
+            ::Ogre::GPT_FRAGMENT_PROGRAM
+        );
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
         fsp->setParameter("attach", "TransferFunction_FP");
         fsp->setParameter("attach", "DepthPeelingCommon_FP");
 
-        for(const std::string& attachement: m_fragmentShaderAttachements)
+        for(const std::string& attachement : m_fragmentShaderAttachements)
         {
             fsp->setParameter("attach", attachement);
         }
+
         if(fpPPDefines.size() > 0)
         {
             fsp->setParameter("preprocessor_defines", fpPPDefines);
@@ -716,8 +755,10 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
         fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
         fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-        fpParams->setNamedAutoConstant("u_invWorldViewProj",
-                                       ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+        fpParams->setNamedAutoConstant(
+            "u_invWorldViewProj",
+            ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX
+        );
         fpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
         fpParams->addSharedParameters(m_RTVSharedParameters->getName());
 
@@ -743,6 +784,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
             texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             texUnitState->setCompositorReference(rayEntryCompositorName, rayEntryCompositorName + "Texture");
         }
+
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
         fpParams->setNamedConstant("u_s2EntryPoints", 2);
@@ -779,9 +821,13 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
-    m_proxyGeometry = viz::scene3d::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
-                                                               m_sceneManager, m_3DOgreTexture,
-                                                               m_gpuVolumeTF.lock(), "RayEntryPoints");
+    m_proxyGeometry = viz::scene3d::vr::GridProxyGeometry::New(
+        this->m_parentId + "_GridProxyGeometry",
+        m_sceneManager,
+        m_3DOgreTexture,
+        m_gpuVolumeTF.lock(),
+        "RayEntryPoints"
+    );
 
     m_proxyGeometry->setRenderQueueGroup(s_PROXY_GEOMETRY_RQ_GROUP);
     m_volumeSceneNode->attachObject(m_proxyGeometry);
@@ -796,13 +842,13 @@ void RayTracingVolumeRenderer::computeRealFocalLength()
 {
     const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
     const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-                                      { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+                                      {return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2);};
 
-    const auto closestFurthestImgPoints
-        = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
+    const auto closestFurthestImgPoints =
+        std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
 
-    const auto focusPoint = *closestFurthestImgPoints.first + m_focalLength *
-                            (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
+    const auto focusPoint = *closestFurthestImgPoints.first + m_focalLength
+                            * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
 
     const float realFocalLength = m_camera->getRealPosition().distance(focusPoint);
 
@@ -851,7 +897,7 @@ std::tuple<std::string, std::string, size_t> RayTracingVolumeRenderer::computeRa
         fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_PREINTEGRATION_DEFINE;
     }
 
-    return std::make_tuple(vpPPDefs.str(), fpPPDefs.str(), std::hash<std::string>{} (vpPPDefs.str() + fpPPDefs.str()));
+    return std::make_tuple(vpPPDefs.str(), fpPPDefs.str(), std::hash<std::string> {}(vpPPDefs.str() + fpPPDefs.str()));
 }
 
 //-----------------------------------------------------------------------------
@@ -862,11 +908,12 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
     mtl->setDiffuse(diffuse);
 
     ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
-    mtl->setSpecular( specular );
-    mtl->setShininess( 20 );
+    mtl->setSpecular(specular);
+    mtl->setShininess(20);
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace vr
+
 } // namespace sight::viz::scene3d

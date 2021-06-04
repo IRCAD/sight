@@ -42,9 +42,9 @@ namespace sight::io::dimse
 class IO_DIMSE_CLASS_API SeriesRetriever : public core::BaseObject,
                                            public DcmSCP
 {
-
 public:
-    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever, new SeriesRetriever)
+
+    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever, new SeriesRetriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
@@ -64,16 +64,23 @@ public:
      * @param[in] timeout Connection timeout
      * @param[in] progressCallback Progress callback
      */
-    IO_DIMSE_API void initialize(const std::string& applicationTitle, unsigned short applicationport, int timeout = 3,
-                                 ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr());
+    IO_DIMSE_API void initialize(
+        const std::string& applicationTitle,
+        unsigned short applicationport,
+        int timeout                                     = 3,
+        ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr()
+    );
 
     /// Start the server
     IO_DIMSE_API bool start();
 
 protected:
+
     /// Handle Incoming Command (Override)
-    virtual OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg,
-                                              const DcmPresentationContextInfo& presContextInfo) override;
+    virtual OFCondition handleIncomingCommand(
+        T_DIMSE_Message* incomingMsg,
+        const DcmPresentationContextInfo& presContextInfo
+    ) override;
 
     /**
      * @brief Handle C-STORE Request
@@ -91,7 +98,6 @@ protected:
 
     /// Dowloaded instance index
     unsigned int m_instanceIndex;
-
 };
 
 } // namespace sight::io::dimse

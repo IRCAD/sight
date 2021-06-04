@@ -61,14 +61,15 @@ void HiResTimer::stop()
 void HiResTimer::reset(core::HiResClock::HiResClockType initial_value)
 {
     bool wasStopped = m_stopped;
-    if (!wasStopped)
+    if(!wasStopped)
     {
         this->stop();
     }
+
     m_startTimeInMicroSec = 0.;
     m_endTimeInMicroSec   = 0.;
     m_cumulTimeInMicroSec = initial_value;
-    if (!wasStopped)
+    if(!wasStopped)
     {
         this->start();
     }

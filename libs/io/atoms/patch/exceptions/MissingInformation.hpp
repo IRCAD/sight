@@ -36,6 +36,7 @@ namespace exceptions
 class MissingInformation : public io::atoms::patch::exceptions::Base
 {
 public:
+
     MissingInformation(const std::string& message);
     virtual ~MissingInformation() noexcept
     {
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

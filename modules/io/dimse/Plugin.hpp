@@ -32,7 +32,6 @@ namespace sight::module::io::dimse
 /// This class is started when the bundle is loaded.
 struct MODULE_IO_DIMSE_CLASS_API Plugin : public core::runtime::Plugin
 {
-
     /// Destroys the plugin.
     MODULE_IO_DIMSE_API ~Plugin() noexcept override;
 
@@ -41,7 +40,6 @@ struct MODULE_IO_DIMSE_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Stops the plugin, does nothing here.
     MODULE_IO_DIMSE_API void stop() noexcept override;
-
 };
 
 } // namespace sight::module::io::dimse.

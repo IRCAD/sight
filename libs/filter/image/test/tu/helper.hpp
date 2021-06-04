@@ -31,7 +31,7 @@
 #include <itkImage.h>
 #include <itkSpatialObjectToImageFilter.h>
 
-template <class P, size_t N>
+template<class P, size_t N>
 /**
  * @brief Create a binary test image of 100x100x100 size containing an ellipsoid in the center.
  *
@@ -41,16 +41,16 @@ template <class P, size_t N>
 sight::data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
 {
     using ImageType                      = ::itk::Image<P, N>;
-    using EllipseType                    = ::itk::EllipseSpatialObject< N >;
-    using SpatialObjectToImageFilterType = ::itk::SpatialObjectToImageFilter< EllipseType, ImageType >;
+    using EllipseType                    = ::itk::EllipseSpatialObject<N>;
+    using SpatialObjectToImageFilterType = ::itk::SpatialObjectToImageFilter<EllipseType, ImageType>;
     using TransformType                  = typename EllipseType::TransformType;
     static_assert(std::is_arithmetic<P>::value, "P type must be numeric");
 
     typename ImageType::Pointer image                            = ImageType::New();
     typename SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
 
-    typename ImageType::SizeType size = { 100, 100, 100 };
-    imageFilter->SetSize( size );
+    typename ImageType::SizeType size = {100, 100, 100};
+    imageFilter->SetSize(size);
 
     imageFilter->SetSpacing(spacing);
 
@@ -67,19 +67,19 @@ sight::data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::
     typename TransformType::OutputVectorType translation;
     typename TransformType::CenterType center;
 
-    translation[ 0 ] = 50;
-    translation[ 1 ] = 50;
-    translation[ 2 ] = 50;
-    transform->Translate( translation, false );
+    translation[0] = 50;
+    translation[1] = 50;
+    translation[2] = 50;
+    transform->Translate(translation, false);
 
-    ellipse->SetObjectToParentTransform( transform );
+    ellipse->SetObjectToParentTransform(transform);
 
     imageFilter->SetInput(ellipse);
 
     ellipse->SetDefaultInsideValue(std::numeric_limits<P>::max());
     ellipse->SetDefaultOutsideValue(0);
-    imageFilter->SetUseObjectValue( true );
-    imageFilter->SetOutsideValue( 0 );
+    imageFilter->SetUseObjectValue(true);
+    imageFilter->SetOutsideValue(0);
 
     imageFilter->Update();
 

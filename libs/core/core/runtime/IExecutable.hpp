@@ -32,7 +32,10 @@ namespace sight::core::runtime
 
 namespace utils
 {
-template<typename E> class GenericExecutableFactory;
+
+template<typename E>
+class GenericExecutableFactory;
+
 }
 
 class Module;
@@ -48,7 +51,9 @@ class Runtime;
 class CORE_CLASS_API IExecutable
 {
 public:
-    template<typename E> friend class core::runtime::utils::GenericExecutableFactory;
+
+    template<typename E>
+    friend class core::runtime::utils::GenericExecutableFactory;
 
     /**
      * @brief   Destructor : does nothing.
@@ -69,7 +74,7 @@ public:
      * @param[in]   configuration   a shared pointer to the configuration element used to
      *              trigger this execution
      */
-    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) = 0;
+    virtual void setInitializationData(const std::shared_ptr<ConfigurationElement> configuration) = 0;
 
 protected:
 
@@ -78,8 +83,7 @@ protected:
      *
      * @param[in]   module  a pointer to the module the executable originates from
      */
-    virtual void setModule( std::shared_ptr< Module > module ) = 0;
-
+    virtual void setModule(std::shared_ptr<Module> module) = 0;
 };
 
 } // namespace sight::core::runtime

@@ -32,7 +32,6 @@ namespace ut
 
 class MaterialTest : public CPPUNIT_NS::TestFixture
 {
-
 CPPUNIT_TEST_SUITE(MaterialTest);
 CPPUNIT_TEST(initializeMaterial);
 CPPUNIT_TEST_SUITE_END();
@@ -48,7 +47,6 @@ public:
     void tearDown() override;
 
     void initializeMaterial();
-
 };
 
 } // namespace ut.

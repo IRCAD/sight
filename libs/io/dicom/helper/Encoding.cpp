@@ -31,102 +31,105 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
 const Encoding::DefinedTermToCharsetMapType Encoding::s_DEFINED_TERM_TO_CHARSET = {
     // ASCII
-    { "ISO_IR 6", "" },
-    { "ISO 2022 IR 6", "" },
+    {"ISO_IR 6", ""},
+    {"ISO 2022 IR 6", ""},
 
     // Latin alphabet No. 1
-    { "ISO_IR 100", "ISO-8859-1" },
-    { "ISO 2022 IR 100", "ISO-8859-1" },
+    {"ISO_IR 100", "ISO-8859-1"},
+    {"ISO 2022 IR 100", "ISO-8859-1"},
 
     // Latin alphabet No. 2
-    { "ISO_IR 101", "ISO-8859-2" },
-    { "ISO 2022 IR 101", "ISO-8859-2" },
+    {"ISO_IR 101", "ISO-8859-2"},
+    {"ISO 2022 IR 101", "ISO-8859-2"},
 
     // Latin alphabet No. 3
-    { "ISO_IR 109", "ISO-8859-3" },
-    { "ISO 2022 IR 109", "ISO-8859-3" },
+    {"ISO_IR 109", "ISO-8859-3"},
+    {"ISO 2022 IR 109", "ISO-8859-3"},
 
     // Latin alphabet No. 4
-    { "ISO_IR 110", "ISO-8859-4" },
-    { "ISO 2022 IR 110", "ISO-8859-4" },
+    {"ISO_IR 110", "ISO-8859-4"},
+    {"ISO 2022 IR 110", "ISO-8859-4"},
 
     // Cyrillic
-    { "ISO_IR 144", "ISO-8859-5" },
-    { "ISO 2022 IR 144", "ISO-8859-5" },
+    {"ISO_IR 144", "ISO-8859-5"},
+    {"ISO 2022 IR 144", "ISO-8859-5"},
 
     // Arabic
-    { "ISO_IR 127", "ISO-8859-6" },
-    { "ISO 2022 IR 127", "ISO-8859-6" },
+    {"ISO_IR 127", "ISO-8859-6"},
+    {"ISO 2022 IR 127", "ISO-8859-6"},
 
     // Greek
-    { "ISO_IR 126", "ISO-8859-7" },
-    { "ISO 2022 IR 126", "ISO-8859-7" },
+    {"ISO_IR 126", "ISO-8859-7"},
+    {"ISO 2022 IR 126", "ISO-8859-7"},
 
     // Hebrew
-    { "ISO_IR 138", "ISO-8859-8" },
-    { "ISO 2022 IR 138", "ISO-8859-8" },
+    {"ISO_IR 138", "ISO-8859-8"},
+    {"ISO 2022 IR 138", "ISO-8859-8"},
 
     // Latin alphabet No. 5
-    { "ISO_IR 148", "ISO-8859-9" },
-    { "ISO 2022 IR 148", "ISO-8859-9" },
+    {"ISO_IR 148", "ISO-8859-9"},
+    {"ISO 2022 IR 148", "ISO-8859-9"},
 
     // Japanese { may require "ISO-IR-13" },
-    { "ISO_IR 13", "JIS_X0201" },
-    { "ISO 2022 IR 13", "JIS_X0201" },
+    {"ISO_IR 13", "JIS_X0201"},
+    {"ISO 2022 IR 13", "JIS_X0201"},
 
     // Thai
-    { "ISO_IR 166", "ISO-IR-166" },
-    { "ISO 2022 IR 166", "ISO-IR-166" },
+    {"ISO_IR 166", "ISO-IR-166"},
+    {"ISO 2022 IR 166", "ISO-IR-166"},
 
     // Japanese
-    { "ISO 2022 IR 87", "ISO-IR-87" },
-    { "ISO 2022 IR 159", "ISO-IR-159" },
+    {"ISO 2022 IR 87", "ISO-IR-87"},
+    {"ISO 2022 IR 159", "ISO-IR-159"},
 
     // Korean
     // - is this mapping really correct?
-    { "ISO 2022 IR 149", "EUC-KR" },
+    {"ISO 2022 IR 149", "EUC-KR"},
 
     // Simplified Chinese
     // - is this mapping really correct?
-    { "ISO 2022 IR 58", "GB2312" },
+    {"ISO 2022 IR 58", "GB2312"},
 
     // Unicode in UTF-8 { multi-byte },
-    { "ISO_IR 192", "UTF-8" },
+    {"ISO_IR 192", "UTF-8"},
 
     // Chinese { multi-byte },
-    { "GB18030", "GB18030" },
+    {"GB18030", "GB18030"},
 
     // Simplified Chinese { multi-byte },
-    { "GBK", "GBK" },
+    {"GBK", "GBK"},
 };
 
 const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CHARSET = {
-    { { 0x28, 0x42}, { "ISO 2022 IR 6", ""}},               // ASCII
-    { { 0x2d, 0x41}, { "ISO 2022 IR 100", "ISO-8859-1" }},  // Latin alphabet No. 1
-    { { 0x2d, 0x42}, { "ISO 2022 IR 101", "ISO-8859-2" }},  // Latin alphabet No. 2
-    { { 0x2d, 0x43}, {  "ISO 2022 IR 109", "ISO-8859-3" }}, // Latin alphabet No. 3
-    { { 0x2d, 0x44}, { "ISO 2022 IR 110", "ISO-8859-4" }},  // Latin alphabet No. 4
-    { { 0x2d, 0x4c}, { "ISO 2022 IR 144", "ISO-8859-5" }},  // Cyrillic
-    { { 0x2d, 0x47}, { "ISO 2022 IR 127", "ISO-8859-6" }},  // Arabic
-    { { 0x2d, 0x46}, { "ISO 2022 IR 126", "ISO-8859-7" }},  // Greek
-    { { 0x2d, 0x48}, { "ISO 2022 IR 138", "ISO-8859-8" }},  // Hebrew
-    { { 0x2d, 0x4d}, { "ISO 2022 IR 148", "ISO-8859-9" }},  // Latin alphabet No. 5
-    { { 0x29, 0x49}, { "ISO 2022 IR 13", "JIS_X0201" }},    // Japanese { may require "ISO-IR-13"}
-    { { 0x28, 0x4a}, { "ISO 2022 IR 13", "ISO-IR-14" }},    // Japanese
-    { { 0x2d, 0x54}, { "ISO 2022 IR 166", "ISO-IR-166" }},  // Thai
-    { { 0x24, 0x42}, {"ISO 2022 IR 87", "ISO-IR-87"}}       // Japanese { multi-byte}
+    {{0x28, 0x42}, {"ISO 2022 IR 6", ""}},             // ASCII
+    {{0x2d, 0x41}, {"ISO 2022 IR 100", "ISO-8859-1"}}, // Latin alphabet No. 1
+    {{0x2d, 0x42}, {"ISO 2022 IR 101", "ISO-8859-2"}}, // Latin alphabet No. 2
+    {{0x2d, 0x43}, {"ISO 2022 IR 109", "ISO-8859-3"}}, // Latin alphabet No. 3
+    {{0x2d, 0x44}, {"ISO 2022 IR 110", "ISO-8859-4"}}, // Latin alphabet No. 4
+    {{0x2d, 0x4c}, {"ISO 2022 IR 144", "ISO-8859-5"}}, // Cyrillic
+    {{0x2d, 0x47}, {"ISO 2022 IR 127", "ISO-8859-6"}}, // Arabic
+    {{0x2d, 0x46}, {"ISO 2022 IR 126", "ISO-8859-7"}}, // Greek
+    {{0x2d, 0x48}, {"ISO 2022 IR 138", "ISO-8859-8"}}, // Hebrew
+    {{0x2d, 0x4d}, {"ISO 2022 IR 148", "ISO-8859-9"}}, // Latin alphabet No. 5
+    {{0x29, 0x49}, {"ISO 2022 IR 13", "JIS_X0201"}},   // Japanese { may require "ISO-IR-13"}
+    {{0x28, 0x4a}, {"ISO 2022 IR 13", "ISO-IR-14"}},   // Japanese
+    {{0x2d, 0x54}, {"ISO 2022 IR 166", "ISO-IR-166"}}, // Thai
+    {{0x24, 0x42}, {"ISO 2022 IR 87", "ISO-IR-87"}} // Japanese { multi-byte}
 };
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertString(const std::string& source,
-                                    const std::string& definedCharsetTerm,
-                                    const core::log::Logger::sptr& logger)
+std::string Encoding::convertString(
+    const std::string& source,
+    const std::string& definedCharsetTerm,
+    const core::log::Logger::sptr& logger
+)
 {
     if(source.empty())
     {
@@ -170,7 +173,7 @@ std::string Encoding::convertString(const std::string& source,
 
         // Convert remaining sequences according to specific charsets
         std::vector<std::string>::iterator it = ++sequenceList.begin();
-        for(; it != sequenceList.end(); ++it)
+        for( ; it != sequenceList.end() ; ++it)
         {
             result += convertSequenceWithCodeExtensions(*it, definedTermList, logger);
         }
@@ -181,20 +184,24 @@ std::string Encoding::convertString(const std::string& source,
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertStringWithoutCodeExtensions(const std::string& source,
-                                                         const std::string& definedTerm,
-                                                         const core::log::Logger::sptr& logger)
+std::string Encoding::convertStringWithoutCodeExtensions(
+    const std::string& source,
+    const std::string& definedTerm,
+    const core::log::Logger::sptr& logger
+)
 {
     std::string charset;
 
-    if (definedTerm.empty())                    // assuming ASCII (according to DICOM PS 3.5)
+    if(definedTerm.empty()) // assuming ASCII (according to DICOM PS 3.5)
     {
         charset = "";
     }
     else
     {
-        SIGHT_WARN_IF("'ISO_IR 6' is not a defined term in DICOM, will be treated as an empty value (ASCII)",
-                      definedTerm == "ISO_IR 6");
+        SIGHT_WARN_IF(
+            "'ISO_IR 6' is not a defined term in DICOM, will be treated as an empty value (ASCII)",
+            definedTerm == "ISO_IR 6"
+        );
 
         // Check that the defined term is known
         if(s_DEFINED_TERM_TO_CHARSET.find(definedTerm) != s_DEFINED_TERM_TO_CHARSET.end())
@@ -203,8 +210,8 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
         }
         else
         {
-            const std::string msg = "'"+definedTerm+"' is not a defined term in DICOM, "
-                                    "will be treated as an empty value (ASCII)";
+            const std::string msg = "'" + definedTerm + "' is not a defined term in DICOM, "
+                                                        "will be treated as an empty value (ASCII)";
 
             SIGHT_WARN_IF(msg, !logger);
             if(logger)
@@ -225,14 +232,15 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
     {
         return ::boost::locale::conv::to_utf<char>(source, charset);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void checkDefinedTermDeclaration(const std::string& definedTerm,
-                                 const std::vector<std::string>& definedTermList,
-                                 const core::log::Logger::sptr& logger)
+void checkDefinedTermDeclaration(
+    const std::string& definedTerm,
+    const std::vector<std::string>& definedTermList,
+    const core::log::Logger::sptr& logger
+)
 {
     if(std::find(definedTermList.begin(), definedTermList.end(), definedTerm) == definedTermList.end())
     {
@@ -249,9 +257,11 @@ void checkDefinedTermDeclaration(const std::string& definedTerm,
 
 //------------------------------------------------------------------------------
 
-std::string Encoding::convertSequenceWithCodeExtensions(const std::string& sequence,
-                                                        const std::vector<std::string>& definedTermList,
-                                                        const core::log::Logger::sptr& logger)
+std::string Encoding::convertSequenceWithCodeExtensions(
+    const std::string& sequence,
+    const std::vector<std::string>& definedTermList,
+    const core::log::Logger::sptr& logger
+)
 {
     // We need at least two more characters to determine the new character set
     SIGHT_THROW_IF("Cannot convert character set: Incomplete escape sequence.", sequence.size() < 2);
@@ -268,30 +278,30 @@ std::string Encoding::convertSequenceWithCodeExtensions(const std::string& seque
     {
         definedTermAndCharset = s_ESCAPE_SEQUENCE_TO_CHARSET.at(escapeSequence);
     }
-    else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte)
+    else if((c1 == 0x24) && (c2 == 0x28)) // Japanese (multi-byte)
     {
         // Do we still have another character in the string?
         if(sequence.size() >= 3)
         {
             escapeSize = 3;
-            if (sequence[2] == 0x44)
+            if(sequence[2] == 0x44)
             {
                 definedTermAndCharset = std::make_pair("ISO 2022 IR 159", "ISO-IR-159");
             }
         }
     }
-    else if ((c1 == 0x24) && (c2 == 0x29))
+    else if((c1 == 0x24) && (c2 == 0x29))
     {
         // Do we still have another character in the string?
         if(sequence.size() >= 3)
         {
             escapeSize = 3;
-            if (sequence[2] == 0x43)        // Korean (multi-byte)
+            if(sequence[2] == 0x43) // Korean (multi-byte)
             {
                 // - is this mapping really correct?
                 definedTermAndCharset = std::make_pair("ISO 2022 IR 149", "EUC-KR");
             }
-            else if (sequence[2] == 0x41)   // Simplified Chinese (multi-byte)
+            else if(sequence[2] == 0x41) // Simplified Chinese (multi-byte)
             {
                 // - is this mapping really correct?
                 definedTermAndCharset = std::make_pair("ISO 2022 IR 58", "GB2312");
@@ -319,4 +329,5 @@ std::string Encoding::convertSequenceWithCodeExtensions(const std::string& seque
 //------------------------------------------------------------------------------
 
 } //namespace helper
+
 } //namespace sight::io::dicom

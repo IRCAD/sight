@@ -43,7 +43,7 @@ class DATA_CLASS_API DicomSeries : public data::Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New<DicomSeries>)
+    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New<DicomSeries>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (DicomSeries))
 

@@ -28,19 +28,19 @@
 namespace sight::core::runtime
 {
 
-ExecutableFactoryRegistry::ExecutableFactoryRegistry( std::shared_ptr< ExecutableFactory > factory )
+ExecutableFactoryRegistry::ExecutableFactoryRegistry(std::shared_ptr<ExecutableFactory> factory)
 {
     // Pre-condition
     SIGHT_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
     // Retrieves the module that is currently loading.
-    std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );
+    std::shared_ptr<detail::Module> loadingModule(detail::Module::getLoadingModule());
 
     // Stores the factory into that module and the default runtime instance.
-    loadingModule->addExecutableFactory( factory );
+    loadingModule->addExecutableFactory(factory);
 
     detail::Runtime& runtime = detail::Runtime::get();
-    runtime.addExecutableFactory( factory );
+    runtime.addExecutableFactory(factory);
 }
 
 } // namespace sight::core::runtime

@@ -54,31 +54,28 @@ SFlip::SFlip()
 
 SFlip::~SFlip()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SFlip::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SFlip::starting()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SFlip::updating()
 {
-    data::Image::csptr inImg = this->getInput< data::Image >(s_IMAGE_IN);
+    data::Image::csptr inImg = this->getInput<data::Image>(s_IMAGE_IN);
 
     SIGHT_ASSERT("No 'imageIn' found !", inImg);
-    if (inImg)
+    if(inImg)
     {
         data::mt::ObjectReadLock inImLock(inImg);
 
@@ -100,7 +97,6 @@ void SFlip::updating()
 
 void SFlip::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------

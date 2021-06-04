@@ -33,10 +33,11 @@
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::geometry::data::ut::LineFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::LineFunctionsTest);
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
@@ -59,7 +60,7 @@ void LineFunctionsTest::tearDown()
 void LineFunctionsTest::checkGetClosestPoint()
 {
     {
-        fwLine line = { {{0, 0, 0}}, {{1, 0, 0}} };
+        fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d pt  = {{5, 10, 0}};
 
         fwVec3d closestPt = geometry::data::getClosestPoint(line, pt);
@@ -69,7 +70,7 @@ void LineFunctionsTest::checkGetClosestPoint()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closestPt[2], 0.001);
     }
     {
-        fwLine line = { {{2, -3, 1}}, {{1, 4, -3}} };
+        fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
         fwVec3d pt = {{1, 42, 2}};
 
@@ -77,7 +78,7 @@ void LineFunctionsTest::checkGetClosestPoint()
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoint");
-            for(int i = 0; i < 1000000; ++i)
+            for(int i = 0 ; i < 1000000 ; ++i)
             {
                 closestPt = geometry::data::getClosestPoint(line, pt);
             }
@@ -100,8 +101,8 @@ void LineFunctionsTest::checkGetClosestPoints()
 
     // No intersection, parallel lines
     {
-        fwLine line1 = { {{0, 0, 0}}, {{1, 0, 0}} };
-        fwLine line2 = { {{0, 1, 0}}, {{1, 0, 0}} };
+        fwLine line1 = {{{0, 0, 0}}, {{1, 0, 0}}};
+        fwLine line2 = {{{0, 1, 0}}, {{1, 0, 0}}};
 
         bool bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
 
@@ -110,8 +111,8 @@ void LineFunctionsTest::checkGetClosestPoints()
 
     // Intersection
     {
-        fwLine line1 = { {{1, 1, 1}}, {{1, 0, 0}} };
-        fwLine line2 = { {{0, 0, 0}}, {{1, 1, 1}} };
+        fwLine line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
+        fwLine line2 = {{{0, 0, 0}}, {{1, 1, 1}}};
 
         geometry::data::normalize(line2.second);
 
@@ -130,8 +131,8 @@ void LineFunctionsTest::checkGetClosestPoints()
 
     // No intersection, but lines are not parallel
     {
-        fwLine line1 = { {{1, 1, 1}}, {{-1, 0, 0}} };
-        fwLine line2 = { {{-2, -1, -3}}, {{-1, -1, -1}} };
+        fwLine line1 = {{{1, 1, 1}}, {{-1, 0, 0}}};
+        fwLine line2 = {{{-2, -1, -3}}, {{-1, -1, -1}}};
 
         geometry::data::normalize(line2.second);
 
@@ -139,7 +140,7 @@ void LineFunctionsTest::checkGetClosestPoints()
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoints");
-            for(int i = 0; i < 1000000; ++i)
+            for(int i = 0 ; i < 1000000 ; ++i)
             {
                 bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
             }
@@ -165,7 +166,7 @@ void LineFunctionsTest::checkGetClosestPoints()
 void LineFunctionsTest::checkIntersect1()
 {
     {
-        fwLine line = { {{0, 0, 0}}, {{1, 0, 0}} };
+        fwLine line = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d pt  = {{5, 10, 0}};
 
         bool bIntersection;
@@ -179,7 +180,7 @@ void LineFunctionsTest::checkIntersect1()
         CPPUNIT_ASSERT(bIntersection == false);
     }
     {
-        fwLine line = { {{2, -3, 1}}, {{1, 4, -3}} };
+        fwLine line = {{{2, -3, 1}}, {{1, 4, -3}}};
         geometry::data::normalize(line.second);
         fwVec3d pt = {{1, 42, 2}};
 
@@ -187,7 +188,7 @@ void LineFunctionsTest::checkIntersect1()
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
-            for(int i = 0; i < 1000000; ++i)
+            for(int i = 0 ; i < 1000000 ; ++i)
             {
                 bIntersection = geometry::data::intersect(line, 10.0, pt);
             }
@@ -211,7 +212,7 @@ void LineFunctionsTest::checkIntersect2()
 {
     // No intersection, parallel lines
     {
-        fwLine line1      = { {{0, 0, 0}}, {{1, 0, 0}} };
+        fwLine line1      = {{{0, 0, 0}}, {{1, 0, 0}}};
         fwVec3d origin    = {{0, 1, 0}};
         fwVec3d direction = {{1, 0, 0}};
         fwVec3d pointOnLine;
@@ -223,7 +224,7 @@ void LineFunctionsTest::checkIntersect2()
 
     // Intersection
     {
-        fwLine line1 = { {{1, 1, 1}}, {{1, 0, 0}} };
+        fwLine line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
 
         fwVec3d origin    = {{0, 0, 0}};
         fwVec3d direction = {{1, 1, 1}};
@@ -235,7 +236,7 @@ void LineFunctionsTest::checkIntersect2()
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::intersect1");
-            for(int i = 0; i < 1000000; ++i)
+            for(int i = 0 ; i < 1000000 ; ++i)
             {
                 bIntersection = geometry::data::intersect(line1, 2.0, origin, direction, pointOnLine);
             }
@@ -256,10 +257,10 @@ void LineFunctionsTest::checkIntersect2()
 
 void LineFunctionsTest::checkIntersect3()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::geometry::data

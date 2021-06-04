@@ -54,9 +54,9 @@ struct FileAutoDelete
 FileHolder::FileHolder(const std::filesystem::path& file, bool autodelete) :
     m_path(file)
 {
-    if (autodelete)
+    if(autodelete)
     {
-        m_autoDelete = std::make_shared< FileAutoDelete >( file );
+        m_autoDelete = std::make_shared<FileAutoDelete>(file);
     }
 }
 

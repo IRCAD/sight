@@ -26,24 +26,24 @@
 #include "data/GenericTL.hxx"
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
+#include <data/factory/new.hpp>
 
 #include <core/tools/Type.hpp>
 
-#include <data/factory/new.hpp>
-
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(FrameTL));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (FrameTL));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a timeline of images.
  */
-class DATA_CLASS_API FrameTL : public GenericTL< uint8_t >
+class DATA_CLASS_API FrameTL : public GenericTL<uint8_t>
 {
-
 public:
-    SIGHT_DECLARE_CLASS(FrameTL, data::TimeLine, data::factory::New< FrameTL >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(FrameTL))
+
+    SIGHT_DECLARE_CLASS(FrameTL, data::TimeLine, data::factory::New<FrameTL>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (FrameTL))
 
     /// Frame format
     enum class PixelFormat
@@ -60,7 +60,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API FrameTL( data::Object::Key key );
+    DATA_API FrameTL(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~FrameTL();
@@ -75,13 +75,22 @@ public:
      * unsigned int maxElementNum = 1) instead, it will be removed in sight 22.0
      */
     [[deprecated("Initialize FrameTL with pixel format instead, it will be removed in sight 22.0")]]
-    DATA_API void initPoolSize(size_t width, size_t height,
-                               const core::tools::Type& type, size_t numberOfComponents = 1,
-                               unsigned int maxElementNum = 1);
+    DATA_API void initPoolSize(
+        size_t width,
+        size_t height,
+        const core::tools::Type& type,
+        size_t numberOfComponents  = 1,
+        unsigned int maxElementNum = 1
+    );
 
     /// Initializes the size of the pool buffer.
-    DATA_API void initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat format,
-                               unsigned int maxElementNum = 1);
+    DATA_API void initPoolSize(
+        size_t width,
+        size_t height,
+        const core::tools::Type& type,
+        const PixelFormat format,
+        unsigned int maxElementNum = 1
+    );
 
     /// Returns the width of an image in the timeline
     size_t getWidth() const
@@ -132,7 +141,6 @@ private:
 
     /// Frame format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
-
 }; // class FrameTL
 
 //-----------------------------------------------------------------------------

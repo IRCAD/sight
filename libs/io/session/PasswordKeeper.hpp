@@ -35,7 +35,7 @@ class IO_SESSION_CLASS_API PasswordKeeper final
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PasswordKeeper)
+    SIGHT_DECLARE_CLASS(PasswordKeeper);
 
     /// Delete default copy constructors and assignment operators
     PasswordKeeper(const PasswordKeeper&)            = delete;

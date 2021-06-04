@@ -34,10 +34,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::sorter::ImagePositionPatientSorter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::sorter::ImagePositionPatientSorter);
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -77,22 +78,23 @@ std::string ImagePositionPatientSorter::getDescription() const
 
 ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger
+) const
 {
     DicomSeriesContainerType result;
 
-    typedef std::map< double, core::memory::BufferObject::sptr > SortedDicomMapType;
+    typedef std::map<double, core::memory::BufferObject::sptr> SortedDicomMapType;
     SortedDicomMapType sortedDicom;
 
     OFCondition status;
     DcmDataset* dataset;
 
-    for(const auto& item :  series->getDicomContainer())
+    for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
         const size_t buffSize                            = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast< char* >( lock.getBuffer() );
+        char* buffer = static_cast<char*>(lock.getBuffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -100,10 +102,12 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 
         DcmFileFormat fileFormat;
         fileFormat.transferInit();
-        if (!fileFormat.read(is).good())
+        if(!fileFormat.read(is).good())
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << item.first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << item.first << "')"
+            );
         }
 
         fileFormat.loadAllDataIntoMemory();
@@ -120,17 +124,17 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         }
 
         fwVec3d imagePosition;
-        for(unsigned int i = 0; i < 3; ++i)
+        for(unsigned int i = 0 ; i < 3 ; ++i)
         {
             dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
         }
 
         fwVec3d imageOrientationU;
         fwVec3d imageOrientationV;
-        for(unsigned int i = 0; i < 3; ++i)
+        for(unsigned int i = 0 ; i < 3 ; ++i)
         {
             dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i+3);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + 3);
         }
 
         //Compute Z direction (cross product)
@@ -153,7 +157,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 
     series->clearDicomContainer();
     size_t index = 0;
-    for(const auto& item :  sortedDicom)
+    for(const auto& item : sortedDicom)
     {
         series->addBinary(index++, item.second);
     }
@@ -166,4 +170,5 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
 }
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

@@ -36,7 +36,6 @@ namespace sight::core::tools
  */
 struct CORE_CLASS_API Exception : public core::Exception
 {
-
     /**
      * @brief       Constructor
      *
@@ -48,7 +47,6 @@ struct CORE_CLASS_API Exception : public core::Exception
      * @brief   Destructor : do nothing.
      */
     CORE_API ~Exception() noexcept;
-
 };
 
 } // namespace sight::core::tools

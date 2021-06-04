@@ -31,34 +31,37 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace helper
 {
+
 /// Get classname of an object
-IO_ATOMS_API std::string getClassname( const sight::atoms::Object::sptr& obj );
+IO_ATOMS_API std::string getClassname(const sight::atoms::Object::sptr& obj);
 
 /// Set classname of an object
-IO_ATOMS_API void setClassname( const sight::atoms::Object::sptr& obj, const std::string& newClassname );
+IO_ATOMS_API void setClassname(const sight::atoms::Object::sptr& obj, const std::string& newClassname);
 
 /// Get version of an object
-IO_ATOMS_API std::string getVersion( const sight::atoms::Object::sptr& obj );
+IO_ATOMS_API std::string getVersion(const sight::atoms::Object::sptr& obj);
 
 /// Set version of an object
-IO_ATOMS_API void setVersion( const sight::atoms::Object::sptr& obj, const std::string& newVersion );
+IO_ATOMS_API void setVersion(const sight::atoms::Object::sptr& obj, const std::string& newVersion);
 
 /// Generates new id for the object (also creates it if it is missing )
-IO_ATOMS_API void generateID( const sight::atoms::Object::sptr& obj );
+IO_ATOMS_API void generateID(const sight::atoms::Object::sptr& obj);
 
 /// Cleans object fields (also creates them if they are missing)
-IO_ATOMS_API void cleanFields( const sight::atoms::Object::sptr& obj );
+IO_ATOMS_API void cleanFields(const sight::atoms::Object::sptr& obj);
 
 /// Generates new UUID for object and child objects
-IO_ATOMS_API void changeUID( const sight::atoms::Object::sptr& obj );
+IO_ATOMS_API void changeUID(const sight::atoms::Object::sptr& obj);
 
 /// Generates new UUID for map objects and child objects
-IO_ATOMS_API void changeMapUID( const sight::atoms::Map::sptr& map );
+IO_ATOMS_API void changeMapUID(const sight::atoms::Map::sptr& map);
 
 /// Generates new UUID for seq objects and child objects
-IO_ATOMS_API void changeSeqUID( const sight::atoms::Sequence::sptr& seq );
+IO_ATOMS_API void changeSeqUID(const sight::atoms::Sequence::sptr& seq);
 
 } //helper
+
 } //fwAtomHelper

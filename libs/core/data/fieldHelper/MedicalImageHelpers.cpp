@@ -25,7 +25,6 @@
 #include "data/fieldHelper/Image.hpp"
 #include "data/helper/Composite.hpp"
 #include "data/helper/Field.hpp"
-
 #include <data/Composite.hpp>
 #include <data/Integer.hpp>
 #include <data/PointList.hpp>
@@ -41,15 +40,15 @@ namespace fieldHelper
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageHelpers::checkLandmarks( data::Image::sptr _pImg )
+bool MedicalImageHelpers::checkLandmarks(data::Image::sptr _pImg)
 {
     bool fieldIsModified = false;
 
     // Manage image landmarks
-    if ( !_pImg->getField( data::fieldHelper::Image::m_imageLandmarksId ) )
+    if(!_pImg->getField(data::fieldHelper::Image::m_imageLandmarksId))
     {
         data::PointList::sptr pl = data::PointList::New();
-        _pImg->setField( data::fieldHelper::Image::m_imageLandmarksId, pl );
+        _pImg->setField(data::fieldHelper::Image::m_imageLandmarksId, pl);
         fieldIsModified = true;
     }
 
@@ -58,19 +57,19 @@ bool MedicalImageHelpers::checkLandmarks( data::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageHelpers::checkImageValidity( data::Image::csptr _pImg )
+bool MedicalImageHelpers::checkImageValidity(data::Image::csptr _pImg)
 {
     // Test if the image is allocated
     bool dataImageIsAllocated = (_pImg != data::Image::sptr());
 
-    if (dataImageIsAllocated)
+    if(dataImageIsAllocated)
     {
         size_t nbDim = _pImg->getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
-        for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
+        for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
         {
-            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize2()[k] >= 1 );
+            dataImageIsAllocated = dataImageIsAllocated && (_pImg->getSize2()[k] >= 1);
         }
     }
 
@@ -79,7 +78,7 @@ bool MedicalImageHelpers::checkImageValidity( data::Image::csptr _pImg )
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
+bool MedicalImageHelpers::checkImageSliceIndex(data::Image::sptr _pImg)
 {
     SIGHT_ASSERT("_pImg pointer null", _pImg);
 
@@ -87,25 +86,28 @@ bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
 
     const data::Image::Size& imageSize = _pImg->getSize2();
 
-    data::Integer::sptr axialIdx = _pImg->getField< data::Integer >(
-        data::fieldHelper::Image::m_axialSliceIndexId );
-    data::Integer::sptr frontalIdx = _pImg->getField< data::Integer >(
-        data::fieldHelper::Image::m_frontalSliceIndexId);
-    data::Integer::sptr sagittalIdx = _pImg->getField< data::Integer >(
-        data::fieldHelper::Image::m_sagittalSliceIndexId );
+    data::Integer::sptr axialIdx = _pImg->getField<data::Integer>(
+        data::fieldHelper::Image::m_axialSliceIndexId
+    );
+    data::Integer::sptr frontalIdx = _pImg->getField<data::Integer>(
+        data::fieldHelper::Image::m_frontalSliceIndexId
+    );
+    data::Integer::sptr sagittalIdx = _pImg->getField<data::Integer>(
+        data::fieldHelper::Image::m_sagittalSliceIndexId
+    );
 
     // Manage image landmarks
-    if ( !(axialIdx && frontalIdx && sagittalIdx) )
+    if(!(axialIdx && frontalIdx && sagittalIdx))
     {
         // Set value
         axialIdx = data::Integer::New(-1);
-        _pImg->setField( data::fieldHelper::Image::m_axialSliceIndexId, axialIdx );
+        _pImg->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIdx);
 
         frontalIdx = data::Integer::New(-1);
-        _pImg->setField( data::fieldHelper::Image::m_frontalSliceIndexId, frontalIdx );
+        _pImg->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIdx);
 
         sagittalIdx = data::Integer::New(-1);
-        _pImg->setField( data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIdx );
+        _pImg->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIdx);
 
         fieldIsModified = true;
     }
@@ -113,24 +115,24 @@ bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
     SIGHT_ASSERT(
         "Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx
-        );
+    );
 
     // Get value
-    if( axialIdx->value() < 0 ||  imageSize[2] < static_cast<size_t>(axialIdx->value()) )
+    if(axialIdx->value() < 0 || imageSize[2] < static_cast<size_t>(axialIdx->value()))
     {
-        axialIdx->value() = static_cast< data::Integer::ValueType >(imageSize[2] / 2);
+        axialIdx->value() = static_cast<data::Integer::ValueType>(imageSize[2] / 2);
         fieldIsModified   = true;
     }
 
-    if( frontalIdx->value() < 0 ||  imageSize[1] < static_cast<size_t>(frontalIdx->value()) )
+    if(frontalIdx->value() < 0 || imageSize[1] < static_cast<size_t>(frontalIdx->value()))
     {
-        frontalIdx->value() = static_cast< data::Integer::ValueType >(imageSize[1] / 2);
+        frontalIdx->value() = static_cast<data::Integer::ValueType>(imageSize[1] / 2);
         fieldIsModified     = true;
     }
 
-    if( sagittalIdx->value() < 0 ||  imageSize[0] < static_cast<size_t>(sagittalIdx->value()) )
+    if(sagittalIdx->value() < 0 || imageSize[0] < static_cast<size_t>(sagittalIdx->value()))
     {
-        sagittalIdx->value() = static_cast< data::Integer::ValueType >(imageSize[0] / 2);
+        sagittalIdx->value() = static_cast<data::Integer::ValueType>(imageSize[0] / 2);
         fieldIsModified      = true;
     }
 
@@ -139,7 +141,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-data::Point::sptr MedicalImageHelpers::getImageSliceIndices( data::Image::sptr _pImg )
+data::Point::sptr MedicalImageHelpers::getImageSliceIndices(data::Image::sptr _pImg)
 {
     SIGHT_ASSERT("_pImg pointer null", _pImg);
 
@@ -148,13 +150,13 @@ data::Point::sptr MedicalImageHelpers::getImageSliceIndices( data::Image::sptr _
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
     point->getCoord()[0] =
-        static_cast<double>(_pImg->getField< data::Integer >( data::fieldHelper::Image::m_sagittalSliceIndexId )
+        static_cast<double>(_pImg->getField<data::Integer>(data::fieldHelper::Image::m_sagittalSliceIndexId)
                             ->value());
     point->getCoord()[1] =
-        static_cast<double>(_pImg->getField< data::Integer >( data::fieldHelper::Image::m_frontalSliceIndexId  )
+        static_cast<double>(_pImg->getField<data::Integer>(data::fieldHelper::Image::m_frontalSliceIndexId)
                             ->value());
     point->getCoord()[2] =
-        static_cast<double>(_pImg->getField< data::Integer >( data::fieldHelper::Image::m_axialSliceIndexId    )
+        static_cast<double>(_pImg->getField<data::Integer>(data::fieldHelper::Image::m_axialSliceIndexId)
                             ->value());
 
     return point;
@@ -162,17 +164,17 @@ data::Point::sptr MedicalImageHelpers::getImageSliceIndices( data::Image::sptr _
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageHelpers::checkComment( data::Image::sptr _pImg )
+bool MedicalImageHelpers::checkComment(data::Image::sptr _pImg)
 {
     SIGHT_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
-    if ( !_pImg->getField( data::fieldHelper::Image::m_commentId ) )
+    if(!_pImg->getField(data::fieldHelper::Image::m_commentId))
     {
         // Set value
         data::String::sptr param = data::String::New("Original image");
-        _pImg->setField( data::fieldHelper::Image::m_commentId, param );
+        _pImg->setField(data::fieldHelper::Image::m_commentId, param);
         fieldIsModified = true;
     }
 
@@ -181,8 +183,10 @@ bool MedicalImageHelpers::checkComment( data::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-data::Image::sptr MedicalImageHelpers::initialize( data::Image::sptr imgSrc,
-                                                   data::Image::sptr imgToInitialize)
+data::Image::sptr MedicalImageHelpers::initialize(
+    data::Image::sptr imgSrc,
+    data::Image::sptr imgToInitialize
+)
 {
     FW_DEPRECATED_MSG("This method is no longer supported", "22.0")
     SIGHT_ASSERT("Image source must be initialized", imgSrc);
@@ -192,6 +196,7 @@ data::Image::sptr MedicalImageHelpers::initialize( data::Image::sptr imgSrc,
     {
         imgToInitialize = data::Image::New();
     }
+
     data::Array::sptr imgData = imgSrc->getDataArray();
     imgSrc->setDataArray(data::Array::sptr(), false);
 
@@ -209,13 +214,13 @@ data::Image::sptr MedicalImageHelpers::initialize( data::Image::sptr imgSrc,
 bool MedicalImageHelpers::isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 {
     bool isNull;
-    const data::Image::BufferType* ucbuf = static_cast< const data::Image::BufferType*> (buf);
+    const data::Image::BufferType* ucbuf = static_cast<const data::Image::BufferType*>(buf);
     isNull = 0 == std::accumulate(
         ucbuf,
-        ucbuf+len,
+        ucbuf + len,
         0,
-        std::bit_or< data::Image::BufferType>()
-        );
+        std::bit_or<data::Image::BufferType>()
+    );
     return isNull;
 }
 
@@ -227,9 +232,9 @@ bool MedicalImageHelpers::checkTransferFunctionPool(const data::Image::sptr& ima
     const std::string poolFieldName = data::fieldHelper::Image::m_transferFunctionCompositeId;
     data::Composite::sptr tfPool;
 
-    tfPool = image->getField< data::Composite >(poolFieldName);
+    tfPool = image->getField<data::Composite>(poolFieldName);
     // Transfer functions
-    if ( !tfPool )
+    if(!tfPool)
     {
         tfPool = data::Composite::New();
 
@@ -246,10 +251,10 @@ bool MedicalImageHelpers::checkTransferFunctionPool(const data::Image::sptr& ima
     if(tfPool->find(defaultTFName) == tfPool->end())
     {
         data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
-        if (image->getWindowWidth() != 0. )
+        if(image->getWindowWidth() != 0.)
         {
-            tf->setWindow( image->getWindowWidth() );
-            tf->setLevel( image->getWindowCenter() );
+            tf->setWindow(image->getWindowWidth());
+            tf->setLevel(image->getWindowCenter());
         }
         else if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
         {
@@ -258,6 +263,7 @@ bool MedicalImageHelpers::checkTransferFunctionPool(const data::Image::sptr& ima
             data::TransferFunction::TFValuePairType wlMinMax(min, max);
             tf->setWLMinMax(wlMinMax);
         }
+
         // Set in TFPool
         data::helper::Composite compositeHelper(tfPool);
         compositeHelper.add(defaultTFName, tf);
@@ -270,4 +276,5 @@ bool MedicalImageHelpers::checkTransferFunctionPool(const data::Image::sptr& ima
 //------------------------------------------------------------------------------
 
 } // fieldHelper
+
 } // fwDataTools

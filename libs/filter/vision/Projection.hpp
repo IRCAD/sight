@@ -51,10 +51,19 @@ public:
  * @param[out] y Output Y coordinate.
  * @param[out] z Output Z coordinate.
  */
-    template <class T>
-    static void projectPixel(size_t px, size_t py, T depth,
-                             T cx, T cy, T fx, T fy,
-                             T& x, T& y, T& z);
+    template<class T>
+    static void projectPixel(
+        size_t px,
+        size_t py,
+        T depth,
+        T cx,
+        T cy,
+        T fx,
+        T fy,
+        T& x,
+        T& y,
+        T& z
+    );
 
 /**
  * @brief compute the projection of a point in a 2D image
@@ -73,19 +82,37 @@ public:
  * @param[out] py output y pixel coordinate
  * @return true if the point can be projected on the image
  */
-    template <class T>
-    static bool projectPoint(T x, T y, T z, T cx, T cy, T fx, T fy,
-                             size_t width, size_t height,
-                             size_t& px, size_t& py);
-
+    template<class T>
+    static bool projectPoint(
+        T x,
+        T y,
+        T z,
+        T cx,
+        T cy,
+        T fx,
+        T fy,
+        size_t width,
+        size_t height,
+        size_t& px,
+        size_t& py
+    );
 };
 
 //------------------------------------------------------------------------------
 
-template <class T>
-void Projection::projectPixel(size_t px, size_t py, T depth,
-                              T cx, T cy, T fx, T fy,
-                              T& x, T& y, T& z)
+template<class T>
+void Projection::projectPixel(
+    size_t px,
+    size_t py,
+    T depth,
+    T cx,
+    T cy,
+    T fx,
+    T fy,
+    T& x,
+    T& y,
+    T& z
+)
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
     x = (static_cast<T>(px) - cx) / fx * depth;
@@ -95,10 +122,20 @@ void Projection::projectPixel(size_t px, size_t py, T depth,
 
 //------------------------------------------------------------------------------
 
-template <class T>
-bool Projection::projectPoint(T x, T y, T z, T cx, T cy, T fx, T fy,
-                              size_t width, size_t height,
-                              size_t& px, size_t& py)
+template<class T>
+bool Projection::projectPoint(
+    T x,
+    T y,
+    T z,
+    T cx,
+    T cy,
+    T fx,
+    T fy,
+    size_t width,
+    size_t height,
+    size_t& px,
+    size_t& py
+)
 {
     static_assert(std::is_floating_point<T>::value, "T must be a floating point type");
     const T a = x / z;
@@ -106,7 +143,7 @@ bool Projection::projectPoint(T x, T y, T z, T cx, T cy, T fx, T fy,
     T u       = a * fx + cx;
     T v       = b * fy + cy;
 
-    if ((v < 1.) || (v > height) || (u < 1.) || (u > width))
+    if((v < 1.) || (v > height) || (u < 1.) || (u > width))
     {
         return false;
     }

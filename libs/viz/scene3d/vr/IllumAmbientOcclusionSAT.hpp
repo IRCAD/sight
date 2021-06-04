@@ -36,16 +36,22 @@ namespace vr
  */
 class VIZ_SCENE3D_CLASS_API IllumAmbientOcclusionSAT final
 {
-
 public:
 
     typedef std::shared_ptr<IllumAmbientOcclusionSAT> sptr;
 
     /// Initializes the illumination volume with the give dimensions.
-    VIZ_SCENE3D_API IllumAmbientOcclusionSAT(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                             float satSizeRatio = 0.25f, bool ao = false, bool shadows = false,
-                                             int nbShells = 3, int shellRadius = 3, float coneAngle = 0.1f,
-                                             int samplesAlongCone = 50);
+    VIZ_SCENE3D_API IllumAmbientOcclusionSAT(
+        std::string parentId,
+        ::Ogre::SceneManager* sceneManager,
+        float satSizeRatio   = 0.25f,
+        bool ao              = false,
+        bool shadows         = false,
+        int nbShells         = 3,
+        int shellRadius      = 3,
+        float coneAngle      = 0.1f,
+        int samplesAlongCone = 50
+    );
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API virtual ~IllumAmbientOcclusionSAT();
@@ -57,8 +63,11 @@ public:
     VIZ_SCENE3D_API void updateVolIllum();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    VIZ_SCENE3D_API void SATUpdate(::Ogre::TexturePtr _img, const viz::scene3d::TransferFunction::sptr& _tf,
-                                   float _sampleDistance);
+    VIZ_SCENE3D_API void SATUpdate(
+        ::Ogre::TexturePtr _img,
+        const viz::scene3d::TransferFunction::sptr& _tf,
+        float _sampleDistance
+    );
 
     /// Illumination volume texture getter.
     VIZ_SCENE3D_API ::Ogre::TexturePtr getIlluminationVolume();

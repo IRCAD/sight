@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/base.hpp>
 #include <core/mt/types.hpp>
 
@@ -42,15 +41,15 @@ class CORE_CLASS_API fwID
 {
 public:
 
-    SIGHT_DECLARE_CLASS(fwID)
+    SIGHT_DECLARE_CLASS(fwID);
 
     typedef std::string IDType;
 
     typedef enum
     {
-        EMPTY = 1,    ///< return an empty id if no one set
-        GENERATE,     ///< generate a new id if necessary
-        MUST_EXIST    ///< throw an exception if object has not id.
+        EMPTY = 1, ///< return an empty id if no one set
+        GENERATE,  ///< generate a new id if necessary
+        MUST_EXIST ///< throw an exception if object has not id.
     } Policy;
 
     /**
@@ -59,13 +58,13 @@ public:
      * @return true iff the given id is recorded in fwID dictionary.
      * @note This method is thread-safe.
      */
-    CORE_API static bool exist( IDType _id);
+    CORE_API static bool exist(IDType _id);
 
     /**
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
      * @note This method is thread-safe.
      */
-    CORE_API static SPTR(core::tools::Object ) getObject( IDType requestID );
+    CORE_API static SPTR(core::tools::Object) getObject(IDType requestID);
 
     CORE_API virtual ~fwID();
 
@@ -76,7 +75,7 @@ protected:
      * @brief Return true if the object has an id set.
      * @note This method is thread-safe.
      */
-    CORE_API bool   hasID() const;
+    CORE_API bool hasID() const;
 
     /**
      * @brief Returns the id of the object. If it is not set and the policy value is
@@ -87,27 +86,27 @@ protected:
      * @note We consider an object be constant whatever if its id is generated.
      * @note This method is thread-safe.
      */
-    CORE_API IDType getID( Policy policy = GENERATE ) const;
+    CORE_API IDType getID(Policy policy = GENERATE) const;
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
      * @warning Cannot set a empty ID.
      * @note This method is thread-safe.
      */
-    CORE_API virtual void   setID( IDType newID ); // cannot set a empty one
+    CORE_API virtual void setID(IDType newID); // cannot set a empty one
 
     /**
      * @brief Release the id for the object.
      * @note This method is thread-safe
      */
-    CORE_API void   resetID();
+    CORE_API void resetID();
 
     /**
      * @brief   Constructor : does nothing.
      */
     fwID()
     {
-    }          // cannot be instantiated
+    } // cannot be instantiated
 
 private:
 
@@ -121,24 +120,24 @@ private:
      * @brief Remove ID from the dictionary.
      * @note This method is NOT thread-safe.
      */
-    static void removeIDfromDictionary(IDType _id );
+    static void removeIDfromDictionary(IDType _id);
 
     /**
      * @brief return true if the  _id is found in the dictionary.
      * @note This method is NOT thread-safe.
      */
-    static bool isIdFound( IDType _id);
+    static bool isIdFound(IDType _id);
 
     /**
      * @brief Add newID in the dictionary (newID must not exist in fwID).
      * @note This method is NOT thread-safe
      */
-    void addIDInDictionary( IDType newID );
+    void addIDInDictionary(IDType newID);
 
     IDType m_id;
 
-    typedef std::unordered_map< IDType, WPTR(core::tools::Object ) > Dictionary;
-    typedef std::unordered_map< std::string, std::uint32_t >  CategorizedCounter;
+    typedef std::unordered_map<IDType, WPTR(core::tools::Object)> Dictionary;
+    typedef std::unordered_map<std::string, std::uint32_t> CategorizedCounter;
 
     static Dictionary m_dictionary;
     static CategorizedCounter m_CategorizedCounter;
@@ -153,4 +152,4 @@ private:
     mutable core::mt::ReadWriteMutex m_idMutex;
 };
 
-}
+} // namespace sight::core

@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <boost/program_options.hpp>
-
 #include <io/atoms/patch/VersionsManager.hpp>
+
+#include <boost/program_options.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -52,9 +52,9 @@ int main(int argc, char** argv)
     ::boost::program_options::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "produce help message")
-        ("output,o", ::boost::program_options::value< std::string >(), "set output file")
-        ("context,f", ::boost::program_options::value< std::string >(), "set context name")
-        ("version,v", ::boost::program_options::value< std::string >(), "set version name")
+        ("output,o", ::boost::program_options::value<std::string>(), "set output file")
+        ("context,f", ::boost::program_options::value<std::string>(), "set context name")
+        ("version,v", ::boost::program_options::value<std::string>(), "set version name")
     ;
 
     // Manage the options
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     ::boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
     ::boost::program_options::notify(vm);
 
-    if (vm.count("help"))
+    if(vm.count("help"))
     {
         std::cout << desc << "\n";
         return EXIT_SUCCESS;
@@ -84,9 +84,12 @@ int main(int argc, char** argv)
     }
 
     // Generate the result
-    std::filesystem::path versionFile(vm["output"].as< std::string >());
-    sight::io::atoms::patch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
-                                                              vm["version"].as< std::string >());
+    std::filesystem::path versionFile(vm["output"].as<std::string>());
+    sight::io::atoms::patch::VersionsManager::generateNewFile(
+        versionFile,
+        vm["context"].as<std::string>(),
+        vm["version"].as<std::string>()
+    );
 
     return EXIT_SUCCESS;
 }

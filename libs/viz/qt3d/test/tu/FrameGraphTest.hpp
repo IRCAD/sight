@@ -32,7 +32,6 @@ namespace ut
 
 class FrameGraphTest : public CPPUNIT_NS::TestFixture
 {
-
 CPPUNIT_TEST_SUITE(FrameGraphTest);
 CPPUNIT_TEST(initializeFrameGraph);
 CPPUNIT_TEST_SUITE_END();
@@ -48,7 +47,6 @@ public:
     void tearDown() override;
 
     void initializeFrameGraph();
-
 };
 
 } // namespace ut.

@@ -193,7 +193,6 @@ std::string SScan::selectDevice()
     {
         selectedDevice = devices[0].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
     }
-
     // Several devices found -> open a selector dialog.
     else if(device_count > 1)
     {
@@ -446,7 +445,6 @@ void SScan::startCamera()
         this->popMessageDialog("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
         return;
     }
-
     // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
     else
     {
@@ -1000,10 +998,10 @@ void SScan::grab()
 {
     // Declare pointcloud object, for calculating pointclouds and texture mappings
     ::rs2::pointcloud pc;
-    ::rs2::spatial_filter spatialFilter; // Spatial    - edge-preserving spatial smoothing
-    ::rs2::temporal_filter temporalFilter; // Temporal   - reduces temporal noise
-    ::rs2::hole_filling_filter holesFilter; // Holes filling
-    ::rs2::disparity_transform depthToDisparity(true); // transform depth to disparity
+    ::rs2::spatial_filter spatialFilter;                // Spatial    - edge-preserving spatial smoothing
+    ::rs2::temporal_filter temporalFilter;              // Temporal   - reduces temporal noise
+    ::rs2::hole_filling_filter holesFilter;             // Holes filling
+    ::rs2::disparity_transform depthToDisparity(true);  // transform depth to disparity
     ::rs2::disparity_transform disparityToDepth(false); // transform disparity to depth
 
     bool needAligment = false;
@@ -1266,7 +1264,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
         const auto dumpLock = m_pointcloud->lock();
 
         // Get Width and Height coordinates of texture
-        const int textureW = _texture.get_width(); // Frame width in pixels
+        const int textureW = _texture.get_width();  // Frame width in pixels
         const int textureH = _texture.get_height(); // Frame height in pixels
 
         const int textureBytePerPix = _texture.get_bytes_per_pixel();
@@ -1311,8 +1309,8 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
                 textureH - 1
             );
 
-            const int bytes   = x_value * textureBytePerPix;  // Get # of bytes per pixel
-            const int strides = y_value * textureStrides; // Get line width in bytes
+            const int bytes   = x_value * textureBytePerPix; // Get # of bytes per pixel
+            const int strides = y_value * textureStrides;    // Get line width in bytes
             const int index   = (bytes + strides);
 
             // Fill the color buffer (R = +0, G = +1, B = +2).

@@ -28,10 +28,11 @@
 
 namespace camp
 {
+
 namespace detail
 {
 
-template <typename A>
+template<typename A>
 class MapPropertyImpl : public MapProperty
 {
 public:
@@ -54,7 +55,7 @@ protected:
      */
     virtual std::size_t getSize(const UserObject& object) const;
 
-    MapProperty::ValuePair getElement(const UserObject& object, std::size_t index ) const;
+    MapProperty::ValuePair getElement(const UserObject& object, std::size_t index) const;
 
     virtual void set(const UserObject& object, const Value& key, const Value& value) const;
 
@@ -77,6 +78,7 @@ private:
 };
 
 } // namespace detail
-}  // namespace camp
+
+} // namespace camp
 
 #include "core/reflection/camp/detail/MapPropertyImpl.hxx"

@@ -33,10 +33,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::ImageDimensionsSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImageDimensionsSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -74,7 +75,9 @@ std::string ImageDimensionsSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
@@ -90,8 +93,8 @@ ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply
     filter::dicom::helper::Filter::applyFilter(result, rowsSplitter, false, logger);
 
     return result;
-
 }
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

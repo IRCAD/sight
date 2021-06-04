@@ -23,7 +23,6 @@
 #pragma once
 
 #include "data/config.hpp"
-
 #include <data/Color.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
@@ -47,8 +46,10 @@ public:
      * @param _modelSeries Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
-    DATA_API static void addReconstruction(const data::ModelSeries::sptr& _modelSeries,
-                                           const data::Reconstruction::sptr& _rec);
+    DATA_API static void addReconstruction(
+        const data::ModelSeries::sptr& _modelSeries,
+        const data::Reconstruction::sptr& _rec
+    );
 
     /**
      * @brief Create a reconstruction from a mesh.
@@ -60,13 +61,14 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      * @return Output reconstruction.
      */
-    DATA_API static data::Reconstruction::sptr
-    createReconstructionFromMesh( const data::Mesh::sptr& _mesh,
-                                  const std::string& _organName,
-                                  const std::string& _structureType,
-                                  const data::Color::sptr& _color          = data::Color::New(),
-                                  data::Material::RepresentationType _mode = data::Material::SURFACE,
-                                  bool _visible                            = true);
+    DATA_API static data::Reconstruction::sptr createReconstructionFromMesh(
+        const data::Mesh::sptr& _mesh,
+        const std::string& _organName,
+        const std::string& _structureType,
+        const data::Color::sptr& _color          = data::Color::New(),
+        data::Material::RepresentationType _mode = data::Material::SURFACE,
+        bool _visible                            = true
+    );
 
     /**
      * @brief Add a mesh into a model series. A reconstruction for this mesh will be automatically created.
@@ -78,13 +80,15 @@ public:
      * @param _mode Representation mode of the material of the reconstruction.
      * @param _visible Visibility flag of the reconstruction.
      */
-    DATA_API static void
-    addMesh(const data::ModelSeries::sptr& _modelSeries,
-            const data::Mesh::sptr& _mesh,
-            const std::string& _organName, const std::string& _structureType,
-            const data::Color::sptr& _color          = data::Color::New(),
-            data::Material::RepresentationType _mode = data::Material::SURFACE,
-            bool _visible                            = true);
+    DATA_API static void addMesh(
+        const data::ModelSeries::sptr& _modelSeries,
+        const data::Mesh::sptr& _mesh,
+        const std::string& _organName,
+        const std::string& _structureType,
+        const data::Color::sptr& _color          = data::Color::New(),
+        data::Material::RepresentationType _mode = data::Material::SURFACE,
+        bool _visible                            = true
+    );
 };
 
 } // end namespace sight::data::tools

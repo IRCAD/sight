@@ -37,11 +37,13 @@ namespace sight::ui::qt
  */
 class UI_QT_CLASS_API LineLayoutManager : public ui::base::layoutManager::LineLayoutManagerBase
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(LineLayoutManager, ui::base::layoutManager::LineLayoutManagerBase,
-                        ui::base::factory::New< LineLayoutManager >)
+    SIGHT_DECLARE_CLASS(
+        LineLayoutManager,
+        ui::base::layoutManager::LineLayoutManagerBase,
+        ui::base::factory::New<LineLayoutManager>
+    )
 
     UI_QT_API LineLayoutManager(ui::base::GuiBaseObject::Key key);
 
@@ -52,7 +54,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -61,6 +63,7 @@ public:
     UI_QT_API void destroyLayout() override;
 
 private:
+
     ui::qt::container::QtContainer::sptr m_parentContainer;
 };
 

@@ -26,6 +26,7 @@
 
 namespace sight::module::io::video
 {
+
 SIGHT_REGISTER_PLUGIN("::sight::module::io::video::Plugin");
 
 Plugin::~Plugin() noexcept
@@ -43,4 +44,5 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
+
 } // namespace sight::module::io::video

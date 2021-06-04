@@ -24,7 +24,6 @@
 
 #include <service/macros.hpp>
 
-
 namespace sight::module::ui::base
 {
 
@@ -67,7 +66,7 @@ void SToolBar::updating()
 
 //-----------------------------------------------------------------------------
 
-void SToolBar::info( std::ostream& _sstream )
+void SToolBar::info(std::ostream& _sstream)
 {
 }
 

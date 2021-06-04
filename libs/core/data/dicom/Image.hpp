@@ -55,7 +55,8 @@ public:
         unsigned short highBit,
         unsigned short pixelRepresentation,
         double rescaleSlope,
-        double rescaleIntercept);
+        double rescaleIntercept
+    );
 
     /// Destructor
     DATA_API virtual ~Image();
@@ -91,7 +92,6 @@ protected:
 
     /// Rescale Intercept
     double m_rescaleIntercept;
-
 };
 
 } //fwDicomTools

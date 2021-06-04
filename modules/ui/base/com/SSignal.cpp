@@ -30,11 +30,11 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
 //-----------------------------------------------------------------------------
-
 
 static const core::com::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
 static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
@@ -78,7 +78,7 @@ void SSignal::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SSignal::info(std::ostream& _sstream )
+void SSignal::info(std::ostream& _sstream)
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -87,7 +87,7 @@ void SSignal::info(std::ostream& _sstream )
 
 void SSignal::updating()
 {
-    if (this->confirmAction())
+    if(this->confirmAction())
     {
         m_sigTriggered->asyncEmit(this->getIsActive());
     }
@@ -95,10 +95,10 @@ void SSignal::updating()
     {
         m_sigCancelled->asyncEmit(this->getIsActive());
     }
-
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace com
+
 } // namespace sight::module::ui::base

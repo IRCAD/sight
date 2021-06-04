@@ -35,6 +35,7 @@
 
 namespace sight::module::viz::scene3d::adaptor
 {
+
 /**
  * @brief This adaptor maps a texture on a mesh. This is done via module::viz::scene3d::adaptor::SMaterial.
  * In the configuration we don't specify the material adaptor since it is automatically created by the
@@ -65,11 +66,10 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API STexture final : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STexture, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(STexture, ::sight::viz::scene3d::IAdaptor);
 
     /// Defines the keys of the slot @ref textureSwapped().
     MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
@@ -127,21 +127,20 @@ private:
     std::string m_textureName;
 
     /// Defines the filtering method.
-    std::string m_filtering { "linear" };
+    std::string m_filtering {"linear"};
 
     /// Defines the wraping method.
-    std::string m_wrapping { "repeat" };
+    std::string m_wrapping {"repeat"};
 
     /// Defines if 1.0 is used as the alpha value (no transparency) or another value.
-    bool m_useAlpha { true };
+    bool m_useAlpha {true};
 
     /// Defines if the texture changes dynamically, defined in m_configuration.
-    bool m_isDynamic { false };
+    bool m_isDynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    typedef core::com::Signal< void () > TextureSwappedSignalType;
+    typedef core::com::Signal<void ()> TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
-
 };
 
 //------------------------------------------------------------------------------

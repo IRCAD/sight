@@ -48,7 +48,7 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    m_appManager = std::make_unique< service::AppManager >();
+    m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
 
     // Objects declaration.
@@ -139,9 +139,12 @@ void Plugin::initialize()
         menuFileView->configure(config);
     }
 
-    auto containerView = m_appManager->addService("::sight::module::ui::base::SView", "containerView",
-                                                  true,
-                                                  false);
+    auto containerView = m_appManager->addService(
+        "::sight::module::ui::base::SView",
+        "containerView",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         {
@@ -180,8 +183,12 @@ void Plugin::initialize()
         containerView->configure(config);
     }
 
-    auto editorsView = m_appManager->addService("::sight::module::ui::base::SView", "editorsView", true,
-                                                false);
+    auto editorsView = m_appManager->addService(
+        "::sight::module::ui::base::SView",
+        "editorsView",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         {
@@ -265,16 +272,24 @@ void Plugin::initialize()
         genericSceneSrv->configure(config);
     }
 
-    auto trackballInteractorAdp = m_appManager->addService("::sight::module::viz::scene3d::adaptor::STrackballCamera",
-                                                           "trackballInteractorAdp", true, false);
+    auto trackballInteractorAdp = m_appManager->addService(
+        "::sight::module::viz::scene3d::adaptor::STrackballCamera",
+        "trackballInteractorAdp",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", "default");
         trackballInteractorAdp->configure(config);
     }
 
-    auto textureAdp = m_appManager->addService("::sight::module::viz::scene3d::adaptor::STexture", "textureAdp", true,
-                                               false);
+    auto textureAdp = m_appManager->addService(
+        "::sight::module::viz::scene3d::adaptor::STexture",
+        "textureAdp",
+        true,
+        false
+    );
     {
         textureAdp->registerInput(texture, "image", true);
         service::IService::ConfigType config;
@@ -292,10 +307,14 @@ void Plugin::initialize()
         meshAdp->configure(config);
     }
 
-    auto negatoAdp = m_appManager->addService("::sight::module::viz::scene3d::adaptor::SNegato3D", "negatoAdp", true,
-                                              false);
+    auto negatoAdp = m_appManager->addService(
+        "::sight::module::viz::scene3d::adaptor::SNegato3D",
+        "negatoAdp",
+        true,
+        false
+    );
     {
-        negatoAdp->registerInOut(image, "image", true );
+        negatoAdp->registerInOut(image, "image", true);
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", "default");
         config.add("config.<xmlattr>.sliceIndex", "axial");
@@ -303,10 +322,12 @@ void Plugin::initialize()
         negatoAdp->configure(config);
     }
 
-    auto snapshotAdp = m_appManager->addService("::sight::module::viz::scene3d::adaptor::SFragmentsInfo",
-                                                "snapshotAdp",
-                                                true,
-                                                false);
+    auto snapshotAdp = m_appManager->addService(
+        "::sight::module::viz::scene3d::adaptor::SFragmentsInfo",
+        "snapshotAdp",
+        true,
+        false
+    );
     {
         snapshotAdp->registerInOut(snapshot, "image", true);
         service::IService::ConfigType config;
@@ -316,25 +337,36 @@ void Plugin::initialize()
     }
 
     // Actions.
-    auto openImageAct = m_appManager->addService("::sight::module::ui::base::com::SStarter", "openImageAct", true,
-                                                 false);
+    auto openImageAct = m_appManager->addService(
+        "::sight::module::ui::base::com::SStarter",
+        "openImageAct",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "imageReaderSrv");
         openImageAct->configure(config);
     }
 
-    auto openMeshAct = m_appManager->addService("::sight::module::ui::base::com::SStarter", "openMeshAct", true,
-                                                false);
+    auto openMeshAct = m_appManager->addService(
+        "::sight::module::ui::base::com::SStarter",
+        "openMeshAct",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "meshReaderSrv");
         openMeshAct->configure(config);
     }
 
-    auto openTextureAct = m_appManager->addService("::sight::module::ui::base::com::SStarter", "openTextureAct",
-                                                   true,
-                                                   false);
+    auto openTextureAct = m_appManager->addService(
+        "::sight::module::ui::base::com::SStarter",
+        "openTextureAct",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "textureReaderSrv");
@@ -347,9 +379,12 @@ void Plugin::initialize()
     }
 
     // Services.
-    auto imageReaderSrv = m_appManager->addService("::sight::module::ui::base::io::SSelector", "imageReaderSrv",
-                                                   true,
-                                                   false);
+    auto imageReaderSrv = m_appManager->addService(
+        "::sight::module::ui::base::io::SSelector",
+        "imageReaderSrv",
+        true,
+        false
+    );
     {
         imageReaderSrv->registerInOut(image, "data");
         service::IService::ConfigType config;
@@ -357,9 +392,12 @@ void Plugin::initialize()
         imageReaderSrv->configure(config);
     }
 
-    auto meshReaderSrv = m_appManager->addService("::sight::module::ui::base::io::SSelector", "meshReaderSrv",
-                                                  true,
-                                                  false);
+    auto meshReaderSrv = m_appManager->addService(
+        "::sight::module::ui::base::io::SSelector",
+        "meshReaderSrv",
+        true,
+        false
+    );
     {
         meshReaderSrv->registerInOut(mesh, "data");
         service::IService::ConfigType config;
@@ -367,9 +405,12 @@ void Plugin::initialize()
         meshReaderSrv->configure(config);
     }
 
-    auto textureReaderSrv = m_appManager->addService("::sight::module::ui::base::io::SSelector",
-                                                     "textureReaderSrv",
-                                                     true, false);
+    auto textureReaderSrv = m_appManager->addService(
+        "::sight::module::ui::base::io::SSelector",
+        "textureReaderSrv",
+        true,
+        false
+    );
     {
         textureReaderSrv->registerInOut(texture, "data");
         service::IService::ConfigType config;
@@ -390,8 +431,12 @@ void Plugin::initialize()
         showNegatoSrv->configure(config);
     }
 
-    auto sliderIndexEditorSrv = m_appManager->addService("::sight::module::ui::qt::image::SliceIndexPositionEditor",
-                                                         "sliderIndexEditorSrv", true, false);
+    auto sliderIndexEditorSrv = m_appManager->addService(
+        "::sight::module::ui::qt::image::SliceIndexPositionEditor",
+        "sliderIndexEditorSrv",
+        true,
+        false
+    );
     {
         sliderIndexEditorSrv->registerInOut(image, "image", true);
         service::IService::ConfigType config;
@@ -399,8 +444,12 @@ void Plugin::initialize()
         sliderIndexEditorSrv->configure(config);
     }
 
-    auto snapshotSrv = m_appManager->addService("::sight::module::ui::qt::com::SSignalButton", "snapshotSrv", true,
-                                                false);
+    auto snapshotSrv = m_appManager->addService(
+        "::sight::module::ui::qt::com::SSignalButton",
+        "snapshotSrv",
+        true,
+        false
+    );
     {
         service::IService::ConfigType config;
         config.add("config.checkable", false);
@@ -408,9 +457,12 @@ void Plugin::initialize()
         snapshotSrv->configure(config);
     }
 
-    auto imageWriterSrv = m_appManager->addService("::sight::module::ui::base::io::SSelector", "imageWriterSrv",
-                                                   true,
-                                                   false);
+    auto imageWriterSrv = m_appManager->addService(
+        "::sight::module::ui::base::io::SSelector",
+        "imageWriterSrv",
+        true,
+        false
+    );
     {
         imageWriterSrv->registerInOut(snapshot, "data");
         service::IService::ConfigType config;

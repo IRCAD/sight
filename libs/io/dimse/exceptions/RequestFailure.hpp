@@ -27,6 +27,7 @@
 
 namespace sight::io::dimse
 {
+
 namespace exceptions
 {
 
@@ -36,6 +37,7 @@ namespace exceptions
 class IO_DIMSE_CLASS_API RequestFailure : public sight::io::dimse::exceptions::Base
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] message Exception message
@@ -44,8 +46,8 @@ public:
 
     /// Destructor
     IO_DIMSE_API virtual ~RequestFailure() noexcept;
-
 };
 
 } //exceptions
+
 } //fwPacsIO

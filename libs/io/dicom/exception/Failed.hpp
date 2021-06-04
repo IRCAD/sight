@@ -28,6 +28,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace exception
 {
 
@@ -36,11 +37,12 @@ namespace exception
  */
 struct IO_DICOM_CLASS_API Failed : core::Exception
 {
-    Failed( const std::string& err ) :
+    Failed(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::io::dicom

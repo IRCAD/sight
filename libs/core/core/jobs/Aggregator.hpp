@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/jobs/IJob.hpp"
-
 #include <core/macros.hpp>
 
 #include <boost/multi_index/hashed_index.hpp>
@@ -51,18 +50,18 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR (core::jobs::Aggregator) sptr;
-    typedef WPTR (core::jobs::Aggregator) wptr;
+    typedef SPTR(core::jobs::Aggregator) sptr;
+    typedef WPTR(core::jobs::Aggregator) wptr;
 
     /// Aggregator container type
-    typedef ::boost::multi_index_container< core::jobs::IJob::sptr,
-                                            ::boost::multi_index::indexed_by<
-                                                ::boost::multi_index::random_access<>,
-                                                ::boost::multi_index::hashed_unique<
-                                                    ::boost::multi_index::identity< core::jobs::IJob::sptr >
-                                                    >
-                                                >
-                                            > IJobSeq;
+    typedef ::boost::multi_index_container<core::jobs::IJob::sptr,
+                                           ::boost::multi_index::indexed_by<
+                                               ::boost::multi_index::random_access<>,
+                                               ::boost::multi_index::hashed_unique<
+                                                   ::boost::multi_index::identity<core::jobs::IJob::sptr>
+                                               >
+                                           >
+    > IJobSeq;
     /**  @} */
 
     /**
@@ -136,7 +135,7 @@ private:
         {
         }
 
-        JobInfo( const IJob& iJob ) :
+        JobInfo(const IJob& iJob) :
             doneWork(iJob.getDoneWorkUnits()),
             totalWork(iJob.getTotalWorkUnits()),
             lastValue(0)
@@ -147,12 +146,12 @@ private:
 
         double progress() const
         {
-            return ( 0 == totalWork ) ? 1. : static_cast<double>(doneWork)/ static_cast<double>(totalWork);
+            return (0 == totalWork) ? 1. : static_cast<double>(doneWork) / static_cast<double>(totalWork);
         }
     };
 
     /// Job info map type
-    typedef std::map< core::jobs::IJob*, JobInfo > JobInfoMap;
+    typedef std::map<core::jobs::IJob*, JobInfo> JobInfoMap;
 
     /// Map containing job info
     JobInfoMap m_jobInfo;

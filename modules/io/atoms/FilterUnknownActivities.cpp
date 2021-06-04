@@ -31,7 +31,7 @@
 #include <io/atoms/filter/registry/macros.hpp>
 #include <io/atoms/patch/helper/functions.hpp>
 
-fwAtomsFilterRegisterMacro( ::sight::module::io::atoms::FilterUnknownActivities, "FilterUnknownActivities" );
+fwAtomsFilterRegisterMacro(::sight::module::io::atoms::FilterUnknownActivities, "FilterUnknownActivities");
 
 namespace sight::module::io::atoms
 {
@@ -52,14 +52,16 @@ void FilterUnknownActivities::apply(const SPTR(sight::atoms::Object)& atom)
 
     const std::string expName    = "::sight::data::SeriesDB"; // expected classname
     const std::string& classname = sight::io::atoms::patch::helper::getClassname(atom);
-    SIGHT_THROW_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
-                   classname != expName);
+    SIGHT_THROW_IF(
+        "Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
+        classname != expName
+    );
 
-    auto series = atom->getAttribute< sight::atoms::Sequence >("values");
+    auto series = atom->getAttribute<sight::atoms::Sequence>("values");
     SIGHT_ASSERT("Failed to retrieve 'values' attribute as atoms::Sequence", series);
 
     auto knownSeries = sight::atoms::Sequence::New();
-    for(auto serie :  series->getValue())
+    for(auto serie : series->getValue())
     {
         auto obj = sight::atoms::Object::dynamicCast(serie);
         SIGHT_ASSERT("Failed to cast sequence element as atoms::Object", obj);
@@ -71,7 +73,7 @@ void FilterUnknownActivities::apply(const SPTR(sight::atoms::Object)& atom)
     }
 
     series->clear();
-    for(auto serie :  knownSeries->getValue())
+    for(auto serie : knownSeries->getValue())
     {
         series->push_back(serie);
     }

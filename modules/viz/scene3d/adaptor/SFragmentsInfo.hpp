@@ -62,11 +62,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
     public Ogre::Viewport::Listener,
     public Ogre::RenderTargetListener
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
@@ -115,7 +114,7 @@ private:
     void destroyCompositor();
 
     /// Contains the created compositor.
-    ::Ogre::CompositorPtr m_compositor { nullptr };
+    ::Ogre::CompositorPtr m_compositor {nullptr};
 
     /// Defines the compositor name.
     std::string m_compositorName;
@@ -128,18 +127,17 @@ private:
 
     /// Enables the fixed size, if width & height parameters are found in config xml, use fixed size.
     /// If not use the layer's viewport size and listen the resize event.
-    bool m_fixedSize { false };
+    bool m_fixedSize {false};
 
     /// Defines the width and the height of the compositor's render target.
     /// Only used if width & height are found in <config /> of xml configuration
-    int m_width { -1 };
+    int m_width {-1};
 
     /// Defines the compositor target fixed height.
-    int m_height { -1 };
+    int m_height {-1};
 
     /// Flips Ogre texture when converting to sight, can be useful when using VTK to save images.
-    bool m_flipImage { false };
-
+    bool m_flipImage {false};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

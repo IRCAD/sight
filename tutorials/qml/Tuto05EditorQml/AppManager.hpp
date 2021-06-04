@@ -39,9 +39,10 @@ namespace Tuto05EditorQml
 class TUTO05EDITORQML_CLASS_API AppManager : public QObject,
                                              public sight::service::AppManager
 {
-
 Q_OBJECT;
+
 public:
+
     /// Constructor.
     TUTO05EDITORQML_API AppManager() noexcept;
 

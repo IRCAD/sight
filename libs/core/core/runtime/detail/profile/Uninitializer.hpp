@@ -50,7 +50,7 @@ public:
      *
      * @param[in]   identifier a string containing a module identifier
      */
-    Uninitializer( const std::string& identifier );
+    Uninitializer(const std::string& identifier);
 
     /**
      * @brief   Applies the uninitializer on the module.
@@ -61,7 +61,7 @@ public:
 
 protected:
 
-    const std::string m_identifier;     ///< the module identifier
+    const std::string m_identifier; ///< the module identifier
 };
 
 } // namespace profile

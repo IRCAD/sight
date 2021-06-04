@@ -30,8 +30,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
@@ -43,8 +45,11 @@ class IO_DICOM_CLASS_API DicomSRUIDRefNode : public io::dicom::container::sr::Di
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRUIDRefNode(const DicomCodedAttribute& codedAttribute,
-                                   const std::string& relationship, const std::string uidValue);
+    IO_DICOM_API DicomSRUIDRefNode(
+        const DicomCodedAttribute& codedAttribute,
+        const std::string& relationship,
+        const std::string uidValue
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~DicomSRUIDRefNode();
@@ -77,5 +82,7 @@ protected:
 };
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

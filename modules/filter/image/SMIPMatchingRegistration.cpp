@@ -77,9 +77,9 @@ void SMIPMatchingRegistration::configuring()
 
 void SMIPMatchingRegistration::updating()
 {
-    auto fixed     = this->getInput< data::Image>("fixed");
-    auto moving    = this->getInput< data::Image>("moving");
-    auto transform = this->getInOut< data::Matrix4>("transform");
+    auto fixed     = this->getInput<data::Image>("fixed");
+    auto moving    = this->getInput<data::Image>("moving");
+    auto transform = this->getInOut<data::Matrix4>("transform");
     SIGHT_ASSERT("Missing required input 'fixed'", fixed);
     SIGHT_ASSERT("Missing required input 'moving'", moving);
     SIGHT_ASSERT("Missing required inout 'transform'", transform);
@@ -94,12 +94,13 @@ void SMIPMatchingRegistration::updating()
         data::mt::ObjectReadLock fixedLock(fixed);
         data::mt::ObjectWriteLock transformLock(transform);
         core::tools::Type type = moving->getType();
-        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch >
-        ::invoke( type, params );
+        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch>
+        ::invoke(type, params);
     }
 
-    transform->signal< data::Matrix4::ModifiedSignalType>(
-        data::Matrix4::s_MODIFIED_SIG)
+    transform->signal<data::Matrix4::ModifiedSignalType>(
+        data::Matrix4::s_MODIFIED_SIG
+    )
     ->asyncEmit();
 }
 

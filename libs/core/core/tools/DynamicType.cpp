@@ -31,21 +31,23 @@
 namespace sight::core::tools
 {
 
-std::list< std::string > DynamicType::m_managedTypes = {{ ("unsigned char"),
-                                                          ("signed char"),
-                                                          ("unsigned short"),
-                                                          ("signed short"),
-                                                          ("unsigned int"),
-                                                          ("signed int"),
-                                                          ("unsigned long"),
-                                                          ("signed long"),
-                                                          ("float"),
-                                                          ("double")}};
+std::list<std::string> DynamicType::m_managedTypes = {{("unsigned char"),
+    ("signed char"),
+    ("unsigned short"),
+    ("signed short"),
+    ("unsigned int"),
+    ("signed int"),
+    ("unsigned long"),
+    ("signed long"),
+    ("float"),
+    ("double")
+}
+};
 
 const std::string DynamicType::m_unSpecifiedType = std::string("UNSPECIFIED TYPE");
 
-typedef boost::mpl::vector< signed char, unsigned char, signed short, unsigned short,  signed int, unsigned int, float,
-                            double >::type SupportedTypes;
+typedef boost::mpl::vector<signed char, unsigned char, signed short, unsigned short, signed int, unsigned int, float,
+                           double>::type SupportedTypes;
 
 //------------------------------------------------------------------------------
 
@@ -69,17 +71,23 @@ bool DynamicType::operator<(const DynamicType& d2) const
 }
 
 DynamicType::DynamicType() :
-    m_value( m_unSpecifiedType),
+    m_value(m_unSpecifiedType),
     m_sizeof(0)
 {
-    FW_DEPRECATED_MSG("'core::tools::DynamicType' is no longer supported and will be removed in sight 22.0,"
-                      " use 'core::tools::Type' instead",  "22.0")
+    FW_DEPRECATED_MSG(
+        "'core::tools::DynamicType' is no longer supported and will be removed in sight 22.0,"
+        " use 'core::tools::Type' instead",
+        "22.0"
+    )
 }
 
 DynamicType::DynamicType(const DynamicType& d2)
 {
-    FW_DEPRECATED_MSG("'core::tools::DynamicType' is no longer supported and will be removed in sight 22.0,"
-                      " use 'core::tools::Type' instead",  "22.0")
+    FW_DEPRECATED_MSG(
+        "'core::tools::DynamicType' is no longer supported and will be removed in sight 22.0,"
+        " use 'core::tools::Type' instead",
+        "22.0"
+    )
     this->m_value  = d2.m_value;
     this->m_sizeof = d2.m_sizeof;
 }
@@ -116,8 +124,8 @@ public:
 
     //------------------------------------------------------------------------------
 
-    template< typename PIXEL >
-    void operator()( bool& isSigned )
+    template<typename PIXEL>
+    void operator()(bool& isSigned)
     {
         isSigned = !std::is_unsigned<PIXEL>::value;
     }
@@ -128,7 +136,7 @@ public:
 bool DynamicType::isSigned()
 {
     bool isSigned;
-    Dispatcher<SupportedTypes, isSignedFunctor >::invoke(*this, isSigned);
+    Dispatcher<SupportedTypes, isSignedFunctor>::invoke(*this, isSigned);
     return isSigned;
 }
 

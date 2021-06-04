@@ -47,25 +47,36 @@ namespace sight::viz::scene3d
 class VIZ_SCENE3D_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
+
     [[deprecated("Will be removed in sight 22.0")]]
-    VIZ_SCENE3D_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
-                                               ::Ogre::SceneManager* _sceneManager,
-                                               data::Mesh::CellTypesEnum _primitiveType,
-                                               const std::string& _mtlName );
+    VIZ_SCENE3D_API static R2VBRenderable* New(
+        const std::string& _name,
+        ::Ogre::SubEntity* _sourceObject,
+        ::Ogre::SceneManager* _sceneManager,
+        data::Mesh::CellTypesEnum _primitiveType,
+        const std::string& _mtlName
+    );
 
     /// Create a new instance of R2VBRenderable
-    VIZ_SCENE3D_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
-                                               ::Ogre::SceneManager* _sceneManager,
-                                               data::Mesh::CellType _primitiveType,
-                                               const std::string& _mtlName );
+    VIZ_SCENE3D_API static R2VBRenderable* New(
+        const std::string& _name,
+        ::Ogre::SubEntity* _sourceObject,
+        ::Ogre::SceneManager* _sceneManager,
+        data::Mesh::CellType _primitiveType,
+        const std::string& _mtlName
+    );
 
     VIZ_SCENE3D_API R2VBRenderable(const ::Ogre::String& name);
     virtual VIZ_SCENE3D_API ~R2VBRenderable();
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
-    VIZ_SCENE3D_API void setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
-                                           bool _hasNormals = true);
+    VIZ_SCENE3D_API void setOutputSettings(
+        size_t _vertexCount,
+        bool _hasColor,
+        bool _hasTexCoord,
+        bool _hasNormals = true
+    );
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
     VIZ_SCENE3D_API void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
@@ -102,6 +113,7 @@ public:
     data::Mesh::CellType getInputPrimitiveType2() const;
 
 protected:
+
     /// Source object of the r2vb process
     ::Ogre::SubEntity* m_srcObject;
 
@@ -168,7 +180,7 @@ inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlNam
 
 inline data::Mesh::CellTypesEnum R2VBRenderable::getInputPrimitiveType() const
 {
-    return static_cast< data::Mesh::CellTypesEnum >(m_inputPrimitiveType);
+    return static_cast<data::Mesh::CellTypesEnum>(m_inputPrimitiveType);
 }
 
 //------------------------------------------------------------------------------

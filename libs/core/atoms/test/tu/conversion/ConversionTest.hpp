@@ -26,28 +26,29 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace ut
 {
 
-class ConversionTest :  public CPPUNIT_NS::TestFixture
+class ConversionTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ConversionTest );
-CPPUNIT_TEST( dataToAtomTest );
-CPPUNIT_TEST( materialConversionTest );
-CPPUNIT_TEST( meshConversionTest );
-CPPUNIT_TEST( graphConversionTest );
-CPPUNIT_TEST( tfConversionTest );
-CPPUNIT_TEST( seriesDBConversionTest );
-CPPUNIT_TEST( objectMultiReferencedTest );
-CPPUNIT_TEST( recursiveObjectTest );
-CPPUNIT_TEST( uuidExceptionTest );
-CPPUNIT_TEST( uuidChangeTest );
-CPPUNIT_TEST( uuidReuseTest );
-CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
-CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
-CPPUNIT_TEST( conversionNotManagedExceptionTest );
-CPPUNIT_TEST( nullPtrManagmentTest );
-CPPUNIT_TEST( landmarksConversionTest );
+CPPUNIT_TEST_SUITE(ConversionTest);
+CPPUNIT_TEST(dataToAtomTest);
+CPPUNIT_TEST(materialConversionTest);
+CPPUNIT_TEST(meshConversionTest);
+CPPUNIT_TEST(graphConversionTest);
+CPPUNIT_TEST(tfConversionTest);
+CPPUNIT_TEST(seriesDBConversionTest);
+CPPUNIT_TEST(objectMultiReferencedTest);
+CPPUNIT_TEST(recursiveObjectTest);
+CPPUNIT_TEST(uuidExceptionTest);
+CPPUNIT_TEST(uuidChangeTest);
+CPPUNIT_TEST(uuidReuseTest);
+CPPUNIT_TEST(dataFactoryNotFoundExceptionTest);
+CPPUNIT_TEST(campFactoryNotFoundExceptionTest);
+CPPUNIT_TEST(conversionNotManagedExceptionTest);
+CPPUNIT_TEST(nullPtrManagmentTest);
+CPPUNIT_TEST(landmarksConversionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -105,5 +106,6 @@ public:
     void landmarksConversionTest();
 };
 
-}  // namespace ut
-}  // namespace sight::atoms::conversion
+} // namespace ut
+
+} // namespace sight::atoms::conversion

@@ -28,6 +28,7 @@
 
 namespace sight::module::activity
 {
+
 /**
  *
  */
@@ -43,7 +44,6 @@ struct MODULE_ACTIVITY_CLASS_API Plugin : public core::runtime::Plugin
 
     // Overrides
     MODULE_ACTIVITY_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::activity

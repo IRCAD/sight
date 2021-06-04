@@ -25,7 +25,6 @@
 #include "core/jobs/Job.hpp"
 
 #include "core/jobs/exception/Waiting.hpp"
-
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
@@ -40,7 +39,7 @@ namespace sight::core::jobs
 
 Job::sptr Job::New(const std::string& name, Job::Task task, const core::thread::Worker::sptr& worker)
 {
-    return std::make_shared<Job>( name, task, worker );
+    return std::make_shared<Job>(name, task, worker);
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +76,7 @@ IJob::SharedFuture Job::runImpl()
                        };
         if(m_worker)
         {
-            return m_worker->postTask< void >( jobTask );
+            return m_worker->postTask<void>(jobTask);
         }
         else
         {
@@ -89,7 +88,7 @@ IJob::SharedFuture Job::runImpl()
         this->finish();
     }
 
-    return ::std::async( []() {} );
+    return ::std::async([](){});
 }
 
 //------------------------------------------------------------------------------
@@ -98,10 +97,11 @@ IJob::SharedFuture Job::cancel()
 {
     auto future = this->IJob::cancel();
     core::mt::WriteLock lock(m_mutex);
-    if (m_task)
+    if(m_task)
     {
         m_task = nullptr;
     }
+
     return future;
 }
 

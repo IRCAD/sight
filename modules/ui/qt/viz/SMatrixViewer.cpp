@@ -26,14 +26,14 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSlider>
 #include <QString>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -42,7 +42,6 @@ namespace viz
 {
 
 static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
-
 
 // ------------------------------------------------------------------------------
 
@@ -76,21 +75,22 @@ void SMatrixViewer::starting()
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    QPointer< QLabel > description = new QLabel(QString::fromStdString(m_title));
+    QPointer<QLabel> description = new QLabel(QString::fromStdString(m_title));
 
     mainLayout->addWidget(description);
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0 ; j < 4 ; ++j)
         {
             QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
             gridLayout->addWidget(label, i, j);
         }
     }
+
     mainLayout->addLayout(gridLayout);
 
     qtContainer->setLayout(mainLayout);
@@ -116,12 +116,12 @@ void SMatrixViewer::updating()
 
 void SMatrixViewer::updateFromMatrix()
 {
-    auto matrix = this->getInput< data::Matrix4 >(s_MATRIX_INPUT);
-    for(unsigned int i = 0; i < 4; ++i)
+    auto matrix = this->getInput<data::Matrix4>(s_MATRIX_INPUT);
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i*4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
+            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
         }
     }
 }
@@ -130,11 +130,11 @@ void SMatrixViewer::updateFromMatrix()
 
 void SMatrixViewer::clearLabels()
 {
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i*4 + j]->setText(QString(""));
+            m_matrixLabels[i * 4 + j]->setText(QString(""));
         }
     }
 }
@@ -144,12 +144,12 @@ void SMatrixViewer::clearLabels()
 service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_MATRIX_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
 // ------------------------------------------------------------------------------
 
-}// namespace viz
+} // namespace viz
 
 } // namespace sight::module::ui::qt

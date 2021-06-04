@@ -44,40 +44,51 @@ namespace sight::core::tools
  */
 
 // FIX UNSIGNED
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned char>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned short>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned int>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned long>(const std::string& key);
 
 // FIXED PRECISION SIGNED
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed char>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed short>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed int>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed long>(const std::string& key);
 
 // FLOATING PRECISION
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<float>(const std::string& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<double>(const std::string& key);
 
 // MISC
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::string>(const std::string& key);
 ///@}
 

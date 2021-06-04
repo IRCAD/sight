@@ -26,6 +26,7 @@
 
 namespace sight::data
 {
+
 namespace mt
 {
 
@@ -33,7 +34,7 @@ namespace mt
 
 ObjectWriteLock::ObjectWriteLock(data::Object::sptr obj, bool adopt_lock)
 {
-    if (adopt_lock)
+    if(adopt_lock)
     {
         m_lock = core::mt::WriteLock(obj->getMutex());
     }
@@ -66,4 +67,5 @@ void ObjectWriteLock::unlock()
 //-----------------------------------------------------------------------------
 
 } // mt
+
 } // fwData

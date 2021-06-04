@@ -33,10 +33,11 @@
 #include "filter/dicom/splitter/SOPClassUIDSplitter.hpp"
 #include "filter/dicom/splitter/TemporalPositionSplitter.hpp"
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::composite::CTImageStorageDefaultComposite );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::composite::CTImageStorageDefaultComposite);
 
 namespace sight::filter::dicom
 {
+
 namespace composite
 {
 
@@ -90,4 +91,5 @@ std::string CTImageStorageDefaultComposite::getDescription() const
 }
 
 } // namespace composite
+
 } // namespace sight::filter::dicom

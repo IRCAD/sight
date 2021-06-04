@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransferFunction, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STransferFunction, sight::ui::base::IEditor);
 
     /// Does nothing.
     MODULE_UI_QT_API STransferFunction();

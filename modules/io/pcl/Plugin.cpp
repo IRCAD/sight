@@ -46,4 +46,5 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
+
 } // namespace sight::module::io::pcl

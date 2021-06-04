@@ -33,9 +33,9 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -66,17 +66,17 @@ void SHistogramCursor::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if (config.count("color"))
+    if(config.count("color"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    if (config.count("borderColor"))
+    if(config.count("borderColor"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_borderColor, config.get<std::string>("borderColor"));
     }
 
-    if (config.count("pointSize"))
+    if(config.count("pointSize"))
     {
         m_pointSize = config.get<float>("pointSize");
     }
@@ -87,16 +87,16 @@ void SHistogramCursor::configuring()
 void SHistogramCursor::starting()
 {
     m_index = new QGraphicsEllipseItem();
-    m_index->setBrush( m_color.color() );
-    m_index->setPen( m_borderColor );
+    m_index->setBrush(m_color.color());
+    m_index->setPen(m_borderColor);
     m_index->setZValue(m_zValue);
-    m_index->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    m_index->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     m_color.setCosmetic(true);
 
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
 
-    m_layer->addToGroup( m_index );
+    m_layer->addToGroup(m_index);
 
     // Set the layer position (according to the related axis) and zValue
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
@@ -119,18 +119,18 @@ void SHistogramCursor::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
     data::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue             = histogram->getMinValue();
     const float histogramBinsWidth            = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(m_coord);
 
     int histIndex = (int) sceneCoord.getX();
     int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
-    if(index >= 0 && index < (int)values.size()) // avoid std out_of_range on MS Windows
+    if(index >= 0 && index < (int) values.size()) // avoid std out_of_range on MS Windows
     {
         sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight                        = viewport->getHeight();
@@ -153,23 +153,23 @@ void SHistogramCursor::updating()
         diameterH *= ratio.first;
         diameterV *= ratio.second;
 
-        data::Point::csptr point = this->getInput< data::Point>(s_POINT_INPUT);
+        data::Point::csptr point = this->getInput<data::Point>(s_POINT_INPUT);
 
         const double x = point->getCoord()[0] - diameterH / 2;
         const double y = point->getCoord()[1] - diameterV / 2;
 
-        m_index->setRect( x, y, diameterH, diameterV );
+        m_index->setRect(x, y, diameterH, diameterV);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::processInteraction( sight::viz::scene2d::data::Event& _event )
+void SHistogramCursor::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    if( _event.getType() == sight::viz::scene2d::data::Event::MouseMove )
+    if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
     {
         m_coord = _event.getCoord();
     }
@@ -182,12 +182,13 @@ void SHistogramCursor::processInteraction( sight::viz::scene2d::data::Event& _ev
 service::IService::KeyConnectionsMap SHistogramCursor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

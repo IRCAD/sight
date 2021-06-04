@@ -33,30 +33,37 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(const std::string& _name,
-                                                                ::Ogre::SubEntity* _sourceObject,
-                                                                ::Ogre::SceneManager* _sceneManager,
-                                                                data::Mesh::CellTypesEnum _primitiveType,
-                                                                const std::string& _mtlName)
+viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
+    const std::string& _name,
+    ::Ogre::SubEntity* _sourceObject,
+    ::Ogre::SceneManager* _sceneManager,
+    data::Mesh::CellTypesEnum _primitiveType,
+    const std::string& _mtlName
+)
 {
     data::Mesh::CellType type = data::Mesh::CellType::NO_CELL;
-    switch (_primitiveType)
+    switch(_primitiveType)
     {
         case data::Mesh::POINT:
             type = data::Mesh::CellType::POINT;
             break;
+
         case data::Mesh::EDGE:
             type = data::Mesh::CellType::EDGE;
             break;
+
         case data::Mesh::TRIANGLE:
             type = data::Mesh::CellType::TRIANGLE;
             break;
+
         case data::Mesh::QUAD:
             type = data::Mesh::CellType::QUAD;
             break;
+
         case data::Mesh::TETRA:
             type = data::Mesh::CellType::TETRA;
             break;
+
         default:
             type = data::Mesh::CellType::NO_CELL;
     }
@@ -66,14 +73,16 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(const std::strin
 
 //-----------------------------------------------------------------------------
 
-viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(const std::string& _name,
-                                                                ::Ogre::SubEntity* _sourceObject,
-                                                                ::Ogre::SceneManager* _sceneManager,
-                                                                data::Mesh::CellType _primitiveType,
-                                                                const std::string& _mtlName)
+viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
+    const std::string& _name,
+    ::Ogre::SubEntity* _sourceObject,
+    ::Ogre::SceneManager* _sceneManager,
+    data::Mesh::CellType _primitiveType,
+    const std::string& _mtlName
+)
 {
     const auto& factoryName = viz::scene3d::factory::R2VBRenderable::FACTORY_TYPE_NAME;
-    auto instance           = static_cast< viz::scene3d::R2VBRenderable*>
+    auto instance           = static_cast<viz::scene3d::R2VBRenderable*>
                               (_sceneManager->createMovableObject(_name, factoryName));
 
     instance->m_inputPrimitiveType = _primitiveType;
@@ -99,8 +108,12 @@ viz::scene3d::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
 
 //-----------------------------------------------------------------------------
 
-void viz::scene3d::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
-                                                     bool _hasNormals)
+void viz::scene3d::R2VBRenderable::setOutputSettings(
+    size_t _vertexCount,
+    bool _hasColor,
+    bool _hasTexCoord,
+    bool _hasNormals
+)
 {
     if(m_maxOutputVertexCount < _vertexCount)
     {
@@ -110,8 +123,10 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
         m_r2vbBuffer->setOperationType(::Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
-        const size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2 :
-                                   m_inputPrimitiveType == data::Mesh::CellType::TETRA ? _vertexCount * 4 :
+        const size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2
+                                                                                      : m_inputPrimitiveType
+                                   == data::Mesh::CellType::TETRA ? _vertexCount * 4
+                                                                  :
                                    _vertexCount;
         m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(numVertices));
         m_r2vbBuffer->setSourceRenderable(m_srcObject);
@@ -133,10 +148,12 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
     {
         ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
     }
+
     if(_hasColor)
     {
         ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE).getSize();
     }
+
     if(_hasTexCoord)
     {
         ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES).getSize();
@@ -168,6 +185,7 @@ void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* _queue)
             m_r2vbBuffer->update(mParentSceneManager);
             m_dirty = false;
         }
+
         // Add the output vertex buffer in the render queue
         _queue->addRenderable(this, mRenderQueueID, mRenderQueuePriority);
     }

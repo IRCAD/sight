@@ -24,11 +24,11 @@
 
 #include "data/config.hpp"
 #include "data/timeline/Object.hpp"
-
 #include <data/Object.hpp>
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines the interface of TimeLine. Timeline is a collection of objects, each object being
  *          associated with a timestamp. It is intended to store lightweight objects.
@@ -36,9 +36,9 @@ namespace sight::data
 
 class DATA_CLASS_API TimeLine : public data::Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(TimeLine, data::Object)
+
+    SIGHT_DECLARE_CLASS(TimeLine, data::Object);
 
     typedef enum
     {
@@ -47,9 +47,9 @@ public:
         FUTURE = 1
     } DirectionType;
 
-    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
-    typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
-    typedef core::com::Signal< void () > ObjectClearedSignalType;
+    typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> ObjectPushedSignalType;
+    typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> ObjectRemovedSignalType;
+    typedef core::com::Signal<void ()> ObjectClearedSignalType;
 
     DATA_API static const core::com::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
     DATA_API static const core::com::Signals::SignalKeyType s_OBJECT_REMOVED_SIG;
@@ -59,7 +59,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API TimeLine( data::Object::Key key );
+    DATA_API TimeLine(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~TimeLine();
@@ -71,12 +71,16 @@ public:
     DATA_API virtual SPTR(data::timeline::Object) popObject(core::HiResClock::HiResClockType timestamp) = 0;
 
     /// modify an object timestamp
-    DATA_API virtual void modifyTime(core::HiResClock::HiResClockType timestamp,
-                                     core::HiResClock::HiResClockType newTimestamp) = 0;
+    DATA_API virtual void modifyTime(
+        core::HiResClock::HiResClockType timestamp,
+        core::HiResClock::HiResClockType newTimestamp
+    ) = 0;
 
     /// Change an object to the specified timestamp
-    DATA_API virtual void setObject(core::HiResClock::HiResClockType timestamp,
-                                    const SPTR(data::timeline::Object)& obj) = 0;
+    DATA_API virtual void setObject(
+        core::HiResClock::HiResClockType timestamp,
+        const SPTR(data::timeline::Object)& obj
+    ) = 0;
 
     /**
      * @brief Return a new data::timeline::Object with the given timestamp.
@@ -84,7 +88,7 @@ public:
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
     DATA_API virtual SPTR(data::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp)
-        = 0;
+    = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
@@ -92,7 +96,9 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(data::timeline::Object) getClosestObject(
-        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH)  const = 0;
+        core::HiResClock::HiResClockType timestamp,
+        DirectionType direction = BOTH
+    ) const = 0;
 
     /// Return the object with the specified timestamp
     DATA_API virtual CSPTR(data::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
@@ -104,7 +110,6 @@ protected:
     ObjectPushedSignalType::sptr m_sigObjectPushed;
     /// Signal to emit when an object is removed in the timeline.
     ObjectPushedSignalType::sptr m_sigObjectRemoved;
-
 }; // class TimeLine
 
 } // namespace sight::data

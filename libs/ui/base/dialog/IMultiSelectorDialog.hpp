@@ -31,8 +31,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -40,12 +42,11 @@ namespace dialog
  */
 class UI_BASE_CLASS_API IMultiSelectorDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IMultiSelectorDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMultiSelectorDialog, ui::base::GuiBaseObject);
 
-    typedef std::map< std::string, bool > Selections;
+    typedef std::map<std::string, bool> Selections;
     typedef std::string FactoryRegistryKeyType;
 
     /// this *unique* key should  be used *for all* factory for specific Selector(qt,wx,...)
@@ -79,4 +80,5 @@ public:
 };
 
 } //namespace dialog
+
 } //namespace sight::ui::base

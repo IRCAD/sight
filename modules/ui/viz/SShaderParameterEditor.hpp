@@ -54,15 +54,14 @@ namespace sight::module::ui::viz
  */
 class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::base::IEditor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SShaderParameterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SShaderParameterEditor, sight::ui::base::IEditor);
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
     typedef std::string ObjectId;
-    typedef std::map< ObjectClassnameType, EditorImplementationType > EditorMapType;
+    typedef std::map<ObjectClassnameType, EditorImplementationType> EditorMapType;
 
     /// Constructor.
     MODULE_UI_VIZ_API SShaderParameterEditor() noexcept;

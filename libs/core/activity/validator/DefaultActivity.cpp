@@ -30,6 +30,7 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
@@ -49,13 +50,13 @@ DefaultActivity::~DefaultActivity()
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries ) const
+IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries) const
 {
     IValidator::ValidationType validation;
 
     validation = IActivityValidator::checkRequirements(activitySeries);
 
-    if (validation.first)
+    if(validation.first)
     {
         validation = IActivityValidator::checkParameters(activitySeries);
     }
@@ -66,4 +67,5 @@ IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries:
 //-----------------------------------------------------------------------------
 
 } // namespace validator
+
 } // namespace sight::activity

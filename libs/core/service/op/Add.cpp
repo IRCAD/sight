@@ -37,17 +37,18 @@ namespace sight::service
 
 //------------------------------------------------------------------------------
 
-service::IService::sptr add( const std::string& _implType, const std::string& _uid)
+service::IService::sptr add(const std::string& _implType, const std::string& _uid)
 {
     service::IService::sptr srv;
-    srv = service::extension::Factory::getDefault()->create( _implType );
-    service::OSR::registerService( srv );
-    SIGHT_THROW_IF("Failed to add " + _implType, !srv );
+    srv = service::extension::Factory::getDefault()->create(_implType);
+    service::OSR::registerService(srv);
+    SIGHT_THROW_IF("Failed to add " + _implType, !srv);
     if(!_uid.empty())
     {
-        SIGHT_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
-        srv->setID( _uid );
+        SIGHT_ASSERT("Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID());
+        srv->setID(_uid);
     }
+
     return srv;
 }
 

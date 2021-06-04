@@ -53,16 +53,18 @@ V1ToV3::~V1ToV3()
 
 // ----------------------------------------------------------------------------
 
-V1ToV3::V1ToV3( const V1ToV3& cpy ) :
+V1ToV3::V1ToV3(const V1ToV3& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V1ToV3::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToV3::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -71,9 +73,9 @@ void V1ToV3::apply( const sight::atoms::Object::sptr& previous,
 
     // Create helper
     io::atoms::patch::helper::Object helper(current);
-    helper.addAttribute("point_tex_coords", sight::atoms::Object::sptr() );
-    helper.addAttribute("cell_tex_coords", sight::atoms::Object::sptr() );
-    helper.addAttribute("array_map", sight::atoms::Map::New() );
+    helper.addAttribute("point_tex_coords", sight::atoms::Object::sptr());
+    helper.addAttribute("cell_tex_coords", sight::atoms::Object::sptr());
+    helper.addAttribute("array_map", sight::atoms::Map::New());
 }
 
 } // namespace Mesh

@@ -40,6 +40,7 @@
 
 namespace sight::core::memory
 {
+
 namespace tools
 {
 
@@ -67,9 +68,12 @@ std::uint64_t DarwinMemoryMonitorTools::estimateFreeMem()
     struct task_basic_info t_info;
     mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
 
-    if (KERN_SUCCESS != task_info(mach_task_self(),
-                                  TASK_BASIC_INFO, (task_info_t)&t_info,
-                                  &t_info_count))
+    if(KERN_SUCCESS != task_info(
+           mach_task_self(),
+           TASK_BASIC_INFO,
+           (task_info_t) &t_info,
+           &t_info_count
+    ))
     {
         SIGHT_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;
@@ -78,9 +82,9 @@ std::uint64_t DarwinMemoryMonitorTools::estimateFreeMem()
     // Hard coded 3Gb limit for 32bit process
     const std::uint64_t maxMemory         = 3221225472LL; // 3 Go
     const std::uint64_t usedProcessMemory = getUsedProcessMemory();
-    freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
+    freeMemory = std::min(maxMemory - usedProcessMemory, freeMemory);
     const std::uint64_t maxVMemory = 4294967296LL; // 4 Go
-    freeMemory = std::min( maxVMemory - t_info.virtual_size, freeMemory);
+    freeMemory = std::min(maxVMemory - t_info.virtual_size, freeMemory);
 #endif
 
     return freeMemory;
@@ -112,7 +116,7 @@ std::uint64_t DarwinMemoryMonitorTools::getTotalSystemMemory()
 {
     static int64_t physical_memory = 0;
 
-    if (physical_memory == 0)
+    if(physical_memory == 0)
     {
         int mib[2];
         mib[0] = CTL_HW;
@@ -135,17 +139,23 @@ std::uint64_t DarwinMemoryMonitorTools::getUsedSystemMemory()
 
     mach_port = mach_host_self();
     count     = sizeof(vm_stats) / sizeof(natural_t);
-    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
-        KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
-                                        (host_info_t)&vm_stats, &count))
+    if(KERN_SUCCESS == host_page_size(mach_port, &page_size)
+       && KERN_SUCCESS == host_statistics(
+           mach_port,
+           HOST_VM_INFO,
+           (host_info_t) &vm_stats,
+           &count
+       )
+    )
     {
         uint64_t used_memory = (
-            (int64_t)vm_stats.active_count +
-            (int64_t)vm_stats.wire_count
-            ) *  (int64_t)page_size;
+            (int64_t) vm_stats.active_count
+            + (int64_t) vm_stats.wire_count
+                               ) * (int64_t) page_size;
 
         return used_memory;
     }
+
     SIGHT_ASSERT("Failed to retrieve used system memory information", 0);
     return 0;
 }
@@ -161,16 +171,22 @@ std::uint64_t DarwinMemoryMonitorTools::getFreeSystemMemory()
 
     mach_port = mach_host_self();
     count     = sizeof(vm_stats) / sizeof(natural_t);
-    if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
-        KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
-                                        (host_info_t)&vm_stats, &count))
+    if(KERN_SUCCESS == host_page_size(mach_port, &page_size)
+       && KERN_SUCCESS == host_statistics(
+           mach_port,
+           HOST_VM_INFO,
+           (host_info_t) &vm_stats,
+           &count
+       )
+    )
     {
         uint64_t freeMemory = (
-            (int64_t)vm_stats.free_count +
-            (int64_t)vm_stats.inactive_count
-            ) * (int64_t)page_size;
+            (int64_t) vm_stats.free_count
+            + (int64_t) vm_stats.inactive_count
+                              ) * (int64_t) page_size;
         return freeMemory;
     }
+
     SIGHT_ASSERT("Failed to retrieve free system memory information", 0);
     return 0;
 }
@@ -182,9 +198,12 @@ std::uint64_t DarwinMemoryMonitorTools::getUsedProcessMemory()
     struct task_basic_info t_info;
     mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
 
-    if (KERN_SUCCESS != task_info(mach_task_self(),
-                                  TASK_BASIC_INFO, (task_info_t)&t_info,
-                                  &t_info_count))
+    if(KERN_SUCCESS != task_info(
+           mach_task_self(),
+           TASK_BASIC_INFO,
+           (task_info_t) &t_info,
+           &t_info_count
+    ))
     {
         SIGHT_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;
@@ -196,6 +215,7 @@ std::uint64_t DarwinMemoryMonitorTools::getUsedProcessMemory()
 //-----------------------------------------------------------------------------
 
 } // namespace tools
+
 } // namespace sight::core::memory
 
-#endif
+#endif // ifdef __APPLE__

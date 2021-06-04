@@ -36,12 +36,13 @@
 #include <unordered_set>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ServiceFactoryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ServiceFactoryTest);
 
 //------------------------------------------------------------------------------
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -64,21 +65,25 @@ void ServiceFactoryTest::tearDown()
 class TestEmptyService : public service::IService
 {
 public:
+
     //------------------------------------------------------------------------------
 
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void updating() override
@@ -89,22 +94,25 @@ public:
 class TestSrvOneData : public TestEmptyService
 {
 public:
-    SIGHT_DECLARE_SERVICE(TestSrvOneData, service::IService)
 
+    SIGHT_DECLARE_SERVICE(TestSrvOneData, service::IService);
 };
 class TestSrvThreeData : public TestEmptyService
 {
 public:
-    SIGHT_DECLARE_SERVICE(TestSrvThreeData, service::IService)
 
+    SIGHT_DECLARE_SERVICE(TestSrvThreeData, service::IService);
 };
 
-SIGHT_REGISTER_SERVICE( sight::service::ut::TestService, sight::service::ut::TestSrvOneData,
-                        sight::data::Float )
-SIGHT_REGISTER_SERVICE( sight::service::ut::TestService, sight::service::ut::TestSrvThreeData )
-SIGHT_REGISTER_SERVICE_OBJECT(  sight::service::ut::TestSrvThreeData, sight::data::Float );
-SIGHT_REGISTER_SERVICE_OBJECT(  sight::service::ut::TestSrvThreeData, sight::data::Integer );
-SIGHT_REGISTER_SERVICE_OBJECT(  sight::service::ut::TestSrvThreeData, sight::data::Float );
+SIGHT_REGISTER_SERVICE(
+    sight::service::ut::TestService,
+    sight::service::ut::TestSrvOneData,
+    sight::data::Float
+)
+SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestSrvThreeData);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::TestSrvThreeData, sight::data::Float);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::TestSrvThreeData, sight::data::Integer);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::TestSrvThreeData, sight::data::Float);
 
 //------------------------------------------------------------------------------
 
@@ -112,16 +120,20 @@ void ServiceFactoryTest::factoryTest()
 {
     const auto serviceFactory = service::extension::Factory::getDefault();
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Object",
-                                                                                       "::sight::service::ut::TestService");
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+            "::sight::data::Object",
+            "::sight::service::ut::TestService"
+        );
 
         auto it =
             std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestServiceImplementation");
         CPPUNIT_ASSERT_MESSAGE("::sight::service::ut::TestServiceImplementation not found ", it != servicesImpl.end());
     }
     {
-        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Float",
-                                                                                       "::sight::service::ut::TestService");
+        const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+            "::sight::data::Float",
+            "::sight::service::ut::TestService"
+        );
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvOneData");
         CPPUNIT_ASSERT_MESSAGE("::sight::service::ut::TestSrvOneData not found ", it != servicesImpl.end());
@@ -130,14 +142,18 @@ void ServiceFactoryTest::factoryTest()
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Float"), objects[0]);
     }
     {
-        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Float",
-                                                                                 "::sight::service::ut::TestService");
+        auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+            "::sight::data::Float",
+            "::sight::service::ut::TestService"
+        );
 
         auto it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_MESSAGE("::sight::service::ut::TestSrvThreeData not found ", it != servicesImpl.end());
 
-        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("sight::data::Integer",
-                                                                            "sight::service::ut::TestService");
+        servicesImpl = serviceFactory->getImplementationIdFromObjectAndType(
+            "sight::data::Integer",
+            "sight::service::ut::TestService"
+        );
 
         it = std::find(servicesImpl.begin(), servicesImpl.end(), "sight::service::ut::TestSrvThreeData");
         CPPUNIT_ASSERT_MESSAGE("::sight::service::ut::TestSrvThreeData not found ", it != servicesImpl.end());
@@ -153,4 +169,5 @@ void ServiceFactoryTest::factoryTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

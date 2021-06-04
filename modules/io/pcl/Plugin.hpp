@@ -28,6 +28,7 @@
 
 namespace sight::module::io::pcl
 {
+
 struct Plugin : public core::runtime::Plugin
 {
     /**

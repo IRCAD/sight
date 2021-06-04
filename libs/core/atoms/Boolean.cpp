@@ -24,7 +24,7 @@
 
 #include "atoms/registry/macros.hpp"
 
-fwAtomsRegisterMacro( sight::atoms::Boolean );
+fwAtomsRegisterMacro(sight::atoms::Boolean);
 
 namespace sight::atoms
 {

@@ -34,10 +34,11 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::FactoryRegistryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::FactoryRegistryTest);
 
 namespace sight::core
 {
+
 namespace ut
 {
 
@@ -46,8 +47,8 @@ namespace ut
 void FactoryRegistryTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void FactoryRegistryTest::tearDown()
@@ -60,7 +61,8 @@ void FactoryRegistryTest::tearDown()
 class ObjectTest
 {
 public:
-    typedef std::shared_ptr< ObjectTest > sptr;
+
+    typedef std::shared_ptr<ObjectTest> sptr;
 
     ObjectTest() :
         m_name("ObjectTest")
@@ -80,7 +82,7 @@ public:
         m_name("ObjectTest+sleep")
     {
         core::mt::ScopedLock lock(s_mutex);
-        std::this_thread::sleep_for( std::chrono::milliseconds(msec));
+        std::this_thread::sleep_for(std::chrono::milliseconds(msec));
         ++s_counter;
     }
 
@@ -106,7 +108,8 @@ core::mt::Mutex ObjectTest::s_mutex;
 class DerivedObjectTest : public ObjectTest
 {
 public:
-    typedef std::shared_ptr< DerivedObjectTest > sptr;
+
+    typedef std::shared_ptr<DerivedObjectTest> sptr;
 
     DerivedObjectTest() :
         ObjectTest()
@@ -114,12 +117,12 @@ public:
         m_name = "DerivedObjectTest";
     }
 
-    DerivedObjectTest(const std::string& name)  :
+    DerivedObjectTest(const std::string& name) :
         ObjectTest(name)
     {
     }
 
-    DerivedObjectTest(int msec)  :
+    DerivedObjectTest(int msec) :
         ObjectTest(msec)
     {
     }
@@ -131,13 +134,17 @@ void FactoryRegistryTest::pointerTest()
 {
     ObjectTest::s_counter = 0;
 
-    typedef core::FactoryRegistry< ObjectTest::sptr() > FactoryType;
+    typedef core::FactoryRegistry<ObjectTest::sptr()> FactoryType;
     FactoryType objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest::sptr
+    objectTestFactory.addFactory(
+        "ObjectTest",
+        []() -> ObjectTest::sptr
             {
                 return std::make_shared<ObjectTest>();
             });
-    objectTestFactory.addFactory("DerivedObjectTest", []() -> DerivedObjectTest::sptr
+    objectTestFactory.addFactory(
+        "DerivedObjectTest",
+        []() -> DerivedObjectTest::sptr
             {
                 return std::make_shared<DerivedObjectTest>();
             });
@@ -174,12 +181,16 @@ void FactoryRegistryTest::valueTest()
 {
     ObjectTest::s_counter = 0;
 
-    core::FactoryRegistry< ObjectTest() > objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest
+    core::FactoryRegistry<ObjectTest()> objectTestFactory;
+    objectTestFactory.addFactory(
+        "ObjectTest",
+        []() -> ObjectTest
             {
                 return ObjectTest();
             });
-    objectTestFactory.addFactory("DerivedObjectTest", []() -> DerivedObjectTest
+    objectTestFactory.addFactory(
+        "DerivedObjectTest",
+        []() -> DerivedObjectTest
             {
                 return DerivedObjectTest();
             });
@@ -210,12 +221,16 @@ void FactoryRegistryTest::argTest()
 {
     ObjectTest::s_counter = 0;
 
-    core::FactoryRegistry< ObjectTest::sptr(std::string) > objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", [](const std::string& name) -> ObjectTest::sptr
+    core::FactoryRegistry<ObjectTest::sptr(std::string)> objectTestFactory;
+    objectTestFactory.addFactory(
+        "ObjectTest",
+        [](const std::string& name) -> ObjectTest::sptr
             {
                 return std::make_shared<ObjectTest>(name);
             });
-    objectTestFactory.addFactory("DerivedObjectTest", [](const std::string& name) -> DerivedObjectTest::sptr
+    objectTestFactory.addFactory(
+        "DerivedObjectTest",
+        [](const std::string& name) -> DerivedObjectTest::sptr
             {
                 return std::make_shared<DerivedObjectTest>(name);
             });
@@ -243,15 +258,14 @@ void FactoryRegistryTest::argTest()
 
 //-----------------------------------------------------------------------------
 
-typedef core::FactoryRegistry< ObjectTest::sptr(int) > ThreadSafetyTestFactoryType;
+typedef core::FactoryRegistry<ObjectTest::sptr(int)> ThreadSafetyTestFactoryType;
 
 struct UseFactoryThread
 {
+    typedef std::shared_ptr<UseFactoryThread> sptr;
+    typedef std::vector<ObjectTest::sptr> ObjectVectorType;
 
-    typedef std::shared_ptr< UseFactoryThread > sptr;
-    typedef std::vector< ObjectTest::sptr > ObjectVectorType;
-
-    UseFactoryThread( const ThreadSafetyTestFactoryType& factory, std::string objType = "ObjectTest" ) :
+    UseFactoryThread(const ThreadSafetyTestFactoryType& factory, std::string objType = "ObjectTest") :
         m_factory(factory),
         m_objectType(objType)
     {
@@ -262,11 +276,11 @@ struct UseFactoryThread
     void run()
     {
         int duration = 20;
-        for (int i = 0; i < s_NBOBJECTS; ++i)
+        for(int i = 0 ; i < s_NBOBJECTS ; ++i)
         {
-            SIGHT_WARN( "building 1 " << m_objectType << "... " );
-            m_objects.push_back( m_factory.create(m_objectType, duration) );
-            SIGHT_WARN( "built 1 " << m_objectType << "... " );
+            SIGHT_WARN("building 1 " << m_objectType << "... ");
+            m_objects.push_back(m_factory.create(m_objectType, duration));
+            SIGHT_WARN("built 1 " << m_objectType << "... ");
         }
     }
 
@@ -280,10 +294,10 @@ const int UseFactoryThread::s_NBOBJECTS = 10;
 
 struct PopulateRegistryThread
 {
-    typedef std::shared_ptr< PopulateRegistryThread > sptr;
-    typedef std::vector< ObjectTest::sptr > ObjectVectorType;
+    typedef std::shared_ptr<PopulateRegistryThread> sptr;
+    typedef std::vector<ObjectTest::sptr> ObjectVectorType;
 
-    PopulateRegistryThread( ThreadSafetyTestFactoryType& factory ) :
+    PopulateRegistryThread(ThreadSafetyTestFactoryType& factory) :
         m_factory(factory)
     {
     }
@@ -292,20 +306,21 @@ struct PopulateRegistryThread
 
     void run()
     {
-        for (int i = 0; i < s_NBREGISTRYITEMS; ++i)
+        for(int i = 0 ; i < s_NBREGISTRYITEMS ; ++i)
         {
             std::stringstream ss;
-            ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() <<"-" << i;
+            ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() << "-" << i;
             std::string name = ss.str();
-            SIGHT_WARN( "adding " + name + "... " );
-            m_factory.addFactory(name, [](int msec) -> ObjectTest::sptr
+            SIGHT_WARN("adding " + name + "... ");
+            m_factory.addFactory(
+                name,
+                [](int msec) -> ObjectTest::sptr
                     {
                         return std::make_shared<ObjectTest>(msec);
                     });
-            SIGHT_WARN( "added " + name + "... " );
-            std::this_thread::sleep_for( std::chrono::milliseconds(1));
+            SIGHT_WARN("added " + name + "... ");
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-
     }
 
     ThreadSafetyTestFactoryType& m_factory;
@@ -321,40 +336,44 @@ void FactoryRegistryTest::threadSafetyTest()
     ObjectTest::s_counter = 0;
 
     ThreadSafetyTestFactoryType objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", [](int msec) -> ObjectTest::sptr
+    objectTestFactory.addFactory(
+        "ObjectTest",
+        [](int msec) -> ObjectTest::sptr
             {
                 return std::make_shared<ObjectTest>(msec);
             });
-    objectTestFactory.addFactory("DerivedObjectTest", [](int msec) -> DerivedObjectTest::sptr
+    objectTestFactory.addFactory(
+        "DerivedObjectTest",
+        [](int msec) -> DerivedObjectTest::sptr
             {
                 return std::make_shared<DerivedObjectTest>(msec);
             });
 
     const int NB_THREAD(10);
 
-    typedef std::vector < UseFactoryThread::sptr > UseFactoryThreadVector;
-    std::vector< std::thread > tg;
+    typedef std::vector<UseFactoryThread::sptr> UseFactoryThreadVector;
+    std::vector<std::thread> tg;
 
     UseFactoryThreadVector objects;
-    for(size_t i = 0; i < NB_THREAD; i++)
+    for(size_t i = 0 ; i < NB_THREAD ; i++)
     {
         UseFactoryThread::sptr uft;
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory);
-        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft) ));
+        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft)));
         objects.push_back(uft);
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
-        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft) ));
+        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft)));
         objects.push_back(uft);
     }
 
-    for(size_t i = 0; i < NB_THREAD; i++)
+    for(size_t i = 0 ; i < NB_THREAD ; i++)
     {
         PopulateRegistryThread::sptr pft;
 
         pft = std::make_shared<PopulateRegistryThread>(std::ref(objectTestFactory));
-        tg.push_back(std::thread(std::bind(&PopulateRegistryThread::run, pft) ));
+        tg.push_back(std::thread(std::bind(&PopulateRegistryThread::run, pft)));
     }
 
     for(auto& t : tg)
@@ -362,7 +381,7 @@ void FactoryRegistryTest::threadSafetyTest()
         t.join();
     }
 
-    for(const UseFactoryThreadVector::value_type& uft :  objects)
+    for(const UseFactoryThreadVector::value_type& uft : objects)
     {
         CPPUNIT_ASSERT_EQUAL(size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
     }
@@ -371,11 +390,12 @@ void FactoryRegistryTest::threadSafetyTest()
     CPPUNIT_ASSERT_EQUAL(
         size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
         objectTestFactory.getFactoryKeys().size()
-        );
+    );
     ObjectTest::s_counter = 0;
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::core

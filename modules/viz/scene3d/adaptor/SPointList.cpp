@@ -121,7 +121,7 @@ void SPointList::configuring()
 
     m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
 
-    if( config.count(s_MATERIAL_TEMPLATE_CONFIG))
+    if(config.count(s_MATERIAL_TEMPLATE_CONFIG))
     {
         // An existing Ogre material will be used for this mesh
         m_customMaterial       = true;
@@ -135,8 +135,12 @@ void SPointList::configuring()
     // The mesh adaptor will pass the texture name to the created material adaptor
     m_textureName = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
 
-    this->setTransformId(config.get<std::string>( sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
     const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
     if(!hexaMask.empty())
@@ -144,10 +148,12 @@ void SPointList::configuring()
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
-            hexaMask.length() > 2 &&
-            hexaMask.substr(0, 2) == "0x");
-        m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+            hexaMask.length() > 2
+            && hexaMask.substr(0, 2) == "0x"
+        );
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
+
     m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
@@ -167,12 +173,12 @@ void SPointList::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry = ::std::make_shared< sight::viz::scene3d::Mesh>(this->getID());
+    m_meshGeometry = ::std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode                      = this->getTransformNode(rootSceneNode);
+    m_sceneNode = this->getTransformNode(rootSceneNode);
 
-    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -180,7 +186,7 @@ void SPointList::starting()
     }
     else
     {
-        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
@@ -203,12 +209,12 @@ void SPointList::starting()
 service::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
-    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -247,7 +253,7 @@ void SPointList::updating()
 
     this->destroyLabel();
 
-    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -255,7 +261,7 @@ void SPointList::updating()
     }
     else
     {
-        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
@@ -266,6 +272,7 @@ void SPointList::updating()
             SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
+
     this->requestRender();
 }
 
@@ -282,10 +289,10 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
 
     size_t i                = 0;
     std::string labelNumber = std::to_string(i);
-    for(auto& point: _pointList->getPoints())
+    for(auto& point : _pointList->getPoints())
     {
         data::String::sptr strField =
-            point->getField< data::String >(data::fieldHelper::Image::m_labelId);
+            point->getField<data::String>(data::fieldHelper::Image::m_labelId);
         if(strField)
         {
             labelNumber = strField->value();
@@ -294,11 +301,26 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
         {
             labelNumber = std::to_string(i);
         }
-        m_labels.push_back(sight::viz::scene3d::Text::New(this->getID() + labelNumber, sceneMgr, textContainer,
-                                                          m_fontSource, m_fontSize, dpi, cam));
+
+        m_labels.push_back(
+            sight::viz::scene3d::Text::New(
+                this->getID() + labelNumber,
+                sceneMgr,
+                textContainer,
+                m_fontSource,
+                m_fontSize,
+                dpi,
+                cam
+            )
+        );
         m_labels[i]->setText(labelNumber);
-        m_labels[i]->setTextColor(::Ogre::ColourValue(m_labelColor->red(), m_labelColor->green(),
-                                                      m_labelColor->blue()));
+        m_labels[i]->setTextColor(
+            ::Ogre::ColourValue(
+                m_labelColor->red(),
+                m_labelColor->green(),
+                m_labelColor->blue()
+            )
+        );
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
         m_nodes[i]->attachObject(m_labels[i]);
         data::Point::PointCoordArrayType coord = point->getCoord();
@@ -317,14 +339,17 @@ void SPointList::destroyLabel()
     {
         m_sceneNode->removeAndDestroyChild(node);
     }
+
     m_nodes.clear();
 
     for(sight::viz::scene3d::Text* label : m_labels)
     {
         sceneMgr->destroyMovableObject(label);
     }
+
     m_labels.clear();
 }
+
 //-----------------------------------------------------------------------------
 
 void SPointList::updateMesh(const data::PointList::csptr& _pointList)
@@ -347,6 +372,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
     {
         this->createLabel(_pointList);
     }
+
     this->getRenderService()->makeCurrent();
 
     m_meshGeometry->updateMesh(_pointList);
@@ -377,7 +403,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 
     m_meshGeometry->setVisible(m_isVisible);
 
-    if (m_autoResetCamera)
+    if(m_autoResetCamera)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
@@ -400,9 +426,10 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
         m_meshGeometry->clearMesh(*sceneMgr);
         return;
     }
+
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(::std::const_pointer_cast< data::Mesh >(_mesh), true);
+    m_meshGeometry->updateMesh(::std::const_pointer_cast<data::Mesh>(_mesh), true);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -431,7 +458,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
     m_meshGeometry->setVisible(m_isVisible);
 
-    if (m_autoResetCamera)
+    if(m_autoResetCamera)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
@@ -441,20 +468,22 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
 scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _materialSuffix)
 {
-    auto materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+        "::sight::module::viz::scene3d::adaptor::SMaterial"
+    );
     materialAdaptor->registerInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
-    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setRenderService(this->getRenderService());
     materialAdaptor->setLayerID(m_layerID);
 
-    if (!m_materialTemplateName.empty())
+    if(!m_materialTemplateName.empty())
     {
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
+
     std::string meshName;
-    const auto pointListW = this->getWeakInput< data::PointList >(s_POINTLIST_INPUT);
+    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
     const auto pointList  = pointListW.lock();
     if(pointList)
     {
@@ -462,13 +491,14 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
     }
     else
     {
-        const auto meshW = this->getWeakInput< data::Mesh >(s_MESH_INPUT);
+        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
         const auto mesh  = meshW.lock();
         if(mesh)
         {
             meshName = mesh->getID();
         }
     }
+
     const std::string mtlName = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
@@ -495,20 +525,26 @@ void SPointList::updateMaterialAdaptor()
 
             if(!m_textureName.empty())
             {
-                const auto texture = ::Ogre::TextureManager::getSingleton().load(m_textureName,
-                                                                                 sight::viz::scene3d::RESOURCE_GROUP);
+                const auto texture = ::Ogre::TextureManager::getSingleton().load(
+                    m_textureName,
+                    sight::viz::scene3d::RESOURCE_GROUP
+                );
                 ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
-                    m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
+                    m_materialAdaptor->getMaterialName(),
+                    sight::viz::scene3d::RESOURCE_GROUP
+                );
 
                 ::Ogre::TextureUnitState* texUnitState = material->getTechnique(0)->getPass(0)->getTextureUnitState(
-                    "sprite");
+                    "sprite"
+                );
                 texUnitState->setTexture(texture);
             }
+
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
-            m_material)
+    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
+            != m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);

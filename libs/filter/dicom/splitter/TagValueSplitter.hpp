@@ -31,6 +31,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -40,7 +41,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API TagValueSplitter : public ISplitter
 {
 public:
-    SIGHT_DECLARE_CLASS(TagValueSplitter, ISplitter, filter::dicom::factory::New< TagValueSplitter >)
+
+    SIGHT_DECLARE_CLASS(TagValueSplitter, ISplitter, filter::dicom::factory::New<TagValueSplitter>);
 
     /// Constructor
     FILTER_DICOM_API TagValueSplitter(filter::dicom::IFilter::Key key);
@@ -50,7 +52,9 @@ public:
 
     /// Override
     FILTER_DICOM_API virtual DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series,
+        const core::log::Logger::sptr& logger
+    ) const override;
 
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;
@@ -66,25 +70,29 @@ public:
      * @{ */
     //------------------------------------------------------------------------------
 
-    DcmTagKey& getTag ()
+    DcmTagKey& getTag()
     {
         return this->m_tag;
     }
+
     //------------------------------------------------------------------------------
 
     const DcmTagKey& getTag() const
     {
         return this->m_tag;
     }
+
     //------------------------------------------------------------------------------
 
-    void setTag (const DcmTagKey& _tag)
+    void setTag(const DcmTagKey& _tag)
     {
         this->m_tag = _tag;
     }
-    /**  @} */
+
+/**  @} */
 
 protected:
+
     /// Filter name
     static const std::string s_FILTER_NAME;
 
@@ -93,8 +101,8 @@ protected:
 
     /// Tag used to sort instances
     DcmTagKey m_tag;
-
 };
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

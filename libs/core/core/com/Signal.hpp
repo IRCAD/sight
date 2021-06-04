@@ -25,7 +25,6 @@
 #define __FWCOM_SIGNAL_HPP__
 
 #include "core/com/SignalBase.hpp"
-
 #include <core/com/SlotConnection.hpp>
 #include <core/mt/types.hpp>
 
@@ -40,37 +39,37 @@ namespace sight::core::com
 struct SlotConnectionBase;
 struct SlotBase;
 
-template < typename F >
+template<typename F>
 struct Signal;
 
-template < typename F >
+template<typename F>
 struct SlotRun;
 
 /**
  * @brief Signal implementation.
  * Template parameter T must always be void.
  */
-template < typename R, typename ... A >
-struct CORE_CLASS_API Signal< R(A ...) > : SignalBase
+template<typename R, typename ... A>
+struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef R SignatureType (A ...);
+    typedef R SignatureType(A ...);
 
-    typedef Signal< SignatureType > SelfType;
+    typedef Signal<SignatureType> SelfType;
 
-    typedef SPTR ( SelfType ) sptr;
-    typedef WPTR ( SelfType ) wptr;
+    typedef SPTR(SelfType) sptr;
+    typedef WPTR(SelfType) wptr;
 
-    typedef SlotRun< SignatureType > SlotRunType;
-    typedef SPTR ( SlotRunType )      SlotSptr;
+    typedef SlotRun<SignatureType> SlotRunType;
+    typedef SPTR(SlotRunType)      SlotSptr;
 
-    typedef std::pair< bool, SlotRunType* > PairType;
-    typedef std::list< PairType* > SlotContainerType;
+    typedef std::pair<bool, SlotRunType*> PairType;
+    typedef std::list<PairType*> SlotContainerType;
 
-    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ),
-                      std::owner_less< WPTR( SlotBase ) > > ConnectionMapType;
+    typedef std::map<WPTR(SlotBase), WPTR(SlotConnectionBase),
+                     std::owner_less<WPTR(SlotBase)> > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R(A...)>.
@@ -89,22 +88,22 @@ struct CORE_CLASS_API Signal< R(A ...) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect( SPTR( SlotBase ) slot );
+    Connection connect(SPTR(SlotBase) slot);
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect( SPTR( SlotBase ) slot );
+    void disconnect(SPTR(SlotBase) slot);
 
     /// Disconnects all slots.
     void disconnectAll();
 
     /// Requests execution of slots with given arguments.
-    void emit( A ... a ) const;
+    void emit(A ... a) const;
 
     /// Requests asynchronous execution of slots with given arguments.
-    void asyncEmit( A ... a ) const;
+    void asyncEmit(A ... a) const;
 
     /// Returns number of connected slots.
     size_t getNumberOfConnections() const
@@ -117,11 +116,11 @@ struct CORE_CLASS_API Signal< R(A ...) > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
+    Connection getConnection(SPTR(SlotBase) slot, bool throws = false);
 
     protected:
 
-        template < typename F >
+        template<typename F>
         friend struct SlotConnection;
         /**
          * @brief Connects the given slot.
@@ -132,8 +131,8 @@ struct CORE_CLASS_API Signal< R(A ...) > : SignalBase
          * @throws BadSlot If given slot doesn't match signal type.
          * @throws AlreadyConnected If given slot is already connected.
          */
-        template< typename FROM_F >
-        Connection connect( SPTR( SlotBase ) slot );
+        template<typename FROM_F>
+        Connection connect(SPTR(SlotBase) slot);
 
         /// Connected slots.
         SlotContainerType m_slots;
@@ -144,8 +143,8 @@ struct CORE_CLASS_API Signal< R(A ...) > : SignalBase
         mutable core::mt::ReadWriteMutex m_connectionsMutex;
 
     private:
-        BOOST_STATIC_ASSERT( (std::is_same<void, R>::value) );
 
+        BOOST_STATIC_ASSERT((std::is_same<void, R>::value));
 };
 
 } // namespace sight::core::com

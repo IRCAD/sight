@@ -35,7 +35,8 @@ class IFilter;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -44,7 +45,7 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) io::atoms::filter::factory::New();
+friend SPTR(CLASSNAME) io::atoms::filter::factory::New();
 
 Key()
 {
@@ -52,11 +53,13 @@ Key()
 };
 
 IO_ATOMS_API SPTR(io::atoms::filter::IFilter) New(
-    const io::atoms::filter::registry::KeyType& classname );
+    const io::atoms::filter::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
 
     return obj;
 }

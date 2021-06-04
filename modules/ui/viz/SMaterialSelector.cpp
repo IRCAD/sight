@@ -22,6 +22,9 @@
 
 #include "SMaterialSelector.hpp"
 
+#include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/Utils.hpp>
+
 #include <core/com/Signal.hxx>
 
 #include <data/helper/Field.hpp>
@@ -31,9 +34,6 @@
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
-
-#include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -59,7 +59,7 @@ static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() noexcept
 {
-    newSignal< SelectedSignalType >( s_SELECTED_SIG );
+    newSignal<SelectedSignalType>(s_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void SMaterialSelector::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Selection
     QLabel* currentMaterial = new QLabel();
@@ -82,35 +82,40 @@ void SMaterialSelector::starting()
 
     m_materialBox = new QComboBox();
 
-    std::pair <std::string, std::string> elt;
+    std::pair<std::string, std::string> elt;
     ::Ogre::ResourceManager::ResourceMapIterator iter = ::Ogre::MaterialManager::getSingleton().getResourceIterator();
     while(iter.hasMoreElements())
     {
         ::Ogre::ResourcePtr mat = iter.getNext();
-        if (mat->getGroup() == s_MATERIAL_RESOURCEGROUP_NAME)
+        if(mat->getGroup() == s_MATERIAL_RESOURCEGROUP_NAME)
         {
             m_materialBox->addItem(QString::fromStdString(mat->getName()));
         }
     }
+
     m_materialBox->setCurrentIndex(0);
 
     QHBoxLayout* labelLayout = new QHBoxLayout();
-    labelLayout->addWidget( currentMaterial);
-    labelLayout->addWidget( m_materialBox);
+    labelLayout->addWidget(currentMaterial);
+    labelLayout->addWidget(m_materialBox);
 
     // Reload
     m_reloadButton = new QPushButton("Reload");
 
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->addLayout( labelLayout );
-    layout->addWidget( m_reloadButton );
+    layout->addLayout(labelLayout);
+    layout->addWidget(m_reloadButton);
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
     this->updating();
 
-    QObject::connect(m_materialBox, SIGNAL(activated(const QString&)), this,
-                     SLOT(onSelectedModeItem(const QString&)));
+    QObject::connect(
+        m_materialBox,
+        SIGNAL(activated(const QString&)),
+        this,
+        SLOT(onSelectedModeItem(const QString&))
+    );
     QObject::connect(m_reloadButton, SIGNAL(clicked()), this, SLOT(onReloadMaterial()));
 }
 
@@ -146,7 +151,7 @@ void SMaterialSelector::swapping()
 
 void SMaterialSelector::updateMaterial()
 {
-    data::Reconstruction::sptr reconst = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconst = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     data::Material::sptr material      = reconst->getMaterial();
     data::Object::sptr fieldObj        = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
@@ -160,7 +165,7 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    data::Reconstruction::sptr reconst = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconst = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     data::Material::sptr material      = reconst->getMaterial();
     data::String::sptr string          = data::String::New();
     string->setValue(text.toStdString());
@@ -177,9 +182,11 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
 
 void SMaterialSelector::onReloadMaterial()
 {
-    auto materialName = m_materialBox->currentText().toStdString();
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName,
-                                                                                     sight::viz::scene3d::RESOURCE_GROUP);
+    auto materialName            = m_materialBox->currentText().toStdString();
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
+        materialName,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
 
     if(!material)
     {
@@ -204,18 +211,18 @@ void SMaterialSelector::onReloadMaterial()
             {
                 pass->getVertexProgram()->reload();
             }
+
             if(!pass->getGeometryProgramName().empty())
             {
                 pass->getGeometryProgram()->reload();
             }
+
             if(!pass->getFragmentProgramName().empty())
             {
                 pass->getFragmentProgram()->reload();
             }
         }
-
     }
-
 }
 
 //------------------------------------------------------------------------------

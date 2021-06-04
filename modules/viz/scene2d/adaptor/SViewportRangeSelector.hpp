@@ -76,7 +76,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::s
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, ::sight::viz::scene2d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SViewportRangeSelector() noexcept;

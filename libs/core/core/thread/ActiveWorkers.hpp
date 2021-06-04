@@ -23,25 +23,24 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/mt/types.hpp>
 #include <core/thread/Worker.hpp>
 
 namespace sight::core::thread
 {
+
 /**
  * @brief This class to register active worker in the system, creates a default worker
  */
 class CORE_CLASS_API ActiveWorkers : public core::BaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ActiveWorkers, core::BaseObject, std::make_shared< ActiveWorkers >)
+    SIGHT_DECLARE_CLASS(ActiveWorkers, core::BaseObject, std::make_shared<ActiveWorkers>);
 
     typedef std::string WorkerKeyType;
 
-    typedef std::map< WorkerKeyType, core::thread::Worker::sptr > WorkerMapType;
+    typedef std::map<WorkerKeyType, core::thread::Worker::sptr> WorkerMapType;
 
     /// Key of default worker in registry, created and registered by initRegistry method
     CORE_API static const std::string s_DEFAULT_WORKER;
@@ -56,10 +55,10 @@ public:
      * @brief Get a worker registered with key, if the key does not exist a null sptr is returned
      * @note This method is thread safe.
      */
-    CORE_API core::thread::Worker::sptr getWorker( const WorkerKeyType& key ) const;
+    CORE_API core::thread::Worker::sptr getWorker(const WorkerKeyType& key) const;
 
     /// Register the default active worker.
-    CORE_API static void setDefaultWorker( core::thread::Worker::sptr worker );
+    CORE_API static void setDefaultWorker(core::thread::Worker::sptr worker);
 
     /**
      * @brief Get the default registered worker
@@ -71,7 +70,7 @@ public:
      * @brief Registers a worker
      * @note This method is thread safe.
      */
-    CORE_API void addWorker( const WorkerKeyType& key, core::thread::Worker::sptr worker );
+    CORE_API void addWorker(const WorkerKeyType& key, core::thread::Worker::sptr worker);
 
     /**
      * @brief Initializes registry, creates and registers the default worker
@@ -98,7 +97,6 @@ protected:
 
     /// The global instance of the active referenced workers.
     static ActiveWorkers::sptr s_currentActiveWorkers;
-
 };
 
 } // namespace sight::core::thread

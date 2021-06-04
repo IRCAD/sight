@@ -43,14 +43,14 @@ const ConfigurationElement::sptr Executable::getInitializationData() const
 
 //------------------------------------------------------------------------------
 
-void Executable::setModule( std::shared_ptr< Module > module )
+void Executable::setModule(std::shared_ptr<Module> module)
 {
     m_module = module;
 }
 
 //------------------------------------------------------------------------------
 
-void Executable::setInitializationData( const ConfigurationElement::sptr element )
+void Executable::setInitializationData(const ConfigurationElement::sptr element)
 {
     m_initializationData = element;
 }

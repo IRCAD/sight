@@ -63,11 +63,10 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API STransformLandmark final : public service::IService
 {
-
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE( STransformLandmark, service::IService)
+    SIGHT_DECLARE_SERVICE(STransformLandmark, service::IService);
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API STransformLandmark() noexcept;
@@ -98,13 +97,13 @@ protected:
 
 private:
 
-    typedef core::com::Signal< void (std::string) > LandmarkUpdatedSignalType;
+    typedef core::com::Signal<void (std::string)> LandmarkUpdatedSignalType;
 
     /// SLOT: updates selected point.
-    void updateSelectedPoint( std::string name, size_t index );
+    void updateSelectedPoint(std::string name, size_t index);
 
     /// SLOT: updates added point.
-    void updatePoint( std::string name );
+    void updatePoint(std::string name);
 
     /// SLOT: updates removed point.
     void removePoint();
@@ -113,13 +112,13 @@ private:
     data::Matrix4::csptr m_transform;
 
     /// Label containing the landmark group name.
-    std::string m_label{""};
+    std::string m_label {""};
 
     /// Index of the point to modify in the landmark group.
-    size_t m_index{0};
+    size_t m_index {0};
 
     /// Bool showing if a landmark is selected.
-    bool m_landmarkSelected{false};
-
+    bool m_landmarkSelected {false};
 };
+
 } // namespace sight::module::geometry::base

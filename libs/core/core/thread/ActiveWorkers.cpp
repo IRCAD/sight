@@ -47,18 +47,18 @@ ActiveWorkers::~ActiveWorkers()
 
 ActiveWorkers::sptr ActiveWorkers::getDefault()
 {
-    return core::LazyInstantiator< ActiveWorkers >::getInstance();
+    return core::LazyInstantiator<ActiveWorkers>::getInstance();
 }
 
 //-----------------------------------------------------------------------------
 
-core::thread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType& key ) const
+core::thread::Worker::sptr ActiveWorkers::getWorker(const WorkerKeyType& key) const
 {
     core::mt::ReadLock lock(m_registryMutex);
 
     WorkerMapType::const_iterator it = m_workers.find(key);
 
-    if( it != m_workers.end() )
+    if(it != m_workers.end())
     {
         return it->second;
     }
@@ -77,22 +77,22 @@ void ActiveWorkers::setDefaultWorker(core::thread::Worker::sptr worker)
 
 core::thread::Worker::sptr ActiveWorkers::getDefaultWorker()
 {
-    return ActiveWorkers::getDefault()->getWorker( s_DEFAULT_WORKER );
+    return ActiveWorkers::getDefault()->getWorker(s_DEFAULT_WORKER);
 }
 
 //-----------------------------------------------------------------------------
 
-void ActiveWorkers::addWorker( const WorkerKeyType& key, core::thread::Worker::sptr worker )
+void ActiveWorkers::addWorker(const WorkerKeyType& key, core::thread::Worker::sptr worker)
 {
     core::mt::WriteLock lock(m_registryMutex);
-    m_workers.insert( WorkerMapType::value_type(key, worker) );
+    m_workers.insert(WorkerMapType::value_type(key, worker));
 }
 
 //-----------------------------------------------------------------------------
 
 void ActiveWorkers::initRegistry()
 {
-    this->addWorker( s_DEFAULT_WORKER, core::thread::Worker::New() );
+    this->addWorker(s_DEFAULT_WORKER, core::thread::Worker::New());
 }
 
 //-----------------------------------------------------------------------------
@@ -101,10 +101,11 @@ void ActiveWorkers::clearRegistry()
 {
     core::mt::WriteLock lock(m_registryMutex);
 
-    for (const auto& elt: m_workers)
+    for(const auto& elt : m_workers)
     {
         elt.second->stop();
     }
+
     m_workers.clear();
 }
 

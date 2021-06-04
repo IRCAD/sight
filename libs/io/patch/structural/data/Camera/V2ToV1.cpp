@@ -43,7 +43,6 @@ V2ToV1::V2ToV1() :
     m_targetClassname = "data::Camera";
     m_originVersion   = "2";
     m_targetVersion   = "1";
-
 }
 
 // ----------------------------------------------------------------------------
@@ -54,7 +53,7 @@ V2ToV1::~V2ToV1()
 
 // ----------------------------------------------------------------------------
 
-V2ToV1::V2ToV1( const V2ToV1& cpy ) :
+V2ToV1::V2ToV1(const V2ToV1& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
@@ -64,7 +63,8 @@ V2ToV1::V2ToV1( const V2ToV1& cpy ) :
 void V2ToV1::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -74,8 +74,11 @@ void V2ToV1::apply(
     // Create helper
     io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::Sequence::sptr intrinsicParam = sight::atoms::Sequence::dynamicCast(previous->getAttribute(
-                                                                                          "intrinsic"));
+    sight::atoms::Sequence::sptr intrinsicParam = sight::atoms::Sequence::dynamicCast(
+        previous->getAttribute(
+            "intrinsic"
+        )
+    );
     sight::atoms::Numeric::sptr width    = sight::atoms::Numeric::dynamicCast(previous->getAttribute("width"));
     sight::atoms::Numeric::sptr height   = sight::atoms::Numeric::dynamicCast(previous->getAttribute("height"));
     sight::atoms::String::sptr camSource =
@@ -86,22 +89,25 @@ void V2ToV1::apply(
         sight::atoms::String::dynamicCast(previous->getAttribute("stream_url"));
     sight::atoms::String::sptr cameraID =
         sight::atoms::String::dynamicCast(previous->getAttribute("camera_id"));
-    sight::atoms::String::sptr cameraDesc = sight::atoms::String::dynamicCast(previous->getAttribute(
-                                                                                  "description"));
+    sight::atoms::String::sptr cameraDesc = sight::atoms::String::dynamicCast(
+        previous->getAttribute(
+            "description"
+        )
+    );
 
     std::string camID;
     std::string description;
-    if (camSource->getString() == "FILE")
+    if(camSource->getString() == "FILE")
     {
         camID       = "file";
         description = videoFile->getString();
     }
-    else if (camSource->getString() == "STREAM")
+    else if(camSource->getString() == "STREAM")
     {
         camID       = "stream";
         description = streamUrl->getString();
     }
-    else if (camSource->getString() == "DEVICE")
+    else if(camSource->getString() == "DEVICE")
     {
         camID       = cameraID->getString();
         description = cameraDesc->getString();

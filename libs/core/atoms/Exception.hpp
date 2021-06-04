@@ -37,7 +37,6 @@ namespace sight::atoms
  */
 struct ATOMS_CLASS_API Exception : public core::Exception
 {
-
     /**
      * @brief       Constructor
      *
@@ -49,7 +48,6 @@ struct ATOMS_CLASS_API Exception : public core::Exception
      * @brief   Destructor : do nothing.
      */
     ATOMS_API ~Exception() noexcept;
-
 };
 
 } // namespace sight::atoms

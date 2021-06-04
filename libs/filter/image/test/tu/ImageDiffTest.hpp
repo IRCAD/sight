@@ -26,6 +26,7 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -34,12 +35,13 @@ namespace ut
  */
 class ImageDiffTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageDiffTest );
-CPPUNIT_TEST( storeDiffsTest );
-CPPUNIT_TEST( undoRedoTest );
+CPPUNIT_TEST_SUITE(ImageDiffTest);
+CPPUNIT_TEST(storeDiffsTest);
+CPPUNIT_TEST(undoRedoTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
 
@@ -51,4 +53,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image

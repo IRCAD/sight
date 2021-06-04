@@ -64,7 +64,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(ImageInfo, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(ImageInfo, sight::ui::base::IEditor);
 
     MODULE_UI_QT_API ImageInfo() noexcept;
 

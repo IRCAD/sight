@@ -35,9 +35,14 @@ LinkDescriptor::LinkDescriptor() :
 
 // ----------------------------------------------------------------------------
 
-LinkDescriptor::LinkDescriptor(const std::string& context, const std::string& originVersion,
-                               const std::string& targetVersion, const std::string& patcher,
-                               LinksType links, int weight) :
+LinkDescriptor::LinkDescriptor(
+    const std::string& context,
+    const std::string& originVersion,
+    const std::string& targetVersion,
+    const std::string& patcher,
+    LinksType links,
+    int weight
+) :
     m_weight(weight),
     m_context(context),
     m_originVersion(originVersion),

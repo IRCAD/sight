@@ -62,16 +62,16 @@ void SShowArray::starting()
 
 void SShowArray::updating()
 {
-    const auto array = this->getInput< sight::data::Array >(s_ARRAY_INPUT);
+    const auto array = this->getInput<sight::data::Array>(s_ARRAY_INPUT);
 
     const auto dumpLock = array->lock();
 
-    auto itr       = array->begin< unsigned int >();
-    const auto end = array->end< unsigned int >();
+    auto itr       = array->begin<unsigned int>();
+    const auto end = array->end<unsigned int>();
 
     std::stringstream str;
     std::ostream_iterator<unsigned int> coutIter(str, ", ");
-    std::copy(itr, end, coutIter );
+    std::copy(itr, end, coutIter);
     SIGHT_INFO("Buffer : " + str.str());
 }
 

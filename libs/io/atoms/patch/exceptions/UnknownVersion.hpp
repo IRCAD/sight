@@ -36,6 +36,7 @@ namespace exceptions
 class UnknownVersion : public io::atoms::patch::exceptions::Base
 {
 public:
+
     UnknownVersion(const std::string& message);
     virtual ~UnknownVersion() noexcept
     {
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

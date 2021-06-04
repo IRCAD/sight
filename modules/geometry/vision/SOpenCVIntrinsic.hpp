@@ -58,9 +58,9 @@ class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVIntrinsic : public service::ICalib
 public:
 
     /// Double changed signal type
-    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
 
-    SIGHT_DECLARE_SERVICE(SOpenCVIntrinsic, service::ICalibration)
+    SIGHT_DECLARE_SERVICE(SOpenCVIntrinsic, service::ICalibration);
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SOpenCVIntrinsic() noexcept;

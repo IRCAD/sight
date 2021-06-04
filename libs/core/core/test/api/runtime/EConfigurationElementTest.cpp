@@ -25,10 +25,11 @@
 #include <core/runtime/EConfigurationElement.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::ut::EConfigurationElementTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::ut::EConfigurationElementTest);
 
 namespace sight::core::runtime
 {
+
 namespace ut
 {
 
@@ -57,8 +58,8 @@ void EConfigurationElementTest::testConfiguration()
     const std::string VALUE2     = "value2";
     const std::string ATTRIBUTE1 = "attibute1";
 
-    std::shared_ptr< core::runtime::EConfigurationElement > config1( new core::runtime::EConfigurationElement(NAME1));
-    std::shared_ptr< core::runtime::EConfigurationElement > config2( new core::runtime::EConfigurationElement(NAME2));
+    std::shared_ptr<core::runtime::EConfigurationElement> config1(new core::runtime::EConfigurationElement(NAME1));
+    std::shared_ptr<core::runtime::EConfigurationElement> config2(new core::runtime::EConfigurationElement(NAME2));
 
     config1->addConfigurationElement(config2);
     config2->setAttributeValue(ATTRIBUTE1, VALUE1);
@@ -72,11 +73,12 @@ void EConfigurationElementTest::testConfiguration()
     CPPUNIT_ASSERT_EQUAL(VALUE1, config2->getExistingAttributeValue(ATTRIBUTE1));
     CPPUNIT_ASSERT_EQUAL(VALUE1, config2->getAttributeValue(ATTRIBUTE1));
 
-    std::shared_ptr< core::runtime::ConfigurationElement > config3 =
-        std::dynamic_pointer_cast< core::runtime::ConfigurationElement >(config2);
+    std::shared_ptr<core::runtime::ConfigurationElement> config3 =
+        std::dynamic_pointer_cast<core::runtime::ConfigurationElement>(config2);
     CPPUNIT_ASSERT_EQUAL(config3, config1->findConfigurationElement(NAME2));
     CPPUNIT_ASSERT(config2->findConfigurationElement(NAME3) != NULL);
 }
 
 } // namespace ut
+
 } // namespace sight::core::runtime

@@ -26,13 +26,17 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
 //-----------------------------------------------------------------------------
 
-std::string SelectorDialog::showSelectorDialog(const std::string& title, const std::string& message,
-                                               std::vector< std::string > _selections)
+std::string SelectorDialog::showSelectorDialog(
+    const std::string& title,
+    const std::string& message,
+    std::vector<std::string> _selections
+)
 {
     ui::base::dialog::SelectorDialog selector(title, message, _selections);
     return selector.show();
@@ -40,15 +44,19 @@ std::string SelectorDialog::showSelectorDialog(const std::string& title, const s
 
 //-----------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(const std::string& title, const std::string& message,
-                               std::vector< std::string > _selections)
+SelectorDialog::SelectorDialog(
+    const std::string& title,
+    const std::string& message,
+    std::vector<std::string> _selections
+)
 {
     create();
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        [&]
             {
                 m_implementation->setTitle(title);
-                m_implementation->setMessage( message );
-                m_implementation->setSelections( _selections );
+                m_implementation->setMessage(message);
+                m_implementation->setSelections(_selections);
             }).wait();
 }
 
@@ -63,66 +71,81 @@ SelectorDialog::SelectorDialog()
 
 void SelectorDialog::create()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ISelectorDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::ISelectorDialog::dynamicCast(guiObj);
-            })).wait();
+                m_implementation                     = ui::base::dialog::ISelectorDialog::dynamicCast(guiObj);
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectorDialog::setTitle(std::string title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 m_implementation->setTitle(title);
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 std::string SelectorDialog::show()
 {
-    std::function< std::string() > f         = std::bind(&ISelectorDialog::show, m_implementation);
-    std::shared_future< std::string > future =
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
+    std::function<std::string()> f         = std::bind(&ISelectorDialog::show, m_implementation);
+    std::shared_future<std::string> future =
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<std::string>(f);
     future.wait();
     return future.get();
 }
 
 //-----------------------------------------------------------------------------
 
-void SelectorDialog::setSelections(std::vector< std::string > _selections)
+void SelectorDialog::setSelections(std::vector<std::string> _selections)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
-                m_implementation->setSelections( _selections );
-            })).wait();
+                m_implementation->setSelections(_selections);
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectorDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
-                m_implementation->setMessage( msg );
-            })).wait();
+                m_implementation->setMessage(msg);
+            })
+    ).wait();
 }
 
 //------------------------------------------------------------------------------
 
 void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
-                m_implementation->addCustomButton( label, clickedFn );
-            })).wait();
+                m_implementation->addCustomButton(label, clickedFn);
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } //namespace sight::ui::base

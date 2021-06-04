@@ -24,10 +24,10 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-
 #include <viz/scene3d/ILight.hpp>
 #include <viz/scene3d/Layer.hpp>
+
+#include <ui/base/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -62,13 +62,12 @@ class MODULE_UI_VIZ_CLASS_API SLightSelector final :
     public QObject,
     public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLightSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SLightSelector, sight::ui::base::IEditor);
 
     /// Initializes signals and slots.
     MODULE_UI_VIZ_API SLightSelector() noexcept;
@@ -145,7 +144,7 @@ private:
     /// Finds the light adaptor with the specified name.
     sight::viz::scene3d::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
-    QPointer<QComboBox>   m_layersBox;
+    QPointer<QComboBox> m_layersBox;
 
     QPointer<QListWidget> m_lightsList;
 
@@ -159,11 +158,11 @@ private:
 
     QPointer<QPushButton> m_ambientColorBtn;
 
-    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
     sight::viz::scene3d::Layer::wptr m_currentLayer;
 
     /// Stores all light adaptors (existing in the configuration and those created by this editor).
-    std::vector< sight::viz::scene3d::ILight::sptr > m_lightAdaptors;
+    std::vector<sight::viz::scene3d::ILight::sptr> m_lightAdaptors;
 
     /// Stores a light adaptor and it's data to keep a reference on them.
     struct Light
@@ -174,21 +173,19 @@ private:
     };
 
     /// Stores adaptors managed by this editor.
-    std::vector< Light > m_managedLightAdaptors;
+    std::vector<Light> m_managedLightAdaptors;
 
     /// Defines the current selected light.
     sight::viz::scene3d::ILight::sptr m_currentLight;
 
     /// Handles connections with the layer.
     core::com::helper::SigSlotConnection m_connections;
-
 };
 
 //------------------------------------------------------------------------------
 
 class NewLightDialog final : public QDialog
 {
-
 Q_OBJECT
 
 public:
@@ -208,7 +205,6 @@ private:
     QPointer<QLineEdit> m_lightNameEdit;
 
     QPointer<QPushButton> m_okBtn;
-
 };
 
 } // namespace sight::module::ui::viz.

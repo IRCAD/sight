@@ -27,6 +27,7 @@
 
 namespace sight::service
 {
+
 /**
  * @brief   This interface defines registerer service API.
  *          Must be implemented for services that register objects together.
@@ -38,7 +39,7 @@ class SERVICE_CLASS_API IRegisterer : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IRegisterer, service::IService)
+    SIGHT_DECLARE_SERVICE(IRegisterer, service::IService);
 
     /**
      * @name Slots API

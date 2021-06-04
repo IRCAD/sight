@@ -157,8 +157,12 @@ public:
      * @param autoUpdate if true, the service will be updated after starting.
      * @return Return the created service
      */
-    SERVICE_API service::IService::sptr addService(const std::string& type, const std::string& uid,
-                                                   bool autoStart, bool autoUpdate);
+    SERVICE_API service::IService::sptr addService(
+        const std::string& type,
+        const std::string& uid,
+        bool autoStart,
+        bool autoUpdate
+    );
 
     /**
      * @brief Create and register the service in the OSR. Its uid will be generated.
@@ -172,8 +176,11 @@ public:
      * @param autoUpdate if true, the service will be updated after starting.
      * @return Return the created service
      */
-    SERVICE_API service::IService::sptr addService(const std::string& type, bool autoStart = false,
-                                                   bool autoUpdate = false);
+    SERVICE_API service::IService::sptr addService(
+        const std::string& type,
+        bool autoStart  = false,
+        bool autoUpdate = false
+    );
 
     /**
      * @brief Create and register the service in the OSR
@@ -188,7 +195,7 @@ public:
      * @return Return the created service
      */
     template<class SERVICE>
-    SPTR(SERVICE) addService( const std::string& type, const std::string& uid, bool autoStart, bool autoUpdate);
+    SPTR(SERVICE) addService(const std::string& type, const std::string& uid, bool autoStart, bool autoUpdate);
 
     /**
      * @brief Create and register the service in the OSR. Its uid will be generated.
@@ -202,7 +209,7 @@ public:
      * @return Return the created service
      */
     template<class SERVICE>
-    SPTR(SERVICE) addService( const std::string& type, bool autoStart = false, bool autoUpdate = false);
+    SPTR(SERVICE) addService(const std::string& type, bool autoStart = false, bool autoUpdate = false);
 
     /**
      * @brief Register the service in the OSR.
@@ -214,8 +221,11 @@ public:
      * @param srv service to register
      * @param autoStart if true, the service will be started when all its required inputs are present.
      */
-    SERVICE_API void addService(const service::IService::sptr& srv, bool autoStart = false,
-                                bool autoUpdate = false);
+    SERVICE_API void addService(
+        const service::IService::sptr& srv,
+        bool autoStart  = false,
+        bool autoUpdate = false
+    );
 
     /**
      * @brief Start the service and register it in the started service container
@@ -312,7 +322,7 @@ protected:
         bool isOptional;
     };
 
-    typedef std::map< std::string, Input > InputContainer;
+    typedef std::map<std::string, Input> InputContainer;
 
     /**
      * @brief Return the input identifier or create a unique human readable identifier by concatenating the given id
@@ -328,20 +338,26 @@ protected:
      * @param defaultValue default value of the input, if it is empty, the input is not present, it will be replaces by
      * this value (for OBJECT, the default value must be the type of the object to create (ex. data::Image)
      */
-    SERVICE_API void requireInput(const std::string& key, const InputType& type,
-                                  const std::string& defaultValue = "");
+    SERVICE_API void requireInput(
+        const std::string& key,
+        const InputType& type,
+        const std::string& defaultValue = ""
+    );
 
 private:
 
     /// Information about connection <channel, sig/slot name>
-    typedef std::unordered_map< std::string, std::string > ConnectionInfo;
+    typedef std::unordered_map<std::string, std::string> ConnectionInfo;
 
     /// Register the service information
     struct ServiceInfo
     {
         /// constructor
-        SERVICE_API ServiceInfo(const service::IService::sptr& srv, const bool autoStart,
-                                const bool autoUpdate);
+        SERVICE_API ServiceInfo(
+            const service::IService::sptr& srv,
+            const bool autoStart,
+            const bool autoUpdate
+        );
 
         /// service
         service::IService::wptr m_service;
@@ -373,22 +389,22 @@ private:
     InputContainer m_inputs;
 
     /// Store the information of the services (objects, autoStart, autoUpdate)
-    std::vector< ServiceInfo > m_services;
+    std::vector<ServiceInfo> m_services;
 
     /// Store started services
-    std::vector< service::IService::sptr > m_startedService;
+    std::vector<service::IService::sptr> m_startedService;
 
     /// Store registered objects <id, obj>
-    std::unordered_map< std::string, data::Object::sptr > m_registeredObject;
+    std::unordered_map<std::string, data::Object::sptr> m_registeredObject;
 
     /// Store the object connections <objId, connection >
-    std::unordered_map< std::string, ConnectionInfo > m_objectConnection;
+    std::unordered_map<std::string, ConnectionInfo> m_objectConnection;
 
     struct ServiceProxyType
     {
-        std::unordered_map< std::string, helper::ProxyConnections > m_proxyCnt;
+        std::unordered_map<std::string, helper::ProxyConnections> m_proxyCnt;
     };
-    std::unordered_map< std::string, ServiceProxyType > m_proxies;
+    std::unordered_map<std::string, ServiceProxyType> m_proxies;
 
     /// Connections to the OSR
     core::com::Connection m_addObjectConnection;
@@ -407,14 +423,21 @@ private:
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) AppManager::addService( const std::string& type, const std::string& uid, bool autoStart,
-                                      bool autoUpdate)
+SPTR(SERVICE) AppManager::addService(
+    const std::string& type,
+    const std::string& uid,
+    bool autoStart,
+    bool autoUpdate
+)
 {
     auto srv = this->addService(type, uid, autoStart, autoUpdate);
 
-    auto castedSrv = std::dynamic_pointer_cast< SERVICE >(srv);
-    SIGHT_THROW_IF("Failed to cast service from factory type '" + type + "' into '" +
-                   core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
+    auto castedSrv = std::dynamic_pointer_cast<SERVICE>(srv);
+    SIGHT_THROW_IF(
+        "Failed to cast service from factory type '" + type + "' into '"
+        + core::TypeDemangler<SERVICE>().getClassname() + "'",
+        !srv
+    );
 
     return castedSrv;
 }
@@ -422,7 +445,7 @@ SPTR(SERVICE) AppManager::addService( const std::string& type, const std::string
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) AppManager::addService( const std::string& type, bool autoStart, bool autoUpdate)
+SPTR(SERVICE) AppManager::addService(const std::string& type, bool autoStart, bool autoUpdate)
 {
     return this->addService<SERVICE>(type, "", autoStart, autoUpdate);
 }

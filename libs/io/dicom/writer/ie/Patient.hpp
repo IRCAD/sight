@@ -28,18 +28,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 /**
  * @brief Patient Information Entity class
  */
-class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity< data::Patient >
+class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity<data::Patient>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
@@ -49,12 +51,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Patient(const SPTR(::gdcm::Writer)& writer,
-                         const SPTR(io::dicom::container::DicomInstance)& instance,
-                         const data::Patient::csptr& patient,
-                         const core::log::Logger::sptr& logger = nullptr,
-                         ProgressCallback progress             = nullptr,
-                         CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Patient(
+        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Patient::csptr& patient,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Patient();
@@ -67,5 +71,7 @@ public:
 };
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

@@ -36,7 +36,7 @@ class MeshSerializer : public IDataSerializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MeshSerializer, IDataSerializer)
+    SIGHT_DECLARE_CLASS(MeshSerializer, IDataSerializer);
 
     /// Delete default copy constructors and assignment operators
     MeshSerializer(const MeshSerializer&)            = delete;

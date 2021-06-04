@@ -32,7 +32,7 @@ namespace sight::io::zip
 namespace exception
 {
 
-Write::Write ( const std::string& err ) :
+Write::Write(const std::string& err) :
     core::Exception(err)
 {
 }

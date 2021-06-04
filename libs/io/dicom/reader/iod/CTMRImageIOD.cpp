@@ -35,18 +35,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-CTMRImageIOD::CTMRImageIOD(const data::DicomSeries::csptr& dicomSeries,
-                           const SPTR(io::dicom::container::DicomInstance)& instance,
-                           const core::log::Logger::sptr& logger,
-                           ProgressCallback progress,
-                           CancelRequestedCallback cancel) :
+CTMRImageIOD::CTMRImageIOD(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel),
     m_enableBufferRotation(true)
 {
@@ -67,7 +71,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
+    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader>(new ::gdcm::ImageReader);
 
     // Read the first file
     const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
@@ -76,9 +80,14 @@ void CTMRImageIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                          bufferObj->getStreamInfo().fsFile.string()+
-                                                          "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed(
+            "Unable to read the DICOM instance \""
+            + bufferObj->getStreamInfo().fsFile.string()
+            + "\" using the GDCM Reader."
+        ),
+        !success
+    );
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
@@ -144,11 +153,12 @@ void CTMRImageIOD::read(data::Series::sptr series)
 
     // Read SOP Common Module - PS 3.3 C.12.1
     // NOTE: Not used in Sight
-
 }
 
 //------------------------------------------------------------------------------
 
-}  // namespace iod
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace iod
+
+} // namespace reader
+
+} // namespace sight::io::dicom

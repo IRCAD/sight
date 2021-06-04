@@ -35,6 +35,7 @@ namespace sight::module::sync
 class MODULE_SYNC_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
+
     /// Destructor. Do nothing.
     MODULE_SYNC_API ~Plugin() noexcept;
 

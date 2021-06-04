@@ -41,6 +41,7 @@ class R2VBRenderable;
 class VIZ_SCENE3D_CLASS_API Mesh
 {
 public:
+
     typedef std::shared_ptr<Mesh> sptr;
     typedef std::weak_ptr<Mesh> wptr;
 
@@ -68,8 +69,12 @@ public:
      * @param _semantic semantic of the buffer.
      * @param _type data type in the buffer.
      */
-    void bindLayer(const data::Mesh::csptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
-                   ::Ogre::VertexElementType _type);
+    void bindLayer(
+        const data::Mesh::csptr& _mesh,
+        BufferBinding _binding,
+        ::Ogre::VertexElementSemantic _semantic,
+        ::Ogre::VertexElementType _type
+    );
 
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
     VIZ_SCENE3D_API void setDynamicVertices(bool _isDynamic);
@@ -79,10 +84,12 @@ public:
     VIZ_SCENE3D_API void setVisible(bool _visible);
     VIZ_SCENE3D_API void updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly = false);
     VIZ_SCENE3D_API void updateMesh(const data::PointList::csptr& _pointList);
-    VIZ_SCENE3D_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(const data::Mesh::sptr& _mesh,
-                                                                              ::Ogre::SceneManager& _sceneMgr,
-                                                                              const std::string& _materialName,
-                                                                              bool _hasTexture);
+    VIZ_SCENE3D_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(
+        const data::Mesh::sptr& _mesh,
+        ::Ogre::SceneManager& _sceneMgr,
+        const std::string& _materialName,
+        bool _hasTexture
+    );
 
     /// Updates the vertices position
     VIZ_SCENE3D_API void updateVertices(const data::Mesh::csptr& _mesh);
@@ -130,24 +137,24 @@ private:
     std::string m_perPrimitiveColorTextureName;
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
-    ::Ogre::Entity* m_r2vbEntity { nullptr };
+    ::Ogre::Entity* m_r2vbEntity {nullptr};
     /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
     ::Ogre::MeshPtr m_r2vbMesh;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map< data::Mesh::CellType, viz::scene3d::R2VBRenderable*> m_r2vbObject;
+    std::map<data::Mesh::CellType, viz::scene3d::R2VBRenderable*> m_r2vbObject;
 
     /// Defines if there is a normal layer
-    bool m_hasNormal { false };
+    bool m_hasNormal {false};
     /// Defines if there is a vertex color layer
-    bool m_hasVertexColor { false };
+    bool m_hasVertexColor {false};
     /// Defines if there is a primitive color layer
-    bool m_hasPrimitiveColor { false };
+    bool m_hasPrimitiveColor {false};
     /// defines if the mesh has UV coordinates, defined in m_configuration
-    bool m_hasUV { false };
+    bool m_hasUV {false};
     /// defines if the mesh changes dynamically, defined in m_configuration
-    bool m_isDynamic { false };
+    bool m_isDynamic {false};
     /// defines if the vertices change dynamically, defined in m_configuration
-    bool m_isDynamicVertices { false };
+    bool m_isDynamicVertices {false};
 };
 
 //------------------------------------------------------------------------------

@@ -85,36 +85,36 @@ void SMeshCreation::configuring()
 {
     this->initialize();
 
-    if (m_configuration->findConfigurationElement("percentReduction") &&
-        m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
+    if(m_configuration->findConfigurationElement("percentReduction")
+       && m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
     {
         std::string reduce = m_configuration->findConfigurationElement("percentReduction")->getExistingAttributeValue(
-            "value");
+            "value"
+        );
         m_reduction = boost::lexical_cast<unsigned int>(reduce);
     }
 
-    SIGHT_INFO( "Reduction value = " << m_reduction);
+    SIGHT_INFO("Reduction value = " << m_reduction);
 }
 
 //-----------------------------------------------------------------------------
 
 void SMeshCreation::updating()
 {
-
     /// Retrieve objects
-    auto pImage = this->getInput< data::Image >("image");
+    auto pImage = this->getInput<data::Image>("image");
     SIGHT_ASSERT("'image' key not found", pImage);
-    auto pMesh = this->getInOut< data::Mesh >("mesh");
+    auto pMesh = this->getInOut<data::Mesh>("mesh");
     SIGHT_ASSERT("'mesh' key not found", pMesh);
 
     ///VTK Mesher
 
     // vtk img
-    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    io::vtk::toVTKImage( pImage, vtkImage );
+    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::toVTKImage(pImage, vtkImage);
 
     // contour filter
-    vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
+    vtkSmartPointer<vtkDiscreteMarchingCubes> contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contourFilter->SetInputData(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
@@ -122,44 +122,44 @@ void SMeshCreation::updating()
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter =
-        vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
+    vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoothFilter =
+        vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
-    smoothFilter->SetNumberOfIterations( 50 );
+    smoothFilter->SetNumberOfIterations(50);
     smoothFilter->BoundarySmoothingOn();
-    smoothFilter->SetPassBand( 0.1 );
+    smoothFilter->SetPassBand(0.1);
     smoothFilter->SetFeatureAngle(120.0);
     smoothFilter->SetEdgeAngle(90);
     smoothFilter->FeatureEdgeSmoothingOn();
     smoothFilter->Update();
 
     // Get polyData
-    vtkSmartPointer< vtkPolyData > polyData;
+    vtkSmartPointer<vtkPolyData> polyData;
 
     // decimate filter
     unsigned int reduction = m_reduction;
-    if( reduction > 0 )
+    if(reduction > 0)
     {
-        vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
-        decimate->SetInputConnection( smoothFilter->GetOutputPort() );
-        decimate->SetTargetReduction( reduction/100.0 );
+        vtkSmartPointer<vtkDecimatePro> decimate = vtkSmartPointer<vtkDecimatePro>::New();
+        decimate->SetInputConnection(smoothFilter->GetOutputPort());
+        decimate->SetTargetReduction(reduction / 100.0);
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();
         decimate->BoundaryVertexDeletionOn();
-        decimate->SetSplitAngle( 120 );
+        decimate->SetSplitAngle(120);
         decimate->Update();
         polyData = decimate->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh);
     }
 
     /// Notification
     data::Object::ModifiedSignalType::sptr sig;
-    sig = pMesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    sig = pMesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -169,4 +169,5 @@ void SMeshCreation::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace action
+
 } // namespace sight::module::filter::mesh

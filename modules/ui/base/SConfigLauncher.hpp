@@ -36,6 +36,7 @@
 
 namespace sight::module::ui::base
 {
+
 /**
  * @brief   This action starts/stops a template configuration.
  *
@@ -72,10 +73,9 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SConfigLauncher, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SConfigLauncher, ::sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
@@ -94,7 +94,7 @@ protected:
     /**
      * @name Defines signal triggered when config is started
      * @{ */
-    typedef core::com::Signal< void () > LaunchedSignalType;
+    typedef core::com::Signal<void ()> LaunchedSignalType;
     LaunchedSignalType::sptr m_sigLaunched;
     /**  @} */
 

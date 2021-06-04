@@ -32,6 +32,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace io
 {
 
@@ -89,7 +90,6 @@ namespace io
  */
 class MODULE_UI_BASE_CLASS_API SSelector : public sight::ui::base::IDialogEditor
 {
-
 public:
 
     /// IOMode enum definition
@@ -99,13 +99,13 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    SIGHT_DECLARE_SERVICE(SSelector,  sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IDialogEditor);
 
-    typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
-    typedef core::com::Signal< void ( ) > JobFailedSignalType;
-    typedef core::com::Signal< void ( ) > JobSucceededSignalType;
+    typedef core::com::Signal<void (core::jobs::IJob::sptr)> JobCreatedSignalType;
+    typedef core::com::Signal<void ()> JobFailedSignalType;
+    typedef core::com::Signal<void ()> JobSucceededSignalType;
 
-    typedef core::com::Slot< void ( core::jobs::IJob::sptr ) > ForwardJobSlotType;
+    typedef core::com::Slot<void (core::jobs::IJob::sptr)> ForwardJobSlotType;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -122,7 +122,7 @@ public:
      *
      *@param[in] _mode the value can be SSelector::READER_MODE or SSelector::WRITER_MODE.
      */
-    MODULE_UI_BASE_API void setIOMode( IOMode _mode );
+    MODULE_UI_BASE_API void setIOMode(IOMode _mode);
 
 protected:
 
@@ -145,7 +145,7 @@ protected:
     MODULE_UI_BASE_API void updating() override;
 
     /// Gives the name of the class. Do nothing.
-    MODULE_UI_BASE_API void info( std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -162,10 +162,10 @@ private:
      *
      * @see SSelector::m_servicesAreExcluded.
      */
-    std::vector< std::string > m_selectedServices;
+    std::vector<std::string> m_selectedServices;
 
     /// Map that specifies a configuration extension for a service
-    std::map< std::string, std::string > m_serviceToConfig;
+    std::map<std::string, std::string> m_serviceToConfig;
 
     /// classname of the readed object (used if the data is set as output instead of inout)
     std::string m_dataClassname;
@@ -175,7 +175,6 @@ private:
     SPTR(JobSucceededSignalType) m_sigJobSucceeded;
 
     SPTR(ForwardJobSlotType) m_slotForwardJob;
-
 };
 
 } // namespace io

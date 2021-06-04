@@ -76,51 +76,44 @@ void IParametersService::setColorParameter(std::array<std::uint8_t, 4>, std::str
 
 void IParametersService::setDoubleParameter(double, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setDouble2Parameter(double, double, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setDouble3Parameter(double, double, double, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setIntParameter(int, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setInt2Parameter(int, int, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setInt3Parameter(int, int, int, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IParametersService::setEnumParameter(std::string, std::string)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::service

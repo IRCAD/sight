@@ -34,8 +34,10 @@
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -48,7 +50,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
+    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New<LoggerDialog>);
 
     /// Constructor
     UI_QT_API LoggerDialog(ui::base::GuiBaseObject::Key key);
@@ -88,6 +90,7 @@ protected Q_SLOTS:
     void displayLogs(int state);
 
 private:
+
     /// Dialog title
     std::string m_title;
 
@@ -105,4 +108,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

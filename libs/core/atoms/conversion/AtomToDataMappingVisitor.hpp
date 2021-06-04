@@ -29,11 +29,15 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::atoms::conversion
@@ -45,7 +49,6 @@ namespace sight::atoms::conversion
  */
 class ATOMS_CLASS_API AtomToDataMappingVisitor : public ::camp::ExtendedClassVisitor
 {
-
 public:
 
     /// Constructor. Initializes visitor.
@@ -54,7 +57,7 @@ public:
         SPTR(atoms::Object)atomObj,
         AtomVisitor::DataCacheType& cache,
         const AtomVisitor::IReadPolicy& uuidPolicy
-        );
+    );
 
     /// Destructor. Does nothing.
     ATOMS_API virtual ~AtomToDataMappingVisitor();

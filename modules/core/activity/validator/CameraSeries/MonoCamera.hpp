@@ -28,8 +28,10 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace CameraSeries
 {
+
 /**
  * @brief Defines a validator which checks if the current CameraSeries contains one and only one Camera and is
  *        calibrated.
@@ -37,8 +39,12 @@ namespace CameraSeries
 class MODULE_ACTIVITY_CLASS_API MonoCamera : public sight::activity::IObjectValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(MonoCamera, sight::activity::IObjectValidator,
-                        sight::activity::validator::factory::New< MonoCamera >)
+
+    SIGHT_DECLARE_CLASS(
+        MonoCamera,
+        sight::activity::IObjectValidator,
+        sight::activity::validator::factory::New<MonoCamera>
+    )
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API MonoCamera(sight::activity::IValidator::Key key);
@@ -50,8 +56,9 @@ public:
      * @brief Checks if the current CameraSeries contains one and only one Camera and is calibrated.
      * @see module::activity::IValidator::validate
      */
-    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
+    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const override;
 };
 
 } // namespace CameraSeries
+
 } // namespace sight::module::activity::validator

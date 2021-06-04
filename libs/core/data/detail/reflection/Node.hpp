@@ -27,4 +27,4 @@
 
 #include <core/reflection/macros.hpp>
 
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Node), (sight)(data)(Object));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Node), (sight) (data) (Object));

@@ -28,12 +28,12 @@
 
 //------------------------------------------------------------------------------
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Camera))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Camera))
 {
     builder
     .tag("object_version", "3")
     .tag("lib_name", "::sight::data")
-    .base< sight::data::Object>()
+    .base<sight::data::Object>()
     .property("intrinsic", &::sight::data::Camera::m_intrinsic)
     .property("is_calibrated", &::sight::data::Camera::m_isCalibrated)
     .property("skew", &::sight::data::Camera::m_skew)
@@ -51,7 +51,7 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Camera))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Camera)(SourceType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Camera) (SourceType))
 {
     builder
     .value("FILE", ::sight::data::Camera::FILE)
@@ -61,7 +61,7 @@ SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Camera)(SourceType))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Camera)(PixelFormat))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Camera) (PixelFormat))
 {
     using ::sight::data::Camera;
     builder

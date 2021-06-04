@@ -123,7 +123,7 @@ void SVideo::starting()
 {
     this->initialize();
 
-    const auto plW = this->getWeakInput< data::PointList >(s_PL_INPUT);
+    const auto plW = this->getWeakInput<data::PointList>(s_PL_INPUT);
 
     if(plW.lock())
     {
@@ -131,8 +131,9 @@ void SVideo::starting()
 
         updatePL();
 
-        m_pointListAdaptor = this->registerService< sight::viz::scene3d::IAdaptor >(
-            "::sight::module::viz::scene3d::adaptor::SPointList");
+        m_pointListAdaptor = this->registerService<sight::viz::scene3d::IAdaptor>(
+            "::sight::module::viz::scene3d::adaptor::SPointList"
+        );
 
         m_pointListAdaptor->registerInput(m_pointList, s_PL_INPUT, true);
 
@@ -143,42 +144,52 @@ void SVideo::starting()
         {
             config.add("config.<xmlattr>." + s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
         }
+
         if(!m_textureName.empty())
         {
             config.add("config.<xmlattr>." + s_TEXTURE_NAME_CONFIG, m_textureName);
         }
+
         if(!m_radius.empty())
         {
             config.add("config.<xmlattr>." + s_RADIUS_CONFIG, m_radius);
         }
+
         if(!m_displayLabel.empty())
         {
             config.add("config.<xmlattr>." + s_DISPLAY_LABEL_CONFIG, m_displayLabel);
         }
+
         if(!m_labelColor.empty())
         {
             config.add("config.<xmlattr>." + s_LABEL_COLOR_CONFIG, m_labelColor);
         }
+
         if(!m_color.empty())
         {
             config.add("config.<xmlattr>." + s_COLOR_CONFIG, m_color);
         }
+
         if(!m_fixedSize.empty())
         {
             config.add("config.<xmlattr>." + s_FIXED_SIZE_CONFIG, m_fixedSize);
         }
+
         if(!m_queryFlags.empty())
         {
             config.add("config.<xmlattr>." + s_QUERY_CONFIG, m_queryFlags);
         }
+
         if(!m_fontSource.empty())
         {
             config.add("config.<xmlattr>." + s_FONT_SOURCE_CONFIG, m_fontSource);
         }
+
         if(!m_fontSize.empty())
         {
             config.add("config.<xmlattr>." + s_FONT_SIZE_CONFIG, m_fontSize);
         }
+
         m_pointListAdaptor->setConfiguration(config);
 
         m_pointListAdaptor->setRenderService(this->getRenderService());
@@ -187,7 +198,6 @@ void SVideo::starting()
         m_pointListAdaptor->start();
 
         SIGHT_ASSERT("SPointList is not started", m_pointListAdaptor->isStarted());
-
     }
 }
 
@@ -217,11 +227,11 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     // Getting Sight Image
-    const auto imageSight = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
+    const auto imageSight = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
 
     auto type = imageSight->getType();
 
-    if (!m_isTextureInit || type != m_previousType )
+    if(!m_isTextureInit || type != m_previousType)
     {
         // /////////////////////////////////////////////////////////////////////
         // Create the appropriate material according to the texture format
@@ -230,13 +240,15 @@ void SVideo::updating()
         {
             auto texture = Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
                 this->getID() + "_VideoTexture",
-                sight::viz::scene3d::RESOURCE_GROUP, true).first;
+                sight::viz::scene3d::RESOURCE_GROUP,
+                true
+            ).first;
 
-            m_texture = Ogre::dynamic_pointer_cast< Ogre::Texture>( texture );
+            m_texture = Ogre::dynamic_pointer_cast<Ogre::Texture>(texture);
         }
 
         auto& mtlMgr   = Ogre::MaterialManager::getSingleton();
-        const auto tfW = this->getWeakInput< data::TransferFunction >(s_TF_INPUT);
+        const auto tfW = this->getWeakInput<data::TransferFunction>(s_TF_INPUT);
         const auto tf  = tfW.lock();
 
         Ogre::MaterialPtr defaultMat;
@@ -260,8 +272,9 @@ void SVideo::updating()
         auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
             this->getID() + "_VideoMaterial",
             sight::viz::scene3d::RESOURCE_GROUP,
-            true).first;
-        m_material = Ogre::dynamic_pointer_cast< Ogre::Material>( material );
+            true
+        ).first;
+        m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material);
 
         defaultMat->copyDetailsTo(m_material);
 
@@ -277,11 +290,12 @@ void SVideo::updating()
         if(tf)
         {
             // TF texture initialization
-            m_gpuTF = std::make_unique< sight::viz::scene3d::TransferFunction>();
+            m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>();
             m_gpuTF->createTexture(this->getID());
 
             this->updateTF();
         }
+
         m_previousType = type;
     }
 
@@ -292,13 +306,13 @@ void SVideo::updating()
     const Ogre::Viewport* const viewport = layer->getViewport();
     SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
 
-    if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
-        // If scaling is disabled and one of the viewport coordinate is modified
-        // Then we need to trigger an update of the viewport displaying the texture
-        || (!m_scaling
-            && (viewport->getActualWidth() != m_previousViewportWidth
-                || viewport->getActualHeight() != m_previousViewportHeight))
-        || m_forcePlaneUpdate)
+    if(!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight
+       // If scaling is disabled and one of the viewport coordinate is modified
+       // Then we need to trigger an update of the viewport displaying the texture
+       || (!m_scaling
+           && (viewport->getActualWidth() != m_previousViewportWidth
+               || viewport->getActualHeight() != m_previousViewportHeight))
+       || m_forcePlaneUpdate)
     {
         this->clearEntity();
 
@@ -310,13 +324,17 @@ void SVideo::updating()
         const std::string entityName    = thisID + "_VideoEntity";
         const std::string nodeName      = thisID + "_VideoSceneNode";
 
-        Ogre::MovablePlane plane( Ogre::Vector3::UNIT_Z, 0 );
+        Ogre::MovablePlane plane(Ogre::Vector3::UNIT_Z, 0);
 
         Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
 
-        m_mesh = meshManager.createPlane(videoMeshName, sight::viz::scene3d::RESOURCE_GROUP,
-                                         plane, static_cast< Ogre::Real >(size[0]),
-                                         static_cast< Ogre::Real >(size[1]));
+        m_mesh = meshManager.createPlane(
+            videoMeshName,
+            sight::viz::scene3d::RESOURCE_GROUP,
+            plane,
+            static_cast<Ogre::Real>(size[0]),
+            static_cast<Ogre::Real>(size[1])
+        );
 
         Ogre::SceneManager* sceneManager = this->getSceneManager();
         SIGHT_ASSERT("The current scene manager cannot be retrieved.", sceneManager);
@@ -339,13 +357,14 @@ void SVideo::updating()
 
         if(m_scaling)
         {
-            cam->setOrthoWindowHeight(static_cast< Ogre::Real >(size[1]));
+            cam->setOrthoWindowHeight(static_cast<Ogre::Real>(size[1]));
         }
         else
         {
-            cam->setOrthoWindowHeight(static_cast< Ogre::Real >(viewport->getActualHeight()));
-            cam->setOrthoWindowWidth(static_cast< Ogre::Real >(viewport->getActualWidth()));
+            cam->setOrthoWindowHeight(static_cast<Ogre::Real>(viewport->getActualHeight()));
+            cam->setOrthoWindowWidth(static_cast<Ogre::Real>(viewport->getActualWidth()));
         }
+
         // Make sure no further scaling request is required
         m_forcePlaneUpdate = false;
 
@@ -398,7 +417,7 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const auto tfW = this->getWeakInput< data::TransferFunction >(s_TF_INPUT);
+    const auto tfW = this->getWeakInput<data::TransferFunction>(s_TF_INPUT);
     const auto tf  = tfW.lock();
 
     m_gpuTF->updateTexture(tf.get_shared());
@@ -413,26 +432,31 @@ void SVideo::updateTF()
 
 void SVideo::updatePL()
 {
-    const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
 
-    const auto pl = this->getLockedInput< data::PointList >(s_PL_INPUT);
+    const auto pl = this->getLockedInput<data::PointList>(s_PL_INPUT);
 
     const data::PointList::PointListContainer& inPoints = pl->getPoints();
 
     data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
-    for (size_t i = 0; i < inPoints.size(); ++i)
+    for(size_t i = 0 ; i < inPoints.size() ; ++i)
     {
         const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
-        outPoints.push_back(data::Point::New(point[0] - static_cast< double >(image->getSize2()[0]) * 0.5,
-                                             -(point[1] - static_cast< double >(image->getSize2()[1]) * 0.5),
-                                             point[2]));
+        outPoints.push_back(
+            data::Point::New(
+                point[0] - static_cast<double>(image->getSize2()[0]) * 0.5,
+                -(point[1] - static_cast<double>(image->getSize2()[1]) * 0.5),
+                point[2]
+            )
+        );
     }
 
     // Send the signal:
-    auto modifiedSig = m_pointList->signal< data::PointList::ModifiedSignalType >(
-        data::PointList::s_MODIFIED_SIG );
+    auto modifiedSig = m_pointList->signal<data::PointList::ModifiedSignalType>(
+        data::PointList::s_MODIFIED_SIG
+    );
     modifiedSig->asyncEmit();
 }
 
@@ -446,13 +470,15 @@ void SVideo::clearEntity()
         this->getSceneManager()->destroyEntity(m_entity);
         m_entity = nullptr;
     }
+
     if(m_sceneNode)
     {
         m_sceneNode->removeAndDestroyAllChildren();
         this->getSceneManager()->destroySceneNode(m_sceneNode);
         m_sceneNode = nullptr;
     }
-    if (m_mesh)
+
+    if(m_mesh)
     {
         Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
         meshManager.remove(m_mesh->getName(), sight::viz::scene3d::RESOURCE_GROUP);
@@ -485,7 +511,7 @@ void SVideo::updateTextureFiltering()
     SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
 
     // Set up texture filtering
-    tus->setTextureFiltering( m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE );
+    tus->setTextureFiltering(m_filtering ? Ogre::TFO_BILINEAR : Ogre::TFO_NONE);
 }
 
 //------------------------------------------------------------------------------

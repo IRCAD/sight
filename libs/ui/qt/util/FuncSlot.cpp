@@ -35,7 +35,7 @@ void doNothing()
 }
 
 FuncSlot::FuncSlot() :
-    m_func( doNothing )
+    m_func(doNothing)
 {
 }
 

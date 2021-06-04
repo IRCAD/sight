@@ -26,19 +26,22 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class FrameTLTest : public CPPUNIT_NS::TestFixture
 {
 public:
-    CPPUNIT_TEST_SUITE( FrameTLTest );
-    CPPUNIT_TEST( initTest );
-    CPPUNIT_TEST( pushTest );
-    CPPUNIT_TEST( copyTest );
+
+    CPPUNIT_TEST_SUITE(FrameTLTest);
+    CPPUNIT_TEST(initTest);
+    CPPUNIT_TEST(pushTest);
+    CPPUNIT_TEST(copyTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -49,4 +52,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data

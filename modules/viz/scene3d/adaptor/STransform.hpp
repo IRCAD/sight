@@ -56,11 +56,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API STransform final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API STransform() noexcept;
@@ -96,14 +95,13 @@ private:
     sight::viz::scene3d::SRender::OgreObjectIdType m_parentTransformId;
 
     /// Contains the Ogre transform node.
-    ::Ogre::SceneNode* m_transformNode { nullptr };
+    ::Ogre::SceneNode* m_transformNode {nullptr};
 
     /// Contains the Ogre parent transform sceneNode.
-    ::Ogre::SceneNode* m_parentTransformNode { nullptr };
+    ::Ogre::SceneNode* m_parentTransformNode {nullptr};
 
     /// Defines the Ogre transformation of this service
     ::Ogre::Affine3 m_ogreTransform;
-
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

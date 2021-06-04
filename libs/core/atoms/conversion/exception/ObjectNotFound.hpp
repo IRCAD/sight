@@ -35,7 +35,7 @@ namespace exception
 /// Object not found exception.
 struct ObjectNotFound : core::Exception
 {
-    ATOMS_API ObjectNotFound ( const std::string& err );
+    ATOMS_API ObjectNotFound(const std::string& err);
 };
 
 } // namespace exception

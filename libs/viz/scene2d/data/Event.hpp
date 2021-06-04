@@ -29,6 +29,7 @@
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
@@ -40,14 +41,13 @@ namespace data
  */
 class Event
 {
-
 public:
 
     typedef enum
     {
         NoType,
-        Resize,                   // change within the size of the widget/view
-        Viewport,                 // change within the size of the sene (contained into the widget/view)
+        Resize,   // change within the size of the widget/view
+        Viewport, // change within the size of the sene (contained into the widget/view)
         MouseButtonDoubleClick,
         MouseButtonPress,
         MouseButtonRelease,
@@ -236,4 +236,5 @@ inline void Event::setType(Type type)
 }
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

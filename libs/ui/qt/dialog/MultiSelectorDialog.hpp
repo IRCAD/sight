@@ -34,8 +34,10 @@
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -47,8 +49,11 @@ class UI_QT_CLASS_API MultiSelectorDialog : public ui::base::dialog::IMultiSelec
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
-                        ui::base::factory::New< MultiSelectorDialog >)
+    SIGHT_DECLARE_CLASS(
+        MultiSelectorDialog,
+        ui::base::dialog::IMultiSelectorDialog,
+        ui::base::factory::New<MultiSelectorDialog>
+    )
 
     UI_QT_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 
@@ -80,4 +85,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

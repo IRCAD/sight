@@ -64,7 +64,7 @@ class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::base::service
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatrixWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SMatrixWriter, sight::io::base::service::IWriter);
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatrixWriter() noexcept;

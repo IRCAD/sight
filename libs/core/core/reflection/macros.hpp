@@ -24,8 +24,8 @@
 
 #ifndef CAMP_COMPILATION
 
-#define SIGHT_DECLARE_REFLECTION( desc, ...)
-#define SIGHT_DECLARE_DATA_REFLECTION( desc, ...)
+#define SIGHT_DECLARE_REFLECTION(desc, ...)
+#define SIGHT_DECLARE_DATA_REFLECTION(desc, ...)
 #define SIGHT_MAKE_FRIEND_REFLECTION(desc)
 
 #else
@@ -39,40 +39,46 @@
 #include <camp/enum.hpp>
 
 #define __FWCAMP_PREDECLARE(_s_, _state_, _elem_) \
-    BOOST_PP_IF(                                  \
-        BOOST_PP_EQUAL( _s_, 2 ),                 \
-        class _elem_; ,                           \
-        namespace _elem_ { _state_ }              \
-        )
+    BOOST_PP_IF( \
+        BOOST_PP_EQUAL(_s_, 2), \
+        class _elem_; \
+        , \
+        namespace _elem_ {_state_} \
+    )
 
-#define __FWCAMP_PREDECLARE_MACRO( _cls_ )  \
-    BOOST_PP_SEQ_FOLD_RIGHT( __FWCAMP_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
+#define __FWCAMP_PREDECLARE_MACRO(_cls_) \
+    BOOST_PP_SEQ_FOLD_RIGHT(__FWCAMP_PREDECLARE, BOOST_PP_SEQ_NIL, _cls_)
 
 #define __FWCAMP_CAT(_s_, _state_, _elem_) BOOST_PP_CAT(_state_, _elem_)
 #define __FWCAMP_NAMESPACE_CAT(_s_, _state_, _elem_) _state_::_elem_
 
 #define __FWCAMP_FUNC_SUFFIX(desc) \
-    BOOST_PP_SEQ_FOLD_LEFT( __FWCAMP_CAT, BOOST_PP_SEQ_HEAD(desc), BOOST_PP_SEQ_TAIL(desc))
+    BOOST_PP_SEQ_FOLD_LEFT(__FWCAMP_CAT, BOOST_PP_SEQ_HEAD(desc), BOOST_PP_SEQ_TAIL(desc))
 
 #define __FWCAMP_NAMESPACE_NAME(desc) \
-    BOOST_PP_SEQ_FOLD_LEFT( __FWCAMP_NAMESPACE_CAT, BOOST_PP_SEQ_HEAD(desc), BOOST_PP_SEQ_TAIL(desc))
+    BOOST_PP_SEQ_FOLD_LEFT(__FWCAMP_NAMESPACE_CAT, BOOST_PP_SEQ_HEAD(desc), BOOST_PP_SEQ_TAIL(desc))
 
-#define __FWCAMP_DECLARE_FUNC_NAME(desc)        BOOST_PP_CAT(fwCampDeclare, __FWCAMP_FUNC_SUFFIX(desc))
-#define __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)  BOOST_PP_CAT(localDeclare, __FWCAMP_FUNC_SUFFIX(desc))
+#define __FWCAMP_DECLARE_FUNC_NAME(desc) BOOST_PP_CAT(fwCampDeclare, __FWCAMP_FUNC_SUFFIX(desc))
+#define __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc) BOOST_PP_CAT(localDeclare, __FWCAMP_FUNC_SUFFIX(desc))
 
 #define __FWCAMP_CLASS_BUILDER_TYPE(desc) \
-    camp::ClassBuilder < __FWCAMP_NAMESPACE_NAME(desc) >
+    camp::ClassBuilder<__FWCAMP_NAMESPACE_NAME(desc)>
 
 #define __FWCAMP_AUTO_TYPE_NONCOPYABLE(type, registerFunc) \
-    CAMP_TYPE_NONCOPYABLE( type)
+    CAMP_TYPE_NONCOPYABLE(type)
 
 #define __FWCAMP__AUTO__DECLARE__MACRO(desc) \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc)&); \
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &); \
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
     { \
         __FWCAMP_CLASS_BUILDER_TYPE(desc) builder = \
-            camp::Class::declare< __FWCAMP_NAMESPACE_NAME(desc) >(BOOST_PP_STRINGIZE( __FWCAMP_NAMESPACE_NAME( \
-                                                                                          desc) )); \
+            camp::Class::declare<__FWCAMP_NAMESPACE_NAME(desc)>( \
+                BOOST_PP_STRINGIZE( \
+                    __FWCAMP_NAMESPACE_NAME( \
+                        desc \
+                    ) \
+                ) \
+            ); \
         __FWCAMP_DECLARE_FUNC_NAME(desc)(builder); \
     } \
     __FWCAMP_AUTO_TYPE_NONCOPYABLE(__FWCAMP_NAMESPACE_NAME(desc), __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc))
@@ -81,7 +87,7 @@
     BOOST_PP_CAT(__FWCAMP_FUNC_SUFFIX(desc), Reg)
 
 #define __FWCAMP__USEROBJREG(desc) \
-    sight::core::reflection::UserObjectRegistry < __FWCAMP_NAMESPACE_NAME(desc) >
+    sight::core::reflection::UserObjectRegistry<__FWCAMP_NAMESPACE_NAME(desc)>
 //----------------------------------------------------------------------------
 
 /**
@@ -91,11 +97,11 @@
  *&builder)
  */
 #define SIGHT_MAKE_FRIEND_REFLECTION(desc) \
-    friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder); \
+    friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) & builder); \
 
 //----------------------------------------------------------------------------
 
-#define SIGHT_DECLARE_DATA_REFLECTION( desc, ...) \
+#define SIGHT_DECLARE_DATA_REFLECTION(desc, ...) \
     namespace sight::core::reflection \
     { \
     template<typename T> \
@@ -106,7 +112,7 @@
 
 //----------------------------------------------------------------------------
 
-#define SIGHT_DECLARE_REFLECTION( desc, ...) \
+#define SIGHT_DECLARE_REFLECTION(desc, ...) \
     __FWCAMP_PREDECLARE_MACRO(desc) \
     __FWCAMP__AUTO__DECLARE__MACRO(desc)
 
@@ -117,7 +123,7 @@
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
     { \
         camp::EnumBuilder builder = \
-            camp::Enum::declare< __FWCAMP_NAMESPACE_NAME(desc) >(BOOST_PP_STRINGIZE( __FWCAMP_NAMESPACE_NAME(desc) )); \
+            camp::Enum::declare<__FWCAMP_NAMESPACE_NAME(desc)>(BOOST_PP_STRINGIZE(__FWCAMP_NAMESPACE_NAME(desc))); \
         __FWCAMP_DECLARE_FUNC_NAME(desc)(builder); \
     } \
     CAMP_TYPE(__FWCAMP_NAMESPACE_NAME(desc))
@@ -125,13 +131,13 @@
 //----------------------------------------------------------------------------
 
 #define SIGHT_IMPLEMENT_REFLECTION(desc) \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder)
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) & builder)
 
 //----------------------------------------------------------------------------
 
 #define SIGHT_IMPLEMENT_DATA_REFLECTION(desc) \
-    static __FWCAMP__USEROBJREG(desc) __FWCAMP__REG_NAME(desc)(BOOST_PP_STRINGIZE( __FWCAMP_NAMESPACE_NAME(desc) )); \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder)
+    static __FWCAMP__USEROBJREG(desc) __FWCAMP__REG_NAME(desc)(BOOST_PP_STRINGIZE(__FWCAMP_NAMESPACE_NAME(desc))); \
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) & builder)
 
 //----------------------------------------------------------------------------
 
@@ -150,47 +156,47 @@
 #define SIGHT_DECLARE_REFLECTION_ACCESSOR(object, attribut) \
     namespace camp { \
     namespace detail { \
-\
-    template <> \
-    class Accessor1< __FWCAMP_NAMESPACE_NAME(object), SPTR( __FWCAMP_NAMESPACE_NAME(attribut) )& > \
+ \
+    template<> \
+    class Accessor1<__FWCAMP_NAMESPACE_NAME(object), SPTR(__FWCAMP_NAMESPACE_NAME(attribut))&> \
     { \
     public: \
-        typedef SPTR ( __FWCAMP_NAMESPACE_NAME (attribut) )& ReturnType; \
-        typedef ObjectTraits< SPTR( __FWCAMP_NAMESPACE_NAME(attribut) )& > Traits; \
+        typedef SPTR(__FWCAMP_NAMESPACE_NAME (attribut))& ReturnType; \
+        typedef ObjectTraits<SPTR(__FWCAMP_NAMESPACE_NAME(attribut))&> Traits; \
         typedef Traits::DataType DataType; \
-        typedef __FWCAMP_NAMESPACE_NAME (object) ClassType; \
-\
+        typedef __FWCAMP_NAMESPACE_NAME(object) ClassType; \
+ \
         enum \
         { \
             canRead  = true, \
             canWrite = true \
         }; \
-\
-        template <typename F> \
-        Accessor1(F getter) :              \
+ \
+        template<typename F> \
+        Accessor1(F getter) : \
             m_getter(getter) \
         { \
         } \
-\
-        ReturnHelper< ReturnType>::Type get(ClassType& objectptr) const \
+ \
+        ReturnHelper<ReturnType>::Type get(ClassType & objectptr) const \
         { \
             ReturnType ptr = m_getter(objectptr); \
-            return ReturnHelper< ReturnType>::get(ptr); \
+            return ReturnHelper<ReturnType>::get(ptr); \
         } \
-\
-        bool set(ClassType& objectptr, const Value& value) const \
+ \
+        bool set(ClassType & objectptr, const Value& value) const \
         { \
             ReturnType ptr = m_getter(objectptr); \
-            ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(((value.to< DataType* >()))->getSptr()); \
+            ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(((value.to<DataType*>()))->getSptr()); \
             return true; \
         } \
-\
+ \
     private: \
-\
-        boost::function< ReturnType(ClassType&)> m_getter; \
+ \
+        boost::function<ReturnType(ClassType&)> m_getter; \
     }; \
-\
+ \
     } \
     }
 
-#endif
+#endif // ifndef CAMP_COMPILATION

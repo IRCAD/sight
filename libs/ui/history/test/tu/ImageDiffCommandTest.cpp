@@ -22,15 +22,16 @@
 
 #include "ImageDiffCommandTest.hpp"
 
-#include <utestData//generator/Image.hpp>
-
 #include <ui/history/ImageDiffCommand.hpp>
 
+#include <utestData//generator/Image.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::ui::history::ut::ImageDiffCommandTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::ui::history::ut::ImageDiffCommandTest);
 
 namespace sight::ui::history
 {
+
 namespace ut
 {
 
@@ -50,9 +51,9 @@ void ImageDiffCommandTest::tearDown()
 
 void ImageDiffCommandTest::undoredoTest()
 {
-    const data::Image::Size SIZE          = {{ 32, 32, 32 }};
-    const data::Image::Spacing SPACING    = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
+    const data::Image::Size SIZE          = {{32, 32, 32}};
+    const data::Image::Spacing SPACING    = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
     const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
@@ -66,17 +67,17 @@ void ImageDiffCommandTest::undoredoTest()
 
     std::uint8_t NEWVALUE = 1;
 
-    data::Image::BufferType* newBufferValue = reinterpret_cast< data::Image::BufferType*>(&NEWVALUE);
+    data::Image::BufferType* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< data::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(int i = 0; i < 8; ++i)
+    for(int i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast< data::Image::BufferType* >(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixelBuffer(index, newBufferValue);
@@ -86,12 +87,12 @@ void ImageDiffCommandTest::undoredoTest()
     }
 
     // Create an imageDiffCommand to test
-    ui::history::ImageDiffCommand imageDiffCommand( image, diff);
+    ui::history::ImageDiffCommand imageDiffCommand(image, diff);
 
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
     CPPUNIT_ASSERT(imageDiffCommand.undo());
 
-    for(size_t it = 0; it < image->getSizeInBytes(); ++it)
+    for(size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
     {
         CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(it)));
     }
@@ -99,7 +100,7 @@ void ImageDiffCommandTest::undoredoTest()
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
     CPPUNIT_ASSERT(imageDiffCommand.redo());
 
-    for(size_t i = 0; i < image->getSizeInBytes(); ++i)
+    for(size_t i = 0 ; i < image->getSizeInBytes() ; ++i)
     {
         // Check if 'i' is an index
         auto indexIt = std::find(indices.begin(), indices.end(), i);
@@ -119,9 +120,9 @@ void ImageDiffCommandTest::undoredoTest()
 
 void ImageDiffCommandTest::getSizeTest()
 {
-    const data::Image::Size SIZE          = {{ 32, 32, 32 }};
-    const data::Image::Spacing SPACING    = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN      = {{ 0., 0., 0. }};
+    const data::Image::Size SIZE          = {{32, 32, 32}};
+    const data::Image::Spacing SPACING    = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
     const core::tools::Type TYPE          = core::tools::Type::s_UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
@@ -131,21 +132,21 @@ void ImageDiffCommandTest::getSizeTest()
 
     const auto dumpLock = image->lock();
 
-    filter::image::ImageDiff diff(image->getType().sizeOf()*64);
+    filter::image::ImageDiff diff(image->getType().sizeOf() * 64);
 
     std::uint8_t NEWVALUE = 1;
 
-    data::Image::BufferType* newBufferValue = reinterpret_cast< data::Image::BufferType*>(&NEWVALUE);
+    data::Image::BufferType* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
 
-    const std::vector< data::Image::IndexType> indices = {{ 51, 10, 8, 123, 1098, 23456, 6, 9999 }};
+    const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(size_t i = 0; i < 8; ++i)
+    for(size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast< data::Image::BufferType* >(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixelBuffer(index, newBufferValue);
@@ -155,16 +156,17 @@ void ImageDiffCommandTest::getSizeTest()
     }
 
     // Create an imageDiffCommand to test
-    ui::history::ImageDiffCommand imageDiffCommand( image, diff);
+    ui::history::ImageDiffCommand imageDiffCommand(image, diff);
 
     // Ensure that the real size is at least bigger than the naive sizeof
-    CPPUNIT_ASSERT( imageDiffCommand.getSize() > sizeof(imageDiffCommand) );
+    CPPUNIT_ASSERT(imageDiffCommand.getSize() > sizeof(imageDiffCommand));
 
     // Ensure that the real size is at least bigger than the size of the diff
-    CPPUNIT_ASSERT( imageDiffCommand.getSize() > diff.getSize() );
+    CPPUNIT_ASSERT(imageDiffCommand.getSize() > diff.getSize());
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace registrationOp

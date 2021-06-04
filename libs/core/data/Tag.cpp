@@ -27,10 +27,11 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::Tag );
+SIGHT_REGISTER_DATA(sight::data::Tag);
 
 namespace sight::data
 {
+
 //------------------------------------------------------------------------------
 
 Tag::Tag(data::Object::Key) :
@@ -40,7 +41,7 @@ Tag::Tag(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-Tag::~Tag ()
+Tag::~Tag()
 {
     if(m_pointList)
     {
@@ -50,13 +51,17 @@ Tag::~Tag ()
 
 //------------------------------------------------------------------------------
 
-void Tag::shallowCopy(const Object::csptr& source )
+void Tag::shallowCopy(const Object::csptr& source)
 {
     Tag::csptr other = Tag::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(source);
     m_sType     = other->m_sType;
     m_size      = other->m_size;
     m_pointList = other->m_pointList;
@@ -67,10 +72,14 @@ void Tag::shallowCopy(const Object::csptr& source )
 void Tag::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Tag::csptr other = Tag::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(source, cache);
     m_sType     = other->m_sType;
     m_size      = other->m_size;
     m_pointList = data::Object::copy(other->m_pointList, cache);

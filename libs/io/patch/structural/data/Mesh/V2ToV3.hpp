@@ -39,7 +39,8 @@ namespace Mesh
 class IO_PATCH_CLASS_API V2ToV3 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(V2ToV3, patch::structural::data::Mesh::V2ToV3, new V2ToV3)
+
+    SIGHT_DECLARE_CLASS(V2ToV3, patch::structural::data::Mesh::V2ToV3, new V2ToV3);
 
     /// Constructor
     IO_PATCH_API V2ToV3();
@@ -48,7 +49,7 @@ public:
     IO_PATCH_API ~V2ToV3();
 
     /// Copy constructor
-    IO_PATCH_API V2ToV3( const V2ToV3& cpy );
+    IO_PATCH_API V2ToV3(const V2ToV3& cpy);
 
     /**
      * @brief Applies patch
@@ -58,8 +59,8 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace Mesh

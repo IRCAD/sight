@@ -26,21 +26,23 @@
 
 namespace sight::io::itk
 {
+
 namespace ut
 {
 
 class TransformTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( TransformTest );
-CPPUNIT_TEST( testConversion );
+CPPUNIT_TEST_SUITE(TransformTest);
+CPPUNIT_TEST(testConversion);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
     void testConversion();
-
 };
 
 } //namespace ut
+
 } //namespace sight::io::itk

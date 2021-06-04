@@ -45,7 +45,7 @@ class UI_BASE_CLASS_API ToolBar : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ToolBar, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ToolBar, ui::base::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 

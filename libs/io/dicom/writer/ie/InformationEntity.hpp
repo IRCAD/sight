@@ -35,21 +35,23 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 /**
  * @brief InformationEntity base class used to write modules
  */
-template< class DATATYPE >
+template<class DATATYPE>
 class IO_DICOM_CLASS_API InformationEntity
 {
-
 public:
-    typedef std::function< void (std::uint64_t) > ProgressCallback;
-    typedef std::function< bool () > CancelRequestedCallback;
+
+    typedef std::function<void (std::uint64_t)> ProgressCallback;
+    typedef std::function<bool ()> CancelRequestedCallback;
 
     /**
      * @brief Constructor
@@ -60,12 +62,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API InformationEntity(const SPTR(::gdcm::Writer)& writer,
-                                   const SPTR(io::dicom::container::DicomInstance)& instance,
-                                   const CSPTR(DATATYPE)& object,
-                                   const core::log::Logger::sptr& logger = nullptr,
-                                   ProgressCallback progress             = nullptr,
-                                   CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API InformationEntity(
+        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const CSPTR(DATATYPE)& object,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~InformationEntity();
@@ -93,13 +97,15 @@ protected:
 
 //------------------------------------------------------------------------------
 
-template< class DATATYPE >
-InformationEntity<DATATYPE>::InformationEntity(const SPTR(::gdcm::Writer)& writer,
-                                               const SPTR(io::dicom::container::DicomInstance)& instance,
-                                               const CSPTR(DATATYPE)& object,
-                                               const core::log::Logger::sptr& logger,
-                                               ProgressCallback progress,
-                                               CancelRequestedCallback cancel) :
+template<class DATATYPE>
+InformationEntity<DATATYPE>::InformationEntity(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const CSPTR(DATATYPE)& object,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     m_writer(writer),
     m_instance(instance),
     m_object(object),
@@ -114,7 +120,7 @@ InformationEntity<DATATYPE>::InformationEntity(const SPTR(::gdcm::Writer)& write
 
 //------------------------------------------------------------------------------
 
-template< class DATATYPE >
+template<class DATATYPE>
 InformationEntity<DATATYPE>::~InformationEntity()
 {
 }
@@ -122,5 +128,7 @@ InformationEntity<DATATYPE>::~InformationEntity()
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

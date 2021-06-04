@@ -26,6 +26,7 @@
 
 namespace sight::data
 {
+
 namespace mt
 {
 
@@ -33,7 +34,7 @@ namespace mt
 
 ObjectReadToWriteLock::ObjectReadToWriteLock(data::Object::sptr obj, bool lock)
 {
-    if (lock)
+    if(lock)
     {
         m_lock = core::mt::ReadToWriteLock(obj->getMutex());
     }
@@ -67,7 +68,7 @@ void ObjectReadToWriteLock::unlock()
 
 void ObjectReadToWriteLock::upgrade()
 {
-    m_upgradedLock = std::make_shared< core::mt::UpgradeToWriteLock >(std::ref(m_lock));
+    m_upgradedLock = std::make_shared<core::mt::UpgradeToWriteLock>(std::ref(m_lock));
 }
 
 //-----------------------------------------------------------------------------
@@ -80,4 +81,5 @@ void ObjectReadToWriteLock::downgrade()
 //-----------------------------------------------------------------------------
 
 } // mt
+
 } // fwData

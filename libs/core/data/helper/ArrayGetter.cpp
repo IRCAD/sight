@@ -28,11 +28,14 @@ namespace sight::data
 namespace helper
 {
 
-ArrayGetter::ArrayGetter(const data::Array::csptr& array ) :
+ArrayGetter::ArrayGetter(const data::Array::csptr& array) :
     m_array(array)
 {
-    FW_DEPRECATED_MSG("::data::helper::ArrayGetter is no longer supported, the methods have been moved to "
-                      "::sight::data::Array", "22.0")
+    FW_DEPRECATED_MSG(
+        "::data::helper::ArrayGetter is no longer supported, the methods have been moved to "
+        "::sight::data::Array",
+        "22.0"
+    )
     SIGHT_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
@@ -41,7 +44,6 @@ ArrayGetter::ArrayGetter(const data::Array::csptr& array ) :
 
 ArrayGetter::~ArrayGetter()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -62,12 +64,12 @@ const char* ArrayGetter::begin() const
 
 const char* ArrayGetter::end() const
 {
-    return reinterpret_cast<const char*> (static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
+    return reinterpret_cast<const char*>(static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------
 
-const char* ArrayGetter::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t ) const
+const char* ArrayGetter::getBufferPtr(const data::Array::IndexType& id, size_t component, size_t) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);
@@ -91,7 +93,7 @@ void ArrayGetter::getItem(const data::Array::IndexType& id, void* value) const
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, 0, sizeOf);
     char* val        = static_cast<char*>(value);
-    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+    std::copy(item, item + m_array->getNumberOfComponents() * sizeOf, val);
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +103,7 @@ void ArrayGetter::getItem(const data::Array::IndexType& id, const size_t compone
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, component, sizeOf);
     char* val        = static_cast<char*>(value);
-    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+    std::copy(item, item + m_array->getNumberOfComponents() * sizeOf, val);
 }
 
 //------------------------------------------------------------------------------

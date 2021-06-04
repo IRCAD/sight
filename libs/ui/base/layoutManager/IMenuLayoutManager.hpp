@@ -50,7 +50,7 @@ class UI_BASE_CLASS_API IMenuLayoutManager : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IMenuLayoutManager, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMenuLayoutManager, ui::base::GuiBaseObject);
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;

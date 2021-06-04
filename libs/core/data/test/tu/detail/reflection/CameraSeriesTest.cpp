@@ -28,14 +28,17 @@
 #include <data/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::detail::reflection::ut::CameraSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::detail::reflection::ut::CameraSeriesTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -60,11 +63,11 @@ void CameraSeriesTest::propertiesTest()
     data::CameraSeries::sptr series = data::CameraSeries::New();
 
     data::Matrix4::sptr mat = data::Matrix4::New();
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
-        for (size_t j = 0; j < 4; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
-            mat->setCoefficient(i, j, static_cast<double>(2*i+j));
+            mat->setCoefficient(i, j, static_cast<double>(2 * i + j));
         }
     }
 
@@ -91,31 +94,31 @@ void CameraSeriesTest::propertiesTest()
     series->setExtrinsicMatrix(1, mat);
 
     const DataCampHelper::PropertiesNameType dataProperties = {
-        { "fields" },
-        { "patient" },
-        { "study" },
-        { "equipment" },
-        { "modality" },
-        { "instance_uid" },
-        { "number" },
-        { "laterality" },
-        { "date" },
-        { "time" },
-        { "performing_physicians_name" },
-        { "protocolName" },
-        { "description" },
-        { "body_part_examined" },
-        { "patient_position" },
-        { "anatomical_orientation_type" },
-        { "performded_procedure_step_id" },
-        { "performed_procedure_step_start_date" },
-        { "performed_procedure_step_start_time" },
-        { "performed_procedure_step_end_date" },
-        { "performed_procedure_step_end_time" },
-        { "performed_procedure_step_description" },
-        { "performed_procedure_comments" },
-        { "cameras" },
-        { "extrinsic_matrices"}
+        {"fields"},
+        {"patient"},
+        {"study"},
+        {"equipment"},
+        {"modality"},
+        {"instance_uid"},
+        {"number"},
+        {"laterality"},
+        {"date"},
+        {"time"},
+        {"performing_physicians_name"},
+        {"protocolName"},
+        {"description"},
+        {"body_part_examined"},
+        {"patient_position"},
+        {"anatomical_orientation_type"},
+        {"performded_procedure_step_id"},
+        {"performed_procedure_step_start_date"},
+        {"performed_procedure_step_start_time"},
+        {"performed_procedure_step_end_date"},
+        {"performed_procedure_step_end_time"},
+        {"performed_procedure_step_description"},
+        {"performed_procedure_comments"},
+        {"cameras"},
+        {"extrinsic_matrices"}
     };
 
     DataCampHelper::visitProperties(series->getClassname(), dataProperties);
@@ -125,7 +128,11 @@ void CameraSeriesTest::propertiesTest()
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace ardata

@@ -32,18 +32,24 @@
 
 namespace sight::data
 {
+
 class Object;
 
 namespace mt
 {
+
 class ObjectReadLock;
+
 }
+
 }
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace visitor
 {
 
@@ -52,13 +58,12 @@ namespace visitor
  */
 class DATA_CLASS_API RecursiveLock : public ::camp::ExtendedClassVisitor
 {
-
 public:
 
     /**
      * @brief Container definition dedicated to object locks storage.
      */
-    typedef std::vector< SPTR(core::mt::ReadLock) > LockVectType;
+    typedef std::vector<SPTR(core::mt::ReadLock)> LockVectType;
 
     /**
      * @brief Constructor.
@@ -68,8 +73,10 @@ public:
      * @param object data object (containing child data objects) to lock recursively
      * @param locks container of previously acquired locks
      */
-    DATA_API RecursiveLock( CSPTR(data::Object)object,
-                            SPTR(LockVectType)locks = SPTR(LockVectType)(new LockVectType()));
+    DATA_API RecursiveLock(
+        CSPTR(data::Object)object,
+        SPTR(LockVectType)locks = SPTR(LockVectType)(new LockVectType())
+    );
 
     DATA_API virtual ~RecursiveLock();
 
@@ -82,7 +89,7 @@ public:
     DATA_API void visit(const camp::ArrayProperty& property);
     DATA_API void visit(const camp::Function& function);
     DATA_API virtual void visit(const camp::MapProperty& property);
-    /**  @} */
+/**  @} */
 
 private:
 
@@ -97,9 +104,10 @@ private:
 
     /// Reflection in camp world of m_object
     ::camp::UserObject m_campObj;
-
 };
 
 } // namespace visitor
+
 } // namespace reflection
+
 } // namespace sight::data

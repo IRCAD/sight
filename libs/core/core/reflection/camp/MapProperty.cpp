@@ -48,8 +48,8 @@ MapProperty::~MapProperty()
 
 void MapProperty::accept(ClassVisitor& visitor) const
 {
-    ExtendedClassVisitor* mapVisitor = dynamic_cast< ExtendedClassVisitor*>(&visitor);
-    if (mapVisitor)
+    ExtendedClassVisitor* mapVisitor = dynamic_cast<ExtendedClassVisitor*>(&visitor);
+    if(mapVisitor)
     {
         mapVisitor->visit(*this);
     }
@@ -80,4 +80,4 @@ Type MapProperty::elementType() const
     return m_elementType;
 }
 
-}  // namespace camp
+} // namespace camp

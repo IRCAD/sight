@@ -26,6 +26,7 @@
 
 namespace sight::module::io::itk
 {
+
 namespace ut
 {
 
@@ -34,12 +35,12 @@ namespace ut
  */
 class IoItkTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( IoItkTest );
-CPPUNIT_TEST( testImageWriterJPG );
-CPPUNIT_TEST( testImageSeriesWriterJPG );
-CPPUNIT_TEST( testSaveLoadInr );
-CPPUNIT_TEST( ImageSeriesInrTest );
-CPPUNIT_TEST( SeriesDBInrTest );
+CPPUNIT_TEST_SUITE(IoItkTest);
+CPPUNIT_TEST(testImageWriterJPG);
+CPPUNIT_TEST(testImageSeriesWriterJPG);
+CPPUNIT_TEST(testSaveLoadInr);
+CPPUNIT_TEST(ImageSeriesInrTest);
+CPPUNIT_TEST(SeriesDBInrTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,8 +54,8 @@ public:
     void testSaveLoadInr();
     void ImageSeriesInrTest();
     void SeriesDBInrTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::module::io::itk

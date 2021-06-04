@@ -31,60 +31,64 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::ut::GenericTLTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::GenericTLTest);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-class Float3TL : public GenericTL< float[3] >
+class Float3TL : public GenericTL<float [3]>
 {
 public:
-    SIGHT_DECLARE_CLASS(Float3TL, data::TimeLine, data::factory::New< Float3TL >)
-    Float3TL( data::Object::Key key ) :
-        GenericTL< float[3] >(key)
+
+    SIGHT_DECLARE_CLASS(Float3TL, data::TimeLine, data::factory::New<Float3TL>);
+    Float3TL(data::Object::Key key) :
+        GenericTL<float [3]>(key)
     {
     }
 };
-SIGHT_REGISTER_DATA( sight::data::Float3TL )
+SIGHT_REGISTER_DATA(sight::data::Float3TL)
 
-typedef float float4[4];
+typedef float float4 [4];
 
 //------------------------------------------------------------------------------
 
-class Float4TL : public GenericTL< float4 >
+class Float4TL : public GenericTL<float4>
 {
 public:
-    SIGHT_DECLARE_CLASS(Float4TL, data::TimeLine, data::factory::New< Float4TL >)
-    Float4TL( data::Object::Key key ) :
-        GenericTL< float4 >(key)
+
+    SIGHT_DECLARE_CLASS(Float4TL, data::TimeLine, data::factory::New<Float4TL>);
+    Float4TL(data::Object::Key key) :
+        GenericTL<float4>(key)
     {
     }
 };
-SIGHT_REGISTER_DATA( sight::data::Float4TL )
+SIGHT_REGISTER_DATA(sight::data::Float4TL)
 
 //------------------------------------------------------------------------------
 
 class TestContained
 {
 public:
+
     int m_int;
     double m_floats[2];
-    std::vector<int>    m_vector;
+    std::vector<int> m_vector;
 };
 
-class TestClassTL : public GenericTL< TestContained >
+class TestClassTL : public GenericTL<TestContained>
 {
 public:
-    SIGHT_DECLARE_CLASS(TestClassTL, data::TimeLine, data::factory::New< TestClassTL >)
 
-    TestClassTL( data::Object::Key key ) :
-        GenericTL< TestContained >(key)
+    SIGHT_DECLARE_CLASS(TestClassTL, data::TimeLine, data::factory::New<TestClassTL>);
+
+    TestClassTL(data::Object::Key key) :
+        GenericTL<TestContained>(key)
     {
     }
 };
-SIGHT_REGISTER_DATA( sight::data::TestClassTL )
+SIGHT_REGISTER_DATA(sight::data::TestClassTL)
 
 namespace ut
 {
@@ -94,7 +98,6 @@ namespace ut
 void GenericTLTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +175,7 @@ void GenericTLTest::pushPopTest()
 
         CSPTR(data::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
         CSPTR(data::Float4TL::BufferType) obj        =
-            std::dynamic_pointer_cast< const data::Float4TL::BufferType >(dataPushed1Bis);
+            std::dynamic_pointer_cast<const data::Float4TL::BufferType>(dataPushed1Bis);
         CPPUNIT_ASSERT(obj);
         CPPUNIT_ASSERT_EQUAL(obj, timeline->getClosestBuffer(time1 + 1.5));
 
@@ -213,7 +216,7 @@ void GenericTLTest::pushPopTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(time3, time3Pushed, 0.00001);
 
         CSPTR(data::Float4TL::BufferType) obj =
-            std::dynamic_pointer_cast< const data::Float4TL::BufferType >(dataPushed3Bis);
+            std::dynamic_pointer_cast<const data::Float4TL::BufferType>(dataPushed3Bis);
         CPPUNIT_ASSERT(obj);
 
         CPPUNIT_ASSERT_EQUAL(2u, obj->getPresentElementNum());
@@ -237,10 +240,10 @@ void GenericTLTest::pushPopTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[3], 0.00001);
 
         buffData = obj->getElement(2);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.0, buffData[0], 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.2, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, buffData[1], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.9, buffData[2], 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.2, buffData[3], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2, buffData[3], 0.00001);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -350,7 +353,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData1.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData1.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData1.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0; i < testData1.m_vector.size(); ++i)
+        for(size_t i = 0 ; i < testData1.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData1.m_vector[i], testData.m_vector[i]);
         }
@@ -361,7 +364,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData2.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData2.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData2.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0; i < testData2.m_vector.size(); ++i)
+        for(size_t i = 0 ; i < testData2.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData2.m_vector[i], testData.m_vector[i]);
         }
@@ -387,7 +390,7 @@ void GenericTLTest::pushClassTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData3.m_floats[0], testData.m_floats[0], 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(testData3.m_floats[1], testData.m_floats[1], 0.00001);
         CPPUNIT_ASSERT_EQUAL(testData3.m_vector.size(), testData.m_vector.size());
-        for(size_t i = 0; i < testData3.m_vector.size(); ++i)
+        for(size_t i = 0 ; i < testData3.m_vector.size() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(testData3.m_vector[i], testData.m_vector[i]);
         }
@@ -463,7 +466,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(data::Float3TL::BufferType) obj1 =
-        std::dynamic_pointer_cast< const data::Float3TL::BufferType >(deepDataPushed1);
+        std::dynamic_pointer_cast<const data::Float3TL::BufferType>(deepDataPushed1);
     CPPUNIT_ASSERT(obj1);
     CPPUNIT_ASSERT_EQUAL(obj1, deepTimeline->getBuffer(time1));
 
@@ -699,8 +702,8 @@ void GenericTLTest::objectValid()
 
     CPPUNIT_ASSERT_EQUAL(false, timeline2->isObjectValid(data1));
     CPPUNIT_ASSERT_EQUAL(true, timeline2->isObjectValid(data2));
-
 }
 
 } //namespace ut
+
 } //namespace sight::data

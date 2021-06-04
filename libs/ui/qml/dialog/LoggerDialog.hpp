@@ -33,8 +33,10 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -51,7 +53,7 @@ Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
 
 public:
 
-    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
+    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New<LoggerDialog>);
 
     /// Constructor
     UI_QML_API LoggerDialog(ui::base::GuiBaseObject::Key key);
@@ -83,6 +85,7 @@ public:
     UI_QML_API bool show() override;
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void hiddenChanged();
     void iconChanged();
@@ -90,10 +93,12 @@ Q_SIGNALS:
     void shownChanged();
 
 protected Q_SLOTS:
+
     /// slot getting the result of the dialog when a button is pressed
     void resultDialog(bool isOk);
 
 private:
+
     /// Dialog title
     QString m_title;
 
@@ -121,4 +126,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

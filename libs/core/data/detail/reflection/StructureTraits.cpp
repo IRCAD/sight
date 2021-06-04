@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(StructureTraits))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (StructureTraits))
 {
     builder
     .tag("object_version", "1")
@@ -45,11 +45,11 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(StructureTraits))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(StructureTraits)(Category))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (StructureTraits) (Category))
 {
     builder
     .value("BODY", sight::data::StructureTraits::BODY)
-    .value("HEAD", sight::data::StructureTraits::HEAD )
+    .value("HEAD", sight::data::StructureTraits::HEAD)
     .value("NECK", sight::data::StructureTraits::NECK)
     .value("THORAX", sight::data::StructureTraits::THORAX)
     .value("ABDOMEN", sight::data::StructureTraits::ABDOMEN)
@@ -61,11 +61,11 @@ SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(StructureTraits)(Category))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(StructureTraits)(StructureClass))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (StructureTraits) (StructureClass))
 {
     builder
     .value("TOOL", sight::data::StructureTraits::TOOL)
-    .value("ENVIRONMENT", sight::data::StructureTraits::ENVIRONMENT )
+    .value("ENVIRONMENT", sight::data::StructureTraits::ENVIRONMENT)
     .value("VESSEL", sight::data::StructureTraits::VESSEL)
     .value("LESION", sight::data::StructureTraits::LESION)
     .value("ORGAN", sight::data::StructureTraits::ORGAN)

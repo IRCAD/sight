@@ -31,7 +31,6 @@ namespace exceptions
 HostNotFound::HostNotFound(const std::string& message) :
     io::http::exceptions::Base(message)
 {
-
 }
 
 HostNotFound::~HostNotFound() noexcept
@@ -39,4 +38,5 @@ HostNotFound::~HostNotFound() noexcept
 }
 
 } /* namespace exceptions */
+
 } /* namespace sight::io::http */

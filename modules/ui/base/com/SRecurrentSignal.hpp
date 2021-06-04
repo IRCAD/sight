@@ -34,6 +34,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -53,7 +54,6 @@ namespace com
  */
 class MODULE_UI_BASE_CLASS_API SRecurrentSignal : public sight::service::IController
 {
-
 public:
 
     SIGHT_DECLARE_SERVICE(SRecurrentSignal, sight::service::IController);
@@ -83,6 +83,7 @@ public:
     ///@}
 
 protected:
+
     /// Configures service
     MODULE_UI_BASE_API void configuring() override;
 
@@ -103,5 +104,7 @@ private:
 
     RepeatedSignalType::sptr m_sigRepeated; ///< signal to emit the timestamp
 };
+
 } //namespace com
+
 } //namespace sight::module::ui::base

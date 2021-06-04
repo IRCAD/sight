@@ -32,10 +32,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V1
 {
+
 namespace V2
 {
+
 namespace data
 {
 
@@ -55,7 +58,7 @@ Acquisition::~Acquisition()
 
 // ----------------------------------------------------------------------------
 
-Acquisition::Acquisition( const Acquisition& cpy ) :
+Acquisition::Acquisition(const Acquisition& cpy) :
     io::atoms::patch::ISemanticPatch(cpy)
 {
 }
@@ -65,33 +68,36 @@ Acquisition::Acquisition( const Acquisition& cpy ) :
 void Acquisition::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     ISemanticPatch::apply(previous, current, newVersions);
-    io::atoms::patch::helper::cleanFields( current );
+    io::atoms::patch::helper::cleanFields(current);
 
-    sight::atoms::Object::sptr image = current->getAttribute< sight::atoms::Object >("image");
-    sight::atoms::Map::sptr fields   = image->getAttribute< sight::atoms::Map >("fields");
+    sight::atoms::Object::sptr image = current->getAttribute<sight::atoms::Object>("image");
+    sight::atoms::Map::sptr fields   = image->getAttribute<sight::atoms::Map>("fields");
 
     sight::atoms::Map::ConstIteratorType it = fields->find("m_commentId");
     io::atoms::patch::helper::Object helper(current);
-    if ( it != fields->end() )
+    if(it != fields->end())
     {
-        sight::atoms::Object::sptr value = sight::atoms::Object::dynamicCast( it->second );
+        sight::atoms::Object::sptr value = sight::atoms::Object::dynamicCast(it->second);
         helper.replaceAttribute("description", sight::atoms::String::New(value->getAttribute("value")->getString()));
     }
 
-    sight::atoms::String::sptr uid = current->getAttribute< sight::atoms::String >("instance_uid");
-    if( uid->getValue().empty() )
+    sight::atoms::String::sptr uid = current->getAttribute<sight::atoms::String>("instance_uid");
+    if(uid->getValue().empty())
     {
-        helper.replaceAttribute("instance_uid", sight::atoms::String::New( core::tools::UUID::generateUUID() ));
+        helper.replaceAttribute("instance_uid", sight::atoms::String::New(core::tools::UUID::generateUUID()));
     }
-
 }
 
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

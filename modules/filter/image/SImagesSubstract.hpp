@@ -52,7 +52,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public service::IOp
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SImagesSubstract, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SImagesSubstract, ::sight::service::IOperator);
 
     MODULE_FILTER_IMAGE_API SImagesSubstract()          = default;
     MODULE_FILTER_IMAGE_API virtual ~SImagesSubstract() = default;

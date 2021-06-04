@@ -55,7 +55,6 @@ SResizeViewport::SResizeViewport() noexcept
 
 SResizeViewport::~SResizeViewport() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -73,16 +72,16 @@ void SResizeViewport::configuring()
     const float width  = config.get<float>(s_WIDTH_CONFIG, 1.f);
     const float height = config.get<float>(s_HEIGHT_CONFIG, 1.f);
 
-    const std::map< std::string, float > horizAlignToX {
-        { "left", xPos },
-        { "center", 0.5f - width * 0.5f + xPos},
-        { "right", 1.f - width - xPos }
+    const std::map<std::string, float> horizAlignToX {
+        {"left", xPos},
+        {"center", 0.5f - width * 0.5f + xPos},
+        {"right", 1.f - width - xPos}
     };
 
-    const std::map< std::string, float > vertAlignToY {
-        { "bottom", 1.f -height - yPos },
-        { "center", 0.5f - height * 0.5f + yPos },
-        { "top", yPos }
+    const std::map<std::string, float> vertAlignToY {
+        {"bottom", 1.f - height - yPos},
+        {"center", 0.5f - height * 0.5f + yPos},
+        {"top", yPos}
     };
 
     const std::string hAlign = config.get(s_H_ALIGN_CONFIG, "left");
@@ -109,14 +108,12 @@ void SResizeViewport::starting()
 
 void SResizeViewport::updating() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SResizeViewport::stopping() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------

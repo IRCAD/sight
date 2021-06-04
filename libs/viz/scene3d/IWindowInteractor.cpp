@@ -38,23 +38,30 @@ const IWindowInteractor::FactoryRegistryKeyType IWindowInteractor::OFFSCREEN_REG
 IWindowInteractor::sptr IWindowInteractor::createManager()
 {
     IWindowInteractor::sptr manager = viz::scene3d::factory::New(
-        viz::scene3d::IWindowInteractor::REGISTRY_KEY );
+        viz::scene3d::IWindowInteractor::REGISTRY_KEY
+    );
     SIGHT_ASSERT(
         "The factory process to create an IWindowInteractor, failed. Missing Qt or Wx component ?",
-        manager );
+        manager
+    );
     return manager;
 }
 
 //-----------------------------------------------------------------------------
 
-IWindowInteractor::sptr IWindowInteractor::createOffscreenManager(unsigned int _w,
-                                                                  unsigned int _h)
+IWindowInteractor::sptr IWindowInteractor::createOffscreenManager(
+    unsigned int _w,
+    unsigned int _h
+)
 {
     IWindowInteractor::sptr manager = viz::scene3d::offscreenInteractorMgrFactory::New(
-        viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY, std::make_pair(_w, _h));
+        viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY,
+        std::make_pair(_w, _h)
+    );
     SIGHT_ASSERT(
         "The factory process to create an IWindowInteractor, failed. Missing Qt or Wx component ?",
-        manager);
+        manager
+    );
     return manager;
 }
 

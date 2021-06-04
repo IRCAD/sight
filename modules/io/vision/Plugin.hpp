@@ -28,6 +28,7 @@
 
 namespace sight::module::io::vision
 {
+
 struct Plugin : public core::runtime::Plugin
 {
     /**

@@ -35,10 +35,9 @@ namespace sight::viz::scene3d
  */
 class VIZ_SCENE3D_CLASS_API IParameter : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IParameter, viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_CLASS(IParameter, viz::scene3d::IAdaptor);
 
     /**
      * @name Slots API

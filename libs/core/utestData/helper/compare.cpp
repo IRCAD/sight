@@ -29,6 +29,7 @@
 
 namespace sight::utestData
 {
+
 namespace helper
 {
 
@@ -38,22 +39,23 @@ bool compare(
     data::Object::sptr objRef,
     data::Object::sptr objComp,
     ExcludeSetType excludeCompare,
-    ExcludeSetType excludeByPrefix)
+    ExcludeSetType excludeByPrefix
+)
 {
     data::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
 
-    for(const ExcludeSetType::value_type& key: excludeCompare)
+    for(const ExcludeSetType::value_type& key : excludeCompare)
     {
         props->erase(key);
     }
 
-    std::set< data::reflection::visitor::CompareObjects::PropsMapType::key_type > propsKey;
-    for(const data::reflection::visitor::CompareObjects::PropsMapType::value_type& prop: *props)
+    std::set<data::reflection::visitor::CompareObjects::PropsMapType::key_type> propsKey;
+    for(const data::reflection::visitor::CompareObjects::PropsMapType::value_type& prop : *props)
     {
         bool erased = false;
-        for(const ExcludeSetType::value_type& key: excludeByPrefix)
+        for(const ExcludeSetType::value_type& key : excludeByPrefix)
         {
             if(::boost::starts_with(prop.first, key))
             {
@@ -65,7 +67,7 @@ bool compare(
         SIGHT_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
 
-    for(const data::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)
+    for(const data::reflection::visitor::CompareObjects::PropsMapType::key_type& key : propsKey)
     {
         props->erase(key);
     }
@@ -74,4 +76,5 @@ bool compare(
 }
 
 } // namespace helper
+
 } // namespace sight::utestData

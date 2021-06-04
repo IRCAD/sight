@@ -60,7 +60,7 @@ struct OpenGLRunner final : public QRunnable
     void run() final
     {
         QOpenGLContext* workerContext = m_worker->m_glContext.get();
-        if (workerContext->thread() == nullptr)
+        if(workerContext->thread() == nullptr)
         {
             QThread* currentThread = QThread::currentThread();
             workerContext->moveToThread(currentThread);
@@ -77,7 +77,6 @@ struct OpenGLRunner final : public QRunnable
 
         // Task to run.
         sight::viz::scene3d::IGraphicsWorker::TaskType m_task;
-
 };
 
 //------------------------------------------------------------------------------
@@ -103,7 +102,7 @@ OpenGLWorker::OpenGLWorker(QSurface* _surface) :
 
 OpenGLWorker::~OpenGLWorker()
 {
-    m_threadPool->clear(); // Clear all pending tasks.
+    m_threadPool->clear();       // Clear all pending tasks.
     m_threadPool->waitForDone(); // Wait on the running task.
 }
 

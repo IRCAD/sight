@@ -47,8 +47,8 @@ public:
 
 protected:
 
-    typedef std::vector< std::string > ActivitesType;
-    typedef std::map< std::string, data::Object::sptr > RequirementsType;
+    typedef std::vector<std::string> ActivitesType;
+    typedef std::map<std::string, data::Object::sptr> RequirementsType;
 
     /**
      * @brief parse the activities contained in seriesDB and store their data
@@ -60,8 +60,11 @@ protected:
     ACTIVITY_API int parseActivities(const data::SeriesDB::sptr& seriesDB);
 
     /// Store the data of the activity at the given index
-    ACTIVITY_API void storeActivityData(const data::SeriesDB::sptr& seriesDB, int index,
-                                        const data::Composite::csptr& overrides = nullptr);
+    ACTIVITY_API void storeActivityData(
+        const data::SeriesDB::sptr& seriesDB,
+        int index,
+        const data::Composite::csptr& overrides = nullptr
+    );
 
     /**
      * @brief Return the activity corresponding to the given index in the activity list. If the activity does not exist,
@@ -75,20 +78,21 @@ protected:
      * the seriesDB
      * @param overrides Composite that contains data to override the previouly stored data (from the other activities)
      */
-    ACTIVITY_API data::ActivitySeries::sptr getActivity(const data::SeriesDB::sptr& seriesDB,
-                                                        size_t index,
-                                                        const core::com::SlotBase::sptr& slot   = nullptr,
-                                                        const data::Composite::csptr& overrides = nullptr);
+    ACTIVITY_API data::ActivitySeries::sptr getActivity(
+        const data::SeriesDB::sptr& seriesDB,
+        size_t index,
+        const core::com::SlotBase::sptr& slot   = nullptr,
+        const data::Composite::csptr& overrides = nullptr
+    );
 
     /// List of the activity to create.
     ActivitesType m_activityIds;
 
     /// Index of the current activity
-    int m_currentActivity{-1};
+    int m_currentActivity {-1};
 
     /// Map containing all the data produced by the activities. It is used to create the next one.
     RequirementsType m_requirements;
-
 };
 
 } // namespace sight::activity

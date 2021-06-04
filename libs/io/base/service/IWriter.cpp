@@ -69,8 +69,10 @@ const std::filesystem::path& IWriter::getFile() const
         std::filesystem::path dirname  = m_currentLocation.parent_path();
         std::filesystem::path basename = m_currentLocation.filename();
 
-        m_currentLocation = dirname / std::filesystem::path(std::to_string(m_currentTimestamp)
-                                                            + std::string("-") + basename.string());
+        m_currentLocation = dirname / std::filesystem::path(
+            std::to_string(m_currentTimestamp)
+            + std::string("-") + basename.string()
+        );
     }
 
     return m_currentLocation;
@@ -78,7 +80,7 @@ const std::filesystem::path& IWriter::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFile( const std::filesystem::path& file)
+void IWriter::setFile(const std::filesystem::path& file)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
     m_locations.clear();
@@ -90,7 +92,7 @@ void IWriter::setFile( const std::filesystem::path& file)
 const io::base::service::LocationsType& IWriter::getFiles() const
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
-    SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty());
     return m_locations;
 }
 
@@ -107,7 +109,7 @@ void IWriter::setFiles(const io::base::service::LocationsType& files)
 const std::filesystem::path& IWriter::getFolder() const
 {
     SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
-    SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
+    SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1);
     return m_locations.front();
 }
 
@@ -124,9 +126,11 @@ void IWriter::setFolder(const std::filesystem::path& folder)
 
 void IWriter::setFileFolder(std::filesystem::path folder)
 {
-    SIGHT_THROW_IF("This reader doesn't manage file or files",
-                   !(this->getIOPathType() & io::base::service::FILE) &&
-                   !(this->getIOPathType() & io::base::service::FILES));
+    SIGHT_THROW_IF(
+        "This reader doesn't manage file or files",
+        !(this->getIOPathType() & io::base::service::FILE)
+        && !(this->getIOPathType() & io::base::service::FILES)
+    );
 
     for(auto& file : m_locations)
     {
@@ -149,7 +153,7 @@ void IWriter::setTimestampPrefix(core::HiResClock::HiResClockType timestamp)
 
 const io::base::service::LocationsType& IWriter::getLocations() const
 {
-    SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty());
     return m_locations;
 }
 
@@ -164,50 +168,57 @@ void IWriter::clearLocations()
 
 void IWriter::configuring()
 {
-    SIGHT_ASSERT("Generic configuring method is only available for io service that uses paths.",
-                 !( this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED ) );
+    SIGHT_ASSERT(
+        "Generic configuring method is only available for io service that uses paths.",
+        !(this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED)
+    );
 
-    SIGHT_ASSERT("This writer does not manage folders and a folder path is given in the configuration",
-                 ( this->getIOPathType() & io::base::service::FOLDER ) ||
-                 (m_configuration->find("folder").size() == 0));
+    SIGHT_ASSERT(
+        "This writer does not manage folders and a folder path is given in the configuration",
+        (this->getIOPathType() & io::base::service::FOLDER)
+        || (m_configuration->find("folder").size() == 0)
+    );
 
-    SIGHT_ASSERT("This writer does not manages files and a file path is given in the configuration",
-                 ( this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES ) ||
-                 (m_configuration->find("file").size() == 0));
+    SIGHT_ASSERT(
+        "This writer does not manages files and a file path is given in the configuration",
+        (this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES)
+        || (m_configuration->find("file").size() == 0)
+    );
 
     core::runtime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
     m_windowTitle = titleConfig ? titleConfig->getValue() : "";
 
-    if ( this->getIOPathType() & io::base::service::FILE )
+    if(this->getIOPathType() & io::base::service::FILE)
     {
-        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES );
-        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
-        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.size() > 1 );
-        if (config.size() == 1)
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES);
+        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("file");
+        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.size() > 1);
+        if(config.size() == 1)
         {
             std::string file = config.at(0)->getValue();
             this->setFile(std::filesystem::path(file));
         }
     }
 
-    if ( this->getIOPathType() & io::base::service::FILES )
+    if(this->getIOPathType() & io::base::service::FILES)
     {
-        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILE );
-        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILE);
+        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("file");
         io::base::service::LocationsType locations;
-        for(core::runtime::ConfigurationElement::sptr elt :  config)
+        for(core::runtime::ConfigurationElement::sptr elt : config)
         {
             std::string location = elt->getValue();
             locations.push_back(std::filesystem::path(location));
         }
+
         this->setFiles(locations);
     }
 
-    if ( this->getIOPathType() & io::base::service::FOLDER )
+    if(this->getIOPathType() & io::base::service::FOLDER)
     {
-        std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("folder");
-        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.size() > 1 );
-        if (config.size() == 1)
+        std::vector<core::runtime::ConfigurationElement::sptr> config = m_configuration->find("folder");
+        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.size() > 1);
+        if(config.size() == 1)
         {
             std::string folder = config.at(0)->getValue();
             this->setFolder(std::filesystem::path(folder));
@@ -219,8 +230,11 @@ void IWriter::configuring()
 
 void IWriter::deprecateConfigureWithIHM()
 {
-    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
-                      " this method will be a pure virtual in sight 22.0.", 22.0);
+    FW_DEPRECATED_MSG(
+        "openLocationDialog should be implemented in subclass,"
+        " this method will be a pure virtual in sight 22.0.",
+        22.0
+    );
     this->openLocationDialog();
 }
 
@@ -228,8 +242,11 @@ void IWriter::deprecateConfigureWithIHM()
 
 void IWriter::openLocationDialog()
 {
-    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
-                      " this method will be a pure virtual in sight 22.0.", 22.0);
+    FW_DEPRECATED_MSG(
+        "openLocationDialog should be implemented in subclass,"
+        " this method will be a pure virtual in sight 22.0.",
+        22.0
+    );
     this->configureWithIHM();
 }
 
@@ -256,4 +273,4 @@ bool IWriter::hasFailed() const
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::io

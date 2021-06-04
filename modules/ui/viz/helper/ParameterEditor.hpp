@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <service/IService.hpp>
-
 #include <viz/scene3d/IParameter.hpp>
+
+#include <service/IService.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -45,10 +45,11 @@ public:
      * @param[in] _paramSrv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    MODULE_UI_VIZ_API static service::IService::ConfigType
-    createConfig(const sight::viz::scene3d::IParameter::csptr& _adaptor,
-                 const service::IService::csptr& _paramSrv,
-                 core::com::helper::SigSlotConnection& _connections);
+    MODULE_UI_VIZ_API static service::IService::ConfigType createConfig(
+        const sight::viz::scene3d::IParameter::csptr& _adaptor,
+        const service::IService::csptr& _paramSrv,
+        core::com::helper::SigSlotConnection& _connections
+    );
 };
 
 } // namespace helper

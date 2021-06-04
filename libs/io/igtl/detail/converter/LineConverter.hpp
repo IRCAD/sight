@@ -27,8 +27,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  *
  * @brief class to manage conversion between data::Line and igtl::PositionMessage
@@ -37,6 +39,7 @@ class IO_IGTL_CLASS_API LineConverter :
     public IConverter
 {
 public:
+
     /// Constructor
     IO_IGTL_API LineConverter();
 
@@ -48,14 +51,14 @@ public:
      *
      * @return an data::Image converted from an ::igtl::ImageMessage
      */
-    IO_IGTL_API data::Object::sptr fromIgtlMessage (::igtl::MessageBase::Pointer const src) const;
+    IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer const src) const;
 
     /**
      * @brief convert a data::Line to an igtl::PositionMessage
      *
      * @return an  ::igtl::ImageMessage converted from an data::Image
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
+    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -86,5 +89,7 @@ private:
     /// fwData type supported for conversion
     static std::string const s_FWDATA_OBJECT_TYPE;
 };
+
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

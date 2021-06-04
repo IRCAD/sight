@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,11 @@ int main(int argc, char** argv)
         options.add_options()
             ("help,h", "produce help message")
             ("makerid,m", po::value<int>(&id)->required()->default_value(100), "set the marker ID (0:1023)")
-            ("file,f", po::value<std::string>(&file)->required()->default_value("marker_100.jpeg"),
-            "set the output file")
+        (
+            "file,f",
+            po::value<std::string>(&file)->required()->default_value("marker_100.jpeg"),
+            "set the output file"
+        )
             ("size,s", po::value<int>(&size)->required()->default_value(300), "set the size in pixels for the marker")
             ("border,b", po::value<int>(&borderBits)->default_value(1), "width of the marker border");
 
@@ -52,17 +55,18 @@ int main(int argc, char** argv)
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(options).positional(pos).run(), vm);
 
-        if (vm.count("help"))
+        if(vm.count("help"))
         {
             std::cout << "usage: " << argv[0] << " makerID outfile.(jpg|png|tiff|...) sizeInPixels" << std::endl;
             std::cout << options << std::endl;
             return 0;
         }
+
         po::notify(vm);
 
         ::cv::Mat marker;
 
-        ::cv::Ptr< ::cv::aruco::Dictionary > dictionary;
+        ::cv::Ptr< ::cv::aruco::Dictionary> dictionary;
         //Use the aruco original dictionary
         dictionary = ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
 

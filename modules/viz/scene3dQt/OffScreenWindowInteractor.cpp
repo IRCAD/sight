@@ -38,8 +38,10 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterOffscreenMgrMacro(sight::module::viz::scene3dQt::OffScreenWindowInteractor,
-                                      sight::viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY);
+fwRenderOgreRegisterOffscreenMgrMacro(
+    sight::module::viz::scene3dQt::OffScreenWindowInteractor,
+    sight::viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY
+);
 
 namespace sight::module::viz::scene3dQt
 {
@@ -51,7 +53,8 @@ int OffScreenWindowInteractor::m_counter = 0;
 OffScreenWindowInteractor::OffScreenWindowInteractor(
     sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey,
     unsigned int _width,
-    unsigned int _height) :
+    unsigned int _height
+) :
     m_id(OffScreenWindowInteractor::m_counter++),
     m_width(_width),
     m_height(_height)
@@ -80,12 +83,14 @@ void OffScreenWindowInteractor::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenWindowInteractor::createContainer( sight::ui::base::container::fwContainer::sptr, bool, bool)
+void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwContainer::sptr, bool, bool)
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
-    SIGHT_ASSERT("OpenGL RenderSystem not found",
-                 m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
+    SIGHT_ASSERT(
+        "OpenGL RenderSystem not found",
+        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
+    );
 
     Ogre::NameValuePairList parameters;
 
@@ -100,32 +105,36 @@ void OffScreenWindowInteractor::createContainer( sight::ui::base::container::fwC
     parameters["currentGLContext"] = "true";
 
     // We create the renderWindow with a dummy size of 1 by 1
-    m_ogreRenderWindow = m_ogreRoot->createRenderWindow("OffScreenWindow_" + std::to_string(m_id),
-                                                        1,
-                                                        1,
-                                                        false,
-                                                        &parameters);
+    m_ogreRenderWindow = m_ogreRoot->createRenderWindow(
+        "OffScreenWindow_" + std::to_string(m_id),
+        1,
+        1,
+        false,
+        &parameters
+    );
     mgr->registerWindow(m_ogreRenderWindow);
 
     m_ogreRenderWindow->setHidden(true);
     m_ogreRenderWindow->setAutoUpdated(false);
 
     auto& texMgr = ::Ogre::TextureManager::getSingleton();
-    m_ogreTexture = texMgr.createManual("OffscreenRT" + std::to_string(m_id),
-                                        sight::viz::scene3d::RESOURCE_GROUP,
-                                        ::Ogre::TEX_TYPE_2D,
-                                        m_width, m_height, 0,
-                                        ::Ogre::PF_BYTE_RGBA,
-                                        ::Ogre::TU_RENDERTARGET);
+    m_ogreTexture = texMgr.createManual(
+        "OffscreenRT" + std::to_string(m_id),
+        sight::viz::scene3d::RESOURCE_GROUP,
+        ::Ogre::TEX_TYPE_2D,
+        m_width,
+        m_height,
+        0,
+        ::Ogre::PF_BYTE_RGBA,
+        ::Ogre::TU_RENDERTARGET
+    );
     m_ogreRenderTarget = m_ogreTexture->getBuffer()->getRenderTarget();
-
 }
 
 //-----------------------------------------------------------------------------
 
 void OffScreenWindowInteractor::connectToContainer()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +205,7 @@ void OffScreenWindowInteractor::render()
     }
 
     service::IService::sptr renderService                = m_renderService.lock();
-    sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast( renderService );
+    sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
     ogreRenderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
 
     ++m_frameId;

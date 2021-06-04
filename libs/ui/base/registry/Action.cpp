@@ -32,6 +32,7 @@
 
 namespace sight::ui::base
 {
+
 namespace registry
 {
 
@@ -86,4 +87,5 @@ void Action::actionServiceSetVisible(bool isVisible)
 //-----------------------------------------------------------------------------
 
 } // namespace registry
+
 } //namespace sight::ui::base

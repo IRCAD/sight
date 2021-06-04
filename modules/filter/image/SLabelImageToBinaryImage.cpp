@@ -45,7 +45,7 @@ namespace sight::module::filter::image
 static const service::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
 static const service::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
 
-typedef std::function< std::uint8_t(const std::uint8_t&) > FunctionType;
+typedef std::function<std::uint8_t(const std::uint8_t&)> FunctionType;
 
 class LambdaFunctor
 {
@@ -62,14 +62,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline std::uint8_t operator() (const std::uint8_t& _in)
+    inline std::uint8_t operator()(const std::uint8_t& _in)
     {
         return m_function(_in);
     }
 
     // Needs to be implemented because it is called by the itkUnaryFunctorImageFilter when setting the functor.
     // Always return true to force-set the functor.
-    inline bool operator != (const LambdaFunctor&)
+    inline bool operator!=(const LambdaFunctor&)
     {
         return true;
     }
@@ -83,14 +83,12 @@ private:
 
 SLabelImageToBinaryImage::SLabelImageToBinaryImage()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 SLabelImageToBinaryImage::~SLabelImageToBinaryImage()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -106,64 +104,72 @@ void SLabelImageToBinaryImage::configuring()
 
 void SLabelImageToBinaryImage::starting()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SLabelImageToBinaryImage::updating()
 {
-    typedef typename ::itk::Image< std::uint8_t, 3 > ImageType;
+    typedef typename ::itk::Image<std::uint8_t, 3> ImageType;
 
-    const auto labelImage = this->getLockedInput< data::Image >(s_LABEL_IMAGE_INPUT);
+    const auto labelImage = this->getLockedInput<data::Image>(s_LABEL_IMAGE_INPUT);
     SIGHT_ASSERT("No 'labelImage' input.", labelImage);
 
-    const auto maskImage = this->getLockedInOut< data::Image >(s_BINARY_MASK_INOUT);
+    const auto maskImage = this->getLockedInOut<data::Image>(s_BINARY_MASK_INOUT);
     SIGHT_ASSERT("No 'maskImage' inout.", maskImage);
 
-    SIGHT_ASSERT("The label image must be a greyscale image with uint8 values.",
-                 labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1);
+    SIGHT_ASSERT(
+        "The label image must be a greyscale image with uint8 values.",
+        labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1
+    );
 
     LambdaFunctor functor;
     if(m_labelSetFieldName)
     {
-        data::Vector::csptr labels = labelImage->getField< data::Vector >(m_labelSetFieldName.value());
+        data::Vector::csptr labels = labelImage->getField<data::Vector>(m_labelSetFieldName.value());
 
         if(!labels)
         {
-            SIGHT_INFO("No field named '" + m_labelSetFieldName.value() +
-                       "' in 'labelImage'. No binary mask generated.");
+            SIGHT_INFO(
+                "No field named '" + m_labelSetFieldName.value()
+                + "' in 'labelImage'. No binary mask generated."
+            );
             return;
         }
 
-        std::bitset< std::numeric_limits< std::uint8_t >::max() + 1 > labelSet;
+        std::bitset<std::numeric_limits<std::uint8_t>::max() + 1> labelSet;
 
-        std::for_each(labels->begin(), labels->end(), [&labelSet](data::Object::csptr _o)
+        std::for_each(
+            labels->begin(),
+            labels->end(),
+            [&labelSet](data::Object::csptr _o)
             {
                 data::Integer::csptr intObj = data::Integer::dynamicConstCast(_o);
                 SIGHT_ASSERT("The label vector should only contain integers.", intObj);
                 const int val = intObj->value();
-                SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255 );
-                labelSet.set(static_cast< std::uint8_t >(val), true);
+                SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255);
+                labelSet.set(static_cast<std::uint8_t>(val), true);
             });
 
-        functor = FunctionType([labelSet](const std::uint8_t& _in)
+        functor = FunctionType(
+            [labelSet](const std::uint8_t& _in)
             {
                 return labelSet[_in] ? 255 : 0;
             });
     }
     else
     {
-        functor = FunctionType([](const std::uint8_t& _in)
+        functor = FunctionType(
+            [](const std::uint8_t& _in)
             {
                 return _in > 0 ? 255 : 0;
             });
     }
 
-    typename ImageType::Pointer itkLabelImg = io::itk::itkImageFactory< ImageType >(labelImage.get_shared());
+    typename ImageType::Pointer itkLabelImg = io::itk::itkImageFactory<ImageType>(labelImage.get_shared());
 
-    ::itk::UnaryFunctorImageFilter< ImageType, ImageType, LambdaFunctor >::Pointer labelToMaskFilter =
-        ::itk::UnaryFunctorImageFilter< ImageType, ImageType, LambdaFunctor >::New();
+    ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
+        ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
 
     labelToMaskFilter->SetFunctor(functor);
     labelToMaskFilter->SetInput(itkLabelImg);
@@ -171,8 +177,8 @@ void SLabelImageToBinaryImage::updating()
 
     typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
 
-    io::itk::itkImageToFwDataImage< ImageType::Pointer >(itkMaskImg, maskImage.get_shared());
-    const auto modifiedSig = maskImage->signal< data::Object::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
+    io::itk::itkImageToFwDataImage<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
+    const auto modifiedSig = maskImage->signal<data::Object::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
 
     modifiedSig->asyncEmit();
 

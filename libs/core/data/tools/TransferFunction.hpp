@@ -23,10 +23,9 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/TransferFunction.hpp>
 
 #include <core/base.hpp>
-
-#include <data/TransferFunction.hpp>
 
 namespace sight::data::tools
 {
@@ -36,7 +35,6 @@ namespace sight::data::tools
  */
 class TransferFunction
 {
-
 public:
 
     /**
@@ -49,7 +47,6 @@ protected:
 
     /// Return a map <value, color> used to generate drawing TF
     DATA_API static data::TransferFunction::TFDataType getDrawingTFColors();
-
 };
 
 } // namespace sight::data::tools

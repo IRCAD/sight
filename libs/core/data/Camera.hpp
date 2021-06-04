@@ -23,30 +23,31 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/factory/new.hpp>
+#include <data/Object.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
-
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
 
 #include <array>
 #include <filesystem>
 #include <string>
 #include <utility>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Camera));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Camera));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a camera object.
  */
 class DATA_CLASS_API Camera : public data::Object
 {
 public:
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Camera));
-    SIGHT_DECLARE_CLASS(Camera, data::Object, data::factory::New< Camera >)
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Camera));
+    SIGHT_DECLARE_CLASS(Camera, data::Object, data::factory::New<Camera>);
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;
@@ -76,7 +77,6 @@ public:
         BGR565,
         BGR555,
         BGRA5658_PREMULTIPLIED,
-
         AYUV444,
         AYUV444_PREMULTIPLIED,
         YUV444,
@@ -92,14 +92,10 @@ public:
         IMC4,
         Y8,
         Y16,
-
         JPEG,
-
         CAMERARAW,
         ADOBEDNG,
-
         RGBA32,
-
         USER = 1000
     } PixelFormat;
 
@@ -107,7 +103,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Camera( data::Object::Key key );
+    DATA_API Camera(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Camera() noexcept;
@@ -117,7 +113,7 @@ public:
     DATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -215,47 +211,52 @@ public:
     /**
      * @brief distortion coefficient
      * @{ */
-    const DistArrayType& getDistortionCoefficient () const
+    const DistArrayType& getDistortionCoefficient() const
     {
         return m_distortionCoefficient;
     }
+
     //------------------------------------------------------------------------------
 
-    void setDistortionCoefficient (const DistArrayType& val)
+    void setDistortionCoefficient(const DistArrayType& val)
     {
         m_distortionCoefficient = val;
     }
+
     /**  @} */
 
     /**
      * @brief the skew coefficient (angle between the x and y pixel axes)
      * @{ */
-    double  getSkew () const
+    double getSkew() const
     {
         return m_skew;
     }
 
     //------------------------------------------------------------------------------
 
-    void setSkew (double val)
+    void setSkew(double val)
     {
         m_skew = val;
     }
+
     /**  @} */
 
     /**
      * @brief the flag to tell if the camera is calibrated
      * @{ */
-    bool  getIsCalibrated () const
+    bool getIsCalibrated() const
     {
         return m_isCalibrated;
     }
+
     //------------------------------------------------------------------------------
 
-    void setIsCalibrated (bool val)
+    void setIsCalibrated(bool val)
     {
         m_isCalibrated = val;
     }
+
     /**  @} */
 
     /// Gets the camera source (file, stream or device).
@@ -429,14 +430,13 @@ inline int Camera::getIndex() const
             // Limited to [0-9] range
             index = std::stoi(&m_description.at(0));
         }
-        catch (std::exception& _e)
+        catch(std::exception& _e)
         {
             SIGHT_ERROR("Cannot get index of: " + m_description + " " + _e.what());
         }
     }
 
     return index;
-
 }
 
 //-----------------------------------------------------------------------------

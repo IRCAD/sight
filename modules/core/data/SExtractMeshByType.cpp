@@ -22,13 +22,13 @@
 
 #include "SExtractMeshByType.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
+
+#include <core/runtime/ConfigurationElement.hpp>
 
 #include <service/registry/ObjectService.hpp>
 
@@ -58,26 +58,28 @@ void SExtractMeshByType::configuring()
     const ConfigType inoutCfg = m_configuration->findConfigurationElement("inout");
     SIGHT_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
-    const std::vector< ConfigType > extractCfg = inoutCfg->find("extract");
+    const std::vector<ConfigType> extractCfg = inoutCfg->find("extract");
     SIGHT_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
     bool ok = false;
 
-    const std::vector< ConfigType > outCfg = m_configuration->find("out");
-    for (const auto& cfg : outCfg)
+    const std::vector<ConfigType> outCfg = m_configuration->find("out");
+    for(const auto& cfg : outCfg)
     {
         if(cfg->hasAttribute("group"))
         {
             if(cfg->getAttributeValue("group") == "target")
             {
-                const std::vector< ConfigType > keyCfg = cfg->find("key");
+                const std::vector<ConfigType> keyCfg = cfg->find("key");
                 SIGHT_ASSERT(
-                    "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " <<  keyCfg.size(),
-                        extractCfg.size() == keyCfg.size());
+                    "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " << keyCfg.size(),
+                    extractCfg.size() == keyCfg.size()
+                );
                 ok = true;
             }
         }
     }
+
     SIGHT_ASSERT("Missing 'target' output keys", ok);
 
     for(ConfigType cfg : extractCfg)
@@ -99,7 +101,7 @@ void SExtractMeshByType::starting()
 
 void SExtractMeshByType::updating()
 {
-    sight::data::ModelSeries::sptr modelSeries = this->getInOut< sight::data::ModelSeries>("source");
+    sight::data::ModelSeries::sptr modelSeries = this->getInOut<sight::data::ModelSeries>("source");
     SIGHT_ASSERT("ModelSeries not found", modelSeries);
 
     sight::data::mt::ObjectReadLock lock(modelSeries);
@@ -132,9 +134,11 @@ void SExtractMeshByType::updating()
                 }
             }
         }
+
         SIGHT_ERROR_IF(
             "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
-                !found);
+            !found
+        );
     }
 }
 
@@ -143,7 +147,7 @@ void SExtractMeshByType::updating()
 void SExtractMeshByType::stopping()
 {
     // Unregister outputs
-    for (size_t i = 0; i < this->getKeyGroupSize("target"); ++i)
+    for(size_t i = 0 ; i < this->getKeyGroupSize("target") ; ++i)
     {
         this->setOutput("target", nullptr, i);
     }

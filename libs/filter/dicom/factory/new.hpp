@@ -35,7 +35,8 @@ class IFilter;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Filter construction.
@@ -44,18 +45,19 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) filter::dicom::factory::New();
+friend SPTR(CLASSNAME) filter::dicom::factory::New();
 
 Key()
 {
 }
 };
 
-FILTER_DICOM_API SPTR( filter::dicom::IFilter ) New( const filter::dicom::registry::KeyType& classname );
+FILTER_DICOM_API SPTR(filter::dicom::IFilter) New(const filter::dicom::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 

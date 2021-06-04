@@ -36,7 +36,9 @@
 
 namespace sight::data
 {
+
 class Composite;
+
 }
 
 namespace sight::module::io::igtl
@@ -70,10 +72,9 @@ namespace sight::module::io::igtl
  */
 class MODULE_IO_IGTL_CLASS_API STDataListener : public module::io::igtl::INetworkListener
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(STDataListener, module::io::igtl::INetworkListener)
+    SIGHT_DECLARE_SERVICE(STDataListener, module::io::igtl::INetworkListener);
 
     /// Constructor
     MODULE_IO_IGTL_API STDataListener();
@@ -94,7 +95,7 @@ protected:
 
 private:
 
-    typedef std::map< std::string, unsigned long > MatrixNameIndexType;
+    typedef std::map<std::string, unsigned long> MatrixNameIndexType;
 
     ///Push received matrices in timeline
     void manageTimeline(const SPTR(data::Composite)& obj, double timestamp = 0);
@@ -118,7 +119,7 @@ private:
     std::string m_portConfig;
 
     /// device names key
-    std::vector < core::runtime::ConfigurationElement::sptr > m_deviceNamesConfig;
+    std::vector<core::runtime::ConfigurationElement::sptr> m_deviceNamesConfig;
 
     MatrixNameIndexType m_matrixNameIndex;
 };

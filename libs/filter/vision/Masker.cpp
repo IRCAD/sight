@@ -31,9 +31,14 @@ namespace sight::filter::vision
 
 // Define the morphological element used
 const ::cv::Mat Masker::s_MORPHELEMENT =
-    ::cv::getStructuringElement(Masker::s_MORPHTYPE, ::cv::Size(2*Masker::s_MORPHSIZE+1,
-                                                                2*Masker::s_MORPHSIZE+1),
-                                ::cv::Point(Masker::s_MORPHSIZE, Masker::s_MORPHSIZE));
+    ::cv::getStructuringElement(
+        Masker::s_MORPHTYPE,
+        ::cv::Size(
+            2 * Masker::s_MORPHSIZE + 1,
+            2 * Masker::s_MORPHSIZE + 1
+        ),
+        ::cv::Point(Masker::s_MORPHSIZE, Masker::s_MORPHSIZE)
+    );
 
 //------------------------------------------------------------------------------
 
@@ -53,8 +58,12 @@ Masker::~Masker()
 
 //------------------------------------------------------------------------------
 
-void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                  const unsigned int numClusters, const double noise)
+void Masker::trainForegroundModel(
+    const ::cv::Mat& rgbImg,
+    const ::cv::Mat& selectionMask,
+    const unsigned int numClusters,
+    const double noise
+)
 {
     ::cv::Mat rgbImgCopy;
     rgbImg.copyTo(rgbImgCopy, selectionMask);
@@ -71,8 +80,11 @@ void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
 
 //------------------------------------------------------------------------------
 
-void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                  const unsigned int numClusters)
+void Masker::trainBackgroundModel(
+    const ::cv::Mat& rgbImg,
+    const ::cv::Mat& selectionMask,
+    const unsigned int numClusters
+)
 {
     const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
     m_backgroundModel = this->trainModelFromSamples(s, numClusters);
@@ -104,12 +116,14 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
             ::cv::threshold(fgResponse, m, m_threshold, 255, ::cv::THRESH_BINARY);
             break;
         }
+
         case bgLL:
         {
             ::cv::Mat bgResponse = makeResponseImage(I, m_backgroundModel, testImgMask2);
             ::cv::threshold(bgResponse, m, m_threshold, 255, ::cv::THRESH_BINARY_INV);
             break;
         }
+
         case LLRatio:
         {
             ::cv::Mat fgResponse = makeResponseImage(I, m_foregroundModel, testImgMask2);
@@ -118,6 +132,7 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
             break;
         }
     }
+
     m.convertTo(m, CV_8UC1);
 
     //get mask back to original size:
@@ -145,52 +160,53 @@ bool Masker::isModelLearned(void)
     switch(m_DETECTIONMODE)
     {
         case fgLL:
-        {
             return !m_foregroundModel.empty();
-        }
+
         case bgLL:
-        {
             return !m_backgroundModel.empty();
-        }
+
         case LLRatio:
-        {
             return !m_foregroundModel.empty() && !m_backgroundModel.empty();
-        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Masker::makeResponseImage(const ::cv::Mat& I, const ::cv::Ptr< ::cv::ml::EM > model,
-                                    ::cv::Mat& inImgMask)
+::cv::Mat Masker::makeResponseImage(
+    const ::cv::Mat& I,
+    const ::cv::Ptr< ::cv::ml::EM> model,
+    ::cv::Mat& inImgMask
+)
 {
     const int cn              = I.channels();
     const int w               = I.cols;
     const bool usesFilterMask = !inImgMask.empty();
 
-    ::cv::Mat output = ::cv::Mat::zeros(I.rows, I.cols, CV_32FC1);
+    ::cv::Mat output      = ::cv::Mat::zeros(I.rows, I.cols, CV_32FC1);
     const uchar* pixelPtr = static_cast<uchar*>(I.data);
 
     // Parallelization of pixel prediction
-    ::cv::parallel_for_(::cv::Range(0, I.rows*I.cols), [&](const ::cv::Range& range)
+    ::cv::parallel_for_(
+        ::cv::Range(0, I.rows * I.cols),
+        [&](const ::cv::Range& range)
         {
             ::cv::Mat sample = ::cv::Mat::zeros(cn, 1, CV_32FC1);
-            for(int r = range.start; r < range.end; ++r)
+            for(int r = range.start ; r < range.end ; ++r)
             {
                 const int i = r / w;
                 const int j = r % w;
 
                 if(usesFilterMask)
                 {
-                    if (inImgMask.at<uchar>(i, j) == 0)
+                    if(inImgMask.at<uchar>(i, j) == 0)
                     {
                         continue;
                     }
                 }
 
-                for(int chnInxs = 0; chnInxs < cn; ++chnInxs)
+                for(int chnInxs = 0 ; chnInxs < cn ; ++chnInxs)
                 {
-                    sample.at<float>(chnInxs) = pixelPtr[i*w*cn + j*cn + chnInxs];
+                    sample.at<float>(chnInxs) = pixelPtr[i * w * cn + j * cn + chnInxs];
                 }
 
                 output.at<float>(i, j) = static_cast<float>(model->predict2(sample, ::cv::noArray())[0]);
@@ -208,16 +224,15 @@ bool Masker::isModelLearned(void)
     switch(c)
     {
         case BGR:
-        {
             src.copyTo(output);
             break;
-        }
+
         case HSv:
         {
             ::cv::cvtColor(src, output, ::cv::COLOR_BGR2HSV);
-            ::cv::Mat s[3]; //destination array
-            ::cv::split(output, s);//split source
-            std::vector< ::cv::Mat > array_to_merge;
+            ::cv::Mat s[3];         //destination array
+            ::cv::split(output, s); //split source
+            std::vector< ::cv::Mat> array_to_merge;
             array_to_merge.push_back(s[0]);
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[1]); //we remove v channel for illumination invariance. This is done here by
@@ -225,24 +240,26 @@ bool Masker::isModelLearned(void)
             ::cv::merge(array_to_merge, output);
             break;
         }
+
         case lAB:
         {
             ::cv::cvtColor(src, output, ::cv::COLOR_BGR2Lab);
-            ::cv::Mat s[3]; //destination array
-            ::cv::split(output, s);//split source
-            std::vector< ::cv::Mat > array_to_merge;
+            ::cv::Mat s[3];         //destination array
+            ::cv::split(output, s); //split source
+            std::vector< ::cv::Mat> array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
             array_to_merge.push_back(s[1]);
             ::cv::merge(array_to_merge, output);
             break;
         }
+
         case yCrCb:
         {
             ::cv::cvtColor(src, output, ::cv::COLOR_BGR2YCrCb);
-            ::cv::Mat s[3]; //destination array
-            ::cv::split(output, s);//split source
-            std::vector< ::cv::Mat > array_to_merge;
+            ::cv::Mat s[3];         //destination array
+            ::cv::split(output, s); //split source
+            std::vector< ::cv::Mat> array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
             array_to_merge.push_back(s[1]);
@@ -250,14 +267,15 @@ bool Masker::isModelLearned(void)
             break;
         }
     }
+
     return output;
 }
 
 //------------------------------------------------------------------------------
 
-::cv::Ptr< ::cv::ml::EM > Masker::trainModelFromSamples(const ::cv::Mat& samples, const unsigned int numClusters)
+::cv::Ptr< ::cv::ml::EM> Masker::trainModelFromSamples(const ::cv::Mat& samples, const unsigned int numClusters)
 {
-    ::cv::Ptr < ::cv::ml::EM > m = ::cv::ml::EM::create();
+    ::cv::Ptr< ::cv::ml::EM> m = ::cv::ml::EM::create();
     m->setClustersNumber(static_cast<int>(numClusters));
     m->setCovarianceMatrixType(::cv::ml::EM::COV_MAT_SPHERICAL);
     m->setTermCriteria(::cv::TermCriteria(::cv::TermCriteria::COUNT + ::cv::TermCriteria::EPS, 300, 0.1));
@@ -281,14 +299,16 @@ bool Masker::isModelLearned(void)
     ::cv::Mat samples(nonZeroCoordinates.rows, cn, CV_64FC1);
 
     // Fill it by copying from the original image to the linear one
-    ::cv::parallel_for_(::cv::Range(0, nonZeroCoordinates.rows), [&](const ::cv::Range& range)
+    ::cv::parallel_for_(
+        ::cv::Range(0, nonZeroCoordinates.rows),
+        [&](const ::cv::Range& range)
         {
-            for(int r = range.start; r < range.end; ++r)
+            for(int r = range.start ; r < range.end ; ++r)
             {
-                ::cv::Point position = nonZeroCoordinates.at< ::cv::Point >(r);
+                ::cv::Point position = nonZeroCoordinates.at< ::cv::Point>(r);
                 // Implicit cast from Vec3b to Vec3d avoiding static_cast<float> in next for loop
-                ::cv::Vec3d pixel = trainImg.at< ::cv::Vec3b >(position);
-                for(int chnInxs = 0; chnInxs < cn; ++chnInxs)
+                ::cv::Vec3d pixel = trainImg.at< ::cv::Vec3b>(position);
+                for(int chnInxs = 0 ; chnInxs < cn ; ++chnInxs)
                 {
                     samples.at<double>(r, chnInxs) = pixel[chnInxs];
                 }
@@ -309,12 +329,12 @@ bool Masker::isModelLearned(void)
     k.setTo(1);
 
     // Perform some erosion/dilatation to remove small areas
-    for (size_t i = 0; i < n; i++)
+    for(size_t i = 0 ; i < n ; i++)
     {
         ::cv::erode(mask, mask, k);
     }
 
-    for (size_t i = 0; i < n; i++)
+    for(size_t i = 0 ; i < n ; i++)
     {
         ::cv::dilate(mask, mask, k);
     }
@@ -336,9 +356,11 @@ bool Masker::isModelLearned(void)
     ::cv::Mat res  = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
 
     // Browse all labels
-    ::cv::parallel_for_(::cv::Range(0, nbLabels), [&](const ::cv::Range& range)
+    ::cv::parallel_for_(
+        ::cv::Range(0, nbLabels),
+        [&](const ::cv::Range& range)
         {
-            for(int r = range.start; r < range.end; ++r)
+            for(int r = range.start ; r < range.end ; ++r)
             {
                 ::cv::Mat tmp = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
                 // Get the binary image corresponding to the current label
@@ -359,4 +381,5 @@ bool Masker::isModelLearned(void)
 }
 
 //------------------------------------------------------------------------------
-}
+
+} // namespace sight::filter

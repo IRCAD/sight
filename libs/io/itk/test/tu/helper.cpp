@@ -26,8 +26,10 @@
 
 namespace sight::io::itk
 {
+
 namespace ut
 {
+
 namespace helper
 {
 
@@ -50,5 +52,7 @@ void roundSpacing(data::Image::sptr image)
 //------------------------------------------------------------------------------
 
 } //namespace helper
+
 } //namespace ut
+
 } //namespace sight::io::itk

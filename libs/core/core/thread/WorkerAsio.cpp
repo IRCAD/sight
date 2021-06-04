@@ -22,7 +22,6 @@
 
 #include "core/thread/Timer.hpp"
 #include "core/thread/Worker.hpp"
-
 #include <core/TimeStamp.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
@@ -33,7 +32,7 @@ namespace sight::core::thread
 
 //------------------------------------------------------------------------------
 
-std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
+std::size_t WorkerThread(SPTR(::boost::asio::io_service)io_service)
 {
     std::size_t res = io_service->run();
     return res;
@@ -45,9 +44,10 @@ std::size_t WorkerThread( SPTR(::boost::asio::io_service)io_service )
 class WorkerAsio : public core::thread::Worker
 {
 public:
+
     typedef ::boost::asio::io_service IOServiceType;
     typedef ::boost::asio::io_service::work WorkType;
-    typedef std::shared_ptr< WorkType > WorkPtrType;
+    typedef std::shared_ptr<WorkType> WorkPtrType;
     typedef std::thread ThreadType;
 
     WorkerAsio();
@@ -69,10 +69,10 @@ public:
 protected:
 
     /// Copy constructor forbidden
-    WorkerAsio( const WorkerAsio& );
+    WorkerAsio(const WorkerAsio&);
 
     /// Copy operator forbidden
-    WorkerAsio& operator=( const WorkerAsio& );
+    WorkerAsio& operator=(const WorkerAsio&);
 
     /// Class provides functionality to manipulate asynchronous tasks.
     SPTR(IOServiceType) m_ioService;
@@ -95,6 +95,7 @@ protected:
 class TimerAsio : public core::thread::Timer
 {
 public:
+
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
@@ -140,10 +141,10 @@ protected:
     void call(const std::error_code& code);
 
     /// Copy constructor forbidden.
-    TimerAsio( const TimerAsio& );
+    TimerAsio(const TimerAsio&);
 
     /// Copy operator forbidden.
-    TimerAsio& operator=( const TimerAsio& );
+    TimerAsio& operator=(const TimerAsio&);
 
     /// Timer object.
     ::boost::asio::deadline_timer m_timer;
@@ -163,13 +164,13 @@ protected:
 // ---------- WorkerAsio private implementation ----------
 
 WorkerAsio::WorkerAsio() :
-    m_ioService( std::make_shared<IOServiceType>() ),
-    m_work( std::make_shared< WorkType >(*m_ioService) )
+    m_ioService(std::make_shared<IOServiceType>()),
+    m_work(std::make_shared<WorkType>(*m_ioService))
 {
-    std::packaged_task< core::thread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, m_ioService) );
-    std::future< core::thread::Worker::ExitReturnType > ufuture = task.get_future();
+    std::packaged_task<core::thread::Worker::ExitReturnType()> task(std::bind(&WorkerThread, m_ioService));
+    std::future<core::thread::Worker::ExitReturnType> ufuture = task.get_future();
 
-    m_thread = std::make_shared< ThreadType >( std::move( task ) );
+    m_thread = std::make_shared<ThreadType>(std::move(task));
 
     m_future = std::move(ufuture);
 }
@@ -180,8 +181,10 @@ WorkerAsio::~WorkerAsio()
 {
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
-    SIGHT_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
-                 !m_thread->joinable());
+    SIGHT_ASSERT(
+        "Worker must be properly stopped. Try to call stop() from the caller thread before.",
+        !m_thread->joinable()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -192,8 +195,10 @@ void WorkerAsio::stop()
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
     SIGHT_ASSERT("Thread is not joinable", m_thread->joinable());
-    SIGHT_ASSERT("Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
-                 m_thread->get_id() != core::thread::getCurrentThreadId());
+    SIGHT_ASSERT(
+        "Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
+        m_thread->get_id() != core::thread::getCurrentThreadId()
+    );
 
     m_work.reset();
     m_thread->join();
@@ -203,7 +208,7 @@ void WorkerAsio::stop()
 
 SPTR(core::thread::Timer) WorkerAsio::createTimer()
 {
-    return std::make_shared< TimerAsio >(*m_ioService);
+    return std::make_shared<TimerAsio>(*m_ioService);
 }
 
 //------------------------------------------------------------------------------
@@ -243,7 +248,7 @@ void WorkerAsio::processTasks(PeriodType maxtime)
 // ---------- Worker ----------
 SPTR(Worker) Worker::defaultFactory()
 {
-    return std::make_shared< WorkerAsio >();
+    return std::make_shared<WorkerAsio>();
 }
 
 // ---------- Timer private implementation ----------
@@ -282,7 +287,7 @@ void TimerAsio::start()
 void TimerAsio::stop()
 {
     core::mt::ScopedLock lock(m_mutex);
-    if (m_running )
+    if(m_running)
     {
         m_running = false;
         this->cancelNoLock();
@@ -296,8 +301,8 @@ void TimerAsio::rearmNoLock(TimeDurationType duration)
     this->cancelNoLock();
     ::boost::posix_time::time_duration d =
         ::boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
-    m_timer.expires_from_now( d );
-    m_timer.async_wait( std::bind(&TimerAsio::call, this, std::placeholders::_1));
+    m_timer.expires_from_now(d);
+    m_timer.async_wait(std::bind(&TimerAsio::call, this, std::placeholders::_1));
 }
 
 //------------------------------------------------------------------------------
@@ -318,7 +323,7 @@ void TimerAsio::call(const std::error_code& error)
             duration = m_duration;
         }
 
-        if (!oneShot)
+        if(!oneShot)
         {
             this->rearmNoLock(duration);
             m_function();
@@ -330,7 +335,6 @@ void TimerAsio::call(const std::error_code& error)
             m_running = false;
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

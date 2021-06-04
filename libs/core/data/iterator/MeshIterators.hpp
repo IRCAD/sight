@@ -36,26 +36,30 @@ class Mesh;
 
 namespace iterator
 {
+
 typedef std::uint32_t CellId;
 typedef std::uint32_t PointId;
 typedef std::uint32_t Size;
 
 /// Stores a representation of a point.
-struct Point {
+struct Point
+{
     float x;
     float y;
     float z;
 };
 
 /// Stores a representation of a normal.
-struct Normal {
+struct Normal
+{
     float nx;
     float ny;
     float nz;
 };
 
 /// Stores a representation of a texture coordinate.
-struct TexCoords {
+struct TexCoords
+{
     float u;
     float v;
 };
@@ -74,65 +78,65 @@ enum class CellType : std::uint8_t
 
 /// Stores point iterator information.
 template<bool isConst>
-struct PointInfoBase {
-
-    typedef typename std::conditional< isConst, const Point, Point >::type point_value_type;
+struct PointInfoBase
+{
+    typedef typename std::conditional<isConst, const Point, Point>::type point_value_type;
     typedef point_value_type& point_reference;
 
-    typedef typename std::conditional< isConst, const RGBA, RGBA >::type rgba_value_type;
+    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
     typedef rgba_value_type& rgba_reference;
 
     // TMP: to support old API using RGB colors
-    typedef typename std::conditional< isConst, const RGB, RGB >::type rgb_value_type;
+    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
     typedef rgb_value_type& rgb_reference;
 
-    typedef typename std::conditional< isConst, const Normal, Normal >::type normal_value_type;
+    typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
     typedef normal_value_type& normal_reference;
 
-    typedef typename std::conditional< isConst, const TexCoords, TexCoords >::type tex_value_type;
+    typedef typename std::conditional<isConst, const TexCoords, TexCoords>::type tex_value_type;
     typedef tex_value_type& tex_reference;
 
-    PointInfoBase& operator=(const PointInfoBase< false >& other);
+    PointInfoBase& operator=(const PointInfoBase<false>& other);
 
-    PointInfoBase& operator=(const PointInfoBase< true >& other);
+    PointInfoBase& operator=(const PointInfoBase<true>& other);
 
     bool operator==(const PointInfoBase& other);
 
     /// Contains coordinates of the point.
-    point_value_type* point { nullptr };
+    point_value_type* point {nullptr};
 
     /// Contains normals of the point.
-    normal_value_type* normal { nullptr };
+    normal_value_type* normal {nullptr};
 
     /// Contains the rgba color of the point.
-    rgba_value_type* rgba { nullptr };
+    rgba_value_type* rgba {nullptr};
 
     /// Contains the rgb color of the point.
-    rgb_value_type* rgb { nullptr };
+    rgb_value_type* rgb {nullptr};
 
     /// Contains texture coordinates of the point.
-    tex_value_type* tex { nullptr };
+    tex_value_type* tex {nullptr};
 };
 
 /// Stores cell iterator information.
 template<bool isConst>
-struct CellInfoBase {
+struct CellInfoBase
+{
+    typedef typename std::conditional<isConst, const CellId, CellId>::type cell_data_value_type;
+    typedef typename std::conditional<isConst, const CellType, CellType>::type cell_type_value_type;
+    typedef typename std::conditional<isConst, const CellId, CellId>::type cell_offset_value_type;
 
-    typedef typename std::conditional< isConst, const CellId, CellId >::type cell_data_value_type;
-    typedef typename std::conditional< isConst, const CellType, CellType >::type cell_type_value_type;
-    typedef typename std::conditional< isConst, const CellId, CellId >::type cell_offset_value_type;
-
-    typedef typename std::conditional< isConst, const RGBA, RGBA >::type rgba_value_type;
+    typedef typename std::conditional<isConst, const RGBA, RGBA>::type rgba_value_type;
     typedef rgba_value_type& rgba_reference;
 
     // TMP: to support old API using RGB colors
-    typedef typename std::conditional< isConst, const RGB, RGB >::type rgb_value_type;
+    typedef typename std::conditional<isConst, const RGB, RGB>::type rgb_value_type;
     typedef rgb_value_type& rgb_reference;
 
-    typedef typename std::conditional< isConst, const Normal, Normal >::type normal_value_type;
+    typedef typename std::conditional<isConst, const Normal, Normal>::type normal_value_type;
     typedef normal_value_type& normal_reference;
 
-    typedef typename std::conditional< isConst, const TexCoords, TexCoords >::type tex_value_type;
+    typedef typename std::conditional<isConst, const TexCoords, TexCoords>::type tex_value_type;
     typedef tex_value_type& tex_reference;
 
     CellInfoBase& operator=(const CellInfoBase<false>& other);
@@ -142,35 +146,34 @@ struct CellInfoBase {
     bool operator==(const CellInfoBase& other);
 
     /// Contains the current cell data.
-    cell_data_value_type* pointIdx { nullptr };
+    cell_data_value_type* pointIdx {nullptr};
 
     /// Contains the current cell type.
-    cell_type_value_type* type { nullptr };
+    cell_type_value_type* type {nullptr};
 
     /// Contains the current cell offset.
-    cell_offset_value_type* offset { nullptr };
+    cell_offset_value_type* offset {nullptr};
 
     /// Contains the current cell normal.
-    normal_value_type* normal { nullptr };
+    normal_value_type* normal {nullptr};
 
     /// Contains the current cell rgba color.
-    rgba_value_type* rgba { nullptr };
+    rgba_value_type* rgba {nullptr};
 
     /// Contains the current cell rgb color.
-    rgb_value_type* rgb { nullptr };
+    rgb_value_type* rgb {nullptr};
 
     /// Contains the current cell texture coordinates.
-    tex_value_type* tex { nullptr };
+    tex_value_type* tex {nullptr};
 
     /// Contains the number of points in the cell.
-    Size nbPoints { 0 };
+    Size nbPoints {0};
 
     /// Stores current idx (from CellIterator).
-    std::ptrdiff_t idx { 0 };
+    std::ptrdiff_t idx {0};
 
     /// Stores number of elements (from CellIterator).
-    std::ptrdiff_t numberOfElements { 0 };
-
+    std::ptrdiff_t numberOfElements {0};
 };
 
 /**
@@ -187,7 +190,7 @@ public:
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    typedef PointInfoBase< isConst > PointInfo;
+    typedef PointInfoBase<isConst> PointInfo;
     typedef PointInfo value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
@@ -237,10 +240,10 @@ protected:
     std::unique_ptr<PointInfo> m_pointInfo;
 
     /// Defines the current index of the iterator.
-    difference_type m_idx { 0 };
+    difference_type m_idx {0};
 
     /// Defines the number of elements of the iterator.
-    difference_type m_numberOfElements { 0 };
+    difference_type m_numberOfElements {0};
 };
 
 /**
@@ -305,6 +308,7 @@ public:
 class DATA_CLASS_API ConstPointIterator : public PointIteratorBase<true>
 {
 public:
+
     /// Constructor
     DATA_API ConstPointIterator();
     DATA_API ConstPointIterator(const Mesh* mesh);
@@ -325,11 +329,12 @@ template<bool isConst>
 class CellIteratorBase
 {
 public:
+
     /**
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    typedef CellInfoBase< isConst> CellInfo;
+    typedef CellInfoBase<isConst> CellInfo;
     typedef CellInfo value_type;
     typedef value_type* pointer;
     typedef value_type& reference;
@@ -383,16 +388,16 @@ protected:
     std::unique_ptr<CellInfo> m_cellInfo;
 
     /// Defines the current index of the iterator.
-    difference_type m_idx { 0 };
+    difference_type m_idx {0};
 
     /// Defines the number of elements of the iterator.
-    difference_type m_numberOfElements { 0 };
+    difference_type m_numberOfElements {0};
 
     /// Defines the cell data size of the mesh.
-    Size m_cellDataSize { 0 };
+    Size m_cellDataSize {0};
 
     /// Defines the current offset of the cell.
-    difference_type m_currentOffset { 0 };
+    difference_type m_currentOffset {0};
 };
 
 /**
@@ -473,6 +478,7 @@ public:
 };
 
 } // namespace iterator.
+
 } // namespace sight::data.
 
 #include "data/iterator/MeshIterators.hxx"

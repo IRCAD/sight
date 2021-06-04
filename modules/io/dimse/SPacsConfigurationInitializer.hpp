@@ -69,11 +69,10 @@ namespace sight::module::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationInitializer : public service::IController
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPacsConfigurationInitializer,  service::IController)
+    SIGHT_DECLARE_SERVICE(SPacsConfigurationInitializer, service::IController);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationInitializer() noexcept;
@@ -140,7 +139,6 @@ private:
 
     /// Defines the key to save/load preferences.
     std::string m_preferenceKey;
-
 };
 
 } // namespace sight::module::io::dimse.

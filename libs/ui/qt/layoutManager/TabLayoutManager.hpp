@@ -43,11 +43,13 @@ namespace sight::ui::qt
  */
 class UI_QT_CLASS_API TabLayoutManager : public ui::base::layoutManager::TabLayoutManagerBase
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(TabLayoutManager, ui::base::layoutManager::TabLayoutManagerBase,
-                        ui::base::factory::New< TabLayoutManager >)
+    SIGHT_DECLARE_CLASS(
+        TabLayoutManager,
+        ui::base::layoutManager::TabLayoutManagerBase,
+        ui::base::factory::New<TabLayoutManager>
+    )
 
     UI_QT_API TabLayoutManager(ui::base::GuiBaseObject::Key key);
 
@@ -58,7 +60,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.

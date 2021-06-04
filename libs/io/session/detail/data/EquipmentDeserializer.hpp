@@ -36,7 +36,7 @@ class EquipmentDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(EquipmentDeserializer, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(EquipmentDeserializer, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     EquipmentDeserializer(const EquipmentDeserializer&)            = delete;

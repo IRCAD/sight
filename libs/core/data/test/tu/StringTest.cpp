@@ -25,10 +25,11 @@
 #include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::StringTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::StringTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -50,19 +51,20 @@ void StringTest::tearDown()
 
 void StringTest::methode1()
 {
-    const std::string VALUES[] = { "", "chaine_caractere" };
+    const std::string VALUES[] = {"", "chaine_caractere"};
 
-    for( std::string VALUE : VALUES )
+    for(std::string VALUE : VALUES)
     {
         data::String::sptr s0 = data::String::New();
         s0->value() = VALUE;
-        data::String::sptr s1 = data::String::New( VALUE );
+        data::String::sptr s1 = data::String::New(VALUE);
 
-        CPPUNIT_ASSERT_EQUAL( VALUE, s0->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE, s1->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE, data::String::New( VALUE )->value() );
+        CPPUNIT_ASSERT_EQUAL(VALUE, s0->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, s1->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, data::String::New(VALUE)->value());
     }
 }
 
 } //namespace ut
+
 } //namespace sight::data

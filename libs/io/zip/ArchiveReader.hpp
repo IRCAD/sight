@@ -40,7 +40,7 @@ class IO_ZIP_CLASS_API ArchiveReader : public Archive
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ArchiveReader, Archive)
+    SIGHT_DECLARE_CLASS(ArchiveReader, Archive);
 
     /// Delete copy constructors and assignment operators, as we don't want to allow resources duplication
     ArchiveReader(const ArchiveReader&)            = delete;

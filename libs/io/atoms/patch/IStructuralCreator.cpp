@@ -45,7 +45,7 @@ IStructuralCreator::~IStructuralCreator()
 
 // ----------------------------------------------------------------------------
 
-IStructuralCreator::IStructuralCreator( const IStructuralCreator& cpy )
+IStructuralCreator::IStructuralCreator(const IStructuralCreator& cpy)
 {
     m_classname = cpy.getObjectClassname();
     m_version   = cpy.getObjectVersion();
@@ -73,10 +73,10 @@ sight::atoms::Object::sptr IStructuralCreator::createObjBase() const
 
     io::atoms::patch::helper::setClassname(obj, m_classname);
     io::atoms::patch::helper::setVersion(obj, m_version);
-    io::atoms::patch::helper::generateID( obj );
+    io::atoms::patch::helper::generateID(obj);
 
     // All data objects has a parameter fields
-    io::atoms::patch::helper::cleanFields( obj );
+    io::atoms::patch::helper::cleanFields(obj);
 
     return obj;
 }

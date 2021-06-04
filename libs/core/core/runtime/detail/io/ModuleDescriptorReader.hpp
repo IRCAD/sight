@@ -59,9 +59,10 @@ namespace io
 class ModuleDescriptorReader
 {
 public:
-    typedef std::vector< std::shared_ptr<Module> >  ModuleContainer;
+
+    typedef std::vector<std::shared_ptr<Module> > ModuleContainer;
     /// Pair of created extension point associated with extensions
-    typedef std::pair< SPTR(ExtensionPoint), std::vector< SPTR(Extension) > > PointExtensionsPairType;
+    typedef std::pair<SPTR(ExtensionPoint), std::vector<SPTR(Extension)> > PointExtensionsPairType;
 
     /**
      * @brief       Creates all modules that are found at the given location.
@@ -90,8 +91,10 @@ public:
      *
      * @return  a pointer to the created configuration element
      */
-    static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
-                                                                             const std::shared_ptr<Module> module)
+    static std::shared_ptr<ConfigurationElement> processConfigurationElement(
+        xmlNodePtr node,
+        const std::shared_ptr<Module> module
+    )
     ;
 
     /**
@@ -102,8 +105,10 @@ public:
      *
      * @return  a pointer to the created extension
      */
-    static std::shared_ptr<Extension> processExtension(xmlNodePtr node,
-                                                       const std::shared_ptr<Module> module);
+    static std::shared_ptr<Extension> processExtension(
+        xmlNodePtr node,
+        const std::shared_ptr<Module> module
+    );
 
     /**
      * Processes a node that is a point
@@ -112,8 +117,10 @@ public:
      * @param   module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
-    static PointExtensionsPairType processPoint(xmlNodePtr node,
-                                                const std::shared_ptr<Module> module);
+    static PointExtensionsPairType processPoint(
+        xmlNodePtr node,
+        const std::shared_ptr<Module> module
+    );
 
     /**
      * @brief   Processes an extension point XML node.
@@ -123,8 +130,10 @@ public:
      *
      * @return  a pointer to the created extension point
      */
-    static std::shared_ptr<ExtensionPoint> processExtensionPoint(xmlNodePtr node,
-                                                                 const std::shared_ptr<Module> module);
+    static std::shared_ptr<ExtensionPoint> processExtensionPoint(
+        xmlNodePtr node,
+        const std::shared_ptr<Module> module
+    );
 
     /**
      * Processes a node that is a plugin element.
@@ -134,8 +143,10 @@ public:
      *
      * @return  a pointer to the created module
      */
-    static std::shared_ptr<detail::Module> processPlugin(xmlNodePtr node,
-                                                         const std::filesystem::path& location);
+    static std::shared_ptr<detail::Module> processPlugin(
+        xmlNodePtr node,
+        const std::filesystem::path& location
+    );
 
     /**
      * Processes a node that is a requirement
@@ -148,18 +159,18 @@ public:
 
 private:
 
-    static std::string CLASS;       ///< Defines the class XML element name.
-    static std::string EXTENSION;   ///< Defines the extension XML element name.
+    static std::string CLASS;           ///< Defines the class XML element name.
+    static std::string EXTENSION;       ///< Defines the extension XML element name.
     static std::string EXTENSION_POINT; ///< Defines the extension-point XML element name.
-    static std::string ID;          ///< Defines the id XML element name.
-    static std::string IMPLEMENTS;  ///< Defines the implements XML element name.
-    static std::string NAME;        ///< Defines the name XML element name.
-    static std::string LIBRARY;     ///< Defines the library XML element name.
-    static std::string PLUGIN;      ///< Defines the plugin XML element name.
-    static std::string REQUIREMENT; ///< Defines the requirement XML element name.
-    static std::string SCHEMA;      ///< Defines the schema XML element name.
-    static std::string VERSION;     ///< Defines the version XML element name.
-    static std::string POINT;       ///< Defines the version XML element name.
+    static std::string ID;              ///< Defines the id XML element name.
+    static std::string IMPLEMENTS;      ///< Defines the implements XML element name.
+    static std::string NAME;            ///< Defines the name XML element name.
+    static std::string LIBRARY;         ///< Defines the library XML element name.
+    static std::string PLUGIN;          ///< Defines the plugin XML element name.
+    static std::string REQUIREMENT;     ///< Defines the requirement XML element name.
+    static std::string SCHEMA;          ///< Defines the schema XML element name.
+    static std::string VERSION;         ///< Defines the version XML element name.
+    static std::string POINT;           ///< Defines the version XML element name.
 };
 
 } // namespace io

@@ -61,7 +61,6 @@ void ConfigurationElement2XML(core::runtime::ConfigurationElement::sptr _cfgElem
         {
             xmlNodeSetContent(child, xmlCharStrdup(elt->getValue().c_str()));
         }
-
         // If configuration element is a XML_ELEMENT_NODE
         else
         {

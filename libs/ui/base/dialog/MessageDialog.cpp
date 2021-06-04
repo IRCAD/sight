@@ -28,13 +28,17 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
 //-----------------------------------------------------------------------------
 
 IMessageDialog::Buttons MessageDialog::show(
-    const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon)
+    const std::string& title,
+    const std::string& message,
+    ui::base::dialog::IMessageDialog::Icons icon
+)
 {
     ui::base::dialog::MessageDialog messageBox(title, message, icon);
     messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
@@ -44,7 +48,10 @@ IMessageDialog::Buttons MessageDialog::show(
 //-----------------------------------------------------------------------------
 
 IMessageDialog::Buttons MessageDialog::showMessageDialog(
-    const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon)
+    const std::string& title,
+    const std::string& message,
+    ui::base::dialog::IMessageDialog::Icons icon
+)
 {
     return show(title, message, icon);
 }
@@ -53,22 +60,30 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(
 
 MessageDialog::MessageDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMessageDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
-            })).wait();
+                m_implementation                     = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 MessageDialog::MessageDialog(
-    const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon)
+    const std::string& title,
+    const std::string& message,
+    ui::base::dialog::IMessageDialog::Icons icon
+)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMessageDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
+                m_implementation                     = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
 
                 if(m_implementation)
                 {
@@ -76,7 +91,8 @@ MessageDialog::MessageDialog(
                     m_implementation->setMessage(message);
                     m_implementation->setIcon(icon);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -87,80 +103,98 @@ MessageDialog::~MessageDialog()
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setTitle( const std::string& title )
+void MessageDialog::setTitle(const std::string& title)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->setTitle(title);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setMessage( const std::string& msg )
+void MessageDialog::setMessage(const std::string& msg)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->setMessage(msg);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setIcon( ui::base::dialog::IMessageDialog::Icons icon )
+void MessageDialog::setIcon(ui::base::dialog::IMessageDialog::Icons icon)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->setIcon(icon);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::addButton( ui::base::dialog::IMessageDialog::Buttons button )
+void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->addButton(button);
                 }
-            } )).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setDefaultButton( ui::base::dialog::IMessageDialog::Buttons button )
+void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->setDefaultButton(button);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 if(m_implementation)
                 {
                     m_implementation->addCustomButton(label, clickedFn);
                 }
-            })).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -186,4 +220,5 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } // namespace sight::ui::base

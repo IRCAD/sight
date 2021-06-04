@@ -58,15 +58,15 @@ struct LabelingFilter
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef itk::Image< PIXELTYPE, 3 > ImageType;
-        typedef itk::Image< std::uint8_t, 3 > BinaryImageType;
+        typedef itk::Image<PIXELTYPE, 3> ImageType;
+        typedef itk::Image<std::uint8_t, 3> BinaryImageType;
         typename ImageType::Pointer itkImage;
-        itkImage = io::itk::itkImageFactory< ImageType >(params.m_inputImage);
+        itkImage = io::itk::itkImageFactory<ImageType>(params.m_inputImage);
 
         BinaryImageType::Pointer out;
         out = filter::image::labeling<PIXELTYPE, 3>(itkImage, params.m_numLabels);
 
-        io::itk::dataImageFactory< BinaryImageType >(out, params.m_outputImage);
+        io::itk::dataImageFactory<BinaryImageType>(out, params.m_outputImage);
     }
 };
 
@@ -82,11 +82,11 @@ data::Image::sptr labeling(data::Image::sptr image, unsigned int numLabels)
     params.m_numLabels   = numLabels;
 
     const core::tools::Type type = image->getType();
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, LabelingFilter >::invoke( type, params );
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelingFilter>::invoke(type, params);
 
     // Notify image
     data::Object::ModifiedSignalType::sptr sig;
-    sig = outputImage->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     return outputImage;
@@ -100,8 +100,8 @@ struct LabelImageFilter
     struct Parameters
     {
         data::Image::sptr i_image;
-        std::vector< data::PointList::sptr > i_lPointListCentroids;
-        std::vector< std::vector<size_t> > i_lPointListLabels;
+        std::vector<data::PointList::sptr> i_lPointListCentroids;
+        std::vector<std::vector<size_t> > i_lPointListLabels;
     };
     //------------------------------------------------------------------------------
 
@@ -111,19 +111,19 @@ struct LabelImageFilter
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
-        typedef typename ::itk::Image<PIXELTYPE, dimension>  InputImageType;
-        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>( image );
+        typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
+        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>(image);
 
         typedef PIXELTYPE LabelType;
-        typedef ::itk::Image< LabelType, dimension > OutputImageType;
-        typedef ::itk::ShapeLabelObject< LabelType, dimension > ShapeLabelObjectType;
-        typedef ::itk::LabelMap< ShapeLabelObjectType > LabelMapType;
+        typedef ::itk::Image<LabelType, dimension> OutputImageType;
+        typedef ::itk::ShapeLabelObject<LabelType, dimension> ShapeLabelObjectType;
+        typedef ::itk::LabelMap<ShapeLabelObjectType> LabelMapType;
 
         // Extract shapes
-        typedef typename ::itk::LabelImageToShapeLabelMapFilter< OutputImageType, LabelMapType> I2LType;
+        typedef typename ::itk::LabelImageToShapeLabelMapFilter<OutputImageType, LabelMapType> I2LType;
 
         typename I2LType::Pointer i2l = I2LType::New();
-        i2l->SetInput( itkInputImage );
+        i2l->SetInput(itkInputImage);
         i2l->SetComputePerimeter(true);
         i2l->SetBackgroundValue(0);
         i2l->Update();
@@ -134,15 +134,15 @@ struct LabelImageFilter
             LabelMapType* labelMap = i2l->GetOutput();
             data::Point::sptr newPoint;
 
-            for(unsigned int n = 1; n <= labelMap->GetNumberOfLabelObjects(); ++n)
+            for(unsigned int n = 1 ; n <= labelMap->GetNumberOfLabelObjects() ; ++n)
             {
                 std::vector<size_t> findPlanes;
                 size_t plane;
-                for(plane = 0; plane < params.i_lPointListLabels.size(); ++plane)
+                for(plane = 0 ; plane < params.i_lPointListLabels.size() ; ++plane)
                 {
                     std::vector<size_t> currentPlane = params.i_lPointListLabels.at(plane);
 
-                    for(size_t labelInPlane = 0; labelInPlane < currentPlane.size(); ++labelInPlane)
+                    for(size_t labelInPlane = 0 ; labelInPlane < currentPlane.size() ; ++labelInPlane)
                     {
                         if(currentPlane.at(labelInPlane) == n)
                         {
@@ -155,14 +155,14 @@ struct LabelImageFilter
                 {
                     // We need to get the 'n-1'th object because of the '0' background value (1st object = '1' label
                     // value)
-                    ShapeLabelObjectType* labelObject = labelMap->GetNthLabelObject(n-1);
+                    ShapeLabelObjectType* labelObject = labelMap->GetNthLabelObject(n - 1);
 
                     // append to landmark
                     const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
 
                     newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
 
-                    for(size_t idFindPlanes = 0; idFindPlanes < findPlanes.size(); ++idFindPlanes)
+                    for(size_t idFindPlanes = 0 ; idFindPlanes < findPlanes.size() ; ++idFindPlanes)
                     {
                         data::PointList::sptr planePointList =
                             params.i_lPointListCentroids.at(findPlanes.at(idFindPlanes));
@@ -182,16 +182,16 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::fieldHelper::MedicalImageHelpers::checkLandmarks( image );
+            data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
             data::PointList::sptr landmarks =
-                image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
+                image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
 
             LabelMapType* labelMap = i2l->GetOutput();
             data::Point::sptr newPoint;
-            for (unsigned int n = 0; n < labelMap->GetNumberOfLabelObjects(); ++n)
+            for(unsigned int n = 0 ; n < labelMap->GetNumberOfLabelObjects() ; ++n)
             {
                 ShapeLabelObjectType* labelObject = labelMap->GetNthLabelObject(n);
 
@@ -199,14 +199,15 @@ struct LabelImageFilter
                 const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
 
                 newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
-                landmarks->getPoints().push_back( newPoint );
+                landmarks->getPoints().push_back(newPoint);
 
                 // append to point the label
                 std::stringstream labelName;
                 labelName << n;
                 data::String::sptr label = data::String::New(labelName.str());
-                newPoint->setField( data::fieldHelper::Image::m_labelId, label );
+                newPoint->setField(data::fieldHelper::Image::m_labelId, label);
             }
+
             image->setField("ShowLandmarks", data::Boolean::New(true));
         }
     }
@@ -214,9 +215,11 @@ struct LabelImageFilter
 
 //------------------------------------------------------------------------------
 
-void computeCentroids(data::Image::sptr image,
-                      std::vector< data::PointList::sptr > pointListCentroids,
-                      std::vector< std::vector<size_t> > pointListLabels)
+void computeCentroids(
+    data::Image::sptr image,
+    std::vector<data::PointList::sptr> pointListCentroids,
+    std::vector<std::vector<size_t> > pointListLabels
+)
 {
     // Preparing the parameters for ITK
     LabelImageFilter::Parameters params;
@@ -230,7 +233,7 @@ void computeCentroids(data::Image::sptr image,
 
     // Call the ITK operator
     const core::tools::Type type = image->getType();
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, LabelImageFilter >::invoke(type, params);
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelImageFilter>::invoke(type, params);
 }
 
-}// namespace sight::filter::image.
+} // namespace sight::filter::image.

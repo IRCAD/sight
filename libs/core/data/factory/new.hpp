@@ -35,7 +35,8 @@ class Object;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -44,19 +45,21 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 private:
+
     template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) data::factory::New();
+    friend SPTR(CLASSNAME) data::factory::New();
 
     Key()
     {
     }
 };
 
-DATA_API SPTR( data::Object ) New( const data::registry::KeyType& classname );
+DATA_API SPTR(data::Object) New(const data::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 

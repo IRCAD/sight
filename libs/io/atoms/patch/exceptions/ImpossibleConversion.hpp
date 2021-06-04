@@ -36,6 +36,7 @@ namespace exceptions
 class ImpossibleConversion : public io::atoms::patch::exceptions::Base
 {
 public:
+
     ImpossibleConversion(const std::string& message);
     virtual ~ImpossibleConversion() noexcept
     {
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

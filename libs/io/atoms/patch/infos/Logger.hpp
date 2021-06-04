@@ -32,6 +32,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace infos
 {
 
@@ -43,7 +44,7 @@ class IO_ATOMS_CLASS_API Logger
 public:
 
     typedef std::ostringstream StreamType;
-    typedef ::boost::shared_ptr< StreamType  > StreamPtrType;
+    typedef ::boost::shared_ptr<StreamType> StreamPtrType;
 
     /// Logger destructor
     IO_ATOMS_API ~Logger();
@@ -91,4 +92,5 @@ private:
 };
 
 } //infos
+
 } //fwAtomHelper

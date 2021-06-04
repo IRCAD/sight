@@ -61,7 +61,7 @@ STDataListener::~STDataListener()
 void STDataListener::configuring()
 {
     SIGHT_ASSERT("Configuration not found", m_configuration != NULL);
-    if (m_configuration->findConfigurationElement("server"))
+    if(m_configuration->findConfigurationElement("server"))
     {
         const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
         SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
@@ -82,11 +82,11 @@ void STDataListener::configuring()
 
     if(tdata)
     {
-        std::vector < core::runtime::ConfigurationElement::sptr > matrices = tdata->find("matrix");
+        std::vector<core::runtime::ConfigurationElement::sptr> matrices = tdata->find("matrix");
 
         for(const auto& m : matrices)
         {
-            const unsigned long index = ::boost::lexical_cast< unsigned long >(m->getAttributeValue("index"));
+            const unsigned long index = ::boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
             m_matrixNameIndex[m->getAttributeValue("name")] = index;
         }
     }
@@ -117,13 +117,14 @@ void STDataListener::runClient()
                 const std::string dnKey = ui::base::preferences::getValue(dn->getValue());
                 m_client.addAuthorizedDevice(dnKey);
             }
+
             m_client.setFilteringByDeviceName(true);
         }
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
     }
-    catch (core::Exception& ex)
+    catch(core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
@@ -138,25 +139,26 @@ void STDataListener::runClient()
             // Only report the error on console (this normally happens only if we have requested the disconnection)
             SIGHT_ERROR(ex.what());
         }
+
         return;
     }
 
     // 2. Receive messages
     try
     {
-        while (m_client.isConnected())
+        while(m_client.isConnected())
         {
             std::string deviceName;
             double timestamp                 = 0;
             data::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
-            if (receiveObject)
+            if(receiveObject)
             {
                 composite->shallowCopy(receiveObject);
                 this->manageTimeline(composite, timestamp);
             }
         }
     }
-    catch (core::Exception& ex)
+    catch(core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
@@ -178,9 +180,9 @@ void STDataListener::runClient()
 
 void STDataListener::starting()
 {
-    data::MatrixTL::sptr matTL = this->getInOut< data::MatrixTL>(s_TIMELINE_KEY);
+    data::MatrixTL::sptr matTL = this->getInOut<data::MatrixTL>(s_TIMELINE_KEY);
     matTL->setMaximumSize(10);
-    matTL->initPoolSize(static_cast< unsigned int >(m_matrixNameIndex.size()));
+    matTL->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
 
     m_clientFuture = std::async(std::launch::async, std::bind(&STDataListener::runClient, this));
 }
@@ -198,7 +200,7 @@ void STDataListener::stopping()
 
 void STDataListener::manageTimeline(const data::Composite::sptr& obj, double timestamp)
 {
-    data::MatrixTL::sptr matTL = this->getInOut< data::MatrixTL>(s_TIMELINE_KEY);
+    data::MatrixTL::sptr matTL = this->getInOut<data::MatrixTL>(s_TIMELINE_KEY);
     SPTR(data::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
@@ -217,23 +219,25 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
             values = transfoMatrix->getCoefficients();
             float matrixValues[16];
             bool isZero = true;
-            for(unsigned int i = 0; i < 16; ++i)
+            for(unsigned int i = 0 ; i < 16 ; ++i)
             {
-                matrixValues[i] = static_cast< float >(values[i]);
+                matrixValues[i] = static_cast<float>(values[i]);
                 //Test if matrix contains only '0' except last value (always '1)
                 isZero &= i < 15 ? (matrixValues[i] == 0.f) : true;
             }
+
             //don't push the matrix if it contains only '0'
             if(!isZero)
             {
-                matrixBuf->setElement(matrixValues, static_cast< unsigned int>(index));
+                matrixBuf->setElement(matrixValues, static_cast<unsigned int>(index));
             }
         }
     }
+
     matTL->pushObject(matrixBuf);
 
     data::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = matTL->signal< data::TimeLine::ObjectPushedSignalType >(data::TimeLine::s_OBJECT_PUSHED_SIG );
+    sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
     sig->asyncEmit(timestamp);
 }
 

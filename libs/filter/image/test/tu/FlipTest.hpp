@@ -26,20 +26,22 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class FlipTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( FlipTest );
-CPPUNIT_TEST( flipAlongXAxisTest );
-CPPUNIT_TEST( flipAlongYAxisTest );
-CPPUNIT_TEST( flipAlongZAxisTest );
-CPPUNIT_TEST( flipAlongMultipleAxesTest );
-CPPUNIT_TEST( flipEmptyImageTest );
+CPPUNIT_TEST_SUITE(FlipTest);
+CPPUNIT_TEST(flipAlongXAxisTest);
+CPPUNIT_TEST(flipAlongYAxisTest);
+CPPUNIT_TEST(flipAlongZAxisTest);
+CPPUNIT_TEST(flipAlongMultipleAxesTest);
+CPPUNIT_TEST(flipEmptyImageTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void flipAlongXAxisTest();
     void flipAlongYAxisTest();
     void flipAlongZAxisTest();
@@ -48,4 +50,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image

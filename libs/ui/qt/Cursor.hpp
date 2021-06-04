@@ -36,21 +36,19 @@ namespace sight::ui::qt
  */
 class UI_QT_CLASS_API Cursor : public ui::base::ICursor
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Cursor, ui::base::ICursor, ui::base::factory::New< Cursor >)
+    SIGHT_DECLARE_CLASS(Cursor, ui::base::ICursor, ui::base::factory::New<Cursor>);
 
     UI_QT_API Cursor(ui::base::GuiBaseObject::Key key);
 
     UI_QT_API virtual ~Cursor();
 
     /// Set the cursor
-    UI_QT_API void setCursor( ui::base::ICursor::CursorType cursor) override;
+    UI_QT_API void setCursor(ui::base::ICursor::CursorType cursor) override;
 
     /// Set the default cursor
     UI_QT_API void setDefaultCursor() override;
-
 };
 
 } // namespace sight::ui::qt

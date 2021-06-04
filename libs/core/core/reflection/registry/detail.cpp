@@ -28,6 +28,7 @@
 
 namespace sight::core::reflection
 {
+
 namespace registry
 {
 
@@ -35,9 +36,10 @@ struct FwCampRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwCampRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwCampRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
+
 } // namespace sight::core::reflection

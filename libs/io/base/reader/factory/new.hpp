@@ -29,6 +29,7 @@
 
 namespace sight::io::base
 {
+
 namespace reader
 {
 
@@ -37,7 +38,8 @@ class IObjectReader;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -46,18 +48,19 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) io::base::reader::factory::New();
+friend SPTR(CLASSNAME) io::base::reader::factory::New();
 
 Key()
 {
 }
 };
 
-IO_BASE_API SPTR( io::base::reader::IObjectReader ) New( const io::base::reader::registry::KeyType& classname );
+IO_BASE_API SPTR(io::base::reader::IObjectReader) New(const io::base::reader::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
 
     return obj;
 }

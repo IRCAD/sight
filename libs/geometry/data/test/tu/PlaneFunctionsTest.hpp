@@ -26,25 +26,28 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
 class PlaneFunctionsTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( PlaneFunctionsTest );
-    CPPUNIT_TEST( checkGetPlane );
-    CPPUNIT_TEST( checkSetValues );
-    CPPUNIT_TEST( checkDistance );
-    CPPUNIT_TEST( checkNormal );
+
+    CPPUNIT_TEST_SUITE(PlaneFunctionsTest);
+    CPPUNIT_TEST(checkGetPlane);
+    CPPUNIT_TEST(checkSetValues);
+    CPPUNIT_TEST(checkDistance);
+    CPPUNIT_TEST(checkNormal);
 //    CPPUNIT_TEST( checkIntersect );
-    CPPUNIT_TEST( checkIsInHalfSpace );
-    CPPUNIT_TEST( checkOffset );
-    CPPUNIT_TEST( checkTransform );
-    CPPUNIT_TEST( checkOperator);
+    CPPUNIT_TEST(checkIsInHalfSpace);
+    CPPUNIT_TEST(checkOffset);
+    CPPUNIT_TEST(checkTransform);
+    CPPUNIT_TEST(checkOperator);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -62,4 +65,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::data

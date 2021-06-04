@@ -24,11 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/SRender.hpp>
+
+#include <ui/base/IEditor.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QVBoxLayout>
 
@@ -48,10 +48,9 @@ namespace sight::module::ui::viz
  */
 class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::base::IEditor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SCompositorParameterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCompositorParameterEditor, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SCompositorParameterEditor() noexcept;
@@ -65,7 +64,7 @@ public:
      */
     /// Slot: update the interface.
     MODULE_UI_VIZ_API static const core::com::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
-    /** @} */
+/** @} */
 
 protected:
 
@@ -82,6 +81,7 @@ protected:
     MODULE_UI_VIZ_API void updating() override;
 
 private:
+
     /// Slot: update the interface.
     void updateCompositor(std::string _compositorName, bool _enabled, sight::viz::scene3d::Layer::sptr _layer);
 

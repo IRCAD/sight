@@ -70,11 +70,11 @@ void AppManager::uninitialize()
 void AppManager::onServiceCreated(const QVariant& obj)
 {
     // check that the service is a IQmlEditor
-    ui::qml::IQmlEditor::sptr srv(obj.value< ui::qml::IQmlEditor* >());
-    if (srv)
+    ui::qml::IQmlEditor::sptr srv(obj.value<ui::qml::IQmlEditor*>());
+    if(srv)
     {
         // check if it is the SOrganMaterialEditor
-        if (srv->isA("Tuto05EditorQml::SStringEditor"))
+        if(srv->isA("Tuto05EditorQml::SStringEditor"))
         {
             // register the new service in the AppManager, it will be automatically started when the reconstruction is
             // added

@@ -31,8 +31,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  *
  * @brief class to manage conversion between data::Mesh and igtl::PolyDataMessage
@@ -40,7 +42,6 @@ namespace converter
 class IO_IGTL_CLASS_API MeshConverter :
     public IConverter
 {
-
 public:
 
     /// Constructor
@@ -61,7 +62,7 @@ public:
      *
      * @return an  ::igtl::ImageMessage converted from an data::Image
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
+    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -85,6 +86,7 @@ public:
     IO_IGTL_API std::string const& getFwDataObjectType() const;
 
 private:
+
     /// copy cells from a fwMesh to polydata message
     void copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const;
 
@@ -105,5 +107,7 @@ private:
     /// fwData type supported for conversion
     static const std::string s_FWDATA_OBJECT_TYPE;
 };
+
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

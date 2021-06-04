@@ -34,10 +34,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::custom::DefaultDicomFilter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::custom::DefaultDicomFilter);
 
 namespace sight::filter::dicom
 {
+
 namespace custom
 {
 
@@ -74,7 +75,9 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+)
 const
 {
     DicomSeriesContainerType result;
@@ -85,14 +88,14 @@ const
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
     // Apply default filters depending on SOPClassUIDs
-    for(const data::DicomSeries::sptr& s :  seriesContainer)
+    for(const data::DicomSeries::sptr& s : seriesContainer)
     {
         DicomSeriesContainerType tempo;
 
         // Create filter depending on SOPClassUID
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
         std::string sopClassUID                                          = sopClassUIDContainer.begin()->c_str();
-        if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34")    // FIXME Remove hard coded string
+        if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Remove hard coded string
         {
             sopClassUID = "Comprehensive3DSR";
         }
@@ -104,8 +107,8 @@ const
         filter::dicom::composite::IComposite::sptr filter;
 
         // CT Image Storage
-        if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage" ||
-           sopClassUID == "SecondaryCaptureImageStorage")
+        if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage"
+           || sopClassUID == "SecondaryCaptureImageStorage")
         {
             filter = filter::dicom::composite::CTImageStorageDefaultComposite::New();
         }
@@ -117,19 +120,19 @@ const
         }
         else
         {
-            logger->information("Can't apply any filter : \""+sopClassUID+"\" SOPClassUID is not supported.");
+            logger->information("Can't apply any filter : \"" + sopClassUID + "\" SOPClassUID is not supported.");
             tempo.push_back(s);
         }
 
-        for(data::DicomSeries::sptr filteredSeries :  tempo)
+        for(data::DicomSeries::sptr filteredSeries : tempo)
         {
             result.push_back(filteredSeries);
         }
     }
 
     return result;
-
 }
 
 } // namespace custom
+
 } // namespace sight::filter::dicom

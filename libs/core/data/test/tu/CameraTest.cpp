@@ -29,10 +29,11 @@
 #include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::ut::CameraTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::CameraTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -41,7 +42,7 @@ namespace ut
 void CameraTest::setUp()
 {
     // Set up context before running a test.
-    std::srand(core::tools::numericRoundCast< unsigned int >(std::time(NULL)));
+    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -54,16 +55,16 @@ void CameraTest::tearDown()
 
 data::Camera::sptr initCamera()
 {
-    const double CX                             = rand()%10000/100;
-    const double CY                             = rand()%10000/100;
-    const double FX                             = rand()%10000/100;
-    const double FY                             = rand()%10000/100;
-    const double SKEW                           = rand()%10000/100;
-    const double K1                             = rand()%10000/100;
-    const double K2                             = rand()%10000/100;
-    const double P1                             = rand()%10000/100;
-    const double P2                             = rand()%10000/100;
-    const double K3                             = rand()%10000/100;
+    const double CX                             = rand() % 10000 / 100;
+    const double CY                             = rand() % 10000 / 100;
+    const double FX                             = rand() % 10000 / 100;
+    const double FY                             = rand() % 10000 / 100;
+    const double SKEW                           = rand() % 10000 / 100;
+    const double K1                             = rand() % 10000 / 100;
+    const double K2                             = rand() % 10000 / 100;
+    const double P1                             = rand() % 10000 / 100;
+    const double P2                             = rand() % 10000 / 100;
+    const double K3                             = rand() % 10000 / 100;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -103,16 +104,16 @@ data::Camera::sptr initCamera()
 
 void CameraTest::paramTest()
 {
-    const double CX                             = rand()%10000/100;
-    const double CY                             = rand()%10000/100;
-    const double FX                             = rand()%10000/100;
-    const double FY                             = rand()%10000/100;
-    const double SKEW                           = rand()%10000/100;
-    const double K1                             = rand()%10000/100;
-    const double K2                             = rand()%10000/100;
-    const double P1                             = rand()%10000/100;
-    const double P2                             = rand()%10000/100;
-    const double K3                             = rand()%10000/100;
+    const double CX                             = rand() % 10000 / 100;
+    const double CY                             = rand() % 10000 / 100;
+    const double FX                             = rand() % 10000 / 100;
+    const double FY                             = rand() % 10000 / 100;
+    const double SKEW                           = rand() % 10000 / 100;
+    const double K1                             = rand() % 10000 / 100;
+    const double K2                             = rand() % 10000 / 100;
+    const double P1                             = rand() % 10000 / 100;
+    const double P2                             = rand() % 10000 / 100;
+    const double K3                             = rand() % 10000 / 100;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -219,4 +220,5 @@ void CameraTest::deepCopyTest()
 }
 
 } //namespace ut
+
 } //namespace sight::data

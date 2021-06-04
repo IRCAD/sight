@@ -56,16 +56,18 @@ V1ToV2::~V1ToV2()
 
 // ----------------------------------------------------------------------------
 
-V1ToV2::V1ToV2( const V1ToV2& cpy ) :
+V1ToV2::V1ToV2(const V1ToV2& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V1ToV2::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToV2::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -75,10 +77,10 @@ void V1ToV2::apply( const sight::atoms::Object::sptr& previous,
     // Create helper
     io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::Sequence::sptr oldCoefs = previous->getAttribute< sight::atoms::Sequence >("coefficient");
+    sight::atoms::Sequence::sptr oldCoefs = previous->getAttribute<sight::atoms::Sequence>("coefficient");
     sight::atoms::Sequence::sptr newCoefs = sight::atoms::Sequence::New();
 
-    for(size_t i = 0; i < 16; ++i)
+    for(size_t i = 0 ; i < 16 ; ++i)
     {
         newCoefs->push_back((*oldCoefs)[i]);
     }

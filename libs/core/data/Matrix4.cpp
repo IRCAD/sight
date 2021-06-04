@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( sight::data::Matrix4 );
+SIGHT_REGISTER_DATA(sight::data::Matrix4);
 
 namespace sight::data
 {
@@ -36,9 +36,9 @@ Matrix4::Matrix4(data::Object::Key)
 {
     //default initialization
     m_vCoefficients.fill(0.);
-    for(size_t t = 0; t < MATRIX_SIZE; ++t)
+    for(size_t t = 0 ; t < MATRIX_SIZE ; ++t)
     {
-        m_vCoefficients[t*MATRIX_SIZE + t] = 1.;
+        m_vCoefficients[t * MATRIX_SIZE + t] = 1.;
     }
 }
 
@@ -50,13 +50,17 @@ Matrix4::~Matrix4()
 
 //-----------------------------------------------------------------------------
 
-void Matrix4::shallowCopy(const Object::csptr& _source )
+void Matrix4::shallowCopy(const Object::csptr& _source)
 {
     Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_vCoefficients = other->m_vCoefficients;
 }
 
@@ -65,10 +69,14 @@ void Matrix4::shallowCopy(const Object::csptr& _source )
 void Matrix4::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
     m_vCoefficients = other->m_vCoefficients;
 }
 

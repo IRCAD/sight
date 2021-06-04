@@ -39,7 +39,8 @@ namespace Image
 class IO_PATCH_CLASS_API V3ToV2 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(V3ToV2, patch::structural::data::Image::V3ToV2, new V3ToV2)
+
+    SIGHT_DECLARE_CLASS(V3ToV2, patch::structural::data::Image::V3ToV2, new V3ToV2);
 
     /// Constructor
     IO_PATCH_API V3ToV2();
@@ -48,7 +49,7 @@ public:
     IO_PATCH_API ~V3ToV2() override;
 
     /// Copy constructor
-    IO_PATCH_API V3ToV2( const V3ToV2& cpy );
+    IO_PATCH_API V3ToV2(const V3ToV2& cpy);
 
     /**
      * @brief Applies patch
@@ -58,8 +59,8 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace Image

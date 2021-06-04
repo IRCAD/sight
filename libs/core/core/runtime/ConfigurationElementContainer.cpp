@@ -40,14 +40,14 @@ namespace
  */
 struct HasName
 {
-    HasName( const std::string& name ) :
-        m_name( name )
+    HasName(const std::string& name) :
+        m_name(name)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    bool operator() ( ConfigurationElement::csptr element ) const
+    bool operator()(ConfigurationElement::csptr element) const
     {
         return element->getName() == m_name;
     }
@@ -61,9 +61,9 @@ struct HasName
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElementContainer::addConfigurationElement( ConfigurationElement::sptr element )
+void ConfigurationElementContainer::addConfigurationElement(ConfigurationElement::sptr element)
 {
-    m_elements.push_back( element );
+    m_elements.push_back(element);
 }
 
 //------------------------------------------------------------------------------
@@ -89,36 +89,37 @@ const ConfigurationElementContainer::Container& ConfigurationElementContainer::g
 
 //-----------------------------------------------------------------------------
 
-bool ConfigurationElementContainer::hasConfigurationElement( const std::string& name ) const
+bool ConfigurationElementContainer::hasConfigurationElement(const std::string& name) const
 {
-    Container::const_iterator found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
+    Container::const_iterator found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
     return found != m_elements.end();
 }
 
 //-----------------------------------------------------------------------------
 
 const std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
-    const std::string& name ) const
+    const std::string& name
+) const
 {
-    Container::const_iterator found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
+    Container::const_iterator found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
 
-    return ( found == m_elements.end() ) ? std::shared_ptr< ConfigurationElement >() : *found;
+    return (found == m_elements.end()) ? std::shared_ptr<ConfigurationElement>() : *found;
 }
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement( const std::string& _name )
+ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement(const std::string& _name)
 const
 {
     ConfigurationElementContainer container;
 
-    for(    Container::const_iterator itCfgElem = m_elements.begin();
-            itCfgElem != m_elements.end();
-            ++itCfgElem )
+    for(Container::const_iterator itCfgElem = m_elements.begin() ;
+        itCfgElem != m_elements.end() ;
+        ++itCfgElem)
     {
-        if ( (*itCfgElem)->getName() == _name )
+        if((*itCfgElem)->getName() == _name)
         {
-            container.addConfigurationElement( (*itCfgElem) );
+            container.addConfigurationElement((*itCfgElem));
         }
     }
 

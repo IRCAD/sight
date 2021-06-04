@@ -29,18 +29,19 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief Defines the generic message box for IHM.
  * Use the Delegate design pattern.
  */
 class UI_BASE_CLASS_API NotificationDialog : public ui::base::dialog::INotificationDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(NotificationDialog, ui::base::dialog::INotificationDialog, new NotificationDialog)
+    SIGHT_DECLARE_CLASS(NotificationDialog, ui::base::dialog::INotificationDialog, new NotificationDialog);
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -49,10 +50,12 @@ public:
      * @param _type type of the notification box (SUCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
-    UI_BASE_API static void show( const std::string& _message,
-                                  INotificationDialog::Type _type =
-                                      INotificationDialog::Type::DEFAULT,
-                                  INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT );
+    UI_BASE_API static void show(
+        const std::string& _message,
+        INotificationDialog::Type _type =
+        INotificationDialog::Type::DEFAULT,
+        INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT
+    );
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -63,10 +66,12 @@ public:
      * @deprecated use show() instead
      */
     [[deprecated("Sight 22.0, use show() instead.")]]
-    UI_BASE_API static void showNotificationDialog( const std::string& _message,
-                                                    INotificationDialog::Type _type =
-                                                        INotificationDialog::Type::DEFAULT,
-                                                    INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT );
+    UI_BASE_API static void showNotificationDialog(
+        const std::string& _message,
+        INotificationDialog::Type _type =
+        INotificationDialog::Type::DEFAULT,
+        INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT
+    );
 
     /// Constructor. Create the implementation of the specific message box
     UI_BASE_API NotificationDialog();
@@ -79,9 +84,11 @@ public:
      * @param _type type of the notification box (SUCCESS, FAILURE or INFO)
      * @param _pos position where notification is displayed (TOP_LEFT, TOP_RIGHT, ...)
      */
-    UI_BASE_API NotificationDialog( const std::string& _message,
-                                    INotificationDialog::Type _type    = INotificationDialog::Type::DEFAULT,
-                                    INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT);
+    UI_BASE_API NotificationDialog(
+        const std::string& _message,
+        INotificationDialog::Type _type    = INotificationDialog::Type::DEFAULT,
+        INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT
+    );
 
     /// Destructor. Does nothing
     UI_BASE_API ~NotificationDialog() override;
@@ -93,10 +100,10 @@ public:
     UI_BASE_API void setMessage(const std::string& _msg) override;
 
     /// Sets the notification type.
-    UI_BASE_API void setType( Type _type) override;
+    UI_BASE_API void setType(Type _type) override;
 
     /// Sets the position.
-    UI_BASE_API void setPosition( Position _position) override;
+    UI_BASE_API void setPosition(Position _position) override;
 
     /// Sets the size
     UI_BASE_API void setSize(unsigned int _width, unsigned int _height) override;
@@ -129,4 +136,5 @@ protected:
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

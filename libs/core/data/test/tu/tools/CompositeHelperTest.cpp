@@ -27,14 +27,15 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <data/String.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::tools::ut::CompositeHelperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::tools::ut::CompositeHelperTest);
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
@@ -74,7 +75,7 @@ void CompositeHelperTest::testHelper()
     std::condition_variable condition;
 
     data::Composite::ContainerType addedComposites;
-    std::function<void ( data::Composite::ContainerType)> fnAdd =
+    std::function<void(data::Composite::ContainerType)> fnAdd =
         [&](data::Composite::ContainerType f)
         {
             {
@@ -85,15 +86,15 @@ void CompositeHelperTest::testHelper()
             condition.notify_one();
         };
 
-    auto slotAdded = core::com::newSlot( fnAdd );
+    auto slotAdded = core::com::newSlot(fnAdd);
     slotAdded->setWorker(worker);
-    auto sigAdded = obj->signal< data::Composite::AddedObjectsSignalType>(data::Composite::s_ADDED_OBJECTS_SIG);
+    auto sigAdded = obj->signal<data::Composite::AddedObjectsSignalType>(data::Composite::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
 
     unsigned int numRemovedNotif = 0;
     data::Composite::ContainerType removedComposites;
 
-    std::function<void ( data::Composite::ContainerType)> fnRemove =
+    std::function<void(data::Composite::ContainerType)> fnRemove =
         [&](data::Composite::ContainerType f)
         {
             {
@@ -103,17 +104,18 @@ void CompositeHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotRemoved = core::com::newSlot( fnRemove );
+    auto slotRemoved = core::com::newSlot(fnRemove);
     slotRemoved->setWorker(worker);
-    auto sigRemoved = obj->signal< data::Composite::RemovedObjectsSignalType>(
-        data::Composite::s_REMOVED_OBJECTS_SIG);
+    auto sigRemoved = obj->signal<data::Composite::RemovedObjectsSignalType>(
+        data::Composite::s_REMOVED_OBJECTS_SIG
+    );
     sigRemoved->connect(slotRemoved);
 
     unsigned int numChangedNotif = 0;
     data::Composite::ContainerType newComposites;
     data::Composite::ContainerType oldComposites;
 
-    std::function<void ( data::Composite::ContainerType, data::Composite::ContainerType)> fnChange =
+    std::function<void(data::Composite::ContainerType, data::Composite::ContainerType)> fnChange =
         [&](data::Composite::ContainerType newF, data::Composite::ContainerType oldF)
         {
             {
@@ -124,14 +126,15 @@ void CompositeHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotChanged = core::com::newSlot( fnChange );
+    auto slotChanged = core::com::newSlot(fnChange);
     slotChanged->setWorker(worker);
-    auto sigChanged = obj->signal< data::Composite::ChangedObjectsSignalType>(
-        data::Composite::s_CHANGED_OBJECTS_SIG);
+    auto sigChanged = obj->signal<data::Composite::ChangedObjectsSignalType>(
+        data::Composite::s_CHANGED_OBJECTS_SIG
+    );
     sigChanged->connect(slotChanged);
 
     auto clearArrays =
-        [&]() { addedComposites.clear(); removedComposites.clear(); newComposites.clear(); oldComposites.clear(); };
+        [&](){addedComposites.clear(); removedComposites.clear(); newComposites.clear(); oldComposites.clear();};
 
     {
         // Test add()
@@ -147,7 +150,7 @@ void CompositeHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numAddedNotif == 1; });
+        condition.wait(lock, [&]{return numAddedNotif == 1;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(2), addedComposites.size());
         CPPUNIT_ASSERT_EQUAL(size_t(0), removedComposites.size());
@@ -173,7 +176,7 @@ void CompositeHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numChangedNotif == 1; });
+        condition.wait(lock, [&]{return numChangedNotif == 1;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(0), addedComposites.size());
         CPPUNIT_ASSERT_EQUAL(size_t(0), removedComposites.size());
@@ -215,7 +218,7 @@ void CompositeHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numAddedNotif == 2 && numRemovedNotif == 1 && numChangedNotif == 2; });
+        condition.wait(lock, [&]{return numAddedNotif == 2 && numRemovedNotif == 1 && numChangedNotif == 2;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(2), addedComposites.size());
         CPPUNIT_ASSERT_EQUAL(size_t(1), removedComposites.size());
@@ -238,7 +241,7 @@ void CompositeHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numRemovedNotif == 2; });
+        condition.wait(lock, [&]{return numRemovedNotif == 2;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(3), removedComposites.size());
         CPPUNIT_ASSERT(removedComposites[COMPOSITE_ID1] == compositeObj3);
@@ -253,4 +256,5 @@ void CompositeHelperTest::testHelper()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data::tools

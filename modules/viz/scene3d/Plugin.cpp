@@ -60,25 +60,30 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void SightOgreListener::messageLogged(const ::Ogre::String& _message,
-                                      ::Ogre::LogMessageLevel _lml,
-                                      bool,
-                                      const ::Ogre::String&,
-                                      bool& _skipThisMessage)
+void SightOgreListener::messageLogged(
+    const ::Ogre::String& _message,
+    ::Ogre::LogMessageLevel _lml,
+    bool,
+    const ::Ogre::String&,
+    bool& _skipThisMessage
+)
 {
-    if (!_skipThisMessage)
+    if(!_skipThisMessage)
     {
         switch(_lml)
         {
             case ::Ogre::LML_TRIVIAL:
                 SIGHT_INFO(_message);
                 break;
+
             case ::Ogre::LML_NORMAL:
                 SIGHT_DEBUG(_message);
                 break;
+
             case ::Ogre::LML_WARNING:
                 SIGHT_WARN(_message);
                 break;
+
             case ::Ogre::LML_CRITICAL:
                 SIGHT_ERROR(_message);
                 break;

@@ -32,10 +32,11 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ReconstructionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ReconstructionTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -64,9 +65,9 @@ void ReconstructionTest::methode1() //test des setters et getters
     // process
     data::Reconstruction::sptr p1 = data::Reconstruction::New();
 
-    p1->setIsVisible( ISVISIBLE );
-    p1->setOrganName( CREFORGANNAME );
-    p1->setStructureType( CREFSTRUCTURETYPE );
+    p1->setIsVisible(ISVISIBLE);
+    p1->setOrganName(CREFORGANNAME);
+    p1->setStructureType(CREFSTRUCTURETYPE);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
@@ -78,7 +79,6 @@ void ReconstructionTest::methode1() //test des setters et getters
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
-
 }
 
 //------------------------------------------------------------------------------
@@ -92,9 +92,9 @@ void ReconstructionTest::methode2()
     // process
     data::Reconstruction::sptr p1 = data::Reconstruction::New();
 
-    p1->setIsVisible( ISVISIBLE );
-    p1->setOrganName( CREFORGANNAME );
-    p1->setStructureType( CREFSTRUCTURETYPE );
+    p1->setIsVisible(ISVISIBLE);
+    p1->setOrganName(CREFORGANNAME);
+    p1->setStructureType(CREFSTRUCTURETYPE);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
@@ -116,8 +116,9 @@ void ReconstructionTest::image()
     data::Image::sptr i1(data::Image::New());
 
     p1->setImage(i1);
-    CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1 );
+    CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1);
 }
 
 } //namespace ut
+
 } //namespace sight::data

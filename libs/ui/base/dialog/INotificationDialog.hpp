@@ -31,17 +31,18 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief Defines the generic notification popup GUI.
  */
 class UI_BASE_CLASS_API INotificationDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(INotificationDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(INotificationDialog, ui::base::GuiBaseObject);
 
     /// Notification Type (changes Qss style).
     enum class Type
@@ -85,13 +86,13 @@ public:
      * @brief Sets the notification type.
      * @param _type notification type @see Type.
      */
-    UI_BASE_API virtual void setType( Type _type);
+    UI_BASE_API virtual void setType(Type _type);
 
     /**
      * @brief Sets the position.
      * @param _position notification position @see Position.
      */
-    UI_BASE_API virtual void setPosition( Position _position);
+    UI_BASE_API virtual void setPosition(Position _position);
 
     /**
      * @brief Sets the size
@@ -153,8 +154,8 @@ protected:
 
     /// Pointer to the parent container, default nullptr.
     ui::base::container::fwContainer::csptr m_parentContainer {nullptr};
-
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

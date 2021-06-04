@@ -26,29 +26,31 @@
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
 class UtilTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( UtilTest );
+CPPUNIT_TEST_SUITE(UtilTest);
 
-CPPUNIT_TEST( autoBindTest );
-CPPUNIT_TEST( convertFunctionTypeTest );
-CPPUNIT_TEST( removeLastArgTest );
+CPPUNIT_TEST(autoBindTest);
+CPPUNIT_TEST(convertFunctionTypeTest);
+CPPUNIT_TEST(removeLastArgTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
-    void autoBindTest ();
-    void convertFunctionTypeTest ();
-    void removeLastArgTest ();
-
+    void autoBindTest();
+    void convertFunctionTypeTest();
+    void removeLastArgTest();
 };
 
 } //namespace ut
+
 } //namespace sight::core::com

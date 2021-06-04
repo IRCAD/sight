@@ -37,7 +37,7 @@ using namespace sight;
 
 //------------------------------------------------------------------------------
 
-SDisplayTestNotifications::SDisplayTestNotifications( ) noexcept
+SDisplayTestNotifications::SDisplayTestNotifications() noexcept
 {
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SDisplayTestNotifications::setEnumParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SDisplayTestNotifications::setBoolParameter, this);
@@ -99,11 +99,11 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         {
             m_type = ::dial::NotificationDialog::Type::SUCCESS;
         }
-        else if (_val == "INFO")
+        else if(_val == "INFO")
         {
             m_type = ::dial::NotificationDialog::Type::INFO;
         }
-        else if (_val == "FAILURE")
+        else if(_val == "FAILURE")
         {
             m_type = ::dial::NotificationDialog::Type::FAILURE;
         }
@@ -114,7 +114,7 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
     }
     else
     {
-        SIGHT_ERROR("Key '" + _key + "' is not handled." );
+        SIGHT_ERROR("Key '" + _key + "' is not handled.");
     }
 }
 
@@ -128,13 +128,13 @@ void SDisplayTestNotifications::setBoolParameter(bool _val, std::string _key)
     }
     else
     {
-        SIGHT_ERROR("Key '" + _key + "' is not handled." );
+        SIGHT_ERROR("Key '" + _key + "' is not handled.");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayTestNotifications::info(std::ostream& _sstream )
+void SDisplayTestNotifications::info(std::ostream& _sstream)
 {
     _sstream << "SDisplayTestNotifications" << std::endl;
 }
@@ -148,7 +148,7 @@ void SDisplayTestNotifications::configuring()
 
 //------------------------------------------------------------------------------
 
-void SDisplayTestNotifications::updating( )
+void SDisplayTestNotifications::updating()
 {
     if(m_useSNotifier)
     {
@@ -159,22 +159,25 @@ void SDisplayTestNotifications::updating( )
 
         if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
         {
-            auto notif = this->signal< service::IService::SuccessNotifiedSignalType >(
-                service::IService::s_SUCCESS_NOTIFIED_SIG);
+            auto notif = this->signal<service::IService::SuccessNotifiedSignalType>(
+                service::IService::s_SUCCESS_NOTIFIED_SIG
+            );
 
             notif->asyncEmit("Notification Test !");
         }
         else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
         {
-            auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-                service::IService::s_FAILURE_NOTIFIED_SIG);
+            auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+                service::IService::s_FAILURE_NOTIFIED_SIG
+            );
 
             notif->asyncEmit("Notification Test !");
         }
         else
         {
-            auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
-                service::IService::s_INFO_NOTIFIED_SIG);
+            auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
+                service::IService::s_INFO_NOTIFIED_SIG
+            );
 
             notif->asyncEmit("Notification Test !");
         }
@@ -184,24 +187,45 @@ void SDisplayTestNotifications::updating( )
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the NotificationDialog.
         if(m_displayAll)
         {
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::TOP_LEFT );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::TOP_RIGHT );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::CENTERED_TOP );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::CENTERED );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::BOTTOM_LEFT );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::BOTTOM_RIGHT );
-            ::dial::NotificationDialog::show("Notification Test !", m_type,
-                                             ::dial::NotificationDialog::Position::CENTERED_BOTTOM );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::TOP_LEFT
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::TOP_RIGHT
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::CENTERED_TOP
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::CENTERED
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::BOTTOM_LEFT
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::BOTTOM_RIGHT
+            );
+            ::dial::NotificationDialog::show(
+                "Notification Test !",
+                m_type,
+                ::dial::NotificationDialog::Position::CENTERED_BOTTOM
+            );
         }
         else
         {
-            ::dial::NotificationDialog::show("Notification Test !", m_type, m_position );
+            ::dial::NotificationDialog::show("Notification Test !", m_type, m_position);
         }
     }
 }

@@ -113,12 +113,15 @@ std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _dif
         case data::Material::AMBIENT:
             suffix = s_AMBIENT;
             break;
+
         case data::Material::FLAT:
             suffix = s_FLAT;
             break;
+
         case data::Material::GOURAUD:
             suffix = s_GOURAUD;
             break;
+
         case data::Material::PHONG:
             suffix = s_PIXELLIGHTING;
             break;
@@ -128,6 +131,7 @@ std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _dif
     {
         suffix += "+VT";
     }
+
     if(_diffuseTexture)
     {
         suffix += "+DfsTex";
@@ -138,8 +142,12 @@ std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _dif
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primitiveType, bool _diffuseTexture,
-                                                bool _vertexColor, bool _hasPrimitiveColor)
+std::string Shading::getR2VBGeometryProgramName(
+    data::Mesh::CellTypesEnum _primitiveType,
+    bool _diffuseTexture,
+    bool _vertexColor,
+    bool _hasPrimitiveColor
+)
 {
     std::string suffix;
 
@@ -160,10 +168,12 @@ std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primi
     {
         suffix += "+VT";
     }
+
     if(_diffuseTexture)
     {
         suffix += "+DfsTex";
     }
+
     if(_hasPrimitiveColor)
     {
         suffix += "+PPColor";
@@ -176,8 +186,12 @@ std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primi
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellType _primitiveType, bool _diffuseTexture,
-                                                bool _vertexColor, bool _hasPrimitiveColor)
+std::string Shading::getR2VBGeometryProgramName(
+    data::Mesh::CellType _primitiveType,
+    bool _diffuseTexture,
+    bool _vertexColor,
+    bool _hasPrimitiveColor
+)
 {
     std::string suffix;
 
@@ -198,10 +212,12 @@ std::string Shading::getR2VBGeometryProgramName(data::Mesh::CellType _primitiveT
     {
         suffix += "+VT";
     }
+
     if(_diffuseTexture)
     {
         suffix += "+DfsTex";
     }
+
     if(_hasPrimitiveColor)
     {
         suffix += "+PPColor";
@@ -223,7 +239,8 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
-    static const std::regex regexShading("("+s_AMBIENT+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
+    static const std::regex regexShading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_GOURAUD + ")|("
+                                         + s_PIXELLIGHTING + ")");
     prgName = std::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;
@@ -253,34 +270,38 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
 
     // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
     // with the given data::Object ID
-    if (pass->isProgrammable())
+    if(pass->isProgrammable())
     {
         ::Ogre::GpuProgramParametersSharedPtr params;
 
         // Getting params for each program type
-        if (pass->hasVertexProgram())
+        if(pass->hasVertexProgram())
         {
             params = pass->getVertexProgramParameters();
             auto vpConstants = findShaderConstants(params, ::Ogre::GPT_VERTEX_PROGRAM);
             std::move(vpConstants.begin(), vpConstants.end(), std::inserter(constants, constants.begin()));
         }
-        if (pass->hasFragmentProgram())
+
+        if(pass->hasFragmentProgram())
         {
             params = pass->getFragmentProgramParameters();
             auto fpConstants = findShaderConstants(params, ::Ogre::GPT_FRAGMENT_PROGRAM);
             std::move(fpConstants.begin(), fpConstants.end(), std::inserter(constants, constants.begin()));
         }
-        if (pass->hasGeometryProgram())
+
+        if(pass->hasGeometryProgram())
         {
             params = pass->getGeometryProgramParameters();
             auto gpConstants = findShaderConstants(params, ::Ogre::GPT_GEOMETRY_PROGRAM);
             std::move(gpConstants.begin(), gpConstants.end(), std::inserter(constants, constants.begin()));
         }
-        if (pass->hasTessellationHullProgram())
+
+        if(pass->hasTessellationHullProgram())
         {
             SIGHT_WARN("Tessellation Hull Program in Material not supported yet");
         }
-        if (pass->hasTessellationDomainProgram())
+
+        if(pass->hasTessellationDomainProgram())
         {
             SIGHT_WARN("Tessellation Domain Program in Material not supported yet");
         }
@@ -291,16 +312,18 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
 
 //------------------------------------------------------------------------------
 
-Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramParametersSharedPtr _params,
-                                                          ::Ogre::GpuProgramType _shaderType,
-                                                          bool _enableLightConstants)
+Shading::ShaderConstantsType Shading::findShaderConstants(
+    ::Ogre::GpuProgramParametersSharedPtr _params,
+    ::Ogre::GpuProgramType _shaderType,
+    bool _enableLightConstants
+)
 {
     ShaderConstantsType parameters;
 
     ::Ogre::GpuNamedConstants constantsDefinitionMap = _params->getConstantDefinitions();
 
     // Get only user constants
-    for (const auto& cstDef : constantsDefinitionMap.map)
+    for(const auto& cstDef : constantsDefinitionMap.map)
     {
         if(!_enableLightConstants)
         {
@@ -312,39 +335,48 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
             }
         }
 
-        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        if(!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
             ConstantValueType constantValue;
             bool found = false;
             if(cstDef.second.isDouble())
             {
-                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.d[i] = _params->getDoubleConstantList()[cstDef.second.physicalIndex + i];
                 }
+
                 found = true;
             }
             else if(cstDef.second.isFloat())
             {
-                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.f[i] = _params->getFloatConstantList()[cstDef.second.physicalIndex + i];
                 }
+
                 found = true;
             }
             else if(cstDef.second.isInt())
             {
-                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                for(size_t i = 0 ; i < cstDef.second.elementSize ; ++i)
                 {
                     constantValue.i[i] = _params->getIntConstantList()[cstDef.second.physicalIndex + i];
                 }
+
                 found = true;
             }
 
             if(found)
             {
-                parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType,
-                                                     constantValue));
+                parameters.push_back(
+                    std::make_tuple(
+                        cstDef.first,
+                        cstDef.second.constType,
+                        _shaderType,
+                        constantValue
+                    )
+                );
             }
         }
     }
@@ -365,22 +397,24 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             auto newObj = data::Float::New();
             newObj->setValue(_value.f[0]);
             object = newObj;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_FLOAT2:
         {
             data::Array::sptr arrayObject = data::Array::New();
 
-            arrayObject->resize( {2}, core::tools::Type::s_FLOAT);
+            arrayObject->resize({2}, core::tools::Type::s_FLOAT);
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< float >(0) = _value.f[0];
-            arrayObject->at< float >(1) = _value.f[1];
+            arrayObject->at<float>(0) = _value.f[0];
+            arrayObject->at<float>(1) = _value.f[1];
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_FLOAT3:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -389,30 +423,34 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< float >(0) = _value.f[0];
-            arrayObject->at< float >(1) = _value.f[1];
-            arrayObject->at< float >(2) = _value.f[2];
+            arrayObject->at<float>(0) = _value.f[0];
+            arrayObject->at<float>(1) = _value.f[1];
+            arrayObject->at<float>(2) = _value.f[2];
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_FLOAT4:
         {
             auto newObj = data::Color::New();
             newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
             object = newObj;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
             object = data::Matrix4::New();
             break;
+
         case ::Ogre::GpuConstantType::GCT_INT1:
         {
             auto newObj = data::Integer::New();
             newObj->setValue(_value.i[0]);
             object = newObj;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_INT2:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -421,12 +459,13 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
-            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
+            arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_INT3:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -435,13 +474,14 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
-            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
-            arrayObject->at< std::uint32_t >(2) = static_cast<std::uint32_t>(_value.i[2]);
+            arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
+            arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(_value.i[2]);
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_INT4:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -450,21 +490,23 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< std::uint32_t >(0) = static_cast<std::uint32_t>(_value.i[0]);
-            arrayObject->at< std::uint32_t >(1) = static_cast<std::uint32_t>(_value.i[1]);
-            arrayObject->at< std::uint32_t >(2) = static_cast<std::uint32_t>(_value.i[2]);
-            arrayObject->at< std::uint32_t >(3) = static_cast<std::uint32_t>(_value.i[3]);
+            arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
+            arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
+            arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(_value.i[2]);
+            arrayObject->at<std::uint32_t>(3) = static_cast<std::uint32_t>(_value.i[3]);
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_DOUBLE1:
         {
             auto newObj = data::Float::New();
-            newObj->setValue( static_cast<float>(_value.d[0]) );
+            newObj->setValue(static_cast<float>(_value.d[0]));
             object = newObj;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_DOUBLE2:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -473,12 +515,13 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< double >(0) = _value.d[0];
-            arrayObject->at< double >(1) = _value.d[1];
+            arrayObject->at<double>(0) = _value.d[0];
+            arrayObject->at<double>(1) = _value.d[1];
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_DOUBLE3:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -487,13 +530,14 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< double >(0) = _value.d[0];
-            arrayObject->at< double >(1) = _value.d[1];
-            arrayObject->at< double >(2) = _value.d[2];
+            arrayObject->at<double>(0) = _value.d[0];
+            arrayObject->at<double>(1) = _value.d[1];
+            arrayObject->at<double>(2) = _value.d[2];
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_DOUBLE4:
         {
             data::Array::sptr arrayObject = data::Array::New();
@@ -502,17 +546,19 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
             const auto dumpLock = arrayObject->lock();
 
-            arrayObject->at< double >(0) = _value.d[0];
-            arrayObject->at< double >(1) = _value.d[1];
-            arrayObject->at< double >(2) = _value.d[2];
-            arrayObject->at< double >(3) = _value.d[3];
+            arrayObject->at<double>(0) = _value.d[0];
+            arrayObject->at<double>(1) = _value.d[1];
+            arrayObject->at<double>(2) = _value.d[2];
+            arrayObject->at<double>(3) = _value.d[3];
 
             object = arrayObject;
+            break;
         }
-        break;
+
         case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
             object = data::Matrix4::New();
             break;
+
         default:
             std::string GpuConstantTypeNames[] =
             {
@@ -557,20 +603,23 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            SIGHT_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
+            SIGHT_WARN("Object type " + GpuConstantTypeNames[_type - 1] + " not supported yet");
 
-            (void)GpuConstantTypeNames; // Only there to avoid the 'unused' warning.
+            (void) GpuConstantTypeNames; // Only there to avoid the 'unused' warning.
     }
+
     return object;
 }
 
 // ----------------------------------------------------------------------------
 
-::Ogre::GpuProgramPtr Shading::createProgramFrom(const std::string& _name,
-                                                 const std::string& _sourceFileName,
-                                                 const GpuProgramParametersType& _parameters,
-                                                 ::Ogre::GpuProgramType _shaderType,
-                                                 const std::string& _baseName)
+::Ogre::GpuProgramPtr Shading::createProgramFrom(
+    const std::string& _name,
+    const std::string& _sourceFileName,
+    const GpuProgramParametersType& _parameters,
+    ::Ogre::GpuProgramType _shaderType,
+    const std::string& _baseName
+)
 {
     auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
@@ -586,8 +635,8 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
     newProgram->setSourceFile(_sourceFileName);
 
-    auto srcResource = mgr.getResourceByName(_baseName, RESOURCE_GROUP);
-    auto srcProgram  = ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(srcResource);
+    auto srcResource                   = mgr.getResourceByName(_baseName, RESOURCE_GROUP);
+    auto srcProgram                    = ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(srcResource);
     ::Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
 
     for(const auto& params : _parameters)
@@ -601,6 +650,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
             newProgram->setParameter(params.first, params.second);
         }
     }
+
     newProgram->setParameter("preprocessor_defines", preprocessorDefines);
 
     // Grab previous attached shaders and add them to the new program

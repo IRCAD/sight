@@ -23,20 +23,19 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/IService.hpp>
 
 namespace sight::service
 {
+
 /**
  * @brief   ISynchronizer service synchronize objects from timelines
  */
 class SERVICE_CLASS_API ISynchronizer : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(ISynchronizer, service::IService)
+    SIGHT_DECLARE_SERVICE(ISynchronizer, service::IService);
 
     /**
      * @brief Constructor.
@@ -47,7 +46,6 @@ public:
      * @brief Destructor.
      */
     SERVICE_API virtual ~ISynchronizer() noexcept;
-
 };
 
 } //namespace sight::service

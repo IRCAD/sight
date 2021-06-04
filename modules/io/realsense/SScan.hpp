@@ -180,7 +180,7 @@ class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScan, ::sight::service::IRGBDGrabber)
+    SIGHT_DECLARE_SERVICE(SScan, ::sight::service::IRGBDGrabber);
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal<void (double)> DistanceComputedSignalType;
@@ -225,16 +225,16 @@ private:
      */
     struct CameraSettings
     {
-        int fps               = 30; ///< Default FPS of all streams.
-        int colorH            = 720; ///< Default Height of color/infrared streams.
-        int colorW            = 1280; ///< Default Width of color/infrared streams.
-        int depthH            = 720; ///< Default Height of depth stream.
-        int depthW            = 1280; ///< Default Width of depth stream.
-        ::fs::path presetPath = ""; ///< Path to the preset to load (default none).
-        bool irEmitter        = true; ///< enable/disable ir emitter (default on).
+        int fps               = 30;                ///< Default FPS of all streams.
+        int colorH            = 720;               ///< Default Height of color/infrared streams.
+        int colorW            = 1280;              ///< Default Width of color/infrared streams.
+        int depthH            = 720;               ///< Default Height of depth stream.
+        int depthW            = 1280;              ///< Default Width of depth stream.
+        ::fs::path presetPath = "";                ///< Path to the preset to load (default none).
+        bool irEmitter        = true;              ///< enable/disable ir emitter (default on).
         int maxRange          = s_MAX_DEPTH_RANGE; ///< max depth range.
         int minRange          = s_MIN_DEPTH_RANGE; ///< min depth range.
-        bool needHardReset    = false; ///< if device needs to be hard-reset before at stop.
+        bool needHardReset    = false;             ///< if device needs to be hard-reset before at stop.
         ///If frames needs to be aligned on in a particular STREAM.
         /// Value can be RS2_STREAM_COUNT = No alignement, RS_STREAM_DEPTH, RS_STREAM_COLOR, RS_STREAM_INFRARED, others
         // values are ignored.
@@ -261,8 +261,8 @@ private:
     /// (see https://github.com/IntelRealSense/librealsense/blob/master/doc/post-processing-filters.md)
     struct FilterSettings
     {
-        bool enableSpacial {false}; ///< Enable Spatial Edge-Preserving filter
-        bool enableTemporal {false}; ///< Enable Temporal filter
+        bool enableSpacial {false};      ///< Enable Spatial Edge-Preserving filter
+        bool enableTemporal {false};     ///< Enable Temporal filter
         bool enableHolesFilling {false}; ///< Enable Holes Filling filter
 
         // spacial filter settings

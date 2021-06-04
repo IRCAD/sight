@@ -35,10 +35,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::dicom::ut::ImagePositionPatientSplitterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -65,8 +66,10 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -78,12 +81,13 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter"
+    );
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
@@ -98,7 +102,6 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     // Check number of instances in series
     CPPUNIT_ASSERT_EQUAL(size_t(233), dicomSeriesA->getDicomContainer().size());
     CPPUNIT_ASSERT_EQUAL(size_t(275), dicomSeriesB->getDicomContainer().size());
-
 }
 
 //-----------------------------------------------------------------------------
@@ -110,8 +113,10 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     const std::string filename       = "04-CT-DICOM_SCRAT_CORRUPTED/46140000";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -139,12 +144,13 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     // Just in case we load the wrong series or the data is corrupted.
     CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->getNumberOfInstances());
 
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter"
+    );
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
@@ -153,10 +159,10 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(37), dicomSeriesContainer.size());
-
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

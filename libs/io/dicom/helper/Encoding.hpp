@@ -35,11 +35,14 @@
 
 namespace sight::core::log
 {
+
 class Logger;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -59,9 +62,11 @@ public:
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
-    IO_DICOM_API static std::string convertString(const std::string& source,
-                                                  const std::string& definedCharsetTerm,
-                                                  const SPTR(core::log::Logger)& logger = nullptr);
+    IO_DICOM_API static std::string convertString(
+        const std::string& source,
+        const std::string& definedCharsetTerm,
+        const SPTR(core::log::Logger)& logger = nullptr
+    );
 
 private:
 
@@ -72,9 +77,11 @@ private:
      * @param[in] logger Logger used for conversion errors
      * @return converted charset
      */
-    static std::string convertStringWithoutCodeExtensions(const std::string& source,
-                                                          const std::string& definedTerm,
-                                                          const SPTR(core::log::Logger)& logger);
+    static std::string convertStringWithoutCodeExtensions(
+        const std::string& source,
+        const std::string& definedTerm,
+        const SPTR(core::log::Logger)& logger
+    );
     /**
      * @brief Convert string sequence with a code extension.
      * @param[in] sequence Sequence buffer
@@ -84,31 +91,33 @@ private:
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */
-    static std::string convertSequenceWithCodeExtensions(const std::string& sequence,
-                                                         const std::vector<std::string>& definedTermList,
-                                                         const SPTR(core::log::Logger)& logger);
+    static std::string convertSequenceWithCodeExtensions(
+        const std::string& sequence,
+        const std::vector<std::string>& definedTermList,
+        const SPTR(core::log::Logger)& logger
+    );
 
     /**
      * @brief Map used to convert defined term to charset
      * @{ */
-    typedef std::map< std::string, std::string> DefinedTermToCharsetMapType;
+    typedef std::map<std::string, std::string> DefinedTermToCharsetMapType;
     static const DefinedTermToCharsetMapType s_DEFINED_TERM_TO_CHARSET;
     /**  @} */
 
     /// Escape sequence representation
-    typedef std::pair< char, char> EscapeSequenceType;
+    typedef std::pair<char, char> EscapeSequenceType;
 
     /// Pair containing a defined term and the associated charset
-    typedef std::pair< std::string, std::string > DefinedTermAndCharsetPairType;
+    typedef std::pair<std::string, std::string> DefinedTermAndCharsetPairType;
 
     /**
      * @brief Map used to convert escape sequence to charset
      * @{ */
-    typedef std::map< EscapeSequenceType, DefinedTermAndCharsetPairType>  EscapeSequenceToCharsetMapType;
+    typedef std::map<EscapeSequenceType, DefinedTermAndCharsetPairType> EscapeSequenceToCharsetMapType;
     static const EscapeSequenceToCharsetMapType s_ESCAPE_SEQUENCE_TO_CHARSET;
     /**  @} */
-
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

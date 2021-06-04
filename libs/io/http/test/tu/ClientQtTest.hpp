@@ -24,9 +24,9 @@
 
 #include <core/thread/Worker.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <io/http/ClientQt.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 #include <QCoreApplication>
 #include <QTcpServer>
@@ -35,14 +35,15 @@
 
 namespace sight::io::http
 {
+
 namespace ut
 {
 
 class ClientQtTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ClientQtTest );
-CPPUNIT_TEST( get );
-CPPUNIT_TEST( post );
+CPPUNIT_TEST_SUITE(ClientQtTest);
+CPPUNIT_TEST(get);
+CPPUNIT_TEST(post);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,6 +61,7 @@ public:
     void post();
 
 private:
+
     // Application thread
     core::thread::Worker::sptr m_worker;
     // HTTP client
@@ -71,4 +73,5 @@ private:
 };
 
 } // namespace ut
+
 } // namespace sight::io::http

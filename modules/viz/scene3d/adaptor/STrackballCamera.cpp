@@ -32,14 +32,12 @@ static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 
 STrackballCamera::STrackballCamera() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 STrackballCamera::~STrackballCamera() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +61,7 @@ void STrackballCamera::starting()
 
     const auto layer = this->getLayer();
     m_trackball =
-        std::make_shared< sight::viz::scene3d::interactor::TrackballInteractor >(layer, m_layerOrderDependant);
+        std::make_shared<sight::viz::scene3d::interactor::TrackballInteractor>(layer, m_layerOrderDependant);
 
     layer->addInteractor(m_trackball, m_priority);
 }
@@ -72,7 +70,6 @@ void STrackballCamera::starting()
 
 void STrackballCamera::updating() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------

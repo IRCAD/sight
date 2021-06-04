@@ -42,7 +42,6 @@ struct MODULE_UI_HISTORY_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides stop method. Does nothing.
     MODULE_UI_HISTORY_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::ui::history

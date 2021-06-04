@@ -32,11 +32,14 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* Technique::copyToMaterial(const Ogre::Technique* _tech, const std::string& _schemeName,
-                                             Ogre::Material* _mtl)
+::Ogre::Technique* Technique::copyToMaterial(
+    const Ogre::Technique* _tech,
+    const std::string& _schemeName,
+    Ogre::Material* _mtl
+)
 {
     ::Ogre::Technique* newTech = _mtl->createTechnique();
-    *newTech                   = *_tech;
+    *newTech = *_tech;
     newTech->setName(_schemeName);
     newTech->setSchemeName(_schemeName);
 
@@ -46,4 +49,5 @@ namespace helper
 }
 
 } // fwRenderOgre
+
 } // helper

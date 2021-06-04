@@ -41,40 +41,51 @@ namespace sight::core::tools
  * @warning isMapping does not need to be exported since fwTools Library is builded as static
  */
 // FIX UNSIGNED
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned char>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned short>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned int>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<unsigned long>(const DynamicType& key);
 
 // FIXED PRECISION SIGNED
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed char>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed short>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed int>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<signed long>(const DynamicType& key);
 
 // FLOATING PRECISION
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<float>(const DynamicType& key);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<double>(const DynamicType& key);
 
 // MISC
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::string>(const DynamicType& key);
 
 ///@}

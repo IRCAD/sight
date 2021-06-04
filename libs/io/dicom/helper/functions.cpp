@@ -31,6 +31,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -61,4 +62,5 @@ std::string generateStudyInstanceUid()
 }
 
 } // namespace helper
+
 } // namespace sight::io::dicom

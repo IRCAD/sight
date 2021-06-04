@@ -28,6 +28,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace exception
 {
 
@@ -37,6 +38,7 @@ namespace exception
 class IO_DICOM_CLASS_API InvalidTag : public core::Exception
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] message Exception message
@@ -45,8 +47,8 @@ public:
 
     /// Destructor
     IO_DICOM_API virtual ~InvalidTag() noexcept;
-
 };
 
 } // namespace exception
+
 } // namespace sight::io::dicom

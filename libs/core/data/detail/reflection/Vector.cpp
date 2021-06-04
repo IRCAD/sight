@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Vector))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Vector))
 {
     builder
     .tag("object_version", "1")

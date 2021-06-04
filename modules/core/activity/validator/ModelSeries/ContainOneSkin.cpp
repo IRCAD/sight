@@ -31,6 +31,7 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace ModelSeries
 {
 
@@ -40,19 +41,17 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSe
 
 ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key key)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 ContainOneSkin::~ContainOneSkin()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData ) const
+::sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -63,10 +62,10 @@ ContainOneSkin::~ContainOneSkin()
     data::Vector::csptr vector           = data::Vector::dynamicConstCast(currentData);
     data::Composite::csptr composite     = data::Composite::dynamicConstCast(currentData);
 
-    if (modelSeries)
+    if(modelSeries)
     {
         size_t skinCount = 0;
-        for (auto rec: modelSeries->getReconstructionDB())
+        for(auto rec : modelSeries->getReconstructionDB())
         {
             if(rec->getStructureType() == "Skin")
             {
@@ -74,7 +73,7 @@ ContainOneSkin::~ContainOneSkin()
             }
         }
 
-        if (skinCount == 1)
+        if(skinCount == 1)
         {
             validation.first = true;
         }
@@ -84,12 +83,12 @@ ContainOneSkin::~ContainOneSkin()
             validation.second = "ModelSeries should contain one and only one Skin, here : " + std::to_string(skinCount);
         }
     }
-    else if (vector)
+    else if(vector)
     {
-        for (auto obj : *vector)
+        for(auto obj : *vector)
         {
             data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(obj);
-            if (!model)
+            if(!model)
             {
                 validation.first  = false;
                 validation.second = "Current object should contain only ModelSeries.";
@@ -97,7 +96,7 @@ ContainOneSkin::~ContainOneSkin()
             else
             {
                 size_t skinCount = 0;
-                for (auto rec: model->getReconstructionDB())
+                for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Skin")
                     {
@@ -105,7 +104,7 @@ ContainOneSkin::~ContainOneSkin()
                     }
                 }
 
-                if (skinCount == 1)
+                if(skinCount == 1)
                 {
                     validation.first &= true;
                 }
@@ -113,17 +112,18 @@ ContainOneSkin::~ContainOneSkin()
                 {
                     validation.first  = false;
                     validation.second = "ModelSeries should contain one and only one Skin, here : " + std::to_string(
-                        skinCount);
+                        skinCount
+                    );
                 }
             }
         }
     }
-    else if (composite)
+    else if(composite)
     {
-        for (auto elt : *composite)
+        for(auto elt : *composite)
         {
             data::ModelSeries::sptr model = data::ModelSeries::dynamicCast(elt.second);
-            if (!model)
+            if(!model)
             {
                 validation.first  = false;
                 validation.second = "Current object should contain only ModelSeries.";
@@ -131,7 +131,7 @@ ContainOneSkin::~ContainOneSkin()
             else
             {
                 size_t skinCount = 0;
-                for (auto rec: model->getReconstructionDB())
+                for(auto rec : model->getReconstructionDB())
                 {
                     if(rec->getStructureType() == "Skin")
                     {
@@ -139,7 +139,7 @@ ContainOneSkin::~ContainOneSkin()
                     }
                 }
 
-                if (skinCount == 1)
+                if(skinCount == 1)
                 {
                     validation.first &= true;
                 }
@@ -147,7 +147,8 @@ ContainOneSkin::~ContainOneSkin()
                 {
                     validation.first  = false;
                     validation.second = "ModelSeries should contain one and only one Skin, here : " + std::to_string(
-                        skinCount);
+                        skinCount
+                    );
                 }
             }
         }
@@ -164,4 +165,5 @@ ContainOneSkin::~ContainOneSkin()
 //-----------------------------------------------------------------------------
 
 } // namespace ModelSeries
+
 } // namespace sight::module::activity::validator

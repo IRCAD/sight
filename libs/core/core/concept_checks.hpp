@@ -35,10 +35,11 @@
 
 namespace sight::core
 {
+
 namespace concepts
 {
 
-template <class X>
+template<class X>
 struct SharedPtrTypedef
 {
     public:
@@ -55,7 +56,7 @@ struct SharedPtrTypedef
     private:
 
         // Type deduction will fail unless the arguments have the same type.
-        template <typename T>
+        template<typename T>
         void same_type(T*, T*);
 };
 

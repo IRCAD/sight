@@ -39,16 +39,16 @@ namespace sight::io::atoms::patch
  */
 class IO_ATOMS_CLASS_API IStructuralCreator : public core::BaseObject
 {
-
 public:
-    SIGHT_DECLARE_CLASS(IStructuralCreator)
+
+    SIGHT_DECLARE_CLASS(IStructuralCreator);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor
     IO_ATOMS_API IStructuralCreator();
 
     /// Copy constructor
-    IO_ATOMS_API IStructuralCreator( const IStructuralCreator& cpy );
+    IO_ATOMS_API IStructuralCreator(const IStructuralCreator& cpy);
 
     /// Destructor
     IO_ATOMS_API virtual ~IStructuralCreator();

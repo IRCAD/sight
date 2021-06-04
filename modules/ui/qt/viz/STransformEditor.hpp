@@ -65,7 +65,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API STransformEditor() noexcept;
@@ -122,11 +122,11 @@ private:
      */
     struct SliderWidget
     {
-        QPointer<QSlider> m_slider; ///< Slider to change coefficient value.
-        QPointer<QLabel> m_labelMin; ///< Label to show the min value.
-        QPointer<QLabel> m_labelMax; ///< Label to show the max value.
+        QPointer<QSlider> m_slider;         ///< Slider to change coefficient value.
+        QPointer<QLabel> m_labelMin;        ///< Label to show the min value.
+        QPointer<QLabel> m_labelMax;        ///< Label to show the max value.
         QPointer<QLabel> m_labelDefinition; ///< Label to show the coefficient description.
-        QPointer<QLineEdit> m_sliderValue; ///< Editor to show the current value of the slider.
+        QPointer<QLineEdit> m_sliderValue;  ///< Editor to show the current value of the slider.
     };
 
     /// Array containing the different structs to regulate the transformation matrix entries.

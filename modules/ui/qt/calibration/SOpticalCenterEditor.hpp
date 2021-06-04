@@ -62,9 +62,10 @@ class MODULE_UI_QT_CLASS_API SOpticalCenterEditor : public QObject,
                                                     public sight::ui::base::IEditor
 {
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpticalCenterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOpticalCenterEditor, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_QT_API SOpticalCenterEditor() noexcept;

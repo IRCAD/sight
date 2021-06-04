@@ -29,7 +29,7 @@
 #include "data/Exception.hpp"
 #include "data/Port.hpp"
 
-SIGHT_REGISTER_DATA( sight::data::Node );
+SIGHT_REGISTER_DATA(sight::data::Node);
 
 namespace sight::data
 {
@@ -42,7 +42,7 @@ Node::Node(data::Object::Key key) :
     m_sigUpdated(UpdatedSignalType::New())
 {
     SIGHT_NOT_USED(key);
-    m_signals( s_UPDATED_SIG,  m_sigUpdated);
+    m_signals(s_UPDATED_SIG, m_sigUpdated);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ Node::PortContainer& Node::getOutputPorts()
 
 //------------------------------------------------------------------------------
 
-void Node::setObject(const data::Object::sptr& object )
+void Node::setObject(const data::Object::sptr& object)
 {
     m_object = object;
 }
@@ -97,11 +97,11 @@ data::Object::sptr Node::getObject() const
 
 Port::sptr Node::findPort(const std::string& identifier, bool modeInput) const
 {
-    if ( modeInput)
+    if(modeInput)
     {
-        for ( const auto& input : m_inputs)
+        for(const auto& input : m_inputs)
         {
-            if ( input->getIdentifier() == identifier)
+            if(input->getIdentifier() == identifier)
             {
                 return input;
             }
@@ -109,44 +109,51 @@ Port::sptr Node::findPort(const std::string& identifier, bool modeInput) const
     }
     else
     {
-        for ( const auto& output : m_outputs )
+        for(const auto& output : m_outputs)
         {
-            if ( output->getIdentifier() == identifier)
+            if(output->getIdentifier() == identifier)
             {
                 return output;
             }
         }
     }
+
     return Port::sptr();
 }
 
 //------------------------------------------------------------------------------
 
-void Node::shallowCopy(const Object::csptr& _source )
+void Node::shallowCopy(const Object::csptr& _source)
 {
     Node::csptr other = Node::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !other );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !other
+    );
+    this->fieldShallowCopy(_source);
 
     m_inputs.clear();
     m_outputs.clear();
 
-    if( other->getObject())
+    if(other->getObject())
     {
-        core::tools::Object::sptr object = data::factory::New( other->getObject()->getClassname() );
-        SIGHT_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
+        core::tools::Object::sptr object = data::factory::New(other->getObject()->getClassname());
+        SIGHT_ASSERT("The instantiation of '" << other->getObject()->getClassname() << "' failed", object);
         m_object = data::Object::dynamicCast(object);
-        m_object->shallowCopy( other->m_object );
+        m_object->shallowCopy(other->m_object);
     }
+
     for(const data::Port::sptr& port : other->m_inputs)
     {
-        this->addInputPort( data::Object::copy(port) );
+        this->addInputPort(data::Object::copy(port));
     }
+
     for(const data::Port::sptr& port : other->m_outputs)
     {
-        this->addOutputPort( data::Object::copy(port) );
+        this->addOutputPort(data::Object::copy(port));
     }
 }
 
@@ -155,15 +162,19 @@ void Node::shallowCopy(const Object::csptr& _source )
 void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Node::csptr other = Node::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 
     m_inputs.clear();
     m_outputs.clear();
 
-    m_object = data::Object::copy( other->m_object, cache );
+    m_object = data::Object::copy(other->m_object, cache);
 
     for(const data::Port::sptr& port : other->m_inputs)
     {
@@ -171,6 +182,7 @@ void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
         newPort = data::Object::copy(port, cache);
         this->addInputPort(newPort);
     }
+
     for(const data::Port::sptr& port : other->m_outputs)
     {
         data::Port::sptr newPort;

@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/thread/Worker.hpp"
-
 #include <core/mt/types.hpp>
 
 #include <functional>
@@ -42,12 +41,13 @@ namespace sight::core::thread
 class CORE_CLASS_API Timer : public core::BaseObject
 {
 public:
+
     /**
      * @name Typedefs
      * @{ */
-    typedef std::shared_ptr< Timer >        sptr;
-    typedef std::function< void () >         FunctionType;
-    typedef std::chrono::duration<double>   TimeDurationType;
+    typedef std::shared_ptr<Timer> sptr;
+    typedef std::function<void ()> FunctionType;
+    typedef std::chrono::duration<double> TimeDurationType;
     /**  @} */
 
     CORE_API ~Timer();
@@ -64,7 +64,7 @@ public:
     CORE_API virtual void setDuration(TimeDurationType duration) = 0;
 
     /// Sets the function to be triggered when time duration expires.
-    template< typename F >
+    template<typename F>
     void setFunction(F f)
     {
         core::mt::ScopedLock lock(m_mutex);
@@ -90,10 +90,10 @@ protected:
     CORE_API Timer();
 
     /// Copy constructor forbidden.
-    Timer( const Timer& );
+    Timer(const Timer&);
 
     /// Copy operator forbidden.
-    Timer& operator=( const Timer& );
+    Timer& operator=(const Timer&);
 
     /// This method is triggered when Timer's function is changed.
     CORE_API virtual void updatedFunction()

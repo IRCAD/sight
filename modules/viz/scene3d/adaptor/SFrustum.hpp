@@ -68,11 +68,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFrustum final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFrustum, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SFrustum, ::sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SFrustum() noexcept;
@@ -115,20 +114,19 @@ private:
     void setOgreCamFromData();
 
     /// Contains the Ogre's camera (frustum) representing data::Camera position and parameters.
-    ::Ogre::Camera* m_ogreCamera { nullptr };
+    ::Ogre::Camera* m_ogreCamera {nullptr};
 
     /// Contains the material data.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Defines the near clipping distance.
-    float m_near { 1.f };
+    float m_near {1.f};
 
     /// Defines the far clipping distance.
-    float m_far { 20.f };
+    float m_far {20.f};
 
     /// Defines the color of frustum.
-    std::string m_color { "#FF0000" };
-
+    std::string m_color {"#FF0000"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

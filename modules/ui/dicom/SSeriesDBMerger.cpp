@@ -46,7 +46,7 @@ SSeriesDBMerger::~SSeriesDBMerger() noexcept
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::info(std::ostream& _sstream )
+void SSeriesDBMerger::info(std::ostream& _sstream)
 {
     _sstream << "SSeriesDBMerger::info";
 }
@@ -73,18 +73,18 @@ void SSeriesDBMerger::configuring()
 
 void SSeriesDBMerger::updating()
 {
-    auto destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
+    auto destinationSeriesDB = this->getInOut<data::SeriesDB>("seriesDB");
     SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
     data::helper::SeriesDB sDBhelper(destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    data::Vector::csptr selectedSeries      = this->getInput< data::Vector >("selectedSeries");
+    data::Vector::csptr selectedSeries      = this->getInput<data::Vector>("selectedSeries");
 
     // Save added series in this container in order to display information on the push
-    std::vector< data::Series::sptr > addedSeries;
+    std::vector<data::Series::sptr> addedSeries;
 
     // Loop through all selected series
-    for(const data::Object::sptr& obj: selectedSeries->getContainer())
+    for(const data::Object::sptr& obj : selectedSeries->getContainer())
     {
         data::Series::sptr series = data::Series::dynamicCast(obj);
 
@@ -94,6 +94,7 @@ void SSeriesDBMerger::updating()
             addedSeries.push_back(series);
         }
     }
+
     sDBhelper.notify();
 
     // Display the informations
@@ -104,11 +105,11 @@ void SSeriesDBMerger::updating()
 
     if(selectedSeries->empty())
     {
-        messageBox.setMessage( "Unable to push series, there is no series selected." );
+        messageBox.setMessage("Unable to push series, there is no series selected.");
     }
     else if(addedSeries.empty())
     {
-        messageBox.setMessage( "Unable to push series, the series are already present in the database." );
+        messageBox.setMessage("Unable to push series, the series are already present in the database.");
     }
     else
     {
@@ -122,13 +123,14 @@ void SSeriesDBMerger::updating()
             ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
         }
 
-        for(const data::Series::sptr& series: addedSeries)
+        for(const data::Series::sptr& series : addedSeries)
         {
             std::string description = series->getDescription();
             description = (description.empty()) ? "[No description]" : description;
             ss << "- " << description << std::endl;
         }
-        messageBox.setMessage( ss.str() );
+
+        messageBox.setMessage(ss.str());
     }
 
     messageBox.show();

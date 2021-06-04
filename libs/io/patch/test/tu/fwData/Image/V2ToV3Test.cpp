@@ -28,21 +28,24 @@
 #include <atoms/Object.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Image/V2ToV3.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Image::V2ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Image::V2ToV3Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Image
 {
 
@@ -168,7 +171,11 @@ void V2ToV3Test::applyPatchTest()
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Image
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

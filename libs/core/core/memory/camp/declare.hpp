@@ -27,6 +27,7 @@
 
 namespace sight::core::memory
 {
+
 namespace camp
 {
 
@@ -41,4 +42,5 @@ struct runner
 };
 
 } // namespace camp
+
 } // namespace sight::core::memory

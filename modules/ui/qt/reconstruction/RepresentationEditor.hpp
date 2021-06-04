@@ -63,7 +63,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(RepresentationEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(RepresentationEditor, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API RepresentationEditor() noexcept;
@@ -100,9 +100,9 @@ protected:
 
 protected Q_SLOTS:
 
-    void onChangeRepresentation( int id );
-    void onChangeShading( int id );
-    void onShowNormals(int state );
+    void onChangeRepresentation(int id);
+    void onChangeShading(int id);
+    void onShowNormals(int state);
 
 private:
 
@@ -115,7 +115,6 @@ private:
     QPointer<QButtonGroup> m_normalsRadioBox;
 
     data::Material::sptr m_material;
-
 };
 
 } // uiReconstructionQt

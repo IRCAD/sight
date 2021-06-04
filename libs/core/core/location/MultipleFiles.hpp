@@ -36,7 +36,7 @@ class CORE_CLASS_API MultipleFiles : public ILocation
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MultipleFiles, ILocation)
+    SIGHT_DECLARE_CLASS(MultipleFiles, ILocation);
 
     /// String serialization function
     inline std::string toString() const override;

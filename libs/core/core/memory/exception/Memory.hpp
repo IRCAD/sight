@@ -23,11 +23,11 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::memory
 {
+
 namespace exception
 {
 
@@ -36,11 +36,12 @@ namespace exception
  */
 struct CORE_CLASS_API Memory : core::Exception
 {
-    Memory( const std::string& err ) :
+    Memory(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::core::memory

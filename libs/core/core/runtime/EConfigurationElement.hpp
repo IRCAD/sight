@@ -38,11 +38,11 @@ class CORE_CLASS_API EConfigurationElement : public core::runtime::Configuration
 public:
 
     /// Shared pointer type
-    typedef std::shared_ptr < EConfigurationElement > sptr;
+    typedef std::shared_ptr<EConfigurationElement> sptr;
     /// Weak pointer type
-    typedef std::weak_ptr < EConfigurationElement > wptr;
+    typedef std::weak_ptr<EConfigurationElement> wptr;
     /// Const shared pointer type
-    typedef std::shared_ptr < const EConfigurationElement > csptr;
+    typedef std::shared_ptr<const EConfigurationElement> csptr;
 
     /**
      * @brief       EConfigurationElement factory.
@@ -70,13 +70,13 @@ public:
      * @param[in]   name name of the configuration element
      * @return      the created configuration element
      */
-    CORE_API EConfigurationElement::sptr addConfigurationElement( const std::string& name );
+    CORE_API EConfigurationElement::sptr addConfigurationElement(const std::string& name);
 
     /**
      * @brief       Adds a new configuration element to the extension.
      * @param[in]   element     a shared pointer to the configuration element to add
      */
-    CORE_API void addConfigurationElement( EConfigurationElement::sptr element );
+    CORE_API void addConfigurationElement(EConfigurationElement::sptr element);
 
     CORE_API void setAttributeValue(const std::string& name, const std::string& value) noexcept;
 

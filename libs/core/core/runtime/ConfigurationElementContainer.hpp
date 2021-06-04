@@ -34,7 +34,9 @@ namespace sight::core::runtime
 
 namespace io
 {
+
 class ModuleDescriptorReader;
+
 } // namespace io
 
 struct ConfigurationElement;
@@ -53,7 +55,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      */
 
     /// Defines the configuration element container type.
-    typedef std::vector< std::shared_ptr<ConfigurationElement> > Container;
+    typedef std::vector<std::shared_ptr<ConfigurationElement> > Container;
     ///< Defines the configuration element container iterator type.
     typedef Container::iterator Iterator;
 
@@ -88,7 +90,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      a pointer to a configuration element instance or null if none
      */
-    CORE_API const std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string& name )
+    CORE_API const std::shared_ptr<ConfigurationElement> findConfigurationElement(const std::string& name)
     const;
 
     /**
@@ -98,7 +100,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      true if the method find at least one configuration
      */
-    CORE_API bool hasConfigurationElement( const std::string& name ) const;
+    CORE_API bool hasConfigurationElement(const std::string& name) const;
 
     /**
      * @brief       Retrieves the configurations corresponding to the specified name.
@@ -107,7 +109,7 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @return      a configuration element container that contains configuration element instances
      */
-    CORE_API ConfigurationElementContainer findAllConfigurationElement( const std::string& name ) const;
+    CORE_API ConfigurationElementContainer findAllConfigurationElement(const std::string& name) const;
 
     /**
      * @brief       Return the number of configurations
@@ -123,12 +125,11 @@ struct CORE_CLASS_API ConfigurationElementContainer
      *
      * @param[in]   element a shared pointer to the configuration element to add
      */
-    CORE_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
+    CORE_API void addConfigurationElement(std::shared_ptr<ConfigurationElement> element);
 
     private:
 
         Container m_elements; ///< all configuration elements
-
 };
 
 } // namespace sight::core::runtime

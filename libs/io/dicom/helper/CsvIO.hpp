@@ -40,7 +40,6 @@ namespace helper
  */
 class IO_DICOM_CLASS_API CsvIO
 {
-
 public:
 
     /**
@@ -54,7 +53,7 @@ public:
     IO_DICOM_API virtual ~CsvIO();
 
     /// Containers to store parsed tokens.
-    typedef std::vector< std::string > TokenContainerType;
+    typedef std::vector<std::string> TokenContainerType;
 
     /**
      * @brief Returns tokens on next line to read, using comma separator
@@ -73,4 +72,5 @@ private:
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

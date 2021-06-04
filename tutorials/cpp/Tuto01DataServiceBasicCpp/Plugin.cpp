@@ -109,9 +109,9 @@ void Plugin::uninitialize()
     m_frameSrv->stop();
 
     // unregister the services
-    service::OSR::unregisterService( m_readerSrv );
-    service::OSR::unregisterService( m_frameSrv );
-    service::OSR::unregisterService( m_renderSrv );
+    service::OSR::unregisterService(m_readerSrv);
+    service::OSR::unregisterService(m_frameSrv);
+    service::OSR::unregisterService(m_renderSrv);
     m_image.reset();
 }
 

@@ -35,7 +35,7 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
+bool getClosestPoints(const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
 {
     const ::glm::dvec3 pos1 = ::glm::make_vec3<double>(_ray1.first.data());
     const ::glm::dvec3 dir1 = ::glm::make_vec3<double>(_ray1.second.data());
@@ -51,8 +51,8 @@ bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _point
         return false;
     }
 
-    double t2 = ( ::glm::dot(dir2, pos1 - pos2) - ::glm::dot(dir1, pos1-pos2) * dd)/delta;
-    double t1 = ( -::glm::dot(dir1, pos1 - pos2) + ::glm::dot(dir2, pos1-pos2) * dd)/delta;
+    double t2 = (::glm::dot(dir2, pos1 - pos2) - ::glm::dot(dir1, pos1 - pos2) * dd) / delta;
+    double t1 = (-::glm::dot(dir1, pos1 - pos2) + ::glm::dot(dir2, pos1 - pos2) * dd) / delta;
 
     const ::glm::dvec3 pointOnThis   = pos1 + t1 * dir1;
     const ::glm::dvec3 pointOnfwLine = pos2 + t2 * dir2;
@@ -70,7 +70,7 @@ bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _point
 
 //------------------------------------------------------------------------------
 
-fwVec3d getClosestPoint( const fwLine& _ray, const fwVec3d& _point)
+fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point)
 {
     const ::glm::dvec3 pos   = ::glm::make_vec3<double>(_ray.first.data());
     const ::glm::dvec3 dir   = ::glm::make_vec3<double>(_ray.second.data());
@@ -94,9 +94,9 @@ bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point)
     fwVec3d point          = getClosestPoint(_ray, _point);
     const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
     const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(point.data());
-    ::glm::dvec3 tmp = pt1-pt2;
-    double length = ::glm::length(tmp);
-    return (length <= _radius);
+    ::glm::dvec3 tmp       = pt1 - pt2;
+    double length          = ::glm::length(tmp);
+    return length <= _radius;
 }
 
 //------------------------------------------------------------------------------
@@ -112,18 +112,25 @@ bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _origin, const
 
     const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
     const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(pThis.data());
-    ::glm::dvec3 tmp = pt1-pt2;
-    double length = ::glm::length(tmp);
+    ::glm::dvec3 tmp       = pt1 - pt2;
+    double length          = ::glm::length(tmp);
 
-    return (length <= _radius);
+    return length <= _radius;
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect( const fwLine& _line, const fwVec3d& _v1,  const fwVec3d& _v2, const fwVec3d& _v3, fwVec3d& _point,
-                fwVec3d& _barycentric, bool& _front)
+bool intersect(
+    const fwLine& _line,
+    const fwVec3d& _v1,
+    const fwVec3d& _v2,
+    const fwVec3d& _v3,
+    fwVec3d& _point,
+    fwVec3d& _barycentric,
+    bool& _front
+)
 {
-    _barycentric = (_v1 + _v2 + _v3)/3.;
+    _barycentric = (_v1 + _v2 + _v3) / 3.;
     const fwVec3d v01 = _v2 - _v1;
     const fwVec3d v12 = _v3 - _v2;
     const fwVec3d v20 = _v1 - _v3;
@@ -136,22 +143,22 @@ bool intersect( const fwLine& _line, const fwVec3d& _v1,  const fwVec3d& _v2, co
     v[2] = 1.0F;
 
     const fwVec3d& normal = getNormal(plane);
-    _front = ((dot(normal, v )) >= 0.0);
+    _front = ((dot(normal, v)) >= 0.0);
 
     bool isIntersect = true;
     if(intersect(plane, _line, _point) == false)
     {
         isIntersect = false;
     }
-    else if((dot(normal, cross(v01, _point-_v1))) < 0.0)
+    else if((dot(normal, cross(v01, _point - _v1))) < 0.0)
     {
         isIntersect = false;
     }
-    else if((dot(normal, cross(v12, _point-_v2))) < 0.0)
+    else if((dot(normal, cross(v12, _point - _v2))) < 0.0)
     {
         isIntersect = false;
     }
-    else if((dot(normal, cross(v20, _point-_v3))) < 0.0)
+    else if((dot(normal, cross(v20, _point - _v3))) < 0.0)
     {
         isIntersect = false;
     }

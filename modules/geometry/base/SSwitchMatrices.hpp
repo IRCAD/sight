@@ -65,7 +65,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SSwitchMatrices : public service::IControll
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSwitchMatrices, service::IController)
+    SIGHT_DECLARE_SERVICE(SSwitchMatrices, service::IController);
 
     /**
      * @brief Constructor.

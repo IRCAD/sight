@@ -25,7 +25,6 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/Module.hpp"
 #include "core/runtime/RuntimeException.hpp"
-
 #include <core/base.hpp>
 
 namespace sight::core::runtime
@@ -35,18 +34,18 @@ namespace sight::core::runtime
 
 std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configurationElement)
 {
-    _sstream << "Configuration element " << _configurationElement.getName() << " value = " <<
-        _configurationElement.getValue() << std::endl;
-    for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin();
-        iter != _configurationElement.m_attributes.end(); ++iter )
+    _sstream << "Configuration element " << _configurationElement.getName() << " value = "
+    << _configurationElement.getValue() << std::endl;
+    for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin() ;
+        iter != _configurationElement.m_attributes.end() ; ++iter)
     {
         _sstream << "Id = " << iter->first << " with value " << iter->second << std::endl;
     }
-    _sstream << "Subelement : " << std::endl;
-    for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin();
-        iter != _configurationElement.end(); ++iter )
-    {
 
+    _sstream << "Subelement : " << std::endl;
+    for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin() ;
+        iter != _configurationElement.end() ; ++iter)
+    {
         _sstream << std::endl << *(*iter) << std::endl;
     }
 
@@ -55,7 +54,7 @@ std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configur
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::ConfigurationElement( const std::shared_ptr< Module > module, const std::string& name ) :
+ConfigurationElement::ConfigurationElement(const std::shared_ptr<Module> module, const std::string& name) :
     m_name(name),
     m_module(module)
 {
@@ -85,6 +84,7 @@ const std::string ConfigurationElement::getExistingAttributeValue(const std::str
     {
         SIGHT_THROW_EXCEPTION(NoSuchAttribute(name));
     }
+
     return foundPos->second;
 }
 
@@ -155,33 +155,33 @@ void ConfigurationElement::operator=(const ConfigurationElement&) noexcept
 
 //------------------------------------------------------------------------------
 
-std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
+std::vector<ConfigurationElement::sptr> ConfigurationElement::find(
     std::string name,
     std::string attribute,
     std::string attributeValue,
     int depth
-    )
+)
 {
-    typedef std::vector < ConfigurationElement::sptr > ConfVector;
+    typedef std::vector<ConfigurationElement::sptr> ConfVector;
     ConfVector result;
 
     bool nameOk           = (name.empty() || this->getName() == name);
     bool attributeOk      = (attribute.empty() || this->hasAttribute(attribute));
     bool attributeValueOk =
-        (attributeValue.empty() ||
-         (this->hasAttribute(attribute) && this->getAttributeValue(attribute) == attributeValue));
-    if (nameOk && attributeOk && attributeValueOk)
+        (attributeValue.empty()
+         || (this->hasAttribute(attribute) && this->getAttributeValue(attribute) == attributeValue));
+    if(nameOk && attributeOk && attributeValueOk)
     {
         result.push_back(this->shared_from_this());
     }
 
-    if (depth != 0)
+    if(depth != 0)
     {
         ConfigurationElement::Iterator iter;
-        for (iter = this->begin(); iter != this->end(); ++iter)
+        for(iter = this->begin() ; iter != this->end() ; ++iter)
         {
             ConfVector deepConf;
-            deepConf = (*iter)->find(name, attribute, attributeValue, depth-1);
+            deepConf = (*iter)->find(name, attribute, attributeValue, depth - 1);
             result.insert(result.end(), deepConf.begin(), deepConf.end());
         }
     }

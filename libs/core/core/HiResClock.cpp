@@ -38,7 +38,7 @@ namespace HiResClock
 HiResClockType getTimeInMicroSec()
 {
     const auto now = std::chrono::high_resolution_clock::now();
-    const auto res = std::chrono::duration_cast< std::chrono::microseconds >(now.time_since_epoch()).count();
+    const auto res = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
     return static_cast<HiResClockType>(res);
 }
 
@@ -47,7 +47,7 @@ HiResClockType getTimeInMicroSec()
 HiResClockType getTimeInMilliSec()
 {
     const auto now = std::chrono::high_resolution_clock::now();
-    const auto res = std::chrono::duration_cast< std::chrono::milliseconds >(now.time_since_epoch()).count();
+    const auto res = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return static_cast<HiResClockType>(res);
 }
 
@@ -56,7 +56,7 @@ HiResClockType getTimeInMilliSec()
 HiResClockType getTimeInSec()
 {
     const auto now = std::chrono::high_resolution_clock::now();
-    const auto res = std::chrono::duration_cast< std::chrono::seconds >(now.time_since_epoch()).count();
+    const auto res = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
     return static_cast<HiResClockType>(res);
 }
 

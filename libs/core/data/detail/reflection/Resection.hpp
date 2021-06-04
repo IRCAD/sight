@@ -27,4 +27,4 @@
 
 #include <core/reflection/macros.hpp>
 
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Resection), (sight)(data)(PlaneList));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Resection), (sight) (data) (PlaneList));

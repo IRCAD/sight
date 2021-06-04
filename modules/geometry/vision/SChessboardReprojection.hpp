@@ -32,6 +32,7 @@
 
 namespace sight::module::geometry::vision
 {
+
 /**
  * @brief Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.
  *
@@ -83,7 +84,8 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection : public service::IService
 {
 public:
-    SIGHT_DECLARE_SERVICE(SChessboardReprojection, service::IService)
+
+    SIGHT_DECLARE_SERVICE(SChessboardReprojection, service::IService);
 
     ///Constructor
     MODULE_GEOMETRY_VISION_API SChessboardReprojection();
@@ -111,7 +113,7 @@ protected:
 
 private:
 
-    using ErrorComputedSignalType = core::com::Signal< void (double) >;
+    using ErrorComputedSignalType = core::com::Signal<void (double)>;
 
     /// Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();
@@ -129,31 +131,31 @@ private:
     std::string m_squareSizeKey;
 
     /// Width of the chessboard we're looking for.
-    size_t m_width { 11 };
+    size_t m_width {11};
 
     /// Height of the chessboard we're looking for.
-    size_t m_height { 8 };
+    size_t m_height {8};
 
     /// Apply distortion to the reprojected points if true. Undistort the detected points otherwise.
-    bool m_distortReprojection { true };
+    bool m_distortReprojection {true};
 
     /// Draw reprojection points on the image if true.
-    bool m_drawReprojection { true };
+    bool m_drawReprojection {true};
 
     /// Draw detected points on the image if true.
-    bool m_drawDetected { true };
+    bool m_drawDetected {true};
 
     /// Draw the reprojection error on the image if true.
-    bool m_drawReprojectionError { true };
+    bool m_drawReprojectionError {true};
 
     /// True if this service outputs the chessboard model.
-    bool m_hasOutputChessboard { false };
+    bool m_hasOutputChessboard {false};
 
     /// Chessboard model.
-    std::vector< ::cv::Point3f > m_chessboardModel;
+    std::vector< ::cv::Point3f> m_chessboardModel;
 
     /// Signal sent when the reprojection error is computed.
     ErrorComputedSignalType::sptr m_errorComputedSig;
 };
 
-}//namespace sight::module::geometry::vision
+} //namespace sight::module::geometry::vision

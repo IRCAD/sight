@@ -36,8 +36,10 @@
 #include <QMainWindow>
 #include <QScrollArea>
 
-fwGuiRegisterMacro( sight::ui::qt::CardinalLayoutManager,
-                    sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    sight::ui::qt::CardinalLayoutManager,
+    sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
@@ -56,24 +58,24 @@ CardinalLayoutManager::~CardinalLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
+void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    m_qtWindow = new QMainWindow(  );
+    m_qtWindow = new QMainWindow();
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget( m_qtWindow );
+    layout->addWidget(m_qtWindow);
 
     m_parentContainer->setLayout(layout);
 
-    const std::list< ViewInfo>& views = this->getViewsInfo();
+    const std::list<ViewInfo>& views = this->getViewsInfo();
 
     bool hasCentral = false;
 
-    for ( ViewInfo viewInfo : views)
+    for(ViewInfo viewInfo : views)
     {
         QWidget* insideWidget;
         QScrollArea* scrollArea;
@@ -92,39 +94,42 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
             }
 
             QWidget* widget = insideWidget;
-            SIGHT_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
-                         !hasCentral);
+            SIGHT_ASSERT(
+                "multiple center views are not managed in Qt version of CardinalLayoutManager",
+                !hasCentral
+            );
 
             if(!viewInfo.m_backgroundColor.empty())
             {
                 std::uint8_t rgba[4];
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-                   << static_cast< short >(rgba[1]) << ','
-                   << static_cast< short >(rgba[2]) << ','
-                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+                << static_cast<short>(rgba[1]) << ','
+                << static_cast<short>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 widget->setStyleSheet(style + qApp->styleSheet());
             }
 
-            if (viewInfo.m_useScrollBar)
+            if(viewInfo.m_useScrollBar)
             {
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
-                scrollArea->setWidgetResizable( true );
+                scrollArea->setWidgetResizable(true);
                 if(!viewInfo.m_backgroundColor.empty())
                 {
                     std::uint8_t rgba[4];
                     data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                     std::stringstream ss;
-                    ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-                       << static_cast< short >(rgba[1]) << ','
-                       << static_cast< short >(rgba[2]) << ','
-                       << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                    ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+                    << static_cast<short>(rgba[1]) << ','
+                    << static_cast<short>(rgba[2]) << ','
+                    << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
                     const QString style = QString::fromStdString(ss.str());
                     scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
+
                 m_qtWindow->setCentralWidget(scrollArea);
             }
             else
@@ -138,6 +143,7 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
             {
                 insideWidget->setToolTip(QString::fromStdString(viewInfo.m_toolTip));
             }
+
             hasCentral = true;
         }
         else
@@ -172,7 +178,7 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
 
             if(viewInfo.m_caption.first)
             {
-                dockWidget->setWindowTitle( QString::fromStdString(viewInfo.m_caption.second) );
+                dockWidget->setWindowTitle(QString::fromStdString(viewInfo.m_caption.second));
                 dockWidget->setMinimumSize(0, 0);
             }
             else
@@ -188,12 +194,14 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
                 QWidget* widget = new QWidget;
                 widget->setLayout(layout);
 
-                dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first, 0),
-                                           std::max(viewInfo.m_minSize.second, 0));
+                dockWidget->setMinimumSize(
+                    std::max(viewInfo.m_minSize.first, 0),
+                    std::max(viewInfo.m_minSize.second, 0)
+                );
                 dockWidget->setTitleBarWidget(widget);
             }
 
-            if (viewInfo.m_useScrollBar)
+            if(viewInfo.m_useScrollBar)
             {
                 scrollArea = new QScrollArea(dockWidget);
                 scrollArea->setWidget(insideWidget);
@@ -201,9 +209,11 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
                 if(viewInfo.m_backgroundColor != "default")
                 {
                     const QString style = QString::fromStdString(
-                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}");
+                        "QWidget { background-color: " + viewInfo.m_backgroundColor + ";}"
+                    );
                     scrollArea->setStyleSheet(style);
                 }
+
                 dockWidget->setWidget(scrollArea);
             }
             else
@@ -227,7 +237,7 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
             //TODO
         }
 
-        if (viewInfo.m_useScrollBar)
+        if(viewInfo.m_useScrollBar)
         {
             scrollArea->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         }

@@ -28,6 +28,7 @@
 
 namespace sight::module::io::realsense
 {
+
 /**
  * @brief   This class is started when the modules are loaded.
  */
@@ -43,7 +44,6 @@ struct MODULE_IO_REALSENSE_CLASS_API Plugin : public core::runtime::Plugin
 
     // Overrides
     MODULE_IO_REALSENSE_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::io::realsense

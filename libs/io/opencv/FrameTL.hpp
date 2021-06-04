@@ -30,6 +30,7 @@
 
 namespace sight::io::opencv
 {
+
 /**
  * @brief Helper to manage conversion from/to OpenCV to/from data::FrameTL buffer
  *
@@ -41,7 +42,6 @@ namespace sight::io::opencv
  */
 class IO_OPENCV_CLASS_API FrameTL
 {
-
 public:
 
     /**
@@ -50,9 +50,11 @@ public:
      * The resulting ::cv::Mat does not allocate a new buffer and points to the data::FrameTL::BufferType.
      * That's why the source buffer is not const, because the _cvImage may alter the existing buffer.
      */
-    IO_OPENCV_API static void moveToCv(const data::FrameTL::csptr& _timeline,
-                                       data::FrameTL::BufferType::ElementType* _buffer,
-                                       ::cv::Mat& _cvImage);
+    IO_OPENCV_API static void moveToCv(
+        const data::FrameTL::csptr& _timeline,
+        data::FrameTL::BufferType::ElementType* _buffer,
+        ::cv::Mat& _cvImage
+    );
 
     /**
      * @brief Convert a timeline buffer into an OpenCV image.
@@ -60,25 +62,30 @@ public:
      * The resulting ::cv::Mat does not allocate a new buffer and points to the data::FrameTL::BufferType.
      * The returned cvMat is const because the input buffer is const as well.
      */
-    IO_OPENCV_API static const ::cv::Mat moveToCv(const data::FrameTL::csptr& _timeline,
-                                                  const data::FrameTL::BufferType::ElementType* _buffer);
+    IO_OPENCV_API static const ::cv::Mat moveToCv(
+        const data::FrameTL::csptr& _timeline,
+        const data::FrameTL::BufferType::ElementType* _buffer
+    );
 
     /**
      * @brief Copy a OpenCV image into our internal image data.
      */
-    IO_OPENCV_API static void copyFromCv(const data::FrameTL::csptr& _timeline,
-                                         data::FrameTL::BufferType::ElementType* _buffer,
-                                         const ::cv::Mat& _cvImage);
+    IO_OPENCV_API static void copyFromCv(
+        const data::FrameTL::csptr& _timeline,
+        data::FrameTL::BufferType::ElementType* _buffer,
+        const ::cv::Mat& _cvImage
+    );
 
     /**
      * @brief Copy an image data into an OpenCV image.
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    IO_OPENCV_API static void copyToCv(const data::FrameTL::csptr& _timeline,
-                                       const data::FrameTL::BufferType::ElementType* _buffer,
-                                       ::cv::Mat& _cvImage);
-
+    IO_OPENCV_API static void copyToCv(
+        const data::FrameTL::csptr& _timeline,
+        const data::FrameTL::BufferType::ElementType* _buffer,
+        ::cv::Mat& _cvImage
+    );
 };
 
-}// namespace sight::io::opencv
+} // namespace sight::io::opencv

@@ -26,14 +26,15 @@
 #include "data/DicomSeries.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
-
 #include <data/factory/new.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ImageSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ImageSeries))
 
 namespace sight::data
 {
+
 class Image;
+
 }
 
 namespace sight::data
@@ -44,12 +45,11 @@ namespace sight::data
  */
 class DATA_CLASS_API ImageSeries : public data::Series
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ImageSeries, data::Object, data::factory::New< ImageSeries >)
+    SIGHT_DECLARE_CLASS(ImageSeries, data::Object, data::factory::New<ImageSeries>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ImageSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ImageSeries))
 
     /**
      * @brief Creates the series.
@@ -64,14 +64,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the image container.
     SPTR(data::Image) getImage() const;
@@ -200,7 +200,6 @@ protected:
 
     /// Defines the time acquisition of data that resulted in this image started.
     DicomValueType m_acquisitionTime;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -228,7 +227,7 @@ inline data::DicomSeries::csptr ImageSeries::getDicomReference() const
 
 inline void ImageSeries::setDicomReference(const data::DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast< data::DicomSeries >( _reference );
+    m_dicomReference = std::const_pointer_cast<data::DicomSeries>(_reference);
 }
 
 //-----------------------------------------------------------------------------

@@ -60,7 +60,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SOrientationMarker, sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SOrientationMarker, sight::viz::scene3d::IAdaptor);
 
     /// Constructor
     MODULE_VIZ_SCENE3D_API SOrientationMarker() noexcept;

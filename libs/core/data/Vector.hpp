@@ -33,10 +33,12 @@
 
 namespace sight::data
 {
+
 class Vector;
+
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Vector));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Vector));
 
 namespace sight::data
 {
@@ -48,13 +50,12 @@ namespace sight::data
  */
 class DATA_CLASS_API Vector : public Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Vector, data::Object, data::factory::New< Vector >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Vector));
+    SIGHT_DECLARE_CLASS(Vector, data::Object, data::factory::New<Vector>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Vector));
 
-    typedef std::vector< Object::sptr > ContainerType;
+    typedef std::vector<Object::sptr> ContainerType;
 
     typedef ContainerType::value_type ValueType;
     typedef ContainerType::reference ReferenceType;
@@ -88,12 +89,12 @@ public:
     IteratorType begin();
     IteratorType end();
     ConstIteratorType begin() const;
-    ConstIteratorType end()   const;
+    ConstIteratorType end() const;
 
     ReverseIteratorType rbegin();
     ReverseIteratorType rend();
     ConstReverseIteratorType rbegin() const;
-    ConstReverseIteratorType rend()   const;
+    ConstReverseIteratorType rend() const;
 
     bool empty() const;
     SizeType size() const;
@@ -101,48 +102,48 @@ public:
     ValueType front() const;
     ValueType back() const;
 
-    ReferenceType operator[] ( size_type n );
-    ConstReferenceType operator[] ( size_type n ) const;
+    ReferenceType operator[](size_type n);
+    ConstReferenceType operator[](size_type n) const;
 
-    ReferenceType at ( SizeType n );
-    ConstReferenceType at ( SizeType n ) const;
+    ReferenceType at(SizeType n);
+    ConstReferenceType at(SizeType n) const;
     /// @}
 
     /// @brief get/set the vector of data::Object
     /// @{
     ContainerType& getContainer();
-    const ContainerType& getContainer () const;
-    void setContainer (const ContainerType& val);
+    const ContainerType& getContainer() const;
+    void setContainer(const ContainerType& val);
     /// @}
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Method to initialize a data::Vector from a std::vector
-    template< class DATATYPE >
-    void setDataContainer( const std::vector< SPTR(DATATYPE) >& vec );
+    template<class DATATYPE>
+    void setDataContainer(const std::vector<SPTR(DATATYPE)>& vec);
 
     /// Method to get a std::vector from data::Vector
-    template< class DATATYPE >
-    std::vector< SPTR(DATATYPE) > getDataContainer() const;
+    template<class DATATYPE>
+    std::vector<SPTR(DATATYPE)> getDataContainer() const;
 
     /**
      * @name Signals
      * @{
      */
     /// Type of signal when objects are added
-    typedef core::com::Signal< void (ContainerType) > AddedObjectsSignalType;
+    typedef core::com::Signal<void (ContainerType)> AddedObjectsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
 
     /// Type of signal when objects are removed
-    typedef core::com::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    typedef core::com::Signal<void (ContainerType)> RemovedObjectsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -270,40 +271,40 @@ inline Vector::ContainerType& Vector::getContainer()
 
 //-----------------------------------------------------------------------------
 
-inline const Vector::ContainerType& Vector::getContainer () const
+inline const Vector::ContainerType& Vector::getContainer() const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Vector::setContainer (const Vector::ContainerType& val)
+inline void Vector::setContainer(const Vector::ContainerType& val)
 {
     m_container = val;
 }
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
-inline void Vector::setDataContainer( const std::vector< SPTR(DATATYPE) >& vec )
+template<class DATATYPE>
+inline void Vector::setDataContainer(const std::vector<SPTR(DATATYPE)>& vec)
 {
     m_container.clear();
-    std::copy( vec.begin(), vec.end(), std::back_inserter(this->getContainer()) );
+    std::copy(vec.begin(), vec.end(), std::back_inserter(this->getContainer()));
 }
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
-inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
+template<class DATATYPE>
+inline std::vector<SPTR(DATATYPE)> Vector::getDataContainer() const
 {
-    std::vector< SPTR(DATATYPE) > vec;
-    vec.reserve( this->size() );
+    std::vector<SPTR(DATATYPE)> vec;
+    vec.reserve(this->size());
     SPTR(DATATYPE) castedData;
-    for(const data::Object::sptr& data : this->getContainer() )
+    for(const data::Object::sptr& data : this->getContainer())
     {
-        castedData = std::dynamic_pointer_cast<DATATYPE>( data );
-        SIGHT_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
-        vec.push_back( castedData );
+        castedData = std::dynamic_pointer_cast<DATATYPE>(data);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castedData);
+        vec.push_back(castedData);
     }
 
     return vec;

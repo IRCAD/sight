@@ -72,23 +72,23 @@ struct AndImageFilter
         SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->getNumberOfDimensions() == dimension);
 
         typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
-        typedef typename ::itk::Image<MASK_PIXELTYPE, dimension>  MaskImageType;
+        typedef typename ::itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;
         typedef typename ::itk::Image<PIXELTYPE, dimension> OutputImageType;
 
-        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>( inputImage );
-        typename MaskImageType::Pointer itkMaskImage   = io::itk::itkImageFactory<MaskImageType>( mask );
+        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>(inputImage);
+        typename MaskImageType::Pointer itkMaskImage   = io::itk::itkImageFactory<MaskImageType>(mask);
         typename OutputImageType::Pointer itkOutputImage;
 
         // We assume that the mask pixel type has a lower size in bits than the image pixel type
         // Cast mask pixel type to the image pixel type
-        typedef itk::CastImageFilter< MaskImageType, InputImageType> FilterType;
+        typedef itk::CastImageFilter<MaskImageType, InputImageType> FilterType;
         typename FilterType::Pointer caster = FilterType::New();
-        caster->SetInput( itkMaskImage);
+        caster->SetInput(itkMaskImage);
 
         // Rescale the image so that the output range of the casted mask image is in the same range as the input image.
-        typedef itk::RescaleIntensityImageFilter< InputImageType, InputImageType> RescaleType;
+        typedef itk::RescaleIntensityImageFilter<InputImageType, InputImageType> RescaleType;
         typename RescaleType::Pointer rescaler = RescaleType::New();
-        rescaler->SetInput( caster->GetOutput() );
+        rescaler->SetInput(caster->GetOutput());
         rescaler->SetOutputMinimum(0);
         rescaler->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
         rescaler->Update();
@@ -97,13 +97,13 @@ struct AndImageFilter
 
         typedef typename ::itk::AndImageFilter<InputImageType, InputImageType, OutputImageType> ITKFilterType;
         typename ITKFilterType::Pointer filter = ITKFilterType::New();
-        filter->SetInput1( itkInputImage );
-        filter->SetInput2( itkMaskImageCasted );
+        filter->SetInput1(itkInputImage);
+        filter->SetInput2(itkMaskImageCasted);
         itkOutputImage = filter->GetOutput();
         filter->Update();
 
         itkOutputImage->GetSource()->Update();
-        io::itk::dataImageFactory< OutputImageType >( itkOutputImage, outputImage );
+        io::itk::dataImageFactory<OutputImageType>(itkOutputImage, outputImage);
     }
 };
 
@@ -114,10 +114,10 @@ struct AndImageFilterCaller
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator() (AndImageFilterParameters& params)
+    void operator()(AndImageFilterParameters& params)
     {
         const core::tools::DynamicType maskType = params.mask->getPixelType();
-        core::tools::Dispatcher< core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
+        core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
     }
 };
 
@@ -149,10 +149,10 @@ void SBitwiseAnd::starting()
 
 void SBitwiseAnd::updating()
 {
-    const auto image = this->getLockedInput< data::Image >(s_IMAGE_IN);
+    const auto image = this->getLockedInput<data::Image>(s_IMAGE_IN);
     SIGHT_ASSERT("image does not exist.", image);
 
-    const auto mask = this->getLockedInput< data::Image >(s_MASK_IN);
+    const auto mask = this->getLockedInput<data::Image>(s_MASK_IN);
     SIGHT_ASSERT("mask does not exist.", mask);
 
     data::helper::ImageGetter imageHelper(image.get_shared());
@@ -166,7 +166,7 @@ void SBitwiseAnd::updating()
     params.outputImage = outputImage;
 
     core::tools::DynamicType type = image->getPixelType();
-    core::tools::Dispatcher< core::tools::IntegerTypes, AndImageFilterCaller >::invoke(type, params);
+    core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilterCaller>::invoke(type, params);
 
     this->setOutput(s_OUTPUTIMAGE_OUT, outputImage);
 

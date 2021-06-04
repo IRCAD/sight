@@ -31,8 +31,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
@@ -43,7 +45,7 @@ class IO_DICOM_CLASS_API DicomSRNode
 {
 public:
 
-    typedef std::vector< SPTR(DicomSRNode) > SubNodeContainer;
+    typedef std::vector<SPTR(DicomSRNode)> SubNodeContainer;
 
     /**
      * @brief Write the SR node in the dataset
@@ -58,7 +60,7 @@ public:
     IO_DICOM_API void addSubNode(const SPTR(DicomSRNode)& node);
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<< (std::ostream& os, const DicomSRNode& node)
+    IO_DICOM_API friend std::ostream& operator<<(std::ostream& os, const DicomSRNode& node)
     {
         node.print(os);
         return os;
@@ -115,8 +117,11 @@ public:
 protected:
 
     /// Constructor
-    DicomSRNode(const DicomCodedAttribute& codedAttribute, const std::string& type,
-                const std::string& relationship = "");
+    DicomSRNode(
+        const DicomCodedAttribute& codedAttribute,
+        const std::string& type,
+        const std::string& relationship = ""
+    );
 
     /// Destructor
     virtual ~DicomSRNode();
@@ -129,8 +134,9 @@ protected:
      * @param[in] dataset Destination dataset
      * @param[in] codedAttribute Coded attribute to write
      */
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createConceptNameCodeSequence(
-        const DicomCodedAttribute& codedAttribute) const;
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> createConceptNameCodeSequence(
+        const DicomCodedAttribute& codedAttribute
+    ) const;
 
     /**
      * @brief Write a content sequence
@@ -153,5 +159,7 @@ protected:
 };
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

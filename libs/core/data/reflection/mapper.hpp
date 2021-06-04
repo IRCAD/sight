@@ -31,8 +31,8 @@
 namespace camp_ext
 {
 
-template <>
-struct ValueMapper< sight::data::TransferFunction::TFColor >
+template<>
+struct ValueMapper<sight::data::TransferFunction::TFColor>
 {
     typedef sight::data::TransferFunction::TFColor ReturnType;
     static const int type = camp::stringType;
@@ -42,19 +42,19 @@ struct ValueMapper< sight::data::TransferFunction::TFColor >
     {
         std::string result = "";
 
-        std::string current = boost::lexical_cast< std::string>(source.r);
+        std::string current = boost::lexical_cast<std::string>(source.r);
         result += current;
         result += ";";
 
-        current = boost::lexical_cast< std::string>(source.g);
+        current = boost::lexical_cast<std::string>(source.g);
         result += current;
         result += ";";
 
-        current = boost::lexical_cast< std::string>(source.b);
+        current = boost::lexical_cast<std::string>(source.b);
         result += current;
         result += ";";
 
-        current = boost::lexical_cast< std::string>(source.a);
+        current = boost::lexical_cast<std::string>(source.a);
         result += current;
         result += ";";
 
@@ -67,35 +67,40 @@ struct ValueMapper< sight::data::TransferFunction::TFColor >
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
     {
-        std::vector< std::string> result;
+        std::vector<std::string> result;
         ReturnType tfColor;
         ::boost::split(result, source, boost::is_any_of(";"));
 
@@ -110,6 +115,7 @@ struct ValueMapper< sight::data::TransferFunction::TFColor >
         {
             SIGHT_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
         }
+
         return tfColor;
     }
 };

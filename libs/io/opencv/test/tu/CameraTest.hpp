@@ -37,11 +37,12 @@ class CameraTest : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE( CameraTest );
+    CPPUNIT_TEST_SUITE(CameraTest);
     CPPUNIT_TEST(copyToCv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
 

@@ -33,10 +33,12 @@
 
 namespace sight::data
 {
+
 class Composite;
+
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Composite));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Composite));
 
 namespace sight::data
 {
@@ -50,10 +52,11 @@ namespace sight::data
 class DATA_CLASS_API Composite : public Object
 {
 public:
-    SIGHT_DECLARE_CLASS(Composite, data::Object, data::factory::New< Composite >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Composite));
 
-    typedef std::map< std::string, data::Object::sptr > ContainerType;
+    SIGHT_DECLARE_CLASS(Composite, data::Object, data::factory::New<Composite>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Composite));
+
+    typedef std::map<std::string, data::Object::sptr> ContainerType;
 
     typedef ContainerType::key_type KeyType;
     typedef ContainerType::mapped_type MappedType;
@@ -79,7 +82,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Composite( data::Object::Key key );
+    DATA_API Composite(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Composite();
@@ -87,44 +90,44 @@ public:
     IteratorType begin();
     IteratorType end();
     ConstIteratorType begin() const;
-    ConstIteratorType end()   const;
+    ConstIteratorType end() const;
 
     ReverseIteratorType rbegin();
     ReverseIteratorType rend();
     ConstReverseIteratorType rbegin() const;
-    ConstReverseIteratorType rend()   const;
+    ConstReverseIteratorType rend() const;
 
     bool empty() const;
     SizeType size() const;
 
-    mapped_type& operator[] ( KeyType n );
+    mapped_type& operator[](KeyType n);
 
-    IteratorType find ( const KeyType& x );
-    ConstIteratorType find ( const KeyType& x ) const;
+    IteratorType find(const KeyType& x);
+    ConstIteratorType find(const KeyType& x) const;
 
-    SizeType count ( const KeyType& x ) const;
+    SizeType count(const KeyType& x) const;
     /// @}
 
     /// @brief get/set the map of std::string/data::Object
     /// @{
     ContainerType& getContainer();
-    const ContainerType& getContainer () const;
-    void setContainer (const ContainerType& val);
+    const ContainerType& getContainer() const;
+    void setContainer(const ContainerType& val);
     /// @}
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Method to initialize a data::Composite from a std::map< string, X >
-    template< class DATATYPE >
-    void setDataContainer( const std::map< std::string, SPTR(DATATYPE) >& map );
+    template<class DATATYPE>
+    void setDataContainer(const std::map<std::string, SPTR(DATATYPE)>& map);
 
     /// Method to get a std::map< string, X > from data::Composite
-    template< class DATATYPE >
-    std::map< std::string, SPTR(DATATYPE) > getDataContainer() const;
+    template<class DATATYPE>
+    std::map<std::string, SPTR(DATATYPE)> getDataContainer() const;
 
     /**
      * @brief Returns object in composite associated with the key.
@@ -134,7 +137,7 @@ public:
      *
      *  @return requested object in composite associated with the key
      */
-    template< class DATATYPE >
+    template<class DATATYPE>
     SPTR(DATATYPE) at(const std::string& key);
 
     /**
@@ -145,7 +148,7 @@ public:
      *
      *  @return requested object in composite associated with the key
      */
-    template< class DATATYPE >
+    template<class DATATYPE>
     CSPTR(DATATYPE) at(const std::string& key) const;
 
     /**
@@ -153,21 +156,22 @@ public:
      * @{
      */
     /// Type of signal when objects are added
-    typedef core::com::Signal< void (ContainerType) > AddedObjectsSignalType;
+    typedef core::com::Signal<void (ContainerType)> AddedObjectsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    typedef core::com::Signal< void (ContainerType, ContainerType) > ChangedObjectsSignalType;
+    typedef core::com::Signal<void (ContainerType, ContainerType)> ChangedObjectsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_CHANGED_OBJECTS_SIG;
 
     /// Type of signal when objects are removed
-    typedef core::com::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    typedef core::com::Signal<void (ContainerType)> RemovedObjectsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
+
     ContainerType m_container;
 };
 
@@ -278,38 +282,38 @@ inline Composite::ContainerType& Composite::getContainer()
 
 //-----------------------------------------------------------------------------
 
-inline const Composite::ContainerType& Composite::getContainer () const
+inline const Composite::ContainerType& Composite::getContainer() const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Composite::setContainer (const Composite::ContainerType& val)
+inline void Composite::setContainer(const Composite::ContainerType& val)
 {
     m_container = val;
 }
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
-inline void Composite::setDataContainer( const std::map< std::string, SPTR(DATATYPE) >& map )
+template<class DATATYPE>
+inline void Composite::setDataContainer(const std::map<std::string, SPTR(DATATYPE)>& map)
 {
     this->getContainer().clear();
-    this->getContainer().insert( map.begin(), map.end() );
+    this->getContainer().insert(map.begin(), map.end());
 }
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
-inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() const
+template<class DATATYPE>
+inline std::map<std::string, SPTR(DATATYPE)> Composite::getDataContainer() const
 {
-    std::map< std::string, SPTR(DATATYPE) > map;
+    std::map<std::string, SPTR(DATATYPE)> map;
     SPTR(DATATYPE) castData;
-    for( data::Composite::value_type elem : *this )
+    for(data::Composite::value_type elem : *this)
     {
-        castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        SIGHT_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
+        castData = std::dynamic_pointer_cast<DATATYPE>(elem.second);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
         map[elem.first] = castData;
     }
 
@@ -318,7 +322,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
+template<class DATATYPE>
 SPTR(DATATYPE) Composite::at(const std::string& key)
 {
     SPTR(DATATYPE) castData;
@@ -330,12 +334,13 @@ SPTR(DATATYPE) Composite::at(const std::string& key)
     else
     {
     }
+
     return castData;
 }
 
 //-----------------------------------------------------------------------------
 
-template< class DATATYPE >
+template<class DATATYPE>
 CSPTR(DATATYPE) Composite::at(const std::string& key) const
 {
     CSPTR(DATATYPE) castData;
@@ -347,6 +352,7 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
     else
     {
     }
+
     return castData;
 }
 

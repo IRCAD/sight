@@ -41,6 +41,7 @@ namespace sight::viz::scene3d
 class VIZ_SCENE3D_CLASS_API TransferFunction : public ::boost::noncopyable
 {
 public:
+
     typedef std::shared_ptr<TransferFunction> sptr;
     typedef std::weak_ptr<TransferFunction> wptr;
 
@@ -63,16 +64,21 @@ public:
     VIZ_SCENE3D_API void setSampleDistance(const float& _sampleDistance);
 
     /// Bind the texture and the uniforms in a given pass
-    template <class GPU_PARAMETERS>
-    void bind(const ::Ogre::Pass* const _ogrePass, const std::string& _texUnitName,
-              ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform = "u_f2TFWindow") const;
+    template<class GPU_PARAMETERS>
+    void bind(
+        const ::Ogre::Pass* const _ogrePass,
+        const std::string& _texUnitName,
+        ::Ogre::SharedPtr<GPU_PARAMETERS> _params,
+        const std::string& _uniform = "u_f2TFWindow"
+    ) const;
+
 private:
 
     /// Texture containing the interpolated nodes of the transfer function.
     ::Ogre::TexturePtr m_texture;
 
     /// Current sample distance used in the VR renderer.
-    float m_sampleDistance { 1.f };
+    float m_sampleDistance {1.f};
 
     /**
      *  @brief Defines interpolation mode on extremities. Copied from data::TransferFunction.
@@ -80,7 +86,7 @@ private:
      *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
      **/
-    bool m_isClamped { false };
+    bool m_isClamped {false};
 
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
     ::Ogre::Vector2 m_tfWindow;
@@ -106,9 +112,13 @@ inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
 
 //------------------------------------------------------------------------------
 
-template <class GPU_PARAMETERS>
-inline void TransferFunction::bind(const ::Ogre::Pass* const _pass, const std::string& _texUnitName,
-                                   ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform) const
+template<class GPU_PARAMETERS>
+inline void TransferFunction::bind(
+    const ::Ogre::Pass* const _pass,
+    const std::string& _texUnitName,
+    ::Ogre::SharedPtr<GPU_PARAMETERS> _params,
+    const std::string& _uniform
+) const
 {
     SIGHT_ASSERT("Pass is null", _pass);
     SIGHT_ASSERT("Parameters pointer is null", _params);
@@ -120,6 +130,7 @@ inline void TransferFunction::bind(const ::Ogre::Pass* const _pass, const std::s
     {
         texUnitState->setTexture(m_texture);
     }
+
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
 
     // Beware, "clamped" here means the border color is black (see data::TransferFunction), otherwise use the

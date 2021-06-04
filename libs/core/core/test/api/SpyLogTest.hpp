@@ -28,17 +28,19 @@
 
 namespace sight::core
 {
+
 namespace ut
 {
 
 class SpyLogTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SpyLogTest );
-CPPUNIT_TEST( logMessageTest );
-CPPUNIT_TEST( threadSafetyTest );
+CPPUNIT_TEST_SUITE(SpyLogTest);
+CPPUNIT_TEST(logMessageTest);
+CPPUNIT_TEST(threadSafetyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,4 +57,5 @@ private:
 };
 
 } //namespace ut
+
 } //namespace sight::core

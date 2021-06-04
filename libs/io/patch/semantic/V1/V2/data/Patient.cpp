@@ -33,10 +33,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V1
 {
+
 namespace V2
 {
+
 namespace data
 {
 
@@ -56,7 +59,7 @@ Patient::~Patient()
 
 // ----------------------------------------------------------------------------
 
-Patient::Patient( const Patient& cpy ) :
+Patient::Patient(const Patient& cpy) :
     io::atoms::patch::ISemanticPatch(cpy)
 {
 }
@@ -66,14 +69,15 @@ Patient::Patient( const Patient& cpy ) :
 void Patient::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     ISemanticPatch::apply(previous, current, newVersions);
-    io::atoms::patch::helper::cleanFields( current );
-    io::atoms::patch::helper::Object helper( current );
+    io::atoms::patch::helper::cleanFields(current);
+    io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::String::sptr uid = current->getAttribute< sight::atoms::String >("patient_id");
-    if( uid->getValue().empty() )
+    sight::atoms::String::sptr uid = current->getAttribute<sight::atoms::String>("patient_id");
+    if(uid->getValue().empty())
     {
         helper.replaceAttribute("patient_uid", sight::atoms::String::New(core::tools::UUID::generateUUID()));
     }
@@ -82,6 +86,9 @@ void Patient::apply(
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

@@ -43,7 +43,9 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
 //-----------------------------------------------------------------------------
 
 ::Ogre::MovableObject* R2VBRenderable::createInstanceImpl(
-    const ::Ogre::String& name, const ::Ogre::NameValuePairList* /*params*/)
+    const ::Ogre::String& name,
+    const ::Ogre::NameValuePairList* /*params*/
+)
 {
     return new viz::scene3d::R2VBRenderable(name);
 }
@@ -51,7 +53,7 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
 #if OGRE_VERSION_PATCH < 9
 //------------------------------------------------------------------------------
 
-void R2VBRenderable::destroyInstance( ::Ogre::MovableObject* obj)
+void R2VBRenderable::destroyInstance(::Ogre::MovableObject* obj)
 {
     delete obj;
 }

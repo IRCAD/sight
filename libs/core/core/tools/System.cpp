@@ -51,7 +51,7 @@ std::string System::s_tempPrefix;
 
 struct RemoveTemporaryFolder
 {
-    typedef std::shared_ptr< RemoveTemporaryFolder > sptr;
+    typedef std::shared_ptr<RemoveTemporaryFolder> sptr;
 
     RemoveTemporaryFolder(const std::filesystem::path& path) :
         m_path(path)
@@ -62,8 +62,9 @@ struct RemoveTemporaryFolder
     {
         std::error_code er;
         std::filesystem::remove_all(m_path, er);
-        SIGHT_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
+        SIGHT_ERROR_IF("Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
+
     std::filesystem::path m_path;
 };
 static RemoveTemporaryFolder::sptr autoRemoveTempFolder;
@@ -112,9 +113,10 @@ const std::filesystem::path& System::getTempPath() noexcept
 #else
         fs::path fallback("/tmp");
 #endif
-        SIGHT_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
+        SIGHT_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback);
         sysTmp = fallback;
     }
+
     return sysTmp;
 }
 
@@ -122,11 +124,12 @@ const std::filesystem::path& System::getTempPath() noexcept
 
 const std::string System::genTempFileName(size_t _length)
 {
-    static const char chrs[] = { "0123456789"
-                                 "abcdefghijklmnopqrstuvwxyz"
-                                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+    static const char chrs[] = {"0123456789"
+                                "abcdefghijklmnopqrstuvwxyz"
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    };
 
-    thread_local static std::mt19937 rg{std::random_device{} ()};
+    thread_local static std::mt19937 rg {std::random_device {}()};
     thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chrs) - 2);
 
     std::string s;
@@ -159,9 +162,8 @@ const std::filesystem::path createUniqueFolder(const std::filesystem::path& fold
 
             created = true;
         }
-
     }
-    while ( !created );
+    while(!created);
 
     return tmpDir;
 }
@@ -178,7 +180,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
         if(!subFolderPrefix.empty())
         {
             const std::string subDirName = subFolderPrefix + "-";
-            fs::path tmpSubDir           = createUniqueFolder(tmpDirPath/subDirName);
+            fs::path tmpSubDir           = createUniqueFolder(tmpDirPath / subDirName);
             return tmpSubDir;
         }
 
@@ -188,18 +190,18 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
     const fs::path& sysTmp = getTempPath();
 
     const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "." SIGHT_TMP_EXT;
-    fs::path tmpDir              = createUniqueFolder(sysTmp/tmpDirName);
-    tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
+    fs::path tmpDir              = createUniqueFolder(sysTmp / tmpDirName);
+    tmpDirPath = tmpDir; // tmpDirPath always set to root tmp dir
 
     fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
-    std::fstream( pidFile, std::ios::out ).close();
+    std::fstream(pidFile, std::ios::out).close();
 
     autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
 
     if(!subFolderPrefix.empty())
     {
         const std::string subDirName = subFolderPrefix + "-" + "%%%%%%%%%%%%";
-        tmpDir = createUniqueFolder(tmpDir/subDirName);
+        tmpDir = createUniqueFolder(tmpDir / subDirName);
     }
 
     SIGHT_INFO("Temporary folder is : " << tmpDirPath);
@@ -212,7 +214,7 @@ bool System::isProcessRunning(int pid) noexcept
 {
 #ifdef WIN32
     HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
-    if (!hProcess)
+    if(!hProcess)
     {
         return false;
     }
@@ -232,19 +234,19 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 {
     namespace fs = std::filesystem;
 
-    const std::regex pidFilter( "([\\d]+)\\.pid" );
+    const std::regex pidFilter("([\\d]+)\\.pid");
 
     int pid = 0;
 
     try
     {
-        fs::directory_iterator i( dir );
+        fs::directory_iterator i(dir);
         fs::directory_iterator endIter;
 
-        for(; i != endIter; ++i )
+        for( ; i != endIter ; ++i)
         {
             // Skip if not a dir
-            if( !fs::is_regular_file( i->status() ) )
+            if(!fs::is_regular_file(i->status()))
             {
                 continue;
             }
@@ -253,22 +255,22 @@ int System::tempFolderPID(const std::filesystem::path& dir) noexcept
 
             // Skip if no match
             const std::string s = i->path().filename().string();
-            if( !std::regex_match( s, what, pidFilter ) )
+            if(!std::regex_match(s, what, pidFilter))
             {
                 continue;
             }
 
             try
             {
-                pid = ::boost::lexical_cast< int >(what.str(1));
+                pid = ::boost::lexical_cast<int>(what.str(1));
                 break;
             }
-            catch (boost::bad_lexical_cast&)
+            catch(boost::bad_lexical_cast&)
             {
             }
         }
     }
-    catch (std::exception&)
+    catch(std::exception&)
     {
         // The directory might have been removed by another process
         return 0;
@@ -283,17 +285,17 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 {
     namespace fs = std::filesystem;
 
-    const std::regex tmpFolderFilter( ".*\\." SIGHT_TMP_EXT );
+    const std::regex tmpFolderFilter(".*\\." SIGHT_TMP_EXT);
 
-    std::vector< fs::path > allTempFolders;
+    std::vector<fs::path> allTempFolders;
 
-    fs::directory_iterator i( dir );
+    fs::directory_iterator i(dir);
     fs::directory_iterator endIter;
 
-    for(; i != endIter; ++i )
+    for( ; i != endIter ; ++i)
     {
         // Skip if not a dir
-        if( !fs::is_directory( i->status() ) )
+        if(!fs::is_directory(i->status()))
         {
             continue;
         }
@@ -302,15 +304,15 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 
         // Skip if no match
         std::string s = i->path().filename().string();
-        if( !std::regex_match( s, what, tmpFolderFilter ) )
+        if(!std::regex_match(s, what, tmpFolderFilter))
         {
             continue;
         }
 
-        allTempFolders.push_back( i->path() );
+        allTempFolders.push_back(i->path());
     }
 
-    for( const fs::path& foundTmpDir :  allTempFolders)
+    for(const fs::path& foundTmpDir : allTempFolders)
     {
         const int pid = tempFolderPID(foundTmpDir);
 
@@ -321,10 +323,9 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
             std::error_code er;
             fs::remove_all(foundTmpDir, er);
 
-            SIGHT_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
+            SIGHT_WARN_IF("Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------

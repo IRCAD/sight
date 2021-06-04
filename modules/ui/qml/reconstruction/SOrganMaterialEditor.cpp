@@ -47,7 +47,6 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
 
 void SOrganMaterialEditor::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +67,7 @@ void SOrganMaterialEditor::stopping()
 
 void SOrganMaterialEditor::updating()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
@@ -76,7 +75,7 @@ void SOrganMaterialEditor::updating()
     QColor color;
     color.setRgbF(material->diffuse()->red(), material->diffuse()->green(), material->diffuse()->blue());
 
-    int alpha = static_cast<int>(material->diffuse()->alpha()*100);
+    int alpha = static_cast<int>(material->diffuse()->alpha() * 100);
     Q_EMIT materialChanged(color, alpha);
 }
 
@@ -84,7 +83,7 @@ void SOrganMaterialEditor::updating()
 
 void SOrganMaterialEditor::onColor(QColor color)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
@@ -96,14 +95,13 @@ void SOrganMaterialEditor::onColor(QColor color)
 
 //------------------------------------------------------------------------------
 
-void SOrganMaterialEditor::onOpacitySlider(int value )
+void SOrganMaterialEditor::onOpacitySlider(int value)
 {
-
-    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
-    material->diffuse()->alpha() = value/100.0f;
+    material->diffuse()->alpha() = value / 100.0f;
     this->materialNotification();
 }
 
@@ -111,12 +109,13 @@ void SOrganMaterialEditor::onOpacitySlider(int value )
 
 void SOrganMaterialEditor::materialNotification()
 {
-    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
-        data::Object::s_MODIFIED_SIG);
+    sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
+        data::Object::s_MODIFIED_SIG
+    );
     sig->asyncEmit();
 }
 
@@ -131,4 +130,4 @@ service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() 
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::module

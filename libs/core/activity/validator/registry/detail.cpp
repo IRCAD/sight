@@ -26,8 +26,10 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
+
 namespace registry
 {
 
@@ -35,10 +37,12 @@ struct FwActivitiesValidatorRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwActivitiesValidatorRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwActivitiesValidatorRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
+
 } // namespace validator
+
 } // namespace sight::activity

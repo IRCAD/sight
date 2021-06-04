@@ -48,20 +48,26 @@
 
 namespace sight::data
 {
+
 class Color;
 class Matrix4;
+
 }
 
 namespace sight::viz::scene3d
 {
+
 class SRender;
 class IAdaptor;
 class ILight;
+
 }
 
 namespace Ogre
 {
+
 class Camera;
+
 }
 
 namespace sight::viz::scene3d
@@ -74,21 +80,19 @@ class VIZ_SCENE3D_CLASS_API Layer :
     public core::BaseObject,
     public core::com::HasSignals,
     public core::com::HasSlots
-
 {
-
 public:
 
     /// Generates default methods.
-    SIGHT_DECLARE_CLASS(Layer, viz::scene3d::Layer, new Layer)
+    SIGHT_DECLARE_CLASS(Layer, viz::scene3d::Layer, new Layer);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Defines the extrinsic x Intrinsic camera calibrations.
-    using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;
+    using CameraCalibrationsType = std::vector< ::Ogre::Matrix4>;
 
     /// Defines the set of overlays enabled on a layer.
-    using OverlaySetType = std::vector< ::Ogre::Overlay* >;
+    using OverlaySetType = std::vector< ::Ogre::Overlay*>;
 
     /// Definest the viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;
@@ -109,9 +113,9 @@ public:
     VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef core::com::Signal<void ()> CameraUpdatedSignalType;
 
-    typedef core::com::Slot< void (viz::scene3d::IWindowInteractor::InteractionInfo) >
+    typedef core::com::Slot<void (viz::scene3d::IWindowInteractor::InteractionInfo)>
         InteractionSlotType;
-    typedef core::com::Slot< void () > DestroySlotType;
+    typedef core::com::Slot<void ()> DestroySlotType;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_INTERACTION_SLOT;
@@ -185,8 +189,10 @@ public:
     VIZ_SCENE3D_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
-    VIZ_SCENE3D_API void addInteractor(const viz::scene3d::interactor::IInteractor::sptr& _interactor,
-                                       int _priority = 0);
+    VIZ_SCENE3D_API void addInteractor(
+        const viz::scene3d::interactor::IInteractor::sptr& _interactor,
+        int _priority = 0
+    );
 
     /// Removes the given interactor.
     VIZ_SCENE3D_API void removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& _interactor);
@@ -198,13 +204,13 @@ public:
     VIZ_SCENE3D_API void setOrder(int _order);
 
     /// Sets the worker used by slots.
-    VIZ_SCENE3D_API void setWorker( const core::thread::Worker::sptr& _worker);
+    VIZ_SCENE3D_API void setWorker(const core::thread::Worker::sptr& _worker);
 
     /// @returns the render service.
     VIZ_SCENE3D_API SPTR(viz::scene3d::SRender) getRenderService() const;
 
     /// Sets the render service.
-    VIZ_SCENE3D_API void setRenderService( const SPTR(viz::scene3d::SRender)& _service );
+    VIZ_SCENE3D_API void setRenderService(const SPTR(viz::scene3d::SRender)& _service);
 
     /// Requests render.
     VIZ_SCENE3D_API void requestRender();
@@ -219,10 +225,13 @@ public:
     VIZ_SCENE3D_API void setBackgroundScale(float topScale, float botScale);
 
     /// Sets if this layer need a layer's 3D scene.
-    VIZ_SCENE3D_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
-                                                  std::string numPeels                        = "",
-                                                  compositor::Core::StereoModeType stereoMode =
-                                                      compositor::Core::StereoModeType::NONE);
+    VIZ_SCENE3D_API void setCoreCompositorEnabled(
+        bool enabled,
+        std::string transparencyTechnique           = "",
+        std::string numPeels                        = "",
+        compositor::Core::StereoModeType stereoMode =
+        compositor::Core::StereoModeType::NONE
+    );
 
     /// Sets if this layer has a configured compositor chain.
     VIZ_SCENE3D_API void setCompositorChainEnabled(const std::string& compositorChain);
@@ -317,62 +326,62 @@ private:
     void restartAdaptors();
 
     /// Calls a function on all interactors and deletes the ones that expired.
-    void forAllInteractors(const std::function< void(const interactor::IInteractor::sptr&)>&& _f);
+    void forAllInteractors(const std::function<void(const interactor::IInteractor::sptr&)>&& _f);
 
     /// Contains the Ogre scene manager of this viewport.
-    ::Ogre::SceneManager* m_sceneManager { nullptr };
+    ::Ogre::SceneManager* m_sceneManager {nullptr};
 
     /// Contains the Ogre render window containing this viewport.
-    ::Ogre::RenderTarget* m_renderTarget { nullptr };
+    ::Ogre::RenderTarget* m_renderTarget {nullptr};
 
     /// Contains the Ogre viewport representing this layer.
-    ::Ogre::Viewport* m_viewport { nullptr };
+    ::Ogre::Viewport* m_viewport {nullptr};
 
     /// Contains the overlay panel to which all the UI's text is attached.
-    ::Ogre::OverlayContainer* m_overlayTextPanel { nullptr };
+    ::Ogre::OverlayContainer* m_overlayTextPanel {nullptr};
 
     /// Defines stereoscopic rendering mode.
-    compositor::Core::StereoModeType m_stereoMode { compositor::Core::StereoModeType::NONE };
+    compositor::Core::StereoModeType m_stereoMode {compositor::Core::StereoModeType::NONE};
 
     /// Stores configured compositor chain raw string if there is a one.
-    std::string m_rawCompositorChain { "" };
+    std::string m_rawCompositorChain {""};
 
     /// Contains the Ogre default compositor for this layer.
-    SPTR(viz::scene3d::compositor::Core) m_coreCompositor { nullptr };
+    SPTR(viz::scene3d::compositor::Core) m_coreCompositor {nullptr};
 
     /// Contains the Ogre default compositor default transparency technique.
-    viz::scene3d::compositor::transparencyTechnique m_transparencyTechnique { viz::scene3d::compositor::DEFAULT };
+    viz::scene3d::compositor::transparencyTechnique m_transparencyTechnique {viz::scene3d::compositor::DEFAULT};
 
     /// Defines the number of peels used by OIT.
-    int m_numPeels { 8 };
+    int m_numPeels {8};
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not.
     viz::scene3d::compositor::ChainManager::uptr m_compositorChainManager;
 
     /// Defines the Z order of this viewport.
-    int m_order { 1 };
+    int m_order {1};
 
     /// Defines the top background color : specific to background Layer.
-    std::string m_topColor { "#333333" };
+    std::string m_topColor {"#333333"};
 
     /// Defines the bottom background color : specific to background Layer.
-    std::string m_bottomColor { "#333333" };
+    std::string m_bottomColor {"#333333"};
 
     /// Defines the top background scale : specific to background Layer.
-    float m_topScale { 0.f };
+    float m_topScale {0.f};
 
     /// Defines the bottom background scale : specific to background Layer.
-    float m_bottomScale { 1.f };
+    float m_bottomScale {1.f};
 
     /// Contains the Ogre camera.
-    ::Ogre::Camera* m_camera { nullptr };
+    ::Ogre::Camera* m_camera {nullptr};
 
     /// Stores the list of interactors, sorted by priority.
-    std::multimap< int, viz::scene3d::interactor::IInteractor::wptr, std::greater<int> > m_interactors;
+    std::multimap<int, viz::scene3d::interactor::IInteractor::wptr, std::greater<int> > m_interactors;
 
     /// Handles flag cancelling all further interaction when enabled.
-    bool m_cancelFurtherInteraction { false };
+    bool m_cancelFurtherInteraction {false};
 
     /// Handles all connections.
     core::com::helper::SigSlotConnection m_connections;
@@ -381,35 +390,35 @@ private:
     WPTR(viz::scene3d::SRender) m_renderService;
 
     /// Defines the layer identifier as referenced in SRender.
-    std::string m_id { "" };
+    std::string m_id {""};
 
     /// Enables default compositor's widgets (gui displays before scene creation).
-    bool m_hasCoreCompositor { false };
+    bool m_hasCoreCompositor {false};
 
     /// Indicates if a compositor chain is attached to the layer.
-    bool m_hasCompositorChain { false };
+    bool m_hasCompositorChain {false};
 
     /// Indicates if the scene has been created.
-    bool m_sceneCreated { false };
+    bool m_sceneCreated {false};
 
     /// Indicates if the scene has a default light.
-    bool m_hasDefaultLight { true };
+    bool m_hasDefaultLight {true};
 
     /// Contains the abstract light used to set the default light.
-    SPTR(viz::scene3d::ILight) m_lightAdaptor { nullptr };
+    SPTR(viz::scene3d::ILight) m_lightAdaptor {nullptr};
 
     /// Contains the diffuse color of the default light.
-    SPTR(data::Color) m_defaultLightDiffuseColor { nullptr };
+    SPTR(data::Color) m_defaultLightDiffuseColor {nullptr};
 
     /// Contains the specular color of the specular light.
-    SPTR(data::Color) m_defaultLightSpecularColor { nullptr };
+    SPTR(data::Color) m_defaultLightSpecularColor {nullptr};
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct LayerCameraListener;
-    LayerCameraListener* m_cameraListener { nullptr };
+    LayerCameraListener* m_cameraListener {nullptr};
 
     /// Contains the autostereo listener.
-    compositor::listener::AutoStereoCompositorListener* m_autostereoListener { nullptr };
+    compositor::listener::AutoStereoCompositorListener* m_autostereoListener {nullptr};
 
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     CameraCalibrationsType m_stereoCameraCalibration;
@@ -421,11 +430,10 @@ private:
     OverlaySetType m_enabledOverlays;
 
     /// Defines viewport parameters: left, top, width, height.
-    ViewportConfigType m_viewportCfg { 0.f, 0.f, 1.f, 1.f};
+    ViewportConfigType m_viewportCfg {0.f, 0.f, 1.f, 1.f};
 
     /// Defines the dpi number of the rendering screen.
-    float m_dpi { 96.f };
-
+    float m_dpi {96.f};
 };
 
 } // namespace sight::viz::scene3d.

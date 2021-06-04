@@ -31,6 +31,7 @@ namespace sight::io::patch::structural
 class PatchLoader
 {
 public:
+
     /// Function used to force link.
     IO_PATCH_API static void loadPatches();
 };

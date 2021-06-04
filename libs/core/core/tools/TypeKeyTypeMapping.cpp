@@ -31,6 +31,7 @@ bool isMapping<std::uint8_t>(const Type& type)
 {
     return type.isOfType<std::uint8_t>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>
@@ -38,6 +39,7 @@ bool isMapping<std::uint16_t>(const Type& type)
 {
     return type.isOfType<std::uint16_t>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>
@@ -45,6 +47,7 @@ bool isMapping<std::uint32_t>(const Type& type)
 {
     return type.isOfType<std::uint32_t>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>
@@ -59,6 +62,7 @@ bool isMapping<std::int8_t>(const Type& type)
 {
     return type.isOfType<std::int8_t>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>
@@ -66,6 +70,7 @@ bool isMapping<std::int16_t>(const Type& type)
 {
     return type.isOfType<std::int16_t>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>
@@ -88,6 +93,7 @@ bool isMapping<float>(const Type& type)
 {
     return type.isOfType<float>();
 }
+
 //------------------------------------------------------------------------------
 
 template<>

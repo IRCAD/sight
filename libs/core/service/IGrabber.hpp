@@ -23,16 +23,18 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/IService.hpp>
 
 namespace sight::data
 {
+
 class FrameTL;
+
 }
 
 namespace sight::service
 {
+
 /**
  * @brief   This interface defines grabber service API.
  *          Must be implemented for services that grabs frames.
@@ -58,10 +60,9 @@ namespace sight::service
  */
 class SERVICE_CLASS_API IGrabber : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IGrabber, service::IService)
+    SIGHT_DECLARE_SERVICE(IGrabber, service::IService);
 
     /**
      * @name Slots API
@@ -160,6 +161,7 @@ public:
     SERVICE_API virtual void setStep(int step, std::string key);
 
 protected:
+
     /**
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
@@ -180,8 +182,7 @@ private:
     SERVICE_API void playPauseCamera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
-    bool m_isStarted{false};
-
+    bool m_isStarted {false};
 };
 
 } //namespace sight::service

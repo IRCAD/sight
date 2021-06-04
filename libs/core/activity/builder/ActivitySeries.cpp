@@ -38,6 +38,7 @@
 
 namespace sight::activity
 {
+
 namespace builder
 {
 
@@ -57,17 +58,19 @@ ActivitySeries::~ActivitySeries()
 
 //-----------------------------------------------------------------------------
 
-data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
-                                        const activity::extension::ActivityRequirement& req)
+data::Composite::sptr vectorToComposite(
+    const data::Vector::csptr& vector,
+    const activity::extension::ActivityRequirement& req
+)
 {
     namespace ActReg = activity::extension;
     data::Composite::sptr composite = data::Composite::New();
 
-    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
+    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs);
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
-    for(const data::Object::sptr& obj :  *vector)
+    for(const data::Object::sptr& obj : *vector)
     {
         const ActReg::ActivityRequirementKey& keyTag = (*iter++);
         if(keyTag.path.empty())
@@ -76,7 +79,7 @@ data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
         }
         else
         {
-            (*composite)[keyTag.key] = data::reflection::getObject( obj, keyTag.path );
+            (*composite)[keyTag.key] = data::reflection::getObject(obj, keyTag.path);
         }
     }
 
@@ -87,12 +90,13 @@ data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
 
 data::ActivitySeries::sptr ActivitySeries::buildData(
     const activity::extension::ActivityInfo& activityInfo,
-    const data::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection
+) const
 {
     data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
 
     data::Series::sptr series;
-    for(const data::Object::sptr& obj :  *currentSelection)
+    for(const data::Object::sptr& obj : *currentSelection)
     {
         series = data::Series::dynamicCast(obj);
         if(series)
@@ -103,13 +107,13 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
 
     if(series)
     {
-        actSeries->setPatient( data::Object::copy(series->getPatient()) );
-        actSeries->setStudy( data::Object::copy(series->getStudy()) );
-        actSeries->setEquipment( data::Object::copy(series->getEquipment()) );
+        actSeries->setPatient(data::Object::copy(series->getPatient()));
+        actSeries->setStudy(data::Object::copy(series->getStudy()));
+        actSeries->setEquipment(data::Object::copy(series->getEquipment()));
     }
 
     actSeries->setModality("OT");
-    actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID() );
+    actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
 
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
     actSeries->setDate(core::tools::getDate(now));
@@ -121,21 +125,23 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
     namespace ActReg = activity::extension;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
-    for(const ActReg::ActivityRequirement& req :  reqVect)
+    for(const ActReg::ActivityRequirement& req : reqVect)
     {
         data::Vector::sptr vectorType = this->getType(currentSelection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
-            SIGHT_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
+            SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vectorType->empty());
             (*data)[req.name] = (*vectorType)[0];
         }
         else
         {
-            SIGHT_ASSERT("Unknown specified container: '"+req.container+"'.",
-                         req.container.empty() ||
-                         req.container == "vector" ||
-                         req.container == "composite");
+            SIGHT_ASSERT(
+                "Unknown specified container: '" + req.container + "'.",
+                req.container.empty()
+                || req.container == "vector"
+                || req.container == "composite"
+            );
             if(req.container == "vector")
             {
                 (*data)[req.name] = vectorType;
@@ -153,4 +159,5 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
 //-----------------------------------------------------------------------------
 
 } // namespace builder
+
 } // namespace sight::activity

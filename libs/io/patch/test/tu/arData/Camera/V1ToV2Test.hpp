@@ -26,10 +26,13 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Camera
 {
 
@@ -38,13 +41,14 @@ namespace Camera
  */
 class V1ToV2Test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( V1ToV2Test );
-CPPUNIT_TEST( applyPatchTestFile );
-CPPUNIT_TEST( applyPatchTestStream );
-CPPUNIT_TEST( applyPatchTestDevice );
+CPPUNIT_TEST_SUITE(V1ToV2Test);
+CPPUNIT_TEST(applyPatchTestFile);
+CPPUNIT_TEST(applyPatchTestStream);
+CPPUNIT_TEST(applyPatchTestDevice);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,6 +59,9 @@ public:
 };
 
 } //namespace Camera
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

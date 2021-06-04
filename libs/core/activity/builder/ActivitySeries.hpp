@@ -30,6 +30,7 @@
 
 namespace sight::activity
 {
+
 namespace builder
 {
 
@@ -39,7 +40,8 @@ namespace builder
 class ACTIVITY_CLASS_API ActivitySeries : public activity::IBuilder
 {
 public:
-    SIGHT_DECLARE_CLASS(ActivitySeries, activity::IBuilder, activity::builder::factory::New< ActivitySeries >)
+
+    SIGHT_DECLARE_CLASS(ActivitySeries, activity::IBuilder, activity::builder::factory::New<ActivitySeries>);
 
     typedef std::string RegistryKeyType;
 
@@ -59,8 +61,10 @@ public:
      */
     ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
         const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection
+    ) const override;
 };
 
 } // namespace builder
+
 } // namespace sight::activity

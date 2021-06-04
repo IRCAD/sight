@@ -89,12 +89,12 @@ namespace sight::module::ui::qml::activity
 class MODULE_UI_QML_CLASS_API SSequencer : public sight::ui::qml::IQmlEditor,
                                            public sight::activity::IActivitySequencer
 {
-
 Q_OBJECT
 Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SSequencer, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SSequencer, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSequencer();
@@ -107,11 +107,11 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr) > DataRequiredSignalType;
-    /**
-     * @}
-     */
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> DataRequiredSignalType;
+/**
+ * @}
+ */
 
 Q_SIGNALS:
 

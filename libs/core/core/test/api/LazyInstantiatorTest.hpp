@@ -26,25 +26,27 @@
 
 namespace sight::core
 {
+
 namespace ut
 {
 
 class LazyInstantiatorTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( LazyInstantiatorTest );
-CPPUNIT_TEST( lazyTest );
-CPPUNIT_TEST( threadSafetyTest );
+CPPUNIT_TEST_SUITE(LazyInstantiatorTest);
+CPPUNIT_TEST(lazyTest);
+CPPUNIT_TEST(threadSafetyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void lazyTest();
     void threadSafetyTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::core

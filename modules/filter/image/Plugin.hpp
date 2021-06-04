@@ -32,7 +32,6 @@ namespace sight::module::filter::image
  */
 struct Plugin : public core::runtime::Plugin
 {
-
     /**
      * @brief   destructor
      */
@@ -43,7 +42,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::filter::image

@@ -67,9 +67,9 @@ void SPointListRegistration::configuring()
     const auto configTree = this->getConfigTree();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
-    if (config)
+    if(config)
     {
-        const std::string mode = config->get< std::string >("mode", "rigid");
+        const std::string mode = config->get<std::string>("mode", "rigid");
 
         if(mode == "rigid")
         {
@@ -85,8 +85,10 @@ void SPointListRegistration::configuring()
         }
         else
         {
-            SIGHT_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
-                        " Defaulting to 'rigid'.");
+            SIGHT_ERROR(
+                "Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
+                                                        " Defaulting to 'rigid'."
+            );
         }
     }
     else
@@ -111,12 +113,12 @@ void SPointListRegistration::stopping()
 
 void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    data::PointList::sptr registeredPL = this->getInOut< data::PointList >("registeredPL");
-    data::PointList::sptr referencePL  = this->getInOut< data::PointList >("referencePL");
-    data::Matrix4::sptr matrix         = this->getInOut< data::Matrix4 >("output");
+    data::PointList::sptr registeredPL = this->getInOut<data::PointList>("registeredPL");
+    data::PointList::sptr referencePL  = this->getInOut<data::PointList>("referencePL");
+    data::Matrix4::sptr matrix         = this->getInOut<data::Matrix4>("output");
 
-    if( registeredPL->getPoints().size() >= 3 &&
-        registeredPL->getPoints().size() == referencePL->getPoints().size() )
+    if(registeredPL->getPoints().size() >= 3
+       && registeredPL->getPoints().size() == referencePL->getPoints().size())
     {
         vtkSmartPointer<vtkLandmarkTransform> landmarkTransform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
@@ -127,19 +129,19 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< data::String >(data::fieldHelper::Image::m_labelId ) != nullptr
-           && firstPointReg->getField< data::String >(data::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField<data::String>(data::fieldHelper::Image::m_labelId) != nullptr
+           && firstPointReg->getField<data::String>(data::fieldHelper::Image::m_labelId) != nullptr)
         {
             // ... Then match them according to that label.
-            for( data::Point::sptr pointRef : referencePL->getPoints() )
+            for(data::Point::sptr pointRef : referencePL->getPoints())
             {
                 const std::string& labelRef =
-                    pointRef->getField< data::String >(data::fieldHelper::Image::m_labelId )->value();
+                    pointRef->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
 
-                for( data::Point::sptr pointReg : registeredPL->getPoints() )
+                for(data::Point::sptr pointReg : registeredPL->getPoints())
                 {
                     const std::string& labelReg =
-                        pointReg->getField< data::String >(data::fieldHelper::Image::m_labelId )->value();
+                        pointReg->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
 
                     if(labelRef == labelReg)
                     {
@@ -189,9 +191,9 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
         vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
         m->Invert();
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 matrix->setCoefficient(l, c, m->GetElement(l, c));
             }
@@ -200,7 +202,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         //compute RMSE
         double errorValue = 0.;
 
-        for(vtkIdType i = 0; i < sourcePts->GetNumberOfPoints(); ++i)
+        for(vtkIdType i = 0 ; i < sourcePts->GetNumberOfPoints() ; ++i)
         {
             double p1[3];
             sourcePts->GetPoint(i, p1);
@@ -208,16 +210,18 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
             targetPts->GetPoint(i, p2);
 
             // to have homogeneous coordinates (x,y,z,w)
-            double p2H[4] = { 1., 1., 1., 1.};
+            double p2H[4] = {1., 1., 1., 1.};
             std::copy(std::begin(p2), std::end(p2), std::begin(p2H));
 
             //p' = M*p
             double newP[4];
             m->MultiplyPoint(p2H, newP);
 
-            errorValue += std::sqrt(((p1[0] - newP[0]) * (p1[0] - newP[0])) +
-                                    ((p1[1] - newP[1]) * (p1[1] - newP[1])) +
-                                    ((p1[2] - newP[2]) * (p1[2] - newP[2])));
+            errorValue += std::sqrt(
+                ((p1[0] - newP[0]) * (p1[0] - newP[0]))
+                + ((p1[1] - newP[1]) * (p1[1] - newP[1]))
+                + ((p1[2] - newP[2]) * (p1[2] - newP[2]))
+            );
         }
 
         errorValue /= sourcePts->GetNumberOfPoints();
@@ -225,7 +229,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 
         // Notify Matrix modified
-        auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -235,17 +239,23 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            sight::ui::base::dialog::MessageDialog::show("Error",
-                                                         "You must enter 3 or more points for the registration to work.",
-                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Error",
+                "You must enter 3 or more points for the registration to work.",
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
-                referencePL->getPoints().size());
-            sight::ui::base::dialog::MessageDialog::show("Error", msg,
-                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
+                referencePL->getPoints().size()
+            );
+            sight::ui::base::dialog::MessageDialog::show(
+                "Error",
+                msg,
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
     }
 }
@@ -275,7 +285,7 @@ void SPointListRegistration::changeMode(std::string _value)
     {
         m_registrationMode = RIGID;
     }
-    else if( _value == "SIMILARITY")
+    else if(_value == "SIMILARITY")
     {
         m_registrationMode = SIMILARITY;
     }
@@ -285,7 +295,7 @@ void SPointListRegistration::changeMode(std::string _value)
     }
     else
     {
-        SIGHT_ERROR("key "+ _value +" is not handled.");
+        SIGHT_ERROR("key " + _value + " is not handled.");
     }
 }
 

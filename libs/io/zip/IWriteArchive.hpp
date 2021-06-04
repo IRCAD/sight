@@ -35,10 +35,9 @@ namespace sight::io::zip
  */
 class IWriteArchive
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IWriteArchive)
+    SIGHT_DECLARE_CLASS(IWriteArchive);
 
     virtual ~IWriteArchive()
     {

@@ -22,23 +22,24 @@
 
 #include "data/helper/Field.hpp"
 
-#include <core/com/Signal.hxx>
-
 #include <data/Exception.hpp>
 #include <data/Object.hpp>
+
+#include <core/com/Signal.hxx>
 
 #include <algorithm>
 #include <functional>
 
 namespace sight::data
 {
+
 namespace helper
 {
 
 //-----------------------------------------------------------------------------
 
-Field::Field( data::Object::sptr object ) :
-    m_object( object )
+Field::Field(data::Object::sptr object) :
+    m_object(object)
 {
 }
 
@@ -46,7 +47,7 @@ Field::Field( data::Object::sptr object ) :
 
 Field::~Field()
 {
-    if(!m_addedFields.empty() || !m_newChangedFields.empty() || !m_removedFields.empty() )
+    if(!m_addedFields.empty() || !m_newChangedFields.empty() || !m_removedFields.empty())
     {
         notify();
     }
@@ -61,7 +62,7 @@ void Field::setField(const data::Object::FieldNameType& name, data::Object::sptr
 
 //-----------------------------------------------------------------------------
 
-void Field::setFields( const data::Object::FieldMapType& newFields)
+void Field::setFields(const data::Object::FieldMapType& newFields)
 {
     data::Object::sptr object = m_object.lock();
     SIGHT_ASSERT("Field helper need a non-null object pointer", object);
@@ -117,7 +118,7 @@ void Field::addOrSwap(const data::Object::FieldNameType& _name, data::Object::sp
 
     data::Object::sptr field = object->getField(_name);
 
-    if (!field)
+    if(!field)
     {
         m_addedFields[_name] = _obj;
     }
@@ -126,6 +127,7 @@ void Field::addOrSwap(const data::Object::FieldNameType& _name, data::Object::sp
         m_newChangedFields[_name] = _obj;
         m_oldChangedFields[_name] = field;
     }
+
     object->setField(_name, _obj);
 }
 
@@ -165,30 +167,38 @@ void Field::notify()
 {
     SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
 
-    if ( !m_removedFields.empty() )
+    if(!m_removedFields.empty())
     {
-        auto sig = m_object.lock()->signal< data::Object::RemovedFieldsSignalType >(
-            data::Object::s_REMOVED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal<data::Object::RemovedFieldsSignalType>(
+            data::Object::s_REMOVED_FIELDS_SIG
+        );
 
         sig->asyncEmit(m_removedFields);
     }
-    if ( !m_newChangedFields.empty() && !m_oldChangedFields.empty() )
+
+    if(!m_newChangedFields.empty() && !m_oldChangedFields.empty())
     {
-        auto sig = m_object.lock()->signal< data::Object::ChangedFieldsSignalType >(
-            data::Object::s_CHANGED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal<data::Object::ChangedFieldsSignalType>(
+            data::Object::s_CHANGED_FIELDS_SIG
+        );
 
         sig->asyncEmit(m_newChangedFields, m_oldChangedFields);
     }
-    if ( !m_addedFields.empty() )
+
+    if(!m_addedFields.empty())
     {
-        auto sig = m_object.lock()->signal< data::Object::AddedFieldsSignalType >(
-            data::Object::s_ADDED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal<data::Object::AddedFieldsSignalType>(
+            data::Object::s_ADDED_FIELDS_SIG
+        );
 
         sig->asyncEmit(m_addedFields);
     }
-    SIGHT_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
-                  + "', nothing to notify.",
-                  m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
+
+    SIGHT_INFO_IF(
+        "No changes were found on the fields of the object '" + m_object.lock()->getID()
+        + "', nothing to notify.",
+        m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty()
+    );
 
     m_removedFields.clear();
     m_newChangedFields.clear();
@@ -198,22 +208,26 @@ void Field::notify()
 
 //-----------------------------------------------------------------------------
 
-void Field::buildMessage(const data::Object::FieldMapType& oldFields,
-                         const data::Object::FieldMapType& newFields)
+void Field::buildMessage(
+    const data::Object::FieldMapType& oldFields,
+    const data::Object::FieldMapType& newFields
+)
 {
     data::Object::FieldNameVectorType oldFieldNames;
     data::Object::FieldNameVectorType newFieldNames;
 
     std::transform(
-        oldFields.begin(), oldFields.end(),
+        oldFields.begin(),
+        oldFields.end(),
         std::back_inserter(oldFieldNames),
         std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
-        );
+    );
     std::transform(
-        newFields.begin(), newFields.end(),
+        newFields.begin(),
+        newFields.end(),
         std::back_inserter(newFieldNames),
         std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
-        );
+    );
 
     std::sort(oldFieldNames.begin(), oldFieldNames.end());
     std::sort(newFieldNames.begin(), newFieldNames.end());
@@ -223,22 +237,28 @@ void Field::buildMessage(const data::Object::FieldMapType& oldFields,
     data::Object::FieldNameVectorType removed; // old - new
 
     std::set_difference(
-        newFieldNames.begin(), newFieldNames.end(),
-        oldFieldNames.begin(), oldFieldNames.end(),
+        newFieldNames.begin(),
+        newFieldNames.end(),
+        oldFieldNames.begin(),
+        oldFieldNames.end(),
         std::back_inserter(added)
-        );
+    );
 
     std::set_intersection(
-        newFieldNames.begin(), newFieldNames.end(),
-        oldFieldNames.begin(), oldFieldNames.end(),
+        newFieldNames.begin(),
+        newFieldNames.end(),
+        oldFieldNames.begin(),
+        oldFieldNames.end(),
         std::back_inserter(changed)
-        );
+    );
 
     std::set_difference(
-        oldFieldNames.begin(), oldFieldNames.end(),
-        newFieldNames.begin(), newFieldNames.end(),
+        oldFieldNames.begin(),
+        oldFieldNames.end(),
+        newFieldNames.begin(),
+        newFieldNames.end(),
         std::back_inserter(removed)
-        );
+    );
 
     for(const data::Object::FieldNameVectorType::value_type& fieldName : added)
     {
@@ -258,4 +278,5 @@ void Field::buildMessage(const data::Object::FieldMapType& oldFields,
 }
 
 } // namespace helper
+
 } // namespace sight::data

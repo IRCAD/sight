@@ -78,7 +78,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::IOp
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IOperator);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SAutomaticRegistration();
@@ -124,7 +124,7 @@ private:
 
     /// Extract the level at the end of the parameter name.
     /// Create the level if it doesn't exist
-    unsigned long extractLevelFromParameterName(const std::string& name );
+    unsigned long extractLevelFromParameterName(const std::string& name);
 
     /// Smallest step that can be taken by the optimizer.
     double m_minStep;
@@ -133,7 +133,7 @@ private:
     unsigned long m_maxIterations;
 
     /// Flag enabling the registration log.
-    bool m_log = { false };
+    bool m_log = {false};
 
     /// Metric used by the optimizer.
     sight::filter::image::MetricType m_metric;

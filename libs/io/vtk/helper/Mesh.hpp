@@ -41,7 +41,6 @@ namespace helper
  */
 class IO_VTK_CLASS_API Mesh
 {
-
 public:
 
     /*!
@@ -50,7 +49,7 @@ public:
      * @param[in] _polyData vtkPolyData.
      * @param[out] _mesh data::Mesh::sptr.
      */
-    IO_VTK_API static void fromVTKMesh(  vtkSmartPointer<vtkPolyData> _polyData, data::Mesh::sptr _mesh );
+    IO_VTK_API static void fromVTKMesh(vtkSmartPointer<vtkPolyData> _polyData, data::Mesh::sptr _mesh);
     /*!
      * @brief Convert a vtkUnstructuredGrid to a data::Mesh::sptr.
      *
@@ -66,7 +65,7 @@ public:
      * @param[in] mesh data::Mesh::csptr.
      * @param[out] grid vtkUnstructuredGrid.
      */
-    IO_VTK_API static void toVTKGrid( const data::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid);
+    IO_VTK_API static void toVTKGrid(const data::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstructuredGrid> grid);
 
     /*!
      * @brief Convert a data::Mesh::csptr to a vtkPolyData.
@@ -74,7 +73,7 @@ public:
      * @param[in] _mesh data::Mesh::csptr.
      * @param[out] _polyData vtkPolyData.
      */
-    IO_VTK_API static void toVTKMesh( const data::Mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _polyData);
+    IO_VTK_API static void toVTKMesh(const data::Mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _polyData);
 
     /*!
      * @brief Update a vtkPolyData with data::Mesh::sptr points positions, colors, normals and/or textures
@@ -87,8 +86,10 @@ public:
      * vertex of the polydata, cells will not be updated.
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void  updatePolyDataPointsAndAttributes(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                              const data::Mesh::csptr& meshSrc );
+    IO_VTK_API static void updatePolyDataPointsAndAttributes(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with data::Mesh::sptr points
@@ -101,8 +102,10 @@ public:
      * vertex of the polydata, cells will not be updated.
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                 const data::Mesh::csptr& meshSrc );
+    IO_VTK_API static void updatePolyDataPoints(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with point color of data::Mesh
@@ -113,8 +116,10 @@ public:
      *
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                    const data::Mesh::csptr& meshSrc);
+    IO_VTK_API static void updatePolyDataPointColor(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with cell color of data::Mesh
@@ -125,8 +130,10 @@ public:
      *
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                   const data::Mesh::csptr& meshSrc );
+    IO_VTK_API static void updatePolyDataCellColor(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with point normals of data::Mesh
@@ -137,8 +144,10 @@ public:
      *
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                      const data::Mesh::csptr& meshSrc);
+    IO_VTK_API static void updatePolyDataPointNormals(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with cell normals of data::Mesh
@@ -149,8 +158,10 @@ public:
      *
      * Returns the updated vtkPolyPata
      */
-    IO_VTK_API static void updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
-                                                     const data::Mesh::csptr& meshSrc);
+    IO_VTK_API static void updatePolyDataCellNormals(
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with point texCoords of data::Mesh
@@ -160,7 +171,9 @@ public:
      * @return the updated vtkPolyPata
      */
     IO_VTK_API static void updatePolyDataPointTexCoords(
-        vtkSmartPointer<vtkPolyData> polyDataDst, const data::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkPolyData with cell texCoords of data::Mesh
@@ -170,7 +183,9 @@ public:
      * @return the updated vtkPolyPata
      */
     IO_VTK_API static void updatePolyDataCellTexCoords(
-        vtkSmartPointer<vtkPolyData> polyDataDst, const data::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkPolyData> polyDataDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with data::Mesh::sptr points positions, colors, normals and/or textures
@@ -183,8 +198,10 @@ public:
      * vertex of the vtkUnstructuredGrid, cells will not be updated.
      * Returns the updated vtkUnstructuredGrid
      */
-    IO_VTK_API static void updateGridPointsAndAttributes(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-                                                         const data::Mesh::csptr& meshSrc );
+    IO_VTK_API static void updateGridPointsAndAttributes(
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with data::Mesh::sptr points
@@ -199,7 +216,8 @@ public:
      */
     IO_VTK_API static void updateGridPoints(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const data::Mesh::csptr& meshSrc );
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with point color of data::Mesh
@@ -212,7 +230,8 @@ public:
      */
     IO_VTK_API static void updateGridPointColor(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const data::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with cell color of data::Mesh
@@ -225,7 +244,8 @@ public:
      */
     IO_VTK_API static void updateGridCellColor(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const data::Mesh::csptr& meshSrc );
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with point normals of data::Mesh
@@ -238,7 +258,8 @@ public:
      */
     IO_VTK_API static void updateGridPointNormals(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const data::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with cell normals of data::Mesh
@@ -251,7 +272,8 @@ public:
      */
     IO_VTK_API static void updateGridCellNormals(
         vtkSmartPointer<vtkUnstructuredGrid> gridDst,
-        const data::Mesh::csptr& meshSrc);
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with point texCoords of data::Mesh
@@ -263,7 +285,9 @@ public:
      * Returns the updated vtkUnstructuredGrid
      */
     IO_VTK_API static void updateGridPointTexCoords(
-        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const data::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Update a vtkUnstructuredGrid with cell texCoords of data::Mesh
@@ -275,16 +299,18 @@ public:
      * Returns the updated vtkUnstructuredGrid
      */
     IO_VTK_API static void updateGridCellTexCoords(
-        vtkSmartPointer<vtkUnstructuredGrid> gridDst, const data::Mesh::csptr& meshSrc);
+        vtkSmartPointer<vtkUnstructuredGrid> gridDst,
+        const data::Mesh::csptr& meshSrc
+    );
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
      * @param[in] mesh current mesh
      * @return volume of the mesh
      */
-    IO_VTK_API static double computeVolume( const data::Mesh::csptr& mesh );
-
+    IO_VTK_API static double computeVolume(const data::Mesh::csptr& mesh);
 };
 
 } // namespace helper
+
 } // namespace sight::io::vtk

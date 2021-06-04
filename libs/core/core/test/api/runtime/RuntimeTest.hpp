@@ -26,6 +26,7 @@
 
 namespace sight::core::runtime
 {
+
 namespace ut
 {
 
@@ -34,14 +35,15 @@ namespace ut
  */
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( RuntimeTest );
-CPPUNIT_TEST( testLibrary );
-CPPUNIT_TEST( testModule );
-CPPUNIT_TEST( testOperations );
-CPPUNIT_TEST( testPropertyTree );
+CPPUNIT_TEST_SUITE(RuntimeTest);
+CPPUNIT_TEST(testLibrary);
+CPPUNIT_TEST(testModule);
+CPPUNIT_TEST(testOperations);
+CPPUNIT_TEST(testPropertyTree);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     RuntimeTest();
 
     // interface
@@ -55,4 +57,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::core::runtime

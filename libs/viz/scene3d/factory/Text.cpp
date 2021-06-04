@@ -42,7 +42,7 @@ const ::Ogre::String& Text::getType(void) const
 
 //-----------------------------------------------------------------------------
 
-::Ogre::MovableObject* Text::createInstanceImpl( const ::Ogre::String& name, const ::Ogre::NameValuePairList* )
+::Ogre::MovableObject* Text::createInstanceImpl(const ::Ogre::String& name, const ::Ogre::NameValuePairList*)
 {
     return new viz::scene3d::Text(name);
 }
@@ -50,11 +50,12 @@ const ::Ogre::String& Text::getType(void) const
 //-----------------------------------------------------------------------------
 
 #if OGRE_VERSION_PATCH < 9
-void Text::destroyInstance( ::Ogre::MovableObject* obj)
+void Text::destroyInstance(::Ogre::MovableObject* obj)
 {
     delete obj;
 }
 #endif
+
 } // namespace factory
 
 } // namespace sight::viz::scene3d

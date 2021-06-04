@@ -28,6 +28,7 @@
 
 namespace sight::ui::qt
 {
+
 namespace container
 {
 
@@ -78,4 +79,5 @@ QToolBar* QtToolBarContainer::getQtToolBar()
 //-----------------------------------------------------------------------------
 
 } // namespace container
+
 } // namespace sight::ui::qt

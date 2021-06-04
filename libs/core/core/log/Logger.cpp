@@ -84,13 +84,14 @@ std::size_t Logger::count() const
 std::size_t Logger::count(core::log::Log::LevelType level) const
 {
     std::size_t count = 0;
-    for(const core::log::Log& log: m_logContainer)
+    for(const core::log::Log& log : m_logContainer)
     {
         if(log.getLevel() == level)
         {
             ++count;
         }
     }
+
     return count;
 }
 

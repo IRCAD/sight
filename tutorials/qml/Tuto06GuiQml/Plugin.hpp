@@ -35,6 +35,7 @@ namespace sight::Tuto06GuiQml
 class TUTO06GUIQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:
+
     /// Constructor.
     TUTO06GUIQML_API Plugin() noexcept;
 

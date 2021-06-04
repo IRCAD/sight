@@ -35,8 +35,8 @@
 namespace camp_ext
 {
 
-template <>
-struct ValueMapper< std::uint64_t>
+template<>
+struct ValueMapper<std::uint64_t>
 {
     // The corresponding CAMP type is "string"
     static const int type = camp::intType;
@@ -49,10 +49,10 @@ struct ValueMapper< std::uint64_t>
 
     // Convert from any type to MyStringClass
     // Be smart, just reuse ValueMapper<std::string> :)
-    template <typename T>
+    template<typename T>
     static std::uint64_t from(const T& source)
     {
-        return boost::lexical_cast< std::uint64_t>(source);
+        return boost::lexical_cast<std::uint64_t>(source);
     }
 };
 
@@ -72,7 +72,7 @@ struct wrapperTribbol
 //-----------------------------------------------------------------------------
 
 template<>
-struct wrapperTribbol<std::string >
+struct wrapperTribbol<std::string>
 {
     //------------------------------------------------------------------------------
 
@@ -80,11 +80,11 @@ struct wrapperTribbol<std::string >
     {
         ::boost::logic::tribool value;
 
-        if (source.compare("true") == 0)
+        if(source.compare("true") == 0)
         {
             value = true;
         }
-        else if (source.compare("false") == 0)
+        else if(source.compare("false") == 0)
         {
             value = false;
         }
@@ -99,7 +99,7 @@ struct wrapperTribbol<std::string >
 
 //-----------------------------------------------------------------------------
 
-template <>
+template<>
 struct ValueMapper< ::boost::logic::tribool>
 {
     // The corresponding CAMP type is "string"
@@ -110,11 +110,11 @@ struct ValueMapper< ::boost::logic::tribool>
     {
         std::string value;
 
-        if (source)
+        if(source)
         {
             value = "true";
         }
-        else if (!source)
+        else if(!source)
         {
             value = "false";
         }
@@ -122,11 +122,13 @@ struct ValueMapper< ::boost::logic::tribool>
         {
             value = "indeterminate";
         }
+
         return value;
     }
+
     //------------------------------------------------------------------------------
 
-    template <typename T>
+    template<typename T>
     static ::boost::logic::tribool from(const T& source)
     {
         return wrapperTribbol<T>::get(source);
@@ -135,8 +137,8 @@ struct ValueMapper< ::boost::logic::tribool>
 
 //-----------------------------------------------------------------------------
 
-template <>
-struct ValueMapper< ::boost::posix_time::ptime >
+template<>
+struct ValueMapper< ::boost::posix_time::ptime>
 {
     typedef boost::posix_time::ptime ReturnType;
     static const int type = camp::stringType;
@@ -153,30 +155,35 @@ struct ValueMapper< ::boost::posix_time::ptime >
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
@@ -187,8 +194,8 @@ struct ValueMapper< ::boost::posix_time::ptime >
 
 //-----------------------------------------------------------------------------
 
-template <>
-struct ValueMapper< std::filesystem::path >
+template<>
+struct ValueMapper<std::filesystem::path>
 {
     typedef std::filesystem::path ReturnType;
     static const int type = camp::stringType;
@@ -205,30 +212,35 @@ struct ValueMapper< std::filesystem::path >
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject&)
     {
         CAMP_ERROR(camp::BadType(camp::userType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
@@ -242,7 +254,7 @@ struct ValueMapper< std::filesystem::path >
 /*
  * Specialization of ValueMapper for unsigned char
  */
-template <>
+template<>
 struct ValueMapper<unsigned char>
 {
     static const int type = camp::stringType;
@@ -261,18 +273,21 @@ struct ValueMapper<unsigned char>
     {
         return static_cast<unsigned char>(source);
     }
+
     //------------------------------------------------------------------------------
 
     static unsigned char from(long source)
     {
         return static_cast<unsigned char>(source);
     }
+
     //------------------------------------------------------------------------------
 
     static unsigned char from(double source)
     {
         return static_cast<unsigned char>(source);
     }
+
     //------------------------------------------------------------------------------
 
     static unsigned char from(const std::string& source)
@@ -280,12 +295,14 @@ struct ValueMapper<unsigned char>
         unsigned int intValue = boost::lexical_cast<unsigned int>(source);
         return boost::numeric_cast<unsigned char>(intValue);
     }
+
     //------------------------------------------------------------------------------
 
     static unsigned char from(const camp::EnumObject& source)
     {
         return static_cast<unsigned char>(source.value());
     }
+
     //------------------------------------------------------------------------------
 
     static unsigned char from(const camp::UserObject&)
@@ -296,7 +313,7 @@ struct ValueMapper<unsigned char>
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 struct ValueMapper<std::shared_ptr<T> >
 {
     typedef std::shared_ptr<T> ReturnType;
@@ -314,30 +331,35 @@ struct ValueMapper<std::shared_ptr<T> >
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(long)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(double)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string&)
     {
         CAMP_ERROR(camp::BadType(camp::stringType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject&)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject& source)
@@ -345,7 +367,7 @@ struct ValueMapper<std::shared_ptr<T> >
         ReturnType result;
         try
         {
-            T* ptr = source.get< T* >();
+            T* ptr = source.get<T*>();
             result = T::dynamicCast(ptr->getSptr());
         }
         catch(...)
@@ -356,4 +378,5 @@ struct ValueMapper<std::shared_ptr<T> >
         return result;
     }
 };
-}  // namespace camp_ext
+
+} // namespace camp_ext

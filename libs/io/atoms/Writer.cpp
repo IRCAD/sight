@@ -53,8 +53,7 @@ const std::string Writer::s_WRITER_VERSION_KEY = "writer_version";
 
 struct AtomVisitor
 {
-
-    typedef std::map< sight::atoms::Base::sptr, ::boost::property_tree::ptree > PropTreeCacheType;
+    typedef std::map<sight::atoms::Base::sptr, ::boost::property_tree::ptree> PropTreeCacheType;
 
     PropTreeCacheType m_cache;
     io::zip::IWriteArchive::sptr m_archive;
@@ -75,6 +74,7 @@ struct AtomVisitor
         {
             return iter->second;
         }
+
         return PropTreeCacheType::mapped_type();
     }
 
@@ -83,8 +83,8 @@ struct AtomVisitor
     void cache(const PropTreeCacheType::key_type& atom, const std::string& ptpath)
     {
         ::boost::property_tree::ptree ref;
-        ref.put("ref", ptpath );
-        m_cache.insert( PropTreeCacheType::value_type( atom, ref ) );
+        ref.put("ref", ptpath);
+        m_cache.insert(PropTreeCacheType::value_type(atom, ref));
     }
 
 //-----------------------------------------------------------------------------
@@ -128,13 +128,14 @@ struct AtomVisitor
         unsigned long long count = 0;
         for(const sight::atoms::Map::MapType::value_type& elt : atom->getValue())
         {
-            const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
+            const std::string nodeName = "item_" + ::boost::lexical_cast<std::string>(count++);
             ::boost::property_tree::ptree mapChild;
             mapChild.put("key", elt.first);
             mapChild.add_child("value", this->visit(elt.second, path + "." + nodeName + ".value"));
 
             map.add_child(nodeName, mapChild);
         }
+
         pt.add_child("map", map);
         return pt;
     }
@@ -149,11 +150,12 @@ struct AtomVisitor
         std::string path = ptpath + (ptpath.empty() ? "" : ".") + "sequence";
 
         unsigned long long count = 0;
-        for( const sight::atoms::Sequence::SequenceType::value_type& elt : atom->getValue())
+        for(const sight::atoms::Sequence::SequenceType::value_type& elt : atom->getValue())
         {
-            const std::string nodeName = ::boost::lexical_cast< std::string >(count++);
+            const std::string nodeName = ::boost::lexical_cast<std::string>(count++);
             seq.add_child(nodeName, this->visit(elt, path + "." + nodeName));
         }
+
         pt.add_child("sequence", seq);
         return pt;
     }
@@ -172,12 +174,13 @@ struct AtomVisitor
         unsigned long long count = 0;
         for(const sight::atoms::Object::MetaInfosType::value_type& info : metaInfos)
         {
-            const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
+            const std::string nodeName = "item_" + ::boost::lexical_cast<std::string>(count++);
             ::boost::property_tree::ptree item;
             item.put("key", info.first);
             item.put("value", info.second);
             metaInfosPt.push_back(::boost::property_tree::ptree::value_type(nodeName, item));
         }
+
         object.add_child("meta_infos", metaInfosPt);
 
         const sight::atoms::Object::AttributesType& attributes = atom->getAttributes();
@@ -188,6 +191,7 @@ struct AtomVisitor
                 this->visit(attr.second, path + ".attributes." + attr.first);
             attributesPt.add_child(attr.first, childAttributes);
         }
+
         object.add_child("attributes", attributesPt);
 
         pt.add_child("object", object);
@@ -207,7 +211,7 @@ struct AtomVisitor
         pt.put("blob.buffer_type", bufType);
 
         core::memory::BufferObject::sptr buffObj = atom->getBufferObject();
-        if (!buffObj || buffObj->getSize() == 0)
+        if(!buffObj || buffObj->getSize() == 0)
         {
             pt.put("blob.buffer_size", 0);
         }
@@ -222,7 +226,7 @@ struct AtomVisitor
 
             bufFile /= core::tools::UUID::generateUUID() + ".raw";
 
-            if ( !dumpedFile.empty() && (format & core::memory::RAW) )
+            if(!dumpedFile.empty() && (format & core::memory::RAW))
             {
                 m_archive->putFile(dumpedFile, bufFile);
             }
@@ -232,7 +236,7 @@ struct AtomVisitor
                 SIGHT_ASSERT("no istream", is);
 
                 SPTR(std::ostream) os = m_archive->createFile(bufFile);
-                * os << is->rdbuf();
+                *os << is->rdbuf();
             }
 
             pt.put("blob.buffer_size", buffSize);
@@ -249,13 +253,13 @@ struct AtomVisitor
         ::boost::property_tree::ptree pt;
         ::boost::property_tree::ptree ref;
 
-        if (!atom)
+        if(!atom)
         {
             return pt;
         }
 
         ref = this->hitCache(atom);
-        if( !ref.empty() )
+        if(!ref.empty())
         {
             return ref;
         }
@@ -265,41 +269,51 @@ struct AtomVisitor
             case sight::atoms::Base::BOOLEAN:
                 pt = this->visit(sight::atoms::Boolean::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::NUMERIC:
                 pt = this->visit(sight::atoms::Numeric::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::STRING:
                 pt = this->visit(sight::atoms::String::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::OBJECT:
                 pt = this->visit(sight::atoms::Object::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::SEQUENCE:
                 pt = this->visit(sight::atoms::Sequence::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::MAP:
                 pt = this->visit(sight::atoms::Map::dynamicCast(atom), ptpath);
                 break;
+
             case sight::atoms::Base::BLOB:
                 pt = this->visit(sight::atoms::Blob::dynamicCast(atom), ptpath);
                 break;
+
             default:
-                SIGHT_THROW("Atome type '"<<atom->type()<<"' is not supported");
+                SIGHT_THROW("Atome type '" << atom->type() << "' is not supported");
                 break;
         }
+
         return pt;
     }
 };
 
 //-----------------------------------------------------------------------------
 
-std::filesystem::path Writer::write( const io::zip::IWriteArchive::sptr _archive,
-                                     const std::filesystem::path& _rootFilename,
-                                     FormatType _format ) const
+std::filesystem::path Writer::write(
+    const io::zip::IWriteArchive::sptr _archive,
+    const std::filesystem::path& _rootFilename,
+    FormatType _format
+) const
 {
     ::boost::property_tree::ptree root;
-    const std::filesystem::path newRootFileName = _rootFilename.stem().string() + "-" +
-                                                  ((_format == JSON) ? "json" : "xml");
+    const std::filesystem::path newRootFileName = _rootFilename.stem().string() + "-"
+                                                  + ((_format == JSON) ? "json" : "xml");
     const std::string nrfnStr = newRootFileName.u8string();
     AtomVisitor visitor(_archive, nrfnStr);
 
@@ -317,12 +331,14 @@ std::filesystem::path Writer::write( const io::zip::IWriteArchive::sptr _archive
         case JSON:
             ::boost::property_tree::json_parser::write_json(*os, root, false);
             break;
+
         case XML:
         {
             ::boost::property_tree::xml_writer_settings<std::string> settings(' ', 4);
             ::boost::property_tree::xml_parser::write_xml(*os, root, settings);
             break;
         }
+
         default:
             SIGHT_THROW("Archive format '" << _format << "' is not supported");
             break;
@@ -331,4 +347,4 @@ std::filesystem::path Writer::write( const io::zip::IWriteArchive::sptr _archive
     return newRootFileName;
 }
 
-}
+} // namespace sight::io

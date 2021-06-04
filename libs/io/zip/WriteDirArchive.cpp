@@ -36,7 +36,7 @@ namespace sight::io::zip
 
 //-----------------------------------------------------------------------------
 
-WriteDirArchive::WriteDirArchive( const std::filesystem::path& archive ) :
+WriteDirArchive::WriteDirArchive(const std::filesystem::path& archive) :
     m_archive(archive)
 {
     if(!std::filesystem::exists(m_archive))
@@ -62,27 +62,30 @@ SPTR(std::ostream) WriteDirArchive::createFile(const std::filesystem::path& path
         std::filesystem::create_directories(parentFile);
     }
 
-    SPTR(std::ofstream) os = std::make_shared< std::ofstream >();
+    SPTR(std::ofstream) os = std::make_shared<std::ofstream>();
     os->open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
     return os;
 }
 
 //-----------------------------------------------------------------------------
 
-void WriteDirArchive::putFile(const std::filesystem::path& sourceFile,
-                              const std::filesystem::path& destinationFile)
+void WriteDirArchive::putFile(
+    const std::filesystem::path& sourceFile,
+    const std::filesystem::path& destinationFile
+)
 {
     const std::filesystem::path fileDest = m_archive / destinationFile;
-    if (!std::filesystem::exists(fileDest))
+    if(!std::filesystem::exists(fileDest))
     {
         const std::filesystem::path parentFile = fileDest.parent_path();
         if(!std::filesystem::exists(parentFile))
         {
             std::filesystem::create_directories(parentFile);
         }
+
         std::error_code err;
-        std::filesystem::create_hard_link( sourceFile, fileDest, err );
-        if (err.value() != 0)
+        std::filesystem::create_hard_link(sourceFile, fileDest, err);
+        if(err.value() != 0)
         {
             // Use std stream instead of boost:::filesystem::copy_file
             // because fwZip is build using std=c++11 and using copy_file also requires boost built
@@ -90,10 +93,9 @@ void WriteDirArchive::putFile(const std::filesystem::path& sourceFile,
             std::string strSource = sourceFile.string();
             std::string strDest   = fileDest.string();
             std::ifstream src(strSource.c_str(), std::ios::binary);
-            std::ofstream dst(strDest.c_str(),   std::ios::binary);
+            std::ofstream dst(strDest.c_str(), std::ios::binary);
 
             dst << src.rdbuf();
-
         }
     }
 }
@@ -102,7 +104,7 @@ void WriteDirArchive::putFile(const std::filesystem::path& sourceFile,
 
 bool WriteDirArchive::createDir(const std::filesystem::path& path)
 {
-    return std::filesystem::create_directories(m_archive/path);
+    return std::filesystem::create_directories(m_archive / path);
 }
 
 //-----------------------------------------------------------------------------
@@ -112,4 +114,4 @@ const std::filesystem::path WriteDirArchive::getArchivePath() const
     return m_archive;
 }
 
-}
+} // namespace sight::io

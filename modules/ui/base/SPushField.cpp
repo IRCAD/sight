@@ -34,6 +34,7 @@
 
 namespace sight::module::ui::base
 {
+
 //------------------------------------------------------------------------------
 
 static const core::com::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
@@ -87,13 +88,13 @@ void SPushField::stopping()
 
 void SPushField::updating()
 {
-    data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
-    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    data::Object::sptr objectSrc = this->getInOut<data::Object>(s_SOURCE_KEY);
+    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
     data::Object::sptr obj = objectSrc->getField(m_field);
 
     SIGHT_WARN_IF("'" + m_field + "' not found in object '" + objectSrc->getID() + "'", obj == nullptr);
-    if (obj)
+    if(obj)
     {
         this->setOutput(s_DESTINATION_KEY, obj);
     }
@@ -103,12 +104,12 @@ void SPushField::updating()
 
 void SPushField::updateObjects()
 {
-    data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
-    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    data::Object::sptr objectSrc = this->getInOut<data::Object>(s_SOURCE_KEY);
+    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-    this->::sight::ui::base::IAction::setIsExecutable( executable );
+    this->::sight::ui::base::IAction::setIsExecutable(executable);
 }
 
 //------------------------------------------------------------------------------
@@ -116,8 +117,8 @@ void SPushField::updateObjects()
 service::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
-    connections.push( s_SOURCE_KEY, data::Object::s_REMOVED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
+    connections.push(s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT);
+    connections.push(s_SOURCE_KEY, data::Object::s_REMOVED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT);
 
     return connections;
 }

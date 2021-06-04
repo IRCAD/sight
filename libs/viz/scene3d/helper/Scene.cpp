@@ -32,25 +32,27 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* Scene::getNodeById(viz::scene3d::SRender::OgreObjectIdType _nodeId,
-                                      ::Ogre::SceneNode* _sceneNode)
+::Ogre::SceneNode* Scene::getNodeById(
+    viz::scene3d::SRender::OgreObjectIdType _nodeId,
+    ::Ogre::SceneNode* _sceneNode
+)
 {
     SIGHT_ASSERT("Scene node is null", _sceneNode);
 
     ::Ogre::SceneNode* foundNode = nullptr;
 
     // Use a vector as a stack to benefit from iterators.
-    std::vector< ::Ogre::Node* > stack;
+    std::vector< ::Ogre::Node*> stack;
     stack.push_back(_sceneNode);
 
     // Recursive search in the graph
-    while( !stack.empty() )
+    while(!stack.empty())
     {
         ::Ogre::Node* const topNode = stack.back();
 
-        if (topNode->getName() == _nodeId)
+        if(topNode->getName() == _nodeId)
         {
-            foundNode = dynamic_cast< ::Ogre::SceneNode* >(topNode);
+            foundNode = dynamic_cast< ::Ogre::SceneNode*>(topNode);
             SIGHT_ASSERT("'" + _nodeId + "' is not a scene node.", foundNode);
             break;
         }

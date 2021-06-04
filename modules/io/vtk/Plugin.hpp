@@ -30,6 +30,7 @@ namespace sight::module::io::vtk
 class Plugin : public core::runtime::Plugin
 {
 public:
+
     //! @brief Destructor.
     ~Plugin() noexcept;
 
@@ -48,7 +49,6 @@ public:
      * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::io::vtk

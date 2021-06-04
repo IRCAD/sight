@@ -32,7 +32,7 @@ namespace sight::atoms::conversion
 namespace exception
 {
 
-ObjectNotFound::ObjectNotFound ( const std::string& err ) :
+ObjectNotFound::ObjectNotFound(const std::string& err) :
     core::Exception(err)
 {
 }

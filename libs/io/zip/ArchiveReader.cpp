@@ -37,7 +37,7 @@ class ArchiveReaderImpl final : public ArchiveReader
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ArchiveReaderImpl, ArchiveReader)
+    SIGHT_DECLARE_CLASS(ArchiveReaderImpl, ArchiveReader);
 
     /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
     ArchiveReaderImpl()                                    = delete;

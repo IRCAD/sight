@@ -34,7 +34,6 @@ namespace iterator
 
 PointIterator::PointIterator()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -52,10 +51,12 @@ PointIterator::PointIterator(data::Mesh* mesh)
     {
         m_pointInfo->rgb = static_cast<PointInfo::rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
+
     if(mesh->hasPointNormals())
     {
         m_pointInfo->normal = static_cast<PointInfo::normal_value_type*>(mesh->m_pointNormals->getBuffer());
     }
+
     if(mesh->hasPointTexCoords())
     {
         m_pointInfo->tex = static_cast<PointInfo::tex_value_type*>(mesh->m_pointTexCoords->getBuffer());
@@ -67,21 +68,19 @@ PointIterator::PointIterator(data::Mesh* mesh)
 PointIterator::PointIterator(const PointIteratorBase& other) :
     PointIteratorBase(other)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 PointIterator::~PointIterator()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 PointIterator& PointIterator::operator=(const PointIteratorBase& other)
 {
-    if (this != &other)
+    if(this != &other)
     {
         m_pointInfo->point  = other.m_pointInfo->point;
         m_pointInfo->rgb    = other.m_pointInfo->rgb;
@@ -91,6 +90,7 @@ PointIterator& PointIterator::operator=(const PointIteratorBase& other)
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
+
     return *this;
 }
 
@@ -98,7 +98,6 @@ PointIterator& PointIterator::operator=(const PointIteratorBase& other)
 
 ConstPointIterator::ConstPointIterator()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -116,10 +115,12 @@ ConstPointIterator::ConstPointIterator(const data::Mesh* mesh)
     {
         m_pointInfo->rgb = static_cast<PointInfo::rgb_value_type*>(mesh->m_pointColors->getBuffer());
     }
+
     if(mesh->hasPointNormals())
     {
         m_pointInfo->normal = static_cast<PointInfo::normal_value_type*>(mesh->m_pointNormals->getBuffer());
     }
+
     if(mesh->hasPointTexCoords())
     {
         m_pointInfo->tex = static_cast<PointInfo::tex_value_type*>(mesh->m_pointTexCoords->getBuffer());
@@ -131,21 +132,19 @@ ConstPointIterator::ConstPointIterator(const data::Mesh* mesh)
 ConstPointIterator::ConstPointIterator(const PointIteratorBase& other) :
     PointIteratorBase(other)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 ConstPointIterator::~ConstPointIterator()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 ConstPointIterator& ConstPointIterator::operator=(const PointIteratorBase& other)
 {
-    if (this != &other)
+    if(this != &other)
     {
         m_pointInfo->point  = other.m_pointInfo->point;
         m_pointInfo->rgb    = other.m_pointInfo->rgb;
@@ -155,6 +154,7 @@ ConstPointIterator& ConstPointIterator::operator=(const PointIteratorBase& other
         m_idx               = other.m_idx;
         m_numberOfElements  = other.m_numberOfElements;
     }
+
     return *this;
 }
 
@@ -184,15 +184,18 @@ CellIterator::CellIterator(data::Mesh* mesh)
     {
         m_cellInfo->rgb = static_cast<CellInfo::rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
+
     if(mesh->hasCellNormals())
     {
         m_cellInfo->normal = static_cast<CellInfo::normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
+
     if(mesh->hasCellTexCoords())
     {
         m_cellInfo->tex = static_cast<CellInfo::tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
-    const CellInfo::cell_offset_value_type nextOffset = *(m_cellInfo->offset+1);
+
+    const CellInfo::cell_offset_value_type nextOffset = *(m_cellInfo->offset + 1);
     m_cellInfo->nbPoints = nextOffset;
 }
 
@@ -206,7 +209,7 @@ CellIterator::~CellIterator()
 
 CellIterator& CellIterator::operator=(const CellIteratorBase& other)
 {
-    if (this != &other)
+    if(this != &other)
     {
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
@@ -222,10 +225,11 @@ CellIterator& CellIterator::operator=(const CellIteratorBase& other)
 
         m_cellInfo->idx              = other.m_cellInfo->idx;
         m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
-
     }
+
     return *this;
 }
+
 //------------------------------------------------------------------------------
 
 ConstCellIterator::ConstCellIterator()
@@ -252,15 +256,18 @@ ConstCellIterator::ConstCellIterator(const data::Mesh* mesh)
     {
         m_cellInfo->rgb = static_cast<CellInfo::rgb_value_type*>(mesh->m_cellColors->getBuffer());
     }
+
     if(mesh->hasCellNormals())
     {
         m_cellInfo->normal = static_cast<CellInfo::normal_value_type*>(mesh->m_cellNormals->getBuffer());
     }
+
     if(mesh->hasCellTexCoords())
     {
         m_cellInfo->tex = static_cast<CellInfo::tex_value_type*>(mesh->m_cellTexCoords->getBuffer());
     }
-    const CellInfo::cell_offset_value_type nextOffset = *(m_cellInfo->offset+1);
+
+    const CellInfo::cell_offset_value_type nextOffset = *(m_cellInfo->offset + 1);
     m_cellInfo->nbPoints = nextOffset;
 }
 
@@ -294,7 +301,7 @@ ConstCellIterator::~ConstCellIterator()
 
 ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
 {
-    if (this != &other)
+    if(this != &other)
     {
         m_idx                = other.m_idx;
         m_numberOfElements   = other.m_numberOfElements;
@@ -311,9 +318,12 @@ ConstCellIterator& ConstCellIterator::operator=(const CellIteratorBase& other)
         m_cellInfo->idx              = other.m_cellInfo->idx;
         m_cellInfo->numberOfElements = other.m_cellInfo->numberOfElements;
     }
+
     return *this;
 }
+
 //------------------------------------------------------------------------------
 
 } // namespace iterator
+
 } // namespace sight::data

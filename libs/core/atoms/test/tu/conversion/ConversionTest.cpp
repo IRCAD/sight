@@ -644,7 +644,7 @@ class ClassNotCamped : public data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ClassNotCamped, data::Object, data::factory::New<ClassNotCamped>)
+    SIGHT_DECLARE_CLASS(ClassNotCamped, data::Object, data::factory::New<ClassNotCamped>);
 
     ClassNotCamped(data::Object::Key)
     {
@@ -763,7 +763,7 @@ class ClassNotManaged : public data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ClassNotManaged, data::Object, data::factory::New<ClassNotManaged>)
+    SIGHT_DECLARE_CLASS(ClassNotManaged, data::Object, data::factory::New<ClassNotManaged>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (atoms) (conversion) (ut) (ClassNotManaged))
 

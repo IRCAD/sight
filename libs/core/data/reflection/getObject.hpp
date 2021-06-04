@@ -30,11 +30,14 @@
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::data
 {
+
 namespace reflection
 {
 
@@ -48,22 +51,27 @@ namespace reflection
  * @throw data::reflection::exception::NullPointer
  * @throw data::reflection::exception::ObjectNotFound
  */
-DATA_API SPTR(data::Object) getObject( CSPTR(data::Object) object,
-                                       const std::string& path,
-                                       bool raiseException = false);
+DATA_API SPTR(data::Object) getObject(
+    CSPTR(data::Object) object,
+    const std::string& path,
+    bool raiseException = false
+);
 
 /**
  * @see fwDataCamp.getObject
  */
-template< class DATATYPE >
-SPTR(DATATYPE) getObject( CSPTR(data::Object) object,
-                          const std::string& path,
-                          bool raiseException = false )
+template<class DATATYPE>
+SPTR(DATATYPE) getObject(
+    CSPTR(data::Object) object,
+    const std::string& path,
+    bool raiseException = false
+)
 {
-    SPTR(data::Object) subObject = getObject( object, path, raiseException );
-    SPTR(DATATYPE) casteDdata    = ::std::dynamic_pointer_cast<DATATYPE>( subObject );
+    SPTR(data::Object) subObject = getObject(object, path, raiseException);
+    SPTR(DATATYPE) casteDdata    = ::std::dynamic_pointer_cast<DATATYPE>(subObject);
     return casteDdata;
 }
 
 } // namespace reflection
+
 } // namespace sight::data

@@ -91,7 +91,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(WindowLevel, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(WindowLevel, sight::ui::base::IEditor);
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API WindowLevel() noexcept;

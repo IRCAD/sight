@@ -113,7 +113,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::base::IEditor);
 
     /// Initialize signals and slots
     MODULE_UI_QT_API SSequencer() noexcept;

@@ -25,26 +25,29 @@
 #include <data/MarkerMap.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::ut::MarkerMapTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::MarkerMapTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 static const data::MarkerMap::MarkerType marker101 = {{
-                                                          {{ 1.23f, 1.4314f }},
-                                                          {{ 2.45f, 1.42f }},
-                                                          {{ -1.3f, 1.24f }},
-                                                          {{ -10.23f, 1.4f }}
-                                                      }};
+    {{1.23f, 1.4314f}},
+    {{2.45f, 1.42f}},
+    {{-1.3f, 1.24f}},
+    {{-10.23f, 1.4f}}
+}
+};
 
 static const data::MarkerMap::MarkerType marker102 = {{
-                                                          {{ 1.23f, 2.4314f }},
-                                                          {{ 2.45f, 4.484f }},
-                                                          {{ -11.3f, 3.24f }},
-                                                          {{ 100.23f, 1.4f }}
-                                                      }};
+    {{1.23f, 2.4314f}},
+    {{2.45f, 4.484f}},
+    {{-11.3f, 3.24f}},
+    {{100.23f, 1.4f}}
+}
+};
 
 //------------------------------------------------------------------------------
 
@@ -161,4 +164,5 @@ void MarkerMapTest::deepCopyTest()
 }
 
 } //namespace ut
+
 } //namespace sight::data

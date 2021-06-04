@@ -28,12 +28,12 @@
 
 namespace sight::module::navigation::openvslam
 {
+
 /**
  * @brief   This class is started when the modules are loaded.
  */
 class MODULE_NAVIGATION_OPENVSLAM_CLASS_API Plugin : public core::runtime::Plugin
 {
-
 public:
 
     /**

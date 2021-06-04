@@ -31,17 +31,22 @@
 
 namespace sight::data
 {
+
 class DicomSeries;
+
 }
 
 namespace sight::data
 {
+
 class ImageSeries;
 class ModelSeries;
+
 }
 
 namespace sight::io::http
 {
+
 namespace helper
 {
 
@@ -53,8 +58,8 @@ class IO_HTTP_CLASS_API Series
 public:
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainer;
-    typedef std::vector< std::string > InstanceUIDContainer;
-    typedef std::map < std::string, unsigned int > InstanceCountMap;
+    typedef std::vector<std::string> InstanceUIDContainer;
+    typedef std::map<std::string, unsigned int> InstanceCountMap;
 
     /**
      * @brief Convert HTTP series response to data::DicomSeries
@@ -67,8 +72,8 @@ public:
      * @param[in] series Series vector used to extract the series instance uids
      */
     IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
-
 };
 
 } //helper
+
 } //fwNetworkIO

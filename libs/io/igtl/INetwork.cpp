@@ -56,16 +56,16 @@ bool INetwork::sendObject(const data::Object::csptr& obj)
     msg = converter->fromFwObject(obj);
     msg->SetDeviceName(m_deviceNameOut.c_str());
     msg->Pack();
-    return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
+    return m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1;
 }
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendMsg (::igtl::MessageBase::Pointer msg)
+bool INetwork::sendMsg(::igtl::MessageBase::Pointer msg)
 {
     msg->SetDeviceName(m_deviceNameOut.c_str());
     msg->Pack();
-    return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
+    return m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1;
 }
 
 //------------------------------------------------------------------------------
@@ -74,16 +74,17 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName)
 {
     data::Object::sptr obj;
     ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
-    if (headerMsg.IsNotNull())
+    if(headerMsg.IsNotNull())
     {
         ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
-        if (msg.IsNotNull())
+        if(msg.IsNotNull())
         {
             detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
             obj        = converter->fromIgtlMessage(msg);
             deviceName = headerMsg->GetDeviceName();
         }
     }
+
     return obj;
 }
 
@@ -93,10 +94,10 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
 {
     data::Object::sptr obj;
     ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
-    if (headerMsg.IsNotNull())
+    if(headerMsg.IsNotNull())
     {
         ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
-        if (msg.IsNotNull())
+        if(msg.IsNotNull())
         {
             // get message timestamp
             unsigned int sec, frac;
@@ -115,6 +116,7 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
             deviceName = headerMsg->GetDeviceName();
         }
     }
+
     return obj;
 }
 
@@ -126,17 +128,17 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     headerMsg->InitPack();
     const int sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
-    if (sizeReceive == -1 || sizeReceive == 0)
+    if(sizeReceive == -1 || sizeReceive == 0)
     {
         return ::igtl::MessageHeader::Pointer();
     }
     else
     {
-        if (sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
+        if(sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
         {
             return ::igtl::MessageHeader::Pointer();
         }
-        else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+        else if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
         {
             const std::string deviceName = headerMsg->GetDeviceName();
 
@@ -155,15 +157,15 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
             {
                 return headerMsg;
             }
-
         }
     }
+
     return ::igtl::MessageHeader::Pointer();
 }
 
 //------------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer INetwork::receiveBody (::igtl::MessageHeader::Pointer const headerMsg)
+::igtl::MessageBase::Pointer INetwork::receiveBody(::igtl::MessageHeader::Pointer const headerMsg)
 {
     int unpackResult;
     int result;
@@ -174,16 +176,17 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     msg->AllocatePack();
     result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
-    if (result == -1)
+    if(result == -1)
     {
         return ::igtl::MessageBase::Pointer();
     }
 
     unpackResult = msg->Unpack(1);
-    if (unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+    if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
     }
+
     throw Exception("Body pack is not valid");
 }
 
@@ -198,7 +201,7 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
 
 void INetwork::addAuthorizedDevice(const std::string& deviceName)
 {
-    std::set< std::string >::iterator it = m_deviceNamesIn.find(deviceName);
+    std::set<std::string>::iterator it = m_deviceNamesIn.find(deviceName);
 
     if(it == m_deviceNamesIn.end())
     {
@@ -225,7 +228,6 @@ void INetwork::setFilteringByDeviceName(bool filtering)
     {
         m_filteringByDeviceName = filtering;
     }
-
 }
 
 //------------------------------------------------------------------------------

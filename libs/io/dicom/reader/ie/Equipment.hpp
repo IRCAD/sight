@@ -28,18 +28,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API Equipment : public io::dicom::reader::ie::InformationEntity< data::Equipment >
+class IO_DICOM_CLASS_API Equipment : public io::dicom::reader::ie::InformationEntity<data::Equipment>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -50,13 +52,15 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Equipment(const CSPTR(data::DicomSeries)& dicomSeries,
-                           const SPTR(::gdcm::Reader)& reader,
-                           const SPTR(io::dicom::container::DicomInstance)& instance,
-                           const data::Equipment::sptr& equipment,
-                           const core::log::Logger::sptr& logger = nullptr,
-                           ProgressCallback progress             = nullptr,
-                           CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Equipment(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Equipment::sptr& equipment,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Equipment();
@@ -66,9 +70,10 @@ public:
      * @see PS 3.3 C.7.5.1
      */
     IO_DICOM_API virtual void readGeneralEquipmentModule();
-
 };
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

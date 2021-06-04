@@ -54,8 +54,10 @@ static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
 static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
 static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
 
-fwRenderOgreRegisterLightMacro(::sight::module::viz::scene3d::adaptor::SLight,
-                               ::sight::viz::scene3d::ILight::REGISTRY_KEY)
+fwRenderOgreRegisterLightMacro(
+    ::sight::module::viz::scene3d::adaptor::SLight,
+    ::sight::viz::scene3d::ILight::REGISTRY_KEY
+)
 
 //------------------------------------------------------------------------------
 
@@ -90,8 +92,12 @@ void SLight::configuring()
 
     m_lightName = config.get<std::string>("name");
 
-    this->setTransformId(config.get<std::string>( ::sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            ::sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
     m_switchedOn  = config.get<bool>(s_SWITCHED_ON_CONFIG, m_switchedOn);
     m_thetaOffset = config.get<float>(s_THETA_OFFSET_CONFIG, m_thetaOffset);
@@ -107,7 +113,7 @@ void SLight::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
-    m_light                              = sceneMgr->createLight(this->getID() + "_" + m_lightName);
+    m_light = sceneMgr->createLight(this->getID() + "_" + m_lightName);
 
     // Sets the default light direction to the camera's view direction,
     m_light->setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Z);
@@ -116,7 +122,7 @@ void SLight::starting()
 
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     = this->getTransformNode(rootSceneNode);
-    m_lightNode                      = transNode->createChildSceneNode(this->getID() + "_light");
+    m_lightNode = transNode->createChildSceneNode(this->getID() + "_light");
     m_lightNode->attachObject(m_light);
 
     if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
@@ -132,12 +138,13 @@ void SLight::starting()
         m_material = data::Material::New();
 
         const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
-            this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-                "::sight::module::viz::scene3d::adaptor::SMaterial");
+            this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+                "::sight::module::viz::scene3d::adaptor::SMaterial"
+            );
         materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
         materialAdaptor->setID(this->getID() + materialAdaptor->getID());
         materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-        materialAdaptor->setRenderService( this->getRenderService() );
+        materialAdaptor->setRenderService(this->getRenderService());
         materialAdaptor->setLayerID(m_layerID);
         materialAdaptor->setMaterialTemplateName(::sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
         materialAdaptor->start();
@@ -147,18 +154,21 @@ void SLight::starting()
 
         // Size, these value allow to display light with good enough ratio.
         const float originRadius   = m_length * 0.1f;
-        const float cylinderLength = m_length - m_length/10;
-        const float cylinderRadius = m_length/80;
+        const float cylinderLength = m_length - m_length / 10;
+        const float cylinderRadius = m_length / 80;
         const float coneLength     = m_length - cylinderLength;
-        const float coneRadius     = cylinderRadius*2;
+        const float coneRadius     = cylinderRadius * 2;
         const unsigned sample      = 64;
 
         // Creates the commun sphere position
         m_lightPosition = sceneMgr->createManualObject(this->getID() + "_origin");
-        ::sight::viz::scene3d::helper::ManualObject::createSphere(m_lightPosition, materialAdaptor->getMaterialName(),
-                                                                  ::Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
-                                                                  originRadius,
-                                                                  sample);
+        ::sight::viz::scene3d::helper::ManualObject::createSphere(
+            m_lightPosition,
+            materialAdaptor->getMaterialName(),
+            ::Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
+            originRadius,
+            sample
+        );
         m_lightPosition->setVisible(m_visualFeedback);
         m_lightNode->attachObject(m_lightPosition);
 
@@ -166,22 +176,26 @@ void SLight::starting()
         m_directionalFeedback.first  = sceneMgr->createManualObject(this->getID() + "_line");
         m_directionalFeedback.second = sceneMgr->createManualObject(this->getID() + "_cone");
 
-        ::sight::viz::scene3d::helper::ManualObject::createCylinder(m_directionalFeedback.first,
-                                                                    materialAdaptor->getMaterialName(),
-                                                                    ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
-                                                                    cylinderRadius,
-                                                                    cylinderLength,
-                                                                    sample);
+        ::sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_directionalFeedback.first,
+            materialAdaptor->getMaterialName(),
+            ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            cylinderRadius,
+            cylinderLength,
+            sample
+        );
         ::Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->getID() + "_lineNode");
         lineNode->attachObject(m_directionalFeedback.first);
         lineNode->yaw(::Ogre::Degree(-90));
 
-        ::sight::viz::scene3d::helper::ManualObject::createCone(m_directionalFeedback.second,
-                                                                materialAdaptor->getMaterialName(),
-                                                                ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
-                                                                coneRadius,
-                                                                coneLength,
-                                                                sample);
+        ::sight::viz::scene3d::helper::ManualObject::createCone(
+            m_directionalFeedback.second,
+            materialAdaptor->getMaterialName(),
+            ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
+            coneRadius,
+            coneLength,
+            sample
+        );
         ::Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
 
         coneNode->attachObject(m_directionalFeedback.second);
@@ -200,9 +214,9 @@ void SLight::starting()
 service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -211,8 +225,8 @@ service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 
 void SLight::updating()
 {
-    const auto lightDiffuseColor  = this->getLockedInOut< data::Color >(s_DIFFUSE_COLOR_INOUT);
-    const auto lightSpecularColor = this->getLockedInOut< data::Color >(s_SPECULAR_COLOR_INOUT);
+    const auto lightDiffuseColor  = this->getLockedInOut<data::Color>(s_DIFFUSE_COLOR_INOUT);
+    const auto lightSpecularColor = this->getLockedInOut<data::Color>(s_SPECULAR_COLOR_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -268,7 +282,7 @@ void SLight::stopping()
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    const auto lightDiffuseColor = this->getLockedInOut< data::Color >(s_DIFFUSE_COLOR_INOUT);
+    const auto lightDiffuseColor = this->getLockedInOut<data::Color>(s_DIFFUSE_COLOR_INOUT);
 
     lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 
@@ -280,7 +294,7 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    const auto lightSpecularColor = this->getLockedInOut< data::Color >(s_SPECULAR_COLOR_INOUT);
+    const auto lightSpecularColor = this->getLockedInOut<data::Color>(s_SPECULAR_COLOR_INOUT);
 
     lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 

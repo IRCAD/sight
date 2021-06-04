@@ -51,7 +51,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSlider, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSlider, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSlider() noexcept;

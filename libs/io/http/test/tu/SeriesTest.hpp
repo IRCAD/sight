@@ -22,22 +22,24 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <io/http/helper/Series.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::io::http
 {
+
 namespace ut
 {
 
 class SeriesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesTest );
-CPPUNIT_TEST( testSeries );
+CPPUNIT_TEST_SUITE(SeriesTest);
+CPPUNIT_TEST(testSeries);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // Interface
     // Creates a JSON
     void setUp();
@@ -49,9 +51,11 @@ public:
     void testSeries();
 
 private:
+
     // JSON corresponding to a result of a Orthanc GET /instances/{id}/simplified-tags request.
     QJsonObject m_json;
 };
 
 } // namespace ut
+
 } // namespace sight::io::http

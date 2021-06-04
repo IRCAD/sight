@@ -31,8 +31,10 @@ namespace sight::service
 
 IAppConfigManager::sptr IAppConfigManager::New()
 {
-    FW_DEPRECATED_MSG("::sight::service::IAppConfigManager is no longer supported, use service::AppConfigManager",
-                      "22.0");
+    FW_DEPRECATED_MSG(
+        "::sight::service::IAppConfigManager is no longer supported, use service::AppConfigManager",
+        "22.0"
+    );
     return service::AppConfigManager::New();
 }
 

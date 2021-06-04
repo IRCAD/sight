@@ -85,7 +85,7 @@ void SOpenCVIntrinsic::configuring()
     m_heightKey = cfgBoard->getAttributeValue("height");
     SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
-    if( cfgBoard->hasAttribute("squareSize"))
+    if(cfgBoard->hasAttribute("squareSize"))
     {
         m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
         SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
@@ -117,42 +117,51 @@ void SOpenCVIntrinsic::swapping()
 
 void SOpenCVIntrinsic::updating()
 {
-    data::CalibrationInfo::csptr calInfo = this->getInput< data::CalibrationInfo>("calibrationInfo");
-    data::Camera::sptr cam               = this->getInOut< data::Camera >("camera");
-    data::Vector::sptr poseCamera        = this->getInOut< data::Vector >("poseVector");
+    data::CalibrationInfo::csptr calInfo = this->getInput<data::CalibrationInfo>("calibrationInfo");
+    data::Camera::sptr cam               = this->getInOut<data::Camera>("camera");
+    data::Vector::sptr poseCamera        = this->getInOut<data::Vector>("poseVector");
 
     SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SIGHT_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point3f > > objectPoints;
+        std::vector<std::vector< ::cv::Point3f> > objectPoints;
 
-        std::vector< ::cv::Point3f > points;
-        for (unsigned int y = 0; y < m_height - 1; ++y)
+        std::vector< ::cv::Point3f> points;
+        for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
         {
-            for (unsigned int x = 0; x < m_width - 1; ++x)
+            for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
-                points.push_back(::cv::Point3f(static_cast<float>(x)*m_squareSize,
-                                               static_cast<float>(y)*m_squareSize,
-                                               0));
+                points.push_back(
+                    ::cv::Point3f(
+                        static_cast<float>(x) * m_squareSize,
+                        static_cast<float>(y) * m_squareSize,
+                        0
+                    )
+                );
             }
         }
 
-        std::vector<std::vector< ::cv::Point2f > > imagePoints;
+        std::vector<std::vector< ::cv::Point2f> > imagePoints;
 
         {
             data::mt::ObjectReadLock calInfoLock(calInfo);
             for(data::PointList::sptr capture : calInfo->getPointListContainer())
             {
-                std::vector< ::cv::Point2f > dst;
+                std::vector< ::cv::Point2f> dst;
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    dst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
-                                                static_cast<float>(point->getCoord()[1])));
+                    dst.push_back(
+                        ::cv::Point2f(
+                            static_cast<float>(point->getCoord()[0]),
+                            static_cast<float>(point->getCoord()[1])
+                        )
+                    );
                 }
+
                 imagePoints.push_back(dst);
                 objectPoints.push_back(points);
             }
@@ -174,15 +183,16 @@ void SOpenCVIntrinsic::updating()
         {
             poseCamera->getContainer().clear();
 
-            for(size_t index = 0; index < rvecs.size(); ++index)
+            for(size_t index = 0 ; index < rvecs.size() ; ++index)
             {
                 data::Matrix4::sptr mat3D = data::Matrix4::New();
 
                 io::opencv::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->getContainer().push_back(mat3D);
-                auto sig = poseCamera->signal< data::Vector::AddedObjectsSignalType >(
-                    data::Vector::s_ADDED_OBJECTS_SIG);
+                auto sig = poseCamera->signal<data::Vector::AddedObjectsSignalType>(
+                    data::Vector::s_ADDED_OBJECTS_SIG
+                );
                 sig->asyncEmit(poseCamera->getContainer());
             }
         }
@@ -202,8 +212,9 @@ void SOpenCVIntrinsic::updating()
         cam->setIsCalibrated(true);
 
         data::Camera::IntrinsicCalibratedSignalType::sptr sig;
-        sig = cam->signal< data::Camera::IntrinsicCalibratedSignalType >(
-            data::Camera::s_INTRINSIC_CALIBRATED_SIG);
+        sig = cam->signal<data::Camera::IntrinsicCalibratedSignalType>(
+            data::Camera::s_INTRINSIC_CALIBRATED_SIG
+        );
 
         sig->asyncEmit();
     }
@@ -218,11 +229,13 @@ void SOpenCVIntrinsic::updateChessboardSize()
     {
         m_width = std::stoi(widthStr);
     }
+
     const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoi(heightStr);
     }
+
     const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {

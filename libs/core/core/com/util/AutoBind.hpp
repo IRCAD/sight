@@ -45,108 +45,107 @@ namespace util
  * @tparam F Desired binding signature.
  * @tparam PLACEHOLDERS_NB number of placeholders to use.
  */
-template< typename F, int PLACEHOLDERS_NB >
+template<typename F, int PLACEHOLDERS_NB>
 struct AutoBind;
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 0 >
+template<typename F>
+struct AutoBind<F, 0>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
-
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 1 >
+template<typename F>
+struct AutoBind<F, 1>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 2 >
+template<typename F>
+struct AutoBind<F, 2>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 3 >
+template<typename F>
+struct AutoBind<F, 3>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 4 >
+template<typename F>
+struct AutoBind<F, 4>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 5 >
+template<typename F>
+struct AutoBind<F, 5>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 6 >
+template<typename F>
+struct AutoBind<F, 6>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 7 >
+template<typename F>
+struct AutoBind<F, 7>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 8 >
+template<typename F>
+struct AutoBind<F, 8>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /// AutoBind specialization.
-template< typename F >
-struct AutoBind< F, 9 >
+template<typename F>
+struct AutoBind<F, 9>
 {
-    typedef typename convert_function_type< F >::type FunctionType;
+    typedef typename convert_function_type<F>::type FunctionType;
 
-    template< typename W, typename ... A >
-    static std::function< FunctionType > wrap( W f, A ... a );
+    template<typename W, typename ... A>
+    static std::function<FunctionType> wrap(W f, A ... a);
 };
 
 /**
@@ -157,8 +156,8 @@ struct AutoBind< F, 9 >
  * If F is a member method pointer, autobind takes the object on wich we desire to call the method
  * as second argument.
  */
-template <typename F, typename ... A >
-std::function< typename convert_function_type< F >::type > autobind(F f, A ... a);
+template<typename F, typename ... A>
+std::function<typename convert_function_type<F>::type> autobind(F f, A ... a);
 
 } //namespace util
 

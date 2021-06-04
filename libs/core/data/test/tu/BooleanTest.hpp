@@ -26,17 +26,20 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class BooleanTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( BooleanTest );
-    CPPUNIT_TEST( methode1 );
+
+    CPPUNIT_TEST_SUITE(BooleanTest);
+    CPPUNIT_TEST(methode1);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -45,4 +48,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data

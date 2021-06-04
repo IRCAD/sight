@@ -35,7 +35,7 @@ void PointList::copyToCv(const data::Point::csptr& _src, ::cv::Point2d& _dst)
 
 //------------------------------------------------------------------------------
 
-void PointList::copyToCv(const data::PointList::csptr& _src, std::vector< ::cv::Point2d >& _dst)
+void PointList::copyToCv(const data::PointList::csptr& _src, std::vector< ::cv::Point2d>& _dst)
 {
     _dst.clear();
     for(const auto& point : _src->getPoints())
@@ -48,7 +48,7 @@ void PointList::copyToCv(const data::PointList::csptr& _src, std::vector< ::cv::
 
 //------------------------------------------------------------------------------
 
-void PointList::copyFromCv(const std::vector< ::cv::Point2d >& _src, const data::PointList::sptr& _dst)
+void PointList::copyFromCv(const std::vector< ::cv::Point2d>& _src, const data::PointList::sptr& _dst)
 {
     _dst->getPoints().clear();
     for(const auto& cvPoint : _src)

@@ -32,11 +32,14 @@
 
 namespace sight::data
 {
+
 class Image;
+
 }
 
 namespace sight::module::io::itk
 {
+
 /**
  * @brief Reader for .inr.gz image
  *
@@ -56,9 +59,9 @@ namespace sight::module::io::itk
  */
 class MODULE_IO_ITK_CLASS_API InrImageReaderService : public sight::io::base::service::IReader
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(InrImageReaderService, sight::io::base::service::IReader)
+
+    SIGHT_DECLARE_SERVICE(InrImageReaderService, sight::io::base::service::IReader);
 
     MODULE_IO_ITK_API InrImageReaderService() noexcept;
 
@@ -83,7 +86,7 @@ protected:
     MODULE_IO_ITK_API void updating() override;
 
     /// Override
-    MODULE_IO_ITK_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief Configure using GUI.
@@ -102,7 +105,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    bool createImage( const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg );
+    bool createImage(const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg);
 };
 
 } // namespace sight::module::io::itk

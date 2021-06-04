@@ -37,14 +37,13 @@ static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 
 SPicker::SPicker() noexcept
 {
-    m_pickedSig = newSignal< sight::viz::scene3d::interactor::MeshPickerInteractor::PointClickedSigType >(s_PICKED_SIG);
+    m_pickedSig = newSignal<sight::viz::scene3d::interactor::MeshPickerInteractor::PointClickedSigType>(s_PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
 SPicker::~SPicker() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -65,11 +64,11 @@ void SPicker::configuring()
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
-            hexaMask.length() > 2 &&
-            hexaMask.substr(0, 2) == "0x");
-        m_queryMask = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
+            hexaMask.length() > 2
+            && hexaMask.substr(0, 2) == "0x"
+        );
+        m_queryMask = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -79,20 +78,20 @@ void SPicker::starting()
     this->initialize();
 
     const auto layer = this->getLayer();
-    m_interactor = std::make_shared< sight::viz::scene3d::interactor::MeshPickerInteractor >(layer,
-                                                                                             m_layerOrderDependant);
+    m_interactor = std::make_shared<sight::viz::scene3d::interactor::MeshPickerInteractor>(
+        layer,
+        m_layerOrderDependant
+    );
     m_interactor->setQueryMask(m_queryMask);
     m_interactor->setPointClickedSig(m_pickedSig);
 
     layer->addInteractor(m_interactor, m_priority);
-
 }
 
 //-----------------------------------------------------------------------------
 
 void SPicker::updating() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------

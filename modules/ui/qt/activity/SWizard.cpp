@@ -56,6 +56,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -88,7 +89,7 @@ SWizard::SWizard() noexcept :
 
     m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
     m_sigActivityUpdated = newSignal<ActivityUpdatedSignalType>(s_ACTIVITY_UPDATED_SIG);
-    m_sigCanceled        = newSignal< CanceledSignalType >(s_CANCELED_SIG);
+    m_sigCanceled        = newSignal<CanceledSignalType>(s_CANCELED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +110,7 @@ void SWizard::configuring()
     SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
 
     m_sdbIoSelectorConfig = config.get("sdbIoSelectorConfig", "");
-    if (m_sdbIoSelectorConfig.empty())
+    if(m_sdbIoSelectorConfig.empty())
     {
         m_sdbIoSelectorConfig = m_ioSelectorConfig;
     }
@@ -119,7 +120,7 @@ void SWizard::configuring()
 
     const auto iconsCfg = config.get_child("icons");
     const auto iconCfg  = iconsCfg.equal_range("icon");
-    for (auto itIcon = iconCfg.first; itIcon != iconCfg.second; ++itIcon)
+    for(auto itIcon = iconCfg.first ; itIcon != iconCfg.second ; ++itIcon)
     {
         const auto iconCfg = itIcon->second.get_child("<xmlattr>");
 
@@ -131,6 +132,7 @@ void SWizard::configuring()
         const auto file = core::runtime::getResourceFilePath(icon);
         m_objectIcons[type] = file.string();
     }
+
     SIGHT_ASSERT("icons are empty", !m_objectIcons.empty());
 }
 
@@ -176,7 +178,7 @@ void SWizard::starting()
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     layout->addLayout(buttonLayout);
 
-    if (m_isCancelable)
+    if(m_isCancelable)
     {
         m_cancelButton = new QPushButton("Cancel");
         m_cancelButton->setToolTip("Cancel the activity creation");
@@ -193,11 +195,15 @@ void SWizard::starting()
 
     container->setLayout(layout);
 
-    QObject::connect(m_DataView.data(), &DataView::currentChanged,
-                     this, &SWizard::onTabChanged);
+    QObject::connect(
+        m_DataView.data(),
+        &DataView::currentChanged,
+        this,
+        &SWizard::onTabChanged
+    );
     QObject::connect(m_okButton.data(), &QPushButton::clicked, this, &SWizard::onBuildActivity);
     QObject::connect(m_resetButton.data(), &QPushButton::clicked, this, &SWizard::onReset);
-    if (m_isCancelable)
+    if(m_isCancelable)
     {
         QObject::connect(m_cancelButton.data(), &QPushButton::clicked, this, &SWizard::onCancel);
     }
@@ -209,11 +215,15 @@ void SWizard::stopping()
 {
     m_DataView->clear();
 
-    QObject::disconnect(m_DataView.data(), &DataView::currentChanged,
-                        this, &SWizard::onTabChanged);
+    QObject::disconnect(
+        m_DataView.data(),
+        &DataView::currentChanged,
+        this,
+        &SWizard::onTabChanged
+    );
     QObject::disconnect(m_okButton.data(), &QPushButton::clicked, this, &SWizard::onBuildActivity);
     QObject::disconnect(m_resetButton.data(), &QPushButton::clicked, this, &SWizard::onReset);
-    if (m_isCancelable)
+    if(m_isCancelable)
     {
         QObject::disconnect(m_cancelButton.data(), &QPushButton::clicked, this, &SWizard::onCancel);
     }
@@ -225,8 +235,8 @@ void SWizard::stopping()
 
 void SWizard::updating()
 {
-    auto as = this->getInOut< data::ActivitySeries>("activitySeries");
-    if (as)
+    auto as = this->getInOut<data::ActivitySeries>("activitySeries");
+    if(as)
     {
         this->updateActivity(as);
     }
@@ -243,8 +253,8 @@ void SWizard::createActivity(std::string activityID)
     info = Activity::getDefault()->getInfo(activityID);
 
     // load activity module
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
-    if (!module->isStarted())
+    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
+    if(!module->isStarted())
     {
         module->start();
     }
@@ -252,7 +262,7 @@ void SWizard::createActivity(std::string activityID)
     m_actSeries = data::ActivitySeries::New();
 
     m_actSeries->setModality("OT");
-    m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID() );
+    m_actSeries->setInstanceUID("fwActivities." + core::tools::UUID::generateUUID());
 
     ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
     m_actSeries->setDate(core::tools::getDate(now));
@@ -275,10 +285,10 @@ void SWizard::createActivity(std::string activityID)
         }
     }
 
-    if (needConfig)
+    if(needConfig)
     {
         m_DataView->fillInformation(info);
-        if (m_DataView->count() > 1)
+        if(m_DataView->count() > 1)
         {
             m_okButton->setText("Next");
         }
@@ -295,7 +305,7 @@ void SWizard::createActivity(std::string activityID)
             (*data)[req.name] = data::factory::New(req.type);
         }
 
-        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+        data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
         SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
         data::helper::SeriesDB helper(seriesDB);
@@ -313,8 +323,8 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     info = Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
-    if (!module->isStarted())
+    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
+    if(!module->isStarted())
     {
         module->start();
     }
@@ -337,10 +347,10 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
         }
     }
 
-    if (needConfig)
+    if(needConfig)
     {
         m_DataView->fillInformation(m_actSeries);
-        if (m_DataView->count() > 1)
+        if(m_DataView->count() > 1)
         {
             m_okButton->setText("Next");
         }
@@ -349,7 +359,7 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     {
         // Start immediately without popping any configuration UI
         data::Object::ModifiedSignalType::sptr sig;
-        sig = m_actSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        sig = m_actSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
         m_sigActivityUpdated->asyncEmit(m_actSeries);
     }
@@ -360,7 +370,7 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
 void SWizard::updateActivitySeries(data::Series::sptr series)
 {
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if (activitySeries)
+    if(activitySeries)
     {
         this->updateActivity(activitySeries);
     }
@@ -370,7 +380,7 @@ void SWizard::updateActivitySeries(data::Series::sptr series)
 
 void SWizard::onTabChanged(int index)
 {
-    if (index == m_DataView->count() - 1)
+    if(index == m_DataView->count() - 1)
     {
         m_okButton->setText("Apply");
     }
@@ -384,13 +394,13 @@ void SWizard::onTabChanged(int index)
 
 void SWizard::onReset()
 {
-    if (m_actSeries)
+    if(m_actSeries)
     {
         ActivityInfo info;
         info = Activity::getDefault()->getInfo(m_actSeries->getActivityConfigId());
         m_DataView->fillInformation(info);
 
-        if (m_DataView->count() > 1)
+        if(m_DataView->count() > 1)
         {
             m_okButton->setText("Next");
         }
@@ -410,27 +420,27 @@ void SWizard::onCancel()
 void SWizard::onBuildActivity()
 {
     int index   = m_DataView->currentIndex();
-    int lastTab = m_DataView->count() -1;
+    int lastTab = m_DataView->count() - 1;
 
-    if (index < 0)
+    if(index < 0)
     {
         return;
     }
+
     std::string errorMsg;
     // Check current data
-    if (m_DataView->checkData(size_t(index), errorMsg))
+    if(m_DataView->checkData(size_t(index), errorMsg))
     {
-        if (index != lastTab)
+        if(index != lastTab)
         {
             // enable and select the next tab
-            m_DataView->setTabEnabled(index+1, true);
-            m_DataView->setCurrentIndex(index+1);
+            m_DataView->setTabEnabled(index + 1, true);
+            m_DataView->setCurrentIndex(index + 1);
         }
-
         else // index == lastTab
         {
             // Create/update activity
-            if (m_mode == Mode::UPDATE && m_confirmUpdate)
+            if(m_mode == Mode::UPDATE && m_confirmUpdate)
             {
                 QMessageBox::StandardButton button = QMessageBox::question(
                     qApp->activeWindow(),
@@ -438,13 +448,14 @@ void SWizard::onBuildActivity()
                     "You will override your activity. You could loose some data.\n"
                     "Would you duplicate your activity ?",
                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                    QMessageBox::No);
+                    QMessageBox::No
+                );
 
-                if (button == QMessageBox::Cancel)
+                if(button == QMessageBox::Cancel)
                 {
                     return;
                 }
-                else if (button == QMessageBox::Yes)
+                else if(button == QMessageBox::Yes)
                 {
                     m_actSeries = data::Object::copy(m_actSeries);
                     m_mode      = Mode::CREATE; // The new activity should be added in the seriesDB
@@ -453,41 +464,44 @@ void SWizard::onBuildActivity()
 
             // check all data and create/update the activity
             bool ok = m_DataView->checkAndComputeData(m_actSeries, errorMsg);
-            if (ok)
+            if(ok)
             {
                 data::Composite::sptr data = m_actSeries->getData();
 
                 // Copy the patient/study information of a series
                 data::Series::sptr series;
-                for(const auto& elt : (*data) )
+                for(const auto& elt : (*data))
                 {
                     series = data::Series::dynamicCast(elt.second);
                     if(series)
                     {
-                        m_actSeries->setPatient( data::Object::copy(series->getPatient()) );
-                        m_actSeries->setStudy( data::Object::copy(series->getStudy()) );
-                        m_actSeries->setEquipment( data::Object::copy(series->getEquipment()) );
+                        m_actSeries->setPatient(data::Object::copy(series->getPatient()));
+                        m_actSeries->setStudy(data::Object::copy(series->getStudy()));
+                        m_actSeries->setEquipment(data::Object::copy(series->getEquipment()));
                         break;
                     }
                 }
 
-                if (m_mode == Mode::CREATE)
+                if(m_mode == Mode::CREATE)
                 {
                     // Add the new activity series in seriesDB
                     ActivityInfo info;
                     info = Activity::getDefault()->getInfo(
-                        m_actSeries->getActivityConfigId());
+                        m_actSeries->getActivityConfigId()
+                    );
 
                     std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
-                        info.title);
-                    if (description.empty())
+                        info.title
+                    );
+                    if(description.empty())
                     {
                         return;
                     }
+
                     m_actSeries->setDescription(description);
-                    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
+                    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
                     SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
                     data::helper::SeriesDB helper(seriesDB);
@@ -498,7 +512,7 @@ void SWizard::onBuildActivity()
                 else // m_mode == Mode::UPDATE
                 {
                     data::Object::ModifiedSignalType::sptr sig;
-                    sig = m_actSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                    sig = m_actSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
                     m_sigActivityUpdated->asyncEmit(m_actSeries);
                 }
@@ -521,4 +535,5 @@ void SWizard::onBuildActivity()
 //------------------------------------------------------------------------------
 
 } //namespace activity
+
 } //namespace sight::module::ui::qt

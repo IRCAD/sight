@@ -42,7 +42,7 @@ void Plugin::setInitializationData(const ConfigurationElement::sptr) noexcept
 
 //------------------------------------------------------------------------------
 
-void Plugin::setModule( std::shared_ptr<Module> module) noexcept
+void Plugin::setModule(std::shared_ptr<Module> module) noexcept
 {
     m_module = module;
 }

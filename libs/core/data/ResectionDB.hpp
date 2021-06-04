@@ -29,10 +29,11 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ResectionDB));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ResectionDB));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a resection container.
  *
@@ -40,10 +41,10 @@ namespace sight::data
  */
 class DATA_CLASS_API ResectionDB : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(ResectionDB, data::Object, data::factory::New< ResectionDB >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ResectionDB));
+
+    SIGHT_DECLARE_CLASS(ResectionDB, data::Object, data::factory::New<ResectionDB>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ResectionDB));
 
     /**
      * @brief Constructor
@@ -55,12 +56,12 @@ public:
     DATA_API virtual ~ResectionDB();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    typedef std::vector< data::Resection::sptr > ResectionContainerType;
+    typedef std::vector<data::Resection::sptr> ResectionContainerType;
 
     /**
      * @brief Get the number of resections
@@ -70,14 +71,14 @@ public:
     /**
      * @brief add resection
      */
-    DATA_API void addResection(const data::Resection::sptr& resection );
+    DATA_API void addResection(const data::Resection::sptr& resection);
 
     /**
      * @{
      * @brief Get/Set value of the resections.
      */
-    const ResectionContainerType& getResections () const;
-    void setResections (const ResectionContainerType& val);
+    const ResectionContainerType& getResections() const;
+    void setResections(const ResectionContainerType& val);
     /// @}
 
     /**
@@ -95,20 +96,20 @@ public:
      */
 
     /// Type of signal when the safe part is added
-    typedef core::com::Signal< void () > SafePartAddedSignalType;
+    typedef core::com::Signal<void ()> SafePartAddedSignalType;
 
     /// Key in m_signals map of signal m_sigSafePartAdded
     DATA_API static const core::com::Signals::SignalKeyType s_SAFE_PART_ADDED_SIG;
 
     /// Type of signal when a resection is added
-    typedef core::com::Signal< void () > ResectionAddedSignalType;
+    typedef core::com::Signal<void ()> ResectionAddedSignalType;
 
     /// Key in m_signals map of signal m_sigResectionAdded
     DATA_API static const core::com::Signals::SignalKeyType s_RESECTION_ADDED_SIG;
 
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -127,14 +128,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline const ResectionDB::ResectionContainerType& ResectionDB::getResections () const
+inline const ResectionDB::ResectionContainerType& ResectionDB::getResections() const
 {
     return m_resections;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ResectionDB::setResections (const ResectionDB::ResectionContainerType& val)
+inline void ResectionDB::setResections(const ResectionDB::ResectionContainerType& val)
 {
     m_resections = val;
 }

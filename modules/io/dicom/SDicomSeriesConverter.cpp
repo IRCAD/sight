@@ -47,8 +47,9 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 SDicomSeriesConverter::SDicomSeriesConverter() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignal>( JOB_CREATED_SIGNAL );
+    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
+
 //------------------------------------------------------------------------------
 
 SDicomSeriesConverter::~SDicomSeriesConverter() noexcept
@@ -57,7 +58,7 @@ SDicomSeriesConverter::~SDicomSeriesConverter() noexcept
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::info(std::ostream& _sstream )
+void SDicomSeriesConverter::info(std::ostream& _sstream)
 {
     _sstream << "SDicomSeriesConverter::info";
 }
@@ -85,10 +86,10 @@ void SDicomSeriesConverter::configuring()
 void SDicomSeriesConverter::updating()
 {
     // Get Destination SeriesDB
-    data::SeriesDB::sptr destinationSeriesDB = this->getInOut< data::SeriesDB>("target");
+    data::SeriesDB::sptr destinationSeriesDB = this->getInOut<data::SeriesDB>("target");
     SIGHT_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
 
-    data::SeriesDB::csptr dicomSeriesDB = this->getInput< data::SeriesDB >("source");
+    data::SeriesDB::csptr dicomSeriesDB = this->getInput<data::SeriesDB>("source");
     data::SeriesDB::sptr dummy          = data::SeriesDB::New();
 
     if(dicomSeriesDB->empty())
@@ -97,7 +98,7 @@ void SDicomSeriesConverter::updating()
         messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
         messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.setTitle("Read DICOM series");
-        messageBox.setMessage( "There is no DICOM series that can be read." );
+        messageBox.setMessage("There is no DICOM series that can be read.");
         messageBox.show();
     }
     else
@@ -116,14 +117,17 @@ void SDicomSeriesConverter::updating()
 
             std::stringstream ss;
             ss << "The reading process is over : <b>" << dummy->size() << " series</b> "
-               << ((dummy->size() > 1) ? "have" : "has") << " been found. "
-               << "<br>Please verify the log report to be informed of the potential errors.";
+            << ((dummy->size() > 1) ? "have" : "has") << " been found. "
+            << "<br>Please verify the log report to be informed of the potential errors.";
 
             bool result = false;
             if(!job->cancelRequested())
             {
-                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog("Reading process over",
-                                                                                 ss.str(), logger);
+                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog(
+                    "Reading process over",
+                    ss.str(),
+                    logger
+                );
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -139,17 +143,23 @@ void SDicomSeriesConverter::updating()
                 sDBhelper.notify();
             }
         }
-        catch (const std::exception& e)
+        catch(const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
             sight::ui::base::dialog::MessageDialog::show(
-                "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
+                "Warning",
+                ss.str(),
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
-        catch( ... )
+        catch(...)
         {
             sight::ui::base::dialog::MessageDialog::show(
-                "Warning", "Warning during loading", sight::ui::base::dialog::IMessageDialog::WARNING);
+                "Warning",
+                "Warning during loading",
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
     }
 }

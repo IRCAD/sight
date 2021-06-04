@@ -32,10 +32,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::sorter::TagValueSorter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::sorter::TagValueSorter);
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -81,7 +82,9 @@ bool TagValueSorter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+)
 const
 {
     if(m_tag == DCM_UndefinedTagKey)
@@ -96,12 +99,12 @@ const
 
     OFCondition status;
     DcmDataset* dataset;
-    for(const auto& item :  series->getDicomContainer())
+    for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
         const size_t buffSize                            = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast< char* >( lock.getBuffer() );
+        char* buffer = static_cast<char*>(lock.getBuffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -109,10 +112,12 @@ const
 
         DcmFileFormat fileFormat;
         fileFormat.transferInit();
-        if (!fileFormat.read(is).good())
+        if(!fileFormat.read(is).good())
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << item.first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << item.first << "')"
+            );
         }
 
         fileFormat.loadAllDataIntoMemory();
@@ -142,13 +147,14 @@ const
     result.push_back(series);
 
     std::stringstream ss;
-    ss << "The instances have been sorted using the value of tag (" <<
-        std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << "," <<
-        std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
+    ss << "The instances have been sorted using the value of tag ("
+    << std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << ","
+    << std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
     logger->information(ss.str());
 
     return result;
 }
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

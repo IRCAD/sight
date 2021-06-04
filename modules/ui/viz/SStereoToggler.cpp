@@ -34,14 +34,13 @@ static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActi
 
 SStereoToggler::SStereoToggler()
 {
-    m_stereoActiveSig = newSignal< StereoActiveSigType >(s_STEREO_ACTIVE_SIG);
+    m_stereoActiveSig = newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 SStereoToggler::~SStereoToggler()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -61,11 +60,11 @@ void SStereoToggler::configuring()
     {
         m_stereoMode = StereoModeType::STEREO;
     }
-    else if (stereoMode == "AutoStereo5")
+    else if(stereoMode == "AutoStereo5")
     {
         m_stereoMode = StereoModeType::AUTOSTEREO_5;
     }
-    else if (stereoMode == "AutoStereo8")
+    else if(stereoMode == "AutoStereo8")
     {
         m_stereoMode = StereoModeType::AUTOSTEREO_8;
     }

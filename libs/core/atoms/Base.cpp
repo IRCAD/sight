@@ -33,7 +33,7 @@ const std::string Base::s_VERSION = "1";
 
 std::string Base::getString() const
 {
-    SIGHT_THROW_EXCEPTION( atoms::Exception("No string conversion available.") );
+    SIGHT_THROW_EXCEPTION(atoms::Exception("No string conversion available."));
 }
 
 }

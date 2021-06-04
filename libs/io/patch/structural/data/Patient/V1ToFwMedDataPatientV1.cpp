@@ -58,16 +58,19 @@ V1ToFwMedDataPatientV1::~V1ToFwMedDataPatientV1()
 // ----------------------------------------------------------------------------
 
 V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1(
-    const V1ToFwMedDataPatientV1& cpy ) :
+    const V1ToFwMedDataPatientV1& cpy
+) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataPatientV1::apply(const sight::atoms::Object::sptr& previous,
-                                   const sight::atoms::Object::sptr& current,
-                                   io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToFwMedDataPatientV1::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -87,8 +90,8 @@ void V1ToFwMedDataPatientV1::apply(const sight::atoms::Object::sptr& previous,
 
     // Update Name
     std::string nameSeperation = "^";
-    if( previous->getAttribute("name")->getString().empty() ||
-        previous->getAttribute("firstname")->getString().empty() )
+    if(previous->getAttribute("name")->getString().empty()
+       || previous->getAttribute("firstname")->getString().empty())
     {
         nameSeperation = "";
     }
@@ -96,7 +99,7 @@ void V1ToFwMedDataPatientV1::apply(const sight::atoms::Object::sptr& previous,
     std::string newName = previous->getAttribute("name")->getString()
                           + nameSeperation
                           + previous->getAttribute("firstname")->getString();
-    helper.replaceAttribute( "name", sight::atoms::String::New(newName) );
+    helper.replaceAttribute("name", sight::atoms::String::New(newName));
 
     // Update Birthdate
     ::boost::posix_time::ptime bithdate =
@@ -104,8 +107,12 @@ void V1ToFwMedDataPatientV1::apply(const sight::atoms::Object::sptr& previous,
     helper.replaceAttribute("birth_date", sight::atoms::String::New(core::tools::getDate(bithdate)));
 
     // Update Sex
-    helper.replaceAttribute("sex", sight::atoms::String::New(
-                                !(previous->getAttribute("is_male")->getString().compare("true")) ? "M" : "F"));
+    helper.replaceAttribute(
+        "sex",
+        sight::atoms::String::New(
+            !(previous->getAttribute("is_male")->getString().compare("true")) ? "M" : "F"
+        )
+    );
 }
 
 } // namespace Patient

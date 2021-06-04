@@ -55,6 +55,7 @@ void setValues(fwPlane& plane, const fwVec3d& point1, const fwVec3d& point2, con
         normal[1] = 0.0;
         normal[2] = 1.0;
     }
+
     normal = ::glm::normalize(normal);
     double distance = ::glm::dot(normal, p1);
 
@@ -92,14 +93,14 @@ double getDistance(const fwPlane& plane)
 
 //------------------------------------------------------------------------------
 
-void  setDistance(fwPlane& plane, const double distance)
+void setDistance(fwPlane& plane, const double distance)
 {
     plane[3] = distance;
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect( const fwPlane& plane, const fwLine& line,  fwVec3d& point)
+bool intersect(const fwPlane& plane, const fwLine& line, fwVec3d& point)
 {
     ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
     normal = ::glm::normalize(normal);
@@ -135,7 +136,7 @@ bool isInHalfSpace(const fwPlane& plane, const fwVec3d& point)
     ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
     ::glm::normalize(normal);
     ::glm::dvec3 pos = normal * plane[3];
-    return (::glm::dot(normal, pointGlm-pos) >= 0.0);
+    return ::glm::dot(normal, pointGlm - pos) >= 0.0;
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +144,7 @@ bool isInHalfSpace(const fwPlane& plane, const fwVec3d& point)
 void transform(fwPlane& plane, const fwMatrix4x4& matrix)
 {
     ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
-    ::glm::dvec3 beg(normal* plane[3]);
+    ::glm::dvec3 beg(normal * plane[3]);
     ::glm::dvec3 end(beg + normal);
     ::glm::dvec4 beg4(beg, 1.0);
     ::glm::dvec4 end4(end, 1.0);
@@ -183,7 +184,7 @@ void offset(fwPlane& plane, double offset)
 
 //------------------------------------------------------------------------------
 
-fwPlane getPlane(const fwVec3d&  normal, const fwVec3d& point)
+fwPlane getPlane(const fwVec3d& normal, const fwVec3d& point)
 {
     ::glm::dvec3 pointGlm(point[0], point[1], point[2]);
     ::glm::dvec3 normalGlm(normal[0], normal[1], normal[2]);
@@ -210,10 +211,10 @@ bool operator==(fwPlane& plane1, fwPlane& plane2)
     double dz = pl1[2] - pl2[2];
     double dd = pl1[3] - pl2[3];
 
-    return ( std::abs(dx) < EPSILON &&
-             std::abs(dy) < EPSILON &&
-             std::abs(dz) < EPSILON &&
-             std::abs(dd) < EPSILON );
+    return std::abs(dx) < EPSILON
+           && std::abs(dy) < EPSILON
+           && std::abs(dz) < EPSILON
+           && std::abs(dd) < EPSILON;
 }
 
 //------------------------------------------------------------------------------

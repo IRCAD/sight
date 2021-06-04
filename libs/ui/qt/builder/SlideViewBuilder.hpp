@@ -33,17 +33,20 @@
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
 /// This builder creates a slide widget. The slide widget can be displayed over all others widgets.
 class UI_QT_CLASS_API SlideViewBuilder : public ui::base::builder::ISlideViewBuilder
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SlideViewBuilder, ui::base::builder::ISlideViewBuilder,
-                        ui::base::factory::New< SlideViewBuilder >)
+    SIGHT_DECLARE_CLASS(
+        SlideViewBuilder,
+        ui::base::builder::ISlideViewBuilder,
+        ui::base::factory::New<SlideViewBuilder>
+    )
 
     /// Creates the slide builder.
     UI_QT_API SlideViewBuilder(ui::base::GuiBaseObject::Key key);
@@ -52,7 +55,7 @@ public:
     UI_QT_API virtual ~SlideViewBuilder();
 
     /// Create the Qt container @ref ui::qt::widget::SlideBar.
-    UI_QT_API void createContainer( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createContainer(ui::base::container::fwContainer::sptr parent) override;
 
     /// Destroyes the container.
     UI_QT_API void destroyContainer() override;
@@ -61,8 +64,8 @@ protected:
 
     /// Contains the generic parent container.
     ui::qt::container::QtContainer::sptr m_parent;
-
 };
 
 } // namespace builder.
+
 } // namespace sight::ui::base.

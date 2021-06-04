@@ -39,7 +39,7 @@ class IO_SESSION_CLASS_API ISession : public core::location::ILocation
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ISession, core::location::ILocation)
+    SIGHT_DECLARE_CLASS(ISession, core::location::ILocation);
 
     /// String serialization function
     inline std::string toString() const override;

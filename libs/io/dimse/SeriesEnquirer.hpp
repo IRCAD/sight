@@ -66,21 +66,20 @@ class IO_DIMSE_CLASS_API SeriesEnquirer :
     public core::BaseObject,
     protected DcmSCU
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesEnquirer, io::dimse::SeriesEnquirer, new SeriesEnquirer)
+    SIGHT_DECLARE_CLASS(SeriesEnquirer, io::dimse::SeriesEnquirer, new SeriesEnquirer);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
 
     typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
-    typedef std::vector< std::string > InstanceUIDContainer;
+    typedef std::vector<std::string> InstanceUIDContainer;
 
-    typedef std::vector< std::filesystem::path > InstancePathContainer;
+    typedef std::vector<std::filesystem::path> InstancePathContainer;
 
-    typedef std::vector< CSPTR(DcmDataset) > DatasetContainer;
+    typedef std::vector<CSPTR(DcmDataset)> DatasetContainer;
 
     /// Initializes memnbers.
     IO_DIMSE_API SeriesEnquirer();
@@ -98,12 +97,14 @@ public:
      * @param _moveApplicationTitle The move application title.
      * @param _progressCallback The progress callback.
      */
-    IO_DIMSE_API void initialize(const std::string& _applicationTitle,
-                                 const std::string& _peerHostName,
-                                 unsigned short _peerPort,
-                                 const std::string& _peerApplicationTitle,
-                                 const std::string& _moveApplicationTitle         = "",
-                                 ProgressCallbackSlotType::sptr _progressCallback = ProgressCallbackSlotType::sptr());
+    IO_DIMSE_API void initialize(
+        const std::string& _applicationTitle,
+        const std::string& _peerHostName,
+        unsigned short _peerPort,
+        const std::string& _peerApplicationTitle,
+        const std::string& _moveApplicationTitle         = "",
+        ProgressCallbackSlotType::sptr _progressCallback = ProgressCallbackSlotType::sptr()
+    );
 
     /// Initializes the network and negotiates association.
     IO_DIMSE_API bool connect();
@@ -122,21 +123,21 @@ public:
      * @param _name The patient name.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByPatientName(const std::string& _name);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByPatientName(const std::string& _name);
 
     /**
      * @brief Finds series by patient UID.
      * @param _uid The patient UID.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByPatientUID(const std::string& _uid);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByPatientUID(const std::string& _uid);
 
     /**
      * @brief Finds series by birthdate.
      * @param _birthDate birthdate of the series.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByPatientBirthDate(const std::string& _birthDate);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByPatientBirthDate(const std::string& _birthDate);
 
     /**
      * @brief Finds series by study date.
@@ -146,28 +147,28 @@ public:
      *
      * @pre _fromDate and _toDate must match the format YYYYMMDD.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByDate(const std::string& _fromDate, const std::string& _toDate);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByDate(const std::string& _fromDate, const std::string& _toDate);
 
     /**
      * @brief Finds series by series UID.
      * @param _uid The series UID.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByUID(const std::string& _uid);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByUID(const std::string& _uid);
 
     /**
      * @brief Finds series by modality.
      * @param _modality The modality.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByModality(const std::string& _modality);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByModality(const std::string& _modality);
 
     /**
      * @brief Finds series by description.
      * @param _description The desription.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > findSeriesByDescription(const std::string& _description);
+    IO_DIMSE_API OFList<QRResponse*> findSeriesByDescription(const std::string& _description);
 
     /**
      * @brief Finds SOPInstanceUID of the specified instance.
@@ -194,16 +195,20 @@ public:
      * @param _seriesInstanceUID The series instance UID.
      * @param _sopInstanceUID The sOP Instance UID.
      */
-    IO_DIMSE_API void pullInstanceUsingMoveRetrieveMethod(const std::string& _seriesInstanceUID,
-                                                          const std::string& _sopInstanceUID);
+    IO_DIMSE_API void pullInstanceUsingMoveRetrieveMethod(
+        const std::string& _seriesInstanceUID,
+        const std::string& _sopInstanceUID
+    );
 
     /**
      * @brief Pulls instance using C-GET requests.
      * @param _seriesInstanceUID The series instance UID.
      * @param _sopInstanceUID The sOP Instance UID.
      */
-    IO_DIMSE_API void pullInstanceUsingGetRetrieveMethod(const std::string& _seriesInstanceUID,
-                                                         const std::string& _sopInstanceUID);
+    IO_DIMSE_API void pullInstanceUsingGetRetrieveMethod(
+        const std::string& _seriesInstanceUID,
+        const std::string& _sopInstanceUID
+    );
 
     /**
      * @brief Pushs instances using C-STORE requests.
@@ -224,7 +229,7 @@ protected:
      * @param _dataset The request dataset.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList< QRResponse* > sendFindRequest(DcmDataset _dataset);
+    IO_DIMSE_API OFList<QRResponse*> sendFindRequest(DcmDataset _dataset);
 
     /**
      * @brief Sends a C-MOVE Request.
@@ -261,9 +266,11 @@ protected:
      * @param _waitForNextResponse
      * @return
      */
-    IO_DIMSE_API OFCondition handleMOVEResponse(const T_ASC_PresentationContextID _presID,
-                                                RetrieveResponse* _response,
-                                                OFBool& _waitForNextResponse) override;
+    IO_DIMSE_API OFCondition handleMOVEResponse(
+        const T_ASC_PresentationContextID _presID,
+        RetrieveResponse* _response,
+        OFBool& _waitForNextResponse
+    ) override;
 
     /**
      * @brief Handles a C-STORE response.
@@ -273,10 +280,12 @@ protected:
      * @param _cStoreReturnStatus
      * @return
      */
-    IO_DIMSE_API OFCondition handleSTORERequest(const T_ASC_PresentationContextID,
-                                                DcmDataset* _incomingObject,
-                                                OFBool&,
-                                                Uint16&) override;
+    IO_DIMSE_API OFCondition handleSTORERequest(
+        const T_ASC_PresentationContextID,
+        DcmDataset* _incomingObject,
+        OFBool&,
+        Uint16&
+    ) override;
 
     /**
      * @brief Finds uncompressed presentation context.
@@ -296,8 +305,7 @@ private:
     ProgressCallbackSlotType::sptr m_progressCallback;
 
     /// Sets the dowloaded instance index.
-    unsigned int m_instanceIndex { 0 };
-
+    unsigned int m_instanceIndex {0};
 };
 
 } // namespace sight::io::dimse.

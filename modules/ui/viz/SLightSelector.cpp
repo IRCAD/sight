@@ -24,6 +24,8 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
+#include <viz/scene3d/SRender.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
@@ -34,7 +36,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/scene3d/SRender.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -45,11 +47,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 using sight::viz::scene3d::ILight;
 using sight::viz::scene3d::Layer;
@@ -87,7 +86,8 @@ void SLightSelector::starting()
     this->create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
 
     m_layersBox       = new QComboBox();
     m_lightsList      = new QListWidget();
@@ -121,7 +121,7 @@ void SLightSelector::starting()
 
     this->updateLightsList();
 
-    QObject::connect(m_layersBox,  qOverload<int>(&QComboBox::activated), this, &SLightSelector::onSelectedLayerItem);
+    QObject::connect(m_layersBox, qOverload<int>(&QComboBox::activated), this, &SLightSelector::onSelectedLayerItem);
     QObject::connect(m_lightsList, &QListWidget::currentItemChanged, this, &SLightSelector::onSelectedLightItem);
     QObject::connect(m_lightsList, &QListWidget::itemChanged, this, &SLightSelector::onCheckedLightItem);
     QObject::connect(m_addLightBtn, &QPushButton::clicked, this, &SLightSelector::onAddLight);
@@ -147,6 +147,7 @@ void SLightSelector::stopping()
     {
         ILight::destroyLightAdaptor(light.m_light);
     }
+
     m_managedLightAdaptors.clear();
 
     this->destroy();
@@ -192,7 +193,8 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 void SLightSelector::onAddLight(bool)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
     QWidget* const container = qtContainer->getQtContainer();
 
     module::ui::viz::NewLightDialog* lightDialog = new module::ui::viz::NewLightDialog(container);
@@ -202,8 +204,10 @@ void SLightSelector::onAddLight(bool)
         std::string lightName = lightDialog->property("lightName").toString().toStdString();
 
         auto existingLight =
-            std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
-                         [lightName](ILight::sptr lightAdaptor)
+            std::find_if(
+                m_lightAdaptors.begin(),
+                m_lightAdaptors.end(),
+                [lightName](ILight::sptr lightAdaptor)
             {
                 return lightAdaptor->getName() == lightName;
             });
@@ -223,13 +227,16 @@ void SLightSelector::onRemoveLight(bool)
     {
         Layer::sptr currentLayer = m_currentLayer.lock();
 
-        const std::vector< Light >::iterator position
-            = std::find_if(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), [&](const Light& _light)
+        const std::vector<Light>::iterator position =
+            std::find_if(
+                m_managedLightAdaptors.begin(),
+                m_managedLightAdaptors.end(),
+                [&](const Light& _light)
             {
                 return _light.m_light == m_currentLight;
             });
 
-        if (position != m_managedLightAdaptors.end())
+        if(position != m_managedLightAdaptors.end())
         {
             m_managedLightAdaptors.erase(position);
         }
@@ -242,6 +249,7 @@ void SLightSelector::onRemoveLight(bool)
         {
             ILight::destroyLightAdaptor(m_currentLight);
         }
+
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
@@ -261,15 +269,18 @@ void SLightSelector::onRemoveLight(bool)
 void SLightSelector::onEditAmbientColor(bool)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
     QWidget* const container = qtContainer->getQtContainer();
 
-    Layer::sptr layer = m_currentLayer.lock();
+    Layer::sptr layer             = m_currentLayer.lock();
     ::Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
 
-    QColor qColor = QColorDialog::getColor(module::ui::viz::helper::Utils::converOgreColorToQColor(ogreColor),
-                                           container,
-                                           "Scene ambient color");
+    QColor qColor = QColorDialog::getColor(
+        module::ui::viz::helper::Utils::converOgreColorToQColor(ogreColor),
+        container,
+        "Scene ambient color"
+    );
 
     ogreColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
 
@@ -310,8 +321,12 @@ void SLightSelector::refreshLayers()
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
-            m_connections.connect(layerMap.second, Layer::s_INIT_LAYER_SIG,
-                                  this->getSptr(), s_INIT_LIGHT_LIST_SLOT);
+            m_connections.connect(
+                layerMap.second,
+                Layer::s_INIT_LAYER_SIG,
+                this->getSptr(),
+                s_INIT_LIGHT_LIST_SLOT
+            );
         }
     }
 
@@ -331,9 +346,9 @@ void SLightSelector::updateLightsList()
 
     for(auto lightAdaptor : m_lightAdaptors)
     {
-        QString lightName = lightAdaptor->getName().c_str();
-        ::Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? ::Qt::Checked :
-                                      ::Qt::Unchecked;
+        QString lightName           = lightAdaptor->getName().c_str();
+        ::Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? ::Qt::Checked
+                                                                   : ::Qt::Unchecked;
 
         QListWidgetItem* nextLight = new QListWidgetItem(lightName, m_lightsList);
         nextLight->setFlags(nextLight->flags() | ::Qt::ItemIsUserCheckable);
@@ -352,8 +367,10 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         data::Color::sptr lightDiffuseColor  = data::Color::New();
         data::Color::sptr lightSpecularColor = data::Color::New();
 
-        ILight::sptr lightAdaptor = ILight::createLightAdaptor(lightDiffuseColor,
-                                                               lightSpecularColor);
+        ILight::sptr lightAdaptor = ILight::createLightAdaptor(
+            lightDiffuseColor,
+            lightSpecularColor
+        );
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
@@ -389,8 +406,10 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
 ILight::sptr SLightSelector::retrieveLightAdaptor(const std::string& _name) const
 {
-    auto it = std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
-                           [_name](ILight::sptr lightAdaptor)
+    auto it = std::find_if(
+        m_lightAdaptors.begin(),
+        m_lightAdaptors.end(),
+        [_name](ILight::sptr lightAdaptor)
         {
             return lightAdaptor->getName() == _name;
         });
@@ -414,12 +433,12 @@ void SLightSelector::onUnCheckAllCheckBox()
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onCheckAllBoxes( bool _visible )
+void SLightSelector::onCheckAllBoxes(bool _visible)
 {
-    for( int i = 0; i < m_lightsList->count(); ++i )
+    for(int i = 0 ; i < m_lightsList->count() ; ++i)
     {
-        auto item = m_lightsList->item( i );
-        item->setCheckState(_visible ? ::Qt::Checked : ::Qt::Unchecked );
+        auto item = m_lightsList->item(i);
+        item->setCheckState(_visible ? ::Qt::Checked : ::Qt::Unchecked);
     }
 }
 

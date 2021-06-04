@@ -31,6 +31,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
 
@@ -39,7 +40,6 @@ namespace container
  */
 class IO_DICOM_CLASS_API DicomSurface
 {
-
 public:
 
     /**
@@ -51,9 +51,9 @@ public:
     /**
      * @brief Container types to store points, cells and normals.
      * @{ */
-    typedef std::vector< float > DicomPointBufferType;
-    typedef std::vector< DicomCellValueType > DicomCellBufferType;
-    typedef std::vector< float > DicomNormalBufferType;
+    typedef std::vector<float> DicomPointBufferType;
+    typedef std::vector<DicomCellValueType> DicomCellBufferType;
+    typedef std::vector<float> DicomNormalBufferType;
     /**  @} */
 
     /**
@@ -70,11 +70,13 @@ public:
      * @param[in] cellBufferSize Cells buffer size
      * @param[in] normalBuffer Normals buffer
      */
-    IO_DICOM_API DicomSurface(const data::Mesh::PointValueType* pointBuffer,
-                              const data::Mesh::Size pointBufferSize,
-                              const DicomCellValueType* cellBuffer,
-                              const data::Mesh::Size cellBufferSize,
-                              const data::Mesh::NormalValueType* normalBuffer);
+    IO_DICOM_API DicomSurface(
+        const data::Mesh::PointValueType* pointBuffer,
+        const data::Mesh::Size pointBufferSize,
+        const DicomCellValueType* cellBuffer,
+        const data::Mesh::Size cellBufferSize,
+        const data::Mesh::NormalValueType* normalBuffer
+    );
 
     /// Destructor
     IO_DICOM_API ~DicomSurface();
@@ -124,4 +126,5 @@ private:
 };
 
 } //namespace container
+
 } //namespace sight::io::dicom

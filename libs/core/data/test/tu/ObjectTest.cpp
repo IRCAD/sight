@@ -25,10 +25,11 @@
 #include <data/Float.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ObjectTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -111,4 +112,5 @@ void ObjectTest::fieldTest()
 }
 
 } //namespace ut
+
 } //namespace sight::data

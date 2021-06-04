@@ -56,11 +56,11 @@ void INetworkSender::updating()
     {
         const size_t numObjects = this->getKeyGroupSize(s_OBJECTS_INOUT);
         // Grab the objects to send.
-        for(size_t i = 0; i < numObjects; ++i)
+        for(size_t i = 0 ; i < numObjects ; ++i)
         {
-            data::Object::csptr object = this->getInput< data::Object >(s_OBJECTS_INOUT, i);
+            data::Object::csptr object = this->getInput<data::Object>(s_OBJECTS_INOUT, i);
 
-            if (object)
+            if(object)
             {
                 this->sendObject(object, i);
             }

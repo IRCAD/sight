@@ -51,15 +51,15 @@ namespace sight::viz::qt3d
  */
 class VIZ_QT3D_CLASS_API IAdaptor : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IAdaptor, sight::service::IService)
+    SIGHT_DECLARE_CLASS(IAdaptor, sight::service::IService);
 
     /// Gets the render service using this adaptor.
     VIZ_QT3D_API SRender::sptr getRenderService() const;
 
 protected:
+
     VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
     VIZ_QT3D_API static const sight::core::com::Slots::SlotKeyType s_SHOW_SLOT;
@@ -100,8 +100,7 @@ protected:
     viz::qt3d::SRender::wptr m_renderService;
 
     /// Enables the adaptor visibility.
-    bool m_isVisible { true };
-
+    bool m_isVisible {true};
 };
 
 } // namespace sight::viz::qt3d.

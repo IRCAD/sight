@@ -29,6 +29,7 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
@@ -40,8 +41,12 @@ namespace validator
 class ACTIVITY_CLASS_API DefaultActivity : public activity::IActivityValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(DefaultActivity, activity::IActivityValidator,
-                        activity::validator::factory::New< DefaultActivity >)
+
+    SIGHT_DECLARE_CLASS(
+        DefaultActivity,
+        activity::IActivityValidator,
+        activity::validator::factory::New<DefaultActivity>
+    )
 
     /// Constructor. Do nothing.
     ACTIVITY_API DefaultActivity(activity::IValidator::Key key);
@@ -51,8 +56,10 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     ACTIVITY_API virtual IValidator::ValidationType validate(
-        const CSPTR(data::ActivitySeries)& activitySeries ) const override;
+        const CSPTR(data::ActivitySeries)& activitySeries
+    ) const override;
 };
 
 } // namespace validator
+
 } // namespace sight::activity

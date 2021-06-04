@@ -28,18 +28,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API Equipment : public io::dicom::writer::ie::InformationEntity< data::Equipment >
+class IO_DICOM_CLASS_API Equipment : public io::dicom::writer::ie::InformationEntity<data::Equipment>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
@@ -49,12 +51,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Equipment(const SPTR(::gdcm::Writer)& writer,
-                           const SPTR(io::dicom::container::DicomInstance)& instance,
-                           const data::Equipment::csptr& equipment,
-                           const core::log::Logger::sptr& logger = nullptr,
-                           ProgressCallback progress             = nullptr,
-                           CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Equipment(
+        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Equipment::csptr& equipment,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Equipment();
@@ -70,9 +74,10 @@ public:
      * @see PS 3.3 C.7.5.2
      */
     IO_DICOM_API virtual void writeEnhancedGeneralEquipmentModule();
-
 };
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

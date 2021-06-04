@@ -22,6 +22,8 @@
 
 #include "SStereoSelector.hpp"
 
+#include <viz/scene3d/SRender.hpp>
+
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -29,7 +31,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/scene3d/SRender.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -38,11 +40,8 @@
 #include <QHBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +62,8 @@ void SStereoSelector::starting()
     this->create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
 
     m_layersBox = new QComboBox();
     m_modeBox   = new QComboBox();
@@ -72,7 +72,7 @@ void SStereoSelector::starting()
     layout->addWidget(m_layersBox);
     layout->addWidget(m_modeBox);
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
     this->refreshRenderers();
 
@@ -123,9 +123,11 @@ void SStereoSelector::onSelectedLayerItem(int index)
 void SStereoSelector::onSelectedModeItem(int index)
 {
     using sight::viz::scene3d::compositor::Core;
-    m_currentLayer.lock()->setStereoMode(index == 1 ? Core::StereoModeType::AUTOSTEREO_5 :
-                                         index == 2 ? Core::StereoModeType::AUTOSTEREO_8 :
-                                         Core::StereoModeType::NONE);
+    m_currentLayer.lock()->setStereoMode(
+        index == 1 ? Core::StereoModeType::AUTOSTEREO_5
+                   : index == 2 ? Core::StereoModeType::AUTOSTEREO_8
+                                : Core::StereoModeType::NONE
+    );
 }
 
 //------------------------------------------------------------------------------

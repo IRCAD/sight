@@ -65,19 +65,19 @@ static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 //------------------------------------------------------------------------------
 
 SSelector::SSelector() :
-    m_mode( READER_MODE ),
-    m_servicesAreExcluded( true )
+    m_mode(READER_MODE),
+    m_servicesAreExcluded(true)
 {
-    m_sigJobCreated   = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
-    m_sigJobFailed    = newSignal< JobFailedSignalType >( JOB_FAILED_SIGNAL );
-    m_sigJobSucceeded = newSignal< JobSucceededSignalType >( JOB_SUCCEEDED_SIGNAL );
+    m_sigJobCreated   = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobFailed    = newSignal<JobFailedSignalType>(JOB_FAILED_SIGNAL);
+    m_sigJobSucceeded = newSignal<JobSucceededSignalType>(JOB_SUCCEEDED_SIGNAL);
 
-    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SSelector::forwardJob, this );
+    m_slotForwardJob = newSlot(FORWARD_JOB_SLOT, &SSelector::forwardJob, this);
 }
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector()  noexcept
+SSelector::~SSelector() noexcept
 {
 }
 
@@ -88,50 +88,54 @@ void SSelector::configuring()
     const ConfigType srvConfig = this->getConfigTree();
 
     const std::string mode = srvConfig.get<std::string>("type.<xmlattr>.mode", "reader");
-    SIGHT_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
-                 mode == "writer" || mode == "reader" );
-    m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
-    SIGHT_DEBUG( "mode => " + mode );
+    SIGHT_ASSERT(
+        "The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
+        mode == "writer" || mode == "reader"
+    );
+    m_mode = (mode == "writer") ? WRITER_MODE : READER_MODE;
+    SIGHT_DEBUG("mode => " + mode);
 
     m_dataClassname = srvConfig.get<std::string>("type.<xmlattr>.class", "");
 
     const std::string selectionMode = srvConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
-    SIGHT_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
-                  "'exclude' (to exclude the selection of the selector list).",
-                  selectionMode == "exclude" || selectionMode == "include" );
-    m_servicesAreExcluded = ( selectionMode == "exclude" );
-    SIGHT_DEBUG( "selection mode => " + selectionMode );
+    SIGHT_ASSERT(
+        "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+        "'exclude' (to exclude the selection of the selector list).",
+        selectionMode == "exclude" || selectionMode == "include"
+    );
+    m_servicesAreExcluded = (selectionMode == "exclude");
+    SIGHT_DEBUG("selection mode => " + selectionMode);
 
     const auto selectionCfg = srvConfig.equal_range("addSelection");
-    for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
+    for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
     {
         const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
         m_selectedServices.push_back(service);
-        SIGHT_DEBUG( "add selection => " + service );
+        SIGHT_DEBUG("add selection => " + service);
 
         const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
         if(!configId.empty())
         {
             m_serviceToConfig[service] = configId;
-            SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
         }
     }
 
     const auto configCfg = srvConfig.equal_range("config");
-    for (auto itCfg = configCfg.first; itCfg != configCfg.second; ++itCfg)
+    for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
     {
         const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
         const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
         m_serviceToConfig[service] = configId;
-        SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+        SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
     }
 
-    if (m_mode == WRITER_MODE)
+    if(m_mode == WRITER_MODE)
     {
         this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
     }
-    else if (m_dataClassname.empty())
+    else if(m_dataClassname.empty())
     {
         this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
     }
@@ -158,29 +162,35 @@ void SSelector::stopping()
 void SSelector::updating()
 {
     bool createOutput      = false;
-    data::Object::sptr obj = this->getInOut< data::Object>(io::base::service::s_DATA_KEY);
+    data::Object::sptr obj = this->getInOut<data::Object>(io::base::service::s_DATA_KEY);
 
     // Retrieve implementation of type io::base::service::IReader for this object
-    std::vector< std::string > availableExtensionsId;
-    if ( m_mode == READER_MODE )
+    std::vector<std::string> availableExtensionsId;
+    if(m_mode == READER_MODE)
     {
         std::string classname = m_dataClassname;
 
         SIGHT_ASSERT(
             "An inout key '" + io::base::service::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
-            obj || !classname.empty());
+            obj || !classname.empty()
+        );
 
-        if (obj)
+        if(obj)
         {
-            SIGHT_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
-                          "is used",
-                          !classname.empty())
+            SIGHT_WARN_IF(
+                "The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
+                "is used",
+                !classname.empty()
+            )
             classname = obj->getClassname();
         }
+
         createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
             service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
-                classname, "::sight::io::base::service::IReader");
+                classname,
+                "::sight::io::base::service::IReader"
+            );
     }
     else // m_mode == WRITER_MODE
     {
@@ -188,63 +198,68 @@ void SSelector::updating()
 
         availableExtensionsId =
             service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
-                obj->getClassname(), "::sight::io::base::service::IWriter");
+                obj->getClassname(),
+                "::sight::io::base::service::IWriter"
+            );
     }
 
     // Filter available extensions and replace id by service description
-    std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
-    std::vector< std::string > availableExtensionsSelector;
+    std::vector<std::pair<std::string, std::string> > availableExtensionsMap;
+    std::vector<std::string> availableExtensionsSelector;
 
-    for( const std::string& serviceId :  availableExtensionsId )
+    for(const std::string& serviceId : availableExtensionsId)
     {
         bool serviceIsSelectedByUser =
-            std::find( m_selectedServices.begin(), m_selectedServices.end(),
-                       serviceId ) != m_selectedServices.end();
+            std::find(
+                m_selectedServices.begin(),
+                m_selectedServices.end(),
+                serviceId
+            ) != m_selectedServices.end();
 
         // Test if the service is considered here as available by users, if yes push in availableExtensionsSelector
         // excluded mode => add services that are not selected by users
         // included mode => add services selected by users
-        if( (m_servicesAreExcluded && !serviceIsSelectedByUser) ||
-            (!m_servicesAreExcluded && serviceIsSelectedByUser) )
+        if((m_servicesAreExcluded && !serviceIsSelectedByUser)
+           || (!m_servicesAreExcluded && serviceIsSelectedByUser))
         {
             // Add this service
             std::string infoUser =
                 service::extension::Factory::getDefault()->getServiceDescription(serviceId);
 
-            std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
-            if ( iter != m_serviceToConfig.end() )
+            std::map<std::string, std::string>::const_iterator iter = m_serviceToConfig.find(serviceId);
+            if(iter != m_serviceToConfig.end())
             {
                 infoUser = service::extension::Config::getDefault()->getConfigDesc(iter->second);
             }
 
-            if (infoUser != "")
+            if(infoUser != "")
             {
-                availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, infoUser) );
-                availableExtensionsSelector.push_back( infoUser );
+                availableExtensionsMap.push_back(std::pair<std::string, std::string>(serviceId, infoUser));
+                availableExtensionsSelector.push_back(infoUser);
             }
             else
             {
-                availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, serviceId) );
-                availableExtensionsSelector.push_back( serviceId );
+                availableExtensionsMap.push_back(std::pair<std::string, std::string>(serviceId, serviceId));
+                availableExtensionsSelector.push_back(serviceId);
             }
         }
     }
 
     // Sort available services (lexical string sort)
-    std::sort( availableExtensionsSelector.begin(), availableExtensionsSelector.end() );
+    std::sort(availableExtensionsSelector.begin(), availableExtensionsSelector.end());
 
     // Test if we have an extension
-    if ( !availableExtensionsMap.empty() )
+    if(!availableExtensionsMap.empty())
     {
         std::string extensionId           = availableExtensionsMap[0].first;
         bool extensionSelectionIsCanceled = false;
 
         // Selection of extension when availableExtensions.size() > 1
-        if ( availableExtensionsSelector.size() > 1 )
+        if(availableExtensionsSelector.size() > 1)
         {
             sight::ui::base::dialog::SelectorDialog::sptr selector = sight::ui::base::dialog::SelectorDialog::New();
 
-            if ( m_mode != READER_MODE )
+            if(m_mode != READER_MODE)
             {
                 selector->setTitle("Writer to use");
             }
@@ -252,26 +267,29 @@ void SSelector::updating()
             {
                 selector->setTitle("Reader to use");
             }
+
             selector->setSelections(availableExtensionsSelector);
             std::string selection = selector->show();
-            if( !selection.empty() )
+            if(!selection.empty())
             {
                 bool extensionIdFound = false;
 
-                typedef std::pair < std::string, std::string > PairType;
-                for(PairType pair :  availableExtensionsMap)
+                typedef std::pair<std::string, std::string> PairType;
+                for(PairType pair : availableExtensionsMap)
                 {
-                    if (pair.second == selection )
+                    if(pair.second == selection)
                     {
                         extensionId      = pair.first;
                         extensionIdFound = true;
                     }
                 }
+
                 if(!extensionIdFound)
                 {
                     m_sigJobFailed->asyncEmit();
                 }
-                SIGHT_ASSERT("Problem to find the selected string.", extensionIdFound );
+
+                SIGHT_ASSERT("Problem to find the selected string.", extensionIdFound);
             }
             else
             {
@@ -279,24 +297,26 @@ void SSelector::updating()
             }
         }
 
-        if ( !extensionSelectionIsCanceled )
+        if(!extensionSelectionIsCanceled)
         {
-
             // Get Config
             bool hasConfigForService = false;
             core::runtime::ConfigurationElement::csptr srvCfg;
-            if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
+            if(m_serviceToConfig.find(extensionId) != m_serviceToConfig.end())
             {
                 hasConfigForService = true;
                 srvCfg              = service::extension::Config::getDefault()->getServiceConfig(
-                    m_serviceToConfig[extensionId], extensionId );
+                    m_serviceToConfig[extensionId],
+                    extensionId
+                );
                 SIGHT_ASSERT(
                     "No service configuration of type service::extension::Config was found",
-                    srvCfg );
+                    srvCfg
+                );
             }
 
             // Configure and start service
-            if ( m_mode == READER_MODE )
+            if(m_mode == READER_MODE)
             {
                 if(createOutput)
                 {
@@ -304,13 +324,13 @@ void SSelector::updating()
                     SIGHT_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
-                io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >( extensionId );
+                io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(extensionId);
                 reader->registerInOut(obj, io::base::service::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
-                if ( hasConfigForService )
+                if(hasConfigForService)
                 {
-                    reader->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
+                    reader->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
                     reader->configure();
                 }
 
@@ -333,12 +353,12 @@ void SSelector::updating()
                     reader->stop();
                     service::OSR::unregisterService(reader);
 
-                    if (createOutput && !reader->hasFailed())
+                    if(createOutput && !reader->hasFailed())
                     {
                         this->setOutput(io::base::service::s_DATA_KEY, obj);
                     }
                 }
-                catch (std::exception& e)
+                catch(std::exception& e)
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
                     sight::ui::base::dialog::MessageDialog::show("Reader Error", msg);
@@ -362,15 +382,19 @@ void SSelector::updating()
 
                 auto factory                            = service::extension::Factory::getDefault();
                 io::base::service::IWriter::sptr writer =
-                    io::base::service::IWriter::dynamicCast(factory->create( "::sight::io::base::service::IWriter",
-                                                                             extensionId));
+                    io::base::service::IWriter::dynamicCast(
+                        factory->create(
+                            "::sight::io::base::service::IWriter",
+                            extensionId
+                        )
+                    );
                 writer->registerInput(obj, io::base::service::s_DATA_KEY);
 
                 writer->setWorker(m_associatedWorker);
 
-                if ( hasConfigForService )
+                if(hasConfigForService)
                 {
-                    writer->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
+                    writer->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
                     writer->configure();
                 }
 
@@ -393,9 +417,9 @@ void SSelector::updating()
                     writer->stop();
                     service::OSR::unregisterService(writer);
                 }
-                catch (std::exception& e)
+                catch(std::exception& e)
                 {
-                    std::string msg = "Failed to write : \n" +  std::string(e.what());
+                    std::string msg = "Failed to write : \n" + std::string(e.what());
                     sight::ui::base::dialog::MessageDialog::show("Writer Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
@@ -418,11 +442,11 @@ void SSelector::updating()
     else
     {
         SIGHT_WARN("SSelector::load : availableExtensions is empty.");
-        if ( m_mode == READER_MODE )
+        if(m_mode == READER_MODE)
         {
             sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
-            messageBox.setMessage( "There are no available readers for this data type." );
+            messageBox.setMessage("There are no available readers for this data type.");
             messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
             messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -431,19 +455,19 @@ void SSelector::updating()
         {
             sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
-            messageBox.setMessage( "There are no available writers for this data type." );
+            messageBox.setMessage("There are no available writers for this data type.");
             messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
             messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
-
         }
+
         m_sigJobFailed->asyncEmit();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSelector::info( std::ostream& _sstream )
+void SSelector::info(std::ostream& _sstream)
 {
     // Update message
     _sstream << "SSelector";
@@ -451,7 +475,7 @@ void SSelector::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSelector::setIOMode( IOMode _mode )
+void SSelector::setIOMode(IOMode _mode)
 {
     m_mode = _mode;
 }
@@ -464,6 +488,7 @@ void SSelector::forwardJob(core::jobs::IJob::sptr iJob)
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace io
 
 } // namespace sight::module::ui::base

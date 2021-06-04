@@ -36,8 +36,10 @@ namespace sight::filter::image
 FILTER_IMAGE_API data::Image::sptr labeling(data::Image::sptr image, unsigned int _numLabels);
 
 /// Labels filter with centroids.
-FILTER_IMAGE_API void computeCentroids(data::Image::sptr image,
-                                       std::vector< data::PointList::sptr > pointListCentroids,
-                                       std::vector< std::vector<size_t> > pointListLabels);
+FILTER_IMAGE_API void computeCentroids(
+    data::Image::sptr image,
+    std::vector<data::PointList::sptr> pointListCentroids,
+    std::vector<std::vector<size_t> > pointListLabels
+);
 
 } //namespace sight::filter::image.

@@ -26,12 +26,12 @@
 
 namespace sight::module::viz::scene2d
 {
+
 /**
  * @brief   This class is started when the modules are loaded.
  */
 struct Plugin : public core::runtime::Plugin
 {
-
     /**
      * @brief   destructor
      */
@@ -42,7 +42,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::viz::scene2d

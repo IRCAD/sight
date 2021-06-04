@@ -28,6 +28,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -46,4 +47,5 @@ IO_DICOM_API std::string generatePatientId();
 IO_DICOM_API std::string generateStudyInstanceUid();
 
 } // namespace helper
+
 } // namespace sight::io::dicom

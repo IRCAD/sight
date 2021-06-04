@@ -129,7 +129,7 @@ class MODULE_SYNC_CLASS_API SFrameMatrixSynchronizer : public service::ISynchron
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameMatrixSynchronizer, service::IController)
+    SIGHT_DECLARE_SERVICE(SFrameMatrixSynchronizer, service::IController);
 
     /**
      * @name Signal API

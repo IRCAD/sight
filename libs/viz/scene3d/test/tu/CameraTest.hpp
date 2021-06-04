@@ -28,15 +28,15 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace ut
 {
 
 class CameraTest : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( CameraTest );
-CPPUNIT_TEST( computeProjectionMatrix );
-CPPUNIT_TEST( convertPixelToWorldSpace );
+CPPUNIT_TEST_SUITE(CameraTest);
+CPPUNIT_TEST(computeProjectionMatrix);
+CPPUNIT_TEST(convertPixelToWorldSpace);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,8 +46,8 @@ public:
 
     void computeProjectionMatrix();
     void convertPixelToWorldSpace();
-
 };
 
 } //namespace ut
+
 } //namespace sight::viz::scene3d

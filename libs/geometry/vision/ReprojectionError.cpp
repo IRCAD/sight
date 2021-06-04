@@ -27,31 +27,35 @@ namespace sight::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-ReprojectionError::ReprojectionError(const ::cv::Mat& _cameraMat, const ::cv::Mat& _distCoef,
-                                     const ::cv::Point2f& _imagePoints, const ::cv::Point3f& _objectPoints,
-                                     const ::cv::Mat& _extrinsic) :
+ReprojectionError::ReprojectionError(
+    const ::cv::Mat& _cameraMat,
+    const ::cv::Mat& _distCoef,
+    const ::cv::Point2f& _imagePoints,
+    const ::cv::Point3f& _objectPoints,
+    const ::cv::Mat& _extrinsic
+) :
     m_imagePoint(_imagePoints),
     m_objectPoint(_objectPoints),
     m_extrinsic(_extrinsic),
     m_cameraMatrix(_cameraMat),
     m_distCoef(_distCoef)
-
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-::ceres::CostFunction* ReprojectionError::Create(const ::cv::Mat& _cameraMatrix,
-                                                 const ::cv::Mat& _distCoef,
-                                                 const ::cv::Point2f& _imagePoints,
-                                                 const ::cv::Point3f& _objectPoints,
-                                                 const ::cv::Mat& _extrinsic)
+::ceres::CostFunction* ReprojectionError::Create(
+    const ::cv::Mat& _cameraMatrix,
+    const ::cv::Mat& _distCoef,
+    const ::cv::Point2f& _imagePoints,
+    const ::cv::Point3f& _objectPoints,
+    const ::cv::Mat& _extrinsic
+)
 {
     ReprojectionError* rep = new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _extrinsic);
-    return (new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(rep));
+    return new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(rep);
 }
 
 //-----------------------------------------------------------------------------
 
-}// namespace sight::geometry::vision
+} // namespace sight::geometry::vision

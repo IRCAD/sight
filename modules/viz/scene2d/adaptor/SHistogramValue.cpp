@@ -35,6 +35,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -44,7 +45,6 @@ static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 
 static const std::string s_COLOR_CONFIG     = "color";
 static const std::string s_FONT_SIZE_CONFIG = "fontSize";
-
 
 //---------------------------------------------------------------------------------------------------------------
 SHistogramValue::SHistogramValue() noexcept :
@@ -73,7 +73,7 @@ void SHistogramValue::configuring()
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, color);
 
-    m_fontSize = config.get< float >(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize = config.get<float>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -81,19 +81,19 @@ void SHistogramValue::configuring()
 void SHistogramValue::starting()
 {
     m_font.setPointSize(m_fontSize);
-    m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.2 );
-    m_font.setKerning( true );
-    m_font.setFixedPitch( true );
+    m_font.setLetterSpacing(QFont::AbsoluteSpacing, 0.2);
+    m_font.setKerning(true);
+    m_font.setFixedPitch(true);
 
     m_text = new QGraphicsSimpleTextItem();
-    m_text->setBrush( QBrush(m_color.color()) );
-    m_text->setFont( m_font );
-    m_text->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-    m_text->setVisible( false );
+    m_text->setBrush(QBrush(m_color.color()));
+    m_text->setFont(m_font);
+    m_text->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    m_text->setVisible(false);
 
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
-    m_layer->addToGroup( m_text );
+    m_layer->addToGroup(m_text);
 
     // Set the layer position (according to the related axis) and zValue
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
@@ -108,8 +108,8 @@ void SHistogramValue::starting()
 service::IService::KeyConnectionsMap SHistogramValue::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -120,18 +120,18 @@ void SHistogramValue::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    const data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
     const data::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue                   = histogram->getMinValue();
     const float histogramBinsWidth                  = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    const sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    const sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(m_coord);
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
-    if(index >= 0 && index < (int)values.size() && m_isInteracting) // avoid std out_of_range on Windows
+    if(index >= 0 && index < (int) values.size() && m_isInteracting) // avoid std out_of_range on Windows
     {
         sight::viz::scene2d::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight                        = viewport->getHeight();
@@ -152,7 +152,7 @@ void SHistogramValue::updating()
         diameterH *= ratio.first;
         diameterV *= ratio.second;
 
-        m_text->setText( QString::number( histIndex ) );
+        m_text->setText(QString::number(histIndex));
 
         double scaleX = m_fontSize;
         double scaleY = m_fontSize * viewportSizeRatio;
@@ -166,11 +166,11 @@ void SHistogramValue::updating()
         QTransform transform;
         transform.scale(scaleX, scaleY);
 
-        const data::Point::csptr point = this->getInput< data::Point>(s_POINT_INPUT);
+        const data::Point::csptr point = this->getInput<data::Point>(s_POINT_INPUT);
 
-        m_text->setTransform( transform );
-        m_text->setPos(point->getCoord()[0] + diameterH * 2, point->getCoord()[1] - diameterV * 2 );
-        m_text->setVisible( true );
+        m_text->setTransform(transform);
+        m_text->setPos(point->getCoord()[0] + diameterH * 2, point->getCoord()[1] - diameterV * 2);
+        m_text->setVisible(true);
     }
     else
     {
@@ -186,7 +186,7 @@ void SHistogramValue::stopping()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::processInteraction( sight::viz::scene2d::data::Event& _event)
+void SHistogramValue::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -209,5 +209,6 @@ void SHistogramValue::processInteraction( sight::viz::scene2d::data::Event& _eve
 
 //---------------------------------------------------------------------------------------------------------------
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

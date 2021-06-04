@@ -25,10 +25,11 @@
 #include "core/base.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::DemanglerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::DemanglerTest);
 
 namespace sight::core
 {
+
 namespace ut
 {
 
@@ -43,9 +44,9 @@ void DemanglerTest::setUp()
 class IDemanglerTest : public core::BaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(IDemanglerTest)
-    virtual ~IDemanglerTest();
 
+    SIGHT_DECLARE_CLASS(IDemanglerTest);
+    virtual ~IDemanglerTest();
 };
 
 IDemanglerTest::~IDemanglerTest()
@@ -57,7 +58,8 @@ IDemanglerTest::~IDemanglerTest()
 class ODemanglerTest : public IDemanglerTest
 {
 public:
-    SIGHT_DECLARE_CLASS(ODemanglerTest, IDemanglerTest, new ODemanglerTest)
+
+    SIGHT_DECLARE_CLASS(ODemanglerTest, IDemanglerTest, new ODemanglerTest);
     virtual ~ODemanglerTest();
 };
 
@@ -81,7 +83,7 @@ void DemanglerTest::classNameTest()
     CPPUNIT_ASSERT_EQUAL(std::string("IDemanglerTest"), core::ut::IDemanglerTest::leafClassname());
     CPPUNIT_ASSERT_EQUAL(std::string("ODemanglerTest"), core::ut::ODemanglerTest::leafClassname());
 
-    ODemanglerTest::sptr object        = std::make_shared< ODemanglerTest>();
+    ODemanglerTest::sptr object        = std::make_shared<ODemanglerTest>();
     IDemanglerTest::sptr genericObject = object;
     CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::ODemanglerTest"), object->getClassname());
     CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::ODemanglerTest"), genericObject->getClassname());
@@ -93,4 +95,5 @@ void DemanglerTest::classNameTest()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::core

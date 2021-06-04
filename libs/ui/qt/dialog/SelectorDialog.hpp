@@ -33,8 +33,10 @@
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -44,7 +46,7 @@ class UI_QT_CLASS_API SelectorDialog : public ui::base::dialog::ISelectorDialog
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New<SelectorDialog>);
 
     UI_QT_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 
@@ -53,7 +55,7 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_QT_API void setSelections(std::vector< std::string > _selections) override;
+    UI_QT_API void setSelections(std::vector<std::string> _selections) override;
 
     /**
      * @brief Sets the selector title.
@@ -73,15 +75,16 @@ public:
 
 private:
 
-    std::vector< std::string > m_selections;
+    std::vector<std::string> m_selections;
 
     /// Dialog box message
     std::string m_message;
     std::string m_title;
 
     /// Stores custom buttons
-    QVector< QPushButton* > m_customButtons;
+    QVector<QPushButton*> m_customButtons;
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

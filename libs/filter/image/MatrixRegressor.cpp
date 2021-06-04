@@ -44,7 +44,7 @@ MatrixRegressor::MatrixRegressor(const data::Vector::csptr& matrixList, const st
 {
     for(const auto& elt : *matrixList)
     {
-        data::Matrix4::sptr mat = std::dynamic_pointer_cast< data::Matrix4 >(elt);
+        data::Matrix4::sptr mat = std::dynamic_pointer_cast<data::Matrix4>(elt);
 
         m_matList.push_back(geometry::data::getMatrixFromTF3D(mat));
     }
@@ -52,12 +52,16 @@ MatrixRegressor::MatrixRegressor(const data::Vector::csptr& matrixList, const st
 
 //-----------------------------------------------------------------------------
 
-data::Matrix4::sptr MatrixRegressor::minimize(const data::Matrix4::csptr& initValue,
-                                              double stepLength, double stepTolerance,
-                                              double valueTolerance, unsigned int maxIter)
+data::Matrix4::sptr MatrixRegressor::minimize(
+    const data::Matrix4::csptr& initValue,
+    double stepLength,
+    double stepTolerance,
+    double valueTolerance,
+    unsigned int maxIter
+)
 {
     ::glm::dmat4 initMat = geometry::data::getMatrixFromTF3D(initValue);
-    double scale = std::pow(::glm::determinant(initMat), 1./3.);
+    double scale         = std::pow(::glm::determinant(initMat), 1. / 3.);
 
     ::glm::dvec3 angles = ::glm::eulerAngles(::glm::toQuat(initMat / scale));
 
@@ -76,8 +80,8 @@ data::Matrix4::sptr MatrixRegressor::minimize(const data::Matrix4::csptr& initVa
         [this](const PowellOptimizer::FunctionParametersType& parameters)
         {
             ::glm::dmat4 M = ::glm::eulerAngleYXZ(parameters[4], parameters[3], parameters[5]);
-            M              = ::glm::translate(M, ::glm::dvec3(parameters[0], parameters[1], parameters[2]));
-            M              = ::glm::scale(M, ::glm::dvec3(parameters[6], parameters[6], parameters[6]));
+            M = ::glm::translate(M, ::glm::dvec3(parameters[0], parameters[1], parameters[2]));
+            M = ::glm::scale(M, ::glm::dvec3(parameters[6], parameters[6], parameters[6]));
 
             double distance = 0;
 
@@ -97,8 +101,8 @@ data::Matrix4::sptr MatrixRegressor::minimize(const data::Matrix4::csptr& initVa
     PowellOptimizer::FunctionParametersType finalPosition = optimizer.optimize(initParams);
 
     ::glm::dmat4 result = ::glm::eulerAngleYXZ(finalPosition[4], finalPosition[3], finalPosition[5]);
-    result              = ::glm::translate(result, ::glm::dvec3(finalPosition[0], finalPosition[1], finalPosition[2]));
-    result              = ::glm::scale(result, ::glm::dvec3(finalPosition[6], finalPosition[6], finalPosition[6]));
+    result = ::glm::translate(result, ::glm::dvec3(finalPosition[0], finalPosition[1], finalPosition[2]));
+    result = ::glm::scale(result, ::glm::dvec3(finalPosition[6], finalPosition[6], finalPosition[6]));
 
     data::Matrix4::sptr resMat = data::Matrix4::New();
     geometry::data::setTF3DFromMatrix(resMat, result);

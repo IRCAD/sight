@@ -38,14 +38,15 @@ void Mesh::copyColors(::Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _num
 {
     if(_numComponents == 3)
     {
-        for (unsigned int i = 0; i < (_numPoints - 1); ++i)
+        for(unsigned int i = 0 ; i < (_numPoints - 1) ; ++i)
         {
             // Fastest way to copy tested so far, take 1.0 in alpha as default
             ::Ogre::RGBA argb = 0xFF000000;
-            argb             |= *reinterpret_cast< const ::Ogre::RGBA*>(_src);
-            *_dest++          = argb;
-            _src             += 3;
+            argb    |= *reinterpret_cast<const ::Ogre::RGBA*>(_src);
+            *_dest++ = argb;
+            _src    += 3;
         }
+
         // The above loop reads 4 bytes at a time and will read one byte out of bounds on the last
         // vertex, so handle it as a special case.
         *_dest = 0xFF000000

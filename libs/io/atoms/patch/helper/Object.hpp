@@ -29,6 +29,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace helper
 {
 
@@ -42,34 +43,44 @@ class IO_ATOMS_CLASS_API Object
 public:
 
     /// Constructor
-    IO_ATOMS_API Object(sight::atoms::Object::sptr metaObject );
+    IO_ATOMS_API Object(sight::atoms::Object::sptr metaObject);
 
     /// Destructor
     IO_ATOMS_API ~Object();
 
     /// Adds a new attribute in the current object
-    IO_ATOMS_API void addAttribute(const std::string& name,
-                                   sight::atoms::Base::sptr value,
-                                   conditions::Abstract::sptr condition = conditions::Abstract::New());
+    IO_ATOMS_API void addAttribute(
+        const std::string& name,
+        sight::atoms::Base::sptr value,
+        conditions::Abstract::sptr condition = conditions::Abstract::New()
+    );
 
     /// Adds or replaces an attribute in the current object
-    IO_ATOMS_API void addOrReplaceAttribute(const std::string& name,
-                                            sight::atoms::Base::sptr value,
-                                            conditions::Abstract::sptr condition = conditions::Abstract::New());
+    IO_ATOMS_API void addOrReplaceAttribute(
+        const std::string& name,
+        sight::atoms::Base::sptr value,
+        conditions::Abstract::sptr condition = conditions::Abstract::New()
+    );
 
     /// Removes an attribute
-    IO_ATOMS_API void removeAttribute(const std::string& name,
-                                      conditions::Abstract::sptr condition = conditions::Abstract::New());
+    IO_ATOMS_API void removeAttribute(
+        const std::string& name,
+        conditions::Abstract::sptr condition = conditions::Abstract::New()
+    );
 
     /// Replaces an attribute
-    IO_ATOMS_API void replaceAttribute(const std::string& name,
-                                       sight::atoms::Base::sptr newValue,
-                                       conditions::Abstract::sptr condition = conditions::Abstract::New());
+    IO_ATOMS_API void replaceAttribute(
+        const std::string& name,
+        sight::atoms::Base::sptr newValue,
+        conditions::Abstract::sptr condition = conditions::Abstract::New()
+    );
 
     /// Renames an attribute.
-    IO_ATOMS_API void renameAttribute(const std::string& name, const std::string& newName,
-                                      conditions::Abstract::sptr condition = conditions::Abstract::New()
-                                      );
+    IO_ATOMS_API void renameAttribute(
+        const std::string& name,
+        const std::string& newName,
+        conditions::Abstract::sptr condition = conditions::Abstract::New()
+    );
 
     /// Atom::Object getter
     IO_ATOMS_API sight::atoms::Object::sptr getObject() const;
@@ -81,4 +92,5 @@ private:
 };
 
 } //helper
+
 } //fwAtomHelper

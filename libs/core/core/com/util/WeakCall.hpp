@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/com/exception/WorkerChanged.hpp"
-
 #include <core/exceptionmacros.hpp>
 #include <core/mt/types.hpp>
 
@@ -46,21 +45,23 @@ namespace util
  * @tparam T Stored object type.
  * @tparam R Stored function return type.
  */
-template< typename T, typename R >
+template<typename T, typename R>
 struct WeakCall
 {
-
-    WeakCall( const std::shared_ptr< T const >& ptr, std::function< R() > f) :
+    WeakCall(const std::shared_ptr<T const>& ptr, std::function<R()> f) :
         m_weakPtr(ptr),
         m_func(f)
     {
     }
 
-    WeakCall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
-              const std::shared_ptr< core::thread::Worker >& m) :
+    WeakCall(
+        const std::shared_ptr<T const>& ptr,
+        std::function<R()> f,
+        const std::shared_ptr<core::thread::Worker>& m
+    ) :
         m_weakPtr(ptr),
         m_func(f),
-        m_worker( m )
+        m_worker(m)
     {
     }
 
@@ -70,23 +71,23 @@ struct WeakCall
 
     //------------------------------------------------------------------------------
 
-    R operator ()() const
+    R operator()() const
     {
-        std::shared_ptr< T const > ptr(this->m_weakPtr.lock());
+        std::shared_ptr<T const> ptr(this->m_weakPtr.lock());
 
-        if (!ptr)
+        if(!ptr)
         {
             m_worker.reset();
             // will throw an exception because m_weakPtr is expired
-            std::shared_ptr< T const > errorPtr(this->m_weakPtr);
+            std::shared_ptr<T const> errorPtr(this->m_weakPtr);
             SIGHT_NOT_USED(errorPtr);
         }
 
         core::mt::ReadLock lock(ptr->m_workerMutex);
 
-        std::shared_ptr< core::thread::Worker > worker = m_worker.lock();
+        std::shared_ptr<core::thread::Worker> worker = m_worker.lock();
 
-        if (worker && ptr->m_worker != worker)
+        if(worker && ptr->m_worker != worker)
         {
             //Worker changed since WeakCall creation
             SIGHT_THROW_EXCEPTION(core::com::exception::WorkerChanged("Worker changed since WeakCall creation"));
@@ -98,22 +99,26 @@ struct WeakCall
     }
 
     protected:
-        mutable std::weak_ptr< T const > m_weakPtr;
-        std::function< R() > m_func;
-        mutable std::weak_ptr< core::thread::Worker > m_worker;
+
+        mutable std::weak_ptr<T const> m_weakPtr;
+        std::function<R()> m_func;
+        mutable std::weak_ptr<core::thread::Worker> m_worker;
 };
 
 /// Returns weak call from given object and function.
-template <typename T, typename R >
-WeakCall<T, R> weakcall( const std::shared_ptr< T const >& ptr, std::function< R() > f)
+template<typename T, typename R>
+WeakCall<T, R> weakcall(const std::shared_ptr<T const>& ptr, std::function<R()> f)
 {
     return WeakCall<T, R>(ptr, f);
 }
 
 /// Returns weak call from given object, function and mutex.
-template <typename T, typename R >
-WeakCall<T, R> weakcall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
-                         const std::shared_ptr< core::thread::Worker >& m)
+template<typename T, typename R>
+WeakCall<T, R> weakcall(
+    const std::shared_ptr<T const>& ptr,
+    std::function<R()> f,
+    const std::shared_ptr<core::thread::Worker>& m
+)
 {
     return WeakCall<T, R>(ptr, f, m);
 }

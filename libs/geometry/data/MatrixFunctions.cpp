@@ -52,7 +52,7 @@ void multVecMatrix(const fwMatrix4x4& matrix, const fwVec3d& source, fwVec3d& de
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4  getInverse( const fwMatrix4x4& matrix )
+fwMatrix4x4 getInverse(const fwMatrix4x4& matrix)
 {
     // fwMatrix4x4 is stored row-major
     // glm matrices are stored column-major
@@ -67,19 +67,20 @@ fwMatrix4x4  getInverse( const fwMatrix4x4& matrix )
     fwMatrix4x4 inverse = {matInv[0][0], matInv[1][0], matInv[2][0], matInv[3][0],
                            matInv[0][1], matInv[1][1], matInv[2][1], matInv[3][1],
                            matInv[0][2], matInv[1][2], matInv[2][2], matInv[3][2],
-                           matInv[0][3], matInv[1][3], matInv[2][3], matInv[3][3]};
+                           matInv[0][3], matInv[1][3], matInv[2][3], matInv[3][3]
+    };
     return inverse;
 }
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm )
+fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
 {
     fwMatrix4x4 R;
 
     const double FV0 = _vecNorm[0];
     const double FV1 = _vecNorm[1];
-    const double YP  = sqrt( FV0 * FV0 + FV1 * FV1 );
+    const double YP  = sqrt(FV0 * FV0 + FV1 * FV1);
     const double RZ  = -atan2(FV0, FV1);
     const double RX  = -atan2(YP, _vecNorm[2]);
 
@@ -116,11 +117,12 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm )
 }
 
 //------------------------------------------------------------------------------
-}
+
+} // namespace sight::geometry
 
 //------------------------------------------------------------------------------
 
-fwMatrix4x4 operator*( const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2 )
+fwMatrix4x4 operator*(const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2)
 {
     ::glm::dmat4x4 mat1(matrix1[0][0], matrix1[1][0], matrix1[2][0], matrix1[3][0],
                         matrix1[0][1], matrix1[1][1], matrix1[2][1], matrix1[3][1],
@@ -137,7 +139,8 @@ fwMatrix4x4 operator*( const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2 )
     fwMatrix4x4 product = {prod[0][0], prod[1][0], prod[2][0], prod[3][0],
                            prod[0][1], prod[1][1], prod[2][1], prod[3][1],
                            prod[0][2], prod[1][2], prod[2][2], prod[3][2],
-                           prod[0][3], prod[1][3], prod[2][3], prod[3][3]};
+                           prod[0][3], prod[1][3], prod[2][3], prod[3][3]
+    };
 
     return product;
 }

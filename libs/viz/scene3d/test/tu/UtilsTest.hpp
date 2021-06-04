@@ -26,17 +26,19 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace ut
 {
 
 class UtilsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( UtilsTest );
-CPPUNIT_TEST( convertOgreColorToFwColor );
-CPPUNIT_TEST( convertOgreMatrixToTM3D );
+CPPUNIT_TEST_SUITE(UtilsTest);
+CPPUNIT_TEST(convertOgreColorToFwColor);
+CPPUNIT_TEST(convertOgreMatrixToTM3D);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -46,4 +48,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::viz::scene3d

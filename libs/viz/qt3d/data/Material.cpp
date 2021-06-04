@@ -159,7 +159,7 @@ void Material::removeParameter(Qt3DRender::QParameter* _parameter)
 void Material::updateOptionsMode(int _optionsMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*)this->effect()->techniques()[0];
+        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
 
     if(_optionsMode == 1)
     {
@@ -182,7 +182,7 @@ void Material::updateOptionsMode(int _optionsMode)
 void Material::updatePolygonMode(int _polygonMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*)this->effect()->techniques()[0];
+        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
     tech->updateRasterMode(_polygonMode);
 }
 
@@ -191,8 +191,8 @@ void Material::updatePolygonMode(int _polygonMode)
 void Material::updateShadingMode(int _shadingMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*)this->effect()->techniques()[0];
-    tech->setLightingMode(static_cast< viz::qt3d::techniques::Lighting::LightingMode >(_shadingMode));
+        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
+    tech->setLightingMode(static_cast<viz::qt3d::techniques::Lighting::LightingMode>(_shadingMode));
 }
 
 //------------------------------------------------------------------------------
@@ -203,12 +203,12 @@ void Material::updateRGBAMode(sight::data::Material::sptr _sightMaterial)
     sight::data::Color::csptr sightAmbient = _sightMaterial->ambient();
     sight::data::Color::csptr sightDiffuse = _sightMaterial->diffuse();
 
-    const QColor ambient(static_cast<int>(sightAmbient->red()*255), static_cast<int>(sightAmbient->green()*255),
-                         static_cast<int>(sightAmbient->blue()*255), static_cast<int>(sightAmbient->alpha()*255));
+    const QColor ambient(static_cast<int>(sightAmbient->red() * 255), static_cast<int>(sightAmbient->green() * 255),
+                         static_cast<int>(sightAmbient->blue() * 255), static_cast<int>(sightAmbient->alpha() * 255));
     this->setAmbient(ambient);
 
-    const QColor diffuse(static_cast<int>(sightDiffuse->red()*255), static_cast<int>(sightDiffuse->green()*255),
-                         static_cast<int>(sightDiffuse->blue()*255), static_cast<int>(sightDiffuse->alpha()*255));
+    const QColor diffuse(static_cast<int>(sightDiffuse->red() * 255), static_cast<int>(sightDiffuse->green() * 255),
+                         static_cast<int>(sightDiffuse->blue() * 255), static_cast<int>(sightDiffuse->alpha() * 255));
     this->setDiffuse(diffuse);
 
     const QVector3D specular(.2f, .2f, .2f);

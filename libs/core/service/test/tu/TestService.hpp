@@ -32,6 +32,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -40,7 +41,6 @@ namespace ut
  */
 class TestService : public service::IService
 {
-
 public:
 
     static unsigned int s_START_COUNTER;
@@ -49,7 +49,7 @@ public:
     static const std::string s_UNCONFIGURED;
     static const std::string s_NOT_DEFINED;
 
-    SIGHT_DECLARE_SERVICE(TestService, service::IService)
+    SIGHT_DECLARE_SERVICE(TestService, service::IService);
     TestService() noexcept
     {
     }
@@ -66,6 +66,7 @@ public:
 
         m_option = cfg.get(s_OPTION_KEY, s_NOT_DEFINED);
     }
+
     void starting() override;
     //------------------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ public:
     void updating() override;
     //------------------------------------------------------------------------------
 
-    void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream) override
     {
         _sstream << "TestService";
     }
@@ -137,13 +138,14 @@ public:
     }
 
 protected:
-    bool m_isUpdated { false };
-    bool m_isUpdated2 { false };
-    bool m_isUpdatedMessage { false };
-    bool m_raiseException { false };
-    unsigned int m_startOrder { 0 };
-    unsigned int m_updateOrder { 0 };
-    std::string m_option{s_UNCONFIGURED};
+
+    bool m_isUpdated {false};
+    bool m_isUpdated2 {false};
+    bool m_isUpdatedMessage {false};
+    bool m_raiseException {false};
+    unsigned int m_startOrder {0};
+    unsigned int m_updateOrder {0};
+    std::string m_option {s_UNCONFIGURED};
 };
 
 /**
@@ -151,9 +153,9 @@ protected:
  */
 class TestServiceImplementation : public TestService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(TestServiceImplementation, service::ut::TestService)
+
+    SIGHT_DECLARE_SERVICE(TestServiceImplementation, service::ut::TestService);
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_MSG_SENT_SIG;
@@ -161,7 +163,7 @@ public:
     static const core::com::Slots::SlotKeyType s_UPDATE2_SLOT;
 
     /// Type os signal
-    typedef core::com::Signal< void (const std::string&)> MsgSentSignalType;
+    typedef core::com::Signal<void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
     TestServiceImplementation() noexcept;
@@ -192,7 +194,7 @@ public:
     void swapping(const KeyType& key) override
     {
         m_swappedObjectKey = key;
-        m_swappedObject    = this->getInput< data::Object>(key);
+        m_swappedObject    = this->getInput<data::Object>(key);
     }
 
     //-------------------------------------------------------------------------
@@ -210,7 +212,7 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream) override
     {
         _sstream << "TestServiceImplementation";
     }
@@ -229,9 +231,10 @@ public:
         return m_swappedObject;
     }
 
-    //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
 private:
+
     std::string m_swappedObjectKey;
     data::Object::csptr m_swappedObject;
 };
@@ -241,14 +244,15 @@ private:
  */
 class TestServiceImplementation2 : public TestService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(TestServiceImplementation2, service::ut::TestService)
+
+    SIGHT_DECLARE_SERVICE(TestServiceImplementation2, service::ut::TestService);
 
     //-------------------------------------------------------------------------
     TestServiceImplementation2() noexcept
     {
     }
+
     //-------------------------------------------------------------------------
     virtual ~TestServiceImplementation2() noexcept
     {
@@ -260,9 +264,9 @@ public:
  */
 class TestSrvAutoconnect : public TestService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(TestSrvAutoconnect, service::ut::TestService)
+
+    SIGHT_DECLARE_SERVICE(TestSrvAutoconnect, service::ut::TestService);
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_SIG_1;
@@ -270,7 +274,7 @@ public:
     static const core::com::Slots::SlotKeyType s_SLOT_1;
 
     /// Type os signal
-    typedef core::com::Signal< void (int)> MsgSentSignalType;
+    typedef core::com::Signal<void (int)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
 
@@ -280,39 +284,46 @@ public:
         newSignal<MsgSentSignalType>(s_SIG_1);
         newSlot(s_SLOT_1, &TestSrvAutoconnect::receiveSlot, this);
     }
+
     //-------------------------------------------------------------------------
     virtual ~TestSrvAutoconnect() noexcept
     {
     }
+
     //-------------------------------------------------------------------------
 
     void updating() override
     {
         m_isUpdated = true;
     }
+
     //-------------------------------------------------------------------------
 
-    void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream) override
     {
         _sstream << "TestSrvAutoconnect";
     }
+
     //-------------------------------------------------------------------------
     void receiveSlot()
     {
         m_received = true;
     }
+
     //-------------------------------------------------------------------------
 
     void resetReceive()
     {
         m_received = false;
     }
+
     //-------------------------------------------------------------------------
 
     bool getReceived() const
     {
         return m_received;
     }
+
     //-------------------------------------------------------------------------
 
     IService::KeyConnectionsMap getAutoConnections() const override
@@ -326,7 +337,8 @@ public:
 
         return connections;
     }
-    //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 
 private:
 
@@ -344,7 +356,7 @@ public:
     static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
-    SIGHT_DECLARE_SERVICE(TestServiceWithData, service::IService)
+    SIGHT_DECLARE_SERVICE(TestServiceWithData, service::IService);
     TestServiceWithData() noexcept
     {
         this->registerObject(s_INPUT, AccessType::INPUT, true, false);
@@ -372,8 +384,8 @@ public:
 
     void starting() override
     {
-
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override;
@@ -381,4 +393,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::service

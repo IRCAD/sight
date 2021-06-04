@@ -32,7 +32,7 @@ namespace sight::io::zip
 namespace exception
 {
 
-Read::Read ( const std::string& err ) :
+Read::Read(const std::string& err) :
     core::Exception(err)
 {
 }

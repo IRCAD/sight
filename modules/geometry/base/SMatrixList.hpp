@@ -81,11 +81,10 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public service::IService
 {
-
 public:
 
     /// Generates default methods like New, dynamicCast,...
-    SIGHT_DECLARE_SERVICE(SMatrixList, service::IService)
+    SIGHT_DECLARE_SERVICE(SMatrixList, service::IService);
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SMatrixList() noexcept;
@@ -116,15 +115,16 @@ private:
     void removeMatrix(int);
 
     /// Vector containing input matrices.
-    std::vector< data::Matrix4::sptr > m_inputVector;
+    std::vector<data::Matrix4::sptr> m_inputVector;
 
     /// Vector containing output vector.
-    std::vector< data::Vector::sptr > m_outputVector;
+    std::vector<data::Vector::sptr> m_outputVector;
 
     /// Vector containing selected vector.
-    std::vector< data::Matrix4::sptr > m_selectedVector;
+    std::vector<data::Matrix4::sptr> m_selectedVector;
 
-    typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
-    typedef core::com::Signal< void (int) > MatrixRemovedSignalType;
+    typedef core::com::Signal<void (int, std::string)> MatrixAddedSignalType;
+    typedef core::com::Signal<void (int)> MatrixRemovedSignalType;
 };
+
 } // namespace sight::module::geometry::base.

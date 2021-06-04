@@ -29,11 +29,14 @@
 
 #include <QWidget>
 
-fwGuiRegisterMacro( ::sight::ui::base::builder::SlideViewBuilder,
-                    ::sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY)
+fwGuiRegisterMacro(
+    ::sight::ui::base::builder::SlideViewBuilder,
+    ::sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
+)
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -51,7 +54,7 @@ SlideViewBuilder::~SlideViewBuilder()
 
 //-----------------------------------------------------------------------------
 
-void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr parent )
+void SlideViewBuilder::createContainer(ui::base::container::fwContainer::sptr parent)
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
@@ -67,6 +70,7 @@ void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr p
         case ISlideViewBuilder::LEFT:
             hAlign = ui::qt::widget::SlideBar::LEFT;
             break;
+
         case ISlideViewBuilder::RIGHT:
             hAlign = ui::qt::widget::SlideBar::RIGHT;
             break;
@@ -77,6 +81,7 @@ void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr p
         case ISlideViewBuilder::TOP:
             vAlign = ui::qt::widget::SlideBar::TOP;
             break;
+
         case ISlideViewBuilder::BOTTOM:
             vAlign = ui::qt::widget::SlideBar::BOTTOM;
             break;
@@ -87,23 +92,39 @@ void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr p
         case ISlideViewBuilder::TOP_ANIMATION:
             animAlign = ui::qt::widget::SlideBar::TOP_ANIMATION;
             break;
+
         case ISlideViewBuilder::BOTTOM_ANIMATION:
             animAlign = ui::qt::widget::SlideBar::BOTTOM_ANIMATION;
             break;
+
         case ISlideViewBuilder::LEFT_ANIMATION:
             animAlign = ui::qt::widget::SlideBar::LEFT_ANIMATION;
             break;
+
         case ISlideViewBuilder::RIGHT_ANIMATION:
             animAlign = ui::qt::widget::SlideBar::RIGHT_ANIMATION;
             break;
     }
 
-    ui::qt::widget::SlideBar* slideBar
-        = new ui::qt::widget::SlideBar(qtParent, hAlign, vAlign, m_width, m_percentWidth, m_height, m_percentHeight,
-                                       m_hOffset, m_percentHOffset, m_vOffset, m_percentVOffset, m_opacity,
-                                       m_animatable, animAlign);
+    ui::qt::widget::SlideBar* slideBar =
+        new ui::qt::widget::SlideBar(
+            qtParent,
+            hAlign,
+            vAlign,
+            m_width,
+            m_percentWidth,
+            m_height,
+            m_percentHeight,
+            m_hOffset,
+            m_percentHOffset,
+            m_vOffset,
+            m_percentVOffset,
+            m_opacity,
+            m_animatable,
+            animAlign
+        );
 
-    if (!m_styleSheet.empty())
+    if(!m_styleSheet.empty())
     {
         slideBar->setStyleSheet(QString::fromStdString(m_styleSheet));
     }
@@ -126,4 +147,5 @@ void SlideViewBuilder::destroyContainer()
 //-----------------------------------------------------------------------------
 
 } // namespace builder.
+
 } // namespace sight::ui::base.

@@ -37,10 +37,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::dicom::ut::InstanceNumberSorterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::InstanceNumberSorterTest);
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -67,8 +68,10 @@ void InstanceNumberSorterTest::simpleApplication()
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -80,12 +83,13 @@ void InstanceNumberSorterTest::simpleApplication()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter"
+    );
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
@@ -95,4 +99,5 @@ void InstanceNumberSorterTest::simpleApplication()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

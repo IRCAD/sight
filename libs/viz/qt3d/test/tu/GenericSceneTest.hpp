@@ -32,7 +32,6 @@ namespace ut
 
 class GenericSceneTest : public CPPUNIT_NS::TestFixture
 {
-
 CPPUNIT_TEST_SUITE(GenericSceneTest);
 CPPUNIT_TEST(initializeEmptyScene);
 CPPUNIT_TEST_SUITE_END();
@@ -48,7 +47,6 @@ public:
     void tearDown() override;
 
     void initializeEmptyScene();
-
 };
 
 } // namespace ut.

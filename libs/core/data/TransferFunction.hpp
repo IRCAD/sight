@@ -25,7 +25,7 @@
 #include "data/config.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(TransferFunction))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (TransferFunction))
 
 namespace sight::data
 {
@@ -37,13 +37,12 @@ namespace sight::data
  */
 class DATA_CLASS_API TransferFunction : public Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(TransferFunction, data::Object, data::factory::New< TransferFunction >)
+    SIGHT_DECLARE_CLASS(TransferFunction, data::Object, data::factory::New<TransferFunction>);
 
     /// Defines the deep and shallow copies.
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(TransferFunction))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (TransferFunction))
 
     /// Defines color structure for TF.
     struct TFColor
@@ -51,16 +50,16 @@ public:
         typedef double ColorType;
 
         /// Sets red color (value [0,1]).
-        ColorType r { 0.0 };
+        ColorType r {0.0};
 
         /// Sets green color (value [0,1]).
-        ColorType g { 0.0 };
+        ColorType g {0.0};
 
         /// Sets blue color (value [0,1]).
-        ColorType b { 0.0 };
+        ColorType b {0.0};
 
         /// Sets alpha (value [0,1]).
-        ColorType a { 0.0 };
+        ColorType a {0.0};
 
         /// Creates a default black color.
         TFColor()
@@ -74,7 +73,7 @@ public:
          * @param _b the red channel value.
          * @param _a the alpha channel value.
          */
-        TFColor( ColorType _r, ColorType _g, ColorType _b, ColorType _a )
+        TFColor(ColorType _r, ColorType _g, ColorType _b, ColorType _a)
         {
             r = _r;
             g = _g;
@@ -87,11 +86,10 @@ public:
          * @param _color the color to compare.
          * @return True if this color have the same rgba value than the compared one.
          */
-        inline bool operator== (const TFColor& _color) const
+        inline bool operator==(const TFColor& _color) const
         {
-            return (r == _color.r && g == _color.g && b == _color.b && a == _color.a);
+            return r == _color.r && g == _color.g && b == _color.b && a == _color.a;
         }
-
     };
 
     /// Defines the available modes {LINEAR, NEAREST} to interpolate color between two TF color points.
@@ -111,9 +109,9 @@ public:
     typedef std::vector<TFColor> TFColorVectorType;
 
     /// Defines a point type, affects a color for each value.
-    typedef std::map< TFValueType, TFColor > TFDataType;
+    typedef std::map<TFValueType, TFColor> TFDataType;
 
-    typedef std::pair< TFValueType, TFValueType > TFValuePairType;
+    typedef std::pair<TFValueType, TFValueType> TFValuePairType;
 
     /// Sets the defaults transfer function name.
     DATA_API static const std::string s_DEFAULT_TF_NAME;
@@ -232,15 +230,15 @@ public:
      * @{
      */
     /// Defines the type of signal sent when points are modified.
-    typedef core::com::Signal< void () > PointsModifiedSignalType;
+    typedef core::com::Signal<void ()> PointsModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
 
     /// Defines the type of signal sent when window-level is modified (window, level).
-    typedef core::com::Signal< void (double, double) > WindowingModifiedSignalType;
+    typedef core::com::Signal<void (double, double)> WindowingModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
@@ -269,7 +267,6 @@ private:
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
      **/
     bool m_isClamped;
-
 };
 
 //------------------------------------------------------------------------------
@@ -288,7 +285,7 @@ inline void TransferFunction::setTFData(const TFDataType& _tfData)
 
 //------------------------------------------------------------------------------
 
-inline void TransferFunction::addTFColor( TFValueType _value, const TFColor& _color)
+inline void TransferFunction::addTFColor(TFValueType _value, const TFColor& _color)
 {
     m_tfData[_value] = _color;
 }

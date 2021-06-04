@@ -40,10 +40,12 @@ void StructuralPatchDB::registerPatch(io::atoms::patch::IStructuralPatch::sptr p
 
 // ----------------------------------------------------------------------------
 
-io::atoms::patch::IStructuralPatch::sptr StructuralPatchDB::getPatch(const std::string& originClassname,
-                                                                     const std::string& originVersion,
-                                                                     const std::string& targetClassname,
-                                                                     const std::string& targetVersion) const
+io::atoms::patch::IStructuralPatch::sptr StructuralPatchDB::getPatch(
+    const std::string& originClassname,
+    const std::string& originVersion,
+    const std::string& targetClassname,
+    const std::string& targetVersion
+) const
 {
     const VersionIDType source = std::make_pair(originClassname, originVersion);
     const VersionIDType target = std::make_pair(targetClassname, targetVersion);

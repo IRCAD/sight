@@ -76,42 +76,42 @@ void SPacsConfigurationInitializer::configuring()
     const auto config           = configTree.get_child("config.<xmlattr>");
 
     // Local application title.
-    m_SCUAppEntityTitle = config.get< std::string >("localApplicationTitle");
+    m_SCUAppEntityTitle = config.get<std::string>("localApplicationTitle");
 
     // Pacs host name.
-    m_SCPHostName = config.get< std::string >("pacsHostName");
+    m_SCPHostName = config.get<std::string>("pacsHostName");
 
     // Pacs application title.
-    m_SCPAppEntityTitle = config.get< std::string >("pacsApplicationTitle");
+    m_SCPAppEntityTitle = config.get<std::string>("pacsApplicationTitle");
 
     // Pacs port.
-    const std::string pacsApplicationPort = config.get< std::string >("pacsApplicationPort");
-    m_SCPPort = static_cast < decltype(m_SCPPort) >(std::stoi(pacsApplicationPort));
+    const std::string pacsApplicationPort = config.get<std::string>("pacsApplicationPort");
+    m_SCPPort = static_cast<decltype(m_SCPPort)>(std::stoi(pacsApplicationPort));
 
     // Retrieve Method.
-    const std::string retrieveMethod = config.get< std::string >("retrieveMethod");
-    m_retrieveMethod = (retrieveMethod == "MOVE") ?
-                       (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD):
-                       (sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD);
+    const std::string retrieveMethod = config.get<std::string>("retrieveMethod");
+    m_retrieveMethod = (retrieveMethod == "MOVE")
+                       ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
+                       : (sight::io::dimse::data::PacsConfiguration::GET_RETRIEVE_METHOD);
 
     // Move application title.
     m_moveAppEntityTitle = config.get<std::string>("moveApplicationTitle");
 
     // Move application port.
-    const std::string moveApplicationPort = config.get< std::string >("moveApplicationPort");
-    m_movePort = static_cast < decltype(m_movePort) >(std::stoi(moveApplicationPort));
+    const std::string moveApplicationPort = config.get<std::string>("moveApplicationPort");
+    m_movePort = static_cast<decltype(m_movePort)>(std::stoi(moveApplicationPort));
 
     // Preference Key.
-    m_preferenceKey = config.get< std::string >("preferenceKey", m_preferenceKey);
+    m_preferenceKey = config.get<std::string>("preferenceKey", m_preferenceKey);
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationInitializer::starting()
 {
-    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SIGHT_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
+        this->getInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    SIGHT_ASSERT("input '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
 
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
@@ -121,9 +121,9 @@ void SPacsConfigurationInitializer::starting()
         {
             data::Composite::sptr config = data::Composite::dynamicCast((*prefs)[m_preferenceKey]);
 
-            SetFromConfig< std::string > setFromConfig;
-            SetFromConfig< unsigned short > setFromConfigShort;
-            SetFromConfig< sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD, int > setFromConfigEnum;
+            SetFromConfig<std::string> setFromConfig;
+            SetFromConfig<unsigned short> setFromConfigShort;
+            SetFromConfig<sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD, int> setFromConfigEnum;
 
             setFromConfig(config, "LocalApplicationTitle", m_SCUAppEntityTitle);
             setFromConfig(config, "PacsHostName", m_SCPHostName);
@@ -159,9 +159,9 @@ service::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConne
 
 void SPacsConfigurationInitializer::updating()
 {
-    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration
-        = this->getInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
-    SIGHT_ASSERT("input '" + s_CONFIG_INOUT +"' does not exist.", pacsConfiguration);
+    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
+        this->getInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    SIGHT_ASSERT("input '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
 
     // Check if the user has changed the Pacs configuration and update the local var
     if(pacsConfiguration->getLocalApplicationTitle() != m_SCUAppEntityTitle
@@ -170,8 +170,7 @@ void SPacsConfigurationInitializer::updating()
        || pacsConfiguration->getPacsApplicationPort() != m_SCPPort
        || pacsConfiguration->getMoveApplicationTitle() != m_moveAppEntityTitle
        || pacsConfiguration->getMoveApplicationPort() != m_movePort
-       || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod
-       )
+       || pacsConfiguration->getRetrieveMethod() != m_retrieveMethod)
     {
         m_SCUAppEntityTitle  = pacsConfiguration->getLocalApplicationTitle();
         m_SCPHostName        = pacsConfiguration->getPacsHostName();
@@ -190,20 +189,22 @@ void SPacsConfigurationInitializer::updating()
         {
             (*prefs)[m_preferenceKey] = data::Composite::New();
         }
+
         if(prefs)
         {
             data::Composite::sptr config = data::Composite::dynamicCast((*prefs)[m_preferenceKey]);
             (*config)["LocalApplicationTitle"] = data::String::New(m_SCUAppEntityTitle);
-            (*config)["PacsHostName"         ] = data::String::New(m_SCPHostName);
-            (*config)["PacsApplicationTitle" ] = data::String::New(m_SCPAppEntityTitle);
-            (*config)["PacsApplicationPort"  ] =
+            (*config)["PacsHostName"]          = data::String::New(m_SCPHostName);
+            (*config)["PacsApplicationTitle"]  = data::String::New(m_SCPAppEntityTitle);
+            (*config)["PacsApplicationPort"]   =
                 data::String::New(::boost::lexical_cast<std::string>(m_SCPPort));
-            (*config)["MoveApplicationTitle" ] = data::String::New(m_moveAppEntityTitle);
-            (*config)["MoveApplicationPort"  ] =
+            (*config)["MoveApplicationTitle"] = data::String::New(m_moveAppEntityTitle);
+            (*config)["MoveApplicationPort"]  =
                 data::String::New(::boost::lexical_cast<std::string>(m_movePort));
-            (*config)["RetrieveMethod"       ] =
+            (*config)["RetrieveMethod"] =
                 data::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
         }
+
         ui::base::preferences::savePreferences();
     }
 }

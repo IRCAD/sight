@@ -38,11 +38,15 @@
 
 namespace sight::data
 {
+
 class Material;
+
 }
 namespace sight::data
 {
+
 class Mesh;
+
 }
 
 namespace sight::module::viz::scene3d::adaptor
@@ -98,11 +102,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SPointList final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPointList, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SPointList, ::sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;
@@ -192,56 +195,55 @@ private:
     void destroyLabel();
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera { true };
+    bool m_autoResetCamera {true};
 
     /// Defines whether the material was set by the user or not.
-    bool m_customMaterial { false };
+    bool m_customMaterial {false};
 
     /// Contains the node in the scene graph.
-    ::Ogre::Entity* m_entity { nullptr };
+    ::Ogre::Entity* m_entity {nullptr};
 
     /// Contains the material attached to the mesh.
-    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Contains the Ogre material related to the mesh.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Defines the attached material's name.
-    std::string m_materialTemplateName { "Billboard_Default" };
+    std::string m_materialTemplateName {"Billboard_Default"};
 
     /// Definees the attached texture adaptor UID.
     std::string m_textureName;
 
     /// Contains the mesh support used to render the pointlist.
-    sight::viz::scene3d::Mesh::sptr m_meshGeometry { nullptr };
+    sight::viz::scene3d::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Defines the billboards radius.
-    float m_radius { 1.f };
+    float m_radius {1.f};
 
     /// Defines if label numbers are displayed.
-    bool m_displayLabel { false };
+    bool m_displayLabel {false};
 
     /// Contains the RGB color for the label point color.
-    data::Color::sptr m_labelColor { nullptr };
+    data::Color::sptr m_labelColor {nullptr};
 
     /// Defines the mask for picking requests.
-    std::uint32_t m_queryFlags { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
+    std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
-    std::vector< sight::viz::scene3d::Text* > m_labels;
+    std::vector<sight::viz::scene3d::Text*> m_labels;
 
     /// Stores label points nodes.
-    std::vector< ::Ogre::SceneNode* > m_nodes;
+    std::vector< ::Ogre::SceneNode*> m_nodes;
 
     /// Contains the scene node where all of our manual objects are attached.
-    ::Ogre::SceneNode* m_sceneNode { nullptr };
+    ::Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Defines the TrueType font source file.
-    std::string m_fontSource { "DejaVuSans.ttf" };
+    std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Defines the font size in points.
-    size_t m_fontSize { 16 };
-
+    size_t m_fontSize {16};
 };
 
 //------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ struct LazyInstantiatorDefaultTag {};
  * @tparam INSTANCE_TYPE Type of object to instantiate.
  * @tparam TAG Tag used to allow several LazyInstantiator for one INSTANCE_TYPE.
  */
-template< typename INSTANCE_TYPE, typename TAG = LazyInstantiatorDefaultTag >
+template<typename INSTANCE_TYPE, typename TAG = LazyInstantiatorDefaultTag>
 class LazyInstantiator : ::boost::noncopyable
 {
 public:
@@ -68,8 +68,9 @@ protected:
         static InstanceSptrType s_instance;
         if(!s_instance)
         {
-            s_instance = std::make_shared< InstanceType >();
+            s_instance = std::make_shared<InstanceType>();
         }
+
         return s_instance;
     }
 };

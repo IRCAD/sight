@@ -33,6 +33,7 @@
 #include <ui/base/container/fwMenuBar.hpp>
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -43,7 +44,8 @@ namespace builder
 class UI_QT_CLASS_API MenuBarBuilder : public ui::base::builder::IMenuBarBuilder
 {
 public:
-    SIGHT_DECLARE_CLASS(MenuBarBuilder, ui::base::builder::IMenuBarBuilder, ui::base::factory::New< MenuBarBuilder >)
+
+    SIGHT_DECLARE_CLASS(MenuBarBuilder, ui::base::builder::IMenuBarBuilder, ui::base::factory::New<MenuBarBuilder>);
 
     UI_QT_API MenuBarBuilder(ui::base::GuiBaseObject::Key key);
 
@@ -54,7 +56,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_QT_API void createMenuBar( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createMenuBar(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -63,8 +65,10 @@ public:
     UI_QT_API void destroyMenuBar() override;
 
 protected:
+
     ui::qt::container::QtContainer::sptr m_parent;
 };
 
 } // namespace builder
+
 } // namespace sight::ui::base

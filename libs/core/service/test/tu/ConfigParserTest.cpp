@@ -37,12 +37,13 @@
 #include <service/registry/ObjectService.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ConfigParserTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ConfigParserTest);
 
 //------------------------------------------------------------------------------
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -73,7 +74,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
     // Create the object and its services from the configuration
     service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
-    configManager->service::IAppConfigManager::setConfig( config );
+    configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = data::Image::dynamicCast(configManager->getConfigRoot());
 
@@ -84,8 +85,8 @@ void ConfigParserTest::testObjectCreationWithConfig()
     configManager->start();
     const auto& srv1 = service::get(serviceUUID1);
     const auto& srv2 = service::get(serviceUUID2);
-    CPPUNIT_ASSERT( srv1->isStarted() );
-    CPPUNIT_ASSERT( srv2->isStarted() );
+    CPPUNIT_ASSERT(srv1->isStarted());
+    CPPUNIT_ASSERT(srv2->isStarted());
 
     // Test if object's service is created
     CPPUNIT_ASSERT(service::OSR::isRegistered("data", service::IService::AccessType::INPUT, srv1));
@@ -93,13 +94,13 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
     // Test update services
     configManager->update();
-    CPPUNIT_ASSERT( service::ut::TestConfigService::dynamicCast( srv1 )->getIsUpdated() );
-    CPPUNIT_ASSERT( service::ut::TestConfigService::dynamicCast( srv2 )->getIsUpdated() == false );
+    CPPUNIT_ASSERT(service::ut::TestConfigService::dynamicCast(srv1)->getIsUpdated());
+    CPPUNIT_ASSERT(service::ut::TestConfigService::dynamicCast(srv2)->getIsUpdated() == false);
 
     // Test stop services
     configManager->stop();
-    CPPUNIT_ASSERT( srv1->isStopped() );
-    CPPUNIT_ASSERT( srv2->isStopped() );
+    CPPUNIT_ASSERT(srv1->isStopped());
+    CPPUNIT_ASSERT(srv2->isStopped());
 
     configManager->destroy();
 }
@@ -155,4 +156,5 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

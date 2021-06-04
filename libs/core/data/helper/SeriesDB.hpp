@@ -23,12 +23,12 @@
 #pragma once
 
 #include "data/config.hpp"
-
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
 namespace sight::data
 {
+
 namespace helper
 {
 
@@ -38,11 +38,10 @@ namespace helper
  */
 class DATA_CLASS_API SeriesDB
 {
-
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API SeriesDB( data::SeriesDB::wptr seriesDB );
+    DATA_API SeriesDB(data::SeriesDB::wptr seriesDB);
 
     /// Destrucotr. Do nothing.
     DATA_API ~SeriesDB();
@@ -53,7 +52,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    DATA_API void add( data::Series::sptr newSeries );
+    DATA_API void add(data::Series::sptr newSeries);
 
     /**
      * @brief Remove a Series in the SeriesDB.
@@ -61,7 +60,7 @@ public:
      *
      * Prepare the signal to announce the modification.
      */
-    DATA_API void remove( data::Series::sptr oldSeries );
+    DATA_API void remove(data::Series::sptr oldSeries);
 
     /**
      * @brief Clear all series in the SeriesDB.
@@ -88,4 +87,5 @@ private:
 };
 
 } // namespace helper
+
 } // namespace sight::data

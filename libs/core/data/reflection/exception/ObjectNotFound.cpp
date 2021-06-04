@@ -28,16 +28,20 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace exception
 {
 
-ObjectNotFound::ObjectNotFound ( const std::string& err ) :
+ObjectNotFound::ObjectNotFound(const std::string& err) :
     core::Exception(err)
 {
 }
 
 } // namespace exception
+
 } // namespace reflection
+
 } // namespace sight::data

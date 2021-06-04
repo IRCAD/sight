@@ -44,13 +44,13 @@ namespace sight::module::viz::scene3d::adaptor
 
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
-
 public:
 
     CompositorListener(::Ogre::Viewport*, SCompositorParameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
+
     ~CompositorListener()
     {
     }
@@ -74,6 +74,7 @@ public:
     }
 
 private:
+
     /// Associated Sight adaptor
     module::viz::scene3d::adaptor::SCompositorParameter::wptr m_adaptor;
 };

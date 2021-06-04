@@ -35,6 +35,7 @@ namespace sight::module::data
 
 namespace wrapper
 {
+
 /**
  * @brief  This service forwards signals from an image ti another.
  *
@@ -59,10 +60,9 @@ namespace wrapper
  */
 class MODULE_DATA_CLASS_API SImageSignalForwarder : public module::data::IWrapperSrv
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SImageSignalForwarder, ::sight::module::data::IWrapperSrv)
+    SIGHT_DECLARE_SERVICE(SImageSignalForwarder, ::sight::module::data::IWrapperSrv);
 
     MODULE_DATA_API SImageSignalForwarder() noexcept;
 
@@ -88,7 +88,7 @@ protected:
     MODULE_DATA_API void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    MODULE_DATA_API void info( std::ostream& _sstream ) override;
+    MODULE_DATA_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -111,8 +111,10 @@ private:
     void forwardVisibilityModified(bool visibility);
     void forwardTransparencyModified();
     void forwardAddedFields(sight::data::Object::FieldsContainerType objects);
-    void forwardChangedFields(sight::data::Object::FieldsContainerType newObjects,
-                              sight::data::Object::FieldsContainerType oldObjects);
+    void forwardChangedFields(
+        sight::data::Object::FieldsContainerType newObjects,
+        sight::data::Object::FieldsContainerType oldObjects
+    );
     void forwardRemovedFields(sight::data::Object::FieldsContainerType objects);
     /**
      * @}
@@ -128,9 +130,10 @@ private:
     typedef std::vector<std::string> SignalKeysType;
     SignalKeysType m_managedSignals; ///< contains  the key of the signals to manage
 
-    typedef std::map< std::string, std::string > AvailableConnectionMapType;
+    typedef std::map<std::string, std::string> AvailableConnectionMapType;
     static AvailableConnectionMapType m_availableConnection; ///< store the available connection from source image.
 };
 
 } // wrapper
+
 } // sight::module::data

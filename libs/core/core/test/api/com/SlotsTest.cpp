@@ -30,10 +30,11 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SlotsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SlotsTest);
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
@@ -53,9 +54,9 @@ void SlotsTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-int slotsTestSum (int a, int b)
+int slotsTestSum(int a, int b)
 {
-    return a+b;
+    return a + b;
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ struct SlotsTestBasic
 
     int sum(int a, int b)
     {
-        return a+b;
+        return a + b;
     }
 };
 
@@ -85,11 +86,11 @@ void SlotsTest::buildTest()
 {
     core::com::Slots slots;
 
-    core::com::Slot< int (int, int) >::sptr slot1            = core::com::newSlot( &slotsTestSum );
-    core::com::Slot< void (const std::string&) >::sptr slot2 = core::com::newSlot( &slotsTestPrint );
+    core::com::Slot<int(int, int)>::sptr slot1            = core::com::newSlot(&slotsTestSum);
+    core::com::Slot<void(const std::string&)>::sptr slot2 = core::com::newSlot(&slotsTestPrint);
 
-    slots("sum", std::dynamic_pointer_cast< SlotBase >(slot1))
-        ("print", std::dynamic_pointer_cast< SlotBase >(slot2))
+    slots("sum", std::dynamic_pointer_cast<SlotBase>(slot1))
+        ("print", std::dynamic_pointer_cast<SlotBase>(slot2))
         ("another_key", slot1);
 
     CPPUNIT_ASSERT(slot1 == slots["sum"]);
@@ -107,12 +108,13 @@ void SlotsTest::buildTest()
     slots.setWorker(worker);
 
     int count = 0;
-    for(core::com::Slots::SlotKeyType key :  slots.getSlotKeys())
+    for(core::com::Slots::SlotKeyType key : slots.getSlotKeys())
     {
         core::com::SlotBase::sptr slot = slots[key];
         CPPUNIT_ASSERT(worker == slot->getWorker());
         ++count;
     }
+
     CPPUNIT_ASSERT_EQUAL(4, count);
     worker->stop();
 }
@@ -121,21 +123,21 @@ void SlotsTest::buildTest()
 
 struct SlotsTestHasSlots : public HasSlots
 {
-    typedef Slot< int ()> GetValueSlotType;
+    typedef Slot<int ()> GetValueSlotType;
 
     SlotsTestHasSlots()
     {
-        GetValueSlotType::sptr slotGetValue = core::com::newSlot( &SlotsTestHasSlots::getValue, this );
+        GetValueSlotType::sptr slotGetValue = core::com::newSlot(&SlotsTestHasSlots::getValue, this);
 
         HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
-            ("getValue", slotGetValue );
+            ("getValue", slotGetValue);
     }
 
     //------------------------------------------------------------------------------
 
     int sum(int a, int b)
     {
-        return a+b;
+        return a + b;
     }
 
     //------------------------------------------------------------------------------
@@ -150,13 +152,13 @@ struct SlotsTestHasSlots : public HasSlots
 
 struct SlotsTestHasSlots2 : public HasSlots
 {
-    typedef Slot< int ()> GetValueSlotType;
+    typedef Slot<int ()> GetValueSlotType;
 
     SlotsTestHasSlots2()
     {
-        newSlot( "sum", &SlotsTestHasSlots2::sum, this );
+        newSlot("sum", &SlotsTestHasSlots2::sum, this);
 
-        GetValueSlotType::sptr slot = newSlot( "getValue", &SlotsTestHasSlots2::getValue, this );
+        GetValueSlotType::sptr slot = newSlot("getValue", &SlotsTestHasSlots2::getValue, this);
         CPPUNIT_ASSERT(slot);
     }
 
@@ -164,7 +166,7 @@ struct SlotsTestHasSlots2 : public HasSlots
 
     int sum(int a, int b)
     {
-        return a+b;
+        return a + b;
     }
 
     //------------------------------------------------------------------------------
@@ -181,20 +183,21 @@ void SlotsTest::hasSlotsTest()
 {
     SlotsTestHasSlots obj;
     CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5, 9));
-    CPPUNIT_ASSERT_EQUAL(4, obj.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
+    CPPUNIT_ASSERT_EQUAL(4, obj.slot<SlotsTestHasSlots::GetValueSlotType>("getValue")->call());
 
     SlotsTestHasSlots2 obj2;
     CPPUNIT_ASSERT_EQUAL(14, obj2.slot("sum")->call<int>(5, 9));
-    CPPUNIT_ASSERT_EQUAL(4, obj2.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
+    CPPUNIT_ASSERT_EQUAL(4, obj2.slot<SlotsTestHasSlots::GetValueSlotType>("getValue")->call());
 }
 
 //-----------------------------------------------------------------------------
 
 void SlotsTest::slotsIDTest()
 {
-
 }
 
 //-----------------------------------------------------------------------------
+
 } //namespace ut
+
 } //namespace sight::core::com

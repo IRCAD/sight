@@ -34,7 +34,7 @@ namespace ut
 
 class ActivitySeriesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ActivitySeriesTest );
+CPPUNIT_TEST_SUITE(ActivitySeriesTest);
 
 CPPUNIT_TEST(activityConfigIdTest);
 CPPUNIT_TEST(dataTest);
@@ -42,6 +42,7 @@ CPPUNIT_TEST(dataTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -52,8 +53,8 @@ public:
 private:
 
     SPTR(data::ActivitySeries) m_series;
-
 };
 
 } //namespace ut
+
 } //namespace sight::data

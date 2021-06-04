@@ -30,8 +30,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 const std::string StringConverter::s_IGTL_TYPE          = "STRING";
 const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::String::classname();
 
@@ -64,7 +66,7 @@ data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 {
     data::String::sptr dest = data::String::New();
 
-    ::igtl::StringMessage* msg            = dynamic_cast< ::igtl::StringMessage* >(src.GetPointer());
+    ::igtl::StringMessage* msg            = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
     ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);
     dest->setValue(std::string(srcStr->GetString()));
 
@@ -75,7 +77,7 @@ data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 
 IConverter::sptr StringConverter::New()
 {
-    return std::make_shared< StringConverter >();
+    return std::make_shared<StringConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,4 +95,5 @@ std::string const& StringConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

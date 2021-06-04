@@ -26,7 +26,7 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Histogram));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Histogram));
 
 namespace sight::data
 {
@@ -36,14 +36,13 @@ namespace sight::data
  */
 class DATA_CLASS_API Histogram : public Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Histogram, data::Object, data::factory::New< Histogram >)
+    SIGHT_DECLARE_CLASS(Histogram, data::Object, data::factory::New<Histogram>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Histogram));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Histogram));
 
-    typedef std::vector< long > fwHistogramValues;
+    typedef std::vector<long> fwHistogramValues;
 
     /**
      * @brief Constructor
@@ -55,7 +54,7 @@ public:
     DATA_API virtual ~Histogram();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -68,7 +67,7 @@ public:
      *
      * @param pixel the pixel value to be added into the histogram.
      */
-    DATA_API void addPixel( float pixel );
+    DATA_API void addPixel(float pixel);
 
     /**
      * @brief Return the number of pixels of the histogram that are within the range defined by the given parameters min
@@ -79,7 +78,7 @@ public:
      *
      * @return number of pixels that are within [_min, _max]
      */
-    DATA_API long getNbPixels( float _min, float _max );
+    DATA_API long getNbPixels(float _min, float _max);
 
     /**
      * @brief Initialize the histogram.
@@ -88,7 +87,7 @@ public:
      * @param max Defines the upper pixel value of the image that this histogram belongs to.
      * @param binsWidth Defines the desired bins' width in order to classify pixels.
      */
-    DATA_API void initialize( float min, float max, float binsWidth );
+    DATA_API void initialize(float min, float max, float binsWidth);
 
     /**
      * @brief Return true if the given pixel value is set within histogram's boudaries.
@@ -97,13 +96,13 @@ public:
      *
      * @return true if the pixel value is set within histogram's boundaries.
      */
-    DATA_API bool isInRange( float _pixel );
+    DATA_API bool isInRange(float _pixel);
 
     /** @name bins width accessor
      *  @brief Get/Set bins width
      *  @{
      */
-    const float  getBinsWidth() const;
+    const float getBinsWidth() const;
     void setBinsWidth(float _binsWidth);
     /// @}
 
@@ -120,9 +119,9 @@ public:
      *  @brief Get/Set minimum value within the histogram
      *  @{
      */
-    float& getMinValue ();
-    const float& getMinValue () const;
-    void setMinValue (float _minValue);
+    float& getMinValue();
+    const float& getMinValue() const;
+    void setMinValue(float _minValue);
     /// @}
 
     /** @name maximum value within the histogram
@@ -186,21 +185,21 @@ inline void Histogram::setValues(const Histogram::fwHistogramValues& _values)
 
 //-----------------------------------------------------------------------------
 
-inline float& Histogram::getMinValue ()
+inline float& Histogram::getMinValue()
 {
     return this->m_minValue;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const float& Histogram::getMinValue () const
+inline const float& Histogram::getMinValue() const
 {
     return this->m_minValue;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Histogram::setMinValue (float _minValue)
+inline void Histogram::setMinValue(float _minValue)
 {
     this->m_minValue = _minValue;
 }

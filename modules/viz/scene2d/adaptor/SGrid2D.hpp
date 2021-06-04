@@ -28,8 +28,10 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
+
 /**
  * @brief Render grid on the scene2d.
  *
@@ -62,9 +64,9 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SGrid2D : public sight::viz::scene2d::IAdaptor
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SGrid2D, ::sight::viz::scene2d::IAdaptor)
+
+    SIGHT_DECLARE_SERVICE(SGrid2D, ::sight::viz::scene2d::IAdaptor);
 
     /**
      * @name Slots API
@@ -92,7 +94,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
 private:
 
@@ -127,8 +129,8 @@ private:
 
     /// The layer.
     QGraphicsItemGroup* m_layer;
-
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

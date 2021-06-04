@@ -32,10 +32,11 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::MaterialTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MaterialTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -44,8 +45,8 @@ namespace ut
 void MaterialTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void MaterialTest::tearDown()
@@ -74,4 +75,5 @@ void MaterialTest::methode1()
 }
 
 } //namespace ut
+
 } //namespace sight::data

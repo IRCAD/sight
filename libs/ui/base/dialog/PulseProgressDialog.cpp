@@ -26,23 +26,26 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 //-----------------------------------------------------------------------------
 
 PulseProgressDialog::PulseProgressDialog(
     const std::string& title,
     ui::base::dialog::IPulseProgressDialog::Stuff stuff,
     const std::string& msg,
-    ui::base::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
+    ui::base::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh
+)
 {
-
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
-                                                                             [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IPulseProgressDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::IPulseProgressDialog::dynamicCast(guiObj);
-                if (m_implementation)
+                m_implementation                     = ui::base::dialog::IPulseProgressDialog::dynamicCast(guiObj);
+                if(m_implementation)
                 {
                     m_implementation->setStuff(stuff);
                     m_implementation->setTitle(title);
@@ -53,14 +56,15 @@ PulseProgressDialog::PulseProgressDialog(
                 {
                     this->setStuff(stuff);
                 }
-            } )).wait();
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void PulseProgressDialog::setTitle(const std::string& title)
 {
-    if (m_implementation)
+    if(m_implementation)
     {
         m_implementation->setTitle(title);
     }
@@ -70,7 +74,7 @@ void PulseProgressDialog::setTitle(const std::string& title)
 
 void PulseProgressDialog::setMessage(const std::string& msg)
 {
-    if (m_implementation)
+    if(m_implementation)
     {
         m_implementation->setMessage(msg);
     }
@@ -80,10 +84,11 @@ void PulseProgressDialog::setMessage(const std::string& msg)
 
 void PulseProgressDialog::show()
 {
-    if (m_implementation)
+    if(m_implementation)
     {
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
-            std::bind(&IPulseProgressDialog::show, m_implementation)).wait();
+            std::bind(&IPulseProgressDialog::show, m_implementation)
+        ).wait();
     }
     else
     {
@@ -94,4 +99,5 @@ void PulseProgressDialog::show()
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } //namespace sight::ui::base

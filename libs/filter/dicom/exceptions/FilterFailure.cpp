@@ -24,6 +24,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace exceptions
 {
 
@@ -39,4 +40,5 @@ FilterFailure::~FilterFailure() noexcept
 }
 
 } // namespace exceptions
+
 } // namespace sight::filter::dicom

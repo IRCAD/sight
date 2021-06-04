@@ -30,15 +30,22 @@ namespace timeline
 
 //-----------------------------------------------------------------------------
 
-GenericObjectBase::GenericObjectBase(unsigned int maxElementNum, core::HiResClock::HiResClockType timestamp,
-                                     BufferDataType buffer, size_t size, DeleterType d) :
+GenericObjectBase::GenericObjectBase(
+    unsigned int maxElementNum,
+    core::HiResClock::HiResClockType timestamp,
+    BufferDataType buffer,
+    size_t size,
+    DeleterType d
+) :
     Buffer(timestamp, buffer, size, d),
     m_numPresent(0),
     m_presenceMask(0),
     m_maxElementNum(maxElementNum)
 {
-    SIGHT_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
-                 m_maxElementNum < sizeof(uint64_t) * 8);
+    SIGHT_ASSERT(
+        "m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
+        m_maxElementNum < sizeof(uint64_t) * 8
+    );
 }
 
 //-----------------------------------------------------------------------------

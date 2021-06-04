@@ -34,30 +34,45 @@ namespace sight::filter::image
 {
 
 /// Threshold filter
-template< typename IMAGE_TYPE, unsigned int DIM >
-typename ::itk::Image< std::uint8_t, DIM >::Pointer
-threshold(typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer _image,
-          IMAGE_TYPE _lowerThreshold, IMAGE_TYPE _upperThreshold);
+template<typename IMAGE_TYPE, unsigned int DIM>
+typename ::itk::Image<std::uint8_t, DIM>::Pointer threshold(
+    typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
+    IMAGE_TYPE _lowerThreshold,
+    IMAGE_TYPE _upperThreshold
+);
 
 /// Median filter
-template< typename IMAGE_TYPE, unsigned int DIM >
-typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer
-median(typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer _image, size_t _x, size_t _y, size_t _z);
+template<typename IMAGE_TYPE, unsigned int DIM>
+typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer median(
+    typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
+    size_t _x,
+    size_t _y,
+    size_t _z
+);
 
 /// Labeling filter
-template< typename IMAGE_TYPE, unsigned int DIM >
-typename ::itk::Image< std::uint8_t, DIM >::Pointer
-labeling(typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer _image, unsigned int _numLabels);
+template<typename IMAGE_TYPE, unsigned int DIM>
+typename ::itk::Image<std::uint8_t, DIM>::Pointer labeling(
+    typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
+    unsigned int _numLabels
+);
 
 /// FillHole2D filter
-template< typename IMAGE_TYPE, unsigned int DIM >
-typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer
-fillHole2D(typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer _image, unsigned int _direction,
-           IMAGE_TYPE _background, IMAGE_TYPE _foreground);
+template<typename IMAGE_TYPE, unsigned int DIM>
+typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
+    typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
+    unsigned int _direction,
+    IMAGE_TYPE _background,
+    IMAGE_TYPE _foreground
+);
 
 /// Closing filter
-template< typename IMAGE_TYPE, unsigned int DIM >
-typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer
-closing(typename ::itk::Image< IMAGE_TYPE, DIM >::Pointer _image, size_t _x, size_t _y, size_t _z);
+template<typename IMAGE_TYPE, unsigned int DIM>
+typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
+    typename ::itk::Image<IMAGE_TYPE, DIM>::Pointer _image,
+    size_t _x,
+    size_t _y,
+    size_t _z
+);
 
 } //namespace sight::filter::image.

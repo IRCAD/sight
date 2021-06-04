@@ -31,32 +31,32 @@ namespace sight::core::com
 namespace util
 {
 
-template <typename F>
+template<typename F>
 struct convert_function_type;
 
 /// Convert class member method type to equivalent function type.
-template <typename R, typename C, typename ... Args >
-struct convert_function_type< R (C::*)( Args ... )  >
+template<typename R, typename C, typename ... Args>
+struct convert_function_type<R (C::*)(Args ...)>
 {
-    typedef R type ( Args ... );
+    typedef R type(Args ...);
 };
 
 /// Convert class const member method type to equivalent function type.
-template <typename R, typename C, typename ... Args >
-struct convert_function_type< R (C::*)( Args ... ) const  >
+template<typename R, typename C, typename ... Args>
+struct convert_function_type<R (C::*)(Args ...) const>
 {
-    typedef R type ( Args ... );
+    typedef R type(Args ...);
 };
 
 /// Extract function type from a boost function.
-template <typename F>
-struct convert_function_type< std::function< F > >
+template<typename F>
+struct convert_function_type<std::function<F> >
 {
     typedef F type;
 };
 
 /// Convert function pointer type to function type.
-template <typename F>
+template<typename F>
 struct convert_function_type
 {
     typedef typename std::remove_pointer<F>::type type;

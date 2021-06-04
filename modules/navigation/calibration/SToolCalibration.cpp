@@ -26,9 +26,9 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
+
+#include <service/macros.hpp>
 
 namespace sight::module::navigation::calibration
 {
@@ -41,7 +41,6 @@ static const service::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesV
 
 SToolCalibration::SToolCalibration() noexcept
 {
-
 }
 
 // -----------------------------------------------------------------------------
@@ -56,15 +55,14 @@ void SToolCalibration::configuring()
 {
     const auto configTree = this->getConfigTree();
     const auto outputs    = configTree.equal_range("out");
-    for (auto it = outputs.first; it != outputs.second; ++it)
+    for(auto it = outputs.first ; it != outputs.second ; ++it)
     {
         const std::string key = it->second.get<std::string>("<xmlattr>.key");
-        if (key == s_MATRIX_CENTER_OUTPUT)
+        if(key == s_MATRIX_CENTER_OUTPUT)
         {
             m_hasOutputCenter = true;
         }
     }
-
 }
 
 // -----------------------------------------------------------------------------
@@ -78,7 +76,7 @@ void SToolCalibration::starting()
 void SToolCalibration::stopping()
 {
     this->setOutput(s_MATRIX_CALIBRATION_OUTPUT, nullptr);
-    if (m_hasOutputCenter)
+    if(m_hasOutputCenter)
     {
         this->setOutput(s_MATRIX_CENTER_OUTPUT, nullptr);
     }
@@ -88,14 +86,13 @@ void SToolCalibration::stopping()
 
 void SToolCalibration::updating()
 {
-
 }
 
 // -----------------------------------------------------------------------------
 
 void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    data::Vector::csptr matricesVector = this->getInput< data::Vector >(s_MATRICES_VECTOR_INPUT);
+    data::Vector::csptr matricesVector = this->getInput<data::Vector>(s_MATRICES_VECTOR_INPUT);
 
     data::mt::ObjectReadLock lock(matricesVector);
 
@@ -106,7 +103,7 @@ void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 
     geometry::vision::helper::calibratePointingTool(matricesVector, calibrationMatrix, centerMatrixNoRot);
 
-    if (m_hasOutputCenter)
+    if(m_hasOutputCenter)
     {
         this->setOutput(s_MATRIX_CENTER_OUTPUT, centerMatrixNoRot);
     }

@@ -32,7 +32,7 @@ namespace sight::io::igtl
 /// Exception for igtlNetwork
 struct Exception : core::Exception
 {
-    Exception( const std::string& err ) :
+    Exception(const std::string& err) :
         core::Exception(err)
     {
     }

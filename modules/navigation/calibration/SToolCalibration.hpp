@@ -28,6 +28,7 @@
 
 namespace sight::module::navigation::calibration
 {
+
 /**
  * @brief Service that computes a pivot calibration
  *
@@ -52,9 +53,9 @@ namespace sight::module::navigation::calibration
  */
 class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public service::IRegisterer
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SToolCalibration, ::sight::service::IRegisterer)
+
+    SIGHT_DECLARE_SERVICE(SToolCalibration, ::sight::service::IRegisterer);
 
     /**
      * @brief Constructor.

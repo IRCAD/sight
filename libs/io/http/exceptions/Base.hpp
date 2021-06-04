@@ -28,6 +28,7 @@
 
 namespace sight::io::http
 {
+
 namespace exceptions
 {
 
@@ -37,6 +38,7 @@ namespace exceptions
 class IO_HTTP_CLASS_API Base : public core::Exception
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] message Exception message
@@ -48,4 +50,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::http

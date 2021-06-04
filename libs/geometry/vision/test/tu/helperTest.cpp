@@ -24,27 +24,28 @@
 
 #include <core/data/Point.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+#include <geometry/vision/helper.hpp>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <utestData/Data.hpp>
-
-#include <geometry/data/Matrix4.hpp>
-#include <geometry/vision/helper.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::geometry::vision::ut::helperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::vision::ut::helperTest);
 
 namespace sight::geometry::vision
 {
+
 namespace ut
 {
 
-using ExpectedChessboardType = std::vector< sight::data::Point::PointCoordArrayType >;
+using ExpectedChessboardType = std::vector<sight::data::Point::PointCoordArrayType>;
 
 //------------------------------------------------------------------------------
 
@@ -58,12 +59,14 @@ static inline const ::cv::Mat readRGBImage(const std::string _fname)
 
 //------------------------------------------------------------------------------
 
-static inline void compareChessboards(const ExpectedChessboardType& _expected,
-                                      const sight::data::PointList::csptr& _detected)
+static inline void compareChessboards(
+    const ExpectedChessboardType& _expected,
+    const sight::data::PointList::csptr& _detected
+)
 {
     CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->getPoints().size());
 
-    for(std::uint32_t i = 0; i < _expected.size(); ++i)
+    for(std::uint32_t i = 0 ; i < _expected.size() ; ++i)
     {
         const auto& expectedCoords = _expected[i];
         const auto& detectedCoords = _detected->getPoints()[i]->getCoord();
@@ -91,17 +94,17 @@ void helperTest::tearDown()
 
 void helperTest::reprojectionIdentity()
 {
-    std::vector< ::cv::Point3f > objectPoints;
-    objectPoints.push_back( ::cv::Point3f(-30, 30, 0));
-    objectPoints.push_back( ::cv::Point3f( 30, 30, 0));
-    objectPoints.push_back( ::cv::Point3f( 30, -30, 0));
-    objectPoints.push_back( ::cv::Point3f(-30, -30, 0));
+    std::vector< ::cv::Point3f> objectPoints;
+    objectPoints.push_back(::cv::Point3f(-30, 30, 0));
+    objectPoints.push_back(::cv::Point3f(30, 30, 0));
+    objectPoints.push_back(::cv::Point3f(30, -30, 0));
+    objectPoints.push_back(::cv::Point3f(-30, -30, 0));
 
-    std::vector< ::cv::Point2f > imagePoints;
-    imagePoints.push_back( ::cv::Point2f(-30, 30));
-    imagePoints.push_back( ::cv::Point2f( 30, 30));
-    imagePoints.push_back( ::cv::Point2f( 30, -30));
-    imagePoints.push_back( ::cv::Point2f(-30, -30));
+    std::vector< ::cv::Point2f> imagePoints;
+    imagePoints.push_back(::cv::Point2f(-30, 30));
+    imagePoints.push_back(::cv::Point2f(30, 30));
+    imagePoints.push_back(::cv::Point2f(30, -30));
+    imagePoints.push_back(::cv::Point2f(-30, -30));
 
     ::cv::Mat rvec, tvec;
     ::cv::Mat cameraMatrix;
@@ -114,36 +117,46 @@ void helperTest::reprojectionIdentity()
     distorsion   = ::cv::Mat::zeros(5, 1, CV_64F);
 
     geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                           rvec, tvec, cameraMatrix, distorsion);
+        geometry::vision::helper::computeReprojectionError(
+            objectPoints,
+            imagePoints,
+            rvec,
+            tvec,
+            cameraMatrix,
+            distorsion
+        );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0., result.first, 10e-6);
 
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         ::cv::Point2f expected = imagePoints[i];
         ::cv::Point2f actual   = result.second[i];
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
-                                     static_cast<double>(actual.x), 10e-6);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.y),
-                                     static_cast<double>(actual.y), 10e-6);
-
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.x),
+            static_cast<double>(actual.x),
+            10e-6
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.y),
+            static_cast<double>(actual.y),
+            10e-6
+        );
     }
-
 }
+
 //------------------------------------------------------------------------------
 
 void helperTest::reprojectionRealDatasetTest1()
 {
-
-    std::vector< ::cv::Point3f > objectPoints;
+    std::vector< ::cv::Point3f> objectPoints;
     objectPoints.push_back(::cv::Point3f(-30, 30, 0));
-    objectPoints.push_back(::cv::Point3f( 30, 30, 0));
-    objectPoints.push_back(::cv::Point3f( 30, -30, 0));
+    objectPoints.push_back(::cv::Point3f(30, 30, 0));
+    objectPoints.push_back(::cv::Point3f(30, -30, 0));
     objectPoints.push_back(::cv::Point3f(-30, -30, 0));
 
-    std::vector< ::cv::Point2f > imagePoints;
+    std::vector< ::cv::Point2f> imagePoints;
 
     ::cv::Mat rvec, tvec;
     ::cv::Mat cameraMatrix;
@@ -170,18 +183,18 @@ void helperTest::reprojectionRealDatasetTest1()
     tvec.at<double>(2) = 197.2704315185547;
 
     cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929;  //cx
 
     cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
     cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
-    distorsion.at<double>(0) = 0.06356924027204514; //k1
-    distorsion.at<double>(1) = -0.07869192957878113; //k2
-    distorsion.at<double>(2) = -0.01339129731059074; //p1
+    distorsion.at<double>(0) = 0.06356924027204514;   //k1
+    distorsion.at<double>(1) = -0.07869192957878113;  //k2
+    distorsion.at<double>(2) = -0.01339129731059074;  //p1
     distorsion.at<double>(3) = -0.007336273789405823; //p2
-    distorsion.at<double>(4) = 0.6075565814971924; //k3
+    distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
-    std::vector< ::cv::Point2f > reprojectedPoints_expected;
+    std::vector< ::cv::Point2f> reprojectedPoints_expected;
     reprojectedPoints_expected.push_back(::cv::Point2f(220.89903f, 224.99107f));
     reprojectedPoints_expected.push_back(::cv::Point2f(393.38748f, 216.12437f));
     reprojectedPoints_expected.push_back(::cv::Point2f(416.922f, 365.82419f));
@@ -190,37 +203,46 @@ void helperTest::reprojectionRealDatasetTest1()
     const double expectedErr = 0.0462637;
 
     geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                           rvec, tvec, cameraMatrix, distorsion);
+        geometry::vision::helper::computeReprojectionError(
+            objectPoints,
+            imagePoints,
+            rvec,
+            tvec,
+            cameraMatrix,
+            distorsion
+        );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
         ::cv::Point2f actual   = result.second[i];
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
-                                     static_cast<double>(actual.x), 10e-6);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.y),
-                                     static_cast<double>(actual.y), 10e-6);
-
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.x),
+            static_cast<double>(actual.x),
+            10e-6
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.y),
+            static_cast<double>(actual.y),
+            10e-6
+        );
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 void helperTest::reprojectionRealDatasetTest2()
 {
-
-    std::vector< ::cv::Point3f > objectPoints;
+    std::vector< ::cv::Point3f> objectPoints;
     objectPoints.push_back(::cv::Point3f(-30, 30, 0));
-    objectPoints.push_back(::cv::Point3f( 30, 30, 0));
-    objectPoints.push_back(::cv::Point3f( 30, -30, 0));
+    objectPoints.push_back(::cv::Point3f(30, 30, 0));
+    objectPoints.push_back(::cv::Point3f(30, -30, 0));
     objectPoints.push_back(::cv::Point3f(-30, -30, 0));
 
-    std::vector< ::cv::Point2f > imagePoints;
+    std::vector< ::cv::Point2f> imagePoints;
 
     ::cv::Mat rvec, tvec;
     ::cv::Mat cameraMatrix;
@@ -247,18 +269,18 @@ void helperTest::reprojectionRealDatasetTest2()
     tvec.at<double>(2) = 191.1024627685547;
 
     cameraMatrix.at<double>(0, 0) = 621.8917806423808; //fx
-    cameraMatrix.at<double>(0, 2) = 302.178791918929; //cx
+    cameraMatrix.at<double>(0, 2) = 302.178791918929;  //cx
 
     cameraMatrix.at<double>(1, 1) = 640.3221665123945; //fy
     cameraMatrix.at<double>(1, 2) = 281.4344544571003; //cy
 
-    distorsion.at<double>(0) = 0.06356924027204514; //k1
-    distorsion.at<double>(1) = -0.07869192957878113; //k2
-    distorsion.at<double>(2) = -0.01339129731059074; //p1
+    distorsion.at<double>(0) = 0.06356924027204514;   //k1
+    distorsion.at<double>(1) = -0.07869192957878113;  //k2
+    distorsion.at<double>(2) = -0.01339129731059074;  //p1
     distorsion.at<double>(3) = -0.007336273789405823; //p2
-    distorsion.at<double>(4) = 0.6075565814971924; //k3
+    distorsion.at<double>(4) = 0.6075565814971924;    //k3
 
-    std::vector< ::cv::Point2f > reprojectedPoints_expected;
+    std::vector< ::cv::Point2f> reprojectedPoints_expected;
     reprojectedPoints_expected.push_back(::cv::Point2f(232.92502f, 227.35114f));
     reprojectedPoints_expected.push_back(::cv::Point2f(409.92566f, 220.82785f));
     reprojectedPoints_expected.push_back(::cv::Point2f(434.73633f, 372.69672f));
@@ -267,21 +289,32 @@ void helperTest::reprojectionRealDatasetTest2()
     const double expectedErr = 0.153504;
 
     geometry::vision::helper::ErrorAndPointsType result =
-        geometry::vision::helper::computeReprojectionError(objectPoints, imagePoints,
-                                                           rvec, tvec, cameraMatrix, distorsion);
+        geometry::vision::helper::computeReprojectionError(
+            objectPoints,
+            imagePoints,
+            rvec,
+            tvec,
+            cameraMatrix,
+            distorsion
+        );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedErr, result.first, 10e-6);
 
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         ::cv::Point2f expected = reprojectedPoints_expected[i];
         ::cv::Point2f actual   = result.second[i];
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.x),
-                                     static_cast<double>(actual.x), 10e-6);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(expected.y),
-                                     static_cast<double>(actual.y), 10e-6);
-
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.x),
+            static_cast<double>(actual.x),
+            10e-6
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<double>(expected.y),
+            static_cast<double>(actual.y),
+            10e-6
+        );
     }
 }
 
@@ -300,14 +333,14 @@ void helperTest::toolCalibrationBasic()
     const ::glm::dvec3 translation(radius, 0, 0);
 
     // generates matrices
-    for (size_t i = 0; i < nbMatrices; ++i)
+    for(size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = rand()%180;
+        const double angleInDegrees = rand() % 180;
         const double angle          = ::glm::radians(angleInDegrees);
 
-        const double x = rand()%100 / 100.;
-        const double y = rand()%100 / 100.;
-        const double z = rand()%100 / 100.;
+        const double x = rand() % 100 / 100.;
+        const double y = rand() % 100 / 100.;
+        const double z = rand() % 100 / 100.;
 
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
@@ -323,23 +356,40 @@ void helperTest::toolCalibrationBasic()
 
         matricesVector->getContainer().push_back(mat);
     }
+
     geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
 
-    for (std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-
             const double val = (i == j ? 1. : 0.);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
-                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
-                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
+                val,
+                resTransformMatrix->getCoefficient(i, j),
+                0.00001
+            );
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
+                val,
+                resCenterMatrix->getCoefficient(i, j),
+                0.00001
+            );
         }
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
-                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
-                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "transform[" + std::to_string(i) + "][3]",
+            -translation[i],
+            resTransformMatrix->getCoefficient(i, 3),
+            0.00001
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "center[" + std::to_string(i) + "][3]",
+            center[i],
+            resCenterMatrix->getCoefficient(i, 3),
+            0.00001
+        );
     }
 }
 
@@ -357,44 +407,61 @@ void helperTest::toolCalibration()
     const ::glm::dvec3 translation(-459.45, 46.6, -88.54);
 
     // generates matrices
-    for (size_t i = 0; i < nbMatrices; ++i)
+    for(size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = rand()%360;
+        const double angleInDegrees = rand() % 360;
         const double angle          = ::glm::radians(angleInDegrees);
 
-        const double x = rand()%100 / 100.;
-        const double y = rand()%100 / 100.;
-        const double z = rand()%100 / 100.;
+        const double x = rand() % 100 / 100.;
+        const double y = rand() % 100 / 100.;
+        const double z = rand() % 100 / 100.;
 
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
 
         ::glm::dmat4 matrix = ::glm::translate(::glm::dmat4(1.), center);
-        matrix              = ::glm::rotate(matrix, angle, axis);
-        matrix              = ::glm::translate(matrix, translation);
+        matrix = ::glm::rotate(matrix, angle, axis);
+        matrix = ::glm::translate(matrix, translation);
 
         sight::data::Matrix4::sptr mat = sight::data::Matrix4::New();
         geometry::data::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
     }
+
     geometry::vision::helper::calibratePointingTool(matricesVector, resTransformMatrix, resCenterMatrix);
 
-    for (std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-
             const double val = (i == j ? 1. : 0.);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform["+ std::to_string(i) + "][" + std::to_string(j) + "]",
-                                                 val, resTransformMatrix->getCoefficient(i, j), 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center["+ std::to_string(i) + "][" + std::to_string(j) + "]",
-                                                 val, resCenterMatrix->getCoefficient(i, j), 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
+                val,
+                resTransformMatrix->getCoefficient(i, j),
+                0.00001
+            );
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
+                val,
+                resCenterMatrix->getCoefficient(i, j),
+                0.00001
+            );
         }
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("transform[" + std::to_string(i) + "][3]",
-                                             -translation[i], resTransformMatrix->getCoefficient(i, 3), 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("center[" + std::to_string(i) + "][3]",
-                                             center[i], resCenterMatrix->getCoefficient(i, 3), 0.00001);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "transform[" + std::to_string(i) + "][3]",
+            -translation[i],
+            resTransformMatrix->getCoefficient(i, 3),
+            0.00001
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "center[" + std::to_string(i) + "][3]",
+            center[i],
+            resCenterMatrix->getCoefficient(i, 3),
+            0.00001
+        );
     }
 }
 
@@ -407,35 +474,44 @@ void helperTest::generateCharucoDict()
     {4, 50, 51, 100, 101, 250, 251, 1000,
      4, 50, 51, 100, 101, 250, 251, 1000,
      4, 50, 51, 100, 101, 250, 251, 1000,
-     4, 50, 51, 100, 101, 250, 251, 1000};
+     4, 50, 51, 100, 101, 250, 251, 1000
+    };
 
     int bits[32] = {4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7};
 
     ::cv::Ptr< ::cv::aruco::Dictionary> generatedDict;
 
     //Test case 4x4_50
-    for(int ii = 0; ii < 32; ++ii)
+    for(int ii = 0 ; ii < 32 ; ++ii)
     {
         ::cv::Ptr< ::cv::aruco::Dictionary> DictExpected =
-            ::cv::aruco::generateCustomDictionary(x[ii], bits[ii], ::cv::aruco::getPredefinedDictionary(ii/2));
+            ::cv::aruco::generateCustomDictionary(x[ii], bits[ii], ::cv::aruco::getPredefinedDictionary(ii / 2));
 
-        CPPUNIT_ASSERT_NO_THROW( generatedDict = geometry::vision::helper::generateArucoDictionary(x[ii], 2, bits[ii]));
+        CPPUNIT_ASSERT_NO_THROW(generatedDict = geometry::vision::helper::generateArucoDictionary(x[ii], 2, bits[ii]));
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("markerSize are not equal", DictExpected->markerSize, generatedDict->markerSize);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("maxCorrectionBits are not equal", DictExpected->maxCorrectionBits,
-                                     generatedDict->maxCorrectionBits);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("bytesList.size are not equal", DictExpected->bytesList.size,
-                                     generatedDict->bytesList.size);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "maxCorrectionBits are not equal",
+            DictExpected->maxCorrectionBits,
+            generatedDict->maxCorrectionBits
+        );
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "bytesList.size are not equal",
+            DictExpected->bytesList.size,
+            generatedDict->bytesList.size
+        );
 
-        for(int i = 0; i < DictExpected->bytesList.rows; ++i)
+        for(int i = 0 ; i < DictExpected->bytesList.rows ; ++i)
         {
-            for(int j = 0; j < DictExpected->bytesList.cols; ++j)
+            for(int j = 0 ; j < DictExpected->bytesList.cols ; ++j)
             {
-                for(int k = 0; k < DictExpected->bytesList.channels(); ++k)
+                for(int k = 0 ; k < DictExpected->bytesList.channels() ; ++k)
                 {
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Values of bytesList are not equal",
-                                                 DictExpected->bytesList.at< ::cv::Vec4b >(i, j)[k],
-                                                 generatedDict->bytesList.at< ::cv::Vec4b >(i, j)[k]);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                        "Values of bytesList are not equal",
+                        DictExpected->bytesList.at< ::cv::Vec4b>(i, j)[k],
+                        generatedDict->bytesList.at< ::cv::Vec4b>(i, j)[k]
+                    );
                 }
             }
         }
@@ -454,8 +530,12 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb0.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(chessRgb0,
-                                                                                                       9, 6, 0.25f);
+        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+            chessRgb0,
+            9,
+            6,
+            0.25f
+        );
 
         const ExpectedChessboardType expectedChessboard {
             {743.776, 429.954, 0.0},
@@ -510,8 +590,12 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessRgb1.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(chessRgb1,
-                                                                                                       9, 6, 0.25f);
+        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+            chessRgb1,
+            9,
+            6,
+            0.25f
+        );
 
         const ExpectedChessboardType expectedChessboard {
             {739.341, 394.44, 0.0},
@@ -560,15 +644,21 @@ void helperTest::chessboardDetectionTest()
     }
 
     {
-        const ::cv::Mat chessGray = ::cv::imread((calibDataDir / "chessboardGray.tiff").string(),
-                                                 ::cv::IMREAD_GRAYSCALE);
+        const ::cv::Mat chessGray = ::cv::imread(
+            (calibDataDir / "chessboardGray.tiff").string(),
+            ::cv::IMREAD_GRAYSCALE
+        );
 
         CPPUNIT_ASSERT_EQUAL(false, chessGray.empty());
         CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), chessGray.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(chessGray,
-                                                                                                       9, 6, 0.25f);
+        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+            chessGray,
+            9,
+            6,
+            0.25f
+        );
 
         const ExpectedChessboardType expectedChessboard {
             {933.376, 504.662, 0.0},
@@ -615,8 +705,12 @@ void helperTest::chessboardDetectionTest()
 
         compareChessboards(expectedChessboard, detectedChess);
 
-        const sight::data::PointList::csptr detectedChess2 = geometry::vision::helper::detectChessboard(chessGray,
-                                                                                                        8, 5, 0.25f);
+        const sight::data::PointList::csptr detectedChess2 = geometry::vision::helper::detectChessboard(
+            chessGray,
+            8,
+            5,
+            0.25f
+        );
         CPPUNIT_ASSERT(!detectedChess2);
     }
 }
@@ -637,17 +731,18 @@ void helperTest::chessboardDetectionScaleTest()
 
     CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());
 
-    for(std::uint32_t i = 0; i < detectedChessFullScale->getPoints().size(); ++i)
+    for(std::uint32_t i = 0 ; i < detectedChessFullScale->getPoints().size() ; ++i)
     {
         const auto& fullScaleCoords    = detectedChessFullScale->getPoints()[i]->getCoord();
         const auto& quarterScaleCoords = detectedChessQuarterScale->getPoints()[i]->getCoord();
 
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fullScaleCoords[j], quarterScaleCoords[j], 0.5);
         }
     }
 }
 
-}//namespace ut
-}//namespace sight::geometry::vision
+} //namespace ut
+
+} //namespace sight::geometry::vision

@@ -78,7 +78,7 @@ service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() cons
 
 void SDecomposeMatrix::updating()
 {
-    auto matrix = this->getInput< data::Matrix4 >(s_SOURCE_INPUT);
+    auto matrix = this->getInput<data::Matrix4>(s_SOURCE_INPUT);
     SIGHT_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
     data::mt::ObjectReadLock srcLock(matrix);
 
@@ -93,40 +93,41 @@ void SDecomposeMatrix::updating()
     ::glm::decompose(glmMatrix, scale, orientation, translation, skew, perspective);
     ::glm::dmat4 orientationMat = ::glm::toMat4(orientation);
 
-    auto rotation       = this->getInOut< data::Matrix4 >(s_ROTATION_INOUT);
-    auto translationMat = this->getInOut< data::Matrix4 >(s_TRANSLATION_INOUT);
-    auto scaleMat       = this->getInOut< data::Matrix4 >(s_SCALE_INOUT);
+    auto rotation       = this->getInOut<data::Matrix4>(s_ROTATION_INOUT);
+    auto translationMat = this->getInOut<data::Matrix4>(s_TRANSLATION_INOUT);
+    auto scaleMat       = this->getInOut<data::Matrix4>(s_SCALE_INOUT);
 
-    if( rotation)
+    if(rotation)
     {
         data::mt::ObjectWriteLock rotLock(rotation);
         sight::geometry::data::identity(rotation);
         sight::geometry::data::setTF3DFromMatrix(rotation, orientationMat);
 
-        auto rotSig = rotation->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        auto rotSig = rotation->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         rotSig->asyncEmit();
     }
 
-    if( translationMat)
+    if(translationMat)
     {
         data::mt::ObjectWriteLock transLock(translationMat);
         sight::geometry::data::identity(translationMat);
-        for (size_t i = 0; i < 3; ++i)
+        for(size_t i = 0 ; i < 3 ; ++i)
         {
             translationMat->setCoefficient(i, 3, translation[i]);
         }
+
         auto transSig =
-            translationMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+            translationMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         transSig->asyncEmit();
     }
 
-    if( scaleMat)
+    if(scaleMat)
     {
         data::mt::ObjectWriteLock scaleLock(scaleMat);
         sight::geometry::data::identity(scaleMat);
-        for (size_t i = 0; i < 3; ++i)
+        for(size_t i = 0 ; i < 3 ; ++i)
         {
-            for (size_t j = 0; j < 3; j++)
+            for(size_t j = 0 ; j < 3 ; j++)
             {
                 if(i == j)
                 {
@@ -134,7 +135,8 @@ void SDecomposeMatrix::updating()
                 }
             }
         }
-        auto scaleSig = scaleMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+
+        auto scaleSig = scaleMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         scaleSig->asyncEmit();
     }
 
@@ -143,4 +145,4 @@ void SDecomposeMatrix::updating()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::module::geometry::base
+} // namespace sight::module::geometry::base

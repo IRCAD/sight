@@ -23,7 +23,6 @@
 #include "core/com/exception/WorkerChanged.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -32,7 +31,7 @@ namespace sight::core::com
 namespace exception
 {
 
-WorkerChanged::WorkerChanged ( const std::string& err ) :
+WorkerChanged::WorkerChanged(const std::string& err) :
     core::Exception(err)
 {
 }

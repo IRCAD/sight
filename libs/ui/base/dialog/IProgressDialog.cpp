@@ -26,8 +26,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY = "::ui::base::dialog::ProgressDialog";
 
 IProgressDialog::IProgressDialog() :
@@ -60,7 +62,7 @@ void IProgressDialog::cancelPressed()
     {
         m_cancelCallback();
     }
-    else if (m_raise)
+    else if(m_raise)
     {
         SIGHT_THROW("Operation canceled");
     }
@@ -69,4 +71,5 @@ void IProgressDialog::cancelPressed()
 //-----------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::base

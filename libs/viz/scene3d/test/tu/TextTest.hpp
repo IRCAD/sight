@@ -28,14 +28,14 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace ut
 {
 
 class TextTest : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( TextTest );
-CPPUNIT_TEST( factoryTest );
+CPPUNIT_TEST_SUITE(TextTest);
+CPPUNIT_TEST(factoryTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,4 +47,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::viz::scene3d

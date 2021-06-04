@@ -35,15 +35,17 @@ namespace sight::io::itk
 class ProgressorBase
 {
 public:
-    typedef SPTR (ProgressorBase) sptr;
+
+    typedef SPTR(ProgressorBase) sptr;
 };
 
 //------------------------------------------------------------------------------
 
-template< typename OBSERVEE >
+template<typename OBSERVEE>
 class ProgressItkToFw : public ProgressorBase
 {
 public:
+
     ProgressItkToFw(OBSERVEE observee, SPTR(core::tools::ProgressAdviser)observer, std::string msg);
 
     virtual ~ProgressItkToFw();
@@ -61,15 +63,16 @@ protected:
 class Progressor
 {
 public:
-    typedef SPTR (Progressor) sptr;
 
-    template<typename OBS >
+    typedef SPTR(Progressor) sptr;
+
+    template<typename OBS>
     Progressor(OBS filter, SPTR(core::tools::ProgressAdviser)observer, std::string message)
     {
-        typedef ProgressItkToFw< OBS > ProgressType;
+        typedef ProgressItkToFw<OBS> ProgressType;
         m_progressor = ProgressorBase::sptr(
-            new ProgressType( filter, observer, message )
-            );
+            new ProgressType(filter, observer, message)
+        );
     }
 
     ProgressorBase::sptr m_progressor;

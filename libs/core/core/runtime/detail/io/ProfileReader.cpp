@@ -63,7 +63,7 @@ namespace profile = core::runtime::detail::profile;
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::filesystem::path& path )
+std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesystem::path& path)
 {
     // Normalizes the path.
     std::filesystem::path normalizedPath(std::filesystem::weakly_canonical(path));
@@ -79,7 +79,7 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
 
     Validator validator(profileXSDLocation);
 
-    if( validator.validate(normalizedPath) == false )
+    if(validator.validate(normalizedPath) == false)
     {
         throw RuntimeException(validator.getErrorLog());
     }
@@ -96,18 +96,20 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
 
-        char* pName    = reinterpret_cast<char*>(xmlGetProp(rootNode, reinterpret_cast<const xmlChar*>( NAME.c_str())));
+        char* pName    = reinterpret_cast<char*>(xmlGetProp(rootNode, reinterpret_cast<const xmlChar*>(NAME.c_str())));
         char* pVersion =
-            reinterpret_cast<char*>(xmlGetProp(rootNode, reinterpret_cast<const xmlChar*>( VERSION.c_str())));
+            reinterpret_cast<char*>(xmlGetProp(rootNode, reinterpret_cast<const xmlChar*>(VERSION.c_str())));
         char* pChkInst =
-            reinterpret_cast<char*>(xmlGetProp(rootNode,
-                                               reinterpret_cast<const xmlChar*>( CHECK_SINGLE_INSTANCE.c_str())));
+            reinterpret_cast<char*>(xmlGetProp(
+                                        rootNode,
+                                        reinterpret_cast<const xmlChar*>(CHECK_SINGLE_INSTANCE.c_str())
+            ));
 
         SIGHT_ASSERT("Application profile MUST have a name attribute", pName);
         SIGHT_ASSERT("Application profile MUST have a version attribute", pVersion);
 
-        std::string sName( pName );
-        std::string sVersion( pVersion );
+        std::string sName(pName);
+        std::string sVersion(pVersion);
         bool checkSingleInstance = pChkInst && std::string(pChkInst) == "true";
 
         xmlFree(pName);
@@ -115,7 +117,7 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
         xmlFree(pChkInst);
 
         // Creates and process the profile element.
-        std::shared_ptr< profile::Profile > profile = processProfile(rootNode);
+        std::shared_ptr<profile::Profile> profile = processProfile(rootNode);
 
         profile->setFilePath(normalizedPath);
         profile->setName(sName);
@@ -137,79 +139,80 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< profile::Profile > ProfileReader::processProfile(xmlNodePtr node)
+std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 {
     using namespace profile;
 
-    auto profile = std::dynamic_pointer_cast< detail::profile::Profile>(core::runtime::getCurrentProfile());
+    auto profile = std::dynamic_pointer_cast<detail::profile::Profile>(core::runtime::getCurrentProfile());
 
     // Process child nodes.
     xmlNodePtr curChild = node->children;
-    for(curChild = node->children; curChild != nullptr; curChild = curChild->next)
+    for(curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
-        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>( ACTIVATE.c_str())) == 0)
+        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(ACTIVATE.c_str())) == 0)
         {
-            profile->add( ProfileReader::processActivater(curChild) );
+            profile->add(ProfileReader::processActivater(curChild));
             continue;
         }
 
-        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>( START.c_str())) == 0)
+        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(START.c_str())) == 0)
         {
-            profile->add( processStarter(curChild) );
+            profile->add(processStarter(curChild));
             continue;
         }
     }
+
     return profile;
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< profile::Starter > ProfileReader::processStarter(xmlNodePtr node)
+std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
     std::string version;
-    for(curAttr = node->properties; curAttr != nullptr; curAttr = curAttr->next)
+    for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( ID.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
-            identifier = reinterpret_cast<const char*>( curAttr->children->content);
+            identifier = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( VERSION.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(VERSION.c_str())) == 0)
         {
-            version = reinterpret_cast<const char*>( curAttr->children->content);
+            version = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
     }
 
     // Creates the activater object.
     using detail::profile::Starter;
-    std::shared_ptr< Starter > starter( new Starter(identifier) );
+    std::shared_ptr<Starter> starter(new Starter(identifier));
     return starter;
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< detail::profile::Activater > ProfileReader::processActivater(xmlNodePtr node)
+std::shared_ptr<detail::profile::Activater> ProfileReader::processActivater(xmlNodePtr node)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
     std::string version;
-    for(curAttr = node->properties; curAttr != nullptr; curAttr = curAttr->next)
+    for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( ID.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
-            identifier = reinterpret_cast<const char*>( curAttr->children->content);
+            identifier = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( VERSION.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(VERSION.c_str())) == 0)
         {
-            version = reinterpret_cast<const char*>( curAttr->children->content);
+            version = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
     }
@@ -219,96 +222,102 @@ std::shared_ptr< detail::profile::Activater > ProfileReader::processActivater(xm
 
     // Processes child node that are the parameters
     xmlNodePtr curChild = node->children;
-    for(curChild = node->children; curChild != nullptr; curChild = curChild->next)
+    for(curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
-        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>( PARAM.c_str())) == 0)
+        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(PARAM.c_str())) == 0)
         {
-            processActivaterParam( curChild, activater );
+            processActivaterParam(curChild, activater);
             continue;
         }
 
-        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>( DIS_EXT_PT.c_str())) == 0)
+        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(DIS_EXT_PT.c_str())) == 0)
         {
-            processActivaterDisableExtensionPoint( curChild, activater );
+            processActivaterDisableExtensionPoint(curChild, activater);
             continue;
         }
 
-        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>( DIS_EXT.c_str())) == 0)
+        if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(DIS_EXT.c_str())) == 0)
         {
-            processActivaterDisableExtension( curChild, activater );
+            processActivaterDisableExtension(curChild, activater);
             continue;
         }
     }
+
     // Job's done.
     return activater;
 }
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterParam(xmlNodePtr node, std::shared_ptr< detail::profile::Activater > activater)
+void ProfileReader::processActivaterParam(xmlNodePtr node, std::shared_ptr<detail::profile::Activater> activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
     std::string value;
-    for(curAttr = node->properties; curAttr != nullptr; curAttr = curAttr->next)
+    for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( ID.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
-            identifier = reinterpret_cast<const char*>( curAttr->children->content);
+            identifier = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
 
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( VALUE.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(VALUE.c_str())) == 0)
         {
-            value = reinterpret_cast<const char*>( curAttr->children->content);
+            value = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
     }
+
     // Stores the parameter into the activater.
-    activater->addParameter( identifier, value );
+    activater->addParameter(identifier, value);
 }
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node,
-                                                          std::shared_ptr< detail::profile::Activater > activater)
+void ProfileReader::processActivaterDisableExtensionPoint(
+    xmlNodePtr node,
+    std::shared_ptr<detail::profile::Activater> activater
+)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    for(curAttr = node->properties; curAttr != nullptr; curAttr = curAttr->next)
+    for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( ID.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
-            identifier = reinterpret_cast<const char*>( curAttr->children->content);
+            identifier = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
     }
 
     // Stores the parameter into the activater.
-    activater->addDisableExtensionPoint( identifier );
+    activater->addDisableExtensionPoint(identifier);
 }
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
-                                                     std::shared_ptr< profile::Activater > activater)
+void ProfileReader::processActivaterDisableExtension(
+    xmlNodePtr node,
+    std::shared_ptr<profile::Activater> activater
+)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    for(curAttr = node->properties; curAttr != nullptr; curAttr = curAttr->next)
+    for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
-        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>( ID.c_str())) == 0)
+        if(xmlStrcmp(curAttr->name, reinterpret_cast<const xmlChar*>(ID.c_str())) == 0)
         {
-            identifier = reinterpret_cast<const char*>( curAttr->children->content);
+            identifier = reinterpret_cast<const char*>(curAttr->children->content);
             continue;
         }
     }
 
     // Stores the parameter into the activater.
-    activater->addDisableExtension( identifier );
+    activater->addDisableExtension(identifier);
 }
 
 //------------------------------------------------------------------------------
@@ -319,7 +328,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< core::runtime::Profile> io::ProfileReader::createProfile(const std::filesystem::path& path)
+std::shared_ptr<core::runtime::Profile> io::ProfileReader::createProfile(const std::filesystem::path& path)
 {
     return detail::io::ProfileReader::createProfile(path);
 }

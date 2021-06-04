@@ -35,7 +35,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 std::pair<T, T> getRange(T _value)
 {
     static const T range = 10;
@@ -66,20 +66,23 @@ std::pair<T, T> getRange(T _value)
         max = 0;
         min = 1;
     }
+
     return std::make_pair(min, max);
 }
 
 //-----------------------------------------------------------------------------
 
-service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::scene3d::IParameter::csptr& _adaptor,
-                                                            const service::IService::csptr& _paramSrv,
-                                                            core::com::helper::SigSlotConnection& _connections)
+service::IService::ConfigType ParameterEditor::createConfig(
+    const sight::viz::scene3d::IParameter::csptr& _adaptor,
+    const service::IService::csptr& _paramSrv,
+    core::com::helper::SigSlotConnection& _connections
+)
 {
     service::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
     const data::Object::csptr shaderObj =
-        _adaptor->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
+        _adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
 
     const auto& objType = shaderObj->getClassname();
 
@@ -98,10 +101,10 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
 
         auto colorValue = data::Color::dynamicCast(shaderObj);
 
-        int r = static_cast< unsigned char >(colorValue->red() * 255);
-        int g = static_cast< unsigned char >(colorValue->green() * 255);
-        int b = static_cast< unsigned char >(colorValue->blue() * 255);
-        int a = static_cast< unsigned char >(colorValue->alpha() * 255);
+        int r = static_cast<unsigned char>(colorValue->red() * 255);
+        int g = static_cast<unsigned char>(colorValue->green() * 255);
+        int b = static_cast<unsigned char>(colorValue->blue() * 255);
+        int a = static_cast<unsigned char>(colorValue->alpha() * 255);
 
         std::stringstream hexStr;
         hexStr << "#" << std::hex;
@@ -157,11 +160,15 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
         {
             std::string strSize = std::to_string(numComponents);
 
-            if( arrayObject->getType() == core::tools::Type::s_FLOAT ||
-                arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            if(arrayObject->getType() == core::tools::Type::s_FLOAT
+               || arrayObject->getType() == core::tools::Type::s_DOUBLE)
             {
-                _connections.connect(_paramSrv, "double" + strSize + "Changed",
-                                     _adaptor, "setDouble" + strSize + "Parameter");
+                _connections.connect(
+                    _paramSrv,
+                    "double" + strSize + "Changed",
+                    _adaptor,
+                    "setDouble" + strSize + "Parameter"
+                );
 
                 // We can't give a default value for each component to SParameters :/
                 // For now fill it with the first one
@@ -170,12 +177,13 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
                 double defaultValue;
                 if(arrayObject->getType() == core::tools::Type::s_FLOAT)
                 {
-                    defaultValue = static_cast<double>(arrayObject->at< float >(0));
+                    defaultValue = static_cast<double>(arrayObject->at<float>(0));
                 }
                 else
                 {
-                    defaultValue = arrayObject->at< double >(0);
+                    defaultValue = arrayObject->at<double>(0);
                 }
+
                 const auto minmax = getRange(defaultValue);
                 const double min  = minmax.first;
                 const double max  = minmax.second;
@@ -187,13 +195,17 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
                 paramConfig.add("<xmlattr>.min", min);
                 paramConfig.add("<xmlattr>.max", max);
             }
-            else if( arrayObject->getType() == core::tools::Type::s_INT32)
+            else if(arrayObject->getType() == core::tools::Type::s_INT32)
             {
-                _connections.connect(_paramSrv, "int" + strSize + "Changed",
-                                     _adaptor, "setInt" + strSize + "Parameter");
+                _connections.connect(
+                    _paramSrv,
+                    "int" + strSize + "Changed",
+                    _adaptor,
+                    "setInt" + strSize + "Parameter"
+                );
                 const auto dumpLock = arrayObject->lock();
 
-                const int defaultValue = arrayObject->at< std::int32_t >(0);
+                const int defaultValue = arrayObject->at<std::int32_t>(0);
                 const auto minmax      = getRange(defaultValue);
                 const int min          = minmax.first;
                 const int max          = minmax.second;

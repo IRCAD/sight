@@ -34,6 +34,6 @@ typedef ::boost::mpl::vector<
 #ifndef DEBUG
         , signed long, unsigned long
 #endif
-        >::type IntegerTypes;
+>::type IntegerTypes;
 
 } // end namespace sight::core::tools

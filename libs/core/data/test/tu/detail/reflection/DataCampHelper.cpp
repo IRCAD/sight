@@ -39,36 +39,42 @@ namespace DataCampHelper
 void visitProperties(const std::string& className, const PropertiesNameType& vecProp)
 {
     const ::camp::Class& metaClass = ::camp::classByName(className);
-    CPPUNIT_ASSERT_EQUAL( vecProp.size(), metaClass.propertyCount());
-    for(const std::string& property :  vecProp)
+    CPPUNIT_ASSERT_EQUAL(vecProp.size(), metaClass.propertyCount());
+    for(const std::string& property : vecProp)
     {
-        CPPUNIT_ASSERT_MESSAGE("Missing property "+ property+" in "+className,
-                               metaClass.hasProperty(property));
+        CPPUNIT_ASSERT_MESSAGE(
+            "Missing property " + property + " in " + className,
+            metaClass.hasProperty(property)
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void compareSimplePropertyValue(sight::data::Object::sptr obj,
-                                const std::string& propertyPath,
-                                const std::string& value)
+void compareSimplePropertyValue(
+    sight::data::Object::sptr obj,
+    const std::string& propertyPath,
+    const std::string& value
+)
 {
     sight::data::GenericFieldBase::sptr field;
-    field = sight::data::reflection::getObject< sight::data::GenericFieldBase >(obj, propertyPath);
-    CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, field);
-    CPPUNIT_ASSERT_EQUAL( value, field->toString());
+    field = sight::data::reflection::getObject<sight::data::GenericFieldBase>(obj, propertyPath);
+    CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property " + propertyPath, field);
+    CPPUNIT_ASSERT_EQUAL(value, field->toString());
 }
 
 //------------------------------------------------------------------------------
 
-void compareObjectPropertyValue(sight::data::Object::sptr obj,
-                                const std::string& propertyPath,
-                                sight::data::Object::sptr value)
+void compareObjectPropertyValue(
+    sight::data::Object::sptr obj,
+    const std::string& propertyPath,
+    sight::data::Object::sptr value
+)
 {
     sight::data::Object::sptr subObj;
     subObj = sight::data::reflection::getObject(obj, propertyPath);
-    CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, subObj);
-    CPPUNIT_ASSERT_MESSAGE("Retrieve property "+propertyPath+" not equal with value", value == subObj);
+    CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property " + propertyPath, subObj);
+    CPPUNIT_ASSERT_MESSAGE("Retrieve property " + propertyPath + " not equal with value", value == subObj);
 }
 
 //------------------------------------------------------------------------------

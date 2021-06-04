@@ -28,11 +28,11 @@
 
 #include <core/tools/dateAndTime.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/atoms/patch/infos/Logger.hpp>
 #include <io/atoms/patch/StructuralCreatorDB.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -53,7 +53,6 @@ V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() :
     m_targetClassname = "::sight::data::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "1";
-
 }
 
 // ----------------------------------------------------------------------------
@@ -64,7 +63,7 @@ V1ToFwMedDataImageSeriesV1::~V1ToFwMedDataImageSeriesV1()
 
 // ----------------------------------------------------------------------------
 
-V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImageSeriesV1& cpy ) :
+V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1(const V1ToFwMedDataImageSeriesV1& cpy) :
     io::atoms::patch::
     IStructuralPatch(cpy)
 {
@@ -72,9 +71,11 @@ V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImage
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataImageSeriesV1::apply(const sight::atoms::Object::sptr& previous,
-                                       const sight::atoms::Object::sptr& current,
-                                       io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToFwMedDataImageSeriesV1::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -119,13 +120,13 @@ void V1ToFwMedDataImageSeriesV1::apply(const sight::atoms::Object::sptr& previou
     io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
     // Create Patient
-    helper.addAttribute("patient", creators->create( "::sight::data::Patient", "1") );
+    helper.addAttribute("patient", creators->create("::sight::data::Patient", "1"));
 
     // Create Equipment
-    helper.addAttribute("equipment", creators->create( "::sight::data::Equipment", "1") );
+    helper.addAttribute("equipment", creators->create("::sight::data::Equipment", "1"));
 
     // Create Study
-    helper.addAttribute("study", creators->create( "::sight::data::Study", "1") );
+    helper.addAttribute("study", creators->create("::sight::data::Study", "1"));
 
     // Create performing_physicians_name
     helper.addAttribute("performing_physicians_name", sight::atoms::Sequence::New());

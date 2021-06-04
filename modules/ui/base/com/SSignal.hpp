@@ -28,6 +28,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -50,14 +51,13 @@ namespace com
 
 class MODULE_UI_BASE_CLASS_API SSignal : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SSignal, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SSignal, ::sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
-    typedef core::com::Signal< void (bool) > TriggeredSignalType;
+    typedef core::com::Signal<void (bool)> TriggeredSignalType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -84,7 +84,7 @@ protected:
     MODULE_UI_BASE_API void updating() override;
 
     /// Give information about the class. Do nothing.
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     /// Signal trigerred when action has been triggered
     SPTR(TriggeredSignalType) m_sigTriggered;
@@ -93,4 +93,5 @@ protected:
 };
 
 } // namespace com
+
 } // namespace sight::module::ui::base

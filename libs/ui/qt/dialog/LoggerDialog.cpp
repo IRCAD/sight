@@ -25,6 +25,8 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <boost/foreach.hpp>
 
 #include <QApplication>
@@ -37,12 +39,11 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/base/registry/macros.hpp>
-
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::sight::ui::qt::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
@@ -97,7 +98,7 @@ bool LoggerDialog::show()
     m_dialog->setLayout(mainLayout);
 
     // Disable close button
-    m_dialog->setWindowFlags(Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint| Qt::WindowSystemMenuHint);
+    m_dialog->setWindowFlags(Qt::Window | Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
 
     // Create icon and message widget
     QHBoxLayout* messageLayout = new QHBoxLayout();
@@ -123,14 +124,15 @@ bool LoggerDialog::show()
         const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/information.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
+
     messageLayout->addWidget(iconLabel);
 
     // Create message
     std::stringstream ss;
-    ss << m_message <<
-        "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, " <<
-        m_logger->count(core::log::Log::WARNING) << " warning and " <<
-        m_logger->count(core::log::Log::INFORMATION) << " information messages.";
+    ss << m_message
+    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, "
+    << m_logger->count(core::log::Log::WARNING) << " warning and "
+    << m_logger->count(core::log::Log::INFORMATION) << " information messages.";
 
     QLabel* messageLabel = new QLabel(ss.str().c_str());
     messageLayout->addWidget(messageLabel);
@@ -170,24 +172,24 @@ bool LoggerDialog::show()
     // Fill log table
     core::log::Logger::ConstIteratorType it = m_logger->begin();
     int row                                 = 0;
-    for(; it != m_logger->end(); ++it, ++row)
+    for( ; it != m_logger->end() ; ++it, ++row)
     {
         std::string levelString = "Unknown";
         QIcon levelIcon;
         core::log::Log::LevelType level = it->getLevel();
-        if (level == core::log::Log::INFORMATION)
+        if(level == core::log::Log::INFORMATION)
         {
             levelString = "Information";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/information.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
-        else if (level == core::log::Log::WARNING)
+        else if(level == core::log::Log::WARNING)
         {
             levelString = "Warning";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/warning.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
-        else if (level == core::log::Log::CRITICAL)
+        else if(level == core::log::Log::CRITICAL)
         {
             levelString = "Critical";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/critical.png");
@@ -195,11 +197,11 @@ bool LoggerDialog::show()
         }
 
         QTableWidgetItem* levelItem = new QTableWidgetItem(levelIcon, levelString.c_str());
-        levelItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+        levelItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         m_logTableWidget->setItem(row, 0, levelItem);
 
         QTableWidgetItem* messageItem = new QTableWidgetItem(it->getMessage().c_str());
-        messageItem->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+        messageItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         m_logTableWidget->setItem(row, 1, messageItem);
     }
 
@@ -248,4 +250,5 @@ void LoggerDialog::displayLogs(int state)
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

@@ -52,7 +52,7 @@ struct Native
      *
      * @param[in]   name    libray name
      */
-    Native( const std::string& name ) noexcept;
+    Native(const std::string& name) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -73,7 +73,7 @@ struct Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    virtual void* getSymbol( const std::string& name ) const = 0;
+    virtual void* getSymbol(const std::string& name) const = 0;
 
     /**
      * @brief   Loads the module.
@@ -108,9 +108,10 @@ struct Native
      *
      * @param[in]   path  search path
      */
-    void setSearchPath( const std::filesystem::path& path ) noexcept;
+    void setSearchPath(const std::filesystem::path& path) noexcept;
 
     private:
+
         /**
          * @brief   The path to the module to load.
          */
@@ -126,8 +127,7 @@ struct Native
          *
          * @remark  Assignment is forbidden for this class.
          */
-        void operator=( const Native& ) noexcept;
-
+        void operator=(const Native&) noexcept;
 };
 
 } // namesapce dl

@@ -34,12 +34,12 @@ namespace sight::ui::qt
 namespace widget
 {
 
-template <typename T>
+template<typename T>
 struct Castable
 {
     //------------------------------------------------------------------------------
 
-    template <typename U>
+    template<typename U>
     static T* safeCast(U* p)
     {
         T* casted = dynamic_cast<T*>(p);
@@ -51,6 +51,7 @@ class Handle : public QRangeSlider::Paintable,
                public Castable<Handle>
 {
 public:
+
     Handle(QWidget* w) :
         Paintable(w),
         m_pen(Qt::gray),
@@ -66,9 +67,9 @@ public:
 
     virtual void draw(QPainter& painter, bool /*enabled*/)
     {
-        int height       = drawingArea().height()-1;
+        int height       = drawingArea().height() - 1;
         int top          = height * m_verticalPadding;
-        int handleHeight = height - 2*top;
+        int handleHeight = height - 2 * top;
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setPen(m_pen);
         painter.setBrush(m_brush);
@@ -81,15 +82,16 @@ public:
     {
         bool picked = false;
 
-        int height       = drawingArea().height()-1;
+        int height       = drawingArea().height() - 1;
         int top          = height * m_verticalPadding;
-        int handleHeight = height - 2*top;
+        int handleHeight = height - 2 * top;
 
-        if ( abs(point.x() - m_pos) <= (halfWidth() + m_tolerance)
-             && (top+handleHeight) >= point.y() && point.y() >= top )
+        if(abs(point.x() - m_pos) <= (halfWidth() + m_tolerance)
+           && (top + handleHeight) >= point.y() && point.y() >= top)
         {
             picked = true;
         }
+
         return picked;
     }
 
@@ -98,7 +100,7 @@ public:
     int setHandleSize(int size)
     {
         //handle size should be odd
-        m_width = size + ((size+1)%2);
+        m_width = size + ((size + 1) % 2);
         return m_width;
     }
 
@@ -106,7 +108,7 @@ public:
 
     int halfWidth() const
     {
-        return m_width/2;
+        return m_width / 2;
     }
 
     //------------------------------------------------------------------------------
@@ -150,25 +152,25 @@ public:
     {
         int posMin = xPosMin();
         int posMax = xPosMax();
-        return ( (double) (p - posMin) / (double)(posMax - posMin) );
+        return (double) (p - posMin) / (double) (posMax - posMin);
     }
 
     //------------------------------------------------------------------------------
 
     int fromFloatingPos(double p)
     {
-        assert( 0. <= p && p <= 1.);
+        assert(0. <= p && p <= 1.);
         int posMin = xPosMin();
         int extend = (xPosMax()) - posMin;
 
-        return posMin + (int) (p*extend);
+        return posMin + (int) (p * extend);
     }
 
     //------------------------------------------------------------------------------
 
     double floatingPos()
     {
-        return toFloatingPos( pos() );
+        return toFloatingPos(pos());
     }
 
     //------------------------------------------------------------------------------
@@ -179,6 +181,7 @@ public:
     }
 
 protected:
+
     int m_pos;
     int m_tolerance;
     int m_width;
@@ -192,6 +195,7 @@ class Window : public QRangeSlider::Paintable,
                public Castable<Window>
 {
 public:
+
     Window(QWidget* w) :
         Paintable(w),
         m_pen(Qt::darkBlue),
@@ -207,7 +211,7 @@ public:
 
     int width() const
     {
-        return m_right-m_left;
+        return m_right - m_left;
     }
 
     //------------------------------------------------------------------------------
@@ -220,7 +224,7 @@ public:
 
         if(enabled)
         {
-            if ( w < 0 )
+            if(w < 0)
             {
                 pen   = m_reversePen;
                 brush = m_reverseBrush;
@@ -240,7 +244,7 @@ public:
         painter.setPen(pen);
         painter.setBrush(brush);
         painter.setRenderHint(QPainter::Antialiasing);
-        painter.drawRect(m_left, 0, w, drawingArea().height()-1);
+        painter.drawRect(m_left, 0, w, drawingArea().height() - 1);
     }
 
     //------------------------------------------------------------------------------
@@ -263,6 +267,7 @@ public:
     }
 
 protected:
+
     int m_left;
     int m_right;
 
@@ -270,7 +275,6 @@ protected:
     QBrush m_brush;
     QPen m_reversePen;
     QBrush m_reverseBrush;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -346,16 +350,16 @@ void QRangeSlider::move(int delta)
     high  = maxHandle->pos();
     width = high - low;
 
-    if(  (movingRight  && dir < 0)
-         || (!movingRight && dir > 0 ) )
+    if((movingRight && dir < 0)
+       || (!movingRight && dir > 0))
     {
-        low  = minHandle->setPos(low-delta);
+        low  = minHandle->setPos(low - delta);
         high = low + width;
         maxHandle->setPos(high);
     }
     else
     {
-        high = maxHandle->setPos(high-delta);
+        high = maxHandle->setPos(high - delta);
         low  = high - width;
         minHandle->setPos(low);
     }
@@ -368,26 +372,27 @@ void QRangeSlider::move(int delta)
 bool QRangeSlider::movedTo(double _min, double _max)
 {
     bool changed = m_minValue != _min || m_maxValue != _max;
-    if (changed)
+    if(changed)
     {
         m_minValue = _min;
         m_maxValue = _max;
-        Q_EMIT sliderRangeChanged( m_minValue, m_maxValue );
+        Q_EMIT sliderRangeChanged(m_minValue, m_maxValue);
     }
+
     return changed;
 }
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::paintEvent ( QPaintEvent* /*event*/ )
+void QRangeSlider::paintEvent(QPaintEvent* /*event*/)
 {
     bool enabled = this->isEnabled();
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
     QRect rect = this->rect();
-    rect.setLeft(rect.left() + m_handleSize/2);
-    rect.setRight(rect.right() - m_handleSize/2);
+    rect.setLeft(rect.left() + m_handleSize / 2);
+    rect.setRight(rect.right() - m_handleSize / 2);
     painter.fillRect(rect, QApplication::palette().base());
 
     painter.setBrush(Qt::cyan);
@@ -399,35 +404,34 @@ void QRangeSlider::paintEvent ( QPaintEvent* /*event*/ )
 
     painter.setPen(Qt::darkRed);
     m_maxHandle->draw(painter, enabled);
-
 }
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::mouseMoveEvent ( QMouseEvent* event )
+void QRangeSlider::mouseMoveEvent(QMouseEvent* event)
 {
-    if (m_current)
+    if(m_current)
     {
-
         Handle* minHandle = Handle::safeCast(m_minHandle);
         Handle* maxHandle = Handle::safeCast(m_maxHandle);
         Window* window    = Window::safeCast(m_window);
         Handle* currentHandle;
 
-        if( (currentHandle = Handle::safeCast(m_current)) )
+        if((currentHandle = Handle::safeCast(m_current)))
         {
             int oldPos = currentHandle->pos();
             int newPos = event->pos().x();
             currentHandle->setPos(newPos);
 
-            if(!m_allowMinGreaterThanMax &&
-               minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
+            if(!m_allowMinGreaterThanMax
+               && minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos())
             {
                 currentHandle->setPos(oldPos);
             }
+
             window->setPos(minHandle->pos(), maxHandle->pos());
         }
-        else if( Window::safeCast(m_current) )
+        else if(Window::safeCast(m_current))
         {
             QPoint delta = m_pressPos - event->pos();
 
@@ -439,17 +443,18 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent* event )
 
         double min = minHandle->floatingPos();
         double max = maxHandle->floatingPos();
-        if( this->movedTo(min, max) )
+        if(this->movedTo(min, max))
         {
-            Q_EMIT sliderRangeEdited( min, max );
+            Q_EMIT sliderRangeEdited(min, max);
         }
+
         this->update();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::mousePressEvent ( QMouseEvent* event )
+void QRangeSlider::mousePressEvent(QMouseEvent* event)
 {
     Handle* minHandle = Handle::safeCast(m_minHandle);
     Handle* maxHandle = Handle::safeCast(m_maxHandle);
@@ -475,20 +480,20 @@ void QRangeSlider::mousePressEvent ( QMouseEvent* event )
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::mouseReleaseEvent ( QMouseEvent* /*event*/)
+void QRangeSlider::mouseReleaseEvent(QMouseEvent* /*event*/)
 {
     m_current = NULL;
 }
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::wheelEvent ( QWheelEvent* event )
+void QRangeSlider::wheelEvent(QWheelEvent* event)
 {
     Handle* minHandle = Handle::safeCast(m_minHandle);
     Handle* maxHandle = Handle::safeCast(m_maxHandle);
     Window* window    = Window::safeCast(m_window);
 
-    int delta = this->size().width()/( ((double) event->delta())/4. );
+    int delta = this->size().width() / (((double) event->delta()) / 4.);
     int low   = minHandle->pos();
     int high  = maxHandle->pos();
 
@@ -498,10 +503,10 @@ void QRangeSlider::wheelEvent ( QWheelEvent* event )
         {
             int diff    = (high - low);
             int minDiff = minHandle->fromFloatingPos(m_minimumMinMaxDelta);
-            delta = std::max(delta,  -(diff - minDiff)/2);
+            delta = std::max(delta, -(diff - minDiff) / 2);
         }
 
-        low  = minHandle->setPos(low -  delta);
+        low  = minHandle->setPos(low - delta);
         high = maxHandle->setPos(high + delta);
         window->setPos(low, high);
     }
@@ -512,19 +517,21 @@ void QRangeSlider::wheelEvent ( QWheelEvent* event )
 
     double min = minHandle->floatingPos();
     double max = maxHandle->floatingPos();
-    if( this->movedTo(min, max) )
+    if(this->movedTo(min, max))
     {
-        Q_EMIT sliderRangeEdited( min, max );
+        Q_EMIT sliderRangeEdited(min, max);
     }
+
     this->update();
 }
 
 //------------------------------------------------------------------------------
 
-void QRangeSlider::resizeEvent ( QResizeEvent* event )
+void QRangeSlider::resizeEvent(QResizeEvent* event)
 {
     this->setPos(m_minValue, m_maxValue);
 }
 
 } // namespace widget
+
 } // namespace sight::ui::qt

@@ -44,16 +44,19 @@ std::string getVideoDir()
 
     if(prefComposite)
     {
-        data::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
+        data::Composite::IteratorType iterVideoDir = prefComposite->find(s_VIDEO_DIR_PREF);
         const bool videoFound                      = (iterVideoDir != prefComposite->end());
-        if (videoFound)
+        if(videoFound)
         {
             data::String::sptr videoDir = data::String::dynamicCast(iterVideoDir->second);
-            SIGHT_ERROR_IF("Wrong type of preference : '" + s_VIDEO_DIR_PREF + "' parameter must be a string",
-                           !videoDir);
+            SIGHT_ERROR_IF(
+                "Wrong type of preference : '" + s_VIDEO_DIR_PREF + "' parameter must be a string",
+                !videoDir
+            );
             videoDirectory = videoDir->value();
         }
     }
+
     return videoDirectory;
 }
 

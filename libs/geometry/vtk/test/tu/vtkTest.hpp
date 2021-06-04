@@ -29,17 +29,20 @@
 
 namespace sight::geometry::vtk
 {
+
 namespace ut
 {
 
 class vtkTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( vtkTest );
+
+    CPPUNIT_TEST_SUITE(vtkTest);
     CPPUNIT_TEST(computeCenterOfMass);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -56,4 +59,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::vtk

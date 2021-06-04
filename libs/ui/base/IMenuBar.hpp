@@ -39,7 +39,7 @@ class UI_BASE_CLASS_API IMenuBar : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IMenuBar, service::IService)
+    SIGHT_DECLARE_SERVICE(IMenuBar, service::IService);
 
     /// Method called when a menu service is stopping
     UI_BASE_API void menuServiceStopping(std::string menuSrvSID);

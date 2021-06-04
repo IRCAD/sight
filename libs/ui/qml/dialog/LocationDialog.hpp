@@ -50,7 +50,7 @@ Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
 
 public:
 
-    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>);
 
     UI_QML_API LocationDialog(ui::base::GuiBaseObject::Key key);
 

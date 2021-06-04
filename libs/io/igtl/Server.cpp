@@ -26,10 +26,10 @@
 
 #include <core/spyLog.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 namespace sight::io::igtl
 {
@@ -48,7 +48,7 @@ Server::Server() :
 
 Server::~Server()
 {
-    if (m_isStarted)
+    if(m_isStarted)
     {
         this->stop();
     }
@@ -76,10 +76,10 @@ void Server::runServer()
 {
     Client::sptr newClient;
 
-    while (this->isStarted())
+    while(this->isStarted())
     {
         newClient = this->waitForConnection();
-        if (newClient != nullptr)
+        if(newClient != nullptr)
         {
             core::mt::ScopedLock lock(m_mutex);
             m_clients.push_back(newClient);
@@ -93,9 +93,9 @@ void Server::broadcast(const data::Object::csptr& obj)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); )
+    for(it = m_clients.begin() ; it != m_clients.end() ; )
     {
-        if (!(*it)->sendObject(obj))
+        if(!(*it)->sendObject(obj))
         {
             core::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
@@ -114,9 +114,9 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); )
+    for(it = m_clients.begin() ; it != m_clients.end() ; )
     {
-        if (!(*it)->sendMsg(msg))
+        if(!(*it)->sendMsg(msg))
         {
             core::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
@@ -131,11 +131,11 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-void Server::start (std::uint16_t port)
+void Server::start(std::uint16_t port)
 {
     core::mt::ScopedLock lock(m_mutex);
 
-    if (m_isStarted)
+    if(m_isStarted)
     {
         throw Exception("Server already started");
     }
@@ -144,25 +144,27 @@ void Server::start (std::uint16_t port)
     // Ask m_serverSocket to give us the real port number (ex: if port is 0, it will use the first available port).
     m_port = m_serverSocket->GetServerPort();
 
-    if (result != Server::s_SUCCESS)
+    if(result != Server::s_SUCCESS)
     {
-        throw Exception("Cannot create server on port : " + ::boost::lexical_cast< std::string >(port));
+        throw Exception("Cannot create server on port : " + ::boost::lexical_cast<std::string>(port));
     }
+
     m_isStarted = true;
 }
 
 //------------------------------------------------------------------------------
 
-Client::sptr Server::waitForConnection (int msec)
+Client::sptr Server::waitForConnection(int msec)
 {
     ::igtl::ClientSocket::Pointer clientSocket;
     Client::sptr client;
 
     clientSocket = m_serverSocket->WaitForConnection(static_cast<unsigned long>(msec));
-    if (clientSocket.IsNotNull())
+    if(clientSocket.IsNotNull())
     {
-        client = std::make_shared< Client >(clientSocket);
+        client = std::make_shared<Client>(clientSocket);
     }
+
     return client;
 }
 
@@ -171,7 +173,7 @@ Client::sptr Server::waitForConnection (int msec)
 void Server::stop()
 {
     core::mt::ScopedLock lock(m_mutex);
-    if (!m_isStarted)
+    if(!m_isStarted)
     {
         throw io::igtl::Exception("Server is already stopped");
     }
@@ -191,14 +193,15 @@ size_t Server::getNumberOfClients() const
 
         return m_clients.size();
     }
+
     return 0;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
+std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 {
-    std::vector< ::igtl::MessageHeader::Pointer > headerMsgs;
+    std::vector< ::igtl::MessageHeader::Pointer> headerMsgs;
 
     core::mt::ScopedLock lock(m_mutex);
 
@@ -219,17 +222,17 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
         {
             const int sizeReceive = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
-            if (sizeReceive == -1 || sizeReceive == 0)
+            if(sizeReceive == -1 || sizeReceive == 0)
             {
-                headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+                headerMsgs.push_back(::igtl::MessageHeader::Pointer());
             }
             else
             {
-                if (sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
+                if(sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
                 {
-                    headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+                    headerMsgs.push_back(::igtl::MessageHeader::Pointer());
                 }
-                else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+                else if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
                 {
                     const std::string deviceName = headerMsg->GetDeviceName();
 
@@ -237,21 +240,22 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
                     {
                         if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
                         {
-                            headerMsgs.push_back( headerMsg );
+                            headerMsgs.push_back(headerMsg);
                         }
                         else
                         {
-                            headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+                            headerMsgs.push_back(::igtl::MessageHeader::Pointer());
                         }
                     }
                     else
                     {
-                        headerMsgs.push_back( headerMsg );
+                        headerMsgs.push_back(headerMsg);
                     }
                 }
             }
         }
     }
+
     return headerMsgs;
 }
 
@@ -269,40 +273,43 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
 
     const int result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
-    if (result == -1)
+    if(result == -1)
     {
         return ::igtl::MessageBase::Pointer();
     }
 
     const int unpackResult = msg->Unpack(1);
-    if (unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+    if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
     }
+
     throw Exception("Body pack is not valid");
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< data::Object::sptr > Server::receiveObjects(std::vector<std::string>& deviceNames)
+std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>& deviceNames)
 {
-    std::vector< data::Object::sptr > objVect;
-    std::vector< ::igtl::MessageHeader::Pointer > headerMsgVect = this->receiveHeaders();
-    size_t client                                               = 0;
+    std::vector<data::Object::sptr> objVect;
+    std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
+    size_t client                                              = 0;
     for(const auto& headerMsg : headerMsgVect)
     {
-        if (headerMsg.IsNotNull())
+        if(headerMsg.IsNotNull())
         {
             ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg, client);
-            if (msg.IsNotNull())
+            if(msg.IsNotNull())
             {
                 detail::DataConverter::sptr converter = detail::DataConverter::getInstance();
                 objVect.push_back(converter->fromIgtlMessage(msg));
                 deviceNames.push_back(headerMsg->GetDeviceName());
             }
         }
+
         ++client;
     }
+
     return objVect;
 }
 
@@ -320,4 +327,5 @@ void Server::setMessageDeviceName(const std::string& deviceName)
 }
 
 //------------------------------------------------------------------------------
-}//namespace sight::io::igtl
+
+} //namespace sight::io::igtl

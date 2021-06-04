@@ -29,13 +29,15 @@
 
 namespace sight::geometry::eigen
 {
+
 namespace ut
 {
 
 class EigenToolsTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( EigenToolsTest );
+
+    CPPUNIT_TEST_SUITE(EigenToolsTest);
     CPPUNIT_TEST(f4sToEigen);
     CPPUNIT_TEST(eigenToF4s);
     CPPUNIT_TEST(float16ToEigen);
@@ -44,6 +46,7 @@ private:
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -66,4 +69,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::eigen

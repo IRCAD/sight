@@ -26,16 +26,18 @@
 
 namespace sight::core::tools
 {
+
 namespace ut
 {
 
 class StringizerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( StringizerTest );
-CPPUNIT_TEST( convertTest );
+CPPUNIT_TEST_SUITE(StringizerTest);
+CPPUNIT_TEST(convertTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -44,4 +46,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::core::tools

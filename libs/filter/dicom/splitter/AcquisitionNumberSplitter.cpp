@@ -28,10 +28,11 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::AcquisitionNumberSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::AcquisitionNumberSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -77,4 +78,5 @@ bool AcquisitionNumberSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

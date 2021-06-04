@@ -30,8 +30,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace tid
 {
 
@@ -39,10 +41,10 @@ namespace tid
  * @brief Fiducial TID
  * @see TID t1tt3 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API Fiducial : public io::dicom::reader::tid::TemplateID< data::Image >
+class IO_DICOM_CLASS_API Fiducial : public io::dicom::reader::tid::TemplateID<data::Image>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -51,11 +53,13 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API Fiducial(const CSPTR(data::DicomSeries)& dicomSeries,
-                          const SPTR(::gdcm::Reader)& reader,
-                          const SPTR(io::dicom::container::DicomInstance)& instance,
-                          const data::Image::sptr& image,
-                          const core::log::Logger::sptr& logger);
+    IO_DICOM_API Fiducial(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Image::sptr& image,
+        const core::log::Logger::sptr& logger
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Fiducial();
@@ -76,9 +80,10 @@ protected:
      * @param label Landmark label
      */
     void addLandmark(double x, double y, double z, const std::string& label);
-
 };
 
 } // namespace tid
+
 } // namespace reader
+
 } // namespace sight::io::dicom

@@ -53,20 +53,20 @@ size_t countSubAtoms(const ::boost::property_tree::ptree& pt)
     size_t nb = 0;
     for(const ::boost::property_tree::ptree::value_type& v : pt)
     {
-        if(
-            (v.first == "numeric")  ||
-            (v.first == "string")   ||
-            (v.first == "boolean")  ||
-            (v.first == "sequence") ||
-            (v.first == "map")      ||
-            (v.first == "object")   ||
-            (v.first == "blob")
-            )
+        if((v.first == "numeric")
+           || (v.first == "string")
+           || (v.first == "boolean")
+           || (v.first == "sequence")
+           || (v.first == "map")
+           || (v.first == "object")
+           || (v.first == "blob"))
         {
             nb++;
         }
+
         nb += countSubAtoms(v.second);
     }
+
     return nb;
 }
 
@@ -74,8 +74,7 @@ size_t countSubAtoms(const ::boost::property_tree::ptree& pt)
 
 struct PTreeVisitor
 {
-
-    typedef std::map< std::string, sight::atoms::Base::sptr > AtomCacheType;
+    typedef std::map<std::string, sight::atoms::Base::sptr> AtomCacheType;
 
     AtomCacheType m_cache;
     const ::boost::property_tree::ptree& m_root;
@@ -98,6 +97,7 @@ struct PTreeVisitor
         {
             return iter->second;
         }
+
         return AtomCacheType::mapped_type();
     }
 
@@ -105,7 +105,7 @@ struct PTreeVisitor
 
     void cache(const std::string& ptpath, const AtomCacheType::mapped_type& atom)
     {
-        m_cache.insert( AtomCacheType::value_type( ptpath, atom ) );
+        m_cache.insert(AtomCacheType::value_type(ptpath, atom));
     }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ struct PTreeVisitor
 
 //-----------------------------------------------------------------------------
 
-    sight::atoms::Numeric::sptr getNumeric(const ::boost::property_tree::ptree& pt, const std::string& ptpath )
+    sight::atoms::Numeric::sptr getNumeric(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
         sight::atoms::Numeric::sptr atom = sight::atoms::Numeric::New(pt.get<std::string>("numeric.value"));
         this->cache(ptpath, atom);
@@ -128,7 +128,7 @@ struct PTreeVisitor
 
 //-----------------------------------------------------------------------------
 
-    sight::atoms::String::sptr getString(const ::boost::property_tree::ptree& pt, const std::string& ptpath )
+    sight::atoms::String::sptr getString(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
         sight::atoms::String::sptr atom = sight::atoms::String::New(pt.get<std::string>("string.value"));
         this->cache(ptpath, atom);
@@ -137,7 +137,7 @@ struct PTreeVisitor
 
 //-----------------------------------------------------------------------------
 
-    sight::atoms::Sequence::sptr getSequence(const ::boost::property_tree::ptree& pt, const std::string& ptpath )
+    sight::atoms::Sequence::sptr getSequence(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
         sight::atoms::Sequence::sptr atom = sight::atoms::Sequence::New();
         this->cache(ptpath, atom);
@@ -145,14 +145,18 @@ struct PTreeVisitor
         // We cannot assume that boost will give us the values in the right order (see property_tree documentation)
         // Therefore, we need to sort the subatoms by key prior to adding them to the sequence
         std::vector<const ::boost::property_tree::ptree::value_type*> elems;
-        std::for_each(pt.get_child("sequence").begin(), pt.get_child("sequence").end(),
-                      [&](::boost::property_tree::ptree::value_type const& elem)
+        std::for_each(
+            pt.get_child("sequence").begin(),
+            pt.get_child("sequence").end(),
+            [&](::boost::property_tree::ptree::value_type const& elem)
             {
                 elems.push_back(&elem);
             });
-        std::sort(elems.begin(), elems.end(),
-                  [&](const ::boost::property_tree::ptree::value_type* s1,
-                      const ::boost::property_tree::ptree::value_type* s2)
+        std::sort(
+            elems.begin(),
+            elems.end(),
+            [&](const ::boost::property_tree::ptree::value_type* s1,
+                const ::boost::property_tree::ptree::value_type* s2)
             {
                 const unsigned long n1 = std::stoul(s1->first),
                 n2                     = std::stoul(s2->first);
@@ -160,40 +164,42 @@ struct PTreeVisitor
             });
 
         // Elements are now sorted, add them to the sequence
-        for( const ::boost::property_tree::ptree::value_type* val : elems )
+        for(const ::boost::property_tree::ptree::value_type* val : elems)
         {
             std::string subPath              = ptpath + (ptpath.empty() ? "" : ".") + "sequence." + val->first;
-            sight::atoms::Base::sptr subAtom = this->visit(val->second, subPath );
-            atom->push_back( subAtom );
+            sight::atoms::Base::sptr subAtom = this->visit(val->second, subPath);
+            atom->push_back(subAtom);
         }
+
         return atom;
     }
 
 //-----------------------------------------------------------------------------
 
-    sight::atoms::Map::sptr getMap(const ::boost::property_tree::ptree& pt, const std::string& ptpath )
+    sight::atoms::Map::sptr getMap(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
         sight::atoms::Map::sptr atom = sight::atoms::Map::New();
         this->cache(ptpath, atom);
 
-        for( const ::boost::property_tree::ptree::value_type& val :  pt.get_child("map") )
+        for(const ::boost::property_tree::ptree::value_type& val : pt.get_child("map"))
         {
             std::string subPath = ptpath + (ptpath.empty() ? "" : ".") + "map." + val.first + ".value";
 
             ::boost::property_tree::ptree mapChild = val.second;
             ::boost::property_tree::ptree value    = mapChild.get_child("value");
 
-            sight::atoms::Base::sptr subAtom = this->visit( value, subPath );
+            sight::atoms::Base::sptr subAtom = this->visit(value, subPath);
 
             std::string key = mapChild.get<std::string>("key");
-            atom->insert( key, subAtom );
+            atom->insert(key, subAtom);
         }
+
         return atom;
     }
 
 //-----------------------------------------------------------------------------
 
-    sight::atoms::Object::sptr getObject(const ::boost::property_tree::ptree& pt, const std::string& ptpath )
+    sight::atoms::Object::sptr getObject(const ::boost::property_tree::ptree& pt, const std::string& ptpath)
     {
         using ::boost::property_tree::ptree;
         sight::atoms::Object::sptr atom = sight::atoms::Object::New();
@@ -203,24 +209,26 @@ struct PTreeVisitor
         const ptree& attributesTree = pt.get_child("object.attributes");
 
         sight::atoms::Object::MetaInfosType metaInfos;
-        for( const ptree::value_type& val :  metaInfosTree )
+        for(const ptree::value_type& val : metaInfosTree)
         {
             ::boost::property_tree::ptree item = val.second;
 
             sight::atoms::Object::MetaInfosType::value_type value(
-                item.get<std::string>("key"), item.get<std::string>("value") );
-            metaInfos.insert( value );
+                item.get<std::string>("key"), item.get<std::string>("value"));
+            metaInfos.insert(value);
         }
+
         atom->setMetaInfos(metaInfos);
 
         sight::atoms::Object::AttributesType attributes;
-        for( const ptree::value_type& val :  attributesTree )
+        for(const ptree::value_type& val : attributesTree)
         {
-            std::string subPath              = ptpath + (ptpath.empty() ? "" : ".")+ "object.attributes." + val.first;
-            sight::atoms::Base::sptr subAtom = this->visit(val.second, subPath );
+            std::string subPath              = ptpath + (ptpath.empty() ? "" : ".") + "object.attributes." + val.first;
+            sight::atoms::Base::sptr subAtom = this->visit(val.second, subPath);
             sight::atoms::Object::AttributesType::value_type value(val.first, subAtom);
-            attributes.insert( value );
+            attributes.insert(value);
         }
+
         atom->setAttributes(attributes);
 
         // Managing object with no id
@@ -237,6 +245,7 @@ struct PTreeVisitor
     class AtomsBoostIOReadStream : public core::memory::stream::in::IFactory
     {
     public:
+
         AtomsBoostIOReadStream(const io::zip::IReadArchive::sptr& archive, const std::filesystem::path& path) :
             m_archive(archive),
             m_path(path)
@@ -275,20 +284,25 @@ struct PTreeVisitor
                 std::filesystem::path sourceFile    = "";
                 core::memory::FileFormatType format = core::memory::OTHER;
 
-                if( std::filesystem::is_directory(m_archive->getArchivePath()))
+                if(std::filesystem::is_directory(m_archive->getArchivePath()))
                 {
                     sourceFile = m_archive->getArchivePath() / bufFile;
                     format     = core::memory::RAW;
                 }
 
-                buffObj->setIStreamFactory( std::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
-                                            buffSize, sourceFile, format);
+                buffObj->setIStreamFactory(
+                    std::make_shared<AtomsBoostIOReadStream>(m_archive->clone(), bufFile),
+                    buffSize,
+                    sourceFile,
+                    format
+                );
             }
         }
         else
         {
             SIGHT_THROW("Buffer type '" << bufType << "' unknown.");
         }
+
         return atom;
     }
 
@@ -308,39 +322,39 @@ struct PTreeVisitor
             return atom;
         }
 
-        if(pt.count("numeric") == 1 )
+        if(pt.count("numeric") == 1)
         {
-            atom = this->getNumeric( pt, ptpath );
+            atom = this->getNumeric(pt, ptpath);
         }
         else if(pt.count("string") == 1)
         {
-            atom = this->getString( pt, ptpath );
+            atom = this->getString(pt, ptpath);
         }
         else if(pt.count("boolean") == 1)
         {
-            atom = this->getBoolean( pt, ptpath );
+            atom = this->getBoolean(pt, ptpath);
         }
         else if(pt.count("sequence") == 1)
         {
-            atom = this->getSequence( pt, ptpath );
+            atom = this->getSequence(pt, ptpath);
         }
         else if(pt.count("map") == 1)
         {
-            atom = this->getMap( pt, ptpath );
+            atom = this->getMap(pt, ptpath);
         }
         else if(pt.count("object") == 1)
         {
-            atom = this->getObject( pt, ptpath );
+            atom = this->getObject(pt, ptpath);
         }
         else if(pt.count("blob") == 1)
         {
-            atom = this->getBlob( pt, ptpath );
+            atom = this->getBlob(pt, ptpath);
         }
         else if(pt.count("ref") == 1)
         {
             std::string ref                            = pt.get<std::string>("ref");
             const ::boost::property_tree::ptree& refPt = m_root.get_child(ref);
-            atom = this->visit( refPt, ref );
+            atom = this->visit(refPt, ref);
         }
         else
         {
@@ -356,14 +370,15 @@ struct PTreeVisitor
     {
         return this->visit(m_root);
     }
-
 };
 
 //-----------------------------------------------------------------------------
 
-sight::atoms::Base::sptr Reader::read( const io::zip::IReadArchive::sptr& archive,
-                                       const std::filesystem::path& rootFilename,
-                                       FormatType format ) const
+sight::atoms::Base::sptr Reader::read(
+    const io::zip::IReadArchive::sptr& archive,
+    const std::filesystem::path& rootFilename,
+    FormatType format
+) const
 {
     ::boost::property_tree::ptree root;
     sight::atoms::Base::sptr atom;
@@ -384,32 +399,41 @@ sight::atoms::Base::sptr Reader::read( const io::zip::IReadArchive::sptr& archiv
 
     typedef ::boost::property_tree::ptree::const_assoc_iterator PtreeItType;
     PtreeItType hasVersionsIt = root.find("versions");
-    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno versions found in specified file.",
-                   hasVersionsIt == root.not_found());
+    SIGHT_THROW_IF(
+        "Failed to read file '" << rootFilename.string() << "':\nno versions found in specified file.",
+        hasVersionsIt == root.not_found()
+    );
 
     ::boost::property_tree::ptree versions = root.get_child("versions");
 
     PtreeItType hasAtomsVersionsIt = versions.find(Writer::s_ATOMS_VERSION_KEY);
-    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno atoms version found in specified file.",
-                   hasAtomsVersionsIt == versions.not_found());
+    SIGHT_THROW_IF(
+        "Failed to read file '" << rootFilename.string() << "':\nno atoms version found in specified file.",
+        hasAtomsVersionsIt == versions.not_found()
+    );
 
     PtreeItType hasWriterVersionsIt = versions.find(Writer::s_WRITER_VERSION_KEY);
-    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno writer version found in specified file",
-                   hasWriterVersionsIt == versions.not_found());
+    SIGHT_THROW_IF(
+        "Failed to read file '" << rootFilename.string() << "':\nno writer version found in specified file",
+        hasWriterVersionsIt == versions.not_found()
+    );
 
-    const std::string& atomsVersion  = versions.get< std::string >(Writer::s_ATOMS_VERSION_KEY);
-    const std::string& writerVersion = versions.get< std::string >(Writer::s_WRITER_VERSION_KEY);
+    const std::string& atomsVersion  = versions.get<std::string>(Writer::s_ATOMS_VERSION_KEY);
+    const std::string& writerVersion = versions.get<std::string>(Writer::s_WRITER_VERSION_KEY);
 
     SIGHT_THROW_IF(
         "Failed to read file '" << rootFilename.string() << "':\n"
-                                << "Detected file version is '" << writerVersion << "'"
-                                << " whereas current version is '" << Writer::s_VERSION << "'",
-            Writer::s_VERSION != writerVersion);
+        << "Detected file version is '" << writerVersion << "'"
+        << " whereas current version is '" << Writer::s_VERSION << "'",
+        Writer::s_VERSION != writerVersion
+    );
 
-    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\n"
-                                           << "Detected atoms version is '" << atomsVersion << "'"
-                                           << " whereas current version is '" << sight::atoms::Base::s_VERSION << "'",
-                   sight::atoms::Base::s_VERSION != atomsVersion);
+    SIGHT_THROW_IF(
+        "Failed to read file '" << rootFilename.string() << "':\n"
+        << "Detected atoms version is '" << atomsVersion << "'"
+        << " whereas current version is '" << sight::atoms::Base::s_VERSION << "'",
+        sight::atoms::Base::s_VERSION != atomsVersion
+    );
 
     PTreeVisitor visitor(root, archive);
     atom = visitor.visit();
@@ -417,4 +441,4 @@ sight::atoms::Base::sptr Reader::read( const io::zip::IReadArchive::sptr& archiv
     return atom;
 }
 
-}
+} // namespace sight::io

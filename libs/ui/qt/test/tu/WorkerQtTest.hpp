@@ -36,7 +36,8 @@ namespace ut
 class WorkerQtTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( WorkerQtTest );
+
+    CPPUNIT_TEST_SUITE(WorkerQtTest);
 
     CPPUNIT_TEST(initTest);
     CPPUNIT_TEST(twiceInitTest);
@@ -49,6 +50,7 @@ private:
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -68,4 +70,5 @@ protected:
 };
 
 } //namespace ut
+
 } //namespace sight::ui::qt

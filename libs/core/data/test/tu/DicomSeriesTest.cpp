@@ -31,10 +31,11 @@
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::DicomSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::DicomSeriesTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -63,7 +64,7 @@ void DicomSeriesTest::dicomTest()
     //Create Path
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicomtest";
     std::filesystem::create_directories(path);
-    const std::string filename = path.string()+"/"+"file";
+    const std::string filename = path.string() + "/" + "file";
     std::ofstream file;
     file.open(filename.c_str(), std::ofstream::out);
     file << "42";
@@ -88,4 +89,5 @@ void DicomSeriesTest::dicomTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

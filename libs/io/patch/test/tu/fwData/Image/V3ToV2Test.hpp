@@ -26,10 +26,13 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Image
 {
 
@@ -38,11 +41,12 @@ namespace Image
  */
 class V3ToV2Test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( V3ToV2Test );
-CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE(V3ToV2Test);
+CPPUNIT_TEST(applyPatchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -51,6 +55,9 @@ public:
 };
 
 } //namespace Image
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

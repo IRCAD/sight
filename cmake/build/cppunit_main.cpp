@@ -41,21 +41,22 @@
 class MiniLauncher
 {
 public:
-    MiniLauncher( std::filesystem::path profilePath )
+
+    MiniLauncher(std::filesystem::path profilePath)
     {
         ::sight::core::runtime::init();
         const auto& runtime = ::sight::core::runtime::Runtime::get();
 
         const std::filesystem::path cwd = runtime.getWorkingPath();
 
-        if (!std::filesystem::exists( profilePath ))
+        if(!std::filesystem::exists(profilePath))
         {
             profilePath = cwd / profilePath;
         }
 
-        if (!std::filesystem::exists( profilePath ))
+        if(!std::filesystem::exists(profilePath))
         {
-            throw (std::invalid_argument("<" + profilePath.string() + "> not found." ));
+            throw(std::invalid_argument("<" + profilePath.string() + "> not found."));
         }
 
         m_profile = ::sight::core::runtime::io::ProfileReader::createProfile(profilePath);
@@ -73,8 +74,8 @@ public:
     }
 
 private:
-    ::sight::core::runtime::Profile::sptr m_profile;
 
+    ::sight::core::runtime::Profile::sptr m_profile;
 };
 
 #endif
@@ -85,7 +86,7 @@ struct Options
     bool xmlReport;
     bool listTests;
     std::string xmlReportFile;
-    std::vector< std::string > testsToRun;
+    std::vector<std::string> testsToRun;
 
 #ifdef MODULE_TEST_PROFILE
     std::string profile;
@@ -97,7 +98,7 @@ struct Options
         listTests(false)
 #ifdef MODULE_TEST_PROFILE
         ,
-        profile( MODULE_TEST_PROFILE )
+        profile(MODULE_TEST_PROFILE)
 #endif
     {
     }
@@ -106,46 +107,46 @@ struct Options
 
     bool parse(int argc, char* argv[])
     {
-        if (argc < 1)
+        if(argc < 1)
         {
             return true;
         }
 
-        const std::string programName( *argv != 0 ? *argv : "test_runner" );
+        const std::string programName(*argv != 0 ? *argv : "test_runner");
 
         char** args    = argv + 1;
         char** argsEnd = argv + argc;
-        while (args < argsEnd)
+        while(args < argsEnd)
         {
             std::string arg(*args);
 
             if(arg == "--help" || arg == "-h")
             {
                 std::cout
-                    << "usage : " << programName << " "
-                    << "[--help|-h] [--verbose|-v] [--xml|-x] [-o FILE] [--list|-l] [test1 ... testN]"
-                    << std::endl
-                    << "    -h,--help         Shows this help" << std::endl
-                    << "    -s,--verbose      Shows each run test name and it status" << std::endl
-                    << "    -x,--xml          Output results to a xml file" << std::endl
-                    << "    -o FILE           Specify xml file name" << std::endl
-                    << "    -l,--list         Lists test names" << std::endl
+                << "usage : " << programName << " "
+                << "[--help|-h] [--verbose|-v] [--xml|-x] [-o FILE] [--list|-l] [test1 ... testN]"
+                << std::endl
+                << "    -h,--help         Shows this help" << std::endl
+                << "    -s,--verbose      Shows each run test name and it status" << std::endl
+                << "    -x,--xml          Output results to a xml file" << std::endl
+                << "    -o FILE           Specify xml file name" << std::endl
+                << "    -l,--list         Lists test names" << std::endl
 #ifdef MODULE_TEST_PROFILE
-                    << "    -p,--profile      Profile to launch for module tests" << std::endl
+                << "    -p,--profile      Profile to launch for module tests" << std::endl
 #endif
-                    << "    test1 ... testN   Test names to run" << std::endl
-                    << std::endl;
+                << "    test1 ... testN   Test names to run" << std::endl
+                << std::endl;
                 return false;
             }
-            else if( arg == "--verbose" || arg == "-v")
+            else if(arg == "--verbose" || arg == "-v")
             {
                 this->verbose = true;
             }
-            else if( arg == "--xml" || arg == "-x")
+            else if(arg == "--xml" || arg == "-x")
             {
                 this->xmlReport = true;
             }
-            else if( arg == "-o")
+            else if(arg == "-o")
             {
                 args++;
                 if(args >= argsEnd)
@@ -153,14 +154,16 @@ struct Options
                     std::cerr << "value for -o is missing" << std::endl;
                     return false;
                 }
+
                 this->xmlReportFile = std::string(*args);
             }
-            else if( arg == "--list" || arg == "-l")
+            else if(arg == "--list" || arg == "-l")
             {
                 this->listTests = true;
             }
+
 #ifdef MODULE_TEST_PROFILE
-            else if( arg == "--profile" || arg == "-p")
+            else if(arg == "--profile" || arg == "-p")
             {
                 args++;
                 if(args >= argsEnd)
@@ -168,6 +171,7 @@ struct Options
                     std::cerr << "value for -p/--profile is missing" << std::endl;
                     return false;
                 }
+
                 this->profile = std::string(*args);
             }
 #endif
@@ -178,50 +182,51 @@ struct Options
 
             args++;
         }
+
         return true;
     }
-
 };
 
 //------------------------------------------------------------------------------
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
     Options options;
 
     const std::string testExecutable = (argc >= 1) ? std::string(argv[0]) : "unknown";
     options.xmlReportFile = testExecutable + "-cppunit-report.xml";
 
-    if (!options.parse(argc, argv))
+    if(!options.parse(argc, argv))
     {
         return 1;
     }
 
 #ifdef MODULE_TEST_PROFILE
-    MiniLauncher miniLaucher( options.profile );
+    MiniLauncher miniLaucher(options.profile);
 #endif
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
-    if( options.listTests )
+    if(options.listTests)
     {
-        for(int i = 0; i < testSuite->getChildTestCount(); ++i)
+        for(int i = 0 ; i < testSuite->getChildTestCount() ; ++i)
         {
             std::cout << testSuite->getChildTestAt(i)->getName() << std::endl;
         }
+
         return 0;
     }
 
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
-    runner.addTest( testSuite );
+    runner.addTest(testSuite);
 
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;
 
     // Add a listener that colllects test result
     CPPUNIT_NS::TestResultCollector result;
-    controller.addListener( &result );
+    controller.addListener(&result);
 
     // Listener that prints the name of each test before running it.
     CPPUNIT_NS::BriefTestProgressListener BriefProgress;
@@ -231,11 +236,11 @@ int main( int argc, char* argv[] )
 
     if(options.verbose)
     {
-        controller.addListener( &BriefProgress );
+        controller.addListener(&BriefProgress);
     }
     else
     {
-        controller.addListener( &textProgress );
+        controller.addListener(&textProgress);
     }
 
     if(options.testsToRun.empty())
@@ -247,14 +252,14 @@ int main( int argc, char* argv[] )
     {
         try
         {
-            runner.run( controller, test );
+            runner.run(controller, test);
         }
-        catch ( std::exception& e )
+        catch(std::exception& e)
         {
             std::cerr << "[" << ((test.empty()) ? "All tests" : test) << "]" << "Error: " << e.what() << std::endl;
             return 1;
         }
-        catch ( ... )
+        catch(...)
         {
             std::cerr << "[" << ((test.empty()) ? "All tests" : test) << "]" << "Unexpected error. " << std::endl;
             return 1;
@@ -262,18 +267,18 @@ int main( int argc, char* argv[] )
     }
 
     // Print test results in a compiler compatible format.
-    CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
+    CPPUNIT_NS::CompilerOutputter outputter(&result, std::cerr);
     outputter.write();
 
     if(options.xmlReport)
     {
-        std::ofstream file( options.xmlReportFile.c_str() );
-        CPPUNIT_NS::XmlOutputter xml( &result, file );
+        std::ofstream file(options.xmlReportFile.c_str());
+        CPPUNIT_NS::XmlOutputter xml(&result, file);
         xml.write();
         file.close();
     }
 
-    if (result.testFailuresTotal())
+    if(result.testFailuresTotal())
     {
         return 1;
     }

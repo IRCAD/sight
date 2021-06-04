@@ -70,10 +70,11 @@ namespace sight::module::ui::qml::model
 class MODULE_UI_QML_CLASS_API SModelSeriesList : public sight::ui::qml::IQmlEditor
 {
 Q_OBJECT
-Q_PROPERTY(OrganListModel* listModel MEMBER m_listModel)
+Q_PROPERTY(OrganListModel * listModel MEMBER m_listModel)
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SModelSeriesList, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SModelSeriesList() noexcept;
@@ -106,10 +107,10 @@ protected:
     KeyConnectionsMap getAutoConnections() const override;
 
     static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
-    typedef core::com::Signal< void (data::Object::sptr) > ReconstructionSelectedSignalType;
+    typedef core::com::Signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
 
     static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
-    typedef core::com::Signal< void () > EmptiedSelectionSignalType;
+    typedef core::com::Signal<void ()> EmptiedSelectionSignalType;
 
 protected Q_SLOTS:
 

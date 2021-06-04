@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Landmarks))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Landmarks))
 {
     builder.base< ::sight::data::Object>()
     .tag("object_version", "1")

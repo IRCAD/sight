@@ -28,17 +28,21 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace exception
 {
 
 /// Object not found exception.
 struct ObjectNotFound : core::Exception
 {
-    DATA_API ObjectNotFound ( const std::string& err );
+    DATA_API ObjectNotFound(const std::string& err);
 };
 
 } // namespace exception
+
 } // namespace reflection
+
 } // namespace sight::data

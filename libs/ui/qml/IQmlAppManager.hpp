@@ -66,7 +66,9 @@ class UI_QML_CLASS_QT_API IQmlAppManager : public QObject,
                                            public service::AppManager
 {
 Q_OBJECT
+
 public:
+
     /// Constructor.
     UI_QML_QT_API IQmlAppManager() noexcept;
 
@@ -119,7 +121,8 @@ public Q_SLOTS:
     UI_QML_QT_API virtual void replaceInputs(const QVariant& map) final;
 
 protected:
-    bool m_isInitialized{false};
+
+    bool m_isInitialized {false};
 };
 
 } // fwQml

@@ -30,16 +30,20 @@
 
 namespace cv
 {
+
 namespace aruco
 {
+
 class Dictionary;
 class CharucoBoard;
 
 } //namespace cv
+
 } //namespace aruco
 
 namespace sight::module::geometry::vision::charuco
 {
+
 /**
  * @brief   SOpenCVExtrinsic service that computes charuco extrinsic calibration with openCV.
  *
@@ -71,10 +75,11 @@ namespace sight::module::geometry::vision::charuco
 class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public service::ICalibration
 {
 public:
-    SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, sight::service::ICalibration)
+
+    SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, sight::service::ICalibration);
 
     /// Double changed signal type
-    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SOpenCVExtrinsic() noexcept;
@@ -114,9 +119,11 @@ private:
      * @param _boardSize: board size.
      * @return true if a degenerateConfiguration is detected, false otherwise.
      */
-    bool checkDegeneratedConfiguration(const std::vector< ::cv::Point2f >& _undistortedPoints,
-                                       const std::vector< ::cv::Point2f >& _boardCoords,
-                                       const cv::Size& _boardSize);
+    bool checkDegeneratedConfiguration(
+        const std::vector< ::cv::Point2f>& _undistortedPoints,
+        const std::vector< ::cv::Point2f>& _boardCoords,
+        const cv::Size& _boardSize
+    );
 
     /// FwId of the first calibrationInfo
     std::string m_calibrationInfo1ID;
@@ -145,4 +152,5 @@ private:
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
     size_t m_camIndex;
 };
+
 } // namespace sight::module::geometry::vision::charuco

@@ -37,14 +37,15 @@ namespace sight::core::jobs
 class CORE_CLASS_API Observer : public IJob
 {
 public:
+
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR (core::jobs::Observer) sptr;
-    typedef WPTR (core::jobs::Observer) wptr;
+    typedef SPTR(core::jobs::Observer) sptr;
+    typedef WPTR(core::jobs::Observer) wptr;
 
     /// Progress callback type
-    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function<void (std::uint64_t)> ProgressCallback;
     /**  @} */
 
     /**
@@ -97,11 +98,10 @@ protected:
     CORE_API virtual SharedFuture runImpl();
 
     /// Task type
-    typedef std::packaged_task< void () > PackagedTask;
+    typedef std::packaged_task<void ()> PackagedTask;
 
     /// Task observed
     PackagedTask m_finishTask;
-
 };
 
 } //namespace sight::core::jobs

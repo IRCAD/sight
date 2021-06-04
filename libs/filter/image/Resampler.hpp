@@ -29,12 +29,12 @@
 
 namespace sight::filter::image
 {
+
 /**
  * @brief The Resampler class
  */
 class FILTER_IMAGE_CLASS_API Resampler
 {
-
 public:
 
     /**
@@ -44,10 +44,12 @@ public:
      * @param[in] _trf transform applied to the input.
      * @param[in] _targetImg image used to set the desired origin, spacing and size.
      */
-    static FILTER_IMAGE_API void resample(const data::Image::csptr& _inImg,
-                                          const data::Image::sptr& outImg,
-                                          const data::Matrix4::csptr& _trf,
-                                          const data::Image::csptr& _targetImg = nullptr);
+    static FILTER_IMAGE_API void resample(
+        const data::Image::csptr& _inImg,
+        const data::Image::sptr& outImg,
+        const data::Matrix4::csptr& _trf,
+        const data::Image::csptr& _targetImg = nullptr
+    );
 
     /**
      * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
@@ -57,9 +59,11 @@ public:
      * @return resampled image.
      */
     [[deprecated("Will be removed in sigth 22.0")]]
-    static FILTER_IMAGE_API data::Image::sptr resample(const data::Image::csptr& _img,
-                                                       const data::Matrix4::csptr& _trf,
-                                                       const data::Image::SpacingType& _outputSpacing);
+    static FILTER_IMAGE_API data::Image::sptr resample(
+        const data::Image::csptr& _img,
+        const data::Matrix4::csptr& _trf,
+        const data::Image::SpacingType& _outputSpacing
+    );
 
     /**
      * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
@@ -68,10 +72,11 @@ public:
      * @param _outputSpacing desired sampling rate.
      * @return resampled image.
      */
-    static FILTER_IMAGE_API data::Image::sptr resample(const data::Image::csptr& _img,
-                                                       const data::Matrix4::csptr& _trf,
-                                                       const data::Image::Spacing& _outputSpacing);
-
+    static FILTER_IMAGE_API data::Image::sptr resample(
+        const data::Image::csptr& _img,
+        const data::Matrix4::csptr& _trf,
+        const data::Image::Spacing& _outputSpacing
+    );
 };
 
-}// namespace sight::filter::image
+} // namespace sight::filter::image

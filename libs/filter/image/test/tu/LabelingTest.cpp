@@ -23,18 +23,19 @@
 #include "LabelingTest.hpp"
 
 #include <data/Array.hpp>
-#include <data/Image.hpp>
-#include <data/PointList.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+#include <data/PointList.hpp>
 
 #include <filter/image/Labeling.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::LabelingTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::LabelingTest);
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -70,11 +71,11 @@ void LabelingTest::computeCentroids()
     const auto dumpLock = img->lock();
 
     // Setup image with 0 values
-    for (unsigned int x = 0; x < imgSize[0]; ++x)
+    for(unsigned int x = 0 ; x < imgSize[0] ; ++x)
     {
-        for (unsigned int y = 0; y < imgSize[1]; ++y)
+        for(unsigned int y = 0 ; y < imgSize[1] ; ++y)
         {
-            for (unsigned int z = 0; z < imgSize[2]; ++z)
+            for(unsigned int z = 0 ; z < imgSize[2] ; ++z)
             {
                 img->at<std::uint8_t>(x, y, z) = val;
             }
@@ -82,30 +83,30 @@ void LabelingTest::computeCentroids()
     }
 
     // Add pre-defined features into the images
-    std::vector< std::vector<unsigned int> > featureOrigin;
-    std::vector< std::vector<unsigned int> > featureSize;
+    std::vector<std::vector<unsigned int> > featureOrigin;
+    std::vector<std::vector<unsigned int> > featureSize;
     val = 255;
 
     // feature 1
-    featureOrigin.push_back(std::vector< unsigned int >(3, 96));
-    featureSize.push_back(std::vector< unsigned int >(3, 64));
+    featureOrigin.push_back(std::vector<unsigned int>(3, 96));
+    featureSize.push_back(std::vector<unsigned int>(3, 64));
 
     // feature 2
-    featureOrigin.push_back(std::vector< unsigned int >(3, 16));
-    featureSize.push_back(std::vector< unsigned int >(3, 16));
+    featureOrigin.push_back(std::vector<unsigned int>(3, 16));
+    featureSize.push_back(std::vector<unsigned int>(3, 16));
 
     // feature 3
-    featureOrigin.push_back(std::vector< unsigned int >(3, 255));
-    featureSize.push_back(std::vector< unsigned int >(3, 1));
+    featureOrigin.push_back(std::vector<unsigned int>(3, 255));
+    featureSize.push_back(std::vector<unsigned int>(3, 1));
 
     // Setup the image with the pre-defined features
-    for (unsigned int f = 0; f < featureOrigin.size(); ++f)
+    for(unsigned int f = 0 ; f < featureOrigin.size() ; ++f)
     {
-        for (unsigned int x = featureOrigin[f][0]; x < featureOrigin[f][0] + featureSize[f][0]; ++x)
+        for(unsigned int x = featureOrigin[f][0] ; x < featureOrigin[f][0] + featureSize[f][0] ; ++x)
         {
-            for (unsigned int y = featureOrigin[f][1]; y < featureOrigin[f][1] + featureSize[f][1]; ++y)
+            for(unsigned int y = featureOrigin[f][1] ; y < featureOrigin[f][1] + featureSize[f][1] ; ++y)
             {
-                for (unsigned int z = featureOrigin[f][2]; z < featureOrigin[f][2] + featureSize[f][2]; ++z)
+                for(unsigned int z = featureOrigin[f][2] ; z < featureOrigin[f][2] + featureSize[f][2] ; ++z)
                 {
                     val                            = static_cast<uint8_t>(f + 1);
                     img->at<std::uint8_t>(x, y, z) = val;
@@ -114,15 +115,15 @@ void LabelingTest::computeCentroids()
         }
     }
 
-    std::vector< std::vector<size_t> > pointListLabels;
-    std::vector< data::PointList::sptr > pointListCentroids;
+    std::vector<std::vector<size_t> > pointListLabels;
+    std::vector<data::PointList::sptr> pointListCentroids;
 
     // Call the ITK operator
     filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
 
-    data::fieldHelper::MedicalImageHelpers::checkLandmarks( img );
+    data::fieldHelper::MedicalImageHelpers::checkLandmarks(img);
     data::PointList::sptr landmarks =
-        img->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
+        img->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
 
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);
@@ -130,7 +131,7 @@ void LabelingTest::computeCentroids()
     CPPUNIT_ASSERT_EQUAL(landmarks->getPoints().size(), featureOrigin.size());
 
     // Check that the landmarks are placed at the centroids of the defined features
-    for (unsigned int f = 0; f < featureOrigin.size(); ++f)
+    for(unsigned int f = 0 ; f < featureOrigin.size() ; ++f)
     {
         data::Point::sptr p = landmarks->getPoints().at(f);
 
@@ -143,4 +144,5 @@ void LabelingTest::computeCentroids()
 //------------------------------------------------------------------------------
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

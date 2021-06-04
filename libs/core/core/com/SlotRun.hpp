@@ -31,13 +31,15 @@
 
 namespace sight::core::thread
 {
+
 class Worker;
+
 }
 
 namespace sight::core::com
 {
 
-template< typename F >
+template<typename F>
 struct SlotRun;
 
 /**
@@ -45,21 +47,20 @@ struct SlotRun;
  *
  * @tparam A Slot's arguments types.
  */
-template< typename ... A >
-struct CORE_CLASS_API SlotRun< void (A ...) > : SlotBase
+template<typename ... A>
+struct CORE_CLASS_API SlotRun<void(A ...)>: SlotBase
 {
-
     /**
      * @name Typedefs
      * @{ */
-    typedef void SignatureType (A ...);
-    typedef SlotRun< SignatureType > SelfType;
-    typedef SPTR ( SelfType ) sptr;
-    typedef WPTR ( SelfType ) wptr;
+    typedef void SignatureType(A ...);
+    typedef SlotRun<SignatureType> SelfType;
+    typedef SPTR(SelfType) sptr;
+    typedef WPTR(SelfType) wptr;
     /**  @} */
 
     SlotRun() :
-        SlotBase( sizeof ... (A) )
+        SlotBase(sizeof...(A))
     {
     }
 
@@ -77,7 +78,7 @@ struct CORE_CLASS_API SlotRun< void (A ...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(core::thread::Worker)& worker, A ... args ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun(const SPTR(core::thread::Worker)& worker, A ... args) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -91,16 +92,15 @@ struct CORE_CLASS_API SlotRun< void (A ...) > : SlotBase
 
     protected:
 
-        template< typename R, typename WEAKCALL >
-        static std::shared_future< R > postWeakCall( const SPTR(core::thread::Worker)& worker, WEAKCALL f );
+        template<typename R, typename WEAKCALL>
+        static std::shared_future<R> postWeakCall(const SPTR(core::thread::Worker)& worker, WEAKCALL f);
 
         /**
          * @brief Binds the given parameters to the run method within a void() function.
          *
          * @return a void() function.
          */
-        virtual std::function< void() > bindRun( A ... args  ) const;
-
+        virtual std::function<void()> bindRun(A ... args) const;
 };
 
 } // namespace sight::core::com

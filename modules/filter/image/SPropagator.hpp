@@ -85,7 +85,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IOperator
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPropagator, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SPropagator, ::sight::service::IOperator);
 
     /// Initializes slots signals and member variables.
     MODULE_FILTER_IMAGE_API SPropagator();

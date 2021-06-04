@@ -48,7 +48,6 @@ struct SERVICE_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides stop method. Do nothing
     SERVICE_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::service

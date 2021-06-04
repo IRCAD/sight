@@ -26,24 +26,27 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class ArrayTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( ArrayTest );
-    CPPUNIT_TEST( allocation );
-    CPPUNIT_TEST( resize );
-    CPPUNIT_TEST( reallocate );
-    CPPUNIT_TEST( copy );
-    CPPUNIT_TEST( dumpLockTest );
-    CPPUNIT_TEST( bufferAccessTest );
-    CPPUNIT_TEST( constArrayTest );
-    CPPUNIT_TEST( emptyIteratorTest );
+
+    CPPUNIT_TEST_SUITE(ArrayTest);
+    CPPUNIT_TEST(allocation);
+    CPPUNIT_TEST(resize);
+    CPPUNIT_TEST(reallocate);
+    CPPUNIT_TEST(copy);
+    CPPUNIT_TEST(dumpLockTest);
+    CPPUNIT_TEST(bufferAccessTest);
+    CPPUNIT_TEST(constArrayTest);
+    CPPUNIT_TEST(emptyIteratorTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -57,5 +60,7 @@ public:
     void constArrayTest();
     void emptyIteratorTest();
 };
+
 } //namespace ut
+
 } //namespace sight::data

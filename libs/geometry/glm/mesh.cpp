@@ -22,9 +22,9 @@
 
 #include "geometry/glm/mesh.hpp"
 
-#include <core/spyLog.hpp>
-
 #include <glm/glm.hpp>
+
+#include <core/spyLog.hpp>
 
 #include <string>
 
@@ -33,8 +33,12 @@ namespace sight::geometry::glm
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
-                                const ::glm::dvec3& _C)
+::glm::dvec3 toBarycentricCoord(
+    const ::glm::dvec3& _P,
+    const ::glm::dvec3& _A,
+    const ::glm::dvec3& _B,
+    const ::glm::dvec3& _C
+)
 {
     ::glm::dvec3 baryCoord;
 
@@ -58,7 +62,7 @@ namespace sight::geometry::glm
     const double invdenom = 1. / div;
 
     // Barycentric coordinates
-    const double v = ((d11 * d20) - (d01* d21)) * invdenom;
+    const double v = ((d11 * d20) - (d01 * d21)) * invdenom;
     const double w = ((d00 * d21) - (d01 * d20)) * invdenom;
     const double u = 1. - v - w; // deduce last coordinate from the two others.
 
@@ -71,11 +75,14 @@ namespace sight::geometry::glm
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
-                                const ::glm::dvec3& _C,
-                                const ::glm::dvec3& _D)
+::glm::dvec4 toBarycentricCoord(
+    const ::glm::dvec3& _P,
+    const ::glm::dvec3& _A,
+    const ::glm::dvec3& _B,
+    const ::glm::dvec3& _C,
+    const ::glm::dvec3& _D
+)
 {
-
     /*
        In general, a point with barycentric coordinates (u, v, w,h) is inside (or on) the tetrahedron(ABCD)
           if and only if 0 ≤ u, v, w, h ≤ 1, or alternatively
@@ -125,13 +132,16 @@ namespace sight::geometry::glm
     baryCoord[3] = h;
 
     return baryCoord;
-
 }
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
-                                  const ::glm::dvec3& _C)
+::glm::dvec3 fromBarycentricCoord(
+    const ::glm::dvec3& _baryCoord,
+    const ::glm::dvec3& _A,
+    const ::glm::dvec3& _B,
+    const ::glm::dvec3& _C
+)
 {
     ::glm::dvec3 worldCoordinates;
 
@@ -143,8 +153,11 @@ namespace sight::geometry::glm
     [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
 
     // Don't test in release to avoid performance issue.
-    SIGHT_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
-                 , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+    SIGHT_ASSERT(
+        "Wrong barycentric coordinates.(u + v + w = " + std::to_string(sum) + ")"
+        ,
+        sum<1. + 10e-9 && sum>1. - 10e-9
+    );
 
     worldCoordinates = u * _A + v * _B + w * _C;
 
@@ -153,9 +166,13 @@ namespace sight::geometry::glm
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
-                                  const ::glm::dvec3& _C,
-                                  const ::glm::dvec3& _D)
+::glm::dvec3 fromBarycentricCoord(
+    const ::glm::dvec4& _baryCoord,
+    const ::glm::dvec3& _A,
+    const ::glm::dvec3& _B,
+    const ::glm::dvec3& _C,
+    const ::glm::dvec3& _D
+)
 {
     /*
        General formula (if [u, v, w, h] is normalized).
@@ -173,19 +190,25 @@ namespace sight::geometry::glm
     [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
 
     // Don't test in release to avoid performance issue.
-    SIGHT_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
-                 , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+    SIGHT_ASSERT(
+        "Wrong barycentric coordinates.(u + v + w = " + std::to_string(sum) + ")"
+        ,
+        sum<1. + 10e-9 && sum>1. - 10e-9
+    );
 
     return u * _A + v * _B + w * _C + h * _D;
-
 }
 
 //------------------------------------------------------------------------------
 
-bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                         const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D)
+bool isInsideTetrahedron(
+    const ::glm::dvec3& _P,
+    const ::glm::dvec3& _A,
+    const ::glm::dvec3& _B,
+    const ::glm::dvec3& _C,
+    const ::glm::dvec3& _D
+)
 {
-
     /*
        There are several ways to determine if a point is inside a tetrahedron.
        The present algorithm make use of the barycentric coordinates.
@@ -196,21 +219,21 @@ bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
     const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
     return isInsideTetrahedron(barycentricCoord);
 }
+
 //------------------------------------------------------------------------------
 
-bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD)
+bool isInsideTetrahedron(const ::glm::dvec4 barycentricCoordPInsideABCD)
 {
-
     /*
        There are several ways to determine if a point is inside a tetrahedron.
        The present algorithm make use of the barycentric coordinates.
        It checks if all of the barycentric coordinates are in between 0 and 1.
 
      */
-    return 0 <= barycentricCoordPInsideABCD[0] &&  barycentricCoordPInsideABCD[0] <= 1
-           &&  0 <= barycentricCoordPInsideABCD[1] &&  barycentricCoordPInsideABCD[1] <= 1
-           &&  0 <= barycentricCoordPInsideABCD[2] &&  barycentricCoordPInsideABCD[2] <= 1
-           &&  0 <= barycentricCoordPInsideABCD[3] &&  barycentricCoordPInsideABCD[3] <= 1;
+    return 0 <= barycentricCoordPInsideABCD[0] && barycentricCoordPInsideABCD[0] <= 1
+           && 0 <= barycentricCoordPInsideABCD[1] && barycentricCoordPInsideABCD[1] <= 1
+           && 0 <= barycentricCoordPInsideABCD[2] && barycentricCoordPInsideABCD[2] <= 1
+           && 0 <= barycentricCoordPInsideABCD[3] && barycentricCoordPInsideABCD[3] <= 1;
 }
 
 //-----------------------------------------------------------------------------

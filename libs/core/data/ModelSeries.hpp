@@ -26,19 +26,20 @@
 #include "data/DicomSeries.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
+#include <data/factory/new.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <data/factory/new.hpp>
-
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ModelSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ModelSeries))
 
 namespace sight::data
 {
+
 class Reconstruction;
+
 }
 
 namespace sight::data
@@ -49,14 +50,13 @@ namespace sight::data
  */
 class DATA_CLASS_API ModelSeries : public data::Series
 {
-
 public:
 
-    typedef std::vector< SPTR(data::Reconstruction) > ReconstructionVectorType;
+    typedef std::vector<SPTR(data::Reconstruction)> ReconstructionVectorType;
 
-    SIGHT_DECLARE_CLASS(ModelSeries, data::Object, data::factory::New< ModelSeries >)
+    SIGHT_DECLARE_CLASS(ModelSeries, data::Object, data::factory::New<ModelSeries>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ModelSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ModelSeries))
 
     /**
      * @brief Creates the models series.
@@ -71,14 +71,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
     const ReconstructionVectorType& getReconstructionDB() const;
@@ -97,15 +97,15 @@ public:
      * @{
      */
     /// Defines the type of signal sent when a reconstruction is added.
-    typedef core::com::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
+    typedef core::com::Signal<void (ReconstructionVectorType)> ReconstructionsAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
 
     /// Defines the type of signal sent when a reconstruction is removed.
-    typedef core::com::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
+    typedef core::com::Signal<void (ReconstructionVectorType)> ReconstructionsRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -122,7 +122,6 @@ private:
 
     /// Stores the signal emitted when reconstructions are removed.
     ReconstructionsRemovedSignalType ::sptr m_sigReconstructionsRemoved;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -150,7 +149,7 @@ inline data::DicomSeries::csptr ModelSeries::getDicomReference() const
 
 inline void ModelSeries::setDicomReference(const data::DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast< data::DicomSeries >( _reference );
+    m_dicomReference = std::const_pointer_cast<data::DicomSeries>(_reference);
 }
 
 //-----------------------------------------------------------------------------

@@ -51,7 +51,7 @@ CsvIO::~CsvIO()
 //------------------------------------------------------------------------------
 
 typedef ::boost::char_separator<char> CharSeparatorType;
-typedef ::boost::tokenizer< CharSeparatorType > TokenizerType;
+typedef ::boost::tokenizer<CharSeparatorType> TokenizerType;
 
 //------------------------------------------------------------------------------
 
@@ -73,4 +73,5 @@ CsvIO::TokenContainerType CsvIO::getLine(const std::string& separator)
 //------------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::io::dicom

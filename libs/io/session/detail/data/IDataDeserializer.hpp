@@ -44,7 +44,7 @@ class IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IDataDeserializer)
+    SIGHT_DECLARE_CLASS(IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     IDataDeserializer(const IDataDeserializer&)            = delete;

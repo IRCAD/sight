@@ -26,10 +26,11 @@
 #include <data/StructureTraitsDictionary.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::StructureTraitsDictionaryTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::StructureTraitsDictionaryTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -38,8 +39,8 @@ namespace ut
 void StructureTraitsDictionaryTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void StructureTraitsDictionaryTest::tearDown()
@@ -56,7 +57,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     std::string skinType                             = "Skin";
     skin->setType(skinType);
     skin->setClass(data::StructureTraits::ENVIRONMENT);
-    data::Color::sptr skinColor = data::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 1.0f);
+    data::Color::sptr skinColor = data::Color::New(255.0f / 255.0f, 179.0f / 255.0f, 140.0f / 255.0f, 1.0f);
     skin->setColor(skinColor);
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
@@ -69,7 +70,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     data::StructureTraits::sptr liver = data::StructureTraits::New();
     liver->setType("Liver");
     liver->setClass(data::StructureTraits::ORGAN);
-    liver->setColor(data::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));
+    liver->setColor(data::Color::New(204.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f, 1.0));
     data::StructureTraits::CategoryContainer liverCat(1);
     liverCat[0] = data::StructureTraits::ABDOMEN;
     liver->setCategories(liverCat);
@@ -81,7 +82,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     data::StructureTraits::sptr liverTumor = data::StructureTraits::New();
     liverTumor->setType("Liver_Tumor");
     liverTumor->setClass(data::StructureTraits::LESION);
-    liverTumor->setColor(data::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
+    liverTumor->setColor(data::Color::New(0.0f, 179.0f / 255.0f, 0.0f, 1.0f));
     data::StructureTraits::CategoryContainer liverTumorCat(1);
     liverTumorCat[0] = data::StructureTraits::ABDOMEN;
     liverTumor->setCategories(liverTumorCat);
@@ -112,7 +113,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     data::StructureTraits::sptr badClassStructure = data::StructureTraits::New();
     badClassStructure->setType("my_structure");
     badClassStructure->setClass(data::StructureTraits::ORGAN);
-    badClassStructure->setColor(data::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
+    badClassStructure->setColor(data::Color::New(0.0f, 179.0f / 255.0f, 0.0f, 1.0f));
     data::StructureTraits::CategoryContainer structCat(1);
     structCat[0] = data::StructureTraits::ABDOMEN;
     badClassStructure->setCategories(structCat);
@@ -122,7 +123,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     data::StructureTraits::sptr badAttachmentStructure = data::StructureTraits::New();
     badAttachmentStructure->setType("my_structure");
     badAttachmentStructure->setClass(data::StructureTraits::LESION);
-    badAttachmentStructure->setColor(data::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
+    badAttachmentStructure->setColor(data::Color::New(0.0f, 179.0f / 255.0f, 0.0f, 1.0f));
     badAttachmentStructure->setCategories(structCat);
     badAttachmentStructure->setAttachmentType("Unknown");
     CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), core::Exception);
@@ -131,7 +132,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     data::StructureTraits::sptr liver2 = data::StructureTraits::New();
     liver2->setType("Liver");
     liver2->setClass(data::StructureTraits::ORGAN);
-    liver2->setColor(data::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));
+    liver2->setColor(data::Color::New(204.0f / 255.0f, 51.0f / 255.0f, 51.0f / 255.0f, 1.0));
     data::StructureTraits::CategoryContainer liver2Cat(1);
     liver2Cat[0] = data::StructureTraits::ABDOMEN;
     liver2->setCategories(liver2Cat);
@@ -139,4 +140,5 @@ void StructureTraitsDictionaryTest::testAddingStructure()
 }
 
 } //namespace ut
+
 } //namespace sight::data

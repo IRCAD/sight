@@ -28,12 +28,12 @@
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
 class VIZ_SCENE2D_CLASS_API InitQtPen
 {
-
 public:
 
     /// Set a pen a color.
@@ -44,4 +44,5 @@ public:
 };
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

@@ -28,17 +28,19 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace exception
 {
 
 /// Throw this exception when a new data is created with a specific uuid, but this data already exists in system
 struct ATOMS_CLASS_API ClassnameMismatch : core::Exception
 {
-    ATOMS_API ClassnameMismatch( const std::string& err ) :
+    ATOMS_API ClassnameMismatch(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::atoms::conversion

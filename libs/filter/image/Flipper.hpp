@@ -29,12 +29,12 @@
 
 namespace sight::filter::image
 {
+
 /**
  * @brief The Flipper class
  */
 class FILTER_IMAGE_CLASS_API Flipper
 {
-
 public:
 
     /**
@@ -43,10 +43,11 @@ public:
      * @param _outImage flipped image.
      * @param _flipAxis axes on which to flip the image.
      */
-    static FILTER_IMAGE_API void flip(const data::Image::csptr& _inImage,
-                                      const data::Image::sptr& _outImage,
-                                      const std::array<bool, 3>& _flipAxis);
-
+    static FILTER_IMAGE_API void flip(
+        const data::Image::csptr& _inImage,
+        const data::Image::sptr& _outImage,
+        const std::array<bool, 3>& _flipAxis
+    );
 };
 
-}// namespace sight::filter::image
+} // namespace sight::filter::image

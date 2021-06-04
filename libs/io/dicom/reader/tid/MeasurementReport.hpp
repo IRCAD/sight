@@ -29,8 +29,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace tid
 {
 
@@ -38,10 +40,10 @@ namespace tid
  * @brief Measurement Report TID - This a root template
  * @see TID t1tt1 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::reader::tid::TemplateID< data::Image >
+class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::reader::tid::TemplateID<data::Image>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -50,11 +52,13 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API MeasurementReport(const CSPTR(data::DicomSeries)& dicomSeries,
-                                   const SPTR(::gdcm::Reader)& reader,
-                                   const SPTR(io::dicom::container::DicomInstance)& instance,
-                                   const data::Image::sptr& image,
-                                   const core::log::Logger::sptr& logger);
+    IO_DICOM_API MeasurementReport(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Image::sptr& image,
+        const core::log::Logger::sptr& logger
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~MeasurementReport();
@@ -64,9 +68,10 @@ public:
      * @param[in] root Root node
      */
     IO_DICOM_API virtual void readSR(const SPTR(io::dicom::container::sr::DicomSRNode)& root);
-
 };
 
 } // namespace tid
+
 } // namespace reader
+
 } // namespace sight::io::dicom

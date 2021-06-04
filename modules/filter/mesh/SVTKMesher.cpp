@@ -85,7 +85,7 @@ void SVTKMesher::configuring()
 {
     const service::IService::ConfigType& srvConfig = this->getConfigTree();
 
-    SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
+    SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
 
     const service::IService::ConfigType& config = srvConfig.get_child("config");
 
@@ -98,18 +98,18 @@ void SVTKMesher::configuring()
 
 void SVTKMesher::updating()
 {
-    data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(s_IMAGE_INPUT);
+    data::ImageSeries::csptr imageSeries = this->getInput<data::ImageSeries>(s_IMAGE_INPUT);
     data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
 
     data::Object::DeepCopyCacheType cache;
     modelSeries->data::Series::cachedDeepCopy(imageSeries, cache);
 
     // vtk img
-    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    io::vtk::toVTKImage( imageSeries->getImage(), vtkImage );
+    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::toVTKImage(imageSeries->getImage(), vtkImage);
 
     // contour filter
-    vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
+    vtkSmartPointer<vtkDiscreteMarchingCubes> contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contourFilter->SetInputData(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
@@ -117,39 +117,39 @@ void SVTKMesher::updating()
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter =
-        vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
+    vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoothFilter =
+        vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
-    smoothFilter->SetNumberOfIterations( 50 );
+    smoothFilter->SetNumberOfIterations(50);
     smoothFilter->BoundarySmoothingOn();
-    smoothFilter->SetPassBand( 0.1 );
+    smoothFilter->SetPassBand(0.1);
     smoothFilter->SetFeatureAngle(120.0);
     smoothFilter->SetEdgeAngle(90);
     smoothFilter->FeatureEdgeSmoothingOn();
     smoothFilter->Update();
 
     // Get polyData
-    vtkSmartPointer< vtkPolyData > polyData;
+    vtkSmartPointer<vtkPolyData> polyData;
     data::Mesh::sptr mesh = data::Mesh::New();
 
     // decimate filter
-    if( m_reduction > 0 )
+    if(m_reduction > 0)
     {
-        vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
-        decimate->SetInputConnection( smoothFilter->GetOutputPort() );
-        decimate->SetTargetReduction( m_reduction/100.0 );
+        vtkSmartPointer<vtkDecimatePro> decimate = vtkSmartPointer<vtkDecimatePro>::New();
+        decimate->SetInputConnection(smoothFilter->GetOutputPort());
+        decimate->SetTargetReduction(m_reduction / 100.0);
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();
         decimate->BoundaryVertexDeletionOn();
-        decimate->SetSplitAngle( 120 );
+        decimate->SetSplitAngle(120);
         decimate->Update();
         polyData = decimate->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh( polyData, mesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, mesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh( polyData, mesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, mesh);
     }
 
     data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
@@ -172,4 +172,4 @@ void SVTKMesher::updating()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module

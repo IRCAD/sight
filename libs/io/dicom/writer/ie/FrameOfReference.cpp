@@ -28,21 +28,25 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-FrameOfReference::FrameOfReference(const SPTR(::gdcm::Writer)& writer,
-                                   const SPTR(io::dicom::container::DicomInstance)& instance,
-                                   const data::Series::csptr& series,
-                                   const core::log::Logger::sptr& logger,
-                                   ProgressCallback progress,
-                                   CancelRequestedCallback cancel) :
-    io::dicom::writer::ie::InformationEntity< data::Series >(writer, instance, series,
-                                                             logger, progress, cancel)
+FrameOfReference::FrameOfReference(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const data::Series::csptr& series,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::writer::ie::InformationEntity<data::Series>(writer, instance, series,
+                                                           logger, progress, cancel)
 {
 }
 
@@ -61,15 +65,16 @@ void FrameOfReference::writeFrameOfReferenceModule()
 
     // Frame of Reference UID
     const std::string frameOfReferenceUID = m_instance->getFrameOfReferenceUID();
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0020, 0x0052 >(frameOfReferenceUID, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0052>(frameOfReferenceUID, dataset);
 
     // Position Reference Indicator - Type 2
-    io::dicom::helper::DicomDataWriter::setEmptyTagValue< 0x0020, 0x1040 >(dataset);
-
+    io::dicom::helper::DicomDataWriter::setEmptyTagValue<0x0020, 0x1040>(dataset);
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

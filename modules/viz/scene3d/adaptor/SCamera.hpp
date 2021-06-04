@@ -41,7 +41,9 @@
 
 namespace sight::data
 {
+
 class Camera;
+
 }
 
 namespace sight::module::viz::scene3d::adaptor
@@ -75,11 +77,10 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCamera, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SCamera, ::sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor and initialize slots.
     MODULE_VIZ_SCENE3D_API SCamera() noexcept;
@@ -140,20 +141,20 @@ private:
     void setAspectRatio(::Ogre::Real _ratio);
 
     /// Contains the Ogre camera managed by this adaptor.
-    ::Ogre::Camera* m_camera { nullptr };
+    ::Ogre::Camera* m_camera {nullptr};
 
     /// Defines the aspect ratio for the frustum viewport.
-    ::Ogre::Real m_aspectRatio { 0.f };
+    ::Ogre::Real m_aspectRatio {0.f};
 
     /// Handles connection with the layer.
     core::com::helper::SigSlotConnection m_layerConnection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct CameraNodeListener;
-    CameraNodeListener* m_cameraNodeListener { nullptr };
+    CameraNodeListener* m_cameraNodeListener {nullptr};
 
     /// This avoids a self-call to updateTF3D() when we update() the camera
-    bool m_skipUpdate { false };
+    bool m_skipUpdate {false};
 };
 
 //------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ struct FwRenderOgreRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwRenderOgreRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwRenderOgreRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
@@ -43,7 +43,7 @@ struct FwRenderOgreOffscreenMgrRegistryInstantiatorTag {};
 SPTR(OffscreenMgrType) getOffscreenMgr()
 {
     using InstantiatorType = core::LazyInstantiator<OffscreenMgrType,
-                                                          FwRenderOgreOffscreenMgrRegistryInstantiatorTag>;
+                                                    FwRenderOgreOffscreenMgrRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -51,7 +51,7 @@ struct InteractorRegistryInstantiatorTag {};
 
 SPTR(InteractorFactoryType) getInteractorRegistry()
 {
-    typedef core::LazyInstantiator< InteractorFactoryType, InteractorRegistryInstantiatorTag >
+    typedef core::LazyInstantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>
         InstantiatorType;
     return InstantiatorType::getInstance();
 }
@@ -60,7 +60,7 @@ struct CameraRegistryInstantiatorTag {};
 
 SPTR(CameraFactoryType) getCameraRegistry()
 {
-    typedef core::LazyInstantiator< CameraFactoryType, CameraRegistryInstantiatorTag >
+    typedef core::LazyInstantiator<CameraFactoryType, CameraRegistryInstantiatorTag>
         InstantiatorType;
     return InstantiatorType::getInstance();
 }
@@ -69,7 +69,7 @@ struct LightRegistryInstantiatorTag {};
 
 SPTR(LightFactoryType) getLightRegistry()
 {
-    typedef core::LazyInstantiator< LightFactoryType, LightRegistryInstantiatorTag >
+    typedef core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>
         InstantiatorType;
     return InstantiatorType::getInstance();
 }

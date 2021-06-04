@@ -108,6 +108,7 @@ void SNegato2D::configuring()
         {
             filtering = sight::viz::scene3d::Plane::FilteringEnumType::ANISOTROPIC;
         }
+
         this->setFiltering(filtering);
     }
 
@@ -122,9 +123,9 @@ void SNegato2D::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
@@ -133,18 +134,26 @@ void SNegato2D::starting()
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         sight::viz::scene3d::RESOURCE_GROUP,
-        true);
+        true
+    );
 
     // TF texture initialization
-    m_gpuTF = std::unique_ptr< sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
+    m_gpuTF = std::unique_ptr<sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
     m_gpuTF->createTexture(this->getID());
 
     // Scene node's instanciation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
     // Plane's instanciation
-    m_plane = std::make_unique< sight::viz::scene3d::Plane >(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                                             m_orientation, m_3DOgreTexture, m_filtering, m_border);
+    m_plane = std::make_unique<sight::viz::scene3d::Plane>(
+        this->getID(),
+        m_negatoSceneNode,
+        getSceneManager(),
+        m_orientation,
+        m_3DOgreTexture,
+        m_filtering,
+        m_border
+    );
 
     this->newImage();
     this->setVisible(m_isVisible);
@@ -180,11 +189,11 @@ void SNegato2D::updating()
 
 void SNegato2D::swapping(const KeyType& _key)
 {
-    if (_key == s_TF_INOUT)
+    if(_key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -208,10 +217,9 @@ void SNegato2D::newImage()
     int frontalIdx  = 0;
     int sagittalIdx = 0;
     {
+        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut< data::TransferFunction >(s_TF_INOUT);
+        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
@@ -229,23 +237,26 @@ void SNegato2D::newImage()
 
         // Update Slice
         const auto imgSize       = image->getSize2();
-        const auto axialIdxField = image->getField< data::Integer >(
-            data::fieldHelper::Image::m_axialSliceIndexId);
+        const auto axialIdxField = image->getField<data::Integer>(
+            data::fieldHelper::Image::m_axialSliceIndexId
+        );
         SIGHT_INFO_IF("Axial Idx field missing", !axialIdxField);
-        axialIdx = axialIdxField ?
-                   static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
+        axialIdx = axialIdxField
+                   ? static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2] / 2);
 
-        const auto frontalIdxField = image->getField< data::Integer >(
-            data::fieldHelper::Image::m_frontalSliceIndexId);
+        const auto frontalIdxField = image->getField<data::Integer>(
+            data::fieldHelper::Image::m_frontalSliceIndexId
+        );
         SIGHT_INFO_IF("Frontal Idx field missing", !frontalIdxField);
-        frontalIdx = frontalIdxField ?
-                     static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
+        frontalIdx = frontalIdxField
+                     ? static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1] / 2);
 
-        const auto sagittalIdxField = image->getField< data::Integer >(
-            data::fieldHelper::Image::m_sagittalSliceIndexId);
+        const auto sagittalIdxField = image->getField<data::Integer>(
+            data::fieldHelper::Image::m_sagittalSliceIndexId
+        );
         SIGHT_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
-        sagittalIdx = sagittalIdxField ?
-                      static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0]/2);
+        sagittalIdx = sagittalIdxField
+                      ? static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0] / 2);
     }
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
@@ -260,14 +271,15 @@ void SNegato2D::newImage()
 
 void SNegato2D::changeSliceType(int _from, int _to)
 {
-    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
 
     const auto planeOrientation = m_plane->getOrientationMode();
-    const auto newOrientation   = planeOrientation == toOrientation ? fromOrientation :
-                                  planeOrientation == fromOrientation ? toOrientation : planeOrientation;
+    const auto newOrientation   = planeOrientation == toOrientation ? fromOrientation
+                                                                    : planeOrientation
+                                  == fromOrientation ? toOrientation : planeOrientation;
 
     if(planeOrientation != newOrientation)
     {
@@ -291,7 +303,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
     this->getRenderService()->makeCurrent();
 
@@ -320,7 +332,7 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 void SNegato2D::updateShaderSliceIndexParameter()
 {
     this->getRenderService()->makeCurrent();
-    m_plane->changeSlice( m_currentSliceIndex[static_cast<size_t>(m_plane->getOrientationMode())] );
+    m_plane->changeSlice(m_currentSliceIndex[static_cast<size_t>(m_plane->getOrientationMode())]);
 
     this->requestRender();
 }
@@ -350,10 +362,10 @@ void SNegato2D::updateTF()
 service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT);
 
     return connections;
 }
@@ -383,4 +395,5 @@ void SNegato2D::setVisible(bool _visible)
 }
 
 //-----------------------------------------------------------------------------
+
 } // namespace sight::module::viz::scene3d::adaptor.

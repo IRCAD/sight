@@ -28,16 +28,18 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class AttachmentSeriesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( AttachmentSeriesTest );
+CPPUNIT_TEST_SUITE(AttachmentSeriesTest);
 CPPUNIT_TEST(attachmentTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -45,8 +47,10 @@ public:
     void attachmentTest();
 
 private:
+
     data::AttachmentSeries::sptr m_series;
 };
 
 } //namespace ut
+
 } //namespace sight::data

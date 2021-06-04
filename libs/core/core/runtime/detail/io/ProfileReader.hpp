@@ -36,14 +36,17 @@
 
 namespace sight::core::runtime
 {
+
 namespace detail
 {
 
 namespace profile
 {
+
 class Activater;
 class Profile;
 class Starter;
+
 }
 
 namespace io
@@ -55,13 +58,15 @@ namespace io
 class ProfileReader
 {
 public:
+
     /**
      * @brief       Creates a profile from an xml file located at the given path.
      *
      * @param[in]   path    a path to an xml profile file
      */
-    static std::shared_ptr< core::runtime::detail::profile::Profile > createProfile(
-        const std::filesystem::path& path );
+    static std::shared_ptr<core::runtime::detail::profile::Profile> createProfile(
+        const std::filesystem::path& path
+    );
 
     /**
      * @brief       Processes the given xml node as a profile.
@@ -70,8 +75,8 @@ public:
      *
      * @return      a shared pointer to the created profile
      */
-    static std::shared_ptr< core::runtime::detail::profile::Profile > processProfile(xmlNodePtr node);
-    static std::shared_ptr< core::runtime::detail::profile::Starter > processStarter(xmlNodePtr node);
+    static std::shared_ptr<core::runtime::detail::profile::Profile> processProfile(xmlNodePtr node);
+    static std::shared_ptr<core::runtime::detail::profile::Starter> processStarter(xmlNodePtr node);
 
     /**
      * @brief       Processes the given xml node as an activater.
@@ -80,7 +85,7 @@ public:
      *
      * @return      a shared pointer to the created activater
      */
-    static std::shared_ptr< core::runtime::detail::profile::Activater > processActivater(xmlNodePtr node);
+    static std::shared_ptr<core::runtime::detail::profile::Activater> processActivater(xmlNodePtr node);
 
     /**
      * @brief       Processes the given xml node as an activater parameter and
@@ -89,8 +94,10 @@ public:
      * @param[in]   node        a pointer to the xml node to process
      * @param[out]  activater   a shared pointer to an activater
      */
-    static void processActivaterParam(xmlNodePtr node,
-                                      std::shared_ptr< core::runtime::detail::profile::Activater > activater);
+    static void processActivaterParam(
+        xmlNodePtr node,
+        std::shared_ptr<core::runtime::detail::profile::Activater> activater
+    );
 
     /**
      * @brief       Processes the given xml node as an activater disable extension point and
@@ -99,8 +106,10 @@ public:
      * @param[in]   node        a pointer to the xml node to process
      * @param[out]  activater   a shared pointer to an activater
      */
-    static void processActivaterDisableExtensionPoint(xmlNodePtr node,
-                                                      std::shared_ptr< core::runtime::detail::profile::Activater > activater);
+    static void processActivaterDisableExtensionPoint(
+        xmlNodePtr node,
+        std::shared_ptr<core::runtime::detail::profile::Activater> activater
+    );
 
     /**
      * @brief       Processes the given xml node as an activater disable extension and
@@ -109,23 +118,25 @@ public:
      * @param[in]   node        a pointer to the xml node to process
      * @param[out]  activater   a shared pointer to an activater
      */
-    static void processActivaterDisableExtension(xmlNodePtr node,
-                                                 std::shared_ptr< core::runtime::detail::profile::Activater > activater);
+    static void processActivaterDisableExtension(
+        xmlNodePtr node,
+        std::shared_ptr<core::runtime::detail::profile::Activater> activater
+    );
 
 private:
 
-    static std::string ID;              ///< defines the name of the id xml element or attribute name
-    static std::string NAME;            ///< defines the name of the xml profile
-    static std::string VALUE;           ///< defines the name of the value xml element or attribute name
-    static std::string VERSION;         ///< defines the name of the version xml element or attribute name
-    static std::string CHECK_SINGLE_INSTANCE;    ///< defines the name of the check-single-instance xml element or
-                                                 // attribute name
-    static std::string ACTIVATE;        ///< defines the name of the activate xml element or attribute name
-    static std::string START;           ///< defines the name of the start xml element or attribute name
-    static std::string PARAM;           ///< defines the name of the parameter xml element or attribute name
-    static std::string DIS_EXT_PT;      ///< defines the name of the disable extension point xml element or attribute
-                                        // name
-    static std::string DIS_EXT;         ///< defines the name of the disable extension xml element or attribute name
+    static std::string ID;                    ///< defines the name of the id xml element or attribute name
+    static std::string NAME;                  ///< defines the name of the xml profile
+    static std::string VALUE;                 ///< defines the name of the value xml element or attribute name
+    static std::string VERSION;               ///< defines the name of the version xml element or attribute name
+    static std::string CHECK_SINGLE_INSTANCE; ///< defines the name of the check-single-instance xml element or
+    // attribute name
+    static std::string ACTIVATE;   ///< defines the name of the activate xml element or attribute name
+    static std::string START;      ///< defines the name of the start xml element or attribute name
+    static std::string PARAM;      ///< defines the name of the parameter xml element or attribute name
+    static std::string DIS_EXT_PT; ///< defines the name of the disable extension point xml element or attribute
+    // name
+    static std::string DIS_EXT; ///< defines the name of the disable extension xml element or attribute name
 };
 
 } // namespace io

@@ -30,6 +30,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 /// Key used in object meta infos to define an object classname.
 static const std::string s_OBJ_CLASSNAME = sight::atoms::conversion::DataVisitor::CLASSNAME_METAINFO;
 

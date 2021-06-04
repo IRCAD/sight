@@ -46,7 +46,7 @@ GEOMETRY_DATA_API void multVecMatrix(const fwMatrix4x4& _matrix, const fwVec3d& 
  *  @return rotation matrix
  *
  */
-GEOMETRY_DATA_API fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm );
+GEOMETRY_DATA_API fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm);
 
 /**
  * @brief Computes the inverse of a matrix
@@ -54,7 +54,7 @@ GEOMETRY_DATA_API fwMatrix4x4  getRotationMatrix( const fwVec3d& _vecNorm );
  *  @return inverted matrix
  *
  */
-GEOMETRY_DATA_API fwMatrix4x4  getInverse( const fwMatrix4x4& matrix );
+GEOMETRY_DATA_API fwMatrix4x4 getInverse(const fwMatrix4x4& matrix);
 
 } // namespace sight::geometry::data
 
@@ -65,4 +65,4 @@ GEOMETRY_DATA_API fwMatrix4x4  getInverse( const fwMatrix4x4& matrix );
  *  @return matrix
  *
  */
-GEOMETRY_DATA_API fwMatrix4x4 operator*( const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2 );
+GEOMETRY_DATA_API fwMatrix4x4 operator*(const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2);

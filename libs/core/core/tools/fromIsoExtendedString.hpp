@@ -41,7 +41,7 @@ namespace sight::core::tools
  * @param[in]   time_string time in the iso extended format YYYY-MM-DDTHH:MM:SS (example : 2007-02-25T00:00:00 )
  * @return      Time in the boost format
  */
-CORE_API boost::posix_time::ptime fromIsoExtendedString(const std::string& time_string );
+CORE_API boost::posix_time::ptime fromIsoExtendedString(const std::string& time_string);
 
 /**
  * @brief   Construct a boost ptime from a string in xsd format (YYYY-MM-DD)
@@ -62,8 +62,8 @@ CORE_API std::string toIsoExtendedString(boost::posix_time::ptime ptime);
  * @param[in]   dateAndTime time in the boost format
  * @return      Time in the format YYYY-MM-DD (example : 2007-02-25 )
  */
-CORE_API std::string getDateInXsdFormat( const boost::posix_time::ptime& dateAndTime );
+CORE_API std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndTime);
 
 ///@}
 
-}//end namespace
+} //end namespace

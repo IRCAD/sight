@@ -34,7 +34,6 @@ namespace helper
 
 class ManualObject
 {
-
 public:
 
     /**
@@ -46,12 +45,14 @@ public:
      * @param _length the cylinder's length
      * @param _sample the number of samples used to create the cylinder
      */
-    VIZ_SCENE3D_API static void createCylinder(::Ogre::ManualObject* _object,
-                                               const std::string& _material,
-                                               const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-                                               float _radius                     = 1.f,
-                                               float _length                     = 100.f,
-                                               unsigned int _sample              = 64);
+    VIZ_SCENE3D_API static void createCylinder(
+        ::Ogre::ManualObject* _object,
+        const std::string& _material,
+        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                     = 1.f,
+        float _length                     = 100.f,
+        unsigned int _sample              = 64
+    );
 
     /**
      * @brief createCone create a cone in a ::Ogre::ManualObject along the x axis
@@ -62,12 +63,14 @@ public:
      * @param _length the cone's length
      * @param _sample the number of samples used to create the cone
      */
-    VIZ_SCENE3D_API static void createCone(::Ogre::ManualObject* _object,
-                                           const std::string& _material,
-                                           const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-                                           float _radius                     = 1.f,
-                                           float _length                     = 100.f,
-                                           unsigned int _sample              = 64);
+    VIZ_SCENE3D_API static void createCone(
+        ::Ogre::ManualObject* _object,
+        const std::string& _material,
+        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                     = 1.f,
+        float _length                     = 100.f,
+        unsigned int _sample              = 64
+    );
 
     /**
      * @brief createCube create a cube in a ::Ogre::ManualObject centered in the center of the cube
@@ -76,10 +79,12 @@ public:
      * @param _color the cube's color
      * @param _length the cube's length
      */
-    VIZ_SCENE3D_API static void createCube(::Ogre::ManualObject* _object,
-                                           const std::string& _material,
-                                           const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-                                           float _length                     = 100.f);
+    VIZ_SCENE3D_API static void createCube(
+        ::Ogre::ManualObject* _object,
+        const std::string& _material,
+        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _length                     = 100.f
+    );
 
     /**
      * @brief createSphere create a sphere in a ::Ogre::ManualObject centered in the center of the sphere
@@ -89,12 +94,13 @@ public:
      * @param _radius the sphere's radius
      * @param _sample the number of samples used to create the sphere
      */
-    VIZ_SCENE3D_API static void createSphere(::Ogre::ManualObject* _object,
-                                             const std::string& _material,
-                                             const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
-                                             float _radius                     = 100.f,
-                                             unsigned int _sample              = 50);
-
+    VIZ_SCENE3D_API static void createSphere(
+        ::Ogre::ManualObject* _object,
+        const std::string& _material,
+        const ::Ogre::ColourValue& _color = ::Ogre::ColourValue(1.f, 1.f, 1.f),
+        float _radius                     = 100.f,
+        unsigned int _sample              = 50
+    );
 };
 
 } // namespace helper

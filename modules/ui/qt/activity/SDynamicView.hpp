@@ -113,7 +113,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SDynamicView, sight::ui::base::view::IActivityView)
+    SIGHT_DECLARE_SERVICE(SDynamicView, sight::ui::base::view::IActivityView);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SDynamicView() noexcept;

@@ -53,7 +53,7 @@
 
 #define GET_DEFAULT_PROFILE(x) #x
 #define GET_DEFAULT_PROFILE2(x) GET_DEFAULT_PROFILE(x)
-#define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
+#define DEFAULT_PROFILE_STRING GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
 
 //------------------------------------------------------------------------------
 
@@ -61,11 +61,12 @@ namespace po = ::boost::program_options;
 namespace fs = std::filesystem;
 
 typedef fs::path PathType;
-typedef std::vector< PathType > PathListType;
-typedef std::vector< std::string > StringListType;
+typedef std::vector<PathType> PathListType;
+typedef std::vector<std::string> StringListType;
 
 namespace std
 {
+
 //------------------------------------------------------------------------------
 
 template<class A1, class A2>
@@ -74,6 +75,7 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
     copy(vec.begin(), vec.end(), ostream_iterator<A1>(s, " "));
     return s;
 }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -81,17 +83,19 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 #ifdef __APPLE__
 std::pair<std::string, std::string> parsePns(const std::string& s)
 {
-    if (s.substr(0, 5) == "-psn_")
+    if(s.substr(0, 5) == "-psn_")
     {
         return std::make_pair(std::string("psn"), s.substr(5));
     }
+
     return std::make_pair(std::string(), std::string());
 }
+
 #endif
 
 /// Wrapper for std::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
-PathType absolute( const PathType& path )
+PathType absolute(const PathType& path)
 {
     return fs::weakly_canonical(path);
 }
@@ -113,11 +117,11 @@ void signal_handler(int signal)
     }
     catch(const std::exception& e)
     {
-        SIGHT_FATAL( e.what() );
+        SIGHT_FATAL(e.what());
     }
     catch(...)
     {
-        SIGHT_FATAL( "An unrecoverable error has occurred." );
+        SIGHT_FATAL("An unrecoverable error has occurred.");
     }
 
     // We use brutal exit because when interrupted by a signal, we never get out from run,
@@ -159,8 +163,8 @@ int main(int argc, char* argv[])
 
         ("log-trace", po::value(&logLevel)->implicit_value(SpyLogger::SL_TRACE)->zero_tokens(), "Set loglevel to trace")
         ("log-debug", po::value(&logLevel)->implicit_value(SpyLogger::SL_DEBUG)->zero_tokens(), "Set loglevel to debug")
-        ("log-info",  po::value(&logLevel)->implicit_value(SpyLogger::SL_INFO )->zero_tokens(), "Set loglevel to info")
-        ("log-warn",  po::value(&logLevel)->implicit_value(SpyLogger::SL_WARN )->zero_tokens(), "Set loglevel to warn")
+        ("log-info", po::value(&logLevel)->implicit_value(SpyLogger::SL_INFO)->zero_tokens(), "Set loglevel to info")
+        ("log-warn", po::value(&logLevel)->implicit_value(SpyLogger::SL_WARN)->zero_tokens(), "Set loglevel to warn")
         ("log-error", po::value(&logLevel)->implicit_value(SpyLogger::SL_ERROR)->zero_tokens(), "Set loglevel to error")
         ("log-fatal", po::value(&logLevel)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(), "Set loglevel to fatal")
     ;
@@ -188,14 +192,16 @@ int main(int argc, char* argv[])
 
     try
     {
-        po::store(po::command_line_parser(argc, argv)
-                  .options(cmdline_options)
+        po::store(
+            po::command_line_parser(argc, argv)
+            .options(cmdline_options)
 #ifdef __APPLE__
-                  .extra_parser(parsePns)
+            .extra_parser(parsePns)
 #endif
-                  .positional(p)
-                  .run(),
-                  vm);
+            .positional(p)
+            .run(),
+            vm
+        );
         po::notify(vm);
     }
     catch(const po::error& e)
@@ -205,10 +211,10 @@ int main(int argc, char* argv[])
     }
 
     // If help
-    if (vm.count("help"))
+    if(vm.count("help"))
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
-        std::cout << "  use '--' to stop processing args for sightrun" << std::endl  << std::endl;
+        std::cout << "  use '--' to stop processing args for sightrun" << std::endl << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
     }
@@ -226,7 +232,7 @@ int main(int argc, char* argv[])
         std::ofstream logFileStream(logFile.c_str());
         const bool logFileExists = logFileStream.good();
         logFileStream.close();
-        if (!logFileExists)
+        if(!logFileExists)
         {
             std::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
@@ -253,28 +259,33 @@ int main(int argc, char* argv[])
 #ifdef __APPLE__
     fs::path execPath = argv[0];
 
-    if ( execPath.string().find(".app/") != std::string::npos || vm.count("psn"))
+    if(execPath.string().find(".app/") != std::string::npos || vm.count("psn"))
     {
         bool isChdirOkOSX = false;
 
         fs::path execPath = argv[0];
 
-        while ( fs::extension(execPath) != ".app"
-                && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / fs::path(SIGHT_MODULE_RC_PREFIX))
-                )
+        while(fs::extension(execPath) != ".app"
+              && execPath != execPath.parent_path()
+              && !fs::is_directory(execPath / fs::path(SIGHT_MODULE_RC_PREFIX)))
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / fs::path(SIGHT_MODULE_RC_PREFIX) ) )
+        if(fs::is_directory(execPath / "Contents" / fs::path(SIGHT_MODULE_RC_PREFIX)))
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            SIGHT_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
-                                                                                 SIGHT_MODULE_RC_PREFIX) ));
+            SIGHT_ERROR_IF(
+                "Module directory not found.",
+                !fs::is_directory(
+                    execPath / fs::path(
+                        SIGHT_MODULE_RC_PREFIX
+                    )
+                )
+            );
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
@@ -283,60 +294,72 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    SIGHT_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
-    SIGHT_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
+    SIGHT_INFO_IF("Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
+    SIGHT_INFO_IF("Profile-args: " << profileArgs, vm.count("profile-args"));
 
     // Check if path exist
-    SIGHT_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-                        profileFile), !std::filesystem::exists(profileFile.string()));
+    SIGHT_FATAL_IF(
+        "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
+            profileFile
+        ),
+        !std::filesystem::exists(profileFile.string())
+    );
 
-    std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
+    std::transform(modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute);
     profileFile = ::absolute(profileFile);
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileModulePath = profileFile.parent_path().parent_path();
     bool findProfileModulePath   = false;
-    for(const fs::path& modulePath :  modulePaths )
+    for(const fs::path& modulePath : modulePaths)
     {
         if(profileModulePath == modulePath)
         {
             findProfileModulePath = true;
         }
     }
+
     if(!findProfileModulePath)
     {
         modulePaths.push_back(profileModulePath);
     }
+
 #if SIGHT_INFO_ENABLED
-    for(const fs::path& modulePath :  modulePaths )
+    for(const fs::path& modulePath : modulePaths)
     {
-        SIGHT_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
-                       vm.count("module-path") );
+        SIGHT_INFO_IF(
+            "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
+            vm.count("module-path")
+        );
     }
 #endif
-    for(const fs::path& modulePath :  modulePaths )
+    for(const fs::path& modulePath : modulePaths)
     {
-        SIGHT_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
-                            modulePath), !std::filesystem::exists(modulePath.string()) );
+        SIGHT_FATAL_IF(
+            "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
+                modulePath
+            ),
+            !std::filesystem::exists(modulePath.string())
+        );
     }
 
     sight::core::runtime::init();
 
-    for(const fs::path& modulePath :  modulePaths )
+    for(const fs::path& modulePath : modulePaths)
     {
-        if ( fs::is_directory(modulePath))
+        if(fs::is_directory(modulePath))
         {
-            sight::core::runtime::addModules( modulePath );
+            sight::core::runtime::addModules(modulePath);
         }
         else
         {
-            SIGHT_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
+            SIGHT_ERROR("Module path " << modulePath << " do not exists or is not a directory.");
         }
     }
 
     int retValue = 0;
 
-    if ( fs::is_regular_file(profileFile))
+    if(fs::is_regular_file(profileFile))
     {
         sight::core::runtime::Profile::sptr profile;
 
@@ -364,18 +387,18 @@ int main(int argc, char* argv[])
         }
         catch(const std::exception& e)
         {
-            SIGHT_FATAL( e.what() );
+            SIGHT_FATAL(e.what());
             retValue = 3;
         }
         catch(...)
         {
-            SIGHT_FATAL( "An unrecoverable error has occurred." );
+            SIGHT_FATAL("An unrecoverable error has occurred.");
             retValue = 4;
         }
     }
     else
     {
-        SIGHT_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
+        SIGHT_ERROR("Profile file " << profileFile << " do not exists or is not a regular file.");
         retValue = 5;
     }
 
@@ -389,4 +412,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
     return main(__argc, __argv);
 }
+
 #endif // _WIN32

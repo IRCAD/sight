@@ -34,7 +34,7 @@ namespace sight::geometry::data
  * @param epsilon : error margin
  * @return true iff a and b are equal with 'epsilon' error margin
  */
-template < typename TYPE >
+template<typename TYPE>
 bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001F)
 {
     return fabs(a - b) < epsilon;
@@ -47,8 +47,8 @@ bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001F)
  * @param epsilon : error margin
  * @return true iff container a and b are equal with 'epsilon' error margin
  */
-template < typename CONTAINER >
-bool isContainerEqual(CONTAINER&  containerA, CONTAINER& containerB, const float epsilon = 0.00001F)
+template<typename CONTAINER>
+bool isContainerEqual(CONTAINER& containerA, CONTAINER& containerB, const float epsilon = 0.00001F)
 {
     bool isEqual = true;
     if(containerA.size() != containerB.size())

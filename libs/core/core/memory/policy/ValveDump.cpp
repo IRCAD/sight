@@ -47,15 +47,18 @@ fwMemoryPolicyRegisterMacro(core::memory::policy::ValveDump);
 //------------------------------------------------------------------------------
 
 ValveDump::ValveDump() :
-    m_minFreeMem(1024*1024*500LL),
+    m_minFreeMem(1024 * 1024 * 500LL),
     m_hysteresisOffset(0)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                                   BufferInfo::SizeType size )
+void ValveDump::allocationRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType size
+)
 {
     SIGHT_NOT_USED(buffer);
     this->apply((size > info.size) ? size - info.size : 0);
@@ -63,8 +66,11 @@ void ValveDump::allocationRequest( BufferInfo& info, core::memory::BufferManager
 
 //------------------------------------------------------------------------------
 
-void ValveDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                            BufferInfo::SizeType size )
+void ValveDump::setRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType size
+)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -74,8 +80,11 @@ void ValveDump::setRequest( BufferInfo& info, core::memory::BufferManager::Const
 
 //------------------------------------------------------------------------------
 
-void ValveDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                                   BufferInfo::SizeType newSize )
+void ValveDump::reallocateRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType newSize
+)
 {
     SIGHT_NOT_USED(buffer);
     this->apply((newSize > info.size) ? newSize - info.size : 0);
@@ -83,7 +92,7 @@ void ValveDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager
 
 //------------------------------------------------------------------------------
 
-void ValveDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -91,7 +100,7 @@ void ValveDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::C
 
 //------------------------------------------------------------------------------
 
-void ValveDump::lockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -99,7 +108,7 @@ void ValveDump::lockRequest( BufferInfo& info, core::memory::BufferManager::Cons
 
 //------------------------------------------------------------------------------
 
-void ValveDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -108,7 +117,7 @@ void ValveDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::Co
 
 //------------------------------------------------------------------------------
 
-void ValveDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -116,7 +125,7 @@ void ValveDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::Cons
 
 //------------------------------------------------------------------------------
 
-void ValveDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_NOT_USED(info);
     SIGHT_NOT_USED(buffer);
@@ -143,25 +152,25 @@ size_t ValveDump::dump(size_t nbOfBytes)
         typedef std::pair<
                 core::memory::BufferManager::BufferInfoMapType::key_type,
                 core::memory::BufferManager::BufferInfoMapType::mapped_type
-                > BufferInfosPairType;
-        typedef std::vector< BufferInfosPairType > BufferVectorType;
+        > BufferInfosPairType;
+        typedef std::vector<BufferInfosPairType> BufferVectorType;
 
         BufferVectorType buffers;
 
-        for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt :  bufferInfos)
+        for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt : bufferInfos)
         {
             const core::memory::BufferInfo& info = elt.second;
-            if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
+            if(!(info.size == 0 || info.lockCount() > 0 || !info.loaded))
             {
                 buffers.push_back(elt);
             }
         }
 
-        for(const BufferVectorType::value_type& pair :  bufferInfos)
+        for(const BufferVectorType::value_type& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
-                if( manager->dumpBuffer(pair.first).get() )
+                if(manager->dumpBuffer(pair.first).get())
                 {
                     dumped += pair.second.size;
                 }
@@ -183,8 +192,9 @@ void ValveDump::apply(size_t supplement)
     if(this->needDump(supplement))
     {
         this->dump(
-            (m_minFreeMem + m_hysteresisOffset + supplement) -
-            core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() );
+            (m_minFreeMem + m_hysteresisOffset + supplement)
+            - core::memory::tools::MEMORYTOOLIMPL::getFreeSystemMemory()
+        );
     }
 }
 
@@ -206,7 +216,6 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
         {
             m_minFreeMem = core::memory::ByteSize(value).getSize();
             return true;
-
         }
         else if(name == "hysteresis_offet")
         {
@@ -214,12 +223,12 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
             return true;
         }
     }
-    catch( core::memory::exception::BadCast const& )
+    catch(core::memory::exception::BadCast const&)
     {
         SIGHT_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
-    SIGHT_ERROR("Bad parameter name " << name );
+    SIGHT_ERROR("Bad parameter name " << name);
     return false;
 }
 
@@ -227,30 +236,32 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
 
 const core::memory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 {
-    static const core::memory::IPolicy::ParamNamesType params = {{ "min_free_mem", "hysteresis_offet" }};
+    static const core::memory::IPolicy::ParamNamesType params = {{"min_free_mem", "hysteresis_offet"}};
     return params;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ValveDump::getParam(const std::string& name, bool* ok ) const
+std::string ValveDump::getParam(const std::string& name, bool* ok) const
 {
     bool isOk = false;
     std::string value;
     if(name == "min_free_mem")
     {
-        value = std::string(core::memory::ByteSize( core::memory::ByteSize::SizeType(m_minFreeMem) ));
+        value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_minFreeMem)));
         isOk  = true;
     }
     else if(name == "hysteresis_offet")
     {
-        value = std::string(core::memory::ByteSize( core::memory::ByteSize::SizeType(m_hysteresisOffset) ));
+        value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_hysteresisOffset)));
         isOk  = true;
     }
-    if (ok)
+
+    if(ok)
     {
         *ok = isOk;
     }
+
     return value;
 }
 

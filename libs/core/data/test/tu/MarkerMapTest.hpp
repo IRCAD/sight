@@ -26,18 +26,20 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class MarkerMapTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MarkerMapTest );
+CPPUNIT_TEST_SUITE(MarkerMapTest);
 CPPUNIT_TEST(getterSetter);
 CPPUNIT_TEST(shallowCopyTest);
 CPPUNIT_TEST(deepCopyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -48,4 +50,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data

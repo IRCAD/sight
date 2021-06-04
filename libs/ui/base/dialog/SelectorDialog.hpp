@@ -27,8 +27,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief   SelectorDialog allows the choice of an element among several (_selections)
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
@@ -36,10 +38,9 @@ namespace dialog
  */
 class UI_BASE_CLASS_API SelectorDialog : public ISelectorDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, new SelectorDialog)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, new SelectorDialog);
 
     /**
      * Opens a default selector with the specified title, message and choices.
@@ -49,8 +50,11 @@ public:
      * @param _selections list of choices in the selector
      * @return Returns selected choice
      */
-    UI_BASE_API static std::string showSelectorDialog(const std::string& title, const std::string& message,
-                                                      std::vector< std::string > _selections);
+    UI_BASE_API static std::string showSelectorDialog(
+        const std::string& title,
+        const std::string& message,
+        std::vector<std::string> _selections
+    );
 
     /// will instanciate the concrete implementation
     UI_BASE_API SelectorDialog();
@@ -65,14 +69,17 @@ public:
      * @param message Message of the selector
      * @param _selections list of choices in the selector
      */
-    UI_BASE_API SelectorDialog(const std::string& title, const std::string& message,
-                               std::vector< std::string > _selections);
+    UI_BASE_API SelectorDialog(
+        const std::string& title,
+        const std::string& message,
+        std::vector<std::string> _selections
+    );
 
     /// Sets the selector title.
     UI_BASE_API void setTitle(std::string title) override;
 
     /// Set the string list that can be chosen by the selector.
-    UI_BASE_API void setSelections(std::vector< std::string > _selections) override;
+    UI_BASE_API void setSelections(std::vector<std::string> _selections) override;
 
     /// Show the selector and return the selection.
     UI_BASE_API std::string show() override;
@@ -86,8 +93,8 @@ public:
 protected:
 
     ui::base::dialog::ISelectorDialog::sptr m_implementation;
-
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

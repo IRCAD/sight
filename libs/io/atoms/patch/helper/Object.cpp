@@ -27,6 +27,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace helper
 {
 
@@ -43,18 +44,22 @@ Object::~Object()
 
 // ----------------------------------------------------------------------------
 
-void Object::addAttribute(const std::string& name,
-                          sight::atoms::Base::sptr value,
-                          conditions::Abstract::sptr condition)
+void Object::addAttribute(
+    const std::string& name,
+    sight::atoms::Base::sptr value,
+    conditions::Abstract::sptr condition
+)
 {
     if(m_object->getAttributes().find(name) == m_object->getAttributes().end())
     {
         if(condition->test(value))
         {
             m_object->setAttribute(name, value);
-            fwAtomsPatchAddAttributeLogMacro("'"
-                                             + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                             + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
+            fwAtomsPatchAddAttributeLogMacro(
+                "'"
+                + io::atoms::patch::helper::getClassname(m_object) + "|"
+                + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+            );
         }
     }
     else
@@ -65,31 +70,39 @@ void Object::addAttribute(const std::string& name,
 
 // ----------------------------------------------------------------------------
 
-void Object::addOrReplaceAttribute(const std::string& name,
-                                   sight::atoms::Base::sptr value,
-                                   conditions::Abstract::sptr condition)
+void Object::addOrReplaceAttribute(
+    const std::string& name,
+    sight::atoms::Base::sptr value,
+    conditions::Abstract::sptr condition
+)
 {
     if(m_object->getAttributes().find(name) != m_object->getAttributes().end())
     {
         m_object->eraseAttribute(name);
-        fwAtomsPatchEraseAttributeLogMacro("'"
-                                           + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                           + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
+        fwAtomsPatchEraseAttributeLogMacro(
+            "'"
+            + io::atoms::patch::helper::getClassname(m_object) + "|"
+            + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+        );
     }
 
     if(condition->test(value))
     {
         m_object->setAttribute(name, value);
-        fwAtomsPatchAddAttributeLogMacro("'"
-                                         + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                         + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
+        fwAtomsPatchAddAttributeLogMacro(
+            "'"
+            + io::atoms::patch::helper::getClassname(m_object) + "|"
+            + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+        );
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void Object::removeAttribute(const std::string& name,
-                             conditions::Abstract::sptr condition)
+void Object::removeAttribute(
+    const std::string& name,
+    conditions::Abstract::sptr condition
+)
 {
     sight::atoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
 
@@ -98,9 +111,11 @@ void Object::removeAttribute(const std::string& name,
         if(condition->test(it->second))
         {
             m_object->eraseAttribute(name);
-            fwAtomsPatchEraseAttributeLogMacro("'"
-                                               + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                               + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
+            fwAtomsPatchEraseAttributeLogMacro(
+                "'"
+                + io::atoms::patch::helper::getClassname(m_object) + "|"
+                + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+            );
         }
     }
     else
@@ -111,17 +126,21 @@ void Object::removeAttribute(const std::string& name,
 
 // ----------------------------------------------------------------------------
 
-void Object::replaceAttribute(const std::string& name,
-                              sight::atoms::Base::sptr newValue,
-                              conditions::Abstract::sptr condition)
+void Object::replaceAttribute(
+    const std::string& name,
+    sight::atoms::Base::sptr newValue,
+    conditions::Abstract::sptr condition
+)
 {
     sight::atoms::Object::AttributesType::const_iterator cIt = m_object->getAttributes().find(name);
 
     if(cIt != m_object->getAttributes().end())
     {
-        fwAtomsPatchReplaceAttributeLogMacro("'"
-                                             + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                             + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
+        fwAtomsPatchReplaceAttributeLogMacro(
+            "'"
+            + io::atoms::patch::helper::getClassname(m_object) + "|"
+            + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+        );
 
         if(condition->test(cIt->second, newValue))
         {
@@ -130,9 +149,11 @@ void Object::replaceAttribute(const std::string& name,
         else
         {
             m_object->setAttribute(name, condition->getDefaultValue());
-            fwAtomsPatchOutOfRangeLogMacro("Value '" + name
-                                           + "' is out of range, using default value : '"
-                                           + condition->getDefaultValue()->getString() + "'");
+            fwAtomsPatchOutOfRangeLogMacro(
+                "Value '" + name
+                + "' is out of range, using default value : '"
+                + condition->getDefaultValue()->getString() + "'"
+            );
         }
     }
     else
@@ -143,8 +164,11 @@ void Object::replaceAttribute(const std::string& name,
 
 // ----------------------------------------------------------------------------
 
-void Object::renameAttribute(const std::string& name, const std::string& newName,
-                             conditions::Abstract::sptr condition)
+void Object::renameAttribute(
+    const std::string& name,
+    const std::string& newName,
+    conditions::Abstract::sptr condition
+)
 {
     sight::atoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
 
@@ -153,13 +177,17 @@ void Object::renameAttribute(const std::string& name, const std::string& newName
         if(condition->test(it->second))
         {
             sight::atoms::Base::sptr base = m_object->getAttribute(name);
-            fwAtomsPatchEraseAttributeLogMacro("'"
-                                               + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                               + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'");
-            fwAtomsPatchAddAttributeLogMacro("'"
-                                             + io::atoms::patch::helper::getClassname(m_object) + "|"
-                                             + io::atoms::patch::helper::getVersion(m_object) + "' : '" + newName +
-                                             "'");
+            fwAtomsPatchEraseAttributeLogMacro(
+                "'"
+                + io::atoms::patch::helper::getClassname(m_object) + "|"
+                + io::atoms::patch::helper::getVersion(m_object) + "' : '" + name + "'"
+            );
+            fwAtomsPatchAddAttributeLogMacro(
+                "'"
+                + io::atoms::patch::helper::getClassname(m_object) + "|"
+                + io::atoms::patch::helper::getVersion(m_object) + "' : '" + newName
+                + "'"
+            );
             m_object->setAttribute(newName, base);
             m_object->eraseAttribute(name);
         }
@@ -178,4 +206,5 @@ sight::atoms::Object::sptr Object::getObject() const
 }
 
 } //helper
+
 } //fwAtomHelper

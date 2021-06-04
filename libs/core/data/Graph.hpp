@@ -31,10 +31,11 @@
 #include <map>
 #include <set>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Graph));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Graph));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a graph object.
  *
@@ -44,27 +45,27 @@ namespace sight::data
  */
 class DATA_CLASS_API Graph : public data::Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Graph, data::Object, data::factory::New< Graph >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Graph));
+    SIGHT_DECLARE_CLASS(Graph, data::Object, data::factory::New<Graph>);
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Graph));
 
     DATA_API static const bool UP_STREAM;
     DATA_API static const bool DOWN_STREAM;
 
-    typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be careful, if you change
-                                                                                           // we use erase(it++)
+    typedef std::map<Edge::sptr, std::pair<Node::sptr, Node::sptr> > ConnectionContainer;
+    typedef std::set<Node::sptr> NodeContainer; //  Be careful, if you change
+                                                // we use erase(it++)
 
     /// Type of signal m_sigUpdated
-    typedef std::vector< data::Object::sptr > UpdatedDataType;
+    typedef std::vector<data::Object::sptr> UpdatedDataType;
 
     /**
      * @brief Update signal type
      * Signal updated is composed of two parameters which represent added and removed elements in the graph.
      */
-    typedef core::com::Signal< void (UpdatedDataType, UpdatedDataType ) > UpdatedSignalType;
+    typedef core::com::Signal<void (UpdatedDataType, UpdatedDataType)> UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -80,14 +81,14 @@ public:
      *
      * @return true on success( node not already in graph)
      */
-    DATA_API bool addNode( Node::sptr _node);
+    DATA_API bool addNode(Node::sptr _node);
 
     /**
      * @brief remove a node
      *
      * @return true on success
      */
-    DATA_API bool removeNode( Node::csptr _node);
+    DATA_API bool removeNode(Node::csptr _node);
 
     /**
      * @{
@@ -123,12 +124,13 @@ public:
      * @return new edge created if success else return null one
      */
     DATA_API
-    Edge::sptr makeConnection(  Node::csptr _nodeSource,
-                                std::string _nodeSourceOutputPortID,
-                                Node::csptr _nodeDestination,
-                                std::string _nodeDestinationInputPortID,
-                                std::string _EdgeNature
-                                );
+    Edge::sptr makeConnection(
+        Node::csptr _nodeSource,
+        std::string _nodeSourceOutputPortID,
+        Node::csptr _nodeDestination,
+        std::string _nodeDestinationInputPortID,
+        std::string _EdgeNature
+    );
 
     /**
      * @brief remove an edge
@@ -168,7 +170,7 @@ public:
      * @param[in] _node source node
      * @return a vector of edges where _node is source node
      */
-    DATA_API std::vector< Edge::sptr > getInputEdges(Node::csptr _node);
+    DATA_API std::vector<Edge::sptr> getInputEdges(Node::csptr _node);
 
     /**
      * @brief Get output edges
@@ -176,7 +178,7 @@ public:
      * @param[in] _node destination node
      * @return a vector of  edges where _node is destination node
      */
-    DATA_API std::vector< Edge::sptr > getOutputEdges(Node::csptr _node);
+    DATA_API std::vector<Edge::sptr> getOutputEdges(Node::csptr _node);
 
     /**
      * @brief Get a vector of edges
@@ -188,9 +190,12 @@ public:
      *
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
-    DATA_API std::vector< Edge::sptr > getEdges(const Node::csptr& _node, bool _upStream,
-                                                const std::string& _nature = "",
-                                                const std::string& _portID = "");
+    DATA_API std::vector<Edge::sptr> getEdges(
+        const Node::csptr& _node,
+        bool _upStream,
+        const std::string& _nature = "",
+        const std::string& _portID = ""
+    );
 
     /**
      * @brief Get a vector of nodes
@@ -202,9 +207,12 @@ public:
      *
      * @return the vector of all nodes associated with _node
      */
-    DATA_API std::vector< data::Node::sptr > getNodes( const data::Node::csptr& node, bool upStream,
-                                                       const std::string& nature = "",
-                                                       const std::string& portID = "" );
+    DATA_API std::vector<data::Node::sptr> getNodes(
+        const data::Node::csptr& node,
+        bool upStream,
+        const std::string& nature = "",
+        const std::string& portID = ""
+    );
 
     /**
      * @return Number of nodes
@@ -216,7 +224,7 @@ public:
      */
     DATA_API size_t getNbEdges() const;
 
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
@@ -225,7 +233,7 @@ public:
      *
      * @return true if at least one edge is connected to given node
      */
-    DATA_API bool haveConnectedEdges(Node::csptr _node ) const;
+    DATA_API bool haveConnectedEdges(Node::csptr _node) const;
 
     /// Updated signal key
     DATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;

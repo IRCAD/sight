@@ -53,13 +53,12 @@ struct AppendValueFirst
     template<class TYPE, class SETOFSET>
     struct apply
     {
-
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if< boost::mpl::empty<SETOFSET>,
-                                                            boost::mpl::vector< boost::mpl::vector<TYPE> >,
-                                                            boost::mpl::transform< SETOFSET,
-                                                                                   boost::mpl::push_front< boost::mpl::
-                                                                                                           _1, TYPE > >
-                                                            >::type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if<boost::mpl::empty<SETOFSET>,
+                                                           boost::mpl::vector<boost::mpl::vector<TYPE> >,
+                                                           boost::mpl::transform<SETOFSET,
+                                                                                 boost::mpl::push_front<boost::mpl::
+                                                                                                        _1, TYPE> >
+        >::type type;
     };
 };
 
@@ -71,7 +70,7 @@ struct make_vector
     template<class T>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::vector< T >:: type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::vector<T>::type type;
     };
 };
 
@@ -84,7 +83,7 @@ struct makeSetOfSingletons
     template<class Set>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::transform<Set, make_vector >::type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::transform<Set, make_vector>::type type;
     };
 };
 
@@ -99,18 +98,18 @@ struct makeSetOfSingletons
  */
 struct BinaryCartesianProductRecurser
 {
-    template< class Set1, class MultiSet >
+    template<class Set1, class MultiSet>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::accumulate< Set1,
-                                                               boost::mpl::vector<>,
-                                                               boost::mpl::copy<   boost::mpl::apply2< AppendValueFirst,
-                                                                                                       boost::mpl::_2,
-                                                                                                       MultiSet >,
-                                                                                   boost::mpl::back_inserter< boost::mpl
-                                                                                                              ::_1>  >
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::accumulate<Set1,
+                                                              boost::mpl::vector<>,
+                                                              boost::mpl::copy<boost::mpl::apply2<AppendValueFirst,
+                                                                                                  boost::mpl::_2,
+                                                                                                  MultiSet>,
+                                                                               boost::mpl::back_inserter<boost::mpl
+                                                                                                         ::_1> >
 
-                                                               >::type type;
+        >::type type;
     };
 };
 
@@ -152,13 +151,13 @@ struct BinaryCartesianProductRecurser
  */
 struct BinaryCartesianProduct
 {
-    template< class Set1, class Set2 >
+    template<class Set1, class Set2>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::apply1< makeSetOfSingletons,  Set2>::type Set2WithSingletons;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::apply1<makeSetOfSingletons, Set2>::type Set2WithSingletons;
 
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::apply2<BinaryCartesianProductRecurser, Set1,
-                                                          Set2WithSingletons >::type type;
+                                                          Set2WithSingletons>::type type;
     };
 };
 
@@ -198,14 +197,14 @@ struct BinaryCartesianProduct
  **/
 struct CartesianProduct
 {
-    template< class MultiSet >
+    template<class MultiSet>
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::reverse_fold<   MultiSet,
-                                                                   boost::mpl::vector<>,
-                                                                   boost::mpl::apply2< BinaryCartesianProductRecurser,
-                                                                                       boost::mpl::_2, boost::mpl::_1 >
-                                                                   >::type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::reverse_fold<MultiSet,
+                                                                boost::mpl::vector<>,
+                                                                boost::mpl::apply2<BinaryCartesianProductRecurser,
+                                                                                   boost::mpl::_2, boost::mpl::_1>
+        >::type type;
     };
 };
 

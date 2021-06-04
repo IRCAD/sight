@@ -28,18 +28,20 @@
 
 namespace sight::core::tools
 {
+
 namespace ut
 {
 
 class UUIDTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( UUIDTest );
-CPPUNIT_TEST( objectUUIDTest );
-CPPUNIT_TEST( conccurentAccessOnUUIDMapTest );
-CPPUNIT_TEST( conccurentAccessOnSameObjUUIDTest );
+CPPUNIT_TEST_SUITE(UUIDTest);
+CPPUNIT_TEST(objectUUIDTest);
+CPPUNIT_TEST(conccurentAccessOnUUIDMapTest);
+CPPUNIT_TEST(conccurentAccessOnSameObjUUIDTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -50,6 +52,7 @@ public:
     void conccurentAccessOnSameObjUUIDTest();
 
 private:
+
     void runUUIDCreation();
     void runAccessToObjectUUID();
 
@@ -58,4 +61,5 @@ private:
 };
 
 } // namespace ut
+
 } // namespace sight::core::tools

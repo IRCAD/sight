@@ -38,7 +38,7 @@ struct  PickingInfo
     {
         NONE  = 0,
         CTRL  = 1,
-        SHIFT = 2,
+        SHIFT = 2
     };
 
     enum class Event : std::int8_t
@@ -71,7 +71,6 @@ struct  PickingInfo
     core::HiResClock::HiResClockType m_timestamp;
 
     DATA_API PickingInfo();
-
 };
 
 }

@@ -51,10 +51,10 @@ class Profile : public core::runtime::Profile
 {
 public:
 
-    typedef std::vector< std::string >  ParamsContainer;
-    typedef std::function< int () > RunCallbackType;
+    typedef std::vector<std::string> ParamsContainer;
+    typedef std::function<int ()> RunCallbackType;
 
-    SIGHT_DECLARE_CLASS(Profile, BaseObject, std::make_shared< Profile >)
+    SIGHT_DECLARE_CLASS(Profile, BaseObject, std::make_shared<Profile>);
 
     /**
      * @brief   Constructor : does nothing.
@@ -68,35 +68,35 @@ public:
      *
      * @param[in]   activater   a shared pointer to an activator
      */
-    void add( SPTR( Activater ) activater );
+    void add(SPTR(Activater) activater);
 
     /**
      * @brief       Adds a new starter.
      *
      * @param[in]   starter a shared pointer to a starter
      */
-    void add( SPTR( Starter ) starter );
+    void add(SPTR(Starter) starter);
 
     /**
      * @brief       Adds a new stopper.
      *
      * @param[in]   stopper a shared pointer to a stopper
      */
-    void add( SPTR( Stopper ) stopper );
+    void add(SPTR(Stopper) stopper);
 
     /**
      * @brief       Adds a new starter.
      *
      * @param[in]   initializer a shared pointer to an initializer
      */
-    void add( SPTR( Initializer ) initializer );
+    void add(SPTR(Initializer) initializer);
 
     /**
      * @brief       Adds a new starter.
      *
      * @param[in]   uninitializer a shared pointer to an uninitializer
      */
-    void add( SPTR( Uninitializer ) uninitializer );
+    void add(SPTR(Uninitializer) uninitializer);
 
     /**
      * @brief   Starts the profile.
@@ -150,19 +150,19 @@ public:
 
 private:
 
-    typedef std::vector< SPTR(Activater) >     ActivaterContainer;
-    typedef std::vector< SPTR(Starter) >       StarterContainer;
-    typedef std::vector< SPTR(Stopper) >       StopperContainer;
-    typedef std::vector< SPTR(Initializer) >   InitializerContainer;
-    typedef std::vector< SPTR(Uninitializer) > UninitializerContainer;
+    typedef std::vector<SPTR(Activater)> ActivaterContainer;
+    typedef std::vector<SPTR(Starter)> StarterContainer;
+    typedef std::vector<SPTR(Stopper)> StopperContainer;
+    typedef std::vector<SPTR(Initializer)> InitializerContainer;
+    typedef std::vector<SPTR(Uninitializer)> UninitializerContainer;
 
-    ActivaterContainer m_activaters;            ///< all managed activators
-    StarterContainer m_starters;                ///< all managed starters
-    StopperContainer m_stoppers;                ///< all managed stoppers
-    InitializerContainer m_initializers;        ///< all managed initializers
-    UninitializerContainer m_uninitializers;    ///< all managed uninitializers
+    ActivaterContainer m_activaters;         ///< all managed activators
+    StarterContainer m_starters;             ///< all managed starters
+    StopperContainer m_stoppers;             ///< all managed stoppers
+    InitializerContainer m_initializers;     ///< all managed initializers
+    UninitializerContainer m_uninitializers; ///< all managed uninitializers
 
-    std::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
+    std::filesystem::path m_filePath; ///< xml parsed file used to generate profile
 
     RunCallbackType m_run;
 

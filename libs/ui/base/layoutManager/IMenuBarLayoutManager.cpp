@@ -30,6 +30,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -50,17 +51,19 @@ IMenuBarLayoutManager::~IMenuBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
+void IMenuBarLayoutManager::initialize(ConfigurationType configuration)
 {
-    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                 configuration->getName() == "layout");
+    SIGHT_ASSERT(
+        "Bad configuration name " << configuration->getName() << ", must be layout",
+        configuration->getName() == "layout"
+    );
 
-    std::vector < ConfigurationType > vectMenus = configuration->find("menu");
+    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
     m_menus.clear();
-    for (ConfigurationType menu : vectMenus)
+    for(ConfigurationType menu : vectMenus)
     {
         SIGHT_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
-        if( menu->hasAttribute("name") )
+        if(menu->hasAttribute("name"))
         {
             std::string name = menu->getExistingAttributeValue("name");
             m_menuNames.push_back(name);
@@ -72,16 +75,17 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuBarLayoutManager::destroyMenus()
 {
-    for( ui::base::container::fwMenu::sptr menu :  m_menus)
+    for(ui::base::container::fwMenu::sptr menu : m_menus)
     {
         menu->destroyContainer();
     }
+
     m_menus.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwMenu::sptr > IMenuBarLayoutManager::getMenus()
+std::vector<ui::base::container::fwMenu::sptr> IMenuBarLayoutManager::getMenus()
 {
     return this->m_menus;
 }
@@ -89,4 +93,5 @@ std::vector< ui::base::container::fwMenu::sptr > IMenuBarLayoutManager::getMenus
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

@@ -52,22 +52,25 @@ namespace core
  */
 class VIZ_QT3D_CLASS_QT_API GenericScene : public Qt3DCore::QEntity
 {
-
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(
     Qt3DRender::QCamera* camera
-    READ getCamera WRITE setCamera NOTIFY cameraChanged)
+    READ getCamera WRITE setCamera NOTIFY cameraChanged
+)
 Q_PROPERTY(
     Qt3DExtras::QAbstractCameraController* cameraController
-    READ getCameraController WRITE setCameraController NOTIFY cameraControllerChanged)
+    READ getCameraController WRITE setCameraController NOTIFY cameraControllerChanged
+)
 Q_PROPERTY(
     Qt3DInput::QInputSettings* inputSettings
-    READ getInputSettings WRITE setInputSettings NOTIFY inputSettingsChanged)
+    READ getInputSettings WRITE setInputSettings NOTIFY inputSettingsChanged
+)
 Q_PROPERTY(
     Qt3DRender::QRenderSettings* renderSettings
-    READ getRenderSettings WRITE setRenderSettings NOTIFY renderSettingsChanged)
+    READ getRenderSettings WRITE setRenderSettings NOTIFY renderSettingsChanged
+)
 
 public:
 
@@ -124,20 +127,19 @@ Q_SIGNALS:
 private:
 
     /// Contains the scene's camera.
-    QPointer< Qt3DRender::QCamera > m_camera;
+    QPointer<Qt3DRender::QCamera> m_camera;
 
     /// Contains the scene's camera controller.
-    QPointer< Qt3DExtras::QAbstractCameraController > m_cameraController;
+    QPointer<Qt3DExtras::QAbstractCameraController> m_cameraController;
 
     /// Contains the scene's QInputSettings object (only used in QML applications).
-    QPointer< Qt3DInput::QInputSettings > m_inputSettings;
+    QPointer<Qt3DInput::QInputSettings> m_inputSettings;
 
     /// Contains the scene's QRenderSettings object (only used in QML applications).
-    QPointer< Qt3DRender::QRenderSettings > m_renderSettings;
+    QPointer<Qt3DRender::QRenderSettings> m_renderSettings;
 
     /// Contains the scene's framegraph.
-    QPointer< FrameGraph > m_frameGraph;
-
+    QPointer<FrameGraph> m_frameGraph;
 };
 
 } // namespace core.

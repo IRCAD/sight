@@ -33,23 +33,27 @@
 
 namespace sight::data
 {
+
 class Reconstruction;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API Surface : public io::dicom::reader::ie::InformationEntity< data::ModelSeries >
+class IO_DICOM_CLASS_API Surface : public io::dicom::reader::ie::InformationEntity<data::ModelSeries>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -60,13 +64,15 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Surface(const CSPTR(data::DicomSeries)& dicomSeries,
-                         const SPTR(::gdcm::Reader)& reader,
-                         const SPTR(io::dicom::container::DicomInstance)& instance,
-                         const data::ModelSeries::sptr& series,
-                         const core::log::Logger::sptr& logger = nullptr,
-                         ProgressCallback progress             = nullptr,
-                         CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Surface(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::ModelSeries::sptr& series,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /**
      * @brief Load Segmented Property Registry
@@ -93,22 +99,27 @@ protected:
      * @param[in] segmentItem GDCM segment item
      * @see PS 3.3 C.8.23.1
      */
-    virtual void readSurfaceSegmentationModule(const SPTR(data::Reconstruction)& reconstruction,
-                                               const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
-                                               const ::gdcm::Item& segmentItem);
+    virtual void readSurfaceSegmentationModule(
+        const SPTR(data::Reconstruction)& reconstruction,
+        const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+        const ::gdcm::Item& segmentItem
+    );
     /**
      * @brief Read Surface Mesh Module tags
      * @param[in,out] reconstruction Reconstruction data
      * @param[in] surface GDCM surface
      * @see PS 3.3 C.27.1
      */
-    IO_DICOM_API virtual void readSurfaceMeshModule(const SPTR(data::Reconstruction)& reconstruction, const ::gdcm::SmartPointer< ::gdcm::Surface >& surface
-                                                    );
+    IO_DICOM_API virtual void readSurfaceMeshModule(
+        const SPTR(data::Reconstruction)& reconstruction,
+        const ::gdcm::SmartPointer< ::gdcm::Surface>& surface
+    );
     /// Segment Property Registry
     io::dicom::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;
-
 };
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

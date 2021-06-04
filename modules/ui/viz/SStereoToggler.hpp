@@ -24,11 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <viz/scene3d/Layer.hpp>
+
 #include <core/com/Signals.hpp>
 
 #include <ui/base/IAction.hpp>
-
-#include <viz/scene3d/Layer.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -57,7 +57,7 @@ class MODULE_UI_VIZ_CLASS_API SStereoToggler : public ::sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SStereoToggler, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SStereoToggler, ::sight::ui::base::IAction);
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoToggler();
@@ -82,17 +82,16 @@ protected:
 private:
 
     using StereoModeType      = sight::viz::scene3d::compositor::Core::StereoModeType;
-    using StereoActiveSigType = core::com::Signal< void(bool) >;
+    using StereoActiveSigType = core::com::Signal<void (bool)>;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    sight::viz::scene3d::compositor::Core::StereoModeType m_stereoMode { StereoModeType::NONE };
+    sight::viz::scene3d::compositor::Core::StereoModeType m_stereoMode {StereoModeType::NONE};
 
     /// Sent at each update, notifies if stereo is enabled.
     StereoActiveSigType::sptr m_stereoActiveSig;
-
 };
 
 } // namespace sight::module::ui::viz

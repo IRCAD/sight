@@ -40,23 +40,31 @@
 
 namespace sight::data
 {
+
 class Composite;
 class Integer;
+
 }
 
 namespace thread
 {
+
 class Timer;
+
 }
 
 namespace sight::data
 {
+
 class SeriesDB;
+
 }
 
 namespace fwRuntime
 {
+
 struct ConfigurationElement;
+
 }
 
 namespace sight::module::ui::dicom
@@ -97,7 +105,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::base::IEditor);
 
     MODULE_UI_DICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;
@@ -130,7 +138,7 @@ protected:
     MODULE_UI_DICOM_API void updating() override;
 
     /// Override
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Function called when a new slice must be displayed
     MODULE_UI_DICOM_API void triggerNewSlice();
@@ -148,6 +156,7 @@ protected:
     MODULE_UI_DICOM_API void displayErrorMessage(const std::string& message) const;
 
 private Q_SLOTS:
+
     /**
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
@@ -160,10 +169,10 @@ private:
     ReadImageSlotType::sptr m_slotReadImage;
 
     /// Slice index slider
-    QPointer< QSlider > m_sliceIndexSlider;
+    QPointer<QSlider> m_sliceIndexSlider;
 
     /// Slice index line edit
-    QPointer< QLineEdit > m_sliceIndexLineEdit;
+    QPointer<QLineEdit> m_sliceIndexLineEdit;
 
     /// Number of instances
     std::size_t m_numberOfSlices;

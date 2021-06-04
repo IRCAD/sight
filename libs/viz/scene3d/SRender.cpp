@@ -49,7 +49,7 @@
 
 #include <stack>
 
-SIGHT_REGISTER_SERVICE(::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite)
+SIGHT_REGISTER_SERVICE(::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite);
 
 namespace sight::viz::scene3d
 {

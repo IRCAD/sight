@@ -24,13 +24,13 @@
 
 #include "data/detail/reflection/ActivitySeries.hpp"
 
-#include <core/reflection/UserObject.hpp>
-
 #include <data/Composite.hpp>
+
+#include <core/reflection/UserObject.hpp>
 
 //------------------------------------------------------------------------------
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(ActivitySeries))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (ActivitySeries))
 {
     builder
     .tag("object_version", "2")

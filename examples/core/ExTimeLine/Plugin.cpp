@@ -47,7 +47,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-
     m_worker = sight::core::thread::Worker::New();
     sight::core::thread::ActiveWorkers::getDefault()
     ->addWorker(sight::core::thread::ActiveWorkers::s_DEFAULT_WORKER, m_worker);

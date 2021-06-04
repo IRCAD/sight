@@ -36,7 +36,7 @@ class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenu
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMenu, ::sight::ui::base::IMenu)
+    SIGHT_DECLARE_SERVICE(SMenu, ::sight::ui::base::IMenu);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SMenu() noexcept;

@@ -53,14 +53,14 @@ struct Resampling
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename ::itk::Image< PIXELTYPE, 3 > ImageType;
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory< ImageType >(params.i_image);
+        typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
+        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.i_image);
 
         typename ::itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
             ::itk::ResampleImageFilter<ImageType, ImageType>::New();
 
-        typename ::itk::MinimumMaximumImageCalculator< ImageType >::Pointer minCalculator =
-            ::itk::MinimumMaximumImageCalculator< ImageType >::New();
+        typename ::itk::MinimumMaximumImageCalculator<ImageType>::Pointer minCalculator =
+            ::itk::MinimumMaximumImageCalculator<ImageType>::New();
 
         minCalculator->SetImage(itkImage);
         minCalculator->ComputeMinimum();
@@ -78,7 +78,7 @@ struct Resampling
 
         if(params.i_targetImage)
         {
-            for(std::uint8_t i = 0; i < 3; ++i)
+            for(std::uint8_t i = 0 ; i < 3 ; ++i)
             {
                 // ITK uses unsigned long to store sizes.
                 size[i] = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize2()[i]);
@@ -105,26 +105,28 @@ struct Resampling
 
 //-----------------------------------------------------------------------------
 
-void Resampler::resample(const data::Image::csptr& _inImage,
-                         const data::Image::sptr& _outImage,
-                         const data::Matrix4::csptr& _trf,
-                         const data::Image::csptr& _targetImg)
+void Resampler::resample(
+    const data::Image::csptr& _inImage,
+    const data::Image::sptr& _outImage,
+    const data::Matrix4::csptr& _trf,
+    const data::Image::csptr& _targetImg
+)
 {
-    const itk::Matrix<double, 4, 4 > itkMatrix = io::itk::helper::Transform::convertToITK(_trf);
+    const itk::Matrix<double, 4, 4> itkMatrix = io::itk::helper::Transform::convertToITK(_trf);
 
     // We need to extract a 3x3 matrix and a vector to set the affine transform.
     itk::Matrix<double, 3, 3> transformMat;
 
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
             transformMat(i, j) = itkMatrix(i, j);
         }
     }
 
     itk::Vector<double, 3> translation;
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         // Extract the last column to get the translation.
         translation.SetElement(i, itkMatrix(i, 3));
@@ -141,14 +143,16 @@ void Resampler::resample(const data::Image::csptr& _inImage,
     params.i_targetImage = _targetImg;
 
     const core::tools::Type type = _inImage->getType();
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, Resampling >::invoke(type, params);
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, Resampling>::invoke(type, params);
 }
 
 //-----------------------------------------------------------------------------
 
-data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
-                                      const data::Matrix4::csptr& _trf,
-                                      const data::Image::SpacingType& _outputSpacing)
+data::Image::sptr Resampler::resample(
+    const data::Image::csptr& _img,
+    const data::Matrix4::csptr& _trf,
+    const data::Image::SpacingType& _outputSpacing
+)
 {
     data::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
     return Resampler::resample(_img, _trf, spacing);
@@ -156,9 +160,11 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
 
 //-----------------------------------------------------------------------------
 
-data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
-                                      const data::Matrix4::csptr& _trf,
-                                      const data::Image::Spacing& _outputSpacing)
+data::Image::sptr Resampler::resample(
+    const data::Image::csptr& _img,
+    const data::Matrix4::csptr& _trf,
+    const data::Image::Spacing& _outputSpacing
+)
 {
     using PointType           = ::itk::Point<double, 3>;
     using VectorContainerType = ::itk::VectorContainer<int, PointType>;
@@ -168,14 +174,16 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
     const auto& inputOrigin  = _img->getOrigin2();
     const auto& inputSpacing = _img->getSpacing2();
 
-    SIGHT_ASSERT("Image dimension must be 3.",
-                 inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3);
+    SIGHT_ASSERT(
+        "Image dimension must be 3.",
+        inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3
+    );
 
     typename BoundingBoxType::Pointer inputBB = BoundingBoxType::New();
 
     const PointType min(inputOrigin.data());
     PointType max;
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         max[i] = inputOrigin[i] + static_cast<double>(inputSize[i]) * inputSpacing[i];
     }
@@ -189,7 +197,11 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
     outputCorners->Reserve(inputCorners->Size());
-    std::transform(inputCorners->begin(), inputCorners->end(), outputCorners->begin(), [&matrix](const PointType& _in)
+    std::transform(
+        inputCorners->begin(),
+        inputCorners->end(),
+        outputCorners->begin(),
+        [&matrix](const PointType& _in)
         {
             // Convert input to homogeneous coordinates.
             const ::itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
@@ -207,7 +219,7 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
     data::Image::Origin outputOrigin;
     data::Image::Size outputSize;
 
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         outputOrigin[i] = outputBB->GetMinimum()[i];
         outputSize[i]   = size_t((outputBB->GetMaximum()[i] - outputOrigin[i]) / _outputSpacing[i]);
@@ -223,4 +235,4 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
 
 //-----------------------------------------------------------------------------
 
-}// namespace sight::filter::image
+} // namespace sight::filter::image

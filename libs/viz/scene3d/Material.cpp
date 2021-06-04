@@ -47,12 +47,16 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     m_templateName(_templateName)
 {
     m_material = ::Ogre::MaterialManager::getSingleton().create(
-        _name, viz::scene3d::RESOURCE_GROUP);
+        _name,
+        viz::scene3d::RESOURCE_GROUP
+    );
 
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
-                                                                                               RESOURCE_GROUP);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        _templateName,
+        RESOURCE_GROUP
+    );
 
-    SIGHT_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
+    SIGHT_ASSERT("Material '" + _templateName + "'' not found", ogreMaterial);
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -86,20 +90,20 @@ void Material::updateOptionsMode(int _optionsMode)
 
             const bool depthOnly = viz::scene3d::helper::Shading::isDepthOnlyTechnique(*currentTechnique);
 
-            if( viz::scene3d::helper::Shading::isGeometricTechnique(*currentTechnique) || depthOnly )
+            if(viz::scene3d::helper::Shading::isGeometricTechnique(*currentTechnique) || depthOnly)
             {
                 // We copy the first pass, thus keeping all rendering states
                 ::Ogre::Pass* normalsPass = currentTechnique->createPass();
-                *normalsPass              = *firstPass;
+                *normalsPass = *firstPass;
                 normalsPass->setName(s_NORMALS_PASS);
 
                 // Vertex shader
                 normalsPass->setVertexProgram("Normals_VP");
 
                 std::string gpName = depthOnly ? "DepthPeeling/depthMap/" : "";
-                gpName += (_optionsMode == data::Material::NORMALS) ?
-                          "VerticesNormals_GP" :
-                          "CellsNormals_GP";
+                gpName += (_optionsMode == data::Material::NORMALS)
+                          ? "VerticesNormals_GP"
+                          : "CellsNormals_GP";
 
                 normalsPass->setGeometryProgram(gpName);
 
@@ -193,10 +197,10 @@ void Material::updatePolygonMode(int _polygonMode)
 
             for(const auto ogrePass : passes)
             {
-                switch( _polygonMode )
+                switch(_polygonMode)
                 {
                     case data::Material::SURFACE:
-                        ogrePass->setPolygonMode(::Ogre::PM_SOLID );
+                        ogrePass->setPolygonMode(::Ogre::PM_SOLID);
                         ogrePass->setPointSpritesEnabled(false);
                         break;
 
@@ -211,9 +215,9 @@ void Material::updatePolygonMode(int _polygonMode)
                         break;
 
                     default:
-                        if( _polygonMode != data::Material::EDGE )
+                        if(_polygonMode != data::Material::EDGE)
                         {
-                            SIGHT_ASSERT("Unhandled material representation mode : " << _polygonMode, false );
+                            SIGHT_ASSERT("Unhandled material representation mode : " << _polygonMode, false);
                         }
                 }
             }
@@ -223,7 +227,7 @@ void Material::updatePolygonMode(int _polygonMode)
 
 //------------------------------------------------------------------------------
 
-void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha )
+void Material::updateShadingMode(int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha)
 {
     const bool isR2VB = m_primitiveType != data::Mesh::CellType::TRIANGLE || m_hasPrimitiveColor;
 
@@ -231,14 +235,19 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
     // Otherwise we would have to update the whole R2VB pipeline each time a texture is set/unset
     const bool needDiffuseTexture = isR2VB ? m_hasUV : m_hasUV && _hasDiffuseTexture;
 
-    const data::Material::ShadingType mode = static_cast< data::Material::ShadingType >(_shadingMode);
+    const data::Material::ShadingType mode = static_cast<data::Material::ShadingType>(_shadingMode);
 
-    const ::Ogre::String permutation = viz::scene3d::helper::Shading::getPermutation(mode, needDiffuseTexture,
-                                                                                     m_hasVertexColor);
-    const ::Ogre::String r2vbGSName = viz::scene3d::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
-                                                                                                needDiffuseTexture,
-                                                                                                m_hasVertexColor,
-                                                                                                m_hasPrimitiveColor);
+    const ::Ogre::String permutation = viz::scene3d::helper::Shading::getPermutation(
+        mode,
+        needDiffuseTexture,
+        m_hasVertexColor
+    );
+    const ::Ogre::String r2vbGSName = viz::scene3d::helper::Shading::getR2VBGeometryProgramName(
+        m_primitiveType,
+        needDiffuseTexture,
+        m_hasVertexColor,
+        m_hasPrimitiveColor
+    );
 
     this->cleanTransparencyTechniques();
 
@@ -253,7 +262,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
         for(const auto ogrePass : passes)
         {
             // Nothing to do for edge and normal passes
-            if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
+            if(ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS)
             {
                 continue;
             }
@@ -271,13 +280,15 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                 {
                     const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                         m_perPrimitiveColorTextureName,
-                        viz::scene3d::RESOURCE_GROUP, true);
+                        viz::scene3d::RESOURCE_GROUP,
+                        true
+                    );
 
                     SIGHT_ASSERT("Texture should have been created before in SMesh", !result.second);
 
-                    const ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( result.first );
+                    const ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>(result.first);
 
-                    const std::string texUnitName = "PerPrimitiveColor";
+                    const std::string texUnitName          = "PerPrimitiveColor";
                     ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
 
                     if(texUnitState == nullptr)
@@ -294,8 +305,10 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                         // Unit state is set to 10 in the material file, but the real index is set here
                         // Ogre packs texture unit indices so we can't use spare indices
-                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
-                                                                                   unitStateCount - 1);
+                        ogrePass->getGeometryProgramParameters()->setNamedConstant(
+                            "u_colorPrimitiveTexture",
+                            unitStateCount - 1
+                        );
                     }
 
                     // Set size outside the scope of texture creation because the size could vary
@@ -323,8 +336,10 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                     if(needDiffuseTexture && colorPass)
                     {
                         int useTextureAlpha = static_cast<int>(_useTextureAlpha);
-                        ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
-                                                                                   useTextureAlpha);
+                        ogrePass->getFragmentProgramParameters()->setNamedConstant(
+                            "u_useTextureAlpha",
+                            useTextureAlpha
+                        );
                     }
 
                     ::Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
@@ -366,8 +381,8 @@ void Material::updateRGBAMode(data::Material::sptr _sightMaterial)
     m_material->setDiffuse(diffuse);
 
     const ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
-    m_material->setSpecular( specular );
-    m_material->setShininess( 25 );
+    m_material->setSpecular(specular);
+    m_material->setShininess(25);
 }
 
 //------------------------------------------------------------------------------
@@ -408,17 +423,18 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
             }
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 void Material::setTemplate(const std::string& _templateName)
 {
-    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
-                                                                                               RESOURCE_GROUP);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
+        _templateName,
+        RESOURCE_GROUP
+    );
 
-    SIGHT_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
+    SIGHT_ASSERT("Material '" + _templateName + "'' not found", ogreMaterial);
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -437,7 +453,7 @@ void Material::removePass(const std::string& _name)
         SIGHT_ASSERT("Technique is not set", technique);
 
         const ::Ogre::Technique::Passes& passes = technique->getPasses();
-        std::vector< ::Ogre::Pass* > removePassVector;
+        std::vector< ::Ogre::Pass*> removePassVector;
 
         // Collect the passes to remove
         for(const auto ogrePass : passes)
@@ -465,7 +481,7 @@ void Material::cleanTransparencyTechniques()
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    std::vector< unsigned short > removeTechniqueVector;
+    std::vector<unsigned short> removeTechniqueVector;
 
     unsigned short index = 0;
 
@@ -474,19 +490,20 @@ void Material::cleanTransparencyTechniques()
         SIGHT_ASSERT("Technique is not set", technique);
 
         auto scheme = technique->getSchemeName();
-        if( ::Ogre::StringUtil::startsWith( scheme, "CelShadingDepthPeeling", false) ||
-            ::Ogre::StringUtil::startsWith( scheme, "DepthPeeling", false) ||
-            ::Ogre::StringUtil::startsWith( scheme, "DualDepthPeeling", false) ||
-            ::Ogre::StringUtil::startsWith( scheme, "HybridTransparency", false) ||
-            ::Ogre::StringUtil::startsWith( scheme, "WeightedBlended", false) )
+        if(::Ogre::StringUtil::startsWith(scheme, "CelShadingDepthPeeling", false)
+           || ::Ogre::StringUtil::startsWith(scheme, "DepthPeeling", false)
+           || ::Ogre::StringUtil::startsWith(scheme, "DualDepthPeeling", false)
+           || ::Ogre::StringUtil::startsWith(scheme, "HybridTransparency", false)
+           || ::Ogre::StringUtil::startsWith(scheme, "WeightedBlended", false))
         {
             removeTechniqueVector.push_back(index);
         }
+
         ++index;
     }
 
     // Remove in inverse order otherwise the index we stored becomes invalid ;-)
-    for(auto it = removeTechniqueVector.rbegin(); it != removeTechniqueVector.rend(); ++it )
+    for(auto it = removeTechniqueVector.rbegin() ; it != removeTechniqueVector.rend() ; ++it)
     {
         m_material->removeTechnique(*it);
     }

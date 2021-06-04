@@ -35,11 +35,14 @@
 
 namespace sight::data
 {
+
 class Camera;
+
 }
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -58,17 +61,18 @@ public:
     /// destructor
     MODULE_UI_QT_API ~CameraDeviceDlg();
 
-    MODULE_UI_QT_API bool getSelectedCamera( SPTR(data::Camera)& camera);
+    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::Camera) & camera);
 
 private Q_SLOTS:
 
     void onSelectDevice(int index);
 
 private:
+
     QComboBox* m_devicesComboBox;
     QListWidget* m_camSettings;
-
 };
 
 } // video
+
 } // sight::module::ui::qt

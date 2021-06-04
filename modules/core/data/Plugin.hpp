@@ -44,7 +44,6 @@ struct MODULE_DATA_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides stop method. Do nothing
     MODULE_DATA_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::data

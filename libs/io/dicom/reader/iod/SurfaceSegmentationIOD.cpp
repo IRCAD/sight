@@ -41,18 +41,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(const data::DicomSeries::csptr& dicomSeries,
-                                               const SPTR(io::dicom::container::DicomInstance)& instance,
-                                               const core::log::Logger::sptr& logger,
-                                               ProgressCallback progress,
-                                               CancelRequestedCallback cancel) :
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -71,14 +75,16 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
-    SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
+    SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader>(new ::gdcm::SurfaceReader);
 
     // Dicom container
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
     if(dicomContainer.size() > 1)
     {
-        m_logger->warning("More than one surface segmentation storage have been found in the series. "
-                          "Only the first one will be read.");
+        m_logger->warning(
+            "More than one surface segmentation storage have been found in the series. "
+            "Only the first one will be read."
+        );
     }
 
     // Read first file
@@ -88,9 +94,14 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                          bufferObj->getStreamInfo().fsFile.string()+
-                                                          "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed(
+            "Unable to read the DICOM instance \""
+            + bufferObj->getStreamInfo().fsFile.string()
+            + "\" using the GDCM Reader."
+        ),
+        !success
+    );
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
@@ -107,11 +118,14 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
 
     // Load Segmented Property Registry
     const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
-        "io_dicom/SegmentedPropertyRegistry.csv");
+        "io_dicom/SegmentedPropertyRegistry.csv"
+    );
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
-        throw io::dicom::exception::Failed("Unable to load segmented property registry: '" +
-                                           filepath.string() + "'. File does not exist.");
+        throw io::dicom::exception::Failed(
+                  "Unable to load segmented property registry: '"
+                  + filepath.string() + "'. File does not exist."
+        );
     }
 
     // Read Patient Module - PS 3.3 C.7.1.1
@@ -144,11 +158,12 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
 
     // Display reconstructions
     series->setField("ShowReconstructions", data::Boolean::New(true));
-
 }
 
 //------------------------------------------------------------------------------
 
-}  // namespace iod
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace iod
+
+} // namespace reader
+
+} // namespace sight::io::dicom

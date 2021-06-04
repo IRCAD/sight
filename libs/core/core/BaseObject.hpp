@@ -34,9 +34,11 @@ namespace sight::core
 class CORE_CLASS_API BaseObject : public std::enable_shared_from_this<BaseObject>
 {
 public:
-    SIGHT_DECLARE_CLASS(BaseObject)
+
+    SIGHT_DECLARE_CLASS(BaseObject);
 
 protected:
+
     CORE_API virtual ~BaseObject();
     using std::enable_shared_from_this<BaseObject>::shared_from_this;
 };

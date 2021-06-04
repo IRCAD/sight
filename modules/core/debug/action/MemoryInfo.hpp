@@ -28,16 +28,16 @@
 
 namespace sight::module::debug
 {
+
 namespace action
 {
 
 /// Implements an action to show in a message box few memory information
 class MODULE_DEBUG_CLASS_API MemoryInfo : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(MemoryInfo, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(MemoryInfo, sight::ui::base::IAction);
 
     /// Does nothing
     MODULE_DEBUG_API MemoryInfo() noexcept;
@@ -58,8 +58,8 @@ protected:
 
     /// Calls classic IAction methods to stop
     void stopping() override;
-
 };
 
 } // namespace action
+
 } // namespace sight::module::debug

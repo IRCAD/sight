@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -36,9 +35,11 @@ struct FileAutoDelete;
 class CORE_CLASS_API FileHolder
 {
 public:
+
     FileHolder()
     {
     }
+
     CORE_API FileHolder(const std::filesystem::path& file, bool autodelete = false);
 
     operator std::filesystem::path() const
@@ -69,6 +70,7 @@ public:
     }
 
 protected:
+
     std::filesystem::path m_path;
     SPTR(FileAutoDelete) m_autoDelete;
 };

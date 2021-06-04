@@ -67,10 +67,9 @@ namespace sight::module::ui::qt::calibration
  */
 class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public service::IController
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SDisplayCalibrationInfo, service::IController)
+    SIGHT_DECLARE_SERVICE(SDisplayCalibrationInfo, service::IController);
 
     /// Constructor. Does nothing.
     MODULE_UI_QT_API SDisplayCalibrationInfo() noexcept;

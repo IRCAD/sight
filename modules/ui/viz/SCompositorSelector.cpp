@@ -22,6 +22,8 @@
 
 #include "SCompositorSelector.hpp"
 
+#include <viz/scene3d/SRender.hpp>
+
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -29,7 +31,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/scene3d/SRender.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -38,13 +40,10 @@
 #include <QListWidgetItem>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
 
 using sight::viz::scene3d::Layer;
-
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
@@ -70,7 +69,8 @@ void SCompositorSelector::starting()
     this->create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
 
     m_layersBox       = new QComboBox();
     m_compositorChain = new QListWidget();
@@ -79,13 +79,17 @@ void SCompositorSelector::starting()
     layout->addWidget(m_layersBox);
     layout->addWidget(m_compositorChain);
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
     this->refreshRenderers();
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::connect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
-                     SLOT(onSelectedCompositorItem(QListWidgetItem*)));
+    QObject::connect(
+        m_compositorChain,
+        SIGNAL(itemChanged(QListWidgetItem*)),
+        this,
+        SLOT(onSelectedCompositorItem(QListWidgetItem*))
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -188,8 +192,12 @@ void SCompositorSelector::refreshRenderers()
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
-            m_connections.connect(layerMap.second, Layer::s_INIT_LAYER_SIG,
-                                  this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
+            m_connections.connect(
+                layerMap.second,
+                Layer::s_INIT_LAYER_SIG,
+                this->getSptr(),
+                s_INIT_COMPOSITOR_LIST_SLOT
+            );
         }
     }
 
@@ -215,7 +223,7 @@ void SCompositorSelector::updateCompositorList()
         while(iter.hasMoreElements())
         {
             ::Ogre::ResourcePtr compositor = iter.getNext();
-            if (compositor->getGroup() == s_COMPOSITOR_RESOURCEGROUP_NAME)
+            if(compositor->getGroup() == s_COMPOSITOR_RESOURCEGROUP_NAME)
             {
                 QString compositorName = compositor.get()->getName().c_str();
                 layer->addAvailableCompositor(compositorName.toStdString());
@@ -240,15 +248,18 @@ void SCompositorSelector::checkEnabledCompositors()
 
         if(!m_layerCompositorChain.empty())
         {
-            for(int i(0); i < m_compositorChain->count(); ++i)
+            for(int i(0) ; i < m_compositorChain->count() ; ++i)
             {
                 QListWidgetItem* currentCompositor = m_compositorChain->item(i);
                 std::string currentCompositorName  = currentCompositor->text().toStdString();
 
-                auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
-                                                    m_layerCompositorChain.end(),
-                                                    sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
-                                                        currentCompositorName));
+                auto layerCompositor = std::find_if(
+                    m_layerCompositorChain.begin(),
+                    m_layerCompositorChain.end(),
+                    sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
+                        currentCompositorName
+                    )
+                );
 
                 if(layerCompositor != m_layerCompositorChain.end())
                 {
@@ -267,7 +278,7 @@ void SCompositorSelector::checkEnabledCompositors()
 
 void SCompositorSelector::uncheckCompositors()
 {
-    for(int i(0); i < m_compositorChain->count(); ++i)
+    for(int i(0) ; i < m_compositorChain->count() ; ++i)
     {
         QListWidgetItem* currentCompositor = m_compositorChain->item(i);
         currentCompositor->setCheckState(::Qt::Unchecked);
@@ -278,10 +289,13 @@ void SCompositorSelector::uncheckCompositors()
 
 bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 {
-    auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
-                                        m_layerCompositorChain.end(),
-                                        sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
-                                            compositorName));
+    auto layerCompositor = std::find_if(
+        m_layerCompositorChain.begin(),
+        m_layerCompositorChain.end(),
+        sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
+            compositorName
+        )
+    );
 
     if(layerCompositor != m_layerCompositorChain.end())
     {

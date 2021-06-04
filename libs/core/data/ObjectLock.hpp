@@ -38,28 +38,28 @@ namespace sight::data
  */
 class DATA_CLASS_API ObjectLock
 {
-
 public:
 
     ObjectLock()
     {
     }
 
-    DATA_API ObjectLock( const ObjectLock& );
-    DATA_API ObjectLock( data::Object::sptr obj );
+    DATA_API ObjectLock(const ObjectLock&);
+    DATA_API ObjectLock(data::Object::sptr obj);
 
     DATA_API ~ObjectLock();
 
-    DATA_API ObjectLock& operator=(const ObjectLock& );
+    DATA_API ObjectLock& operator=(const ObjectLock&);
+
 private:
 
-    typedef std::vector< core::memory::BufferObject::Lock > LocksType;
-    typedef std::vector< data::Object::sptr > ObjectsType;
+    typedef std::vector<core::memory::BufferObject::Lock> LocksType;
+    typedef std::vector<data::Object::sptr> ObjectsType;
 
-    void lock( data::Array::sptr array, LocksType& locks );
-    void lock( data::Image::sptr image, LocksType& locks );
-    void lock( data::Mesh::sptr mesh, LocksType& locks );
-    void lock( data::Reconstruction::sptr rec, LocksType& locks );
+    void lock(data::Array::sptr array, LocksType& locks);
+    void lock(data::Image::sptr image, LocksType& locks);
+    void lock(data::Mesh::sptr mesh, LocksType& locks);
+    void lock(data::Reconstruction::sptr rec, LocksType& locks);
 
     LocksType m_locks;
     ObjectsType m_objects;

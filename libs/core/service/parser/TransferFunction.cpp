@@ -31,21 +31,22 @@
 
 namespace sight::service
 {
+
 namespace parser
 {
 
 // ------------------------------------------------------------------------------
 
-void TransferFunction::updating( )
+void TransferFunction::updating()
 {
     SIGHT_FATAL("This method is deprecated, and this shouldn't be used.");
 }
 
 // ------------------------------------------------------------------------------
 
-void TransferFunction::createConfig( core::tools::Object::sptr _obj )
+void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 {
-    data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast( _obj );
+    data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(_obj);
     SIGHT_ASSERT("TransferFunction not instanced", tf);
 
     const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
@@ -63,7 +64,7 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
         {
             const auto stepsConfig = colorCfg.equal_range("step");
 
-            for (auto itStepCfg = stepsConfig.first; itStepCfg != stepsConfig.second; ++itStepCfg)
+            for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
             {
                 const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
                 const std::string strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
@@ -75,6 +76,7 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
                                                             newColor->blue(), newColor->alpha());
                 tf->addTFColor(value, color);
             }
+
             tf->setWLMinMax(tf->getMinMaxTFValues());
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
@@ -92,4 +94,5 @@ void TransferFunction::createConfig( core::tools::Object::sptr _obj )
 // ------------------------------------------------------------------------------
 
 } // namespace parser
+
 } // namespace sight::service

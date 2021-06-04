@@ -61,7 +61,7 @@ class UI_BASE_CLASS_API ISlideViewBuilder : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ISlideViewBuilder, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ISlideViewBuilder, ui::base::GuiBaseObject);
 
     UI_BASE_API const static std::string REGISTRY_KEY;
 
@@ -112,48 +112,48 @@ protected:
     ui::base::container::fwContainer::sptr m_container;
 
     /// Defines the horizontal alignment.
-    HAlignment m_hAlignment { LEFT };
+    HAlignment m_hAlignment {LEFT};
 
     /// Defines the vertical alignment.
-    VAlignment m_vAlignment { TOP };
+    VAlignment m_vAlignment {TOP};
 
     /// Defines the width of the widget.
-    int m_width { 100 };
+    int m_width {100};
 
     /// Defines if the width must be read a percent.
-    bool m_percentWidth { true };
+    bool m_percentWidth {true};
 
     /// Defines the height of the widget.
-    int m_height { 100 };
+    int m_height {100};
 
     /// Defines if the height must be read a percent.
-    bool m_percentHeight { true };
+    bool m_percentHeight {true};
 
     /// Defines the horizontal offset of the widget.
-    int m_hOffset { 0 };
+    int m_hOffset {0};
 
     /// Defines if the horizontal offset must be read a percent.
-    bool m_percentHOffset { false };
+    bool m_percentHOffset {false};
 
     /// Defines the vertical offset of the widget.
-    int m_vOffset { 0 };
+    int m_vOffset {0};
 
     /// Defines if the vertical offset must be read a percent.
-    bool m_percentVOffset { false };
+    bool m_percentVOffset {false};
 
     /// Defines the widget opacity.
-    double m_opacity { 1. };
+    double m_opacity {1.};
 
     /// Defines if the widget animation is enabled.
-    bool m_animatable { false };
+    bool m_animatable {false};
 
     /// Defines the animation direction.
-    AnimatableAlignment m_animatableAlignment { TOP_ANIMATION };
+    AnimatableAlignment m_animatableAlignment {TOP_ANIMATION};
 
     /// Defines the additional style sheet of the widget.
     std::string m_styleSheet;
-
 };
 
 } // namespace builder.
+
 } // namespace sight::ui::base.

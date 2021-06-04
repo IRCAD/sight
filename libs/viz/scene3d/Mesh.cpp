@@ -51,9 +51,14 @@ const unsigned int Mesh::s_maxTextureSize;
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 const data::Mesh::csptr& _mesh)
+template<typename T>
+void copyIndices(
+    void* _pTriangles,
+    void* _pQuads,
+    void* _pEdges,
+    void* _pTetras,
+    const data::Mesh::csptr& _mesh
+)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -62,31 +67,31 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
 
-    auto cellItr       = _mesh->begin< data::iterator::ConstCellIterator >();
-    const auto cellEnd = _mesh->end< data::iterator::ConstCellIterator >();
+    auto cellItr       = _mesh->begin<data::iterator::ConstCellIterator>();
+    const auto cellEnd = _mesh->end<data::iterator::ConstCellIterator>();
 
-    for (; cellItr != cellEnd; ++cellItr)
+    for( ; cellItr != cellEnd ; ++cellItr)
     {
         const auto type = *cellItr->type;
-        if ( type == data::Mesh::CellType::TRIANGLE )
+        if(type == data::Mesh::CellType::TRIANGLE)
         {
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[0]);
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[1]);
             *pTriangles++ = static_cast<T>(cellItr->pointIdx[2]);
         }
-        else if ( type == data::Mesh::CellType::QUAD )
+        else if(type == data::Mesh::CellType::QUAD)
         {
             *pQuads++ = static_cast<T>(cellItr->pointIdx[0]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[1]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[2]);
             *pQuads++ = static_cast<T>(cellItr->pointIdx[3]);
         }
-        else if ( type == data::Mesh::CellType::EDGE )
+        else if(type == data::Mesh::CellType::EDGE)
         {
             *pEdges++ = static_cast<T>(cellItr->pointIdx[0]);
             *pEdges++ = static_cast<T>(cellItr->pointIdx[1]);
         }
-        else if ( type == data::Mesh::CellType::TETRA )
+        else if(type == data::Mesh::CellType::TETRA)
         {
             *pTetras++ = static_cast<T>(cellItr->pointIdx[0]);
             *pTetras++ = static_cast<T>(cellItr->pointIdx[1]);
@@ -115,8 +120,10 @@ Mesh::Mesh(const std::string& _name)
     // Create Mesh Data Structure for r2vb input
     // We could create it only when necessary, but for now it is simpler to create it every time
     const auto r2vbMeshName = _name + "_R2VBMesh";
-    m_r2vbMesh = meshMgr.createManual(r2vbMeshName,
-                                      viz::scene3d::RESOURCE_GROUP);
+    m_r2vbMesh = meshMgr.createManual(
+        r2vbMeshName,
+        viz::scene3d::RESOURCE_GROUP
+    );
 
     // TODO: remove ?
     m_perPrimitiveColorTexture.reset();
@@ -136,8 +143,12 @@ Mesh::~Mesh()
 
 //-----------------------------------------------------------------------------
 
-void Mesh::bindLayer(const data::Mesh::csptr& _mesh, BufferBinding _binding,
-                     ::Ogre::VertexElementSemantic _semantic, ::Ogre::VertexElementType _type)
+void Mesh::bindLayer(
+    const data::Mesh::csptr& _mesh,
+    BufferBinding _binding,
+    ::Ogre::VertexElementSemantic _semantic,
+    ::Ogre::VertexElementType _type
+)
 {
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
@@ -164,19 +175,19 @@ void Mesh::bindLayer(const data::Mesh::csptr& _mesh, BufferBinding _binding,
     }
 
     // Allocate the buffer if it necessary.
-    if(!bind->isBufferBound(m_binding[_binding]) || uiPrevNumVertices < uiNumVertices )
+    if(!bind->isBufferBound(m_binding[_binding]) || uiPrevNumVertices < uiNumVertices)
     {
         FW_PROFILE_AVG("REALLOC LAYER", 5);
 
         // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
-                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
         const size_t offset = ::Ogre::VertexElement::getTypeSize(_type);
 
         ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-        cbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        cbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
         bind->setBinding(m_binding[_binding], cbuf);
     }
 }
@@ -189,6 +200,7 @@ void Mesh::setVisible(bool _visible)
     {
         m_r2vbEntity->setVisible(_visible);
     }
+
     for(auto& it : m_r2vbObject)
     {
         it.second->setVisible(_visible);
@@ -220,7 +232,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     }
 
     ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t prevNumVertices = 0;
+    size_t prevNumVertices            = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -230,11 +242,11 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         // Verify if mesh contains Tetra, Edge or Point
         // If not, generate normals
-        auto cellItr        = _mesh->begin< data::iterator::ConstCellIterator >();
-        const auto cellEnd  = _mesh->end< data::iterator::ConstCellIterator >();
+        auto cellItr        = _mesh->begin<data::iterator::ConstCellIterator>();
+        const auto cellEnd  = _mesh->end<data::iterator::ConstCellIterator>();
         bool computeNormals = true;
 
-        for(; cellItr != cellEnd; ++cellItr)
+        for( ; cellItr != cellEnd ; ++cellItr)
         {
             auto cellType = *cellItr->type;
             if(cellType == data::Mesh::CellType::EDGE || cellType == data::Mesh::CellType::TETRA
@@ -262,9 +274,9 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
         ::Ogre::HardwareVertexBufferSharedPtr vbuf;
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
-                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
         size_t offset = 0;
 
@@ -286,7 +298,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-        vbuf                               = mgr.createVertexBuffer(offset, numVertices, usage, false);
+        vbuf = mgr.createVertexBuffer(offset, numVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
     else
@@ -300,17 +312,17 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     //------------------------------------------
 
     // 1 - Count number of primitives for each type
-    auto cellItr       = _mesh->begin< data::iterator::ConstCellIterator >();
-    const auto cellEnd = _mesh->end< data::iterator::ConstCellIterator >();
-    unsigned int numIndices[ s_numPrimitiveTypes ];
+    auto cellItr       = _mesh->begin<data::iterator::ConstCellIterator>();
+    const auto cellEnd = _mesh->end<data::iterator::ConstCellIterator>();
+    unsigned int numIndices[s_numPrimitiveTypes];
 
     memset(numIndices, 0, sizeof(numIndices));
 
-    for(; cellItr != cellEnd; ++cellItr)
+    for( ; cellItr != cellEnd ; ++cellItr)
     {
-        auto cellType = _pointsOnly ?
-                        data::Mesh::CellType::POINT :
-                        *cellItr->type;
+        auto cellType = _pointsOnly
+                        ? data::Mesh::CellType::POINT
+                        : *cellItr->type;
         if(cellType == data::Mesh::CellType::POINT)
         {
             numIndices[static_cast<unsigned int>(data::Mesh::CellType::POINT)] += 1;
@@ -338,7 +350,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     }
 
     // 2 - Create a submesh for each primitive type
-    void* indexBuffer[ s_numPrimitiveTypes ];
+    void* indexBuffer[s_numPrimitiveTypes];
     memset(indexBuffer, 0, sizeof(indexBuffer));
 
     const bool indices32Bits     = numVertices >= (1 << 16);
@@ -348,9 +360,9 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
-        for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
+        for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
         {
-            const data::Mesh::CellType cellType = static_cast< data::Mesh::CellType>(i);
+            const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
 
             if(numIndices[i] > 0)
             {
@@ -358,7 +370,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                 {
                     // Create one submesh
                     const std::string name = std::to_string(static_cast<int>(cellType));
-                    if ( cellType == data::Mesh::CellType::TRIANGLE )
+                    if(cellType == data::Mesh::CellType::TRIANGLE)
                     {
                         if(hasPrimitiveColor)
                         {
@@ -372,17 +384,17 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
                     }
-                    else if(cellType == data::Mesh::CellType::EDGE )
+                    else if(cellType == data::Mesh::CellType::EDGE)
                     {
                         m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
                     }
-                    else if(cellType == data::Mesh::CellType::POINT )
+                    else if(cellType == data::Mesh::CellType::POINT)
                     {
                         m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
                     }
-                    else if(cellType == data::Mesh::CellType::QUAD || cellType == data::Mesh::CellType::TETRA )
+                    else if(cellType == data::Mesh::CellType::QUAD || cellType == data::Mesh::CellType::TETRA)
                     {
                         // Use r2vb pipeline to generate quads or tetrahedrons
                         m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
@@ -400,27 +412,32 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                     // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
                     // We don't reallocate if we have more space than requested
                     bool createIndexBuffer = !ibuf;
-                    if( ibuf)
+                    if(ibuf)
                     {
                         // reallocate if new mesh has more indexes or IndexType change
-                        createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) ||
-                                            (indicesPrev32Bits != indices32Bits);
+                        createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i])
+                                            || (indicesPrev32Bits != indices32Bits);
                     }
+
                     if(createIndexBuffer)
                     {
-                        ::Ogre::HardwareBuffer::Usage usage = m_isDynamic ?
-                                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                        ::Ogre::HardwareBuffer::Usage usage = m_isDynamic
+                                                              ? ::Ogre::HardwareBuffer::
+                                                              HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
                                                               :
                                                               ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
                         ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
                             indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
-                            numIndices[i], usage);
+                            numIndices[i],
+                            usage
+                        );
 
                         m_subMeshes[i]->indexData->indexBuffer = ibuf;
                     }
+
                     m_subMeshes[i]->indexData->indexCount = numIndices[i];
-                    SIGHT_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
+                    SIGHT_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount);
 
                     // Lock index data, we are going to write into it in the next loop
                     indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
@@ -432,8 +449,8 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                 if(m_subMeshes[i])
                 {
                     std::string name = std::to_string(static_cast<int>(cellType));
-                    if ( (cellType == data::Mesh::CellType::TRIANGLE && hasPrimitiveColor) ||
-                         (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
+                    if((cellType == data::Mesh::CellType::TRIANGLE && hasPrimitiveColor)
+                       || (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
                     {
                         m_r2vbMesh->destroySubMesh(name);
                     }
@@ -441,6 +458,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                     {
                         m_ogreMesh->destroySubMesh(name);
                     }
+
                     m_subMeshes[i] = nullptr;
                 }
             }
@@ -453,23 +471,27 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         if(indices32Bits)
         {
-            copyIndices< std::uint32_t >( indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
-                                          _mesh );
+            copyIndices<std::uint32_t>(
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
+                _mesh
+            );
         }
         else
         {
-            copyIndices< std::uint16_t >( indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
-                                          indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
-                                          _mesh );
+            copyIndices<std::uint16_t>(
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
+                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
+                _mesh
+            );
         }
     }
 
-    for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
+    for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
     {
         if(numIndices[i] > 0 && m_subMeshes[i]->indexData->indexBuffer)
         {
@@ -502,7 +524,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     }
 
     ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    size_t uiPrevNumVertices = 0;
+    size_t uiPrevNumVertices          = 0;
     if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
         uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
@@ -518,9 +540,9 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
         // Allocate vertex buffer of the requested number of vertices (vertexCount)
         // and bytes per vertex (offset)
         ::Ogre::HardwareVertexBufferSharedPtr vbuf;
-        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
-                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices)
+                                              ? ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                              : ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
         size_t offset = 0;
 
@@ -536,7 +558,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-        vbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        vbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
     else
@@ -556,9 +578,12 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh::sptr& _mesh,
-                                                                ::Ogre::SceneManager& _sceneMgr,
-                                                                const std::string& _materialName, bool)
+std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
+    const data::Mesh::sptr& _mesh,
+    ::Ogre::SceneManager& _sceneMgr,
+    const std::string& _materialName,
+    bool
+)
 {
     //------------------------------------------
     // Render to vertex-buffer
@@ -571,8 +596,8 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
     bool add = true;
 
     const bool hasPrimitiveColor = _mesh->hasCellColors();
-    if( (m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::QUAD)]
-         || m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::TETRA)]) || hasPrimitiveColor)
+    if((m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::QUAD)]
+        || m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::TETRA)]) || hasPrimitiveColor)
     {
         if(!m_r2vbMesh->sharedVertexData)
         {
@@ -583,8 +608,8 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
         *m_r2vbMesh->sharedVertexData->vertexDeclaration   = *m_ogreMesh->sharedVertexData->vertexDeclaration;
         m_r2vbMesh->sharedVertexData->vertexCount          = m_ogreMesh->sharedVertexData->vertexCount;
 
-        m_r2vbMesh->_setBounds( m_ogreMesh->getBounds() );
-        m_r2vbMesh->_setBoundingSphereRadius( m_ogreMesh->getBoundingSphereRadius() );
+        m_r2vbMesh->_setBounds(m_ogreMesh->getBounds());
+        m_r2vbMesh->_setBoundingSphereRadius(m_ogreMesh->getBoundingSphereRadius());
 
         // Add mesh to Ogre Root Scene Node if it doesn't exist yet
         if(!m_r2vbEntity)
@@ -595,7 +620,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
         }
 
         const size_t numSubEntities = m_r2vbEntity->getNumSubEntities();
-        for(size_t i = 0; i < numSubEntities; ++i)
+        for(size_t i = 0 ; i < numSubEntities ; ++i)
         {
             const auto subEntity = m_r2vbEntity->getSubEntity(i);
             const auto subMesh   = subEntity->getSubMesh();
@@ -603,24 +628,32 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
             const bool bQuad  = (subMesh == m_subMeshes[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)]);
             const bool bTetra = (subMesh == m_subMeshes[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)]);
 
-            const data::Mesh::CellType cellType = bQuad ? data::Mesh::CellType::QUAD :
-                                                  bTetra ? data::Mesh::CellType::TETRA :
-                                                  data::Mesh::CellType::TRIANGLE;
+            const data::Mesh::CellType cellType = bQuad ? data::Mesh::CellType::QUAD
+                                                        : bTetra ? data::Mesh::CellType::TETRA
+                                                                 : data::Mesh::CellType::TRIANGLE;
 
             if(m_r2vbObject.find(cellType) == m_r2vbObject.end())
             {
                 const std::string name           = std::to_string(static_cast<int>(cellType));
                 const std::string r2vbObjectName = m_ogreMesh->getName() + "_r2vbObject_" + name;
-                m_r2vbObject[cellType] = viz::scene3d::R2VBRenderable::New(r2vbObjectName, subEntity, &_sceneMgr,
-                                                                           cellType, _materialName);
+                m_r2vbObject[cellType] = viz::scene3d::R2VBRenderable::New(
+                    r2vbObjectName,
+                    subEntity,
+                    &_sceneMgr,
+                    cellType,
+                    _materialName
+                );
             }
 
-            m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
-                                                      m_hasPrimitiveColor || m_hasVertexColor,
-                                                      m_hasUV);
+            m_r2vbObject[cellType]->setOutputSettings(
+                static_cast<unsigned int>(subMesh->indexData->indexCount),
+                m_hasPrimitiveColor || m_hasVertexColor,
+                m_hasUV
+            );
 
             r2vbRenderables.push_back(m_r2vbObject[cellType]);
         }
+
         add = true;
     }
     else
@@ -630,6 +663,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
         {
             r2vbRenderables.push_back(r2vbObject.second);
         }
+
         m_r2vbObject.clear();
 
         if(m_r2vbEntity)
@@ -637,8 +671,10 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(const data::Mesh
             _sceneMgr.destroyEntity(m_r2vbEntity);
             m_r2vbEntity = nullptr;
         }
+
         add = false;
     }
+
     return std::make_pair(add, r2vbRenderables);
 }
 
@@ -658,8 +694,8 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     // Update Ogre Mesh with data::Mesh
     const auto dumpLock = _mesh->lock();
 
-    auto pointsItr       = _mesh->begin< data::iterator::ConstPointIterator >();
-    const auto pointsEnd = _mesh->end< data::iterator::ConstPointIterator >();
+    auto pointsItr       = _mesh->begin<data::iterator::ConstPointIterator>();
+    const auto pointsEnd = _mesh->end<data::iterator::ConstPointIterator>();
 
     size_t uiStrideFloat = 3;
     if(m_hasNormal)
@@ -681,7 +717,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for (; pointsItr != pointsEnd; ++pointsItr)
+        for( ; pointsItr != pointsEnd ; ++pointsItr)
         {
             const auto& pt0 = pointsItr->point->x;
             xMin = std::min(xMin, pt0);
@@ -697,25 +733,25 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
         }
     }
     {
-        pointsItr = _mesh->begin< data::iterator::ConstPointIterator >();
-        PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
+        pointsItr = _mesh->begin<data::iterator::ConstPointIterator>();
+        PointValueType* __restrict pPos = static_cast<PointValueType*>(pVertex);
         FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
 
         NormalValueType* __restrict pNormal = nullptr;
 
-        if (m_hasNormal)
+        if(m_hasNormal)
         {
-            pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
+            pNormal = static_cast<NormalValueType*>(pVertex) + 3;
         }
 
-        for (; pointsItr != pointsEnd; ++pointsItr)
+        for( ; pointsItr != pointsEnd ; ++pointsItr)
         {
-            memcpy(pPos, pointsItr->point, 3 * sizeof(PointValueType) );
+            memcpy(pPos, pointsItr->point, 3 * sizeof(PointValueType));
             pPos += uiStrideFloat;
 
-            if (m_hasNormal)
+            if(m_hasNormal)
             {
-                memcpy(pNormal, pointsItr->normal, 3 * sizeof(NormalValueType) );
+                memcpy(pNormal, pointsItr->normal, 3 * sizeof(NormalValueType));
                 pNormal += uiStrideFloat;
             }
         }
@@ -724,14 +760,14 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     // Unlock vertex data
     vbuf->unlock();
 
-    if(xMin < std::numeric_limits<PointValueType>::max() &&
-       yMin < std::numeric_limits<PointValueType>::max() &&
-       zMin < std::numeric_limits<PointValueType>::max() &&
-       xMax > std::numeric_limits<PointValueType>::lowest() &&
-       yMax > std::numeric_limits<PointValueType>::lowest() &&
-       zMax > std::numeric_limits<PointValueType>::lowest())
+    if(xMin < std::numeric_limits<PointValueType>::max()
+       && yMin < std::numeric_limits<PointValueType>::max()
+       && zMin < std::numeric_limits<PointValueType>::max()
+       && xMax > std::numeric_limits<PointValueType>::lowest()
+       && yMax > std::numeric_limits<PointValueType>::lowest()
+       && zMax > std::numeric_limits<PointValueType>::lowest())
     {
-        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
+        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox(xMin, yMin, zMin, xMax, yMax, zMax));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
@@ -739,22 +775,26 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
 
         if(valid)
         {
-            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
-                                                                      ::Ogre::Math::Sqr(yMax - yMin) +
-                                                                      ::Ogre::Math::Sqr(zMax - zMin)) /2);
+            m_ogreMesh->_setBoundingSphereRadius(
+                ::Ogre::Math::Sqrt(
+                    ::Ogre::Math::Sqr(xMax - xMin)
+                    + ::Ogre::Math::Sqr(yMax - yMin)
+                    + ::Ogre::Math::Sqr(zMax - zMin)
+                ) / 2
+            );
         }
         else
         {
             SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
-            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+            m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
         }
     }
     else
     {
         // An extent was not found or is NaN
-        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
     }
 
     /// Notify Mesh object that it has been modified
@@ -793,7 +833,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for (size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
             const auto point = points[i]->getCoord();
             const auto& pt0  = point[0];
@@ -810,9 +850,9 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
         }
     }
     {
-        float* __restrict pPos = static_cast< float* >( pVertex );
+        float* __restrict pPos = static_cast<float*>(pVertex);
         FW_PROFILE_AVG("UPDATE POS", 5);
-        for (size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
             const auto point = points[i]->getCoord();
             pPos[0] = static_cast<float>(point[0]);
@@ -825,12 +865,12 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     // Unlock vertex data
     vbuf->unlock();
 
-    if(xMin < std::numeric_limits<PointType>::max() &&
-       yMin < std::numeric_limits<PointType>::max() &&
-       zMin < std::numeric_limits<PointType>::max() &&
-       xMax > std::numeric_limits<PointType>::lowest() &&
-       yMax > std::numeric_limits<PointType>::lowest() &&
-       zMax > std::numeric_limits<PointType>::lowest())
+    if(xMin < std::numeric_limits<PointType>::max()
+       && yMin < std::numeric_limits<PointType>::max()
+       && zMin < std::numeric_limits<PointType>::max()
+       && xMax > std::numeric_limits<PointType>::lowest()
+       && yMax > std::numeric_limits<PointType>::lowest()
+       && zMax > std::numeric_limits<PointType>::lowest())
     {
         const float xMinF = static_cast<float>(xMin);
         const float yMinF = static_cast<float>(yMin);
@@ -839,7 +879,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
         const float yMaxF = static_cast<float>(yMax);
         const float zMaxF = static_cast<float>(zMax);
 
-        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF ));
+        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
@@ -851,23 +891,26 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
             const float yLenF = yMaxF - yMinF;
             const float zLenF = zMaxF - xMinF;
 
-            m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt(
-                                                      ::Ogre::Math::Sqr( xLenF )
-                                                      + ::Ogre::Math::Sqr( yLenF )
-                                                      + ::Ogre::Math::Sqr( zLenF )) / 2.0f);
+            m_ogreMesh->_setBoundingSphereRadius(
+                ::Ogre::Math::Sqrt(
+                    ::Ogre::Math::Sqr(xLenF)
+                    + ::Ogre::Math::Sqr(yLenF)
+                    + ::Ogre::Math::Sqr(zLenF)
+                ) / 2.0f
+            );
         }
         else
         {
             SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
-            m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+            m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
         }
     }
     else
     {
         // An extent was not found or is NaN
-        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+        m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox::EXTENT_NULL);
     }
 
     /// Notify Mesh object that it has been modified
@@ -904,12 +947,12 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     if(hasPrimitiveColor)
     {
         unsigned int numIndicesTotal = 0;
-        for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
+        for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
         {
             if(m_subMeshes[i])
             {
-                const data::Mesh::CellType cellType = static_cast< data::Mesh::CellType>(i);
-                if ( cellType == data::Mesh::CellType::TRIANGLE)
+                const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
+                if(cellType == data::Mesh::CellType::TRIANGLE)
                 {
                     numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount / 3);
                 }
@@ -925,22 +968,30 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
             static std::uint64_t i = 0;
             m_perPrimitiveColorTextureName = "PerCellColorTexture_" + std::to_string(i++);
             m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
-                m_perPrimitiveColorTextureName, viz::scene3d::RESOURCE_GROUP, true);
+                m_perPrimitiveColorTextureName,
+                viz::scene3d::RESOURCE_GROUP,
+                true
+            );
         }
 
         const size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        const size_t height = static_cast<size_t>( std::floor(numIndicesTotal / s_maxTextureSize) + 1 );
+        const size_t height = static_cast<size_t>(std::floor(numIndicesTotal / s_maxTextureSize) + 1);
 
-        if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height )
+        if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height)
         {
             FW_PROFILE_AVG("REALLOC COLORS_CELL", 5);
 
             // It would be better to use PF_BYTE_RGB when we have 3 components but for some reason it doesn't work
             // Probably something related to alignment or a bug in Ogre
-            viz::scene3d::Utils::allocateTexture(m_perPrimitiveColorTexture.get(), width, height, 1,
-                                                 ::Ogre::PF_BYTE_RGBA, ::Ogre::TEX_TYPE_2D,
-                                                 (m_isDynamic || m_isDynamicVertices));
-
+            viz::scene3d::Utils::allocateTexture(
+                m_perPrimitiveColorTexture.get(),
+                width,
+                height,
+                1,
+                ::Ogre::PF_BYTE_RGBA,
+                ::Ogre::TEX_TYPE_2D,
+                (m_isDynamic || m_isDynamicVertices)
+            );
         }
     }
     else
@@ -949,19 +1000,19 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         {
             m_perPrimitiveColorTexture->freeInternalResources();
         }
+
         m_perPrimitiveColorTexture.reset();
         m_perPrimitiveColorTextureName = "";
     }
 
     const auto lock = _mesh->lock();
     // 2 - Copy of vertices
-    if (hasVertexColor)
+    if(hasVertexColor)
     {
-
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
         ::Ogre::RGBA* pColor                       =
-            static_cast< ::Ogre::RGBA* >( cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD) );
+            static_cast< ::Ogre::RGBA*>(cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD));
 
         // Destination
         const std::uint8_t* colors = _mesh->getPointColorsBuffer();
@@ -975,12 +1026,11 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
 
     if(hasPrimitiveColor)
     {
-
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        ::Ogre::RGBA* pColorDest = reinterpret_cast< ::Ogre::RGBA* >( pixelBox.data );
+        ::Ogre::RGBA* pColorDest         = reinterpret_cast< ::Ogre::RGBA*>(pixelBox.data);
 
         // Destination
         const std::uint8_t* colors = _mesh->getCellColorsBuffer();
@@ -997,6 +1047,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         m_hasVertexColor    = hasVertexColor;
         m_hasPrimitiveColor = hasPrimitiveColor;
     }
+
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
 }
@@ -1008,7 +1059,7 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
     m_hasUV = _mesh->hasPointTexCoords();
 
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
-    if (m_hasUV)
+    if(m_hasUV)
     {
         bindLayer(_mesh, TEXCOORD, ::Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
@@ -1016,13 +1067,13 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
-        void* pBuf = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-        float* pUV = static_cast< float* >( pBuf );
+        void* pBuf                                  = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+        float* pUV                                  = static_cast<float*>(pBuf);
 
-        auto itr = _mesh->begin< data::iterator::ConstPointIterator >();
+        auto itr = _mesh->begin<data::iterator::ConstPointIterator>();
 
         // Copy UV coordinates for each mesh point
-        for (unsigned int i = 0; i < _mesh->getNumberOfPoints(); ++i, ++itr)
+        for(unsigned int i = 0 ; i < _mesh->getNumberOfPoints() ; ++i, ++itr)
         {
             pUV[2 * i]     = itr->tex->u;
             pUV[2 * i + 1] = itr->tex->v;
@@ -1030,6 +1081,7 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 
         uvbuf->unlock();
     }
+
     /// Notify Mesh object that it has been modified
     m_ogreMesh->load();
 }
@@ -1039,14 +1091,14 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
 {
     // Destroy all the submeshes, but keep the two meshes alive
-    for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
+    for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
     {
         if(m_subMeshes[i])
         {
-            const data::Mesh::CellType cellType = static_cast< data::Mesh::CellType>(i);
+            const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
             const std::string name              = std::to_string(static_cast<int>(cellType));
-            if ( (cellType == data::Mesh::CellType::TRIANGLE && m_hasPrimitiveColor) ||
-                 (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
+            if((cellType == data::Mesh::CellType::TRIANGLE && m_hasPrimitiveColor)
+               || (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
             {
                 m_r2vbMesh->destroySubMesh(name);
             }
@@ -1054,6 +1106,7 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
             {
                 m_ogreMesh->destroySubMesh(name);
             }
+
             m_subMeshes[i] = nullptr;
         }
     }
@@ -1062,6 +1115,7 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
     {
         _sceneMgr.destroyMovableObject(r2vbObject.second);
     }
+
     m_r2vbObject.clear();
 
     if(m_r2vbEntity)

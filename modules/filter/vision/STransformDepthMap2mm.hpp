@@ -55,7 +55,8 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public service::IOperator
 {
 public:
-    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::IOperator)
+
+    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::IOperator);
 
     /**
      * @brief STransformDepthMap2mm constructor.

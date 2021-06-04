@@ -34,7 +34,6 @@ namespace Tuto04MeshGeneratorCpp
 
 class TUTO04MESHGENERATORCPP_CLASS_API AlgoMeshDeformation final
 {
-
 public:
 
     /// Creates an instance.
@@ -44,9 +43,11 @@ public:
     TUTO04MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
-    TUTO04MESHGENERATORCPP_API void computeDeformation( sight::data::Mesh::sptr _mesh,
-                                                        const unsigned int _nbStep,
-                                                        const unsigned int _amplitude );
+    TUTO04MESHGENERATORCPP_API void computeDeformation(
+        sight::data::Mesh::sptr _mesh,
+        const unsigned int _nbStep,
+        const unsigned int _amplitude
+    );
 
 private:
 
@@ -56,9 +57,11 @@ private:
      * @param _nbStep the number of simulated acquisitions to compute between inspiration and expiration.
      * @param _amplitude
      */
-    void setParam(sight::data::Mesh::sptr _mesh,
-                  const unsigned int _nbStep,
-                  const unsigned int _amplitude);
+    void setParam(
+        sight::data::Mesh::sptr _mesh,
+        const unsigned int _nbStep,
+        const unsigned int _amplitude
+    );
 
     /// Initializes the simulated acquisition.
     void initSimu();
@@ -67,24 +70,23 @@ private:
     void computeSimu();
 
     /// Defines the number of simulated acquisitions to compute between inspiration and expiration.
-    unsigned int m_nbStep { 0 };
+    unsigned int m_nbStep {0};
 
-    unsigned int m_amplitude { 40 };
+    unsigned int m_amplitude {40};
 
-    unsigned int m_step { 0 };
+    unsigned int m_step {0};
 
-    int m_direction {1 };
+    int m_direction {1};
 
-    size_t m_nbPoints { 0 };
+    size_t m_nbPoints {0};
 
-    size_t m_nbCells { 0 };
+    size_t m_nbCells {0};
 
-    float m_yCenter { 0 };
+    float m_yCenter {0};
 
     sight::data::Mesh::wptr m_mesh;
 
     sight::data::Mesh::sptr m_originMesh;
-
 };
 
 } // namespace Tuto04MeshGeneratorCpp.

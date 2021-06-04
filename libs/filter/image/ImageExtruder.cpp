@@ -43,7 +43,7 @@ void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::c
 
     // We use a dispatcher because we can't retrieve the image type without a DynamicType.
     core::tools::Type type = _image->getType();
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ImageExtruder >::invoke(type, param);
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ImageExtruder>::invoke(type, param);
 }
 
 //------------------------------------------------------------------------------
@@ -52,13 +52,13 @@ template<typename IMAGE_TYPE>
 void ImageExtruder::operator()(Parameters& _param)
 {
     // Creates triangles and bounding box of the mesh.
-    const auto itPoint   = _param.m_mesh->begin< data::iterator::ConstPointIterator >();
-    const auto itCellEnd = _param.m_mesh->end< data::iterator::ConstCellIterator >();
-    auto itCell          = _param.m_mesh->begin< data::iterator::ConstCellIterator >();
-    const float min      = std::numeric_limits< float >::lowest();
-    const float max      = std::numeric_limits< float >::max();
+    const auto itPoint   = _param.m_mesh->begin<data::iterator::ConstPointIterator>();
+    const auto itCellEnd = _param.m_mesh->end<data::iterator::ConstCellIterator>();
+    auto itCell          = _param.m_mesh->begin<data::iterator::ConstCellIterator>();
+    const float min      = std::numeric_limits<float>::lowest();
+    const float max      = std::numeric_limits<float>::max();
 
-    std::list< Triangle > triangles;
+    std::list<Triangle> triangles;
     ::glm::vec3 minBound(max, max, max);
     ::glm::vec3 maxBound(min, min, min);
 
@@ -83,7 +83,7 @@ void ImageExtruder::operator()(Parameters& _param)
             const ::glm::vec3 triB(bx, by, bz);
             const ::glm::vec3 triC(cx, cy, cz);
 
-            triangles.push_back(Triangle{triA, triB, triC});
+            triangles.push_back(Triangle {triA, triB, triC});
 
             minBound.x = std::min(std::min(std::min(minBound.x, ax), bx), cx);
             minBound.y = std::min(std::min(std::min(minBound.y, ay), by), cy);
@@ -94,7 +94,7 @@ void ImageExtruder::operator()(Parameters& _param)
             maxBound.z = std::max(std::max(std::max(maxBound.z, az), bz), cz);
         };
 
-    for (; itCell != itCellEnd; ++itCell)
+    for( ; itCell != itCellEnd ; ++itCell)
     {
         if(itCell->nbPoints < 3)
         {
@@ -136,52 +136,62 @@ void ImageExtruder::operator()(Parameters& _param)
     std::int64_t indexXBeg = 0;
     if(origin[0] < minBound.x)
     {
-        indexXBeg = static_cast< std::int64_t >((minBound.x - origin[0])/spacing[0]);
+        indexXBeg = static_cast<std::int64_t>((minBound.x - origin[0]) / spacing[0]);
     }
-    std::int64_t indexXEnd = static_cast< std::int64_t >(size[0]);
-    if(origin[0] + indexXEnd*spacing[0] > maxBound.x)
+
+    std::int64_t indexXEnd = static_cast<std::int64_t>(size[0]);
+    if(origin[0] + indexXEnd * spacing[0] > maxBound.x)
     {
-        indexXEnd = static_cast< std::int64_t >((maxBound.x - origin[0])/spacing[0]);
+        indexXEnd = static_cast<std::int64_t>((maxBound.x - origin[0]) / spacing[0]);
     }
 
     std::int64_t indexYBeg = 0;
     if(origin[1] < minBound.y)
     {
-        indexYBeg = static_cast< std::int64_t >((minBound.y - origin[1])/spacing[1]);
+        indexYBeg = static_cast<std::int64_t>((minBound.y - origin[1]) / spacing[1]);
     }
+
     std::int64_t indexYEnd = size[1];
-    if(origin[1] + indexYEnd*spacing[1] > maxBound.y)
+    if(origin[1] + indexYEnd * spacing[1] > maxBound.y)
     {
-        indexYEnd = static_cast< std::int64_t >((maxBound.y - origin[1])/spacing[1]);
+        indexYEnd = static_cast<std::int64_t>((maxBound.y - origin[1]) / spacing[1]);
     }
 
     std::int64_t indexZBeg = 0;
     if(origin[2] < minBound.z)
     {
-        indexZBeg = static_cast< std::int64_t >((minBound.z - origin[2])/spacing[2]);
+        indexZBeg = static_cast<std::int64_t>((minBound.z - origin[2]) / spacing[2]);
     }
+
     std::int64_t indexZEnd = size[2];
-    if(origin[2] + indexZEnd*spacing[2] > maxBound.z)
+    if(origin[2] + indexZEnd * spacing[2] > maxBound.z)
     {
-        indexZEnd = static_cast< std::int64_t >((maxBound.z - origin[2])/spacing[2]);
+        indexZEnd = static_cast<std::int64_t>((maxBound.z - origin[2]) / spacing[2]);
     }
 
     // Check if the ray origin is inside or outside of the mesh and return all found intersections.
     const auto getIntersections =
         [&](const ::glm::vec3& _rayOrig, const ::glm::vec3& _rayDir,
-            std::vector< ::glm::vec3 >& _intersections) -> bool
+            std::vector< ::glm::vec3>& _intersections) -> bool
         {
             bool inside = false;
             for(const Triangle& tri : triangles)
             {
                 ::glm::vec2 pos;
                 float distance;
-                if(::glm::intersectRayTriangle(_rayOrig, _rayDir, tri.a, tri.b, tri.c, pos,
-                                               distance))
+                if(::glm::intersectRayTriangle(
+                       _rayOrig,
+                       _rayDir,
+                       tri.a,
+                       tri.b,
+                       tri.c,
+                       pos,
+                       distance
+                ))
                 {
                     if(distance >= 0.f)
                     {
-                        const ::glm::vec3 cross = _rayOrig + _rayDir*distance;
+                        const ::glm::vec3 cross = _rayOrig + _rayDir * distance;
                         // Sometime, the ray it the edge of a triangle, we need to take it into account only one time.
                         if(std::find(_intersections.begin(), _intersections.end(), cross) == _intersections.end())
                         {
@@ -193,8 +203,11 @@ void ImageExtruder::operator()(Parameters& _param)
             }
 
             // Sort all intersections from nearest to farthest from the origin.
-            std::sort(_intersections.begin(), _intersections.end(), [&](const ::glm::vec3& _a,
-                                                                        const ::glm::vec3& _b)
+            std::sort(
+                _intersections.begin(),
+                _intersections.end(),
+                [&](const ::glm::vec3& _a,
+                    const ::glm::vec3& _b)
             {
                 return glm::distance(_rayOrig, _a) < glm::distance(_rayOrig, _b);
             });
@@ -203,7 +216,7 @@ void ImageExtruder::operator()(Parameters& _param)
         };
 
     // Check if each voxel are in the mesh and sets them to the lowest value.
-    const IMAGE_TYPE emptyValue = std::numeric_limits< IMAGE_TYPE >::lowest();
+    const IMAGE_TYPE emptyValue = std::numeric_limits<IMAGE_TYPE>::lowest();
 
     // We loop over two dimensions out of three, for each voxel, we launch a ray on the third dimension and get a
     // list of intersections. After that, we iterate over the voxel line on the third dimension and with the
@@ -213,19 +226,19 @@ void ImageExtruder::operator()(Parameters& _param)
         [&]()
         {
         #pragma omp parallel for
-            for(std::int64_t x = indexXBeg; x < indexXEnd; ++x)
+            for(std::int64_t x = indexXBeg ; x < indexXEnd ; ++x)
             {
-                for(std::int64_t y = indexYBeg; y < indexYEnd; ++y)
+                for(std::int64_t y = indexYBeg ; y < indexYEnd ; ++y)
                 {
                     // For each voxel of the slice, launch a ray to the third axis.
-                    const ::glm::vec3 rayOrig(origin[0] + x* spacing[0] + spacing[0]/2.f,
-                                              origin[1] + y* spacing[1] + spacing[1]/2.f,
-                                              origin[2] + indexZBeg* spacing[2] + spacing[2]/2.f);
+                    const ::glm::vec3 rayOrig(origin[0] + x * spacing[0] + spacing[0] / 2.f,
+                                              origin[1] + y * spacing[1] + spacing[1] / 2.f,
+                                              origin[2] + indexZBeg * spacing[2] + spacing[2] / 2.f);
                     const ::glm::vec3 rayDirPos(rayOrig.x, rayOrig.y, rayOrig.z + 1);
-                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos-rayOrig);
+                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos - rayOrig);
 
                     // Check if the first voxel is inside or not, and stores all intersections.
-                    std::vector< ::glm::vec3 > intersections;
+                    std::vector< ::glm::vec3> intersections;
                     bool inside = getIntersections(rayOrig, rayDir, intersections);
 
                     // If there is no intersection, the entire line is visible.
@@ -235,11 +248,11 @@ void ImageExtruder::operator()(Parameters& _param)
                         // or outside of the mesh.
                         auto nextIntersection      = intersections.begin();
                         const auto intersectionEnd = intersections.end();
-                        for(std::int64_t z = indexZBeg; z < indexZEnd; ++z)
+                        for(std::int64_t z = indexZBeg ; z < indexZEnd ; ++z)
                         {
-                            const ::glm::vec3 currentVoxelPos(origin[0] + x* spacing[0] + spacing[0]/2.f,
-                                                              origin[1] + y* spacing[1] + spacing[1]/2.f,
-                                                              origin[2] + z* spacing[2] + spacing[2]/2.f);
+                            const ::glm::vec3 currentVoxelPos(origin[0] + x * spacing[0] + spacing[0] / 2.f,
+                                                              origin[1] + y * spacing[1] + spacing[1] / 2.f,
+                                                              origin[2] + z * spacing[2] + spacing[2] / 2.f);
                             // While the current ray position is near to the next intersection, set the
                             // voxel to the value if
                             // it's needed.
@@ -260,11 +273,12 @@ void ImageExtruder::operator()(Parameters& _param)
                                 {
                                     if(inside)
                                     {
-                                        for(std::int64_t zp = z; zp < indexZEnd; ++zp)
+                                        for(std::int64_t zp = z ; zp < indexZEnd ; ++zp)
                                         {
                                             _param.m_image->at<IMAGE_TYPE>(x, y, zp) = emptyValue;
                                         }
                                     }
+
                                     break;
                                 }
                             }
@@ -278,28 +292,28 @@ void ImageExtruder::operator()(Parameters& _param)
         [&]()
         {
         #pragma omp parallel for
-            for(std::int64_t x = indexXBeg; x < indexXEnd; ++x)
+            for(std::int64_t x = indexXBeg ; x < indexXEnd ; ++x)
             {
-                for(std::int64_t z = indexZBeg; z < indexZEnd; ++z)
+                for(std::int64_t z = indexZBeg ; z < indexZEnd ; ++z)
                 {
-                    const ::glm::vec3 rayOrig(origin[0] + x* spacing[0] + spacing[0]/2.f,
-                                              origin[1] + indexYBeg* spacing[1] + spacing[1]/2.f,
-                                              origin[2] + z* spacing[2] + spacing[2]/2.f);
+                    const ::glm::vec3 rayOrig(origin[0] + x * spacing[0] + spacing[0] / 2.f,
+                                              origin[1] + indexYBeg * spacing[1] + spacing[1] / 2.f,
+                                              origin[2] + z * spacing[2] + spacing[2] / 2.f);
                     const ::glm::vec3 rayDirPos(rayOrig.x, rayOrig.y + 1, rayOrig.z);
-                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos-rayOrig);
+                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos - rayOrig);
 
-                    std::vector< ::glm::vec3 > intersections;
+                    std::vector< ::glm::vec3> intersections;
                     bool inside = getIntersections(rayOrig, rayDir, intersections);
 
                     if(intersections.size() > 0)
                     {
                         auto nextIntersection      = intersections.begin();
                         const auto intersectionEnd = intersections.end();
-                        for(std::int64_t y = indexYBeg; y < indexYEnd; ++y)
+                        for(std::int64_t y = indexYBeg ; y < indexYEnd ; ++y)
                         {
-                            const ::glm::vec3 currentVoxelPos(origin[0] + x* spacing[0] + spacing[0]/2.f,
-                                                              origin[1] + y* spacing[1] + spacing[1]/2.f,
-                                                              origin[2] + z* spacing[2] + spacing[2]/2.f);
+                            const ::glm::vec3 currentVoxelPos(origin[0] + x * spacing[0] + spacing[0] / 2.f,
+                                                              origin[1] + y * spacing[1] + spacing[1] / 2.f,
+                                                              origin[2] + z * spacing[2] + spacing[2] / 2.f);
                             if(glm::distance(rayOrig, currentVoxelPos) < glm::distance(rayOrig, *nextIntersection))
                             {
                                 if(inside)
@@ -315,11 +329,12 @@ void ImageExtruder::operator()(Parameters& _param)
                                 {
                                     if(inside)
                                     {
-                                        for(std::int64_t yp = y; yp < indexYEnd; ++yp)
+                                        for(std::int64_t yp = y ; yp < indexYEnd ; ++yp)
                                         {
                                             _param.m_image->at<IMAGE_TYPE>(x, yp, z) = emptyValue;
                                         }
                                     }
+
                                     break;
                                 }
                             }
@@ -333,28 +348,28 @@ void ImageExtruder::operator()(Parameters& _param)
         [&]()
         {
         #pragma omp parallel for
-            for(std::int64_t y = indexYBeg; y < indexYEnd; ++y)
+            for(std::int64_t y = indexYBeg ; y < indexYEnd ; ++y)
             {
-                for(std::int64_t z = indexZBeg; z < indexZEnd; ++z)
+                for(std::int64_t z = indexZBeg ; z < indexZEnd ; ++z)
                 {
-                    const ::glm::vec3 rayOrig(origin[0] + indexXBeg* spacing[0] + spacing[0]/2.f,
-                                              origin[1] + y* spacing[1] + spacing[1]/2.f,
-                                              origin[2] + z* spacing[2] + spacing[2]/2.f);
+                    const ::glm::vec3 rayOrig(origin[0] + indexXBeg * spacing[0] + spacing[0] / 2.f,
+                                              origin[1] + y * spacing[1] + spacing[1] / 2.f,
+                                              origin[2] + z * spacing[2] + spacing[2] / 2.f);
                     const ::glm::vec3 rayDirPos(rayOrig.x + 1, rayOrig.y, rayOrig.z);
-                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos-rayOrig);
+                    const ::glm::vec3 rayDir = ::glm::normalize(rayDirPos - rayOrig);
 
-                    std::vector< ::glm::vec3 > intersections;
+                    std::vector< ::glm::vec3> intersections;
                     bool inside = getIntersections(rayOrig, rayDir, intersections);
 
                     if(intersections.size() > 0)
                     {
                         auto nextIntersection      = intersections.begin();
                         const auto intersectionEnd = intersections.end();
-                        for(std::int64_t x = indexXBeg; x < indexXEnd; ++x)
+                        for(std::int64_t x = indexXBeg ; x < indexXEnd ; ++x)
                         {
-                            const ::glm::vec3 currentVoxelPos(origin[0] + x* spacing[0] + spacing[0]/2.f,
-                                                              origin[1] + y* spacing[1] + spacing[1]/2.f,
-                                                              origin[2] + z* spacing[2] + spacing[2]/2.f);
+                            const ::glm::vec3 currentVoxelPos(origin[0] + x * spacing[0] + spacing[0] / 2.f,
+                                                              origin[1] + y * spacing[1] + spacing[1] / 2.f,
+                                                              origin[2] + z * spacing[2] + spacing[2] / 2.f);
                             if(glm::distance(rayOrig, currentVoxelPos) < glm::distance(rayOrig, *nextIntersection))
                             {
                                 if(inside)
@@ -370,11 +385,12 @@ void ImageExtruder::operator()(Parameters& _param)
                                 {
                                     if(inside)
                                     {
-                                        for(std::int64_t xp = x; xp < indexXEnd; ++xp)
+                                        for(std::int64_t xp = x ; xp < indexXEnd ; ++xp)
                                         {
                                             _param.m_image->at<IMAGE_TYPE>(xp, y, z) = emptyValue;
                                         }
                                     }
+
                                     break;
                                 }
                             }
@@ -395,6 +411,7 @@ void ImageExtruder::operator()(Parameters& _param)
         axis  = 1;
         voxel = voxelXZ;
     }
+
     if(voxelYZ < voxel)
     {
         axis  = 0;
@@ -402,18 +419,20 @@ void ImageExtruder::operator()(Parameters& _param)
     }
 
     // Call the right loop.
-    switch (axis)
+    switch(axis)
     {
         case 2:
             zLoop();
             break;
+
         case 1:
             yLoop();
             break;
+
         case 0:
             xLoop();
             break;
     }
 }
 
-}
+} // namespace sight::filter

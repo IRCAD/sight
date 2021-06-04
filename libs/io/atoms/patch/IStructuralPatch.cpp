@@ -42,7 +42,7 @@ IStructuralPatch::~IStructuralPatch()
 
 // ----------------------------------------------------------------------------
 
-IStructuralPatch::IStructuralPatch( const IStructuralPatch& cpy ) :
+IStructuralPatch::IStructuralPatch(const IStructuralPatch& cpy) :
     IPatch(cpy)
 {
     m_originClassname = cpy.getOriginClassname();
@@ -61,18 +61,26 @@ void IStructuralPatch::updateVersion(sight::atoms::Object::sptr current)
 
 // ----------------------------------------------------------------------------
 
-void IStructuralPatch::apply(const sight::atoms::Object::sptr& previous,
-                             const sight::atoms::Object::sptr& current,
-                             io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void IStructuralPatch::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
-    SIGHT_ASSERT("The type of the previous object (" << io::atoms::patch::helper::getClassname(
-                     previous)
-                                                     << ") does not match the required type (" << m_originClassname << ").",
-                 io::atoms::patch::helper::getClassname(previous) == m_originClassname);
-    SIGHT_ASSERT("The version of the previous object (" << io::atoms::patch::helper::getVersion(
-                     previous)
-                                                        << ") does not match the required version (" << m_originVersion << ").",
-                 io::atoms::patch::helper::getVersion(previous) == m_originVersion);
+    SIGHT_ASSERT(
+        "The type of the previous object (" << io::atoms::patch::helper::getClassname(
+            previous
+        )
+        << ") does not match the required type (" << m_originClassname << ").",
+        io::atoms::patch::helper::getClassname(previous) == m_originClassname
+    );
+    SIGHT_ASSERT(
+        "The version of the previous object (" << io::atoms::patch::helper::getVersion(
+            previous
+        )
+        << ") does not match the required version (" << m_originVersion << ").",
+        io::atoms::patch::helper::getVersion(previous) == m_originVersion
+    );
 }
 
 // ----------------------------------------------------------------------------

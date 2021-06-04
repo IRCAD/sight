@@ -36,12 +36,14 @@
 #include <OGRE/OgreTechnique.h>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::viz::scene3d::helper::ut::ShadingTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::ShadingTest);
 
 namespace sight::viz::scene3d
 {
+
 namespace helper
 {
+
 namespace ut
 {
 
@@ -58,7 +60,7 @@ void ShadingTest::setUp()
     auto& mgr     = Ogre::MaterialManager::getSingleton();
     auto material = mgr.createOrRetrieve("TestMaterial", viz::scene3d::RESOURCE_GROUP);
 
-    m_material = Ogre::dynamic_pointer_cast< Ogre::Material >(material.first);
+    m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material.first);
     m_material->createTechnique();
 }
 
@@ -108,7 +110,6 @@ void ShadingTest::isColorTechnique()
     CPPUNIT_ASSERT_EQUAL(true, Shading::isColorTechnique(*tech));
     tech->setName("WeightedBlended/weightBlend");
     CPPUNIT_ASSERT_EQUAL(true, Shading::isColorTechnique(*tech));
-
 }
 
 //------------------------------------------------------------------------------
@@ -194,6 +195,7 @@ void ShadingTest::isGeometricTechnique()
     tech->setName("HybridTransparency/peelInit");
     CPPUNIT_ASSERT_EQUAL(true, Shading::isGeometricTechnique(*tech));
 }
+
 //------------------------------------------------------------------------------
 
 void ShadingTest::isDepthOnlyTechnique()
@@ -264,7 +266,6 @@ void ShadingTest::getPermutation()
 
     suffix = Shading::getPermutation(data::Material::PHONG, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("PixelLit+VT"), suffix);
-
 }
 
 //------------------------------------------------------------------------------
@@ -334,17 +335,17 @@ void ShadingTest::createObjectFromShaderParameter()
     {
         Shading::ConstantValueType value;
 
-        value.d = {{ 2.0, 0., 0., 0. }};
+        value.d = {{2.0, 0., 0., 0.}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Float"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(2.0f, data::Float::dynamicCast(obj)->getValue());
 
-        value.f = {{ 2.5f, 0.f, 0.f, 0.f }};
+        value.f = {{2.5f, 0.f, 0.f, 0.f}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Float"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(2.5f, data::Float::dynamicCast(obj)->getValue());
 
-        value.i = {{ 321, 0, 0, 0 }};
+        value.i = {{321, 0, 0, 0}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Integer"), obj->getClassname());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int64_t>(321), data::Integer::dynamicCast(obj)->getValue());
@@ -356,7 +357,7 @@ void ShadingTest::createObjectFromShaderParameter()
         data::Array::SizeType size;
         Shading::ConstantValueType value;
 
-        value.d = {{ 2.0, 4.5, 0., 0. }};
+        value.d = {{2.0, 4.5, 0., 0.}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE2, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -367,11 +368,11 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(2.0, arrayObject->at< double >({0}));
-            CPPUNIT_ASSERT_EQUAL(4.5, arrayObject->at< double >({1}));
+            CPPUNIT_ASSERT_EQUAL(2.0, arrayObject->at<double>({0}));
+            CPPUNIT_ASSERT_EQUAL(4.5, arrayObject->at<double>({1}));
         }
 
-        value.d = {{ -4.1, 1.5, 3.7, 0. }};
+        value.d = {{-4.1, 1.5, 3.7, 0.}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE3, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -382,12 +383,12 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(-4.1, arrayObject->at< double >({0}));
-            CPPUNIT_ASSERT_EQUAL( 1.5, arrayObject->at< double >({1}));
-            CPPUNIT_ASSERT_EQUAL( 3.7, arrayObject->at< double >({2}));
+            CPPUNIT_ASSERT_EQUAL(-4.1, arrayObject->at<double>({0}));
+            CPPUNIT_ASSERT_EQUAL(1.5, arrayObject->at<double>({1}));
+            CPPUNIT_ASSERT_EQUAL(3.7, arrayObject->at<double>({2}));
         }
 
-        value.d = {{ -1.1, -5.5, -1.7, 4.1 }};
+        value.d = {{-1.1, -5.5, -1.7, 4.1}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE4, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -398,13 +399,13 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_DOUBLE, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(-1.1, arrayObject->at< double >({0}));
-            CPPUNIT_ASSERT_EQUAL(-5.5, arrayObject->at< double >({1}));
-            CPPUNIT_ASSERT_EQUAL(-1.7, arrayObject->at< double >({2}));
-            CPPUNIT_ASSERT_EQUAL( 4.1, arrayObject->at< double >({3}));
+            CPPUNIT_ASSERT_EQUAL(-1.1, arrayObject->at<double>({0}));
+            CPPUNIT_ASSERT_EQUAL(-5.5, arrayObject->at<double>({1}));
+            CPPUNIT_ASSERT_EQUAL(-1.7, arrayObject->at<double>({2}));
+            CPPUNIT_ASSERT_EQUAL(4.1, arrayObject->at<double>({3}));
         }
 
-        value.i = {{ -1, 5, 0, 4 }};
+        value.i = {{-1, 5, 0, 4}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT2, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -415,11 +416,11 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at< int >({0}));
-            CPPUNIT_ASSERT_EQUAL( 5, arrayObject->at< int >({1}));
+            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at<int>({0}));
+            CPPUNIT_ASSERT_EQUAL(5, arrayObject->at<int>({1}));
         }
 
-        value.i = {{ 2, -4, 3, 4 }};
+        value.i = {{2, -4, 3, 4}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT3, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -430,12 +431,12 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL( 2, arrayObject->at< int >({0}));
-            CPPUNIT_ASSERT_EQUAL(-4, arrayObject->at< int >({1}));
-            CPPUNIT_ASSERT_EQUAL( 3, arrayObject->at< int >({2}));
+            CPPUNIT_ASSERT_EQUAL(2, arrayObject->at<int>({0}));
+            CPPUNIT_ASSERT_EQUAL(-4, arrayObject->at<int>({1}));
+            CPPUNIT_ASSERT_EQUAL(3, arrayObject->at<int>({2}));
         }
 
-        value.i = {{ -1, 5, 9, 1 }};
+        value.i = {{-1, 5, 9, 1}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT4, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -446,13 +447,13 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_INT32, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at< int >({0}));
-            CPPUNIT_ASSERT_EQUAL( 5, arrayObject->at< int >({1}));
-            CPPUNIT_ASSERT_EQUAL( 9, arrayObject->at< int >({2}));
-            CPPUNIT_ASSERT_EQUAL( 1, arrayObject->at< int >({3}));
+            CPPUNIT_ASSERT_EQUAL(-1, arrayObject->at<int>({0}));
+            CPPUNIT_ASSERT_EQUAL(5, arrayObject->at<int>({1}));
+            CPPUNIT_ASSERT_EQUAL(9, arrayObject->at<int>({2}));
+            CPPUNIT_ASSERT_EQUAL(1, arrayObject->at<int>({3}));
         }
 
-        value.f = {{ 21.1f, -2.5f, 9.f, 1.f }};
+        value.f = {{21.1f, -2.5f, 9.f, 1.f}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT2, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -463,11 +464,11 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at< float >({0}));
-            CPPUNIT_ASSERT_EQUAL(-2.5f, arrayObject->at< float >({1}));
+            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at<float>({0}));
+            CPPUNIT_ASSERT_EQUAL(-2.5f, arrayObject->at<float>({1}));
         }
 
-        value.f = {{ 21.1f, 2.5f, -9.f, 1.f }};
+        value.f = {{21.1f, 2.5f, -9.f, 1.f}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT3, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Array"), obj->getClassname());
 
@@ -478,12 +479,12 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, arrayObject->getType());
         {
             const auto dumpLock = arrayObject->lock();
-            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at< float >({0}));
-            CPPUNIT_ASSERT_EQUAL( 2.5f, arrayObject->at< float >({1}));
-            CPPUNIT_ASSERT_EQUAL( -9.f, arrayObject->at< float >({2}));
+            CPPUNIT_ASSERT_EQUAL(21.1f, arrayObject->at<float>({0}));
+            CPPUNIT_ASSERT_EQUAL(2.5f, arrayObject->at<float>({1}));
+            CPPUNIT_ASSERT_EQUAL(-9.f, arrayObject->at<float>({2}));
         }
 
-        value.f = {{ 0.12f, .5f, 1.f, 8.f }};
+        value.f = {{0.12f, .5f, 1.f, 8.f}};
         obj     = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT4, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Color"), obj->getClassname());
 
@@ -498,5 +499,7 @@ void ShadingTest::createObjectFromShaderParameter()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace helper
+
 } //namespace sight::viz::scene3d

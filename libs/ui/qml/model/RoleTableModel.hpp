@@ -26,6 +26,7 @@
 
 namespace sight::ui::qml
 {
+
 namespace model
 {
 
@@ -35,7 +36,9 @@ namespace model
 class RoleTableModel : public QAbstractTableModel
 {
 Q_OBJECT
+
 public:
+
     /// Constructor
     explicit RoleTableModel(QObject* parent = nullptr);
 
@@ -68,11 +71,15 @@ public:
 
     /// override
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+
 private:
+
     /// roles of the qml file to fill
     QHash<int, QByteArray> m_roles;
     /// data to send to the qml file
     QList<QHash<QByteArray, QVariant> > m_data;
 };
+
 } // namespace model
+
 } // namespace sight::ui::qml

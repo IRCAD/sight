@@ -24,11 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/helper/ArrayGetter.hpp"
+#include <data/Mesh.hpp>
 
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
-
-#include <data/Mesh.hpp>
 
 namespace sight::data
 {
@@ -43,31 +42,32 @@ namespace helper
 class DATA_DEPRECATED_CLASS_API MeshGetter
 {
 public:
+
     [[deprecated("will be removed in sight 22.0, please use data::Mesh")]]
-    DATA_API MeshGetter( data::Mesh::csptr mesh );
+    DATA_API MeshGetter(data::Mesh::csptr mesh);
 
     DATA_API virtual ~MeshGetter();
 
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstPointsMultiArrayType          getPoints() const;
+    DATA_API data::Mesh::ConstPointsMultiArrayType getPoints() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstCellTypesMultiArrayType       getCellTypes() const;
+    DATA_API data::Mesh::ConstCellTypesMultiArrayType getCellTypes() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstCellDataMultiArrayType        getCellData() const;
+    DATA_API data::Mesh::ConstCellDataMultiArrayType getCellData() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
     DATA_API data::Mesh::ConstCellDataOffsetsMultiArrayType getCellDataOffsets() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstPointColorsMultiArrayType     getPointColors() const;
+    DATA_API data::Mesh::ConstPointColorsMultiArrayType getPointColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstCellColorsMultiArrayType      getCellColors() const;
+    DATA_API data::Mesh::ConstCellColorsMultiArrayType getCellColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstPointNormalsMultiArrayType    getPointNormals() const;
+    DATA_API data::Mesh::ConstPointNormalsMultiArrayType getPointNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstCellNormalsMultiArrayType     getCellNormals() const;
+    DATA_API data::Mesh::ConstCellNormalsMultiArrayType getCellNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstPointTexCoordsMultiArrayType  getPointTexCoords() const;
+    DATA_API data::Mesh::ConstPointTexCoordsMultiArrayType getPointTexCoords() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::ConstCellTexCoordsMultiArrayType   getCellTexCoords() const;
+    DATA_API data::Mesh::ConstCellTexCoordsMultiArrayType getCellTexCoords() const;
 
     /// Returns the internal data::Mesh
     DATA_API data::Mesh::csptr getMesh() const;
@@ -92,7 +92,6 @@ protected:
     data::helper::ArrayGetter::uptr m_helperCellNormals;
     data::helper::ArrayGetter::uptr m_helperPointTexCoords;
     data::helper::ArrayGetter::uptr m_helperCellTexCoords;
-
 };
 
 } // namespace helper

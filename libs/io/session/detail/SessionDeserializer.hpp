@@ -42,7 +42,7 @@ class SessionDeserializer final : public ISession
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionDeserializer, ISession)
+    SIGHT_DECLARE_CLASS(SessionDeserializer, ISession);
 
     /// Delete default constructors and assignment operators
     SessionDeserializer(const SessionDeserializer&)            = delete;

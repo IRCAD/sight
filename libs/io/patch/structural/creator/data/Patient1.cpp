@@ -30,8 +30,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -49,7 +51,7 @@ Patient1::~Patient1()
 
 // ----------------------------------------------------------------------------
 
-Patient1::Patient1( const Patient1& cpy ) :
+Patient1::Patient1(const Patient1& cpy) :
     io::atoms::patch::IStructuralCreator(cpy)
 {
 }
@@ -70,5 +72,7 @@ sight::atoms::Object::sptr Patient1::create()
 }
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

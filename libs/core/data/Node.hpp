@@ -29,7 +29,7 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Node));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Node));
 
 namespace sight::data
 {
@@ -42,14 +42,14 @@ class DATA_CLASS_API Node : public data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Node, data::Object, data::factory::New< Node >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Node));
+    SIGHT_DECLARE_CLASS(Node, data::Object, data::factory::New<Node>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Node));
 
     /// Port container
-    typedef std::vector< data::Port::sptr > PortContainer;
+    typedef std::vector<data::Port::sptr> PortContainer;
 
     /// Type of 'updated' signal
-    typedef core::com::Signal< void () > UpdatedSignalType;
+    typedef core::com::Signal<void ()> UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -73,7 +73,7 @@ public:
     DATA_API PortContainer& getOutputPorts();
 
     /// Set object to the node
-    DATA_API void setObject(const data::Object::sptr& object );
+    DATA_API void setObject(const data::Object::sptr& object);
 
     /// Get node object
     DATA_API data::Object::sptr getObject() const;
@@ -89,7 +89,7 @@ public:
     DATA_API Port::sptr findPort(const std::string& _identifier, bool _modeInput) const;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

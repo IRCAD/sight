@@ -32,8 +32,10 @@
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines an Input dialog.
  *
@@ -48,20 +50,19 @@ namespace dialog
  */
 class UI_QT_CLASS_API InputDialog : public ui::base::dialog::IInputDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New< InputDialog >)
+    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New<InputDialog>);
 
     UI_QT_API InputDialog(ui::base::GuiBaseObject::Key key);
 
     UI_QT_API virtual ~InputDialog();
 
     /// Set the title of the message box
-    UI_QT_API void setTitle( const std::string& title ) override;
+    UI_QT_API void setTitle(const std::string& title) override;
 
     /// Set the message
-    UI_QT_API void setMessage( const std::string& msg ) override;
+    UI_QT_API void setMessage(const std::string& msg) override;
 
     /// Set the input text in the input field
     UI_QT_API void setInput(const std::string& text) override;
@@ -70,13 +71,15 @@ public:
     UI_QT_API std::string getInput() override;
 
 protected:
+
     /// Dialog title
     std::string m_title;
     /// Dialog box message
     std::string m_message;
     /// Text inputed
     std::string m_input;
-
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qt

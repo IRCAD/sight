@@ -23,21 +23,20 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/IGrabber.hpp>
 
 namespace sight::service
 {
+
 /**
  * @brief   This interface defines the RGBD grabber service API.
  *          Must be implemented for services that grabs RGBD camera frames.
  */
 class SERVICE_CLASS_API IRGBDGrabber : public service::IGrabber
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber);
 
     /**
      * @name Data API

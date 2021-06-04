@@ -54,8 +54,8 @@ static const std::string s_MATERIAL_NAME_CONFIG    = "materialName";
 SMesh::SMesh() noexcept
 {
     // Allow using Mesh as QML type when using SMesh service in QML applications.
-    qmlRegisterType< sight::viz::qt3d::data::Mesh >("sight::viz::qt3d", 1, 0, "Mesh");
-    qRegisterMetaType< sight::viz::qt3d::data::Mesh* >("sight::viz::qt3d::data::Mesh*");
+    qmlRegisterType<sight::viz::qt3d::data::Mesh>("sight::viz::qt3d", 1, 0, "Mesh");
+    qRegisterMetaType<sight::viz::qt3d::data::Mesh*>("sight::viz::qt3d::data::Mesh*");
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void SMesh::starting()
     this->initialize();
 
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
+    auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
     SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
 
     // Create a Qt3D mesh from sight data.
@@ -112,7 +112,7 @@ service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 void SMesh::updating()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
+    auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
     SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
 
     // Update the mesh and center camera if necessary.
@@ -128,19 +128,23 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = service::OSR::getServices< module::viz::qt3d::adaptor::SMaterial >();
+        auto mtlAdaptors = service::OSR::getServices<module::viz::qt3d::adaptor::SMaterial>();
 
         auto result =
-            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),
-                         [this](const module::viz::qt3d::adaptor::SMaterial::sptr& srv)
+            std::find_if(
+                mtlAdaptors.begin(),
+                mtlAdaptors.end(),
+                [this](const module::viz::qt3d::adaptor::SMaterial::sptr& srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
 
         auto materialAdaptor = *result;
 
-        SIGHT_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
-                     result != mtlAdaptors.end());
+        SIGHT_ASSERT(
+            "SMaterial adaptor managing material'" + m_materialName + "' is not found",
+            result != mtlAdaptors.end()
+        );
         m_mesh->setMaterial(materialAdaptor->getMaterial());
     }
 }

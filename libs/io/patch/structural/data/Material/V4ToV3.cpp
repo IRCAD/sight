@@ -56,16 +56,18 @@ V4ToV3::~V4ToV3()
 
 // ----------------------------------------------------------------------------
 
-V4ToV3::V4ToV3( const V4ToV3& cpy ) :
+V4ToV3::V4ToV3(const V4ToV3& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V4ToV3::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V4ToV3::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -76,33 +78,33 @@ void V4ToV3::apply( const sight::atoms::Object::sptr& previous,
 
     // Retrieve shading_mode and replace AMBIENT mode with PHONG
     // add lighting attribute (false if mode is AMBIENT, else true)
-    sight::atoms::String::sptr shadingMode = previous->getAttribute< sight::atoms::String >("shading_mode");
+    sight::atoms::String::sptr shadingMode = previous->getAttribute<sight::atoms::String>("shading_mode");
     std::string shading                    = shadingMode->getValue();
 
     bool lighting = true;
-    if (shading == "AMBIENT")
+    if(shading == "AMBIENT")
     {
         lighting = false;
         helper.replaceAttribute("shading_mode", sight::atoms::String::New("PHONG"));
     }
+
     helper.addAttribute("lighting", sight::atoms::Boolean::New(lighting));
 
     // Switch diffuse and ambient
-    sight::atoms::Object::sptr ambient = current->getAttribute< sight::atoms::Object >("ambient");
-    sight::atoms::Object::sptr diffuse = current->getAttribute< sight::atoms::Object >("diffuse");
+    sight::atoms::Object::sptr ambient = current->getAttribute<sight::atoms::Object>("ambient");
+    sight::atoms::Object::sptr diffuse = current->getAttribute<sight::atoms::Object>("diffuse");
 
     // Replace diffuse by previous ambient
     helper.replaceAttribute("diffuse", ambient);
     helper.replaceAttribute("ambient", diffuse);
 
     // Replace options_mode "CELLS_NORMALS" by "NORMALS"
-    sight::atoms::String::sptr optionMode = previous->getAttribute< sight::atoms::String >("options_mode");
+    sight::atoms::String::sptr optionMode = previous->getAttribute<sight::atoms::String>("options_mode");
     std::string option                    = optionMode->getValue();
-    if (option == "CELLS_NORMALS")
+    if(option == "CELLS_NORMALS")
     {
         helper.replaceAttribute("options_mode", sight::atoms::String::New("NORMALS"));
     }
-
 }
 
 } // namespace Material

@@ -30,13 +30,17 @@
 
 namespace sight::data
 {
+
 class Point;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace tid
 {
 
@@ -44,10 +48,10 @@ namespace tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API Measurement : public io::dicom::reader::tid::TemplateID< data::Image >
+class IO_DICOM_CLASS_API Measurement : public io::dicom::reader::tid::TemplateID<data::Image>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -56,11 +60,13 @@ public:
      * @param[in] image Sight data object
      * @param[in] logger Logger
      */
-    IO_DICOM_API Measurement(const CSPTR(data::DicomSeries)& dicomSeries,
-                             const SPTR(::gdcm::Reader)& reader,
-                             const SPTR(io::dicom::container::DicomInstance)& instance,
-                             const data::Image::sptr& image,
-                             const core::log::Logger::sptr& logger);
+    IO_DICOM_API Measurement(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Image::sptr& image,
+        const core::log::Logger::sptr& logger
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Measurement();
@@ -78,11 +84,14 @@ protected:
      * @param point1 First point
      * @param point2 Second point
      */
-    void addDistance(const SPTR(data::Point)& point1,
-                     const SPTR(data::Point)& point2);
-
+    void addDistance(
+        const SPTR(data::Point)& point1,
+        const SPTR(data::Point)& point2
+    );
 };
 
 } // namespace tid
+
 } // namespace reader
+
 } // namespace sight::io::dicom

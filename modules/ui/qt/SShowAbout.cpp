@@ -46,7 +46,7 @@ namespace sight::module::ui::qt
 
 //------------------------------------------------------------------------------
 
-SShowAbout::SShowAbout( ) noexcept :
+SShowAbout::SShowAbout() noexcept :
     m_bServiceIsConfigured(false),
     m_fsAboutPath(""),
     m_title("About"),
@@ -62,7 +62,7 @@ SShowAbout::~SShowAbout() noexcept
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::info(std::ostream& _sstream )
+void SShowAbout::info(std::ostream& _sstream)
 {
     _sstream << "SShowAbout" << std::endl;
 }
@@ -73,7 +73,7 @@ void SShowAbout::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    typedef SPTR (core::runtime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR(core::runtime::ConfigurationElement) ConfigurationElement;
 
     ConfigurationElement cfgFilename = m_configuration->findConfigurationElement("filename");
     ConfigurationElement cfgTitle    = m_configuration->findConfigurationElement("title");
@@ -101,15 +101,14 @@ void SShowAbout::configuring()
 
         m_size.setWidth(std::stoi(w));
         m_size.setHeight(std::stoi(h));
-
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::updating( )
+void SShowAbout::updating()
 {
-    SIGHT_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
+    SIGHT_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured);
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));
@@ -117,8 +116,8 @@ void SShowAbout::updating( )
 #if defined(QT_WEBKIT)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    htmlView->load( url );
-    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
+    htmlView->load(url);
+    QObject::connect(htmlView, SIGNAL(linkClicked(const QUrl&)), this, SLOT(onUrlClicked(const QUrl&)));
 #else
     QTextBrowser* htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);
@@ -144,7 +143,7 @@ void SShowAbout::updating( )
     layout->addLayout(hLayout, 0);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    dialog->setLayout( layout );
+    dialog->setLayout(layout);
 
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
     QObject::connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
@@ -168,7 +167,7 @@ void SShowAbout::stopping()
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::onUrlClicked(const QUrl& url )
+void SShowAbout::onUrlClicked(const QUrl& url)
 {
     QDesktopServices::openUrl(url);
 }

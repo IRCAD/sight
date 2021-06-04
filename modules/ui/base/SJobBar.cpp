@@ -34,8 +34,7 @@
 namespace sight::module::ui::base
 {
 
-
-static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
+static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT      = "showJob";
 static const core::com::Signals::SignalKeyType STARTED_SIGNAL = "started";
 static const core::com::Signals::SignalKeyType ENDED_SIGNAL   = "ended";
 
@@ -43,10 +42,10 @@ static const core::com::Signals::SignalKeyType ENDED_SIGNAL   = "ended";
 
 SJobBar::SJobBar() noexcept
 {
-    newSlot( SHOW_JOB_SLOT, &SJobBar::showJob, this );
+    newSlot(SHOW_JOB_SLOT, &SJobBar::showJob, this);
 
-    m_sigStarted = newSignal< StartedSignalType >( STARTED_SIGNAL );
-    m_sigEnded   = newSignal< EndedSignalType >( ENDED_SIGNAL );
+    m_sigStarted = newSignal<StartedSignalType>(STARTED_SIGNAL);
+    m_sigEnded   = newSignal<EndedSignalType>(ENDED_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +68,7 @@ void SJobBar::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::info(std::ostream& _sstream )
+void SJobBar::info(std::ostream& _sstream)
 {
     _sstream << "Starter editor" << std::endl;
 }
@@ -88,7 +87,7 @@ void SJobBar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::showJob( core::jobs::IJob::sptr iJob )
+void SJobBar::showJob(core::jobs::IJob::sptr iJob)
 {
     auto progressDialog = ::sight::ui::base::dialog::ProgressDialog::New();
     progressDialog->setTitle(iJob->getName());
@@ -98,30 +97,34 @@ void SJobBar::showJob( core::jobs::IJob::sptr iJob )
         progressDialog->hideCancelButton();
     }
 
-    iJob->addDoneWorkHook( [ = ](core::jobs::IJob& job, std::uint64_t oldDoneWork)
+    iJob->addDoneWorkHook(
+        [ = ](core::jobs::IJob& job, std::uint64_t oldDoneWork)
         {
             std::string msg = (job.getLogs().empty()) ? "" : job.getLogs().back();
-            (*progressDialog)( float(job.getDoneWorkUnits())/job.getTotalWorkUnits(), msg );
+            (*progressDialog)(float(job.getDoneWorkUnits()) / job.getTotalWorkUnits(), msg);
         });
 
-    iJob->addStateHook( [ = ](core::jobs::IJob::State state)
+    iJob->addStateHook(
+        [ = ](core::jobs::IJob::State state)
         {
-            if(state == core::jobs::IJob::CANCELED || state == core::jobs::IJob::FINISHED )
+            if(state == core::jobs::IJob::CANCELED || state == core::jobs::IJob::FINISHED)
             {
                 m_sigEnded->emit();
-                m_associatedWorker->postTask< void >( [ = ]
+                m_associatedWorker->postTask<void>(
+                    [ = ]
                 {
                     m_progressDialogs.erase(progressDialog);
                 });
             }
-            else if( state == core::jobs::IJob::RUNNING)
+            else if(state == core::jobs::IJob::RUNNING)
             {
                 m_sigStarted->emit();
             }
         });
 
     core::jobs::IJob::wptr wIJob = iJob;
-    progressDialog->setCancelCallback( [ = ]
+    progressDialog->setCancelCallback(
+        [ = ]
         {
             core::jobs::IJob::sptr job = wIJob.lock();
             if(job)

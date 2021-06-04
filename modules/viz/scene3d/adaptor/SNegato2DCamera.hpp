@@ -79,7 +79,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::sc
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato2DCamera, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SNegato2DCamera, ::sight::viz::scene3d::IAdaptor);
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_SCENE3D_API SNegato2DCamera() noexcept;

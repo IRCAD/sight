@@ -31,10 +31,11 @@
 
 #include <cppunit/Exception.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::http::ut::SeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::SeriesTest);
 
 namespace sight::io::http
 {
+
 namespace ut
 {
 
@@ -115,8 +116,10 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getTime(), seriesTime.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getDescription(), seriesDescription.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicomSeries->getNumberOfInstances(),
-                         static_cast<size_t>(numberOfSeriesRelatedInstances.toULong()));
+    CPPUNIT_ASSERT_EQUAL(
+        dicomSeries->getNumberOfInstances(),
+        static_cast<size_t>(numberOfSeriesRelatedInstances.toULong())
+    );
 
     data::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT(patient);

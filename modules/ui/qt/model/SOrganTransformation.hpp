@@ -43,6 +43,7 @@ class QCheckBox;
 
 namespace sight::module::ui::qt
 {
+
 namespace model
 {
 
@@ -63,9 +64,10 @@ class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
                                                     public sight::ui::base::IEditor
 {
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SOrganTransformation, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOrganTransformation, sight::ui::base::IEditor);
 
     /// constructor
     MODULE_UI_QT_API SOrganTransformation() noexcept;
@@ -79,7 +81,7 @@ protected:
     MODULE_UI_QT_API void stopping() override;
     MODULE_UI_QT_API void swapping() override;
     MODULE_UI_QT_API void updating() override;
-    MODULE_UI_QT_API void info( ::std::ostream& stream ) override;
+    MODULE_UI_QT_API void info(::std::ostream& stream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -96,6 +98,7 @@ protected:
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
+
     void onReconstructionCheck(QListWidgetItem* currentItem);
     void onResetClick();
     void onSaveClick();
@@ -113,17 +116,17 @@ private:
     void addMeshTransform();
 
     // ReconstructionMapType
-    typedef ::std::map< ::std::string, data::Reconstruction::sptr > ReconstructionMapType;
+    typedef ::std::map< ::std::string, data::Reconstruction::sptr> ReconstructionMapType;
     typedef ::std::map< ::std::string, data::Matrix4::sptr> InnerMatMappingType;
     typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;
-    QPointer< QPushButton > m_saveButton;
-    QPointer< QPushButton > m_loadButton;
-    QPointer< QPushButton > m_resetButton;
-    QPointer< QListWidget > m_reconstructionListBox;
-    QPointer< QComboBox > m_saveSelectionComboBox;
-    QPointer< QCheckBox > m_selectAllCheckBox;
+    QPointer<QPushButton> m_saveButton;
+    QPointer<QPushButton> m_loadButton;
+    QPointer<QPushButton> m_resetButton;
+    QPointer<QListWidget> m_reconstructionListBox;
+    QPointer<QComboBox> m_saveSelectionComboBox;
+    QPointer<QCheckBox> m_selectAllCheckBox;
 
     //variables for the functionalities of saving & loading
     SaveMappingType m_saveListing;
@@ -131,4 +134,5 @@ private:
 };
 
 } // namespace model
+
 } // namespace sight::module::ui::qt

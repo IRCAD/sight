@@ -66,14 +66,14 @@ public:
         double stepLength     = 1.,
         double stepTolerance  = 1e-2,
         double valueTolerance = 1e-2,
-        unsigned int maxIter  = 10000);
+        unsigned int maxIter  = 10000
+    );
 
 private:
 
-    std::vector< ::glm::dmat4 > m_matList;
+    std::vector< ::glm::dmat4> m_matList;
 
-    std::vector< PointType > m_pointList;
-
+    std::vector<PointType> m_pointList;
 };
 
 } // namespace sight::filter::image.

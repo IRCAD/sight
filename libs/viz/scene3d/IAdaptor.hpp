@@ -61,13 +61,12 @@ class VIZ_SCENE3D_CLASS_API IAdaptor :
     public service::IService,
     public service::IHasServices
 {
-
 friend class SRender;
 
 public:
 
     /// Generates default methods.
-    SIGHT_DECLARE_CLASS(IAdaptor, service::IService)
+    SIGHT_DECLARE_CLASS(IAdaptor, service::IService);
 
     /// Sets the layer ID.
     VIZ_SCENE3D_API void setLayerID(const std::string& _id);
@@ -149,8 +148,7 @@ protected:
     viz::scene3d::SRender::wptr m_renderService;
 
     /// Enables the adaptor visibility.
-    bool m_isVisible { true };
-
+    bool m_isVisible {true};
 };
 
 //------------------------------------------------------------------------------

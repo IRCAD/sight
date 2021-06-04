@@ -29,6 +29,7 @@
 
 namespace sight::data
 {
+
 namespace mt
 {
 
@@ -39,7 +40,6 @@ namespace mt
  */
 class DATA_CLASS_API ObjectReadToWriteLock
 {
-
 public:
 
     /**
@@ -49,7 +49,7 @@ public:
      * If adopt_lock==false : the mutex is not locked (call lock() to lock mutex)
      */
     [[deprecated("it will be removed in sight 21.0, use locked_ptr")]]
-    DATA_API ObjectReadToWriteLock( data::Object::sptr obj, bool lock = true );
+    DATA_API ObjectReadToWriteLock(data::Object::sptr obj, bool lock = true);
 
     /// Destructor. Does nothing
     DATA_API ~ObjectReadToWriteLock();
@@ -74,4 +74,5 @@ private:
 };
 
 } // mt
+
 } // fwData

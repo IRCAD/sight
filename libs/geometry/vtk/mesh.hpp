@@ -29,13 +29,16 @@
 
 namespace sight::geometry::vtk
 {
+
 /**
  * @brief computeCenterOfMass
  * @param[in] mesh input mesh
  * @param[in] useScalarAsWeights use the scalar data as weights
  * @return mesh center of mass
  */
-GEOMETRY_VTK_API data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh,
-                                                       const bool useScalarAsWeights = false);
+GEOMETRY_VTK_API data::Point::sptr computeCenterOfMass(
+    const data::Mesh::csptr mesh,
+    const bool useScalarAsWeights = false
+);
 
 } // namespace sight::geometry::vtk

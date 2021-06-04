@@ -47,31 +47,31 @@ namespace sight::ui::qt
  */
 class SliceSelector : public QWidget
 {
-
 Q_OBJECT
 
 public:
+
     /**
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    UI_QT_API SliceSelector( QWidget* const parent = nullptr) noexcept;
+    UI_QT_API SliceSelector(QWidget* const parent = nullptr) noexcept;
 
     /// @brief Destructor.
     UI_QT_API virtual ~SliceSelector() noexcept;
 
-    UI_QT_API void setSliceRange( int min, int max );
+    UI_QT_API void setSliceRange(int min, int max);
 
-    UI_QT_API void setSliceValue( int index );
+    UI_QT_API void setSliceValue(int index);
 
-    UI_QT_API void setTypeSelection( int type );
+    UI_QT_API void setTypeSelection(int type);
 
     UI_QT_API void setEnable(bool enable);
 
-    typedef std::function<void (int) > ChangeIndexCallback;
+    typedef std::function<void (int)> ChangeIndexCallback;
     UI_QT_API void setChangeIndexCallback(ChangeIndexCallback fct);
 
-    typedef std::function<void (int) > ChangeTypeCallback;
+    typedef std::function<void (int)> ChangeTypeCallback;
     UI_QT_API void setChangeTypeCallback(ChangeTypeCallback fct);
 
 protected Q_SLOTS:
@@ -80,21 +80,21 @@ protected Q_SLOTS:
      * @brief Event handler for a slice type change.
      * @param index index of the selected type item.
      */
-    UI_QT_API void onSliceTypeChange( int index );
+    UI_QT_API void onSliceTypeChange(int index);
 
     /**
      * @brief Event handler for a slice index change.
      * @param value current value of the slice index slider.
      */
-    UI_QT_API void onSliceIndexChange( int value ) noexcept;
+    UI_QT_API void onSliceIndexChange(int value) noexcept;
 
 private:
 
-    QPointer< QComboBox > m_sliceType;
+    QPointer<QComboBox> m_sliceType;
 
     /// @brief The slice index slider widget.
-    QPointer< QSlider > m_sliceIndex;
-    QPointer< QLineEdit > m_pSliceIndexText;
+    QPointer<QSlider> m_sliceIndex;
+    QPointer<QLineEdit> m_pSliceIndexText;
 
     void printIndex(int index);
     void printType(int type);

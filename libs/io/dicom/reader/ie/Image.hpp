@@ -31,18 +31,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 /**
  * @brief Image Information Entity class
  */
-class IO_DICOM_CLASS_API Image : public io::dicom::reader::ie::InformationEntity< data::Image >
+class IO_DICOM_CLASS_API Image : public io::dicom::reader::ie::InformationEntity<data::Image>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -53,13 +55,15 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Image(const CSPTR(data::DicomSeries)& dicomSeries,
-                       const SPTR(::gdcm::Reader)& reader,
-                       const SPTR(io::dicom::container::DicomInstance)& instance,
-                       const data::Image::sptr& image,
-                       const core::log::Logger::sptr& logger = nullptr,
-                       ProgressCallback progress             = nullptr,
-                       CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Image(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Image::sptr& image,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Image();
@@ -90,9 +94,9 @@ public:
 
 protected:
 
-    typedef ::boost::numeric::ublas::matrix< double, ::boost::numeric::ublas::row_major,
-                                             std::vector<double> > MatrixType;
-    typedef ::boost::numeric::ublas::vector< double > VectorType;
+    typedef ::boost::numeric::ublas::matrix<double, ::boost::numeric::ublas::row_major,
+                                            std::vector<double> > MatrixType;
+    typedef ::boost::numeric::ublas::vector<double> VectorType;
 
     /**
      * @brief Read image buffer
@@ -103,10 +107,12 @@ protected:
      * @return Global raw buffer of the image.
      * @throw(io::dicom::exception::Failed)
      */
-    char* readImageBuffer(const std::vector<unsigned int>& dimensions,
-                          const unsigned short bitsAllocated,
-                          const unsigned short newBitsAllocated,
-                          const bool performRescale);
+    char* readImageBuffer(
+        const std::vector<unsigned int>& dimensions,
+        const unsigned short bitsAllocated,
+        const unsigned short newBitsAllocated,
+        const bool performRescale
+    );
 
     /**
      * @brief Correct image buffer according to image orientation
@@ -114,8 +120,11 @@ protected:
      * @param[in] dimensions Image dimensions
      * @param[in] bitsAllocated Number of bits allocated before rescale
      */
-    char* correctImageOrientation(char* buffer, const std::vector<unsigned int>& dimensions,
-                                  unsigned short bitsAllocated);
+    char* correctImageOrientation(
+        char* buffer,
+        const std::vector<unsigned int>& dimensions,
+        unsigned short bitsAllocated
+    );
 
     /**
      * @brief Compute the inverse of matrix
@@ -128,5 +137,7 @@ protected:
 };
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

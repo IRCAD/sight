@@ -28,10 +28,11 @@
 
 #include <opencv2/core.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::opencv::ut::CameraTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::CameraTest);
 
 namespace sight::io::opencv
 {
+
 namespace ut
 {
 
@@ -39,14 +40,12 @@ namespace ut
 
 void CameraTest::setUp()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void CameraTest::tearDown()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -71,9 +70,9 @@ void CameraTest::copyToCv()
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[0]);
     CPPUNIT_ASSERT_EQUAL(3, intrinsic.size[1]);
 
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
             if(i == 0 && j == 0)
             {
@@ -107,7 +106,7 @@ void CameraTest::copyToCv()
 
     CPPUNIT_ASSERT_EQUAL(5, distCoeffs.size[0]);
 
-    for(std::uint8_t i = 0; i < 5; ++i)
+    for(std::uint8_t i = 0 ; i < 5 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(sightCam->getDistortionCoefficient()[i], distCoeffs.at<double>(i));
     }
@@ -116,4 +115,5 @@ void CameraTest::copyToCv()
 //-----------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::io::opencv

@@ -23,10 +23,11 @@
 #include "StudyTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::StudyTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::StudyTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -109,4 +110,5 @@ void StudyTest::patientAgeTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

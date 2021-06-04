@@ -74,7 +74,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SOrganMaterialEditor() noexcept;
@@ -113,7 +113,7 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the opacity changed, it will update the reconstruction Material
-    void onOpacitySlider( int value);
+    void onOpacitySlider(int value);
 
     /// Called when the color changed, it will update the reconstruction Material
     void onColor(QColor color);

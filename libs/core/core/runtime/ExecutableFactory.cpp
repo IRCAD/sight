@@ -31,8 +31,8 @@ namespace sight::core::runtime
 
 //------------------------------------------------------------------------------
 
-ExecutableFactory::ExecutableFactory( const std::string& type ) :
-    m_type( filterID(type) )
+ExecutableFactory::ExecutableFactory(const std::string& type) :
+    m_type(filterID(type))
 {
 }
 

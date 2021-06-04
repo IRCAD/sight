@@ -53,16 +53,18 @@ V1ToV2::~V1ToV2()
 
 // ----------------------------------------------------------------------------
 
-V1ToV2::V1ToV2( const V1ToV2& cpy ) :
+V1ToV2::V1ToV2(const V1ToV2& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V1ToV2::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToV2::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -71,7 +73,7 @@ void V1ToV2::apply( const sight::atoms::Object::sptr& previous,
 
     // Create helper
     io::atoms::patch::helper::Object helper(current);
-    helper.addAttribute("array_map", sight::atoms::Map::New() );
+    helper.addAttribute("array_map", sight::atoms::Map::New());
 }
 
 } // namespace Mesh

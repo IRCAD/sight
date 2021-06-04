@@ -42,6 +42,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -91,9 +92,9 @@ void SMultipleTF::configuring()
     const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "#FFFFFF");
     sight::viz::scene2d::data::InitQtPen::setPenColor(m_pointsPen, pointColor);
 
-    m_secondOpacity = config.get< float >(s_SECOND_OPACITY_CONFIG, m_secondOpacity);
-    m_pointSize     = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
-    m_interactive   = config.get< bool >(s_INTERACTIVE_CONFIG, m_interactive);
+    m_secondOpacity = config.get<float>(s_SECOND_OPACITY_CONFIG, m_secondOpacity);
+    m_pointSize     = config.get<float>(s_POINT_SIZE_CONFIG, m_pointSize);
+    m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +102,7 @@ void SMultipleTF::configuring()
 void SMultipleTF::starting()
 {
     // Gets the TF pool.
-    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     // Sets the current TF.
@@ -110,7 +111,7 @@ void SMultipleTF::starting()
         SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Sets the current TF used to highlight it in the editor.
-        const data::TransferFunction::csptr tf = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
+        const data::TransferFunction::csptr tf = this->getInput<data::TransferFunction>(s_CURRENT_TF_INPUT);
         if(tf)
         {
             // Check if the current is in the composite.
@@ -136,8 +137,8 @@ void SMultipleTF::starting()
         if(m_currentTF == nullptr)
         {
             // Finds the first TF of the composite.
-            const data::TransferFunction::sptr poolTF
-                = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
+            const data::TransferFunction::sptr poolTF =
+                data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
             SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
             m_currentTF = poolTF;
             // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
@@ -193,10 +194,18 @@ void SMultipleTF::updating()
     for(const SubTF* const subTF : m_subTF)
     {
         m_connections.connect(subTF->m_tf, data::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-        m_connections.connect(subTF->m_tf, data::TransferFunction::s_POINTS_MODIFIED_SIG,
-                              this->getSptr(), s_UPDATE_SLOT);
-        m_connections.connect(subTF->m_tf, data::TransferFunction::s_WINDOWING_MODIFIED_SIG,
-                              this->getSptr(), s_UPDATE_SLOT);
+        m_connections.connect(
+            subTF->m_tf,
+            data::TransferFunction::s_POINTS_MODIFIED_SIG,
+            this->getSptr(),
+            s_UPDATE_SLOT
+        );
+        m_connections.connect(
+            subTF->m_tf,
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG,
+            this->getSptr(),
+            s_UPDATE_SLOT
+        );
     }
 }
 
@@ -217,8 +226,8 @@ void SMultipleTF::swapping(const KeyType& _key)
 {
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
-    const data::TransferFunction::csptr newCurrentTF
-        = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
+    const data::TransferFunction::csptr newCurrentTF =
+        this->getInput<data::TransferFunction>(s_CURRENT_TF_INPUT);
 
     // Avoids swapping if it's the same TF.
     if(_key == s_CURRENT_TF_INPUT && newCurrentTF && newCurrentTF != m_currentTF)
@@ -236,6 +245,7 @@ void SMultipleTF::releaseTFData()
     {
         delete subTF;
     }
+
     m_subTF.clear();
 }
 
@@ -244,7 +254,7 @@ void SMultipleTF::releaseTFData()
 void SMultipleTF::createTFPoints()
 {
     // Iterates over each TF to create subTF.
-    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
@@ -270,7 +280,7 @@ void SMultipleTF::destroyTFPoints()
     // Removes TF point items from the scene and clear the TF point vector of each subTF.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : subTF->m_TFPoints)
+        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             this->getScene2DRender()->getScene()->removeItem(tfPoint.second);
             delete tfPoint.second;
@@ -301,10 +311,10 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
     const double viewportHeight = viewport->getHeight();
 
     // Computes point size from screen space to viewport space.
-    const double pointWidth  = (viewportWidth * pointSize)/sceneWidth;
-    const double pointHeight = (viewportHeight * pointSize)/sceneHeight;
+    const double pointWidth  = (viewportWidth * pointSize) / sceneWidth;
+    const double pointHeight = (viewportHeight * pointSize) / sceneHeight;
 
-    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
@@ -317,7 +327,7 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
     // Sets the z-index of the current TF over all others.
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
     const bool isCurrent = m_currentTF == _tf;
-    subTF->m_zIndex = isCurrent ? static_cast< int >(tfPool->size()) : _zIndex;
+    subTF->m_zIndex = isCurrent ? static_cast<int>(tfPool->size()) : _zIndex;
 
     const data::mt::ObjectReadLock tfLock(_tf);
 
@@ -346,14 +356,14 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
             coord.second - pointHeight / 2,
             pointWidth,
             pointHeight
-            );
-        QColor color(static_cast< int >(tfColor.r*255),
-                     static_cast< int >(tfColor.g*255),
-                     static_cast< int >(tfColor.b*255));
+        );
+        QColor color(static_cast<int>(tfColor.r * 255),
+                     static_cast<int>(tfColor.g * 255),
+                     static_cast<int>(tfColor.b * 255));
         point->setBrush(QBrush(color));
         point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         point->setPen(m_pointsPen);
-        point->setZValue(subTF->m_zIndex*2+1);
+        point->setZValue(subTF->m_zIndex * 2 + 1);
 
         // Pushs it back into the point vector
         if(window > 0)
@@ -392,8 +402,8 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     QVector<QPointF> position;
     QLinearGradient grad;
 
-    const std::pair< Point2DType, QGraphicsEllipseItem* >& firstTFPoint = _subTF->m_TFPoints.front();
-    const std::pair< Point2DType, QGraphicsEllipseItem* >& lastTFPoint  = _subTF->m_TFPoints.back();
+    const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = _subTF->m_TFPoints.front();
+    const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = _subTF->m_TFPoints.back();
 
     const QGraphicsEllipseItem* const firtsPoint = firstTFPoint.second;
 
@@ -408,7 +418,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     {
         if(xBegin > viewport->getX())
         {
-            xBegin = viewport->getX()-10;
+            xBegin = viewport->getX() - 10;
             position.append(QPointF(xBegin, 0));
             position.append(QPointF(xBegin, firstTFPoint.first.second));
         }
@@ -416,6 +426,7 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
         {
             position.append(QPointF(xBegin, 0));
         }
+
         if(xEnd < viewport->getX() + viewport->getWidth())
         {
             xEnd = viewport->getX() + viewport->getWidth() + 10;
@@ -424,8 +435,8 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
 
     grad.setColorAt(0, firtsPoint->brush().color());
 
-    grad.setStart( xBegin, 0);
-    grad.setFinalStop( xEnd, 0 );
+    grad.setStart(xBegin, 0);
+    grad.setFinalStop(xEnd, 0);
 
     const double distanceMax = xEnd - xBegin;
 
@@ -445,8 +456,9 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
         {
             position.append(QPointF(xEnd, lastTFPoint.first.second));
         }
+
         const double lastPointX = lastTFPoint.first.first;
-        grad.setColorAt((lastPointX-xBegin)/distanceMax, lastTFPoint.second->brush().color());
+        grad.setColorAt((lastPointX - xBegin) / distanceMax, lastTFPoint.second->brush().color());
     }
 
     position.append(QPointF(xEnd, 0));
@@ -456,8 +468,8 @@ void SMultipleTF::createTFPolygon(SubTF* const _subTF)
     // Sets gradient, opacity and pen to the polygon
     poly->setBrush(QBrush(grad));
     poly->setPen(m_polygonsPen);
-    poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-    poly->setZValue(_subTF->m_zIndex*2);
+    poly->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    poly->setZValue(_subTF->m_zIndex * 2);
 
     // If the z-index is the highest, it's the current one.
     if(_subTF->m_zIndex == m_subTF.size())
@@ -495,39 +507,43 @@ void SMultipleTF::destroyTFPolygon(SubTF* _subTF)
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::buildLinearPolygons(SubTF* const _subTF,
-                                      QVector<QPointF>& _position,
-                                      QLinearGradient& _grad,
-                                      double _distanceMax)
+void SMultipleTF::buildLinearPolygons(
+    SubTF* const _subTF,
+    QVector<QPointF>& _position,
+    QLinearGradient& _grad,
+    double _distanceMax
+)
 {
-    const std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > >& tfPoints = _subTF->m_TFPoints;
-    for(auto tfPointIt = tfPoints.cbegin(); tfPointIt != tfPoints.cend()-1; ++tfPointIt)
+    const std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
+    for(auto tfPointIt = tfPoints.cbegin() ; tfPointIt != tfPoints.cend() - 1 ; ++tfPointIt)
     {
         const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p2((tfPointIt+1)->first.first, (tfPointIt+1)->first.second);
+        const QPointF p2((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
 
         _position.append(p1);
         _position.append(p2);
 
         // Builds the gradient
-        _grad.setColorAt((p1.x() - _position[0].x())/_distanceMax, (tfPointIt->second)->brush().color());
+        _grad.setColorAt((p1.x() - _position[0].x()) / _distanceMax, (tfPointIt->second)->brush().color());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::buildNearestPolygons(SubTF* const _subTF,
-                                       QVector<QPointF>& _position,
-                                       QLinearGradient& _grad,
-                                       double _distanceMax)
+void SMultipleTF::buildNearestPolygons(
+    SubTF* const _subTF,
+    QVector<QPointF>& _position,
+    QLinearGradient& _grad,
+    double _distanceMax
+)
 {
-    const std::vector< std::pair< Point2DType, QGraphicsEllipseItem* > >& tfPoints = _subTF->m_TFPoints;
-    for(auto tfPointIt = tfPoints.cbegin(); tfPointIt != tfPoints.cend()-1; ++tfPointIt)
+    const std::vector<std::pair<Point2DType, QGraphicsEllipseItem*> >& tfPoints = _subTF->m_TFPoints;
+    for(auto tfPointIt = tfPoints.cbegin() ; tfPointIt != tfPoints.cend() - 1 ; ++tfPointIt)
     {
         const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p4((tfPointIt+1)->first.first, (tfPointIt+1)->first.second);
+        const QPointF p4((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
 
-        const QPointF p2(p1.x() + (p4.x() - p1.x())/2., p1.y());
+        const QPointF p2(p1.x() + (p4.x() - p1.x()) / 2., p1.y());
         const QPointF p3(p2.x(), p4.y());
 
         _position.append(p1);
@@ -535,13 +551,13 @@ void SMultipleTF::buildNearestPolygons(SubTF* const _subTF,
         _position.append(p3);
         _position.append(p4);
 
-        const double d1 = (p1.x() - _position[0].x())/_distanceMax;
-        const double d2 = (p2.x() - _position[0].x())/_distanceMax;
-        const double d3 = d2 + std::numeric_limits< double >::epsilon();
-        const double d4 = (p4.x() - _position[0].x())/_distanceMax;
+        const double d1 = (p1.x() - _position[0].x()) / _distanceMax;
+        const double d2 = (p2.x() - _position[0].x()) / _distanceMax;
+        const double d3 = d2 + std::numeric_limits<double>::epsilon();
+        const double d4 = (p4.x() - _position[0].x()) / _distanceMax;
 
         const QColor c1 = (tfPointIt->second)->brush().color();
-        const QColor c4 = ((tfPointIt+1)->second)->brush().color();
+        const QColor c4 = ((tfPointIt + 1)->second)->brush().color();
 
         _grad.setColorAt(d1, c1);
         _grad.setColorAt(d2, c1);
@@ -557,7 +573,7 @@ void SMultipleTF::buildLayer()
     // Adds graphics items vectors to the layer.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : subTF->m_TFPoints)
+        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             m_layer->addToGroup(tfPoint.second);
         }
@@ -578,7 +594,10 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
     // Find the old subTF.
-    SubTF* const currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
+    SubTF* const currentSubTF = *(std::find_if(
+                                      m_subTF.begin(),
+                                      m_subTF.end(),
+                                      [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             }));
@@ -590,11 +609,12 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
     int zIndex = 0;
     for(SubTF* subTF : m_subTF)
     {
-        subTF->m_zIndex = subTF->m_tf == m_currentTF ? static_cast< int >(m_subTF.size()) : zIndex;
-        for(std::pair< Point2DType, QGraphicsEllipseItem* >& point : subTF->m_TFPoints)
+        subTF->m_zIndex = subTF->m_tf == m_currentTF ? static_cast<int>(m_subTF.size()) : zIndex;
+        for(std::pair<Point2DType, QGraphicsEllipseItem*>& point : subTF->m_TFPoints)
         {
-            point.second->setZValue(subTF->m_zIndex*2+1);
+            point.second->setZValue(subTF->m_zIndex * 2 + 1);
         }
+
         ++zIndex;
     }
 
@@ -608,12 +628,14 @@ void SMultipleTF::setCurrentTF(SubTF* const _subTF)
 
 //-----------------------------------------------------------------------------
 
-std::vector< SMultipleTF::SubTF* > SMultipleTF::getMatchingSubTF(const sight::viz::scene2d::data::Event& _event) const
+std::vector<SMultipleTF::SubTF*> SMultipleTF::getMatchingSubTF(const sight::viz::scene2d::data::Event& _event) const
 {
     // Finds all subTF that match the clicked coord.
-    std::vector< SubTF* > matchingSubTF;
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    std::vector<SubTF*> matchingSubTF;
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Fills the subTF vector with clicked ones.
@@ -651,8 +673,8 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     // If a point as already been captured.
     if(m_capturedTFPoint)
     {
-        if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-           _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+           && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
         {
             // Releases capture point.
             this->leftButtonReleaseEvent();
@@ -671,8 +693,8 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
             _event.setAccepted(true);
             return;
         }
-        else if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton &&
-                _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        else if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
+                && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
         {
             // Releases capture subTF.
             this->midButtonReleaseEvent();
@@ -681,14 +703,16 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
         }
     }
 
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a point is clicked.
     for(SubTF* const subTF : m_subTF)
     {
-        for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : subTF->m_TFPoints)
+        for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : subTF->m_TFPoints)
         {
             // If a point has already been captured.
             if(m_capturedTFPoint == &tfPoint)
@@ -700,30 +724,30 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
                     _event.setAccepted(true);
                     return;
                 }
-
             }
             else if(items.indexOf(tfPoint.second) >= 0)
             {
                 // If there is a double click on a point, open a color dialog.
-                if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-                   _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+                if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+                   && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
                 {
                     this->leftButtonDoubleClickOnPointEvent(subTF, tfPoint);
                     _event.setAccepted(true);
                     return;
                 }
                 // If left button is pressed on a point, set the TF as current.
-                else if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-                        _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+                else if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+                        && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
                 {
                     this->leftButtonClickOnPointEvent(subTF, tfPoint);
                     _event.setAccepted(true);
                     return;
                 }
+
                 // If right button is pressed on a point, remove it.
-                if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton &&
-                   _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress &&
-                   subTF->m_tf == m_currentTF && subTF->m_TFPoints.size() > 2)
+                if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
+                   && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
+                   && subTF->m_tf == m_currentTF && subTF->m_TFPoints.size() > 2)
                 {
                     this->rightButtonClickOnPointEvent(subTF, tfPoint);
                     _event.setAccepted(true);
@@ -734,8 +758,8 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     }
 
     // Adds a new TF point.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
     {
         // Cancel the previous single click interaction.
         m_eventFilter->stop();
@@ -745,8 +769,8 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     }
 
     // If left button is pressed, set the nearest TF as current.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
         // Cancel the previous event if it's needed.
         m_eventFilter->stop();
@@ -754,7 +778,11 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
 
         // Validates the event in 250ms, this allow to the double click event to cancel the interaction.
         m_eventFilter = new QTimer();
-        m_eventFilter->connect(m_eventFilter, &QTimer::timeout, this, [ = ]()
+        m_eventFilter->connect(
+            m_eventFilter,
+            &QTimer::timeout,
+            this,
+            [ = ]()
                 {
                     this->leftButtonCLickEvent(_event);
                 });
@@ -765,16 +793,16 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     }
 
     // If midlle button is pressed, select the current TF to adjust the window/level.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
         this->midButtonClickEvent(_event);
         return;
     }
 
     // If right button is pressed, open a context menu to manage multiple actions.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
         this->rightButtonCLickEvent(_event);
         _event.setAccepted(true);
@@ -782,9 +810,9 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
     }
 
     // If the middle button wheel moves, change the whole subTF opacity.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::NoButton &&
-       (_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown ||
-        _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp))
+    if(_event.getButton() == sight::viz::scene2d::data::Event::NoButton
+       && (_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
+           || _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp))
     {
         this->midButtonWheelMoveEvent(_event);
         return;
@@ -795,7 +823,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
 
 void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _event)
 {
-    std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
+    std::vector<SubTF*> matchingSubTF = this->getMatchingSubTF(_event);
 
     if(matchingSubTF.size() > 0)
     {
@@ -813,14 +841,14 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
         {
             sight::viz::scene2d::data::Coord clickCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
-            float closestDistance  = std::numeric_limits< float >::max();
+            float closestDistance  = std::numeric_limits<float>::max();
             SubTF* newCurrentSubTF = nullptr;
             for(SubTF* subTF : matchingSubTF)
             {
                 // Finds nearest position of the iterate subTF.
-                float localClosestDistance  = std::numeric_limits< float >::max();
+                float localClosestDistance  = std::numeric_limits<float>::max();
                 SubTF* localNewCurrentSubTF = nullptr;
-                for(int i = 0; i <= subTF->m_TFPoints.size(); ++i)
+                for(int i = 0 ; i <= subTF->m_TFPoints.size() ; ++i)
                 {
                     Point2DType tfPoint1;
                     Point2DType tfPoint2;
@@ -846,7 +874,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     // Creates the last fictional TF point.
                     else if(i == subTF->m_TFPoints.size())
                     {
-                        tfPoint1 = subTF->m_TFPoints[i-1].first;
+                        tfPoint1 = subTF->m_TFPoints[i - 1].first;
                         if(subTF->m_tf->getIsClamped())
                         {
                             // The last point is the same a the real last but with a zero alpha channel.
@@ -864,7 +892,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     // Retrieves two TF points.
                     else
                     {
-                        tfPoint1 = subTF->m_TFPoints[i-1].first;
+                        tfPoint1 = subTF->m_TFPoints[i - 1].first;
                         tfPoint2 = subTF->m_TFPoints[i].first;
                     }
 
@@ -877,10 +905,10 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     QPointF intersectPoint;
                     line.intersect(perpendicLine, &intersectPoint);
 
-                    const QVector2D origin(static_cast< float >(clickCoord.getX()),
-                                           static_cast< float >(clickCoord.getY()));
+                    const QVector2D origin(static_cast<float>(clickCoord.getX()),
+                                           static_cast<float>(clickCoord.getY()));
 
-                    float distance = std::numeric_limits< float >::max();
+                    float distance = std::numeric_limits<float>::max();
 
                     // Checks if the intersection belong the segment.
                     if(intersectPoint.x() >= tfPoint1.first && intersectPoint.x() <= tfPoint2.first)
@@ -893,10 +921,10 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
                     // Elses the lower distance is between the point and one of the segment edge.
                     else
                     {
-                        const QVector2D firstLine(static_cast< float >(clickCoord.getX() - tfPoint1.first),
-                                                  static_cast< float >(clickCoord.getY() - tfPoint1.second));
-                        const QVector2D secondLine(static_cast< float >(clickCoord.getX() - tfPoint2.first),
-                                                   static_cast< float >(clickCoord.getY() - tfPoint2.second));
+                        const QVector2D firstLine(static_cast<float>(clickCoord.getX() - tfPoint1.first),
+                                                  static_cast<float>(clickCoord.getY() - tfPoint1.second));
+                        const QVector2D secondLine(static_cast<float>(clickCoord.getX() - tfPoint2.first),
+                                                   static_cast<float>(clickCoord.getY() - tfPoint2.second));
 
                         distance = firstLine.length();
                         if(secondLine.length() < distance)
@@ -932,9 +960,11 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::leftButtonClickOnPointEvent(SubTF* const _subTF,
-                                              std::pair< Point2DType,
-                                                         QGraphicsEllipseItem* >& _TFPoint)
+void SMultipleTF::leftButtonClickOnPointEvent(
+    SubTF* const _subTF,
+    std::pair<Point2DType,
+              QGraphicsEllipseItem*>& _TFPoint
+)
 {
     // Stores the captured TF point in case it's moved.
     m_capturedTFPoint = &_TFPoint;
@@ -991,6 +1021,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     {
         newCoord.setY(0);
     }
+
     if(newCoord.getY() < -1)
     {
         newCoord.setY(-1);
@@ -1025,8 +1056,10 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     }
 
     // Moves the selected TF point by the difference between the old coordinates and the new ones.
-    m_capturedTFPoint->second->moveBy(newCoord.getX() - m_capturedTFPoint->first.first,
-                                      newCoord.getY() - m_capturedTFPoint->first.second);
+    m_capturedTFPoint->second->moveBy(
+        newCoord.getX() - m_capturedTFPoint->first.first,
+        newCoord.getY() - m_capturedTFPoint->first.second
+    );
 
     // Stores new coordinates to the captured one.
     m_capturedTFPoint->first.first  = newCoord.getX();
@@ -1052,7 +1085,7 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     // Retrieves the TF point.
     const data::TransferFunction::TFDataType tfData = tf->getTFData();
     auto tfDataIt                                   = tfData.begin();
-    for(unsigned i = 0; i < pointIndex; ++i)
+    for(unsigned i = 0 ; i < pointIndex ; ++i)
     {
         tfDataIt++;
     }
@@ -1104,8 +1137,9 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1123,8 +1157,10 @@ void SMultipleTF::leftButtonReleaseEvent()
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
-                                               std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint)
+void SMultipleTF::rightButtonClickOnPointEvent(
+    SubTF* const _subTF,
+    std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+)
 {
     // Updates the TF.
     auto pointIt =
@@ -1146,7 +1182,7 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
         // Retrieves the TF point.
         data::TransferFunction::TFDataType tfData = tf->getTFData();
         auto tfDataIt                             = tfData.begin();
-        for(unsigned i = 0; i < pointIndex; ++i)
+        for(unsigned i = 0 ; i < pointIndex ; ++i)
         {
             tfDataIt++;
         }
@@ -1167,13 +1203,13 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
         double max = _subTF->m_TFPoints.rbegin()->first.first;
 
         // If the removed point is the last or the first, the min max is wrong and need to be updated.
-        if((pointIndex == 0 && window >= 0) || (pointIndex == _subTF->m_TFPoints.size()-1 && window < 0))
+        if((pointIndex == 0 && window >= 0) || (pointIndex == _subTF->m_TFPoints.size() - 1 && window < 0))
         {
-            min = (_subTF->m_TFPoints.begin()+1)->first.first;
+            min = (_subTF->m_TFPoints.begin() + 1)->first.first;
         }
-        else if((pointIndex == _subTF->m_TFPoints.size()-1 && window >= 0) || (pointIndex == 0 && window < 0))
+        else if((pointIndex == _subTF->m_TFPoints.size() - 1 && window >= 0) || (pointIndex == 0 && window < 0))
         {
-            max = (_subTF->m_TFPoints.rbegin()+1)->first.first;
+            max = (_subTF->m_TFPoints.rbegin() + 1)->first.first;
         }
 
         // Updates the window/level.
@@ -1188,8 +1224,9 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1207,17 +1244,21 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
-                                                    std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint)
+void SMultipleTF::leftButtonDoubleClickOnPointEvent(
+    SubTF* const _subTF,
+    std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint
+)
 {
     // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
     QColor oldColor = _TFPoint.second->brush().color();
     oldColor.setAlphaF(-_TFPoint.first.second);
 
-    QColor newColor = QColorDialog::getColor(oldColor,
-                                             this->getScene2DRender()->getView(),
-                                             QString("Choose the point color"),
-                                             QColorDialog::ShowAlphaChannel);
+    QColor newColor = QColorDialog::getColor(
+        oldColor,
+        this->getScene2DRender()->getView(),
+        QString("Choose the point color"),
+        QColorDialog::ShowAlphaChannel
+    );
 
     if(newColor.isValid())
     {
@@ -1240,7 +1281,7 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
             // Retrieves the TF point.
             data::TransferFunction::TFDataType tfData = tf->getTFData();
             auto tfDataIt                             = tfData.begin();
-            for(unsigned i = 0; i < pointIndex; ++i)
+            for(unsigned i = 0 ; i < pointIndex ; ++i)
             {
                 tfDataIt++;
             }
@@ -1252,24 +1293,25 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
             tf->eraseTFValue(tfValue);
 
             // Adds the new one with the new color.
-            data::TransferFunction::TFColor tfColor(newColor.red()/255.,
-                                                    newColor.green()/255.,
-                                                    newColor.blue()/255.,
-                                                    newColor.alpha()/255.);
+            data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
+                                                    newColor.green() / 255.,
+                                                    newColor.blue() / 255.,
+                                                    newColor.alpha() / 255.);
             tf->addTFColor(tfValue, tfColor);
         }
 
         // Sends the modification signal.
-        const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-            data::TransferFunction::s_POINTS_MODIFIED_SIG);
+        const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+            data::TransferFunction::s_POINTS_MODIFIED_SIG
+        );
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
 
         // Updates the displayed TF point.
-        const double newYPos = -newColor.alpha()/255.;
-        _TFPoint.second->moveBy(0.,  oldColor.alphaF() + newYPos);
+        const double newYPos = -newColor.alpha() / 255.;
+        _TFPoint.second->moveBy(0., oldColor.alphaF() + newYPos);
         _TFPoint.first.second = newYPos;
         newColor.setAlpha(255);
         _TFPoint.second->setBrush(QBrush(newColor));
@@ -1292,6 +1334,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
     {
         newCoord.setY(0);
     }
+
     if(newCoord.getY() < -1)
     {
         newCoord.setY(-1);
@@ -1299,7 +1342,10 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
 
     // Finds the current subTF.
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
-    SubTF* const currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
+    SubTF* const currentSubTF = *(std::find_if(
+                                      m_subTF.begin(),
+                                      m_subTF.end(),
+                                      [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             }));
@@ -1324,21 +1370,23 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
         if(newCoord.getX() < currentSubTF->m_TFPoints.front().first.first)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.front().second->brush().color();
-            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
-                                                       firstColor.green()/255.,
-                                                       firstColor.blue()/255.,
-                                                       -newCoord.getY());
-
+            newColor = data::TransferFunction::TFColor(
+                firstColor.red() / 255.,
+                firstColor.green() / 255.,
+                firstColor.blue() / 255.,
+                -newCoord.getY()
+            );
         }
         // The new coord becomes the new last TF point, get the current last color in the list.
         else if(newCoord.getX() > currentSubTF->m_TFPoints.back().first.first)
         {
             const QColor firstColor = currentSubTF->m_TFPoints.back().second->brush().color();
-            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
-                                                       firstColor.green()/255.,
-                                                       firstColor.blue()/255.,
-                                                       -newCoord.getY());
-
+            newColor = data::TransferFunction::TFColor(
+                firstColor.red() / 255.,
+                firstColor.green() / 255.,
+                firstColor.blue() / 255.,
+                -newCoord.getY()
+            );
         }
         // Gets an interpolate color since the new point is between two ohers.
         else
@@ -1382,8 +1430,9 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1398,10 +1447,13 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
 void SMultipleTF::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
 {
     // Finds all subTF that match the clicked coord.
-    std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
+    std::vector<SubTF*> matchingSubTF = this->getMatchingSubTF(_event);
 
     // Checks if the current tf is in the matching list.
-    const auto matchingIt = std::find_if(matchingSubTF.begin(), matchingSubTF.end(), [&](const SubTF* _subTF)
+    const auto matchingIt = std::find_if(
+        matchingSubTF.begin(),
+        matchingSubTF.end(),
+        [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             });
@@ -1414,7 +1466,8 @@ void SMultipleTF::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF = std::make_pair(
             (*matchingIt)->m_tf,
-            sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
+            sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY())
+        );
         _event.setAccepted(true);
     }
 }
@@ -1442,8 +1495,9 @@ void SMultipleTF::mouseMoveOnSubTFEvent(const sight::viz::scene2d::data::Event& 
         tf->setLevel(tf->getLevel() + levelDelta);
 
         // Sends the signal.
-        const auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
-            data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+        );
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(tf->getWindow(), tf->getLevel());
@@ -1470,21 +1524,33 @@ void SMultipleTF::midButtonReleaseEvent()
 void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& _event)
 {
     // Finds all subTF that match the clicked coord.
-    std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
+    std::vector<SubTF*> matchingSubTF = this->getMatchingSubTF(_event);
 
     // Creates the menu.
     QAction* const trapezeAction = new QAction("Add trapeze");
-    QObject::connect(trapezeAction, &QAction::triggered, this, [ = ]()
+    QObject::connect(
+        trapezeAction,
+        &QAction::triggered,
+        this,
+        [ = ]()
             {
                 this->addTrapeze(_event);
             });
     QAction* const leftRampAction = new QAction("Add left ramp");
-    QObject::connect(leftRampAction, &QAction::triggered, this, [ = ]()
+    QObject::connect(
+        leftRampAction,
+        &QAction::triggered,
+        this,
+        [ = ]()
             {
                 this->addLeftRamp(_event);
             });
     QAction* const rightRampAction = new QAction("Add right ramp");
-    QObject::connect(rightRampAction, &QAction::triggered, this, [ = ]()
+    QObject::connect(
+        rightRampAction,
+        &QAction::triggered,
+        this,
+        [ = ]()
             {
                 this->addRightRamp(_event);
             });
@@ -1492,7 +1558,10 @@ void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& 
     QMenu* const contextMenu = new QMenu();
     {
         // Checks if the current tf is in the matching list.
-        const auto matchingIt = std::find_if(matchingSubTF.begin(), matchingSubTF.end(), [&](const SubTF* _subTF)
+        const auto matchingIt = std::find_if(
+            matchingSubTF.begin(),
+            matchingSubTF.end(),
+            [&](const SubTF* _subTF)
                 {
                     return _subTF->m_tf == m_currentTF;
                 });
@@ -1500,7 +1569,7 @@ void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& 
         // Adds the delete action if the current TF is clicked.
         if(matchingIt != matchingSubTF.end())
         {
-            const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+            const data::Composite::sptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
             SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
             const data::mt::ObjectWriteLock tfPoolLock(tfPool);
@@ -1532,7 +1601,7 @@ void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& 
 
     contextMenu->addAction(trapezeAction);
     contextMenu->addAction(leftRampAction);
-    contextMenu->addAction(rightRampAction );
+    contextMenu->addAction(rightRampAction);
 
     // Opens the menu.
     contextMenu->exec(QCursor::pos());
@@ -1545,10 +1614,13 @@ void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& 
 void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _event)
 {
     // Finds all subTF that match the current coord.
-    std::vector< SubTF* > matchingSubTF = this->getMatchingSubTF(_event);
+    std::vector<SubTF*> matchingSubTF = this->getMatchingSubTF(_event);
 
     // Checks if the current tf is in the matching list.
-    const auto matchingIt = std::find_if(matchingSubTF.begin(), matchingSubTF.end(), [&](const SubTF* _subTF)
+    const auto matchingIt = std::find_if(
+        matchingSubTF.begin(),
+        matchingSubTF.end(),
+        [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             });
@@ -1559,7 +1631,7 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
         data::Composite::key_type key;
         data::TransferFunction::sptr tf;
         {
-            const auto tfPool = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
+            const auto tfPool = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
 
             SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
@@ -1595,8 +1667,8 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
             bool usefull = false;
             for(auto& data : tfData)
             {
-                if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp && data.second.a > 0. &&
-                   data.second.a < 1.)
+                if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp && data.second.a > 0.
+                   && data.second.a < 1.)
                 {
                     usefull = true;
                     break;
@@ -1629,8 +1701,9 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
                 tf->setTFData(tfData);
 
                 // Sends the signal.
-                const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-                    data::TransferFunction::s_MODIFIED_SIG);
+                const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+                    data::TransferFunction::s_MODIFIED_SIG
+                );
                 {
                     const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
@@ -1649,7 +1722,7 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
 
 void SMultipleTF::removeCurrenTF()
 {
-    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::helper::Composite compositeHelper(tfPool);
@@ -1685,8 +1758,9 @@ void SMultipleTF::removeCurrenTF()
     }
 
     // Sends the signal.
-    auto sig = tfPool->signal< data::Composite::RemovedObjectsSignalType >(
-        data::Composite::s_REMOVED_OBJECTS_SIG);
+    auto sig = tfPool->signal<data::Composite::RemovedObjectsSignalType>(
+        data::Composite::s_REMOVED_OBJECTS_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
@@ -1700,7 +1774,7 @@ void SMultipleTF::removeCurrenTF()
 
 void SMultipleTF::clampCurrentTF(bool _clamp)
 {
-    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::Composite::key_type key;
@@ -1727,14 +1801,18 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-        data::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+        data::TransferFunction::s_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
-    SubTF* currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
+    SubTF* currentSubTF = *(std::find_if(
+                                m_subTF.begin(),
+                                m_subTF.end(),
+                                [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             }));
@@ -1749,7 +1827,7 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
 
 void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 {
-    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::Composite::key_type key;
@@ -1776,14 +1854,18 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-        data::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+        data::TransferFunction::s_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 
-    SubTF* currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
+    SubTF* currentSubTF = *(std::find_if(
+                                m_subTF.begin(),
+                                m_subTF.end(),
+                                [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
             }));
@@ -1798,7 +1880,7 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 
 bool SMultipleTF::hasTFName(const std::string& _name) const
 {
-    const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::csptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolsLock(tfPool);
     return tfPool->find(_name) != tfPool->end();
@@ -1808,7 +1890,7 @@ bool SMultipleTF::hasTFName(const std::string& _name) const
 
 void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
 {
-    const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    const data::Composite::sptr tfPool = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
@@ -1817,8 +1899,9 @@ void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
     compositeHelper.add(_tf->getName(), _tf);
 
     // Sends the signal.
-    auto sig = tfPool->signal< data::Composite::AddedObjectsSignalType >(
-        data::Composite::s_ADDED_OBJECTS_SIG);
+    auto sig = tfPool->signal<data::Composite::AddedObjectsSignalType>(
+        data::Composite::s_ADDED_OBJECTS_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         compositeHelper.notify();
@@ -1849,6 +1932,7 @@ void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
     {
         name = "CT-LeftRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
+
     const data::TransferFunction::sptr leftRamp = data::TransferFunction::New();
     leftRamp->setName(name);
     leftRamp->addTFColor(0.0, data::TransferFunction::TFColor(1.0, 1.0, 1.0, 1.0));
@@ -1860,7 +1944,7 @@ void SMultipleTF::addLeftRamp(const sight::viz::scene2d::data::Event& _event)
     // Updates the window/level.
     sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = leftRamp->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     leftRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
@@ -1877,6 +1961,7 @@ void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
     {
         name = "CT-RightRamp_" + std::to_string(s_left_ramp_index_counter++);
     }
+
     const data::TransferFunction::sptr rightRamp = data::TransferFunction::New();
     rightRamp->setName(name);
     rightRamp->addTFColor(0.0, data::TransferFunction::TFColor());
@@ -1888,7 +1973,7 @@ void SMultipleTF::addRightRamp(const sight::viz::scene2d::data::Event& _event)
     // Updates the window/level.
     sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = rightRamp->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     rightRamp->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
@@ -1905,6 +1990,7 @@ void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
     {
         name = "CT-Trapeze_" + std::to_string(s_left_ramp_index_counter++);
     }
+
     const data::TransferFunction::sptr trapeze = data::TransferFunction::New();
     trapeze->setName(name);
     trapeze->addTFColor(0.0, data::TransferFunction::TFColor());
@@ -1918,7 +2004,7 @@ void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
     // Updates the window/level.
     sight::viz::scene2d::data::Coord newCoord        = this->getScene2DRender()->mapToScene(_event.getCoord());
     const data::TransferFunction::TFValueType window = trapeze->getWindow();
-    data::TransferFunction::TFValueType min          = newCoord.getX() - window/2.;
+    data::TransferFunction::TFValueType min          = newCoord.getX() - window / 2.;
     data::TransferFunction::TFValueType max          = min + window;
     trapeze->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
 
@@ -1926,4 +2012,5 @@ void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
 }
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

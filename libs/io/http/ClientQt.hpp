@@ -51,6 +51,7 @@ class IO_HTTP_CLASS_API ClientQt : public QObject
 Q_OBJECT
 
 public:
+
     /**
      * Constructor/Destructor
      * @{
@@ -86,13 +87,14 @@ public:
     IO_HTTP_API QByteArray post(Request::sptr request, const QByteArray& body);
 
 public Q_SLOTS:
+
     /// Slot triggered when an error occurs.
     void processError(QNetworkReply::NetworkError errorCode);
 
 private:
-    /// Set request headers with given values.
-    void computeHeaders(QNetworkRequest& request,  const Request::HeadersType& headers);
 
+    /// Set request headers with given values.
+    void computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers);
 };
 
 } // namespace sight::io::http

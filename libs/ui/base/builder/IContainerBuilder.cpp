@@ -29,6 +29,7 @@
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -48,7 +49,7 @@ IContainerBuilder::~IContainerBuilder()
 
 //-----------------------------------------------------------------------------
 
-void IContainerBuilder::initialize( core::runtime::ConfigurationElement::sptr configuration)
+void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr configuration)
 {
 }
 
@@ -62,4 +63,5 @@ ui::base::container::fwContainer::sptr IContainerBuilder::getContainer()
 //-----------------------------------------------------------------------------
 
 } // namespace builder
+
 } // namespace sight::ui::base

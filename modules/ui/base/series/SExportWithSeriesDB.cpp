@@ -40,6 +40,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace series
 {
 
@@ -50,11 +51,11 @@ static const service::IService::KeyType s_SERIES_INOUT = "series";
 
 //------------------------------------------------------------------------------
 
-SExportWithSeriesDB::SExportWithSeriesDB( ) noexcept :
+SExportWithSeriesDB::SExportWithSeriesDB() noexcept :
     m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader")
 {
-    m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
-    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SExportWithSeriesDB::forwardJob, this );
+    m_sigJobCreated  = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_slotForwardJob = newSlot(FORWARD_JOB_SLOT, &SExportWithSeriesDB::forwardJob, this);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ SExportWithSeriesDB::~SExportWithSeriesDB() noexcept
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::info(std::ostream& _sstream )
+void SExportWithSeriesDB::info(std::ostream& _sstream)
 {
     _sstream << "Action for add SeriesDB" << std::endl;
 }
@@ -75,7 +76,7 @@ void SExportWithSeriesDB::info(std::ostream& _sstream )
 void SExportWithSeriesDB::configuring()
 {
     this->sight::ui::base::IAction::initialize();
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
+    std::vector<ConfigurationType> vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
         ConfigurationType selectorConfig = vectConfig.at(0);
@@ -86,11 +87,11 @@ void SExportWithSeriesDB::configuring()
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::updating( )
+void SExportWithSeriesDB::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
+    data::Series::sptr series = this->getInOut<data::Series>(s_SERIES_INOUT);
     SIGHT_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
 
     // Create a new SeriesDB
@@ -101,15 +102,20 @@ void SExportWithSeriesDB::updating( )
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::extension::Config::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                       "::sight::module::ui::base::io::SSelector");
-    SIGHT_ASSERT("There is no service configuration "
-                 << m_ioSelectorSrvConfig
-                 << " for module::ui::base::editor::SSelector", ioCfg);
+    ioCfg = service::extension::Config::getDefault()->getServiceConfig(
+        m_ioSelectorSrvConfig,
+        "::sight::module::ui::base::io::SSelector"
+    );
+    SIGHT_ASSERT(
+        "There is no service configuration "
+        << m_ioSelectorSrvConfig
+        << " for module::ui::base::editor::SSelector",
+        ioCfg
+    );
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add( "::sight::module::ui::base::io::SSelector");
+    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
     ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
 
     ioSelectorSrv->setWorker(m_associatedWorker);
@@ -120,12 +126,12 @@ void SExportWithSeriesDB::updating( )
         jobCreatedSignal->connect(m_slotForwardJob);
     }
 
-    ioSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(ioCfg) );
+    ioSelectorSrv->setConfiguration(core::runtime::ConfigurationElement::constCast(ioCfg));
     ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
-    service::OSR::unregisterService( ioSelectorSrv );
+    service::OSR::unregisterService(ioSelectorSrv);
 }
 
 //------------------------------------------------------------------------------
@@ -134,8 +140,8 @@ void SExportWithSeriesDB::starting()
 {
     this->sight::ui::base::IAction::actionServiceStarting();
 
-    data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
-    SIGHT_FATAL_IF( "The associated object must be a data::Series.", !series);
+    data::Series::sptr series = this->getInOut<data::Series>(s_SERIES_INOUT);
+    SIGHT_FATAL_IF("The associated object must be a data::Series.", !series);
 }
 
 //------------------------------------------------------------------------------
@@ -154,5 +160,7 @@ void SExportWithSeriesDB::forwardJob(core::jobs::IJob::sptr iJob)
 
 //------------------------------------------------------------------------------
 //
+
 } // namespace series
+
 } // namespace sight::module::ui::base

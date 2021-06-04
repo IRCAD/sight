@@ -39,14 +39,17 @@
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/SeriesDB.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::CompareObjectsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::CompareObjectsTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -68,7 +71,7 @@ void CompareObjectsTest::tearDown()
 
 void CompareObjectsTest::compareImageTest()
 {
-    core::tools::Type type = core::tools::Type::create< float >();
+    core::tools::Type type = core::tools::Type::create<float>();
     data::Image::sptr img  = data::Image::New();
     utestData::generator::Image::generateRandomImage(img, type);
 
@@ -102,7 +105,7 @@ void CompareObjectsTest::compareReconstructionTest()
     data::Reconstruction::sptr rec = data::Reconstruction::New();
     utestData::generator::SeriesDB::generateReconstruction(rec);
 
-    data::Reconstruction::sptr recComp = data::Object::copy< data::Reconstruction >(rec);
+    data::Reconstruction::sptr recComp = data::Object::copy<data::Reconstruction>(rec);
 
     recComp->setOrganName("Unknown organ name");
     recComp->setIsVisible(!rec->getIsVisible());
@@ -111,7 +114,7 @@ void CompareObjectsTest::compareReconstructionTest()
     visitor.compare(rec, recComp);
 
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL((size_t)2, props->size());
+    CPPUNIT_ASSERT_EQUAL((size_t) 2, props->size());
 
     CPPUNIT_ASSERT(props->find("organ_name") != props->end());
     CPPUNIT_ASSERT_EQUAL(std::string("Unknown organ name"), (*props)["organ_name"]);
@@ -127,8 +130,8 @@ void CompareObjectsTest::compareBufferTest()
     data::Image::sptr imgRef  = data::Image::New();
     data::Image::sptr imgComp = data::Image::New();
 
-    core::tools::Type typeRef  = core::tools::Type::create< float >();
-    core::tools::Type typeComp = core::tools::Type::create< double >();
+    core::tools::Type typeRef  = core::tools::Type::create<float>();
+    core::tools::Type typeComp = core::tools::Type::create<double>();
 
     {
         utestData::generator::Image::generateRandomImage(imgRef, typeRef);
@@ -148,7 +151,7 @@ void CompareObjectsTest::compareBufferTest()
         visitor.compare(imgRef, imgComp);
 
         SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)0);
+        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t) 0);
     }
 }
 
@@ -166,7 +169,7 @@ void CompareObjectsTest::compareEmpty()
     visitor.compare(compComp, compRef);
 
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) diffs = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(diffs->size(), (size_t)2);
+    CPPUNIT_ASSERT_EQUAL(diffs->size(), (size_t) 2);
     CPPUNIT_ASSERT(diffs->find("values.float.value") != diffs->end());
     CPPUNIT_ASSERT(diffs->find("values.int.value") != diffs->end());
     CPPUNIT_ASSERT_EQUAL((*diffs)["values.float.value"], data::reflection::visitor::CompareObjects::s_MISSING_PROPERTY);
@@ -183,9 +186,9 @@ void CompareObjectsTest::exceptionTest()
     data::reflection::visitor::CompareObjects visitor;
     CPPUNIT_ASSERT_THROW(visitor.compare(img, comp), core::Exception);
 
-    CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (size_t)0);
-    CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (size_t)0);
-    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t)0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (size_t) 0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (size_t) 0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t) 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +196,7 @@ void CompareObjectsTest::exceptionTest()
 void CompareObjectsTest::compareSeriesDBTest()
 {
     data::SeriesDB::sptr seriesDBRef  = utestData::generator::SeriesDB::createSeriesDB(1, 1, 1);
-    data::SeriesDB::sptr seriesDBComp = data::Object::copy< data::SeriesDB >(seriesDBRef);
+    data::SeriesDB::sptr seriesDBComp = data::Object::copy<data::SeriesDB>(seriesDBRef);
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -219,7 +222,7 @@ void CompareObjectsTest::compareSeriesDBTest()
         visitor.compare(seriesDBRef, seriesDBComp);
 
         SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
+        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t) 3);
 
         CPPUNIT_ASSERT(props->find("values.0.patient.name") != props->end());
         CPPUNIT_ASSERT_EQUAL(name, (*props)["values.0.patient.name"]);
@@ -235,6 +238,9 @@ void CompareObjectsTest::compareSeriesDBTest()
 //-----------------------------------------------------------------------------
 
 } // namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } // namespace sight::data

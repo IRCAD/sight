@@ -52,6 +52,7 @@ namespace io
 class Validator
 {
 public:
+
     /**
      * @brief   Copy Constructor
      *
@@ -59,7 +60,7 @@ public:
      *
      * @param   validator to be copied
      */
-    Validator( const Validator& validator );
+    Validator(const Validator& validator);
 
     /**
      * @brief   Constructor
@@ -68,7 +69,7 @@ public:
      *
      * @param   schema  a string containing the XML schema
      */
-    Validator( const std::string& schema );
+    Validator(const std::string& schema);
 
     /**
      * @brief   Constructor
@@ -77,7 +78,7 @@ public:
      *
      * @param   path    a path to the xml schema file to load
      */
-    Validator( const std::filesystem::path& path );
+    Validator(const std::filesystem::path& path);
 
     /**
      * @brief   Destructor
@@ -103,7 +104,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate( const std::filesystem::path& xmlFile );
+    bool validate(const std::filesystem::path& xmlFile);
 
     /**
      * @brief   Validates the given xml node.
@@ -112,7 +113,7 @@ public:
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    bool validate( xmlNodePtr node );
+    bool validate(xmlNodePtr node);
 
     /**
      * @brief   Returns the xsd content in string format
@@ -128,16 +129,15 @@ private:
     std::string m_xsd_content;
     std::ostringstream m_errorLog;
 
-    typedef std::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
-    typedef std::shared_ptr< xmlSchema > SchemaSptr;
-    typedef std::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
+    typedef std::shared_ptr<xmlSchemaParserCtxt> SchemaParserCtxtSptr;
+    typedef std::shared_ptr<xmlSchema> SchemaSptr;
+    typedef std::shared_ptr<xmlSchemaValidCtxt> SchemaValidCtxtSptr;
 
     SchemaParserCtxtSptr m_schemaParserContext;
     SchemaSptr m_schema;
     SchemaValidCtxtSptr m_schemaValidContext;
 
-    static void ErrorHandler( void* userData, xmlErrorPtr error );
-
+    static void ErrorHandler(void* userData, xmlErrorPtr error);
 };
 
 } // namespace io

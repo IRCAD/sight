@@ -38,9 +38,16 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-Plane::Plane(const core::tools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
-             ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, ::Ogre::TexturePtr _tex,
-             FilteringEnumType _filtering, float _entityOpacity, bool _displayBorder) :
+Plane::Plane(
+    const core::tools::fwID::IDType& _negatoId,
+    ::Ogre::SceneNode* _parentSceneNode,
+    ::Ogre::SceneManager* _sceneManager,
+    OrientationMode _orientation,
+    ::Ogre::TexturePtr _tex,
+    FilteringEnumType _filtering,
+    float _entityOpacity,
+    bool _displayBorder
+) :
     m_filtering(_filtering),
     m_orientation(_orientation),
     m_texture(_tex),
@@ -57,11 +64,13 @@ Plane::Plane(const core::tools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _par
             m_entityName     = _negatoId + "_Sagittal_Entity";
             m_sceneNodeName  = _negatoId + "_Sagittal_SceneNode";
             break;
+
         case OrientationMode::Y_AXIS:
             m_slicePlaneName = _negatoId + "_Frontal_Mesh";
             m_entityName     = _negatoId + "_Frontal_Entity";
             m_sceneNodeName  = _negatoId + "_Frontal_SceneNode";
             break;
+
         case OrientationMode::Z_AXIS:
             m_slicePlaneName = _negatoId + "_Axial_Mesh";
             m_entityName     = _negatoId + "_Axial_Entity";
@@ -70,7 +79,7 @@ Plane::Plane(const core::tools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _par
     }
 
     // Creates the parent's child scene node positionned at (0; 0; 0)
-    m_planeSceneNode = m_parentSceneNode->createChildSceneNode( m_sceneNodeName );
+    m_planeSceneNode = m_parentSceneNode->createChildSceneNode(m_sceneNodeName);
     this->initializeMaterial();
 }
 
@@ -111,7 +120,7 @@ Plane::~Plane()
 
 void Plane::initializeMaterial()
 {
-    auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
+    auto& materialMgr              = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato", RESOURCE_GROUP);
     SIGHT_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
@@ -149,9 +158,11 @@ void Plane::initializeMaterial()
                 case FilteringEnumType::NONE:
                     filterType = ::Ogre::TFO_NONE;
                     break;
+
                 case FilteringEnumType::LINEAR:
                     filterType = ::Ogre::TFO_BILINEAR;
                     break;
+
                 case FilteringEnumType::ANISOTROPIC:
                     filterType = ::Ogre::TFO_ANISOTROPIC;
                     break;
@@ -216,7 +227,7 @@ void Plane::initializePlane()
 
     if(m_sceneManager->hasEntity(m_entityName))
     {
-        m_sceneManager->getEntity( m_entityName)->detachFromParent();
+        m_sceneManager->getEntity(m_entityName)->detachFromParent();
         m_sceneManager->destroyEntity(m_entityName);
     }
 
@@ -231,11 +242,16 @@ void Plane::initializePlane()
             m_slicePlaneName,
             viz::scene3d::RESOURCE_GROUP,
             plane,
-            m_width, m_height,
-            1, 1,
+            m_width,
+            m_height,
+            1,
+            1,
             true,
-            1, 1.0, 1.0,
-            ::Ogre::Vector3::UNIT_Z);
+            1,
+            1.0,
+            1.0,
+            ::Ogre::Vector3::UNIT_Z
+        );
     }
     else
     {
@@ -243,7 +259,9 @@ void Plane::initializePlane()
             m_slicePlaneName,
             viz::scene3d::RESOURCE_GROUP,
             plane,
-            m_width, m_height);
+            m_width,
+            m_height
+        );
     }
 
     // Entity creation.
@@ -266,33 +284,45 @@ void Plane::initializePlane()
 
         if(m_orientation == data::helper::MedicalImage::Orientation::X_AXIS)
         {
-            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f));
-            m_border->position(::Ogre::Vector3(0.f, m_height/2.f, -m_width/2.f));
-            m_border->position(::Ogre::Vector3(0.f, m_height/2.f, m_width/2.f));
-            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, m_width/2.f));
-            m_border->position(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f));
-            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(0.f, -m_height/2.f, -m_width/2.f),
-                                                            ::Ogre::Vector3(0.f, m_height/2.f, m_width/2.f)));
+            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
+            m_border->position(::Ogre::Vector3(0.f, m_height / 2.f, -m_width / 2.f));
+            m_border->position(::Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f));
+            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, m_width / 2.f));
+            m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
+            m_border->setBoundingBox(
+                ::Ogre::AxisAlignedBox(
+                    ::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f),
+                    ::Ogre::Vector3(0.f, m_height / 2.f, m_width / 2.f)
+                )
+            );
         }
         else if(m_orientation == data::helper::MedicalImage::Orientation::Y_AXIS)
         {
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, -m_height/2.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, 0.f, -m_height/2.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, 0.f, m_height/2.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, m_height/2.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, 0.f, -m_height/2.f));
-            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-m_height/2.f, 0.f, -m_width/2.f),
-                                                            ::Ogre::Vector3(m_height/2.f, 0.f, m_width/2.f)));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(::Ogre::Vector3(m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->position(::Ogre::Vector3(m_width / 2.f, 0.f, m_height / 2.f));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, m_height / 2.f));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
+            m_border->setBoundingBox(
+                ::Ogre::AxisAlignedBox(
+                    ::Ogre::Vector3(-m_height / 2.f, 0.f, -m_width / 2.f),
+                    ::Ogre::Vector3(m_height / 2.f, 0.f, m_width / 2.f)
+                )
+            );
         }
         else
         {
-            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, -m_height/2.f, 0.f));
-            m_border->position(::Ogre::Vector3(m_width/2.f, m_height/2.f, 0.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, m_height/2.f, 0.f));
-            m_border->position(::Ogre::Vector3(-m_width/2.f, -m_height/2.f, 0.f));
-            m_border->setBoundingBox(::Ogre::AxisAlignedBox(::Ogre::Vector3(-m_height/2.f, -m_width/2.f, 0.f),
-                                                            ::Ogre::Vector3(m_height/2.f, m_width/2.f, 0.f)));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(::Ogre::Vector3(m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->position(::Ogre::Vector3(m_width / 2.f, m_height / 2.f, 0.f));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, m_height / 2.f, 0.f));
+            m_border->position(::Ogre::Vector3(-m_width / 2.f, -m_height / 2.f, 0.f));
+            m_border->setBoundingBox(
+                ::Ogre::AxisAlignedBox(
+                    ::Ogre::Vector3(-m_height / 2.f, -m_width / 2.f, 0.f),
+                    ::Ogre::Vector3(m_height / 2.f, m_width / 2.f, 0.f)
+                )
+            );
         }
 
         m_border->end();
@@ -313,9 +343,11 @@ void Plane::initializePosition()
         case OrientationMode::X_AXIS:
             m_planeSceneNode->translate(0, m_height / 2, m_width / 2);
             break;
+
         case OrientationMode::Y_AXIS:
             m_planeSceneNode->translate(m_width / 2, 0, m_height / 2);
             break;
+
         case OrientationMode::Z_AXIS:
             m_planeSceneNode->translate(m_width / 2, m_height / 2, 0);
             break;
@@ -334,9 +366,11 @@ void Plane::moveAlongAxis()
         case OrientationMode::X_AXIS:
             m_planeSceneNode->translate(distance, 0, 0);
             break;
+
         case OrientationMode::Y_AXIS:
             m_planeSceneNode->translate(0, distance, 0);
             break;
+
         case OrientationMode::Z_AXIS:
             m_planeSceneNode->translate(0, 0, distance);
             break;
@@ -347,11 +381,11 @@ void Plane::moveAlongAxis()
 
 void Plane::setRelativePosition(float _relativePosition)
 {
-    if( _relativePosition <= 0 )
+    if(_relativePosition <= 0)
     {
         m_relativePosition = 0;
     }
-    else if ( _relativePosition >= 1)
+    else if(_relativePosition >= 1)
     {
         // as close as possible from 1, but smaller.
         m_relativePosition = 0.999999999999999f;
@@ -420,9 +454,11 @@ double Plane::getSliceWorldPosition() const
         case OrientationMode::X_AXIS:
             position = m_planeSceneNode->getPosition().x;
             break;
+
         case OrientationMode::Y_AXIS:
             position = m_planeSceneNode->getPosition().y;
             break;
+
         case OrientationMode::Z_AXIS:
             position = m_planeSceneNode->getPosition().z;
             break;
@@ -490,10 +526,9 @@ void Plane::enableAlpha(bool _enable)
             ::Ogre::Pass* const pass = tech->getPass(0);
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable );
+            pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -508,8 +543,8 @@ void Plane::setEntityOpacity(float _f)
     ::Ogre::Technique* tech = m_texMaterial->getTechnique(0);
     SIGHT_ASSERT("Technique is not set", tech);
 
-    if(viz::scene3d::helper::Shading::isColorTechnique(*tech) &&
-       !viz::scene3d::helper::Shading::isPeelTechnique(*tech))
+    if(viz::scene3d::helper::Shading::isColorTechnique(*tech)
+       && !viz::scene3d::helper::Shading::isPeelTechnique(*tech))
     {
         ::Ogre::Pass* pass = tech->getPass(0);
 
@@ -542,11 +577,11 @@ void Plane::changeSlice(float sliceIndex)
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
 
-            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", sliceIndex );
+            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", sliceIndex);
         }
     }
 
-    this->setRelativePosition( sliceIndex );
+    this->setRelativePosition(sliceIndex);
     this->moveAlongAxis();
 }
 
@@ -554,9 +589,9 @@ void Plane::changeSlice(float sliceIndex)
 
 ::Ogre::MovablePlane Plane::setDimensions()
 {
-    ::Ogre::Real tex_width  = static_cast< ::Ogre::Real >( m_texture->getWidth() );
-    ::Ogre::Real tex_height = static_cast< ::Ogre::Real >( m_texture->getHeight() );
-    ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real >( m_texture->getDepth() );
+    ::Ogre::Real tex_width  = static_cast< ::Ogre::Real>(m_texture->getWidth());
+    ::Ogre::Real tex_height = static_cast< ::Ogre::Real>(m_texture->getHeight());
+    ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real>(m_texture->getDepth());
 
     ::Ogre::MovablePlane plane(::Ogre::Vector3::ZERO, 0);
     switch(m_orientation)
@@ -566,11 +601,13 @@ void Plane::changeSlice(float sliceIndex)
             m_height = tex_height * m_spacing[1];
             m_depth  = tex_width * m_spacing[0];
             break;
+
         case OrientationMode::Y_AXIS:
             m_width  = tex_width * m_spacing[0];
             m_height = tex_depth * m_spacing[2];
             m_depth  = tex_height * m_spacing[1];
             break;
+
         case OrientationMode::Z_AXIS:
             m_width  = tex_width * m_spacing[0];
             m_height = tex_height * m_spacing[1];
@@ -583,9 +620,11 @@ void Plane::changeSlice(float sliceIndex)
         case OrientationMode::X_AXIS:
             plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_X, 0);
             break;
+
         case OrientationMode::Y_AXIS:
             plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Y, 0);
             break;
+
         case OrientationMode::Z_AXIS:
             plane = ::Ogre::MovablePlane(::Ogre::Vector3::UNIT_Z, 0);
             break;
@@ -602,6 +641,7 @@ const ::Ogre::MovableObject* Plane::getMovableObject() const
     {
         return m_sceneManager->getEntity(m_entityName);
     }
+
     return nullptr;
 }
 

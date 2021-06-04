@@ -49,8 +49,8 @@ const service::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList"
 
 SMarkerToPoint::SMarkerToPoint() noexcept
 {
-    newSlot( s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this );
-    newSlot( s_CLEAR_SLOT, &SMarkerToPoint::clear, this );
+    newSlot(s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this);
+    newSlot(s_CLEAR_SLOT, &SMarkerToPoint::clear, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -93,8 +93,8 @@ void SMarkerToPoint::stopping()
 
 void SMarkerToPoint::addPoint()
 {
-    data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(s_MATRIXTL_INPUT);
-    data::PointList::sptr pl       = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
+    data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>(s_MATRIXTL_INPUT);
+    data::PointList::sptr pl       = this->getInOut<data::PointList>(s_POINTLIST_INOUT);
 
     data::Matrix4::sptr matrix3D = data::Matrix4::New();
 
@@ -104,45 +104,48 @@ void SMarkerToPoint::addPoint()
 
     const float* values = buffer->getElement(0);
 
-    for(unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        for(unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            matrix3D->setCoefficient(i, j, values[i*4+j]);
+            matrix3D->setCoefficient(i, j, values[i * 4 + j]);
         }
     }
 
-    SIGHT_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
-                                           <<matrix3D->getCoefficient(1, 3)<<" , "
-                                           <<matrix3D->getCoefficient(2, 3));
+    SIGHT_DEBUG(
+        "Marker Center Position : " << matrix3D->getCoefficient(0, 3) << " , "
+        << matrix3D->getCoefficient(1, 3) << " , "
+        << matrix3D->getCoefficient(2, 3)
+    );
 
     //Save the position and drop the orientation
-    data::Point::sptr p = data::Point::New(matrix3D->getCoefficient(0, 3),
-                                           matrix3D->getCoefficient(1, 3),
-                                           matrix3D->getCoefficient(2, 3));
+    data::Point::sptr p = data::Point::New(
+        matrix3D->getCoefficient(0, 3),
+        matrix3D->getCoefficient(1, 3),
+        matrix3D->getCoefficient(2, 3)
+    );
 
     pl->pushBack(p);
-    auto sig = pl->signal< data::PointList::PointAddedSignalType >(data::PointList::s_POINT_ADDED_SIG);
+    auto sig = pl->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(p);
     }
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SMarkerToPoint::clear()
 {
-    data::PointList::sptr pl = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
+    data::PointList::sptr pl = this->getInOut<data::PointList>(s_POINTLIST_INOUT);
 
     data::mt::ObjectReadLock lock(pl);
 
-    if (pl && !pl->getPoints().empty())
+    if(pl && !pl->getPoints().empty())
     {
         pl->clear();
 
-        auto sig = pl->signal< data::PointList::ModifiedSignalType >(data::PointList::s_MODIFIED_SIG);
+        auto sig = pl->signal<data::PointList::ModifiedSignalType>(data::PointList::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();

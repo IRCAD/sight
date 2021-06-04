@@ -24,7 +24,7 @@
 
 #include "atoms/registry/macros.hpp"
 
-fwAtomsRegisterMacro( sight::atoms::Map );
+fwAtomsRegisterMacro(sight::atoms::Map);
 
 namespace sight::atoms
 {
@@ -34,10 +34,11 @@ namespace sight::atoms
 Base::sptr Map::clone() const
 {
     Map::sptr cloneMap = Map::New();
-    for(const ValueType& elem :  m_value)
+    for(const ValueType& elem : m_value)
     {
-        cloneMap->m_value.insert( ValueType(elem.first, elem.second->clone() ) );
+        cloneMap->m_value.insert(ValueType(elem.first, elem.second->clone()));
     }
+
     return cloneMap;
 }
 

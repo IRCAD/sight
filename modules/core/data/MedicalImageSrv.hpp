@@ -45,10 +45,9 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API MedicalImageSrv : public service::IController
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(MedicalImageSrv, service::IController)
+    SIGHT_DECLARE_SERVICE(MedicalImageSrv, service::IController);
 
     MODULE_DATA_API MedicalImageSrv() noexcept;
 
@@ -75,7 +74,7 @@ protected:
     MODULE_DATA_API void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    MODULE_DATA_API void info( std::ostream& _sstream ) override;
+    MODULE_DATA_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -90,7 +89,7 @@ private:
 
     void convertImage();
 
-    std::vector< std::string > m_imageCompositeKeys;
+    std::vector<std::string> m_imageCompositeKeys;
 };
 
 } // sight::module::data

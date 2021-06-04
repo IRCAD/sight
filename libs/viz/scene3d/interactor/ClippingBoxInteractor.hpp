@@ -40,18 +40,19 @@ namespace interactor
 /// Picks VR widgets and updates clipping cube.
 class VIZ_SCENE3D_CLASS_API ClippingBoxInteractor final : public IInteractor
 {
-
 public:
 
     /// Creates the widget.
-    VIZ_SCENE3D_API ClippingBoxInteractor(SPTR(Layer)_layer,
-                                          bool _layerOrderDependant,
-                                          const std::string& _id,
-                                          ::Ogre::SceneNode* _parentSceneNode,
-                                          const ::Ogre::Matrix4& _clippingMatrix,
-                                          const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
-                                          const std::string& _boxMtlName,
-                                          const std::string& _handleMtlName) noexcept;
+    VIZ_SCENE3D_API ClippingBoxInteractor(
+        SPTR(Layer)_layer,
+        bool _layerOrderDependant,
+        const std::string& _id,
+        ::Ogre::SceneNode* _parentSceneNode,
+        const ::Ogre::Matrix4& _clippingMatrix,
+        const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
+        const std::string& _boxMtlName,
+        const std::string& _handleMtlName
+    ) noexcept;
 
     /// Destroys the widget.
     VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept override;
@@ -83,7 +84,7 @@ private:
     void cancelFurtherLayerInteractions();
 
     /// Containst the currently selected widget.
-    ::Ogre::MovableObject* m_pickedObject { nullptr };
+    ::Ogre::MovableObject* m_pickedObject {nullptr};
 
     /// Defines the widget with whom we interact.
     widget::ClippingBox m_widget;
@@ -93,7 +94,8 @@ private:
 
     /// Attempts to pick the first object at screen coordinates (x, y), returns nullptr if no object was picked.
     ::Ogre::MovableObject* pickObject(int x, int y);
-
 };
+
 } // namespace interactor.
+
 } // namespace sight::viz::scene3d.

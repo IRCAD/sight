@@ -37,10 +37,11 @@
 #include <future>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SlotTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SlotTest);
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
@@ -74,127 +75,127 @@ struct A
     {
         m_method0 = true;
     }
+
     //------------------------------------------------------------------------------
 
     float method1(float f)
     {
         m_method1 = true;
-        return 2*f;
+        return 2 * f;
     }
 
     bool m_method0;
     bool m_method1;
-
 };
 
 static int lastSumResult = 0;
 
 //------------------------------------------------------------------------------
 
-int sum (int a, int b)
+int sum(int a, int b)
 {
-    lastSumResult = a+b;
+    lastSumResult = a + b;
     return lastSumResult;
 }
 
 //------------------------------------------------------------------------------
 
-void SlotTest::buildTest ()
+void SlotTest::buildTest()
 {
     A a;
 
-    core::com::Slot< int (int, int) >::sptr slot1 = core::com::newSlot( &sum );
-    core::com::Slot< void() >::sptr slot2         = core::com::newSlot( &A::method0, &a );
-    core::com::Slot< float (float) >::sptr slot3  = core::com::newSlot( &A::method1, &a  );
+    core::com::Slot<int(int, int)>::sptr slot1 = core::com::newSlot(&sum);
+    core::com::Slot<void()>::sptr slot2        = core::com::newSlot(&A::method0, &a);
+    core::com::Slot<float(float)>::sptr slot3  = core::com::newSlot(&A::method1, &a);
 
-    CPPUNIT_ASSERT( slot1 );
-    CPPUNIT_ASSERT( slot2 );
-    CPPUNIT_ASSERT( slot3 );
+    CPPUNIT_ASSERT(slot1);
+    CPPUNIT_ASSERT(slot2);
+    CPPUNIT_ASSERT(slot3);
 
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 2, slot1->arity() );
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 0, slot2->arity() );
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 1, slot3->arity() );
+    CPPUNIT_ASSERT_EQUAL((unsigned int) 2, slot1->arity());
+    CPPUNIT_ASSERT_EQUAL((unsigned int) 0, slot2->arity());
+    CPPUNIT_ASSERT_EQUAL((unsigned int) 1, slot3->arity());
 
-    core::com::SlotCall< int (int, int) >::sptr slotcall1
-        = std::dynamic_pointer_cast< core::com::SlotCall< int (int, int) > > ( slot1 );
-    core::com::SlotCall< void() >::sptr slotcall2
-        = std::dynamic_pointer_cast< core::com::SlotCall< void() >        > ( slot2 );
-    core::com::SlotCall< float (float) >::sptr slotcall3
-        = std::dynamic_pointer_cast< core::com::SlotCall< float (float) >  > ( slot3 );
+    core::com::SlotCall<int(int, int)>::sptr slotcall1 =
+        std::dynamic_pointer_cast<core::com::SlotCall<int(int, int)> >(slot1);
+    core::com::SlotCall<void()>::sptr slotcall2 =
+        std::dynamic_pointer_cast<core::com::SlotCall<void()> >(slot2);
+    core::com::SlotCall<float(float)>::sptr slotcall3 =
+        std::dynamic_pointer_cast<core::com::SlotCall<float(float)> >(slot3);
 
-    CPPUNIT_ASSERT( slotcall1 );
-    CPPUNIT_ASSERT( slotcall2 );
-    CPPUNIT_ASSERT( slotcall3 );
+    CPPUNIT_ASSERT(slotcall1);
+    CPPUNIT_ASSERT(slotcall2);
+    CPPUNIT_ASSERT(slotcall3);
 
-    core::com::SlotRun< void (int, int) >::sptr slotrun1
-        = std::dynamic_pointer_cast< core::com::SlotRun< void (int, int) > > ( slot1 );
-    core::com::SlotRun< void() >::sptr slotrun2
-        = std::dynamic_pointer_cast< core::com::SlotRun< void() >         > ( slot2 );
-    core::com::SlotRun< void (float) >::sptr slotrun3
-        = std::dynamic_pointer_cast< core::com::SlotRun< void (float) >    > ( slot3 );
+    core::com::SlotRun<void(int, int)>::sptr slotrun1 =
+        std::dynamic_pointer_cast<core::com::SlotRun<void(int, int)> >(slot1);
+    core::com::SlotRun<void()>::sptr slotrun2 =
+        std::dynamic_pointer_cast<core::com::SlotRun<void()> >(slot2);
+    core::com::SlotRun<void(float)>::sptr slotrun3 =
+        std::dynamic_pointer_cast<core::com::SlotRun<void(float)> >(slot3);
 
-    CPPUNIT_ASSERT( slotrun1 );
-    CPPUNIT_ASSERT( slotrun2 );
-    CPPUNIT_ASSERT( slotrun3 );
+    CPPUNIT_ASSERT(slotrun1);
+    CPPUNIT_ASSERT(slotrun2);
+    CPPUNIT_ASSERT(slotrun3);
 
-    core::com::SlotBase::sptr slotbase1 = std::dynamic_pointer_cast< core::com::SlotBase > ( slot1 );
-    core::com::SlotBase::sptr slotbase2 = std::dynamic_pointer_cast< core::com::SlotBase > ( slot2 );
-    core::com::SlotBase::sptr slotbase3 = std::dynamic_pointer_cast< core::com::SlotBase > ( slot3 );
+    core::com::SlotBase::sptr slotbase1 = std::dynamic_pointer_cast<core::com::SlotBase>(slot1);
+    core::com::SlotBase::sptr slotbase2 = std::dynamic_pointer_cast<core::com::SlotBase>(slot2);
+    core::com::SlotBase::sptr slotbase3 = std::dynamic_pointer_cast<core::com::SlotBase>(slot3);
 
-    CPPUNIT_ASSERT( slotbase1 );
-    CPPUNIT_ASSERT( slotbase2 );
-    CPPUNIT_ASSERT( slotbase3 );
-
+    CPPUNIT_ASSERT(slotbase1);
+    CPPUNIT_ASSERT(slotbase2);
+    CPPUNIT_ASSERT(slotbase3);
 }
 
 //-----------------------------------------------------------------------------
 
-void SlotTest::runTest ()
+void SlotTest::runTest()
 {
     A a;
 
-    core::com::Slot< int (int, int) >::sptr slot1 = core::com::newSlot( &sum );
-    core::com::Slot< void() >::sptr slot2         = core::com::newSlot( &A::method0, &a );
-    core::com::Slot< float (float) >::sptr slot3  = core::com::newSlot( &A::method1, &a );
+    core::com::Slot<int(int, int)>::sptr slot1 = core::com::newSlot(&sum);
+    core::com::Slot<void()>::sptr slot2        = core::com::newSlot(&A::method0, &a);
+    core::com::Slot<float(float)>::sptr slot3  = core::com::newSlot(&A::method1, &a);
 
     lastSumResult = 0;
-    CPPUNIT_ASSERT( !a.m_method0 );
-    CPPUNIT_ASSERT( !a.m_method1 );
+    CPPUNIT_ASSERT(!a.m_method0);
+    CPPUNIT_ASSERT(!a.m_method1);
 
     slot1->run(34, 66);
     slot2->run();
     slot3->run(88.1236F);
 
-    CPPUNIT_ASSERT_EQUAL( 100, lastSumResult );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT_EQUAL(100, lastSumResult);
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(a.m_method1);
 }
+
 //-----------------------------------------------------------------------------
 
-void SlotTest::callTest ()
+void SlotTest::callTest()
 {
     A a;
 
-    core::com::Slot< int (int, int) >::sptr slot1 = core::com::newSlot( &sum );
-    core::com::Slot< void() >::sptr slot2         = core::com::newSlot( &A::method0, &a );
-    core::com::Slot< float (float) >::sptr slot3  = core::com::newSlot( &A::method1, &a );
+    core::com::Slot<int(int, int)>::sptr slot1 = core::com::newSlot(&sum);
+    core::com::Slot<void()>::sptr slot2        = core::com::newSlot(&A::method0, &a);
+    core::com::Slot<float(float)>::sptr slot3  = core::com::newSlot(&A::method1, &a);
 
-    CPPUNIT_ASSERT_EQUAL( 42, slot1->call(40, 2) );
+    CPPUNIT_ASSERT_EQUAL(42, slot1->call(40, 2));
     slot2->call();
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT_EQUAL( 4.2f, slot3->call(2.1f) );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT_EQUAL(4.2f, slot3->call(2.1f));
+    CPPUNIT_ASSERT(a.m_method1);
 }
 
 //-----------------------------------------------------------------------------
 
-void SlotTest::asyncTest ()
+void SlotTest::asyncTest()
 {
     A a;
 
-    core::com::Slot< int (int, int) >::sptr slot1 = core::com::newSlot( &sum );
-    core::com::Slot< void() >::sptr slot2         = core::com::newSlot( &A::method0, &a );
-    core::com::Slot< float (float) >::sptr slot3  = core::com::newSlot( &A::method1, &a );
+    core::com::Slot<int(int, int)>::sptr slot1 = core::com::newSlot(&sum);
+    core::com::Slot<void()>::sptr slot2        = core::com::newSlot(&A::method0, &a);
+    core::com::Slot<float(float)>::sptr slot3  = core::com::newSlot(&A::method1, &a);
 
     core::thread::Worker::sptr w = core::thread::Worker::New();
 
@@ -206,45 +207,45 @@ void SlotTest::asyncTest ()
     slot2->asyncRun();
     slot3->asyncRun(2.1f).wait();
 
-    CPPUNIT_ASSERT_EQUAL( 42, lastSumResult );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT_EQUAL(42, lastSumResult);
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(a.m_method1);
 
     lastSumResult = 0;
     a.m_method0   = false;
     a.m_method1   = false;
 
-    std::shared_future< int >   f1 = slot1->asyncCall(40, 2);
-    std::shared_future< void >  f2 = slot2->asyncCall();
-    std::shared_future< float > f3 = slot3->asyncCall(2.1f);
+    std::shared_future<int> f1   = slot1->asyncCall(40, 2);
+    std::shared_future<void> f2  = slot2->asyncCall();
+    std::shared_future<float> f3 = slot3->asyncCall(2.1f);
 
     f1.wait();
-    CPPUNIT_ASSERT( f1.valid() );
-    CPPUNIT_ASSERT_EQUAL( 42, f1.get() );
-    CPPUNIT_ASSERT( f1.valid() );
+    CPPUNIT_ASSERT(f1.valid());
+    CPPUNIT_ASSERT_EQUAL(42, f1.get());
+    CPPUNIT_ASSERT(f1.valid());
 
     f2.wait();
-    CPPUNIT_ASSERT( f2.valid() );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( f2.valid() );
+    CPPUNIT_ASSERT(f2.valid());
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(f2.valid());
 
     f3.wait();
-    CPPUNIT_ASSERT( f3.valid() );
-    CPPUNIT_ASSERT_EQUAL( 4.2f, f3.get() );
-    CPPUNIT_ASSERT( f3.valid() );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT(f3.valid());
+    CPPUNIT_ASSERT_EQUAL(4.2f, f3.get());
+    CPPUNIT_ASSERT(f3.valid());
+    CPPUNIT_ASSERT(a.m_method1);
     w->stop();
 }
 
 //-----------------------------------------------------------------------------
 
-void SlotTest::slotBaseTest ()
+void SlotTest::slotBaseTest()
 {
     A a;
 
-    core::com::SlotBase::sptr slot1 = core::com::newSlot( &sum );
-    core::com::SlotBase::sptr slot2 = core::com::newSlot( &A::method0, &a );
-    core::com::SlotBase::sptr slot3 = core::com::newSlot( &A::method1, &a );
+    core::com::SlotBase::sptr slot1 = core::com::newSlot(&sum);
+    core::com::SlotBase::sptr slot2 = core::com::newSlot(&A::method0, &a);
+    core::com::SlotBase::sptr slot3 = core::com::newSlot(&A::method1, &a);
 
     lastSumResult = 0;
 
@@ -252,19 +253,19 @@ void SlotTest::slotBaseTest ()
     slot2->run();
     slot3->run(2.1f);
 
-    CPPUNIT_ASSERT_EQUAL( 42, lastSumResult );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT_EQUAL(42, lastSumResult);
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(a.m_method1);
 
     lastSumResult = 0;
     a.m_method0   = false;
     a.m_method1   = false;
 
-    CPPUNIT_ASSERT_EQUAL( 42, slot1->call<int>(40, 2) );
+    CPPUNIT_ASSERT_EQUAL(42, slot1->call<int>(40, 2));
     slot2->call<void>();
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT_EQUAL( 4.2f, slot3->call<float>(2.1f) );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT_EQUAL(4.2f, slot3->call<float>(2.1f));
+    CPPUNIT_ASSERT(a.m_method1);
 
     lastSumResult = 0;
     a.m_method0   = false;
@@ -280,42 +281,41 @@ void SlotTest::slotBaseTest ()
     slot2->asyncRun();
     slot3->asyncRun(2.1f).wait();
 
-    CPPUNIT_ASSERT_EQUAL( 42, lastSumResult );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT_EQUAL(42, lastSumResult);
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(a.m_method1);
 
     lastSumResult = 0;
     a.m_method0   = false;
     a.m_method1   = false;
 
-    std::shared_future< int >   f1 = slot1->asyncCall<int>(40, 2);
-    std::shared_future< void >  f2 = slot2->asyncCall<void>();
-    std::shared_future< float > f3 = slot3->asyncCall<float>(2.1f);
+    std::shared_future<int> f1   = slot1->asyncCall<int>(40, 2);
+    std::shared_future<void> f2  = slot2->asyncCall<void>();
+    std::shared_future<float> f3 = slot3->asyncCall<float>(2.1f);
 
     f1.wait();
-    CPPUNIT_ASSERT( f1.valid() );
-    CPPUNIT_ASSERT_EQUAL( 42, f1.get() );
-    CPPUNIT_ASSERT( f1.valid() );
+    CPPUNIT_ASSERT(f1.valid());
+    CPPUNIT_ASSERT_EQUAL(42, f1.get());
+    CPPUNIT_ASSERT(f1.valid());
 
     f2.wait();
-    CPPUNIT_ASSERT( f2.valid() );
-    CPPUNIT_ASSERT( a.m_method0 );
-    CPPUNIT_ASSERT( f2.valid() );
+    CPPUNIT_ASSERT(f2.valid());
+    CPPUNIT_ASSERT(a.m_method0);
+    CPPUNIT_ASSERT(f2.valid());
 
     f3.wait();
-    CPPUNIT_ASSERT( f3.valid() );
-    CPPUNIT_ASSERT_EQUAL( 4.2f, f3.get() );
-    CPPUNIT_ASSERT( f3.valid() );
-    CPPUNIT_ASSERT( a.m_method1 );
+    CPPUNIT_ASSERT(f3.valid());
+    CPPUNIT_ASSERT_EQUAL(4.2f, f3.get());
+    CPPUNIT_ASSERT(f3.valid());
+    CPPUNIT_ASSERT(a.m_method1);
     w->stop();
 }
 
 //-----------------------------------------------------------------------------
 
-void SlotTest::exceptionTest ()
+void SlotTest::exceptionTest()
 {
-
-    core::com::SlotBase::sptr slot = core::com::newSlot( &sum );
+    core::com::SlotBase::sptr slot = core::com::newSlot(&sum);
 
     CPPUNIT_ASSERT_THROW(slot->run(), core::com::exception::BadRun);
     CPPUNIT_ASSERT_THROW(slot->call<int>(), core::com::exception::BadCall);
@@ -345,7 +345,7 @@ struct B
         m_threadId = std::this_thread::get_id();
         m_firstRun = false;
 
-        std::this_thread::sleep_for( std::chrono::seconds(nbSeconds));
+        std::this_thread::sleep_for(std::chrono::seconds(nbSeconds));
 
         return oldId;
     }
@@ -361,25 +361,24 @@ struct B
 
 void SlotTest::workerSwapTest()
 {
-
     // Tests if weak call gets interrupted when slot worker is changed while
     // calls are pending.
     bool exceptionThrown = false;
     while(!exceptionThrown)
     {
-        typedef std::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature(const unsigned int);
 
         B b;
 
         core::thread::Worker::sptr w1 = core::thread::Worker::New();
         core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
-        core::com::Slot< Signature >::sptr m0 = core::com::newSlot( &B::waitSeconds, &b );
+        core::com::Slot<Signature>::sptr m0 = core::com::newSlot(&B::waitSeconds, &b);
 
         CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
-        core::com::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
+        core::com::Slot<Signature>::VoidSharedFutureType future1 = m0->asyncRun(1);
         m0->setWorker(w2);
 
         {
@@ -387,7 +386,7 @@ void SlotTest::workerSwapTest()
             if(b.m_threadId == std::thread::id())
             {
                 exceptionThrown = true;
-                CPPUNIT_ASSERT_THROW( future1.get(), core::com::exception::WorkerChanged );
+                CPPUNIT_ASSERT_THROW(future1.get(), core::com::exception::WorkerChanged);
             }
             else
             {
@@ -400,19 +399,19 @@ void SlotTest::workerSwapTest()
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncRun test)
     {
-        typedef std::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature(const unsigned int);
 
         B b;
 
         core::thread::Worker::sptr w1 = core::thread::Worker::New();
         core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
-        core::com::Slot< Signature >::sptr m0 = core::com::newSlot( &B::waitSeconds, &b );
+        core::com::Slot<Signature>::sptr m0 = core::com::newSlot(&B::waitSeconds, &b);
 
         CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
-        core::com::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
+        core::com::Slot<Signature>::VoidSharedFutureType future1 = m0->asyncRun(1);
 
         // wait until we entered in slot's function
         while(b.m_firstRun)
@@ -424,7 +423,7 @@ void SlotTest::workerSwapTest()
         future1.wait();
         CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
 
-        core::com::Slot< Signature >::VoidSharedFutureType future2 = m0->asyncRun(1);
+        core::com::Slot<Signature>::VoidSharedFutureType future2 = m0->asyncRun(1);
 
         future2.wait();
 
@@ -435,19 +434,19 @@ void SlotTest::workerSwapTest()
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncCall test)
     {
-        typedef std::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature(const unsigned int);
 
         B b;
 
         core::thread::Worker::sptr w1 = core::thread::Worker::New();
         core::thread::Worker::sptr w2 = core::thread::Worker::New();
 
-        core::com::Slot< Signature >::sptr m0 = core::com::newSlot( &B::waitSeconds, &b );
+        core::com::Slot<Signature>::sptr m0 = core::com::newSlot(&B::waitSeconds, &b);
 
         CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
-        core::com::Slot< Signature >::SharedFutureType future1 = m0->asyncCall(1);
+        core::com::Slot<Signature>::SharedFutureType future1 = m0->asyncCall(1);
 
         // wait until we entered in slot's function
         while(b.m_firstRun)
@@ -459,7 +458,7 @@ void SlotTest::workerSwapTest()
         future1.wait();
         CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
 
-        core::com::Slot< Signature >::SharedFutureType future2 = m0->asyncCall(1);
+        core::com::Slot<Signature>::SharedFutureType future2 = m0->asyncCall(1);
 
         future2.wait();
 
@@ -469,7 +468,6 @@ void SlotTest::workerSwapTest()
         w1->stop();
         w2->stop();
     }
-
 }
 
 } //namespace ut

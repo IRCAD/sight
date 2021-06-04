@@ -28,21 +28,24 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
 class PointListTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( PointListTest );
-    CPPUNIT_TEST( computeDistance );
-    CPPUNIT_TEST( transform );
-    CPPUNIT_TEST( associate );
-    CPPUNIT_TEST( removeClosestPointNominal );
-    CPPUNIT_TEST( removeClosestPointExtreme );
+
+    CPPUNIT_TEST_SUITE(PointListTest);
+    CPPUNIT_TEST(computeDistance);
+    CPPUNIT_TEST(transform);
+    CPPUNIT_TEST(associate);
+    CPPUNIT_TEST(removeClosestPointNominal);
+    CPPUNIT_TEST(removeClosestPointExtreme);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -57,5 +60,7 @@ public:
 
     void removeClosestPointExtreme();
 };
+
 } //namespace ut
+
 } //namespace sight::geometry::data

@@ -66,9 +66,9 @@ ITracker::~ITracker()
 void ITracker::configuring()
 {
     const service::IService::ConfigType config = this->getConfigTree();
-    if (config.count("dropObj"))
+    if(config.count("dropObj"))
     {
-        const std::string dropStr = config.get< std::string >("dropObj");
+        const std::string dropStr = config.get<std::string>("dropObj");
         SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
         m_dropObj = (dropStr == "true");
     }
@@ -78,29 +78,34 @@ void ITracker::configuring()
 
 void ITracker::track(core::HiResClock::HiResClockType timestamp)
 {
-    SIGHT_DEBUG_IF("["+this->getClassname()+"] Tracking is not started: does nothing", !m_isTracking);
-    SIGHT_DEBUG_IF("["+this->getClassname()+"] Dropping object at " + std::to_string(timestamp),
-                   m_isTracking && m_dropObj && timestamp <= m_lastTimestamp);
+    SIGHT_DEBUG_IF("[" + this->getClassname() + "] Tracking is not started: does nothing", !m_isTracking);
+    SIGHT_DEBUG_IF(
+        "[" + this->getClassname() + "] Dropping object at " + std::to_string(timestamp),
+        m_isTracking && m_dropObj && timestamp <= m_lastTimestamp
+    );
 
-    if (m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
+    if(m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
     {
-        data::BufferTL::csptr timeline = this->getInput< data::BufferTL >(s_TIMELINE_INPUT);
-        SIGHT_WARN_IF("the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
-                      !timeline);
-        if (timeline)
+        data::BufferTL::csptr timeline = this->getInput<data::BufferTL>(s_TIMELINE_INPUT);
+        SIGHT_WARN_IF(
+            "the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
+            !timeline
+        );
+        if(timeline)
         {
-            if (m_dropObj)
+            if(m_dropObj)
             {
                 timestamp = timeline->getNewerTimestamp();
             }
-            if (timeline->getClosestObject(timestamp) == nullptr)
+
+            if(timeline->getClosestObject(timestamp) == nullptr)
             {
-                SIGHT_WARN("["+this->getClassname()+"] No buffer found for the timeline.");
+                SIGHT_WARN("[" + this->getClassname() + "] No buffer found for the timeline.");
                 return;
             }
         }
 
-        SIGHT_DEBUG("["+this->getClassname()+"] Tracking at " +  std::to_string(timestamp) + "...");
+        SIGHT_DEBUG("[" + this->getClassname() + "] Tracking at " + std::to_string(timestamp) + "...");
         this->tracking(timestamp);
         m_lastTimestamp = timestamp;
     }
@@ -112,7 +117,7 @@ service::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push( s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT );
+    connections.push(s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT);
 
     return connections;
 }

@@ -44,6 +44,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace com
 {
 
@@ -64,8 +65,8 @@ static const core::com::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 SSignalButton::SSignalButton() noexcept
 {
-    m_sigClicked = newSignal< ClickedSignalType >(s_CLICKED_SIG);
-    m_sigToggled = newSignal< ToggledSignalType >(s_TOGGLED_SIG);
+    m_sigClicked = newSignal<ClickedSignalType>(s_CLICKED_SIG);
+    m_sigToggled = newSignal<ToggledSignalType>(s_TOGGLED_SIG);
 
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
@@ -97,16 +98,20 @@ void SSignalButton::configuring()
         core::runtime::ConfigurationElement::sptr checkableCfg = config->findConfigurationElement("checkable");
         if(checkableCfg)
         {
-            SIGHT_ASSERT("'checkable' value must be 'true' or 'false'",
-                         checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false");
+            SIGHT_ASSERT(
+                "'checkable' value must be 'true' or 'false'",
+                checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false"
+            );
             m_checkable = (checkableCfg->getValue() == "true");
         }
 
         core::runtime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
         if(executableCfg)
         {
-            SIGHT_ASSERT("'executable' value must be 'true' or 'false'",
-                         executableCfg->getValue() == "true" || executableCfg->getValue() == "false");
+            SIGHT_ASSERT(
+                "'executable' value must be 'true' or 'false'",
+                executableCfg->getValue() == "true" || executableCfg->getValue() == "false"
+            );
             m_executable = (executableCfg->getValue() == "true");
         }
 
@@ -115,6 +120,7 @@ void SSignalButton::configuring()
         {
             m_text = txtCfg->getValue();
         }
+
         core::runtime::ConfigurationElement::sptr iconCfg = config->findConfigurationElement("icon");
         if(iconCfg)
         {
@@ -141,8 +147,10 @@ void SSignalButton::configuring()
         if(checkedCfg)
         {
             SIGHT_ASSERT("Button must be 'checkable' in order to defined 'checked'", m_checkable);
-            SIGHT_ASSERT("'checked' value must be 'true' or 'false'",
-                         checkedCfg->getValue() == "true" || checkedCfg->getValue() == "false");
+            SIGHT_ASSERT(
+                "'checked' value must be 'true' or 'false'",
+                checkedCfg->getValue() == "true" || checkedCfg->getValue() == "false"
+            );
             m_checkAtStart = (checkedCfg->getValue() == "true");
         }
 
@@ -172,7 +180,7 @@ void SSignalButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
@@ -189,6 +197,7 @@ void SSignalButton::starting()
     {
         m_button->setIcon(QIcon(QString::fromStdString(m_icon.string())));
     }
+
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
         m_button->setIconSize(QSize(m_iconWidth, m_iconHeight));
@@ -205,6 +214,7 @@ void SSignalButton::starting()
             {
                 m_button->setText(QString::fromStdString(m_text2));
             }
+
             if(!m_icon2.empty())
             {
                 m_button->setIcon(QIcon(QString::fromStdString(m_icon2.string())));
@@ -212,8 +222,8 @@ void SSignalButton::starting()
         }
     }
 
-    QObject::connect(m_button.data(), &QPushButton::clicked, this, &SSignalButton::onClicked );
-    QObject::connect(m_button.data(), &QPushButton::toggled, this, &SSignalButton::onToggled );
+    QObject::connect(m_button.data(), &QPushButton::clicked, this, &SSignalButton::onClicked);
+    QObject::connect(m_button.data(), &QPushButton::toggled, this, &SSignalButton::onToggled);
 }
 
 //-----------------------------------------------------------------------------
@@ -254,6 +264,7 @@ void SSignalButton::setChecked(bool checked)
         {
             m_button->setText(QString::fromStdString(m_text2));
         }
+
         if(!m_icon2.empty())
         {
             m_button->setIcon(QIcon(QString::fromStdString(m_icon2.string())));
@@ -265,6 +276,7 @@ void SSignalButton::setChecked(bool checked)
         {
             m_button->setText(QString::fromStdString(m_text));
         }
+
         if(!m_icon.empty())
         {
             m_button->setIcon(QIcon(QString::fromStdString(m_icon.string())));
@@ -336,4 +348,5 @@ void SSignalButton::hide()
 //-----------------------------------------------------------------------------
 
 } // namespace com.
+
 } // namespace sight::module::ui::base.

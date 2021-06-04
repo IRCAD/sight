@@ -30,10 +30,11 @@
 
 namespace camp_ext
 {
+
 /*
  * Specialization of ArrayMapper for std::set
  */
-template <typename T>
+template<typename T>
 struct ArrayMapper<std::set<T> >
 {
     typedef T ElementType;
@@ -57,10 +58,11 @@ struct ArrayMapper<std::set<T> >
     static const T& get(const std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(std::size_t i = 0; i < index; i++)
+        for(std::size_t i = 0 ; i < index ; i++)
         {
             ++cIt;
         }
+
         return *cIt;
     }
 
@@ -82,10 +84,11 @@ struct ArrayMapper<std::set<T> >
     static void remove(std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(std::size_t i = 0; i < index; ++i)
+        for(std::size_t i = 0 ; i < index ; ++i)
         {
             ++cIt;
         }
+
         arr.erase(cIt);
     }
 };

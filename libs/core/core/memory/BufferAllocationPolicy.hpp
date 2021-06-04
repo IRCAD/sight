@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/memory/exception/Memory.hpp"
-
 #include <core/base.hpp>
 
 namespace sight::core::memory
@@ -33,13 +32,14 @@ namespace sight::core::memory
 class CORE_CLASS_API BufferAllocationPolicy
 {
 public:
-    typedef SPTR (BufferAllocationPolicy) sptr;
+
+    typedef SPTR(BufferAllocationPolicy) sptr;
     typedef size_t SizeType;
     typedef void* BufferType;
 
-    CORE_API virtual void allocate(BufferType& buffer, SizeType size) = 0;
+    CORE_API virtual void allocate(BufferType& buffer, SizeType size)   = 0;
     CORE_API virtual void reallocate(BufferType& buffer, SizeType size) = 0;
-    CORE_API virtual void destroy(BufferType& buffer) = 0;
+    CORE_API virtual void destroy(BufferType& buffer)                   = 0;
 
     CORE_API virtual ~BufferAllocationPolicy()
     {
@@ -49,10 +49,15 @@ public:
 class CORE_CLASS_API BufferMallocPolicy : public BufferAllocationPolicy
 {
 public:
-    CORE_API void allocate(BufferType& buffer,
-                           BufferAllocationPolicy::SizeType size);
-    CORE_API void reallocate(BufferType& buffer,
-                             BufferAllocationPolicy::SizeType size);
+
+    CORE_API void allocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
+    CORE_API void reallocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
     CORE_API void destroy(BufferType& buffer);
 
     CORE_API static BufferAllocationPolicy::sptr New();
@@ -61,10 +66,15 @@ public:
 class CORE_CLASS_API BufferNewPolicy : public BufferAllocationPolicy
 {
 public:
-    CORE_API void allocate(BufferType& buffer,
-                           BufferAllocationPolicy::SizeType size);
-    CORE_API void reallocate(BufferType& buffer,
-                             BufferAllocationPolicy::SizeType size);
+
+    CORE_API void allocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
+    CORE_API void reallocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
     CORE_API void destroy(BufferType& buffer);
 
     CORE_API static BufferAllocationPolicy::sptr New();
@@ -73,13 +83,18 @@ public:
 class CORE_CLASS_API BufferNoAllocPolicy : public BufferAllocationPolicy
 {
 public:
-    CORE_API void allocate(BufferType& buffer,
-                           BufferAllocationPolicy::SizeType size);
-    CORE_API void reallocate(BufferType& buffer,
-                             BufferAllocationPolicy::SizeType size);
+
+    CORE_API void allocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
+    CORE_API void reallocate(
+        BufferType& buffer,
+        BufferAllocationPolicy::SizeType size
+    );
     CORE_API void destroy(BufferType& buffer);
 
     CORE_API static BufferAllocationPolicy::sptr New();
 };
 
-}
+} // namespace sight::core

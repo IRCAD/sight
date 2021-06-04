@@ -35,6 +35,7 @@ namespace sight::Tuto01BasicQml
 class TUTO01BASICQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:
+
     /// Constructor.
     TUTO01BASICQML_API Plugin() noexcept;
 

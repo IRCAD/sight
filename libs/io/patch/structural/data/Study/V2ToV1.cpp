@@ -26,8 +26,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace data
 {
+
 namespace Study
 {
 
@@ -55,9 +57,11 @@ V2ToV1::V2ToV1(const V2ToV1& _cpy) :
 
 // ----------------------------------------------------------------------------
 
-void V2ToV1::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V2ToV1::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -89,5 +93,7 @@ void V2ToV1::apply( const sight::atoms::Object::sptr& previous,
 }
 
 } // namespace Study
+
 } // namespace data
+
 } // namespace sight::io::patch::structural

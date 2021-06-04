@@ -25,10 +25,10 @@
 #include "geometry/data/config.hpp"
 #include "geometry/data/Vector.hxx"
 
+#include <data/Matrix4.hpp>
+
 #include <core/base.hpp>
 #include <core/data/Mesh.hpp>
-
-#include <data/Matrix4.hpp>
 
 namespace sight::geometry::data
 {
@@ -38,7 +38,6 @@ namespace sight::geometry::data
  */
 class Mesh
 {
-
 public:
 
     typedef std::map<Point, sight::data::Mesh::PointId> PointsMapType;
@@ -74,7 +73,8 @@ public:
      * @deprecated This method will be removed because mesh arrays can no longer be accessed.
      */
     [[deprecated("will be removed in sight 22.0")]] DATA_API static void shakeNormals(
-        sight::data::Array::sptr array);
+        sight::data::Array::sptr array
+    );
 
     /**
      * @brief Shake point Normals.
@@ -128,49 +128,67 @@ public:
     DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellType cell);
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
-    DATA_API static void transform(sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr outMesh,
-                                   sight::data::Matrix4::csptr t );
+    DATA_API static void transform(
+        sight::data::Mesh::csptr inMesh,
+        sight::data::Mesh::sptr outMesh,
+        sight::data::Matrix4::csptr t
+    );
 
     /// Apply a transformation 4x4 on a mesh
-    DATA_API static void transform( sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t );
+    DATA_API static void transform(sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t);
 
     /**
      * @brief Colorize the mesh points with the given color
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshPoints(const sight::data::Mesh::sptr& mesh, const std::uint8_t colorR,
-                                            const std::uint8_t colorG, const std::uint8_t colorB,
-                                            const std::uint8_t colorA = 255);
+    DATA_API static void colorizeMeshPoints(
+        const sight::data::Mesh::sptr& mesh,
+        const std::uint8_t colorR,
+        const std::uint8_t colorG,
+        const std::uint8_t colorB,
+        const std::uint8_t colorA = 255
+    );
 
     /**
      * @brief Colorize the mesh points associated to the triangle in _vectorNumTriangle
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshPoints(const sight::data::Mesh::sptr& _mesh,
-                                            const std::vector<size_t>& _vectorNumTriangle,
-                                            const std::uint8_t _colorR, const std::uint8_t colorG,
-                                            const std::uint8_t colorB, const std::uint8_t _colorA = 255);
+    DATA_API static void colorizeMeshPoints(
+        const sight::data::Mesh::sptr& _mesh,
+        const std::vector<size_t>& _vectorNumTriangle,
+        const std::uint8_t _colorR,
+        const std::uint8_t colorG,
+        const std::uint8_t colorB,
+        const std::uint8_t _colorA = 255
+    );
 
     /**
      * @brief Colorize the mesh cells with the given rgb color
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshCells(const sight::data::Mesh::sptr& mesh, const std::uint8_t colorR,
-                                           const std::uint8_t colorG, const std::uint8_t colorB,
-                                           const std::uint8_t _colorA = 255);
+    DATA_API static void colorizeMeshCells(
+        const sight::data::Mesh::sptr& mesh,
+        const std::uint8_t colorR,
+        const std::uint8_t colorG,
+        const std::uint8_t colorB,
+        const std::uint8_t _colorA = 255
+    );
     /**
      * @brief Colorize the cells in vectorNumTriangle
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshCells(const sight::data::Mesh::sptr& mesh,
-                                           const std::vector<size_t>& triangleIndexVector,
-                                           const std::uint8_t colorR,
-                                           const std::uint8_t colorG, const std::uint8_t colorB,
-                                           const std::uint8_t _colorA = 255);
+    DATA_API static void colorizeMeshCells(
+        const sight::data::Mesh::sptr& mesh,
+        const std::vector<size_t>& triangleIndexVector,
+        const std::uint8_t colorR,
+        const std::uint8_t colorG,
+        const std::uint8_t colorB,
+        const std::uint8_t _colorA = 255
+    );
 
     /*!
      * @brief Return true if the mesh is closed.

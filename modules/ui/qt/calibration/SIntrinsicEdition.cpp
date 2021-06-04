@@ -41,25 +41,32 @@ static const service::IService::KeyType s_CAMERA_INOUT = "camera";
 
 SIntrinsicEdition::SIntrinsicEdition()
 {
-    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
     m_dialog = new SUpdateIntrinsicDialog();
 
-    QObject::connect(m_dialog, SIGNAL(newCalibration(std::array< double,12 >&)),
-                     this, SLOT(onNewCalibration(std::array< double,12 >&)));
-
+    QObject::connect(
+        m_dialog,
+        SIGNAL(newCalibration(std::array<double,12>&)),
+        this,
+        SLOT(onNewCalibration(std::array<double,12>&))
+    );
 }
 
 // -------------------------------------------------------------------------
 
 SIntrinsicEdition::~SIntrinsicEdition()
 {
-    QObject::disconnect(m_dialog, SIGNAL(newCalibration(std::array< double,12 >&)),
-                        this, SLOT(onNewCalibration(std::array< double,12 >&)));
+    QObject::disconnect(
+        m_dialog,
+        SIGNAL(newCalibration(std::array<double,12>&)),
+        this,
+        SLOT(onNewCalibration(std::array<double,12>&))
+    );
 }
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
+void SIntrinsicEdition::onNewCalibration(std::array<double, 12>& cal)
 {
     m_calibration = cal;
 
@@ -70,10 +77,10 @@ void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
 
 void SIntrinsicEdition::updateCalibration()
 {
-    data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
+    data::Camera::sptr camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
     SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
-    camera->setWidth( m_calibration[0]);
+    camera->setWidth(m_calibration[0]);
     camera->setHeight(m_calibration[1]);
 
     camera->setFx(m_calibration[2]);
@@ -81,14 +88,20 @@ void SIntrinsicEdition::updateCalibration()
     camera->setCx(m_calibration[4]);
     camera->setCy(m_calibration[5]);
 
-    camera->setDistortionCoefficient(m_calibration[6], m_calibration[7], m_calibration[8],
-                                     m_calibration[9], m_calibration[10]);
+    camera->setDistortionCoefficient(
+        m_calibration[6],
+        m_calibration[7],
+        m_calibration[8],
+        m_calibration[9],
+        m_calibration[10]
+    );
 
     camera->setSkew(m_calibration[11]);
 
     data::Camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = camera->signal< data::Camera::IntrinsicCalibratedSignalType >(
-        data::Camera::s_INTRINSIC_CALIBRATED_SIG);
+    sig = camera->signal<data::Camera::IntrinsicCalibratedSignalType>(
+        data::Camera::s_INTRINSIC_CALIBRATED_SIG
+    );
 
     sig->asyncEmit();
 }
@@ -100,14 +113,13 @@ void SIntrinsicEdition::configuring()
     this->readCalibration();
 
     m_dialog->setParameters(m_calibration);
-
 }
 
 // -------------------------------------------------------------------------
 
 void SIntrinsicEdition::readCalibration()
 {
-    data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
+    data::Camera::sptr camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
     SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     m_calibration[0] = camera->getWidth();
@@ -138,7 +150,6 @@ void SIntrinsicEdition::starting()
 
 void SIntrinsicEdition::stopping()
 {
-
 }
 
 // -------------------------------------------------------------------------

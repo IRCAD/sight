@@ -28,6 +28,7 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
@@ -36,13 +37,14 @@ namespace ut
  */
 class Matrix4Test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( Matrix4Test );
-CPPUNIT_TEST( identityMatrixTest );
-CPPUNIT_TEST( matrixTest );
-CPPUNIT_TEST( glmGetterSetterTest );
+CPPUNIT_TEST_SUITE(Matrix4Test);
+CPPUNIT_TEST(identityMatrixTest);
+CPPUNIT_TEST(matrixTest);
+CPPUNIT_TEST(glmGetterSetterTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -50,8 +52,8 @@ public:
     void identityMatrixTest();
     void matrixTest();
     void glmGetterSetterTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::data

@@ -37,12 +37,13 @@ class UI_QT_CLASS_API App : public QApplication
 Q_OBJECT
 
 public:
+
     UI_QT_API App(int& argc, char** argv, bool guiEnabled);
 
 public Q_SLOTS:
+
     void aboutToQuit();
     void onExit();
-
 };
 
 } // namespace sight::ui::qt

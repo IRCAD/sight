@@ -24,6 +24,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace conditions
 {
 

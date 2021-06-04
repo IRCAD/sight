@@ -32,11 +32,14 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro( ::sight::ui::qml::dialog::MultiSelectorDialog,
-                    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    ::sight::ui::qml::dialog::MultiSelectorDialog,
+    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY
+);
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -96,23 +99,26 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
-    for( const Selections::value_type& selection :  m_selections)
+    for(const Selections::value_type& selection : m_selections)
     {
         QHash<QByteArray, QVariant> data;
         data.insert("textOption", QString::fromStdString(selection.first));
         data.insert("check", selection.second);
         model.addData(QHash<QByteArray, QVariant>(data));
     }
+
     if(!m_message.isNull() && !m_message.isEmpty())
     {
         Q_EMIT messageChanged();
     }
+
     SIGHT_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
 
-    for( Selections::value_type& selection :  m_selections)
+    for(Selections::value_type& selection : m_selections)
     {
         selection.second = false;
     }
+
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));
@@ -130,12 +136,12 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    if (state == true)
+    if(state == true)
     {
         // retreive each check state of the selection list
         QList<QVariant> checkListState = checkList.toList();
         int index                      = 0;
-        for( Selections::value_type& selection :  m_selections)
+        for(Selections::value_type& selection : m_selections)
         {
             selection.second = checkListState[index].toBool();
             index++;
@@ -153,4 +159,5 @@ void MultiSelectorDialog::setMessage(const std::string& msg)
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

@@ -23,32 +23,37 @@
 #pragma once
 
 #include "core/config.hpp"
-
+#include <core/FactoryRegistry.hpp>
 #include <core/macros.hpp>
 #include <core/tools/Object.hpp>
-#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
 namespace camp
 {
+
 class UserObject;
+
 }
 namespace fwTools
 {
+
 class Object;
+
 }
 
 namespace sight::core::reflection
 {
+
 namespace registry
 {
 
 typedef std::string KeyType;
 
-typedef core::FactoryRegistry< SPTR(::camp::UserObject)(core::tools::Object*), KeyType > Type;
+typedef core::FactoryRegistry<SPTR(::camp::UserObject)(core::tools::Object*), KeyType> Type;
 
 CORE_API SPTR(Type) get();
 
 } // namespace registry
+
 } // namespace sight::core::reflection

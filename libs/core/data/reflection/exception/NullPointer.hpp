@@ -28,17 +28,21 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace exception
 {
 
 /// Null pointer exception.
 struct NullPointer : core::Exception
 {
-    DATA_API NullPointer ( const std::string& err );
+    DATA_API NullPointer(const std::string& err);
 };
 
 } // namespace exception
+
 } // namespace reflection
+
 } // namespace sight::data

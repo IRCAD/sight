@@ -26,16 +26,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
 //------------------------------------------------------------------------------
 
-DicomSRNode::DicomSRNode(const DicomCodedAttribute& codedAttribute,
-                         const std::string& type,
-                         const std::string& relationship) :
+DicomSRNode::DicomSRNode(
+    const DicomCodedAttribute& codedAttribute,
+    const std::string& type,
+    const std::string& relationship
+) :
     m_codedAttribute(codedAttribute),
     m_type(type),
     m_relationship(relationship)
@@ -60,21 +64,20 @@ void DicomSRNode::addSubNode(const SPTR(DicomSRNode)& node)
 void DicomSRNode::write(::gdcm::DataSet& dataset) const
 {
     // Value Type - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0040, 0xa040 >(m_type, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa040>(m_type, dataset);
 
     // Relationship Value - Type 1 (Shouldn't be there for root node)
     if(!m_relationship.empty())
     {
-        io::dicom::helper::DicomDataWriter::setTagValue< 0x0040, 0xa010 >(m_relationship, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa010>(m_relationship, dataset);
     }
 
     // Concept Name Code Sequence - Type 1C
     if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
     {
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
+        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence =
             this->createConceptNameCodeSequence(m_codedAttribute);
         io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(codeSequence, dataset);
-
     }
 
     // Content sequence - Type 1C
@@ -86,11 +89,12 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-::gdcm::SmartPointer< ::gdcm::SequenceOfItems > DicomSRNode::createConceptNameCodeSequence(
-    const DicomCodedAttribute& codedAttribute) const
+::gdcm::SmartPointer< ::gdcm::SequenceOfItems> DicomSRNode::createConceptNameCodeSequence(
+    const DicomCodedAttribute& codedAttribute
+) const
 {
     // Write code sequence
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence = new ::gdcm::SequenceOfItems();
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence = new ::gdcm::SequenceOfItems();
     codeSequence->SetLengthToUndefined();
 
     // Create item (shall be one)
@@ -103,13 +107,17 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 
     // Coding Scheme Designator - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0102>(
-        codedAttribute.getCodingSchemeDesignator(), itemDataset);
+        codedAttribute.getCodingSchemeDesignator(),
+        itemDataset
+    );
 
     // Coding Scheme Version - Type 1C
-    if (!m_codedAttribute.getCodingSchemeVersion().empty())
+    if(!m_codedAttribute.getCodingSchemeVersion().empty())
     {
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0103>(
-            codedAttribute.getCodingSchemeVersion(), itemDataset);
+            codedAttribute.getCodingSchemeVersion(),
+            itemDataset
+        );
     }
 
     // Code Meaning - Type 1
@@ -126,10 +134,10 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 void DicomSRNode::writeContentSequence(::gdcm::DataSet& dataset) const
 {
     // Create the content sequence
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
 
     // Write every node
-    for(const SPTR(io::dicom::container::sr::DicomSRNode)& child : m_subNodeContainer)
+    for(const SPTR(io::dicom::container::sr::DicomSRNode) & child : m_subNodeContainer)
     {
         ::gdcm::Item item;
         item.SetVLToUndefined();
@@ -138,7 +146,7 @@ void DicomSRNode::writeContentSequence(::gdcm::DataSet& dataset) const
         sequence->AddItem(item);
     }
 
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue< 0x0040, 0xa730 >(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa730>(sequence, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -155,5 +163,7 @@ void DicomSRNode::print(std::ostream& os) const
 //------------------------------------------------------------------------------
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

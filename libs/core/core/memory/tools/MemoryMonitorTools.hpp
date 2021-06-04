@@ -28,12 +28,12 @@
 
 namespace sight::core::memory
 {
+
 namespace tools
 {
 
 class CORE_CLASS_API MemoryMonitorTools
 {
-
 public:
 
     CORE_API MemoryMonitorTools();
@@ -55,8 +55,8 @@ public:
     CORE_API static std::uint64_t getFreeSystemMemory();
 
     CORE_API static std::uint64_t getUsedProcessMemory();
-
 };
 
 } // namespace tools
+
 } // namespace sight::core::memory

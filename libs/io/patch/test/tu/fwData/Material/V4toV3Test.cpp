@@ -30,21 +30,24 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Material/V4ToV3.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Material::V4ToV3Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Material::V4ToV3Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Material
 {
 
@@ -124,46 +127,75 @@ void V4ToV3Test::applyPatchTest()
         sight::atoms::Object::sptr ambientTarget =
             sight::atoms::Object::dynamicCast(targetObj->getAttribute("ambient"));
         CPPUNIT_ASSERT(ambientTarget);
-        sight::atoms::Sequence::sptr ambientSeqTarget = sight::atoms::Sequence::dynamicCast(ambientTarget->getAttribute(
-                                                                                                "rgba"));
+        sight::atoms::Sequence::sptr ambientSeqTarget = sight::atoms::Sequence::dynamicCast(
+            ambientTarget->getAttribute(
+                "rgba"
+            )
+        );
         CPPUNIT_ASSERT(ambientSeqTarget);
 
         sight::atoms::Object::sptr diffuseTarget =
             sight::atoms::Object::dynamicCast(targetObj->getAttribute("diffuse"));
         CPPUNIT_ASSERT(diffuseTarget);
-        sight::atoms::Sequence::sptr diffuseSeqTarget = sight::atoms::Sequence::dynamicCast(diffuseTarget->getAttribute(
-                                                                                                "rgba"));
+        sight::atoms::Sequence::sptr diffuseSeqTarget = sight::atoms::Sequence::dynamicCast(
+            diffuseTarget->getAttribute(
+                "rgba"
+            )
+        );
         CPPUNIT_ASSERT(diffuseSeqTarget);
 
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[0])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*diffuseSeqTarget)[0])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[1])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*diffuseSeqTarget)[1])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[2])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*diffuseSeqTarget)[2])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[3])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*diffuseSeqTarget)[3])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[0])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*diffuseSeqTarget)[0]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[1])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*diffuseSeqTarget)[1]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[2])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*diffuseSeqTarget)[2]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[3])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*diffuseSeqTarget)[3]
+            )->getValue<float>()
+        );
 
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeq)[0])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*ambientSeqTarget)[0])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeq)[1])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*ambientSeqTarget)[1])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeq)[2])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*ambientSeqTarget)[2])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeq)[3])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >(
-                                 (*ambientSeqTarget)[3])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeq)[0])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*ambientSeqTarget)[0]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeq)[1])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*ambientSeqTarget)[1]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeq)[2])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*ambientSeqTarget)[2]
+            )->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeq)[3])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>(
+                (*ambientSeqTarget)[3]
+            )->getValue<float>()
+        );
 
         sight::atoms::String::sptr option = sight::atoms::String::dynamicCast(targetObj->getAttribute("options_mode"));
         CPPUNIT_ASSERT_EQUAL(std::string("NORMALS"), option->getValue());
-
     }
 
     // if shading_mode is not "AMBIENT", the lighting is true
@@ -185,11 +217,14 @@ void V4ToV3Test::applyPatchTest()
         CPPUNIT_ASSERT(lighting);
         CPPUNIT_ASSERT_EQUAL(true, lighting->getValue());
     }
-
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Material
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

@@ -28,13 +28,15 @@
 
 namespace sight::core::thread
 {
+
 class Worker;
+
 }
 
 namespace sight::core::com
 {
 
-template< typename F >
+template<typename F>
 struct SlotCall;
 
 /**
@@ -43,21 +45,21 @@ struct SlotCall;
  * @tparam R Slot's return type.
  * @tparam A Slot's arguments types.
  */
-template< typename R, typename ... A >
-struct CORE_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
+template<typename R, typename ... A>
+struct CORE_CLASS_API SlotCall<R(A ...)>: SlotRun<void(A ...)>
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef R SignatureType (A ...);
-    typedef SlotCall< SignatureType > SelfType;
-    typedef SPTR ( SelfType ) sptr;
-    typedef WPTR ( SelfType ) wptr;
-    typedef std::shared_future< R > SharedFutureType;
+    typedef R SignatureType(A ...);
+    typedef SlotCall<SignatureType> SelfType;
+    typedef SPTR(SelfType) sptr;
+    typedef WPTR(SelfType) wptr;
+    typedef std::shared_future<R> SharedFutureType;
     /**  @} */
 
     SlotCall() :
-        SlotRun< void ( A ... ) >()
+        SlotRun<void(A ...)>()
     {
     }
 
@@ -80,7 +82,7 @@ struct CORE_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const SPTR(core::thread::Worker)& worker, A ... args ) const;
+    virtual SharedFutureType asyncCall(const SPTR(core::thread::Worker)& worker, A ... args) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -90,19 +92,19 @@ struct CORE_CLASS_API SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
      * @return a shared_future object associated with Slot's call result.
      * @throws NoWorker if slot has no worker set.
      */
-    virtual SharedFutureType asyncCall( A ... args ) const;
+    virtual SharedFutureType asyncCall(A ... args) const;
 
     protected:
 
-        template< typename WEAKCALL >
-        static std::shared_future< R > postWeakCall( const SPTR(core::thread::Worker)& worker, WEAKCALL f );
+        template<typename WEAKCALL>
+        static std::shared_future<R> postWeakCall(const SPTR(core::thread::Worker)& worker, WEAKCALL f);
 
         /**
          * @brief Binds the given parameters to the call method within a R() function.
          *
          * @return a R() function.
          */
-        virtual std::function< R() > bindCall( A ... args  ) const;
+        virtual std::function<R()> bindCall(A ... args) const;
 };
 
 } // namespace sight::core::com

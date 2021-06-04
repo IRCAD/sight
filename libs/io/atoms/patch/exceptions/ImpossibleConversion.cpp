@@ -31,8 +31,8 @@ namespace exceptions
 ImpossibleConversion::ImpossibleConversion(const std::string& message) :
     io::atoms::patch::exceptions::Base(message)
 {
-
 }
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

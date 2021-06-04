@@ -82,7 +82,7 @@ class MODULE_UI_QT_CLASS_API SView : public sight::ui::base::view::IActivityView
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IActivityView)
+    SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IActivityView);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SView();

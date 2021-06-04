@@ -26,20 +26,24 @@
 
 namespace sight::io::opencv
 {
+
 namespace ut
 {
+
 /**
  * @brief Tests the io::opencv::Image functions
  */
 class TypeTest : public CPPUNIT_NS::TestFixture
 {
 public:
-    CPPUNIT_TEST_SUITE( TypeTest );
+
+    CPPUNIT_TEST_SUITE(TypeTest);
     CPPUNIT_TEST(toCv);
     CPPUNIT_TEST(fromCv);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -50,4 +54,4 @@ public:
 
 } // namespace ut
 
-}// namespace sight::io::opencv
+} // namespace sight::io::opencv

@@ -32,7 +32,9 @@
 
 namespace sight::data
 {
+
 class SeriesDB;
+
 }
 
 namespace sight::module::io::dicom
@@ -54,9 +56,9 @@ namespace sight::module::io::dicom
  */
 class MODULE_IO_DICOM_CLASS_API SSeriesDBWriter : public sight::io::base::service::IWriter
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SSeriesDBWriter, sight::io::base::service::IWriter)
+
+    SIGHT_DECLARE_SERVICE(SSeriesDBWriter, sight::io::base::service::IWriter);
 
     /**
      * @brief Constructor
@@ -102,14 +104,13 @@ private:
      * @param[in] folder DICOM folder
      * @param[in] seriesDB SeriesDB that must be writen
      */
-    void saveSeriesDB( const std::filesystem::path folder, SPTR(data::SeriesDB) seriesDB );
+    void saveSeriesDB(const std::filesystem::path folder, SPTR(data::SeriesDB) seriesDB);
 
     /// Select Fiducial Export Mode using a dialog
     bool selectFiducialsExportMode();
 
     /// Fiducial Export Mode
     sight::io::dicom::writer::Series::FiducialsExportMode m_fiducialsExportMode;
-
 };
 
 } // namespace sight::module::io::dicom

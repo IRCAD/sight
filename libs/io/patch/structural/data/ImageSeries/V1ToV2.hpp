@@ -28,8 +28,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace data
 {
+
 namespace ImageSeries
 {
 
@@ -37,7 +39,8 @@ namespace ImageSeries
 class IO_PATCH_CLASS_API V1ToV2 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(V1ToV2, patch::structural::data::ImageSeries::V1ToV2, new V1ToV2)
+
+    SIGHT_DECLARE_CLASS(V1ToV2, patch::structural::data::ImageSeries::V1ToV2, new V1ToV2);
 
     /// Constructor
     IO_PATCH_API V1ToV2();
@@ -46,7 +49,7 @@ public:
     IO_PATCH_API ~V1ToV2();
 
     /// Copy constructor
-    IO_PATCH_API V1ToV2( const V1ToV2& cpy );
+    IO_PATCH_API V1ToV2(const V1ToV2& cpy);
 
     /**
      * @brief Applies patch
@@ -56,10 +59,12 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace ImageSeries
+
 } // namespace data
+
 } // namespace sight::io::patch::structural

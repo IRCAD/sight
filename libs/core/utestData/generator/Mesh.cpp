@@ -29,15 +29,17 @@
 
 namespace sight::utestData
 {
+
 namespace generator
 {
 
-struct RandFloat {
+struct RandFloat
+{
     //------------------------------------------------------------------------------
 
     float operator()()
     {
-        return (static_cast<float>(rand()%101)-50.f)/500.f;
+        return (static_cast<float>(rand() % 101) - 50.f) / 500.f;
     }
 };
 
@@ -50,12 +52,12 @@ void Mesh::initRand()
 
 //------------------------------------------------------------------------------
 
-void Mesh::generateMesh( const data::Mesh::sptr& mesh )
+void Mesh::generateMesh(const data::Mesh::sptr& mesh)
 {
-    const data::Mesh::Attributes attributes = data::Mesh::Attributes::POINT_COLORS |
-                                              data::Mesh::Attributes::POINT_NORMALS |
-                                              data::Mesh::Attributes::CELL_COLORS |
-                                              data::Mesh::Attributes::CELL_NORMALS;
+    const data::Mesh::Attributes attributes = data::Mesh::Attributes::POINT_COLORS
+                                              | data::Mesh::Attributes::POINT_NORMALS
+                                              | data::Mesh::Attributes::CELL_COLORS
+                                              | data::Mesh::Attributes::CELL_NORMALS;
     utestData::generator::Mesh::initRand();
     utestData::generator::Mesh::generateTriangleMesh(mesh, attributes);
     utestData::generator::Mesh::shakePoints(mesh);
@@ -64,33 +66,37 @@ void Mesh::generateMesh( const data::Mesh::sptr& mesh )
 
 //------------------------------------------------------------------------------
 
-void Mesh::generateTriangleQuadMesh(const data::Mesh::sptr& mesh,
-                                    data::Mesh::Attributes attributes)
+void Mesh::generateTriangleQuadMesh(
+    const data::Mesh::sptr& mesh,
+    data::Mesh::Attributes attributes
+)
 {
     data::Mesh::Size nbPointsByEdge = 10;
     float edgeDim                   = 100.;
     Mesh::PointsMapType points;
 
-    const data::Mesh::Size nbPoints        = nbPointsByEdge*nbPointsByEdge*2*4*2;
-    const data::Mesh::Size nbTriangleCells = nbPointsByEdge*nbPointsByEdge*2*2;
-    const data::Mesh::Size nbQuadCells     = nbPointsByEdge*nbPointsByEdge*2;
+    const data::Mesh::Size nbPoints        = nbPointsByEdge * nbPointsByEdge * 2 * 4 * 2;
+    const data::Mesh::Size nbTriangleCells = nbPointsByEdge * nbPointsByEdge * 2 * 2;
+    const data::Mesh::Size nbQuadCells     = nbPointsByEdge * nbPointsByEdge * 2;
 
     mesh->clear();
-    mesh->reserve(nbPoints, nbTriangleCells + nbQuadCells, nbTriangleCells*3 + nbQuadCells*4, attributes);
+    mesh->reserve(nbPoints, nbTriangleCells + nbQuadCells, nbTriangleCells * 3 + nbQuadCells * 4, attributes);
     Mesh::addTriangleMesh(mesh, points, nbPointsByEdge, edgeDim);
     Mesh::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::generateTriangleMesh(const data::Mesh::sptr& mesh,
-                                data::Mesh::Attributes attributes)
+void Mesh::generateTriangleMesh(
+    const data::Mesh::sptr& mesh,
+    data::Mesh::Attributes attributes
+)
 {
     data::Mesh::Size nbPointsByEdge = 10;
     float edgeDim                   = 100.;
     Mesh::PointsMapType points;
-    const data::Mesh::Size nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const data::Mesh::Size nbCells  = nbPointsByEdge*nbPointsByEdge*2*2;
+    const data::Mesh::Size nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
+    const data::Mesh::Size nbCells  = nbPointsByEdge * nbPointsByEdge * 2 * 2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, data::Mesh::CellType::TRIANGLE, attributes);
@@ -100,20 +106,23 @@ void Mesh::generateTriangleMesh(const data::Mesh::sptr& mesh,
 
 //------------------------------------------------------------------------------
 
-void Mesh::generateQuadMesh(const data::Mesh::sptr& mesh,
-                            data::Mesh::Attributes attributes)
+void Mesh::generateQuadMesh(
+    const data::Mesh::sptr& mesh,
+    data::Mesh::Attributes attributes
+)
 {
     data::Mesh::Size nbPointsByEdge = 10;
     float edgeDim                   = 100.;
     Mesh::PointsMapType points;
-    const data::Mesh::Size nbPoints = nbPointsByEdge*nbPointsByEdge*2*4;
-    const data::Mesh::Size nbCells  = nbPointsByEdge*nbPointsByEdge*2;
+    const data::Mesh::Size nbPoints = nbPointsByEdge * nbPointsByEdge * 2 * 4;
+    const data::Mesh::Size nbCells  = nbPointsByEdge * nbPointsByEdge * 2;
 
     mesh->clear();
     mesh->reserve(nbPoints, nbCells, data::Mesh::CellType::QUAD, attributes);
     Mesh::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
     mesh->adjustAllocatedMemory();
 }
+
 //------------------------------------------------------------------------------
 
 void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
@@ -124,25 +133,25 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Y = edgeDim
-    for(size_t x = 0; x < nbPointsByEdge; x++)
+    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t z = 0; z < nbPointsByEdge; z++)
+        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
-            pt1[0] = static_cast<float>(x)*step;
+            pt1[0] = static_cast<float>(x) * step;
             pt1[1] = edgeDim;
-            pt1[2] = static_cast<float>(z)*step;
+            pt1[2] = static_cast<float>(z) * step;
 
-            pt2[0] = static_cast<float>(x+1)*step;
+            pt2[0] = static_cast<float>(x + 1) * step;
             pt2[1] = edgeDim;
-            pt2[2] = static_cast<float>(z)*step;
+            pt2[2] = static_cast<float>(z) * step;
 
-            pt3[0] = static_cast<float>(x)*step;
+            pt3[0] = static_cast<float>(x) * step;
             pt3[1] = edgeDim;
-            pt3[2] = static_cast<float>(z+1)*step;
+            pt3[2] = static_cast<float>(z + 1) * step;
 
-            pt4[0] = static_cast<float>(x+1)*step;
+            pt4[0] = static_cast<float>(x + 1) * step;
             pt4[1] = edgeDim;
-            pt4[2] = static_cast<float>(z+1)*step;
+            pt4[2] = static_cast<float>(z + 1) * step;
 
             idx1 = Mesh::addPoint(pt1, mesh, points);
             idx2 = Mesh::addPoint(pt2, mesh, points);
@@ -151,15 +160,16 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 
             const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
 
-            if (mesh->hasCellColors())
+            if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand()%255);
+                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
-            if (mesh->hasCellNormals())
+
+            if(mesh->hasCellNormals())
             {
                 const float NX = 0;
                 const float NY = 1;
@@ -171,25 +181,25 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
     }
 
     //Face X = edgeDim
-    for(size_t y = 0; y < nbPointsByEdge; y++)
+    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0; z < nbPointsByEdge; z++)
+        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = edgeDim;
-            pt1[1] = static_cast<float>(y)*step;
-            pt1[2] = static_cast<float>(z)*step;
+            pt1[1] = static_cast<float>(y) * step;
+            pt1[2] = static_cast<float>(z) * step;
 
             pt2[0] = edgeDim;
-            pt2[1] = static_cast<float>(y)*step;
-            pt2[2] = static_cast<float>(z+1)*step;
+            pt2[1] = static_cast<float>(y) * step;
+            pt2[2] = static_cast<float>(z + 1) * step;
 
             pt3[0] = edgeDim;
-            pt3[1] = static_cast<float>(y+1)*step;
-            pt3[2] = static_cast<float>(z)*step;
+            pt3[1] = static_cast<float>(y + 1) * step;
+            pt3[2] = static_cast<float>(z) * step;
 
             pt4[0] = edgeDim;
-            pt4[1] = static_cast<float>(y+1)*step;
-            pt4[2] = static_cast<float>(z+1)*step;
+            pt4[1] = static_cast<float>(y + 1) * step;
+            pt4[2] = static_cast<float>(z + 1) * step;
 
             idx1 = Mesh::addPoint(pt1, mesh, points);
             idx2 = Mesh::addPoint(pt2, mesh, points);
@@ -197,15 +207,16 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
             idx4 = Mesh::addPoint(pt4, mesh, points);
 
             const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
-            if (mesh->hasCellColors())
+            if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand()%255);
+                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
-            if (mesh->hasCellNormals())
+
+            if(mesh->hasCellNormals())
             {
                 const float NX = 1;
                 const float NY = 0;
@@ -219,8 +230,12 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 
 //------------------------------------------------------------------------------
 
-void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size_t nbPointsByEdge,
-                           float edgeDim)
+void Mesh::addTriangleMesh(
+    const data::Mesh::sptr& mesh,
+    PointsMapType& points,
+    size_t nbPointsByEdge,
+    float edgeDim
+)
 {
     const auto dumpLock = mesh->lock();
 
@@ -229,24 +244,24 @@ void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, 
     const float step = edgeDim / static_cast<float>(nbPointsByEdge);
 
     //Face Z = 0
-    for(size_t x = 0; x < nbPointsByEdge; x++)
+    for(size_t x = 0 ; x < nbPointsByEdge ; x++)
     {
-        for(size_t y = 0; y < nbPointsByEdge; y++)
+        for(size_t y = 0 ; y < nbPointsByEdge ; y++)
         {
-            pt1[0] = static_cast<float>(x)*step;
-            pt1[1] = static_cast<float>(y)*step;
+            pt1[0] = static_cast<float>(x) * step;
+            pt1[1] = static_cast<float>(y) * step;
             pt1[2] = 0;
 
-            pt2[0] = static_cast<float>(x+1)*step;
-            pt2[1] = static_cast<float>(y)*step;
+            pt2[0] = static_cast<float>(x + 1) * step;
+            pt2[1] = static_cast<float>(y) * step;
             pt2[2] = 0;
 
-            pt3[0] = static_cast<float>(x)*step;
-            pt3[1] = static_cast<float>(y+1)*step;
+            pt3[0] = static_cast<float>(x) * step;
+            pt3[1] = static_cast<float>(y + 1) * step;
             pt3[2] = 0;
 
-            pt4[0] = static_cast<float>(x+1)*step;
-            pt4[1] = static_cast<float>(y+1)*step;
+            pt4[0] = static_cast<float>(x + 1) * step;
+            pt4[1] = static_cast<float>(y + 1) * step;
             pt4[2] = 0;
 
             idx1 = Mesh::addPoint(pt1, mesh, points);
@@ -257,16 +272,17 @@ void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, 
             const auto cellId1 = mesh->pushCell(idx1, idx4, idx2);
             const auto cellId2 = mesh->pushCell(idx1, idx3, idx4);
 
-            if (mesh->hasCellColors())
+            if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand()%255);
+                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
-            if (mesh->hasCellNormals())
+
+            if(mesh->hasCellNormals())
             {
                 const float NX = 0;
                 const float NY = 1;
@@ -279,25 +295,25 @@ void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, 
     }
 
     //Face X = 0
-    for(size_t y = 0; y < nbPointsByEdge; y++)
+    for(size_t y = 0 ; y < nbPointsByEdge ; y++)
     {
-        for(size_t z = 0; z < nbPointsByEdge; z++)
+        for(size_t z = 0 ; z < nbPointsByEdge ; z++)
         {
             pt1[0] = 0;
-            pt1[1] = static_cast<float>(y)*step;
-            pt1[2] = static_cast<float>(z)*step;
+            pt1[1] = static_cast<float>(y) * step;
+            pt1[2] = static_cast<float>(z) * step;
 
             pt2[0] = 0;
-            pt2[1] = static_cast<float>(y)*step;
-            pt2[2] = static_cast<float>(z+1)*step;
+            pt2[1] = static_cast<float>(y) * step;
+            pt2[2] = static_cast<float>(z + 1) * step;
 
             pt3[0] = 0;
-            pt3[1] = static_cast<float>(y+1)*step;
-            pt3[2] = static_cast<float>(z)*step;
+            pt3[1] = static_cast<float>(y + 1) * step;
+            pt3[2] = static_cast<float>(z) * step;
 
             pt4[0] = 0;
-            pt4[1] = static_cast<float>(y+1)*step;
-            pt4[2] = static_cast<float>(z+1)*step;
+            pt4[1] = static_cast<float>(y + 1) * step;
+            pt4[2] = static_cast<float>(z + 1) * step;
 
             idx1 = Mesh::addPoint(pt1, mesh, points);
             idx2 = Mesh::addPoint(pt2, mesh, points);
@@ -307,16 +323,17 @@ void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, 
             const auto cellId1 = mesh->pushCell(idx2, idx4, idx3);
             const auto cellId2 = mesh->pushCell(idx1, idx2, idx3);
 
-            if (mesh->hasCellColors())
+            if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand()%255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand()%255);
+                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
-            if (mesh->hasCellNormals())
+
+            if(mesh->hasCellNormals())
             {
                 const float NX = 1;
                 const float NY = 0;
@@ -331,9 +348,11 @@ void Mesh::addTriangleMesh(const data::Mesh::sptr& mesh, PointsMapType& points, 
 
 //------------------------------------------------------------------------------
 
-data::Mesh::Size Mesh::addPoint(const data::Mesh::PointValueType* pt,
-                                const data::Mesh::sptr& mesh,
-                                PointsMapType& points)
+data::Mesh::Size Mesh::addPoint(
+    const data::Mesh::PointValueType* pt,
+    const data::Mesh::sptr& mesh,
+    PointsMapType& points
+)
 {
     RandFloat randFloat;
     std::array<float, 3> myPoint = {pt[0], pt[1], pt[2]};
@@ -343,24 +362,27 @@ data::Mesh::Size Mesh::addPoint(const data::Mesh::PointValueType* pt,
     {
         return it->second;
     }
+
     const data::Mesh::PointId idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
-    if (mesh->hasPointColors())
+    if(mesh->hasPointColors())
     {
-        const std::uint8_t R = static_cast<std::uint8_t>(rand()%255);
-        const std::uint8_t G = static_cast<std::uint8_t>(rand()%255);
-        const std::uint8_t B = static_cast<std::uint8_t>(rand()%255);
-        const std::uint8_t A = static_cast<std::uint8_t>(rand()%255);
+        const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
+        const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
+        const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
+        const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
         mesh->setPointColor(idx, R, G, B, A);
     }
-    if (mesh->hasPointNormals())
+
+    if(mesh->hasPointNormals())
     {
         const float NX = randFloat();
         const float NY = randFloat();
         const float NZ = randFloat();
 
-        const float length = std::sqrt(NX * NX + NY*NY + NZ*NZ);
-        mesh->setPointNormal(idx, NX/length, NY/length, NZ/length);
+        const float length = std::sqrt(NX * NX + NY * NY + NZ * NZ);
+        mesh->setPointNormal(idx, NX / length, NY / length, NZ / length);
     }
+
     points[myPoint] = idx;
     return idx;
 }
@@ -372,18 +394,19 @@ void Mesh::shakePoints(const data::Mesh::sptr& mesh)
     RandFloat randFloat;
     const auto dumpLock = mesh->lock();
 
-    auto itr          = mesh->begin< data::iterator::PointIterator >();
-    const auto itrEnd = mesh->end< data::iterator::PointIterator >();
+    auto itr          = mesh->begin<data::iterator::PointIterator>();
+    const auto itrEnd = mesh->end<data::iterator::PointIterator>();
 
-    for (; itr != itrEnd; ++itr)
+    for( ; itr != itrEnd ; ++itr)
     {
-        itr->point->x += randFloat()*5;
-        itr->point->y += randFloat()*5;
-        itr->point->z += randFloat()*5;
+        itr->point->x += randFloat() * 5;
+        itr->point->y += randFloat() * 5;
+        itr->point->z += randFloat() * 5;
     }
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace generator
+
 } // namespace sight::utestData

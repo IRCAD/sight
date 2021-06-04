@@ -26,29 +26,38 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Acquisition
 {
+
 /**
  * @brief Test patch to convert data::Acquisition version 1 to data::ImageSeries version 1.
  */
 class V1ToFwMedDataImageSeriesV1Test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( V1ToFwMedDataImageSeriesV1Test );
-CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE(V1ToFwMedDataImageSeriesV1Test);
+CPPUNIT_TEST(applyPatchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void applyPatchTest();
 };
+
 } //namespace Acquisition
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

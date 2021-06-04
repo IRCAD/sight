@@ -26,29 +26,38 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Study
 {
+
 /**
  * @brief Test patch to convert data::Study version 1 to data::Study version 1.
  */
 class V1ToFwMedDataStudyV1Test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( V1ToFwMedDataStudyV1Test );
-CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE(V1ToFwMedDataStudyV1Test);
+CPPUNIT_TEST(applyPatchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void applyPatchTest();
 };
+
 } //namespace Study
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

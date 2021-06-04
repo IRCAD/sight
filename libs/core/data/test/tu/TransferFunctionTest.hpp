@@ -28,24 +28,27 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class TransferFunctionTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( TransferFunctionTest );
-    CPPUNIT_TEST( constructorTest );
-    CPPUNIT_TEST( defaultTfTest );
-    CPPUNIT_TEST( classicGetSetTest );
-    CPPUNIT_TEST( usingTfTest );
-    CPPUNIT_TEST( setTFDataTest );
-    CPPUNIT_TEST( shallowAndDeepCopyTest );
-    CPPUNIT_TEST( linearColorTest );
-    CPPUNIT_TEST( nearestColorTest);
+
+    CPPUNIT_TEST_SUITE(TransferFunctionTest);
+    CPPUNIT_TEST(constructorTest);
+    CPPUNIT_TEST(defaultTfTest);
+    CPPUNIT_TEST(classicGetSetTest);
+    CPPUNIT_TEST(usingTfTest);
+    CPPUNIT_TEST(setTFDataTest);
+    CPPUNIT_TEST(shallowAndDeepCopyTest);
+    CPPUNIT_TEST(linearColorTest);
+    CPPUNIT_TEST(nearestColorTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -61,7 +64,9 @@ public:
     void nearestColorTest();
 
     data::TransferFunction::sptr createTFColor();
-    void checkTFColor( data::TransferFunction::sptr tf );
+    void checkTFColor(data::TransferFunction::sptr tf);
 };
+
 } //namespace ut
+
 } //namespace sight::data

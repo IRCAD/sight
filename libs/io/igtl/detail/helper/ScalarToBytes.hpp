@@ -38,6 +38,7 @@ namespace helper
 
 namespace detail
 {
+
 /**
  * @union ConvertData
  *
@@ -50,6 +51,7 @@ union ConvertData
     T scalar;
     char bytes[sizeof(T)];
 };
+
 } // namespace detail
 
 /**
@@ -62,7 +64,7 @@ class IO_IGTL_CLASS_API ScalarToBytes
 {
 public:
 
-    typedef std::vector< char > RawDataType;
+    typedef std::vector<char> RawDataType;
 
     /**
      * @brief method to convert a scalar to his representation in bytes
@@ -77,7 +79,7 @@ public:
 
         BOOST_STATIC_ASSERT(::boost::is_arithmetic<T>::value);
         convertData.scalar = scalar;
-        bytes.resize(sizeof (T));
+        bytes.resize(sizeof(T));
 
         std::copy(convertData.bytes, convertData.bytes + sizeof(T), bytes.begin());
 

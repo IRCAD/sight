@@ -435,8 +435,8 @@ bool SeriesDB::dicomSeriesComparator(
         (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
          || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
          || aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         || // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-            // ::gdcm::MediaStorage::Comprehensive3DSR"
+         ||                                                 // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
+                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
          || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
@@ -444,8 +444,8 @@ bool SeriesDB::dicomSeriesComparator(
         (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR
          || ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR
          || bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" // FIXME Replace hard coded string by
-         || // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
-            // ::gdcm::MediaStorage::Comprehensive3DSR"
+         ||                                                 // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
+                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
          ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage
          || ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 

@@ -28,6 +28,7 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -36,18 +37,19 @@ namespace ut
  */
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageTest );
-CPPUNIT_TEST( roiApplyTest );
+CPPUNIT_TEST_SUITE(ImageTest);
+CPPUNIT_TEST(roiApplyTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void roiApplyTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image

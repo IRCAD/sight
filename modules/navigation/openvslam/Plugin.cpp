@@ -49,4 +49,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-}  //namespace sight::module::navigation::openvslam
+} //namespace sight::module::navigation::openvslam

@@ -26,6 +26,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -45,15 +46,17 @@ IMenuLayoutManager::~IMenuLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void IMenuLayoutManager::initialize( ConfigurationType configuration)
+void IMenuLayoutManager::initialize(ConfigurationType configuration)
 {
-    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                 configuration->getName() == "layout");
+    SIGHT_ASSERT(
+        "Bad configuration name " << configuration->getName() << ", must be layout",
+        configuration->getName() == "layout"
+    );
 
     core::runtime::ConfigurationElementContainer::Iterator iter;
-    for( iter = configuration->begin(); iter != configuration->end(); ++iter )
+    for(iter = configuration->begin() ; iter != configuration->end() ; ++iter)
     {
-        if( (*iter)->getName() == "menuItem" )
+        if((*iter)->getName() == "menuItem")
         {
             ConfigurationType menuItem = *iter;
             ActionInfo info;
@@ -62,76 +65,78 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
             SIGHT_ASSERT("Depreciated tag <enable>", !menuItem->hasAttribute("enable"));
 
             SIGHT_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
-            if( menuItem->hasAttribute("name") )
+            if(menuItem->hasAttribute("name"))
             {
                 info.m_name = menuItem->getExistingAttributeValue("name");
             }
 
-            if( menuItem->hasAttribute("shortcut") )
+            if(menuItem->hasAttribute("shortcut"))
             {
                 info.m_shortcut = menuItem->getExistingAttributeValue("shortcut");
             }
 
-            if( menuItem->hasAttribute("icon") )
+            if(menuItem->hasAttribute("icon"))
             {
                 info.m_icon = core::runtime::getModuleResourceFilePath(menuItem->getAttributeValue("icon"));
             }
 
-            if( menuItem->hasAttribute("style") )
+            if(menuItem->hasAttribute("style"))
             {
                 std::string style = menuItem->getExistingAttributeValue("style");
                 info.m_isCheckable = (style == "check");
                 info.m_isRadio     = (style == "radio");
             }
 
-            if( menuItem->hasAttribute("specialAction") )
+            if(menuItem->hasAttribute("specialAction"))
             {
                 std::string specialActionName = menuItem->getExistingAttributeValue("specialAction");
-                if (specialActionName == "DEFAULT")
+                if(specialActionName == "DEFAULT")
                 {
                     info.m_type = DEFAULT;
                 }
-                else if (specialActionName == "QUIT")
+                else if(specialActionName == "QUIT")
                 {
                     info.m_type = QUIT;
                 }
-                else if (specialActionName == "ABOUT")
+                else if(specialActionName == "ABOUT")
                 {
                     info.m_type = ABOUT;
                 }
-                else if (specialActionName == "HELP")
+                else if(specialActionName == "HELP")
                 {
                     info.m_type = HELP;
                 }
-                else if (specialActionName == "NEW")
+                else if(specialActionName == "NEW")
                 {
                     info.m_type = NEW;
                 }
                 else
                 {
-                    SIGHT_FATAL("specialAction " << specialActionName << " is unknown." );
+                    SIGHT_FATAL("specialAction " << specialActionName << " is unknown.");
                 }
             }
 
             m_actionInfo.push_back(info);
         }
-        if( (*iter)->getName() == "separator" )
+
+        if((*iter)->getName() == "separator")
         {
             ActionInfo info;
             info.m_isSeparator = true;
             info.m_type        = SEPARATOR;
-            m_actionInfo.push_back( info );
+            m_actionInfo.push_back(info);
         }
 
-        if( (*iter)->getName() == "menu" )
+        if((*iter)->getName() == "menu")
         {
             ActionInfo info;
             info.m_isMenu = true;
-            if( (*iter)->hasAttribute("name") )
+            if((*iter)->hasAttribute("name"))
             {
                 info.m_name = (*iter)->getExistingAttributeValue("name");
             }
-            m_actionInfo.push_back( info );
+
+            m_actionInfo.push_back(info);
         }
     }
 }
@@ -140,28 +145,30 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    for( ui::base::container::fwMenuItem::sptr menuItem :  m_menuItems)
+    for(ui::base::container::fwMenuItem::sptr menuItem : m_menuItems)
     {
         menuItem->destroyContainer();
     }
+
     m_menuItems.clear();
-    for( ui::base::container::fwMenu::sptr menu :  m_menus)
+    for(ui::base::container::fwMenu::sptr menu : m_menus)
     {
         menu->destroyContainer();
     }
+
     m_menus.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwMenuItem::sptr > IMenuLayoutManager::getMenuItems()
+std::vector<ui::base::container::fwMenuItem::sptr> IMenuLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
+std::vector<ui::base::container::fwMenu::sptr> IMenuLayoutManager::getMenus()
 {
     return this->m_menus;
 }
@@ -169,4 +176,5 @@ std::vector< ui::base::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

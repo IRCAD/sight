@@ -80,7 +80,7 @@ class SImageMultiDistances final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImageMultiDistances, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SImageMultiDistances, ::sight::viz::scene3d::IAdaptor);
 
     /// Initialize slots.
     MODULE_VIZ_SCENE3D_API SImageMultiDistances() noexcept;

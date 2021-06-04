@@ -38,10 +38,10 @@ namespace sight::core::tools
 {
 
 // forward declaration
-template< class TSEQ, class KeyTypeContainer >
+template<class TSEQ, class KeyTypeContainer>
 struct isMappingMultiMPLHelper;
 
-template< class T, class KeyType >
+template<class T, class KeyType>
 struct isMappingSingleMPLHelper;
 
 //
@@ -67,17 +67,16 @@ struct isMappingSingleMPLHelper;
  * }
  * @endcode
  */
-template< class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer >
+template<class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer>
 bool isMapping(const KeyType_or_KeyTypeContainer& key)
 {
     namespace mpl = ::boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-            mpl::is_sequence< TSingle_or_TSEQ >,
-            isMappingMultiMPLHelper< TSingle_or_TSEQ, KeyType_or_KeyTypeContainer >,
-            isMappingSingleMPLHelper< TSingle_or_TSEQ, KeyType_or_KeyTypeContainer >
-            >::type typex;
+            mpl::is_sequence<TSingle_or_TSEQ>,
+            isMappingMultiMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>,
+            isMappingSingleMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>
+    >::type typex;
     return typex::evaluate(key);
-
 }
 
 /**
@@ -87,15 +86,14 @@ bool isMapping(const KeyType_or_KeyTypeContainer& key)
  * @tparam  T the type to test
  * @tparam  KeyType the type to match
  */
-template< class T, class KeyType >
+template<class T, class KeyType>
 struct isMappingSingleMPLHelper
 {
-
     /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
     static bool evaluate(const KeyType& key)
     {
         SIGHT_NOT_USED(key);
-        BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
+        BOOST_STATIC_ASSERT(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
         std::string msg("isMapping<type>(const KEYTYPE &key) not specializated for TYPE and/or KEYTYPE!!!");
@@ -109,7 +107,7 @@ struct isMappingSingleMPLHelper
  *
  * @return  true if same size & each element of type list mappes a single element of KeyType
  */
-template< class TSEQ, class KeyTypeContainer >
+template<class TSEQ, class KeyTypeContainer>
 bool isMappingMulti(const KeyTypeContainer& keys)
 {
     return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(keys);
@@ -118,16 +116,18 @@ bool isMappingMulti(const KeyTypeContainer& keys)
 /**
  * @brief an helper to isMapping() using iterator
  */
-template<  class KeyTypeContainer >
+template<class KeyTypeContainer>
 struct EmptyListMapping
 {
     //------------------------------------------------------------------------------
 
-    static bool evaluate(typename KeyTypeContainer::const_iterator& begin,
-                         typename KeyTypeContainer::const_iterator& end)
+    static bool evaluate(
+        typename KeyTypeContainer::const_iterator& begin,
+        typename KeyTypeContainer::const_iterator& end
+)
     {
-        assert( begin == end ); // assertion fails iff TypeList & KeyType container does not have the same size
-        return true; // an empty typelist with an emty keyType matches
+        assert(begin == end); // assertion fails iff TypeList & KeyType container does not have the same size
+        return true;          // an empty typelist with an emty keyType matches
     }
 };
 
@@ -136,21 +136,22 @@ struct EmptyListMapping
  * called with head element
  * removed from TSEQ
  */
-template< class TSEQ, class KeyTypeContainer >
+template<class TSEQ, class KeyTypeContainer>
 struct
 isMappingMultiMPLHelper
 {
-    static bool evaluate(typename KeyTypeContainer::const_iterator& begin,
-                         typename KeyTypeContainer::const_iterator& end);
+    static bool evaluate(
+        typename KeyTypeContainer::const_iterator& begin,
+        typename KeyTypeContainer::const_iterator& end
+    );
 
     //------------------------------------------------------------------------------
 
     static bool evaluate(const KeyTypeContainer& keys)
     {
-
         namespace mpl = ::boost::mpl;
 
-        if ( keys.size() != static_cast<unsigned long>(mpl::size<TSEQ>::value) )
+        if(keys.size() != static_cast<unsigned long>(mpl::size<TSEQ>::value))
         {
             std::string msg("isMappingMulti TypeList & KeyType container does not have the same size !!!");
             throw std::invalid_argument(msg);
@@ -159,18 +160,17 @@ isMappingMultiMPLHelper
 
         typename KeyTypeContainer::const_iterator begin = keys.begin(); // needed to have cste ptr
         typename KeyTypeContainer::const_iterator end   = keys.end();
-        return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate( begin, end );
-
+        return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(begin, end);
     }
-
 };
 
 //------------------------------------------------------------------------------
 
-template< class TSEQ, class KeyTypeContainer >
-bool
-isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator& begin,
-                                                          typename KeyTypeContainer::const_iterator& end)
+template<class TSEQ, class KeyTypeContainer>
+bool isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(
+    typename KeyTypeContainer::const_iterator& begin,
+    typename KeyTypeContainer::const_iterator& end
+)
 {
     namespace mpl = ::boost::mpl;
 
@@ -179,20 +179,19 @@ isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(typename KeyTypeContai
 
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
             mpl::empty<Tail>,
-            EmptyListMapping < KeyTypeContainer >,
-            isMappingMultiMPLHelper <Tail, KeyTypeContainer >
-            >::type typex;
+            EmptyListMapping<KeyTypeContainer>,
+            isMappingMultiMPLHelper<Tail, KeyTypeContainer>
+    >::type typex;
 
-    bool firstKeyIsOK = isMapping< Head >( *begin );     // call a isMapping with a single key
+    bool firstKeyIsOK = isMapping<Head>(*begin); // call a isMapping with a single key
 
-    if ( firstKeyIsOK == false )     // OPTIMISATION
+    if(firstKeyIsOK == false) // OPTIMISATION
     {
-        return false;     // the first key doesn't match : do not try to test other
+        return false; // the first key doesn't match : do not try to test other
     }
 
-    bool otherKeys = typex::evaluate( ++begin, end );
+    bool otherKeys = typex::evaluate(++begin, end);
     return firstKeyIsOK && otherKeys;
-
 }
 
 } // namespace sight::core::tools

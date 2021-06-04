@@ -42,11 +42,11 @@ namespace sight::ui::qml
 class UI_QML_CLASS_QT_API IQmlEditor : public QObject,
                                        public service::IService
 {
-
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(IQmlEditor, service::IService)
+    SIGHT_DECLARE_SERVICE(IQmlEditor, service::IService);
 
     /// Constructor. Do nothing.
     UI_QML_QT_API IQmlEditor() noexcept;
@@ -69,7 +69,6 @@ protected:
 
     /// emit 'stopped' qt signal
     UI_QML_QT_API void stopping() override;
-
 };
 
 } // namespace sight::ui::qml

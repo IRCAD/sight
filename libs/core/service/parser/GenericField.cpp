@@ -32,27 +32,28 @@
 
 namespace sight::service
 {
+
 namespace parser
 {
 
 //------------------------------------------------------------------------------
 
-void GenericField::updating( )
+void GenericField::updating()
 {
     SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
 
-void GenericField::createConfig( core::tools::Object::sptr _obj )
+void GenericField::createConfig(core::tools::Object::sptr _obj)
 {
-    data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast( _obj );
+    data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast(_obj);
     SIGHT_ASSERT("GenericField not instanced", field);
 
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
     SIGHT_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
-    if ( configs.size() >= 1 )
+    if(configs.size() >= 1)
     {
         core::runtime::ConfigurationElement::sptr config = *configs.begin();
         std::string input                                = config->getValue();
@@ -63,4 +64,5 @@ void GenericField::createConfig( core::tools::Object::sptr _obj )
 //------------------------------------------------------------------------------
 
 } //namespace parser
+
 } //namespace sight::service

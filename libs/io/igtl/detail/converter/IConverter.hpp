@@ -34,8 +34,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  * @interface IConverter
  *
@@ -45,7 +47,7 @@ class IO_IGTL_CLASS_API IConverter
 {
 public:
 
-    typedef SPTR (IConverter) sptr;
+    typedef SPTR(IConverter) sptr;
 
     ///destructor
     virtual ~IConverter()
@@ -64,7 +66,7 @@ public:
      *
      * @return a ::igtl::MessageBase
      */
-    IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const = 0;
+    IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const = 0;
 
     /**
      * @brief get the igtlType supported for conversion
@@ -82,4 +84,5 @@ public:
 };
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

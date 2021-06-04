@@ -36,7 +36,7 @@ enum transparencyTechnique
     DUALDEPTHPEELING,
     WEIGHTEDBLENDEDOIT,
     HYBRIDTRANSPARENCY,
-    CELSHADING_DEPTHPEELING,
+    CELSHADING_DEPTHPEELING
 };
 
 } // namespace compositor

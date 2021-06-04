@@ -46,4 +46,4 @@ IRegisterer::~IRegisterer() noexcept
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::service
+} // namespace sight::service

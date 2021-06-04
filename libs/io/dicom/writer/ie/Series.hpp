@@ -28,18 +28,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 /**
  * @brief Series Information Entity class
  */
-class IO_DICOM_CLASS_API Series : public io::dicom::writer::ie::InformationEntity< data::Series >
+class IO_DICOM_CLASS_API Series : public io::dicom::writer::ie::InformationEntity<data::Series>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
@@ -49,12 +51,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Series(const SPTR(::gdcm::Writer)& writer,
-                        const SPTR(io::dicom::container::DicomInstance)& instance,
-                        const data::Series::csptr& series,
-                        const core::log::Logger::sptr& logger = nullptr,
-                        ProgressCallback progress             = nullptr,
-                        CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Series(
+        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Series::csptr& series,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Series();
@@ -82,9 +86,10 @@ public:
      * @see PS 3.3 C.21.1
      */
     IO_DICOM_API virtual void writeSpatialFiducialsSeriesModule();
-
 };
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

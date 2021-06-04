@@ -30,6 +30,7 @@
 
 namespace sight::service
 {
+
 namespace parser
 {
 
@@ -52,9 +53,9 @@ void Color::createConfig(core::tools::Object::sptr _obj)
         SIGHT_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
             "hexadecimal digits. Given color: " << hexaColor,
-                hexaColor[0] == '#'
-                && ( hexaColor.length() == 7 || hexaColor.length() == 9)
-            );
+            hexaColor[0] == '#'
+            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        );
         color->setRGBA(hexaColor);
     }
 }
@@ -62,4 +63,5 @@ void Color::createConfig(core::tools::Object::sptr _obj)
 //------------------------------------------------------------------------------
 
 } // namespace parser.
+
 } // namespace sight::service.

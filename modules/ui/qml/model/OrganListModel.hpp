@@ -38,6 +38,7 @@ namespace sight::module::ui::qml::model
 class MODULE_UI_QML_CLASS_API OrganListModel : public QAbstractListModel
 {
 Q_OBJECT
+
 public:
 
     enum OrganRoles
@@ -62,9 +63,12 @@ public:
     MODULE_UI_QML_API void updateModelSeries(const data::ModelSeries::sptr& modelSeries);
 
 protected:
+
     /// Expose the role names, so that they can be accessed via QML
     MODULE_UI_QML_API virtual QHash<int, QByteArray> roleNames() const;
+
 private:
+
     data::ModelSeries::sptr m_modelSeries;
 };
 

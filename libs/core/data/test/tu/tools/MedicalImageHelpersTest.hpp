@@ -28,19 +28,21 @@
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
 class MedicalImageHelpersTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MedicalImageHelpersTest );
-CPPUNIT_TEST( getMinMaxTest );
-CPPUNIT_TEST( getPixelBufferTest );
-CPPUNIT_TEST( setPixelBufferTest );
-CPPUNIT_TEST( isBufNull );
+CPPUNIT_TEST_SUITE(MedicalImageHelpersTest);
+CPPUNIT_TEST(getMinMaxTest);
+CPPUNIT_TEST(getPixelBufferTest);
+CPPUNIT_TEST(setPixelBufferTest);
+CPPUNIT_TEST(isBufNull);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
 
@@ -58,4 +60,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::data::tools

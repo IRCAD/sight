@@ -31,6 +31,7 @@
 
 namespace sight::core::runtime
 {
+
 namespace utils
 {
 
@@ -41,13 +42,14 @@ template<typename E>
 class GenericExecutableFactory : public ExecutableFactory
 {
 public:
+
     /**
      * @brief       Constructor.
      *
      * @param[in]   type    a string containing the type supported by the factory
      */
     GenericExecutableFactory(const std::string& type) :
-        ExecutableFactory( type )
+        ExecutableFactory(type)
     {
     }
 
@@ -71,16 +73,16 @@ public:
             result = new E();
             result->setModule(this->getModule());
         }
-        catch( std::exception& exception )
+        catch(std::exception& exception)
         {
             std::ostringstream buffer;
             buffer << "Unexpected exception caught while creating an core::runtime::IExecutable instance. ";
             buffer << exception.what();
-            throw RuntimeException( buffer.str() );
+            throw RuntimeException(buffer.str());
         }
-        catch( ... )
+        catch(...)
         {
-            throw RuntimeException( "Unexpected exception caught while creating an core::runtime::IExecutable instance." );
+            throw RuntimeException("Unexpected exception caught while creating an core::runtime::IExecutable instance.");
         }
         return result;
     }
@@ -95,7 +97,6 @@ private:
     void operator=(const GenericExecutableFactory&) noexcept
     {
     }
-
 };
 
 } // namespace utils

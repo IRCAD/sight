@@ -33,7 +33,9 @@
 
 namespace sight::data
 {
+
 class Vector;
+
 }
 
 namespace sight::activity
@@ -44,7 +46,6 @@ namespace sight::activity
  */
 class ACTIVITY_CLASS_API IValidator : public core::BaseObject
 {
-
 public:
 
     /**
@@ -52,7 +53,7 @@ public:
      * First element tells if the activity is validated or not by the IValidator implementation.
      * Second element may contains information about the result of activity validation.
      */
-    typedef std::pair< bool, std::string > ValidationType;
+    typedef std::pair<bool, std::string> ValidationType;
 
     typedef activity::validator::factory::Key Key;
 
@@ -62,18 +63,21 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry(std::string functorKey)
         {
-            sight::activity::validator::registry::get()->addFactory( functorKey,
-                                                                     &sight::activity::validator::factory::New<T> );
+            sight::activity::validator::registry::get()->addFactory(
+                functorKey,
+                &sight::activity::validator::factory::New<T>
+            );
         }
     };
 
-    SIGHT_DECLARE_CLASS(IValidator, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IValidator, core::BaseObject);
 
     /**
      * @brief Performs validation of given data as inputs for the considered activity.
@@ -85,8 +89,8 @@ public:
      */
     ACTIVITY_API virtual ValidationType validate(
         const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection ) const = 0;
-
+        const CSPTR(data::Vector)& currentSelection
+    ) const = 0;
 };
 
 } // namespace sight::activity

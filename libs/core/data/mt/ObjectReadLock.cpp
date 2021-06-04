@@ -26,6 +26,7 @@
 
 namespace sight::data
 {
+
 namespace mt
 {
 
@@ -33,7 +34,7 @@ namespace mt
 
 ObjectReadLock::ObjectReadLock(data::Object::csptr obj, bool lock)
 {
-    if (lock)
+    if(lock)
     {
         m_lock = core::mt::ReadLock(obj->getMutex());
     }
@@ -66,4 +67,5 @@ void ObjectReadLock::unlock()
 //-----------------------------------------------------------------------------
 
 } // mt
+
 } // fwData

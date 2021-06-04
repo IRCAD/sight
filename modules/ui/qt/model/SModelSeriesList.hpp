@@ -104,7 +104,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::base::IEditor);
 
     /// Initializes the slot and signals.
     MODULE_UI_QT_API SModelSeriesList() noexcept;

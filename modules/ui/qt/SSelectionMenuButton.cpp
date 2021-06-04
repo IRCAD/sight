@@ -62,7 +62,7 @@ SSelectionMenuButton::SSelectionMenuButton() noexcept :
     m_text(">"),
     m_selection(0)
 {
-    m_sigSelected = newSignal < SelectedSignalType >(s_SELECTED_SIG);
+    m_sigSelected = newSignal<SelectedSignalType>(s_SELECTED_SIG);
 
     newSlot(s_SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
     newSlot(s_SENABLE_SIG, &SSelectionMenuButton::enable, this);
@@ -86,6 +86,7 @@ void SSelectionMenuButton::configuring()
     {
         m_text = txtCfg->getValue();
     }
+
     Configuration toolTipCfg = m_configuration->findConfigurationElement("toolTip");
     if(toolTipCfg)
     {
@@ -101,9 +102,9 @@ void SSelectionMenuButton::configuring()
     Configuration itemsCfg = m_configuration->findConfigurationElement("items");
     SIGHT_ASSERT("Missing 'items' config", itemsCfg);
 
-    std::vector < Configuration > itemCfgs = itemsCfg->find("item");
+    std::vector<Configuration> itemCfgs = itemsCfg->find("item");
     SIGHT_ASSERT("At least two items must be defined", itemCfgs.size() >= 2);
-    for (auto itemCfg : itemCfgs)
+    for(auto itemCfg : itemCfgs)
     {
         SIGHT_ASSERT("Missing 'text' attribute", itemCfg->hasAttribute("text"));
         SIGHT_ASSERT("Missing 'value' attribute", itemCfg->hasAttribute("value"));
@@ -120,16 +121,16 @@ void SSelectionMenuButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    m_dropDownButton = new QPushButton( QString::fromStdString(m_text) );
-    m_dropDownButton->setToolTip( QString::fromStdString(m_toolTip));
+    m_dropDownButton = new QPushButton(QString::fromStdString(m_text));
+    m_dropDownButton->setToolTip(QString::fromStdString(m_toolTip));
 //    m_dropDownButton->setMaximumWidth(40);
 
     m_pDropDownMenu = new QMenu();
     m_actionGroup   = new QActionGroup(m_pDropDownMenu);
 
-    for (auto item : m_items)
+    for(auto item : m_items)
     {
         QAction* action = new QAction(QString::fromStdString(item.second), m_pDropDownMenu);
         action->setCheckable(true);
@@ -137,19 +138,20 @@ void SSelectionMenuButton::starting()
         m_actionGroup->addAction(action);
         m_pDropDownMenu->addAction(action);
 
-        if (item.first == m_selection)
+        if(item.first == m_selection)
         {
             action->setChecked(true);
         }
     }
+
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
     QVBoxLayout* vLayout = new QVBoxLayout();
-    vLayout->addWidget( m_dropDownButton);
+    vLayout->addWidget(m_dropDownButton);
     vLayout->setContentsMargins(0, 0, 0, 0);
 
-    qtContainer->setLayout( vLayout );
+    qtContainer->setLayout(vLayout);
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +159,7 @@ void SSelectionMenuButton::starting()
 void SSelectionMenuButton::stopping()
 {
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
-    for (QAction* action : m_actionGroup->actions())
+    for(QAction* action : m_actionGroup->actions())
     {
         m_actionGroup->removeAction(action);
     }
@@ -175,12 +177,11 @@ void SSelectionMenuButton::updating()
 
 void SSelectionMenuButton::swapping()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::info( std::ostream& _sstream )
+void SSelectionMenuButton::info(std::ostream& _sstream)
 {
 }
 
@@ -188,7 +189,7 @@ void SSelectionMenuButton::info( std::ostream& _sstream )
 
 void SSelectionMenuButton::onSelection(QAction* action)
 {
-    if (action->isChecked())
+    if(action->isChecked())
     {
         int value = action->data().toInt();
         m_sigSelected->asyncEmit(value);

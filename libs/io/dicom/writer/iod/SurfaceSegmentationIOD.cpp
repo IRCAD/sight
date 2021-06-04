@@ -43,19 +43,23 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(const SPTR(io::dicom::container::DicomInstance)& instance,
-                                               const SPTR(io::dicom::container::DicomInstance)& imageInstance,
-                                               const std::filesystem::path& destinationPath,
-                                               const core::log::Logger::sptr& logger,
-                                               ProgressCallback progress,
-                                               CancelRequestedCallback cancel) :
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+    const std::filesystem::path& destinationPath,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
     m_imageInstance(imageInstance)
 {
@@ -76,7 +80,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     SIGHT_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
-    SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter >();
+    SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
@@ -89,12 +93,15 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Load Segmented Property Registry
     const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
-        "io_dicom/SegmentedPropertyRegistry.csv");
+        "io_dicom/SegmentedPropertyRegistry.csv"
+    );
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
-        throw io::dicom::exception::Failed("Unable to load segmented property registry: '" +
-                                           filepath.string() + "'. File does not exist.");
+        throw io::dicom::exception::Failed(
+                  "Unable to load segmented property registry: '"
+                  + filepath.string() + "'. File does not exist."
+        );
     }
 
     // Write Patient Module - PS 3.3 C.7.1.1
@@ -129,8 +136,8 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     surfaceIE.writeSurfaceSegmentationAndSurfaceMeshModules();
 
     // Write the file
-    if((!m_cancelRequestedCallback || !m_cancelRequestedCallback()) &&
-       (!m_logger || !m_logger->count(core::log::Log::CRITICAL)))
+    if((!m_cancelRequestedCallback || !m_cancelRequestedCallback())
+       && (!m_logger || !m_logger->count(core::log::Log::CRITICAL)))
     {
         io::dicom::helper::FileWriter::write(m_destinationPath, writer);
     }
@@ -139,5 +146,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 //------------------------------------------------------------------------------
 
 } // namespace iod
+
 } // namespace writer
+
 } // namespace sight::io::dicom

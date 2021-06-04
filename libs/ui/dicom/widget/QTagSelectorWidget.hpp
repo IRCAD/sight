@@ -33,6 +33,7 @@
 
 namespace sight::ui::dicom
 {
+
 namespace widget
 {
 
@@ -44,6 +45,7 @@ class QTagSelectorWidget : public QWidget
 Q_OBJECT;
 
 public:
+
     /// Constructor
     QTagSelectorWidget(QWidget* parent = 0);
 
@@ -57,23 +59,25 @@ public:
     DcmTagKey getTag();
 
 protected Q_SLOTS:
+
     /// Update tag name when selected tag changes
     void updateTagName(int value = 0);
 
 protected:
+
     /// Group spin box
-    QPointer< ui::dicom::widget::QHexSpinBox > m_groupSpinBox;
+    QPointer<ui::dicom::widget::QHexSpinBox> m_groupSpinBox;
 
     /// Tag spin box
-    QPointer< ui::dicom::widget::QHexSpinBox > m_elementSpinBox;
+    QPointer<ui::dicom::widget::QHexSpinBox> m_elementSpinBox;
 
     /// tag name label
-    QPointer< QLabel > m_tagNameLabel;
+    QPointer<QLabel> m_tagNameLabel;
 
     /// Tag
     DcmTagKey m_tag;
-
 };
 
 } // namespace widget
+
 } // namespace sight::ui::dicom

@@ -23,13 +23,13 @@
 #pragma once
 
 #include "service/config.hpp"
+#include <service/IXMLParser.hpp>
 
 #include <core/tools/Object.hpp>
 
-#include <service/IXMLParser.hpp>
-
 namespace sight::service
 {
+
 namespace parser
 {
 
@@ -48,11 +48,10 @@ namespace parser
  */
 class SERVICE_CLASS_API Color final : public service::IXMLParser
 {
-
 public:
 
     /// Creates default attributes and methods (New(), ::sptr, ...).
-    SIGHT_DECLARE_SERVICE(Color, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Color, service::IXMLParser);
 
     /// Does nothing.
     SERVICE_API Color()
@@ -71,8 +70,8 @@ private:
      * @param _obj color in which apply the configuration.
      */
     void createConfig(core::tools::Object::sptr _obj) override;
-
 };
 
 } // namespace parser.
+
 } // namespace sight::service.

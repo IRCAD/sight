@@ -23,11 +23,10 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/Array.hpp>
 
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
-
-#include <data/Array.hpp>
 
 namespace sight::data
 {
@@ -43,17 +42,16 @@ namespace helper
  */
 class DATA_DEPRECATED_CLASS_API ArrayGetter
 {
-
 public:
 
     /// Shared pointer type
-    typedef std::shared_ptr < ArrayGetter > sptr;
+    typedef std::shared_ptr<ArrayGetter> sptr;
     /// Const shared pointer type
-    typedef std::shared_ptr < const ArrayGetter > csptr;
+    typedef std::shared_ptr<const ArrayGetter> csptr;
     /// Unique pointer type
-    typedef std::unique_ptr < ArrayGetter > uptr;
+    typedef std::unique_ptr<ArrayGetter> uptr;
     /// Const unique pointer type
-    typedef std::unique_ptr < const ArrayGetter > cuptr;
+    typedef std::unique_ptr<const ArrayGetter> cuptr;
 
     //------------------------------------------------------------------------------
 
@@ -61,8 +59,9 @@ public:
     {
         return std::make_shared<ArrayGetter>(array);
     }
+
     [[deprecated("deprecated and will be removed in sight 22.0, please use data::Array")]]
-    DATA_API ArrayGetter(const data::Array::csptr& array );
+    DATA_API ArrayGetter(const data::Array::csptr& array);
 
     DATA_API virtual ~ArrayGetter();
 
@@ -86,7 +85,8 @@ public:
      *
      * @return Array buffer pointer casted to T
      */
-    template< typename T > const T* getItem(const data::Array::IndexType& id, const size_t component = 0) const;
+    template<typename T>
+    const T* getItem(const data::Array::IndexType& id, const size_t component = 0) const;
 
     /**
      * @brief Copies the data into the buffer pointed by <value>
@@ -95,8 +95,11 @@ public:
      * @param[out] value Buffer to write into
      */
     DATA_API virtual void getItem(const data::Array::IndexType& id, void* value) const;
-    DATA_API virtual void getItem(const data::Array::IndexType& id, const size_t component,
-                                  void* value) const;
+    DATA_API virtual void getItem(
+        const data::Array::IndexType& id,
+        const size_t component,
+        void* value
+    ) const;
 
     /**
      * @brief Getter for the array buffer
@@ -110,8 +113,10 @@ public:
     DATA_API virtual const char* end() const;
 
     /// Returns the begining/end of the buffer, casted to T
-    template< typename T > const T* begin() const;
-    template< typename T > const T* end() const;
+    template<typename T>
+    const T* begin() const;
+    template<typename T>
+    const T* end() const;
 
     /**
      * @brief Get a pointer to the value described by given parameters
@@ -122,8 +127,11 @@ public:
      *
      * @return buffer item pointer
      */
-    DATA_API const char* getBufferPtr( const data::Array::IndexType& id, size_t component,
-                                       size_t sizeOfType ) const;
+    DATA_API const char* getBufferPtr(
+        const data::Array::IndexType& id,
+        size_t component,
+        size_t sizeOfType
+    ) const;
 
     /// Returns a copy of current lock on array
     DATA_API core::memory::BufferObject::Lock getLock() const;
@@ -132,12 +140,11 @@ protected:
 
     data::Array::csptr m_array;
     core::memory::BufferObject::Lock m_lock;
-
 };
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 const T* ArrayGetter::begin() const
 {
     return static_cast<const T*>(this->getBuffer());
@@ -145,18 +152,18 @@ const T* ArrayGetter::begin() const
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 const T* ArrayGetter::end() const
 {
-    return reinterpret_cast<const T*> (static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
+    return reinterpret_cast<const T*>(static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 const T* ArrayGetter::getItem(const data::Array::IndexType& id, const size_t component) const
 {
-    return static_cast<const T*> (this->getItem(id, component));
+    return static_cast<const T*>(this->getItem(id, component));
 }
 
 } // namespace helper

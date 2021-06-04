@@ -84,7 +84,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(TransferFunctionEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(TransferFunctionEditor, sight::ui::base::IEditor);
 
     /// Basic constructor, do nothing.
     MODULE_UI_QT_API TransferFunctionEditor();

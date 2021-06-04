@@ -27,10 +27,11 @@
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ImageSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ImageSeriesTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -67,4 +68,5 @@ void ImageSeriesTest::imageTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

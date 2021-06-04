@@ -30,8 +30,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
@@ -43,10 +45,12 @@ class IO_DICOM_CLASS_API DicomSRNumNode : public io::dicom::container::sr::Dicom
 public:
 
     /// Constructor
-    IO_DICOM_API DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-                                const std::string& relationship,
-                                const double numValue,
-                                const DicomCodedAttribute& measurementUnits);
+    IO_DICOM_API DicomSRNumNode(
+        const DicomCodedAttribute& codedAttribute,
+        const std::string& relationship,
+        const double numValue,
+        const DicomCodedAttribute& measurementUnits
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~DicomSRNumNode();
@@ -98,9 +102,10 @@ protected:
 
     /// Measurement Units
     DicomCodedAttribute m_measurementUnits;
-
 };
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

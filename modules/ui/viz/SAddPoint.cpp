@@ -47,8 +47,8 @@ SAddPoint::SAddPoint() noexcept
 {
     FW_DEPRECATED("::sight::module::ui::viz::SAddPoint", "::sight::module::geometry::base::SManagePointList", "21.0");
 
-    newSlot(s_PICK_SLOT, &SAddPoint::pick, this );
-    newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );
+    newSlot(s_PICK_SLOT, &SAddPoint::pick, this);
+    newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this);
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ void SAddPoint::updating()
 
 void SAddPoint::addPoint(const data::Point::sptr _point)
 {
-    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     {
@@ -93,7 +93,7 @@ void SAddPoint::addPoint(const data::Point::sptr _point)
         pointList->pushBack(_point);
     }
 
-    auto sig = pointList->signal< data::PointList::PointAddedSignalType >(data::PointList::s_POINT_ADDED_SIG);
+    auto sig = pointList->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit(_point);
@@ -104,7 +104,7 @@ void SAddPoint::addPoint(const data::Point::sptr _point)
 
 void SAddPoint::removePoint(const data::Point::csptr _point)
 {
-    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     data::mt::ObjectWriteLock lock(pointList);
@@ -113,8 +113,9 @@ void SAddPoint::removePoint(const data::Point::csptr _point)
 
     if(pointRes != nullptr)
     {
-        const auto& sig = pointList->signal< data::PointList::PointRemovedSignalType >(
-            data::PointList::s_POINT_REMOVED_SIG);
+        const auto& sig = pointList->signal<data::PointList::PointRemovedSignalType>(
+            data::PointList::s_POINT_REMOVED_SIG
+        );
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(pointRes);
@@ -147,14 +148,15 @@ void SAddPoint::pick(data::tools::PickingInfo _info)
 
 void SAddPoint::clearPoints()
 {
-    auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
+    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     data::mt::ObjectWriteLock lock(pointList);
 
     pointList->clear();
-    const auto& sig = pointList->signal< data::PointList::ModifiedSignalType >(
-        data::PointList::s_MODIFIED_SIG);
+    const auto& sig = pointList->signal<data::PointList::ModifiedSignalType>(
+        data::PointList::s_MODIFIED_SIG
+    );
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

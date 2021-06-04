@@ -24,6 +24,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace composite
 {
 
@@ -47,39 +48,45 @@ IFilter::FilterType IComposite::getFilterType() const
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::apply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filter
-    for(const filter::dicom::IFilter::sptr& filter :  m_filterContainer)
+    for(const filter::dicom::IFilter::sptr& filter : m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every serie
-        for(const data::DicomSeries::sptr& s :  result)
+        for(const data::DicomSeries::sptr& s : result)
         {
             DicomSeriesContainerType tempo = filter->apply(s, logger);
             filtered.reserve(filtered.size() + tempo.size());
             std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
         }
+
         result = filtered;
     }
+
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::forcedApply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filters
-    for(const filter::dicom::IFilter::sptr& filter :  m_filterContainer)
+    for(const filter::dicom::IFilter::sptr& filter : m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every series
-        for(const data::DicomSeries::sptr& s :  result)
+        for(const data::DicomSeries::sptr& s : result)
         {
             try
             {
@@ -93,8 +100,10 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(
                 filtered.push_back(s);
             }
         }
+
         result = filtered;
     }
+
     return result;
 }
 
@@ -124,4 +133,5 @@ IComposite::FilterContainerType& IComposite::getChildren()
 }
 
 } // namespace composite
+
 } // namespace sight::filter::dicom

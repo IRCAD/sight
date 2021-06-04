@@ -28,10 +28,11 @@
 #include "../../../../../modules/ui/viz/helper/Utils.cpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::ui::viz::ut::UtilsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::ui::viz::ut::UtilsTest);
 
 namespace sight::module::ui::viz
 {
+
 namespace ut
 {
 
@@ -76,4 +77,5 @@ void UtilsTest::convertQColorToOgreColor()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::module::ui::viz

@@ -30,10 +30,11 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::ui::history::ut::UndoRedoManagerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::ui::history::ut::UndoRedoManagerTest);
 
 namespace sight::ui::history
 {
+
 namespace ut
 {
 
@@ -43,7 +44,6 @@ struct CommandInfo
         commandName(cmdName),
         actionName(actName)
     {
-
     }
 
     std::string commandName;
@@ -61,7 +61,6 @@ public:
         m_cmdLog(cmdLog),
         m_size(size)
     {
-
     }
 
     //------------------------------------------------------------------------------
@@ -94,7 +93,6 @@ public:
     CommandLog& m_cmdLog;
 
     size_t m_size;
-
 };
 
 //------------------------------------------------------------------------------
@@ -130,7 +128,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), undoRedoManager.getCommandCount());
 
     // Add 99 commands to the command history.
-    for(int i = 1; i < 100; ++i)
+    for(int i = 1 ; i < 100 ; ++i)
     {
         BogusCommand::sptr testCmdX = std::make_shared<BogusCommand>(BogusCommand("testCmd" + std::to_string(i), log));
 
@@ -141,7 +139,7 @@ void UndoRedoManagerTest::managerEnqueueTest()
     }
 
     // Undo 50 commands in the history.
-    for(int i = 0; i < 50; ++i)
+    for(int i = 0 ; i < 50 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(true, undoRedoManager.undo());
 
@@ -193,7 +191,7 @@ void UndoRedoManagerTest::managerMemorySizeTest()
     ui::history::UndoRedoManager undoRedoManager(MAXMEMORY);
     CommandLog log;
 
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0 ; i < 5 ; ++i)
     {
         BogusCommand::sptr testCmdI =
             std::make_shared<BogusCommand>(BogusCommand("testCmd" + std::to_string(i), log, CMDSIZE));
@@ -213,7 +211,7 @@ void UndoRedoManagerTest::managerMemorySizeTest()
     CPPUNIT_ASSERT_EQUAL(MAXMEMORY / CMDSIZE, undoRedoManager.getCommandCount());
 
     // Undo all commands to find them in the log.
-    for(int i = 5; i > 0; --i)
+    for(int i = 5 ; i > 0 ; --i)
     {
         CPPUNIT_ASSERT_EQUAL(true, undoRedoManager.undo());
 
@@ -223,7 +221,7 @@ void UndoRedoManagerTest::managerMemorySizeTest()
     }
 
     // Assert that "testCmd0" has been removed from the history.
-    auto it = std::find_if(log.begin(), log.end(), [](CommandInfo& info){ return info.commandName == "testCmd0"; });
+    auto it = std::find_if(log.begin(), log.end(), [](CommandInfo& info){return info.commandName == "testCmd0";});
 
     CPPUNIT_ASSERT(it == log.end());
 }
@@ -239,7 +237,7 @@ void UndoRedoManagerTest::managerCommandCountTest()
     ui::history::UndoRedoManager undoRedoManager(MAXMEMORY, MAXELT);
     CommandLog log;
 
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0 ; i < 5 ; ++i)
     {
         BogusCommand::sptr testCmdI =
             std::make_shared<BogusCommand>(BogusCommand("testCmd" + std::to_string(i), log, CMDSIZE));
@@ -258,7 +256,7 @@ void UndoRedoManagerTest::managerCommandCountTest()
     CPPUNIT_ASSERT_EQUAL(MAXELT, undoRedoManager.getCommandCount());
 
     // Undo all commands to find them in the log.
-    for(int i = 5; i > 0; --i)
+    for(int i = 5 ; i > 0 ; --i)
     {
         CPPUNIT_ASSERT_EQUAL(true, undoRedoManager.undo());
 
@@ -268,7 +266,7 @@ void UndoRedoManagerTest::managerCommandCountTest()
     }
 
     // Assert that "testCmd0" has been removed from the history.
-    auto it = std::find_if(log.begin(), log.end(), [](CommandInfo& info){ return info.commandName == "testCmd0"; });
+    auto it = std::find_if(log.begin(), log.end(), [](CommandInfo& info){return info.commandName == "testCmd0";});
 
     CPPUNIT_ASSERT(it == log.end());
 }
@@ -280,7 +278,7 @@ void UndoRedoManagerTest::managerClearQueueTest()
     ui::history::UndoRedoManager undoRedoManager;
     CommandLog log;
 
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0 ; i < 5 ; ++i)
     {
         BogusCommand::sptr testCmdI =
             std::make_shared<BogusCommand>(BogusCommand("testCmd" + std::to_string(i), log));
@@ -301,4 +299,5 @@ void UndoRedoManagerTest::managerClearQueueTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace registrationOp

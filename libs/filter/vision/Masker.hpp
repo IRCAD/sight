@@ -46,8 +46,8 @@ enum ColSpace
  */
 enum DetectionMode
 {
-    fgLL, /// Using only a foreground likelihood color model
-    bgLL, /// Using only a background likelihood color model
+    fgLL,   /// Using only a foreground likelihood color model
+    bgLL,   /// Using only a background likelihood color model
     LLRatio /// Using a ratio between foreground and background color model
 };
 
@@ -59,7 +59,6 @@ enum DetectionMode
  */
 class FILTER_VISION_CLASS_API Masker
 {
-
 public:
 
     /// Constructor
@@ -69,16 +68,26 @@ public:
     FILTER_VISION_API ~Masker();
 
     /// Train the foreground color model defined with a number of clusters inside a mask on a given image
-    FILTER_VISION_API void trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                                const unsigned int numClusters, const double noise = 0.0);
+    FILTER_VISION_API void trainForegroundModel(
+        const ::cv::Mat& rgbImg,
+        const ::cv::Mat& selectionMask,
+        const unsigned int numClusters,
+        const double noise = 0.0
+    );
 
     /// Train the background color model defined with a number of clusters inside a mask on a given image
-    FILTER_VISION_API void trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                                const unsigned int numClusters);
+    FILTER_VISION_API void trainBackgroundModel(
+        const ::cv::Mat& rgbImg,
+        const ::cv::Mat& selectionMask,
+        const unsigned int numClusters
+    );
 
     /// Perform an image masking based on the learned model on a downscaled image inside a given mask
-    FILTER_VISION_API ::cv::Mat makeMask(const ::cv::Mat& testImg, const ::cv::Size& downSize,
-                                         ::cv::InputArray filterMask) const;
+    FILTER_VISION_API ::cv::Mat makeMask(
+        const ::cv::Mat& testImg,
+        const ::cv::Size& downSize,
+        ::cv::InputArray filterMask
+    ) const;
 
     /// Set threshold value to get final binary image
     FILTER_VISION_API void setThreshold(double t);
@@ -89,14 +98,17 @@ public:
 private:
 
     /// Make a response mask from a model on a given image inside a mask
-    static ::cv::Mat makeResponseImage(const ::cv::Mat& inImg, const ::cv::Ptr< ::cv::ml::EM > model,
-                                       ::cv::Mat& filterMask);
+    static ::cv::Mat makeResponseImage(
+        const ::cv::Mat& inImg,
+        const ::cv::Ptr< ::cv::ml::EM> model,
+        ::cv::Mat& filterMask
+    );
 
     /// Convert the colorspace of an image
     static ::cv::Mat convertColourSpace(const ::cv::Mat& src, const ColSpace& c);
 
     /// Train the model from samples
-    static ::cv::Ptr< ::cv::ml::EM > trainModelFromSamples(const ::cv::Mat& samples, const unsigned int numClusters);
+    static ::cv::Ptr< ::cv::ml::EM> trainModelFromSamples(const ::cv::Mat& samples, const unsigned int numClusters);
 
     /// Get samples of an image inside a mask to train the model
     static ::cv::Mat makeTrainingSamples(const ::cv::Mat& trainImg, const ::cv::Mat& mask, const ColSpace& c);
@@ -105,8 +117,8 @@ private:
     static ::cv::Mat removeMaskHoles(const ::cv::Mat& m, size_t n, ::cv::InputArray insideMask);
 
     /// Foreground and background models
-    ::cv::Ptr< ::cv::ml::EM > m_foregroundModel;
-    ::cv::Ptr< ::cv::ml::EM > m_backgroundModel;
+    ::cv::Ptr< ::cv::ml::EM> m_foregroundModel;
+    ::cv::Ptr< ::cv::ml::EM> m_backgroundModel;
 
     /// Colorspace and detection mode of the image masking model
     const ColSpace m_COLORSPACE;
@@ -126,7 +138,6 @@ private:
 
     /// Morphological element
     static const ::cv::Mat s_MORPHELEMENT;
-
 };
 
-}
+} // namespace sight::filter

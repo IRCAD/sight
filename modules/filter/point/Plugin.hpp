@@ -34,7 +34,6 @@ namespace sight::module::filter::point
  */
 struct MODULE_FILTER_POINT_CLASS_API Plugin : public core::runtime::Plugin
 {
-
     /// Destructor
     MODULE_FILTER_POINT_API ~Plugin() noexcept;
 
@@ -43,7 +42,6 @@ struct MODULE_FILTER_POINT_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides
     MODULE_FILTER_POINT_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::filter::point

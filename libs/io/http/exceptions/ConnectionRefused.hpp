@@ -37,6 +37,7 @@ namespace exceptions
 class IO_HTTP_CLASS_API ConnectionRefused : public sight::io::http::exceptions::Base
 {
 public:
+
     /**
      * @name Constructor/Destructor.
      * @{ */
@@ -46,4 +47,5 @@ public:
 };
 
 } /* namespace exceptions */
+
 } /* namespace sight::io::http */

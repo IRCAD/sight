@@ -26,22 +26,27 @@
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
 class ColorTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( ColorTest );
-    CPPUNIT_TEST( hexaStringToRGBA );
+
+    CPPUNIT_TEST_SUITE(ColorTest);
+    CPPUNIT_TEST(hexaStringToRGBA);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void hexaStringToRGBA();
 };
+
 } //namespace ut
+
 } //namespace sight::data::tools

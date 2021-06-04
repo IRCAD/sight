@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( sight::data::Vector );
+SIGHT_REGISTER_DATA(sight::data::Vector);
 
 namespace sight::data
 {
@@ -40,8 +40,8 @@ const core::com::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removed
 
 Vector::Vector(data::Object::Key)
 {
-    newSignal< AddedObjectsSignalType >(s_ADDED_OBJECTS_SIG);
-    newSignal< RemovedObjectsSignalType >(s_REMOVED_OBJECTS_SIG);
+    newSignal<AddedObjectsSignalType>(s_ADDED_OBJECTS_SIG);
+    newSignal<RemovedObjectsSignalType>(s_REMOVED_OBJECTS_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -52,13 +52,17 @@ Vector::~Vector()
 
 //------------------------------------------------------------------------------
 
-void Vector::shallowCopy(const Object::csptr& _source )
+void Vector::shallowCopy(const Object::csptr& _source)
 {
     Vector::csptr other = Vector::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_container = other->m_container;
 }
 
@@ -67,15 +71,19 @@ void Vector::shallowCopy(const Object::csptr& _source )
 void Vector::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Vector::csptr other = Vector::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(source, cache);
     m_container.clear();
     m_container.reserve(other->m_container.size());
     for(const ContainerType::value_type& obj : other->m_container)
     {
-        m_container.push_back( data::Object::copy(obj, cache) );
+        m_container.push_back(data::Object::copy(obj, cache));
     }
 }
 

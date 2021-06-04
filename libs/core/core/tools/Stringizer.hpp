@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/tools/TypeInfo.hpp"
-
 #include <core/Demangler.hpp>
 
 #include  <boost/lexical_cast.hpp>
@@ -40,6 +39,7 @@ namespace sight::core::tools
 
 namespace
 {
+
 struct NumericCast
 {
     //------------------------------------------------------------------------------
@@ -63,6 +63,7 @@ struct Default
         return "No getString for " + core::Demangler(typeid(t)).getClassname();
     }
 };
+
 }
 
 /**
@@ -80,10 +81,10 @@ struct Default
 template<class T>
 inline std::string getString(const T& t)
 {
-    typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  std::is_arithmetic<T>::value,
-                                                      NumericCast,
-                                                      Default
-                                                      >::type Choice;
+    typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<std::is_arithmetic<T>::value,
+                                                    NumericCast,
+                                                    Default
+    >::type Choice;
 
     return Choice::eval(t);
 }
@@ -117,14 +118,15 @@ template<class ForwardIterator>
 inline std::string getString(ForwardIterator begin, ForwardIterator end)
 {
     std::string result("[");
-    if (begin != end)
+    if(begin != end)
     {
-        result += getString( *begin );
-        while (++begin != end)
+        result += getString(*begin);
+        while(++begin != end)
         {
-            result += "," + getString( *begin );
+            result += "," + getString(*begin);
         }
     }
+
     result += "]";
     return result;
 }
@@ -156,4 +158,4 @@ CORE_API std::string getString(const std::string& aString);
 
 ///@}
 
-}
+} // namespace sight::core

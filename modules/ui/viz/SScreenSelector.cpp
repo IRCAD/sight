@@ -61,8 +61,10 @@ void SScreenSelector::configuring()
 
     m_mode = configTree.get("config.<xmlattr>.mode", m_mode);
 
-    SIGHT_ERROR_IF("Unknown selection mode '" + m_mode + "'.",
-                   m_mode != "current" && m_mode != "neighbor" && m_mode != "select");
+    SIGHT_ERROR_IF(
+        "Unknown selection mode '" + m_mode + "'.",
+        m_mode != "current" && m_mode != "neighbor" && m_mode != "select"
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -130,8 +132,10 @@ int SScreenSelector::selectScreen() const
         // Compute the screen's diagonal length in inches.
         constexpr qreal inchesPerMillimeter = 0.03937008;
         const auto screenSize               = screen->physicalSize();
-        const qreal diagonalLengthMm        = std::sqrt(screenSize.width() * screenSize.width() +
-                                                        screenSize.height() * screenSize.height());
+        const qreal diagonalLengthMm        = std::sqrt(
+            screenSize.width() * screenSize.width()
+            + screenSize.height() * screenSize.height()
+        );
         const qreal diagonalLengthInches = diagonalLengthMm * inchesPerMillimeter;
 
         const QString diagonal = QString::number(diagonalLengthInches, 'f', 1) + "\"";
@@ -149,8 +153,15 @@ int SScreenSelector::selectScreen() const
     }
 
     bool okClicked       = false;
-    QString selectedItem = QInputDialog::getItem(nullptr, "Select a screen.", "Screen:", screenNames, 0,
-                                                 false, &okClicked);
+    QString selectedItem = QInputDialog::getItem(
+        nullptr,
+        "Select a screen.",
+        "Screen:",
+        screenNames,
+        0,
+        false,
+        &okClicked
+    );
 
     std::int64_t retScreen = -1;
     if(okClicked)

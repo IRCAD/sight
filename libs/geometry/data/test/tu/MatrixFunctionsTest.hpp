@@ -26,16 +26,18 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
 class MatrixFunctionsTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
-    CPPUNIT_TEST( checkMultVecMatrix);
-    CPPUNIT_TEST( checkRotationMatrix);
-    CPPUNIT_TEST( checkInverse);
+
+    CPPUNIT_TEST_SUITE(MatrixFunctionsTest);
+    CPPUNIT_TEST(checkMultVecMatrix);
+    CPPUNIT_TEST(checkRotationMatrix);
+    CPPUNIT_TEST(checkInverse);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,4 +51,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::data

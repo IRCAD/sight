@@ -26,5 +26,7 @@
 
 namespace sight::viz::scene3d::ui
 {
+
 using VRWidget [[deprecated("VRWidget was renamed to ClippingBox.")]] = viz::scene3d::widget::ClippingBox;
+
 } // namespace sight::viz::scene3d::ui

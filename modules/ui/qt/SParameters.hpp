@@ -120,28 +120,30 @@ class MODULE_UI_QT_CLASS_API SParameters : public QObject,
                                            public sight::ui::base::IEditor
 {
 Q_OBJECT
+
 public:
-    SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor)
+
+    SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor);
 
     /// Boolean changed signal type
-    typedef core::com::Signal< void (bool, std::string) > BooleanChangedSignalType;
+    typedef core::com::Signal<void (bool, std::string)> BooleanChangedSignalType;
 
     /// Color changed signal type
-    typedef core::com::Signal< void (std::array<std::uint8_t, 4>, std::string) > ColorChangedSignalType;
+    typedef core::com::Signal<void (std::array<std::uint8_t, 4>, std::string)> ColorChangedSignalType;
 
     /// Double changed signal type
-    typedef core::com::Signal< void (double, std::string) > DoubleChangedSignalType;
-    typedef core::com::Signal< void (double, double, std::string) > Double2ChangedSignalType;
-    typedef core::com::Signal< void (double, double, double, std::string) > Double3ChangedSignalType;
+    typedef core::com::Signal<void (double, std::string)> DoubleChangedSignalType;
+    typedef core::com::Signal<void (double, double, std::string)> Double2ChangedSignalType;
+    typedef core::com::Signal<void (double, double, double, std::string)> Double3ChangedSignalType;
 
     /// Integer changed signal type
-    typedef core::com::Signal< void (int, std::string) > IntegerChangedSignalType;
-    typedef core::com::Signal< void (int, int, std::string) > Integer2ChangedSignalType;
-    typedef core::com::Signal< void (int, int, int, std::string) > Integer3ChangedSignalType;
+    typedef core::com::Signal<void (int, std::string)> IntegerChangedSignalType;
+    typedef core::com::Signal<void (int, int, std::string)> Integer2ChangedSignalType;
+    typedef core::com::Signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
 
     /// Enum changed signal type
-    typedef core::com::Signal< void (std::string, std::string) > EnumChangedSignalType;
-    typedef core::com::Signal< void (int, std::string) > EnumChangedIndexSignalType;
+    typedef core::com::Signal<void (std::string, std::string)> EnumChangedSignalType;
+    typedef core::com::Signal<void (int, std::string)> EnumChangedIndexSignalType;
 
     /// Constructor. Initializes signals
     MODULE_UI_QT_API SParameters() noexcept;
@@ -238,32 +240,79 @@ private:
     QPushButton* createResetButton();
 
     /// Create a widget associated with a boolean type
-    void createBoolWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
-                          bool resetButton);
+    void createBoolWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        const std::string& defaultValue,
+        bool resetButton
+    );
 
     /// Create a widget associated with a color type
-    void createColorWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
-                           bool resetButton);
+    void createColorWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        const std::string& defaultValue,
+        bool resetButton
+    );
 
     /// Create a widget associated with a double type
-    void createDoubleWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
-                            double min, double max, int count, bool resetButton = true);
+    void createDoubleWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        double defaultValue,
+        double min,
+        double max,
+        int count,
+        bool resetButton = true
+    );
 
     /// Create a slider widget associated with a double type.
-    void createDoubleSliderWidget(QGridLayout& layout, int row, const std::string& key, double defaultValue,
-                                  double min, double max, std::uint8_t decimals, bool resetButton);
+    void createDoubleSliderWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        double defaultValue,
+        double min,
+        double max,
+        std::uint8_t decimals,
+        bool resetButton
+    );
 
     /// Create a slider widget associated with an integer type
-    void createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
-                                   int defaultValue, int min, int max, bool resetButton);
+    void createIntegerSliderWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        int defaultValue,
+        int min,
+        int max,
+        bool resetButton
+    );
 
     /// Create a spin widget associated with an integer type
-    void createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
-                                 int defaultValue, int min, int max, int count, bool resetButton);
+    void createIntegerSpinWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        int defaultValue,
+        int min,
+        int max,
+        int count,
+        bool resetButton
+    );
 
     /// Create a multi choice widget
-    void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
-                          const std::vector< std::string>& values, const std::vector<std::string>& data);
+    void createEnumWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        const std::string& defaultValue,
+        const std::vector<std::string>& values,
+        const std::vector<std::string>& data
+    );
 
     /// Emit the signal(s) for the integer widget
     void emitIntegerSignal(QObject* widget);
@@ -332,7 +381,7 @@ private:
     static void setDoubleSliderRange(QSlider* slider, double currentValue);
 
     /// Adjust the minimum size of a label according to the range values
-    template <typename T>
+    template<typename T>
     static void setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t decimals = 0);
 
     template<typename T>
@@ -343,19 +392,20 @@ private:
 
     /// if true, the signals are not emitted
     bool m_blockSignals;
-
 };
 
 //------------------------------------------------------------------------------
 
-template<> inline QString SParameters::valueToStringLabel<int>(int value, std::uint8_t)
+template<>
+inline QString SParameters::valueToStringLabel<int>(int value, std::uint8_t)
 {
     return QString("%1").arg(value);
 }
 
 //------------------------------------------------------------------------------
 
-template<> inline QString SParameters::valueToStringLabel<double>(double value, std::uint8_t decimals)
+template<>
+inline QString SParameters::valueToStringLabel<double>(double value, std::uint8_t decimals)
 {
     return QString::number(value, 'f', decimals);
 }
@@ -388,4 +438,4 @@ void SParameters::setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t 
 
 //------------------------------------------------------------------------------
 
-}   //namespace sight::module::ui::qt
+} //namespace sight::module::ui::qt

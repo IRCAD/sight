@@ -26,17 +26,19 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Port));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Port));
 
 namespace sight::data
 {
+
 /**
  * @brief A port is defined by an identifier and a type.
  */
 class DATA_CLASS_API Port : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(Port, data::Object, data::factory::New< Port >)
+
+    SIGHT_DECLARE_CLASS(Port, data::Object, data::factory::New<Port>);
 
     /**
      * @brief Constructor
@@ -51,9 +53,9 @@ public:
      * @{
      * @brief Retrieve the identifier.
      */
-    std::string& getIdentifier ();
-    const std::string& getIdentifier () const;
-    void setIdentifier (const std::string& _identifier);
+    std::string& getIdentifier();
+    const std::string& getIdentifier() const;
+    void setIdentifier(const std::string& _identifier);
     /// @}
 
     /**
@@ -61,20 +63,20 @@ public:
      * @brief Retrieve the type.
      */
 
-    std::string& getType ();
-    const std::string& getType () const;
-    void setType (const std::string& _type);
+    std::string& getType();
+    const std::string& getType() const;
+    void setType(const std::string& _type);
     /// @}
 
     /**
      * @{
      * @brief Retrieve the input data.
      */
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Port));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Port));
     /// @}
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -82,49 +84,49 @@ public:
 protected:
 
     //! port identifier
-    std::string m_identifier;  // example "ID_SIZEX", "THRESHOLD_LOW"
+    std::string m_identifier; // example "ID_SIZEX", "THRESHOLD_LOW"
     //! port type
-    std::string m_type;   // example "Image, Mesh" un className de data
+    std::string m_type; // example "Image, Mesh" un className de data
 };
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Port::getIdentifier ()
+inline std::string& Port::getIdentifier()
 {
     return this->m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Port::getIdentifier () const
+inline const std::string& Port::getIdentifier() const
 {
     return this->m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setIdentifier (const std::string& _identifier)
+inline void Port::setIdentifier(const std::string& _identifier)
 {
     this->m_identifier = _identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Port::getType ()
+inline std::string& Port::getType()
 {
     return this->m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Port::getType () const
+inline const std::string& Port::getType() const
 {
     return this->m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setType (const std::string& _type)
+inline void Port::setType(const std::string& _type)
 {
     this->m_type = _type;
 }

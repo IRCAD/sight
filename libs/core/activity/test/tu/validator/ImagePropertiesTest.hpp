@@ -32,20 +32,21 @@ namespace ut
 
 class ImagePropertiesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImagePropertiesTest );
+CPPUNIT_TEST_SUITE(ImagePropertiesTest);
 
 CPPUNIT_TEST(propertiesTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void propertiesTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::activity

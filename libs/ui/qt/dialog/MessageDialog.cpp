@@ -29,32 +29,37 @@
 #include <QPushButton>
 #include <QVector>
 
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::sight::ui::qt::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
 //------------------------------------------------------------------------------
 
-typedef const std::map< ui::base::dialog::IMessageDialog::Icons, QMessageBox::Icon> MessageDialogQtIconsType;
-MessageDialogQtIconsType messageDialogQtIcons = { {ui::base::dialog::IMessageDialog::NONE, QMessageBox::NoIcon},
-                                                  {ui::base::dialog::IMessageDialog::QUESTION, QMessageBox::Question },
-                                                  {ui::base::dialog::IMessageDialog::INFO, QMessageBox::Information},
-                                                  {ui::base::dialog::IMessageDialog::WARNING, QMessageBox::Warning},
-                                                  {ui::base::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical} };
+typedef const std::map<ui::base::dialog::IMessageDialog::Icons, QMessageBox::Icon> MessageDialogQtIconsType;
+MessageDialogQtIconsType messageDialogQtIcons = {{ui::base::dialog::IMessageDialog::NONE, QMessageBox::NoIcon},
+    {ui::base::dialog::IMessageDialog::QUESTION, QMessageBox::Question},
+    {ui::base::dialog::IMessageDialog::INFO, QMessageBox::Information},
+    {ui::base::dialog::IMessageDialog::WARNING, QMessageBox::Warning},
+    {ui::base::dialog::IMessageDialog::CRITICAL, QMessageBox::Critical
+    }
+};
 
-typedef const std::map< ui::base::dialog::IMessageDialog::Buttons,
-                        QMessageBox::StandardButtons> MessageDialogQtButtonType;
-MessageDialogQtButtonType messageDialogQtButton = { {ui::base::dialog::IMessageDialog::OK, QMessageBox::Ok},
-                                                    {ui::base::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
-                                                    {ui::base::dialog::IMessageDialog::YES, QMessageBox::Yes},
-                                                    {ui::base::dialog::IMessageDialog::NO, QMessageBox::No} };
+typedef const std::map<ui::base::dialog::IMessageDialog::Buttons,
+                       QMessageBox::StandardButtons> MessageDialogQtButtonType;
+MessageDialogQtButtonType messageDialogQtButton = {{ui::base::dialog::IMessageDialog::OK, QMessageBox::Ok},
+    {ui::base::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
+    {ui::base::dialog::IMessageDialog::YES, QMessageBox::Yes},
+    {ui::base::dialog::IMessageDialog::NO, QMessageBox::No
+    }
+};
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key ) :
+MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key) :
     m_buttons(ui::base::dialog::IMessageDialog::NOBUTTON),
     m_defaultButton(ui::base::dialog::IMessageDialog::NOBUTTON),
     m_icon(ui::base::dialog::IMessageDialog::NONE)
@@ -69,44 +74,44 @@ MessageDialog::~MessageDialog()
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setTitle( const std::string& title )
+void MessageDialog::setTitle(const std::string& title)
 {
     m_title = title;
 }
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setMessage( const std::string& msg )
+void MessageDialog::setMessage(const std::string& msg)
 {
     m_message = msg;
 }
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setIcon( ui::base::dialog::IMessageDialog::Icons icon )
+void MessageDialog::setIcon(ui::base::dialog::IMessageDialog::Icons icon)
 {
     m_icon = icon;
 }
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::addButton( ui::base::dialog::IMessageDialog::Buttons button )
+void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
-    m_buttons = (ui::base::dialog::IMessageDialog::Buttons) ( m_buttons | button );
+    m_buttons = (ui::base::dialog::IMessageDialog::Buttons) (m_buttons | button);
 }
 
 //------------------------------------------------------------------------------
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    QPushButton* button = new QPushButton( QString::fromStdString(label) );
-    m_customButtons.push_back( button );
+    QPushButton* button = new QPushButton(QString::fromStdString(label));
+    m_customButtons.push_back(button);
     QObject::connect(button, &QPushButton::clicked, clickedFn);
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button )
+void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button)
 {
     m_defaultButton = button;
 }
@@ -123,9 +128,9 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
     QString text                         = QString::fromStdString(m_message);
     QMessageBox::StandardButtons buttons = QMessageBox::NoButton;
 
-    for(MessageDialogQtButtonType::value_type button :  messageDialogQtButton)
+    for(MessageDialogQtButtonType::value_type button : messageDialogQtButton)
     {
-        if ( m_buttons & button.first)
+        if(m_buttons & button.first)
         {
             buttons |= button.second;
         }
@@ -148,18 +153,20 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
     box.exec();
 
-    for(MessageDialogQtButtonType::value_type button :  messageDialogQtButton)
+    for(MessageDialogQtButtonType::value_type button : messageDialogQtButton)
     {
-        if ( box.standardButton( box.clickedButton() ) == button.second)
+        if(box.standardButton(box.clickedButton()) == button.second)
         {
             result = button.first;
             break;
         }
     }
+
     return result;
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

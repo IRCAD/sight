@@ -29,7 +29,7 @@ namespace sight::core::jobs
 
 Observer::sptr Observer::New(const std::string& name, std::uint64_t workUnits)
 {
-    return std::make_shared<Observer>( name, workUnits );
+    return std::make_shared<Observer>(name, workUnits);
 }
 
 //------------------------------------------------------------------------------
@@ -37,17 +37,19 @@ Observer::sptr Observer::New(const std::string& name, std::uint64_t workUnits)
 Observer::Observer(const std::string& name, std::uint64_t workUnits) :
     IJob(name)
 {
-    m_finishTask = PackagedTask([this]()
+    m_finishTask = PackagedTask(
+        [this]()
         {
             core::mt::WriteLock lock(m_mutex);
             this->finishNoLock();
         });
     m_totalWorkUnits = workUnits;
 
-    this->addSimpleCancelHook( [this]()
+    this->addSimpleCancelHook(
+        [this]()
         {
             this->finish();
-        } );
+        });
     this->run();
 }
 
@@ -66,7 +68,7 @@ Observer::ProgressCallback Observer::progressCallback()
 void Observer::finish()
 {
     core::mt::ReadLock lock(m_mutex);
-    if( m_state == RUNNING || m_state == CANCELING )
+    if(m_state == RUNNING || m_state == CANCELING)
     {
         lock.unlock();
         m_finishTask();

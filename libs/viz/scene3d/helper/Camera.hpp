@@ -45,10 +45,13 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::Matrix4 computeFrustumShearTransform(const Ogre::Camera& _camera, float _angle);
 
-    static VIZ_SCENE3D_API Ogre::Matrix4 computeProjectionMatrix(const data::Camera& _calibration,
-                                                                 float _width, float _height,
-                                                                 float _near,
-                                                                 float _far);
+    static VIZ_SCENE3D_API Ogre::Matrix4 computeProjectionMatrix(
+        const data::Camera& _calibration,
+        float _width,
+        float _height,
+        float _near,
+        float _far
+    );
 
     /**
      * @brief Returns a render window's position relatively to the camera's viewport.
@@ -58,8 +61,11 @@ public:
      *
      * @return screen position relatively to the viewport.
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector2 convertFromWindowToViewportSpace(const ::Ogre::Camera& _camera,
-                                                                            int _renderWindowX, int _renderWindowY);
+    static VIZ_SCENE3D_API ::Ogre::Vector2 convertFromWindowToViewportSpace(
+        const ::Ogre::Camera& _camera,
+        int _renderWindowX,
+        int _renderWindowY
+    );
 
     /**
      * @brief Converts from screen space (u, v, w) to view space (x, y, z).
@@ -67,8 +73,10 @@ public:
      * @param _screenPos screen position (u, v, w).
      * @return view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector3 convertScreenSpaceToViewSpace(const ::Ogre::Camera& _camera,
-                                                                         const ::Ogre::Vector3& _screenPos);
+    static VIZ_SCENE3D_API ::Ogre::Vector3 convertScreenSpaceToViewSpace(
+        const ::Ogre::Camera& _camera,
+        const ::Ogre::Vector3& _screenPos
+    );
 
     /**
      * @brief Converts from NDC space to view space (call by @ref convertScreenSpaceToViewSpace)
@@ -76,9 +84,10 @@ public:
      * @param _ndcPos NDC coordinates (3 components).
      * @return the view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API ::Ogre::Vector3 convertNDCToViewSpace(const ::Ogre::Camera& _camera,
-                                                                 const ::Ogre::Vector3& _ndcPos);
-
+    static VIZ_SCENE3D_API ::Ogre::Vector3 convertNDCToViewSpace(
+        const ::Ogre::Camera& _camera,
+        const ::Ogre::Vector3& _ndcPos
+    );
 };
 
 } // namespace helper

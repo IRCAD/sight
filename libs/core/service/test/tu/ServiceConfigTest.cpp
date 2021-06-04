@@ -32,10 +32,11 @@
 #include <functional>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::service::ut::ServiceConfigTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ServiceConfigTest);
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -65,16 +66,16 @@ void ServiceConfigTest::serviceConfigTest()
     const std::string desc("Description of config");
     core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 
-    currentServiceConfig->addServiceConfigInfo( configId, service, desc, config );
+    currentServiceConfig->addServiceConfigInfo(configId, service, desc, config);
 
     core::runtime::ConfigurationElement::csptr serviceConfig =
         currentServiceConfig->getServiceConfig(configId, service);
-    CPPUNIT_ASSERT( serviceConfig );
+    CPPUNIT_ASSERT(serviceConfig);
     CPPUNIT_ASSERT(serviceConfig->hasAttribute("uid"));
     CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), serviceConfig->getAttributeValue("uid"));
 
-    std::vector< std::string > configs = currentServiceConfig->getAllConfigForService(service);
-    CPPUNIT_ASSERT( !configs.empty());
+    std::vector<std::string> configs = currentServiceConfig->getAllConfigForService(service);
+    CPPUNIT_ASSERT(!configs.empty());
     CPPUNIT_ASSERT(std::find(configs.begin(), configs.end(), configId) != configs.end());
 }
 
@@ -83,10 +84,10 @@ void ServiceConfigTest::serviceConfigTest()
 void ServiceConfigTest::concurentAccessToServiceConfigTest()
 {
     const auto fn = std::bind(&ServiceConfigTest::serviceConfigTest, this);
-    std::vector< std::future<void> > futures;
-    for (unsigned int i = 0; i < 20; ++i)
+    std::vector<std::future<void> > futures;
+    for(unsigned int i = 0 ; i < 20 ; ++i)
     {
-        futures.push_back( std::async(std::launch::async, fn) );
+        futures.push_back(std::async(std::launch::async, fn));
     }
 
     std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
@@ -94,8 +95,9 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     service::extension::Config::sptr currentServiceConfig;
     currentServiceConfig = service::extension::Config::getDefault();
     currentServiceConfig->clearRegistry();
-    std::vector< std::string > allConfigs = currentServiceConfig->getAllConfigForService(
-        "::sight::service::ut::TestService");
+    std::vector<std::string> allConfigs = currentServiceConfig->getAllConfigForService(
+        "::sight::service::ut::TestService"
+    );
     CPPUNIT_ASSERT(allConfigs.empty());
 }
 
@@ -115,65 +117,83 @@ void ServiceConfigTest::getAllConfigsTest()
     std::vector<std::string> vectConfigTest0;
     std::vector<std::string> vectConfigTest1;
 
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0 ; i < 6 ; ++i)
     {
         const std::string configId = configIdPrefix0 + std::to_string(i);
 
         vectConfigTest0.push_back(configId);
 
-        currentServiceConfig->addServiceConfigInfo(configId,
-                                                   serviceName0,
-                                                   "Much test, oh wow",
-                                                   nullptr);
+        currentServiceConfig->addServiceConfigInfo(
+            configId,
+            serviceName0,
+            "Much test, oh wow",
+            nullptr
+        );
     }
 
-    for(int i = 0; i < 4; ++i)
+    for(int i = 0 ; i < 4 ; ++i)
     {
         const std::string configId = configIdPrefix1 + std::to_string(i);
 
         vectConfigTest1.push_back(configId);
 
-        currentServiceConfig->addServiceConfigInfo(configId,
-                                                   serviceName1,
-                                                   "No, bad test ! Bad !",
-                                                   nullptr);
+        currentServiceConfig->addServiceConfigInfo(
+            configId,
+            serviceName1,
+            "No, bad test ! Bad !",
+            nullptr
+        );
     }
 
-    for(int i = 0; i < 3; ++i)
+    for(int i = 0 ; i < 3 ; ++i)
     {
         const std::string configId = configIdPrefix2 + std::to_string(i);
 
         vectConfigTest0.push_back(configId);
         vectConfigTest1.push_back(configId);
 
-        currentServiceConfig->addServiceConfigInfo(configId,
-                                                   "", // Empty type.
-                                                   "Such empty, much space, wow.",
-                                                   nullptr);
+        currentServiceConfig->addServiceConfigInfo(
+            configId,
+            "", // Empty type.
+            "Such empty, much space, wow.",
+            nullptr
+        );
     }
 
     const std::vector<std::string> test0 = currentServiceConfig->getAllConfigForService(serviceName0);
     CPPUNIT_ASSERT_EQUAL(size_t(9), test0.size());
 
-    for(size_t i = 0; i < test0.size(); ++i)
+    for(size_t i = 0 ; i < test0.size() ; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(true, std::find(vectConfigTest0.begin(), vectConfigTest0.end(),
-                                             test0[i]) != vectConfigTest0.end() );
+        CPPUNIT_ASSERT_EQUAL(
+            true,
+            std::find(
+                vectConfigTest0.begin(),
+                vectConfigTest0.end(),
+                test0[i]
+            ) != vectConfigTest0.end()
+        );
     }
 
     const std::vector<std::string> test1 = currentServiceConfig->getAllConfigForService(serviceName1);
     CPPUNIT_ASSERT_EQUAL(size_t(7), test1.size());
 
-    for(size_t i = 0; i < test1.size(); ++i)
+    for(size_t i = 0 ; i < test1.size() ; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(true, std::find(vectConfigTest1.begin(), vectConfigTest1.end(),
-                                             test1[i]) != vectConfigTest1.end() );
+        CPPUNIT_ASSERT_EQUAL(
+            true,
+            std::find(
+                vectConfigTest1.begin(),
+                vectConfigTest1.end(),
+                test1[i]
+            ) != vectConfigTest1.end()
+        );
     }
 
     const std::vector<std::string> test2 = currentServiceConfig->getAllConfigForService("");
     CPPUNIT_ASSERT_EQUAL(size_t(3), test2.size());
 
-    for(size_t i = 0; i < test2.size(); ++i)
+    for(size_t i = 0 ; i < test2.size() ; ++i)
     {
         const std::string expected = configIdPrefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test2[i]);
@@ -182,7 +202,7 @@ void ServiceConfigTest::getAllConfigsTest()
     const std::vector<std::string> test3 = currentServiceConfig->getAllConfigForService(serviceName0, true);
     CPPUNIT_ASSERT_EQUAL(size_t(6), test3.size());
 
-    for(size_t i = 0; i < test3.size(); ++i)
+    for(size_t i = 0 ; i < test3.size() ; ++i)
     {
         const std::string expected = configIdPrefix0 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test3[i]);
@@ -191,7 +211,7 @@ void ServiceConfigTest::getAllConfigsTest()
     const std::vector<std::string> test4 = currentServiceConfig->getAllConfigForService(serviceName1, true);
     CPPUNIT_ASSERT_EQUAL(size_t(4), test4.size());
 
-    for(size_t i = 0; i < test4.size(); ++i)
+    for(size_t i = 0 ; i < test4.size() ; ++i)
     {
         const std::string expected = configIdPrefix1 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test4[i]);
@@ -200,7 +220,7 @@ void ServiceConfigTest::getAllConfigsTest()
     const std::vector<std::string> test5 = currentServiceConfig->getAllConfigForService("", true);
     CPPUNIT_ASSERT_EQUAL(size_t(3), test5.size());
 
-    for(size_t i = 0; i < test5.size(); ++i)
+    for(size_t i = 0 ; i < test5.size() ; ++i)
     {
         const std::string expected = configIdPrefix2 + std::to_string(i);
         CPPUNIT_ASSERT_EQUAL(expected, test5[i]);
@@ -211,10 +231,11 @@ void ServiceConfigTest::getAllConfigsTest()
 
 core::runtime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    std::shared_ptr< core::runtime::EConfigurationElement > serviceCfg( new core::runtime::EConfigurationElement(
-                                                                            "config"));
-    serviceCfg->setAttributeValue( "uid", "serviceUUID");
-    serviceCfg->setAttributeValue( "type", "serviceType");
+    std::shared_ptr<core::runtime::EConfigurationElement> serviceCfg(new core::runtime::EConfigurationElement(
+                                                                         "config"
+    ));
+    serviceCfg->setAttributeValue("uid", "serviceUUID");
+    serviceCfg->setAttributeValue("type", "serviceType");
 
     core::runtime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
     cfg->setValue("Parameter");
@@ -225,4 +246,5 @@ core::runtime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

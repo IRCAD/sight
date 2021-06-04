@@ -31,22 +31,23 @@
 #include <atoms/Object.hxx>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
-#include <boost/algorithm/string.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/semantic/V09ALA/V10/data/Image.hpp>
 #include <io/patch/structural/PatchLoader.hpp>
 
+#include <utest/Exception.hpp>
+
+#include <boost/algorithm/string.hpp>
+
 #include <array>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::semantic::ut::ImageV09ALAToV10Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::semantic::ut::ImageV09ALAToV10Test);
 
 namespace sight::io::patch::semantic
 {
+
 namespace ut
 {
 
@@ -133,7 +134,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
     CPPUNIT_ASSERT_EQUAL(size_t(5), landmarksMap->size());
 
     size_t count = 0;
-    for (const auto& elt: landmarksMap->getValue())
+    for(const auto& elt : landmarksMap->getValue())
     {
         sight::atoms::Object::csptr atomGroup = sight::atoms::Object::dynamicCast(elt.second);
         CPPUNIT_ASSERT(atomGroup);
@@ -166,8 +167,11 @@ void ImageV09ALAToV10Test::applyPatchTest()
 
 //------------------------------------------------------------------------------
 
-void ImageV09ALAToV10Test::addPoint(sight::atoms::Sequence::sptr seq, const std::array<double, 3>& pt,
-                                    const std::string& label)
+void ImageV09ALAToV10Test::addPoint(
+    sight::atoms::Sequence::sptr seq,
+    const std::array<double, 3>& pt,
+    const std::string& label
+)
 {
     sight::atoms::Object::sptr point = sight::atoms::Object::New();
     io::atoms::patch::helper::setClassname(point, "::sight::data::Point");
@@ -195,5 +199,7 @@ void ImageV09ALAToV10Test::addPoint(sight::atoms::Sequence::sptr seq, const std:
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace ut
+
 } //namespace sight::io::patch::semantic

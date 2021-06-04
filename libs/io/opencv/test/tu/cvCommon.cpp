@@ -28,13 +28,14 @@
 
 namespace sight::io::opencv
 {
+
 namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-#define declareCvFormatValue(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4 ) \
-    const std::array< std::int32_t, 4 > getCvFormat<_TYPE>::type = {{ _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4 } \
+#define declareCvFormatValue(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
+    const std::array<std::int32_t, 4> getCvFormat<_TYPE>::type = {{_CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4} \
     };
 
 declareCvFormatValue(std::uint8_t, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4)
@@ -49,4 +50,4 @@ declareCvFormatValue(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
 
 } // namespace ut
 
-}// namespace sight::io::opencv
+} // namespace sight::io::opencv

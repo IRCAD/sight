@@ -30,21 +30,22 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
+#include <service/extension/Factory.hpp>
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/extension/Factory.hpp>
 
 #include <unordered_set>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ObjectServiceTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ObjectServiceTest);
 
 //------------------------------------------------------------------------------
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -74,9 +75,9 @@ void ObjectServiceTest::registerKeyTest()
     data::Integer::sptr obj2 = data::Integer::New();
     data::Integer::sptr obj3 = data::Integer::New();
 
-    auto service1 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
-    auto service2 = service::extension::Factory::getDefault()->create( srvType, srvImplementation2 );
-    auto service3 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
+    auto service1 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
+    auto service2 = service::extension::Factory::getDefault()->create(srvType, srvImplementation2);
+    auto service3 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
 
     service::registry::ObjectService osr;
     CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
@@ -98,29 +99,29 @@ void ObjectServiceTest::registerKeyTest()
     osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service1);
     osr.registerService(obj3, "key3", service::IService::AccessType::INOUT, service1);
 
-    CPPUNIT_ASSERT( osr.isRegistered("key1", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( osr.isRegistered("key2", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( osr.isRegistered("key3", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service1) );
+    CPPUNIT_ASSERT(osr.isRegistered("key1", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(osr.isRegistered("key3", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service1));
 
     osr.registerService(obj1, "key1", service::IService::AccessType::INOUT, service2);
     osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service2);
 
-    CPPUNIT_ASSERT( osr.isRegistered("key1", service::IService::AccessType::INOUT, service2) );
-    CPPUNIT_ASSERT( osr.isRegistered("key2", service::IService::AccessType::INOUT, service2) );
-    CPPUNIT_ASSERT( obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service2) );
-    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service2) );
+    CPPUNIT_ASSERT(osr.isRegistered("key1", service::IService::AccessType::INOUT, service2));
+    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service2));
+    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service2));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service2));
 
     osr.registerService(obj3, "key3", service::IService::AccessType::INOUT, service3);
-    CPPUNIT_ASSERT( osr.isRegistered("key3", service::IService::AccessType::INOUT, service3) );
-    CPPUNIT_ASSERT( obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service3) );
+    CPPUNIT_ASSERT(osr.isRegistered("key3", service::IService::AccessType::INOUT, service3));
+    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service3));
 
     // 3 services in total
     {
-        auto servicesByType         = osr.getServices( srvType );
-        auto servicesByTemplateType = osr.getServices< service::ut::TestService >( );
+        auto servicesByType         = osr.getServices(srvType);
+        auto servicesByTemplateType = osr.getServices<service::ut::TestService>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
@@ -128,8 +129,8 @@ void ObjectServiceTest::registerKeyTest()
 
     // 2 services of type "::sight::service::ut::TestServiceImplementation"
     {
-        auto servicesByType         = osr.getServices( srvImplementation1 );
-        auto servicesByTemplateType = osr.getServices< service::ut::TestServiceImplementation >( );
+        auto servicesByType         = osr.getServices(srvImplementation1);
+        auto servicesByTemplateType = osr.getServices<service::ut::TestServiceImplementation>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
@@ -137,14 +138,14 @@ void ObjectServiceTest::registerKeyTest()
 
     // 1 service of type "::sight::service::ut::TestServiceImplementation2"
     {
-        auto servicesByType         = osr.getServices( srvImplementation2 );
-        auto servicesByTemplateType = osr.getServices< service::ut::TestServiceImplementation2 >( );
+        auto servicesByType         = osr.getServices(srvImplementation2);
+        auto servicesByTemplateType = osr.getServices<service::ut::TestServiceImplementation2>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
-    auto servicesByType = osr.getServices( srvType );
+    auto servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     CPPUNIT_ASSERT(servicesByType.find(service1) != servicesByType.end());
@@ -153,41 +154,41 @@ void ObjectServiceTest::registerKeyTest()
 
     // Remove key 1 from service 1 and check consistency
     osr.unregisterService("key1", service::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT( false == osr.isRegistered("key1", service::IService::AccessType::INOUT, service1) );
-    servicesByType = osr.getServices( srvType );
+    CPPUNIT_ASSERT(false == osr.isRegistered("key1", service::IService::AccessType::INOUT, service1));
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     osr.unregisterService(service1);
-    servicesByType = osr.getServices( srvType );
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Remove key 2 from service 2 and check consistency
     osr.unregisterService("key2", service::IService::AccessType::INOUT, service2);
-    CPPUNIT_ASSERT( false == osr.isRegistered("key2", service::IService::AccessType::INOUT, service2) );
+    CPPUNIT_ASSERT(false == osr.isRegistered("key2", service::IService::AccessType::INOUT, service2));
 
-    servicesByType = osr.getServices( srvType );
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Register key 2 to service 1 just for fun
     osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT( osr.isRegistered("key2", service::IService::AccessType::INOUT, service1) );
-    CPPUNIT_ASSERT( obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1) );
-    servicesByType = osr.getServices( srvType );
+    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1));
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
     // Remove service 3 and check consistency
     osr.unregisterService(service3);
-    servicesByType = osr.getServices( srvType );
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     osr.unregisterService(service2);
 
-    servicesByType = osr.getServices( srvType );
+    servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
 
     osr.unregisterService(service1);
-    servicesByType = osr.getServices( srvType );
-    CPPUNIT_ASSERT( servicesByType.empty() );
+    servicesByType = osr.getServices(srvType);
+    CPPUNIT_ASSERT(servicesByType.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -202,11 +203,11 @@ void ObjectServiceTest::registerConnectionTest()
     data::Integer::sptr obj1 = data::Integer::New();
     data::Integer::sptr obj2 = data::Integer::New();
 
-    auto service1 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
+    auto service1 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
 
     auto worker         = core::thread::Worker::New();
-    auto slotRegister   = core::com::newSlot( &ObjectServiceTest::registerService, this);
-    auto slotUnregister = core::com::newSlot( &ObjectServiceTest::unregisterService, this);
+    auto slotRegister   = core::com::newSlot(&ObjectServiceTest::registerService, this);
+    auto slotUnregister = core::com::newSlot(&ObjectServiceTest::unregisterService, this);
     slotRegister->setWorker(worker);
     slotUnregister->setWorker(worker);
 
@@ -219,7 +220,7 @@ void ObjectServiceTest::registerConnectionTest()
     osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid1"; });
+        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this]{return m_ret == "uid1";});
 
         CPPUNIT_ASSERT_EQUAL(std::string("uid1"), m_ret);
         CPPUNIT_ASSERT(obj1 == m_obj);
@@ -229,7 +230,7 @@ void ObjectServiceTest::registerConnectionTest()
     osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid2"; });
+        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this]{return m_ret == "uid2";});
 
         CPPUNIT_ASSERT_EQUAL(std::string("uid2"), m_ret);
         CPPUNIT_ASSERT(obj2 == m_obj);
@@ -239,7 +240,7 @@ void ObjectServiceTest::registerConnectionTest()
     osr.unregisterServiceOutput("key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid1"; });
+        m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this]{return m_ret == "uid1";});
 
         CPPUNIT_ASSERT_EQUAL(std::string("uid1"), m_ret);
     }
@@ -255,7 +256,6 @@ void ObjectServiceTest::registerService(data::Object::sptr obj, const std::strin
         m_ret = id;
     }
     m_condition.notify_one();
-
 }
 
 //------------------------------------------------------------------------------
@@ -268,10 +268,10 @@ void ObjectServiceTest::unregisterService(data::Object::sptr obj, const std::str
         m_ret = id;
     }
     m_condition.notify_one();
-
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

@@ -77,7 +77,7 @@ class MODULE_DATA_CLASS_API SSeriesSignal : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesSignal, service::IController)
+    SIGHT_DECLARE_SERVICE(SSeriesSignal, service::IController);
 
     /// Constructor. Do nothing.
     MODULE_DATA_API SSeriesSignal() noexcept;

@@ -29,6 +29,7 @@
 
 namespace sight::io::vtk
 {
+
 namespace ut
 {
 
@@ -37,20 +38,21 @@ namespace ut
  */
 class SeriesDBTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesDBTest );
-CPPUNIT_TEST( testImportSeriesDB );
-CPPUNIT_TEST( testLazyImportSeriesDB );
+CPPUNIT_TEST_SUITE(SeriesDBTest);
+CPPUNIT_TEST(testImportSeriesDB);
+CPPUNIT_TEST(testLazyImportSeriesDB);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void testImportSeriesDB();
     void testLazyImportSeriesDB();
-
 };
 
 } // namespace ut
+
 } // namespace sight::io::vtk

@@ -117,9 +117,9 @@ void SOpenCVIntrinsic::swapping()
 
 void SOpenCVIntrinsic::updating()
 {
-    data::CalibrationInfo::csptr calInfo = this->getInput< data::CalibrationInfo>("calibrationInfo");
-    data::Camera::sptr cam               = this->getInOut< data::Camera >("camera");
-    data::Vector::sptr poseCamera        = this->getInOut< data::Vector >("poseVector");
+    data::CalibrationInfo::csptr calInfo = this->getInput<data::CalibrationInfo>("calibrationInfo");
+    data::Camera::sptr cam               = this->getInOut<data::Camera>("camera");
+    data::Vector::sptr poseCamera        = this->getInOut<data::Vector>("poseVector");
 
     SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SIGHT_ASSERT("'camera' should not be null", cam);
@@ -127,26 +127,30 @@ void SOpenCVIntrinsic::updating()
 
     if(!calInfo->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point2f > > cornersPoints;
-        std::vector<std::vector< int > > ids;
+        std::vector<std::vector< ::cv::Point2f> > cornersPoints;
+        std::vector<std::vector<int> > ids;
 
         {
             data::mt::ObjectReadLock calInfoLock(calInfo);
             for(data::PointList::sptr capture : calInfo->getPointListContainer())
             {
-                std::vector< ::cv::Point2f > cdst;
-                std::vector< int > idst;
+                std::vector< ::cv::Point2f> cdst;
+                std::vector<int> idst;
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    cdst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
-                                                 static_cast<float>(point->getCoord()[1])));
+                    cdst.push_back(
+                        ::cv::Point2f(
+                            static_cast<float>(point->getCoord()[0]),
+                            static_cast<float>(point->getCoord()[1])
+                        )
+                    );
                     idst.push_back(static_cast<int>(point->getCoord()[2]));
                 }
+
                 cornersPoints.push_back(cdst);
                 ids.push_back(idst);
-
             }
         }
 
@@ -158,8 +162,16 @@ void SOpenCVIntrinsic::updating()
         std::vector< ::cv::Mat> tvecs;
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
 
-        double err = ::cv::aruco::calibrateCameraCharuco(cornersPoints, ids, m_board, imgsize, cameraMatrix, distCoeffs,
-                                                         rvecs, tvecs);
+        double err = ::cv::aruco::calibrateCameraCharuco(
+            cornersPoints,
+            ids,
+            m_board,
+            imgsize,
+            cameraMatrix,
+            distCoeffs,
+            rvecs,
+            tvecs
+        );
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
@@ -168,7 +180,7 @@ void SOpenCVIntrinsic::updating()
             data::mt::ObjectWriteLock lock(poseCamera);
             poseCamera->getContainer().clear();
 
-            for(size_t index = 0; index < rvecs.size(); ++index)
+            for(size_t index = 0 ; index < rvecs.size() ; ++index)
             {
                 data::Matrix4::sptr mat3D = data::Matrix4::New();
 
@@ -176,8 +188,9 @@ void SOpenCVIntrinsic::updating()
                 io::opencv::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->getContainer().push_back(mat3D);
-                auto sig = poseCamera->signal< data::Vector::AddedObjectsSignalType >(
-                    data::Vector::s_ADDED_OBJECTS_SIG);
+                auto sig = poseCamera->signal<data::Vector::AddedObjectsSignalType>(
+                    data::Vector::s_ADDED_OBJECTS_SIG
+                );
                 sig->asyncEmit(poseCamera->getContainer());
             }
         }
@@ -197,8 +210,9 @@ void SOpenCVIntrinsic::updating()
         cam->setIsCalibrated(true);
 
         data::Camera::IntrinsicCalibratedSignalType::sptr sig;
-        sig = cam->signal< data::Camera::IntrinsicCalibratedSignalType >(
-            data::Camera::s_INTRINSIC_CALIBRATED_SIG);
+        sig = cam->signal<data::Camera::IntrinsicCalibratedSignalType>(
+            data::Camera::s_INTRINSIC_CALIBRATED_SIG
+        );
 
         sig->asyncEmit();
     }
@@ -213,21 +227,25 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     {
         m_width = std::stoul(widthStr);
     }
+
     const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
+
     const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
     }
+
     const std::string markerSizeStr = ui::base::preferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
         m_markerSize = std::stof(markerSizeStr);
     }
+
     const std::string markerSizeInBitsStr = ui::base::preferences::getPreference(m_markerSizeInBitsKey);
     if(!markerSizeInBitsStr.empty())
     {
@@ -238,7 +256,7 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     {
         m_dictionary = sight::geometry::vision::helper::generateArucoDictionary(m_width, m_height, m_markerSizeInBits);
     }
-    catch (const std::exception& e )
+    catch(const std::exception& e)
     {
         // Warn user that something went wrong with dictionary generation.
         // We are not using dialog here since SCharucoDetector already displays one.
@@ -248,8 +266,13 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
         return;
     }
 
-    m_board = ::cv::aruco::CharucoBoard::create(static_cast<int>(m_width), static_cast<int>(m_height),
-                                                m_squareSize, m_markerSize, m_dictionary);
+    m_board = ::cv::aruco::CharucoBoard::create(
+        static_cast<int>(m_width),
+        static_cast<int>(m_height),
+        m_squareSize,
+        m_markerSize,
+        m_dictionary
+    );
 }
 
 //------------------------------------------------------------------------------

@@ -61,10 +61,9 @@ namespace sight::module::filter::point
  */
 class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public service::IRegisterer
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SPointListRegistration, service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SPointListRegistration, service::IRegisterer);
 
     /**
      * @name Slots API
@@ -78,7 +77,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
     ///@}
 
     MODULE_FILTER_POINT_API SPointListRegistration();
@@ -96,7 +95,7 @@ protected:
         RIGID,      /*!< rigid mode of VTK registration */
         SIMILARITY, /*!< similarity mode of VTK registration */
         AFFINE      /*!< affine mode of VTK registration */
-    }RegistrationModeType;
+    } RegistrationModeType;
 
     /// Configures the service
     MODULE_FILTER_POINT_API void configuring() override;

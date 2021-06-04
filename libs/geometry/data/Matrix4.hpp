@@ -31,13 +31,16 @@
 
 namespace sight::geometry::data
 {
+
 /**
  * @brief Invert a matrix.
  * @param[in] _input Input matrix
  * @param[out] _output Inverted matrix.
  */
-GEOMETRY_DATA_API bool invert(const sight::data::Matrix4::csptr& _input,
-                              sight::data::Matrix4::sptr& _output);
+GEOMETRY_DATA_API bool invert(
+    const sight::data::Matrix4::csptr& _input,
+    sight::data::Matrix4::sptr& _output
+);
 
 /**
  * @brief Multiply two matrices.
@@ -45,9 +48,11 @@ GEOMETRY_DATA_API bool invert(const sight::data::Matrix4::csptr& _input,
  * @param[in] trfB Second matrix.
  * @param[out] _output Output matrix.
  */
-GEOMETRY_DATA_API void multiply(const sight::data::Matrix4::csptr& _trfA,
-                                const sight::data::Matrix4::csptr& _trfB,
-                                sight::data::Matrix4::sptr& _output);
+GEOMETRY_DATA_API void multiply(
+    const sight::data::Matrix4::csptr& _trfA,
+    const sight::data::Matrix4::csptr& _trfB,
+    sight::data::Matrix4::sptr& _output
+);
 
 /**
  * @brief Set the matrix to identity.
@@ -61,8 +66,11 @@ GEOMETRY_DATA_API void identity(sight::data::Matrix4::sptr& _trf);
  * @param[in] _input Input point.
  * @param[out] _output Output point.
  */
-GEOMETRY_DATA_API void multiply(const sight::data::Matrix4::csptr& _trf,
-                                const sight::data::Point::csptr& _input, sight::data::Point::sptr& _output);
+GEOMETRY_DATA_API void multiply(
+    const sight::data::Matrix4::csptr& _trf,
+    const sight::data::Point::csptr& _input,
+    sight::data::Point::sptr& _output
+);
 
 /**
  * @brief Return whether a data::Matrix4 is an identity matrix.
@@ -70,8 +78,10 @@ GEOMETRY_DATA_API void multiply(const sight::data::Matrix4::csptr& _trf,
  * @param[in] _epsilon Precision of the test (default 1e-12)
  * @return boolean value: true if the matrix is identity, false otherwise.
  */
-GEOMETRY_DATA_API bool isIdentity(const sight::data::Matrix4::csptr& _trf,
-                                  const double _epsilon = 1e-12);
+GEOMETRY_DATA_API bool isIdentity(
+    const sight::data::Matrix4::csptr& _trf,
+    const double _epsilon = 1e-12
+);
 
 /**
  * @brief Convert a data::Matrix4 into a GLM matrix.
@@ -97,17 +107,19 @@ inline ::glm::dmat4x4 getMatrixFromTF3D(const sight::data::Matrix4::csptr& _trf)
  * @param[out] _trf Output data::Matrix4.
  * @param[in] _input Input GLM matrix.
  */
-inline void setTF3DFromMatrix(sight::data::Matrix4::sptr& _trf,
-                              const ::glm::dmat4x4& _input)
+inline void setTF3DFromMatrix(
+    sight::data::Matrix4::sptr& _trf,
+    const ::glm::dmat4x4& _input
+)
 {
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
     auto& coefs = _trf->getCoefficients();
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
         const size_t rowDst          = i * 4;
         const ::glm::length_t rowSrc = static_cast< ::glm::length_t>(i);
-        for (size_t j = 0; j < 4; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
             const ::glm::length_t colSrc = static_cast< ::glm::length_t>(j);
             coefs[rowDst + j] = _input[colSrc][rowSrc];

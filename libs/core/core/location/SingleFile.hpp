@@ -34,7 +34,7 @@ class CORE_CLASS_API SingleFile : public ILocation
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SingleFile, ILocation)
+    SIGHT_DECLARE_CLASS(SingleFile, ILocation);
 
     /// String serialization function
     inline std::string toString() const override;

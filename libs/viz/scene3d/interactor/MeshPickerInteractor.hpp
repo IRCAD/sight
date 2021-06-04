@@ -38,11 +38,10 @@ namespace sight::viz::scene3d::interactor
  */
 class VIZ_SCENE3D_CLASS_API MeshPickerInteractor final : public ::sight::viz::scene3d::interactor::IInteractor
 {
-
 public:
 
     /// Defines the type of signal sent when a picking query succeeded.
-    using PointClickedSigType = core::com::Signal< void ( data::tools::PickingInfo ) >;
+    using PointClickedSigType = core::com::Signal<void (data::tools::PickingInfo)>;
 
     /// Initializes the picker.
     VIZ_SCENE3D_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;
@@ -79,11 +78,10 @@ private:
     viz::scene3d::picker::IPicker m_picker;
 
     /// Picking query mask. Filters out objects with mismatching flags.
-    std::uint32_t m_queryMask { 0xffffffff };
+    std::uint32_t m_queryMask {0xffffffff};
 
     /// Defines the signal sent when picking succeeded.
     PointClickedSigType::sptr m_pointClickedSig;
-
 };
 
 } //namespace sight::viz::scene3d::interactor.

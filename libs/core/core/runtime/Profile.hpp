@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -40,10 +39,10 @@ class Profile : public core::BaseObject
 {
 public:
 
-    typedef std::vector< std::string >  ParamsContainer;
-    typedef std::function< int () > RunCallbackType;
+    typedef std::vector<std::string> ParamsContainer;
+    typedef std::function<int ()> RunCallbackType;
 
-    SIGHT_DECLARE_CLASS(Profile, BaseObject)
+    SIGHT_DECLARE_CLASS(Profile, BaseObject);
 
     /**
      * @brief Profile factory.
@@ -143,12 +142,12 @@ protected:
 
 private:
 
-    std::string m_sName;                    ///< name profile
-    std::string m_sVersion;                 ///< profile app version
+    std::string m_sName;    ///< name profile
+    std::string m_sVersion; ///< profile app version
 
     ParamsContainer m_params;
     int m_argc;
-    char**          m_argv;
+    char** m_argv;
 };
 
 /**

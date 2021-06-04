@@ -35,8 +35,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
 const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::Image::classname();
 
@@ -71,11 +73,13 @@ ImageConverter::~ImageConverter()
     dest->SetOrigin(srcImg->getOrigin2()[0], srcImg->getOrigin2()[1], srcImg->getOrigin2()[2]);
     dest->SetSpacing(srcImg->getSpacing2()[0], srcImg->getSpacing2()[1], srcImg->getSpacing2()[2]);
     dest->SetNumComponents(static_cast<int>(srcImg->getNumberOfComponents()));
-    dest->SetDimensions(static_cast<int>(srcImg->getSize2()[0]),
-                        static_cast<int>(srcImg->getSize2()[1]),
-                        static_cast<int>(srcImg->getSize2()[2]));
+    dest->SetDimensions(
+        static_cast<int>(srcImg->getSize2()[0]),
+        static_cast<int>(srcImg->getSize2()[1]),
+        static_cast<int>(srcImg->getSize2()[2])
+    );
     dest->AllocateScalars();
-    char*  igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
+    char* igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
     std::copy(itr, itrEnd, igtlImgBuffer);
     return ::igtl::MessageBase::Pointer(dest.GetPointer());
 }
@@ -95,7 +99,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     data::Image::Origin origins;
     data::Image::Size size;
 
-    srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage* >(src.GetPointer()));
+    srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(src.GetPointer()));
     srcImg->GetSpacing(igtlSpacing);
     srcImg->GetOrigin(igtlOrigins);
     srcImg->GetDimensions(igtlDimensions);
@@ -107,15 +111,15 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     destImg->setSize2(size);
     destImg->setType(ImageTypeConverter::getFwToolsType(srcImg->GetScalarType()));
     destImg->setNumberOfComponents(srcImg->GetNumComponents());
-    if (srcImg->GetNumComponents() == 1)
+    if(srcImg->GetNumComponents() == 1)
     {
         destImg->setPixelFormat(data::Image::GRAY_SCALE);
     }
-    else if (srcImg->GetNumComponents() == 3)
+    else if(srcImg->GetNumComponents() == 3)
     {
         destImg->setPixelFormat(data::Image::RGB);
     }
-    else if (srcImg->GetNumComponents() == 4)
+    else if(srcImg->GetNumComponents() == 4)
     {
         destImg->setPixelFormat(data::Image::RGBA);
     }
@@ -132,7 +136,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
 
 IConverter::sptr ImageConverter::New()
 {
-    return std::make_shared< ImageConverter >();
+    return std::make_shared<ImageConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -150,4 +154,5 @@ std::string const& ImageConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail}

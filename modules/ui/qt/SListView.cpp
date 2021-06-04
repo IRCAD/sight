@@ -28,17 +28,16 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt
 {
 
-
-const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
+const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG          = "itemAdded";
 const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
 const core::com::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
 
@@ -49,9 +48,9 @@ const core::com::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem"
 
 SListView::SListView() noexcept
 {
-    newSignal< ItemAddedSignalType>(s_ITEM_ADDED_SIG);
-    newSignal< ItemRemovedSignalType>(s_ITEM_REMOVED_SIG);
-    newSignal< ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG);
+    newSignal<ItemAddedSignalType>(s_ITEM_ADDED_SIG);
+    newSignal<ItemRemovedSignalType>(s_ITEM_REMOVED_SIG);
+    newSignal<ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG);
 
     newSlot(s_INSERT_ITEM_SLOT, &SListView::insertItem, this);
     newSlot(s_REMOVE_ITEM_SLOT, &SListView::removeItem, this);
@@ -81,6 +80,7 @@ bool SListView::eventFilter(QObject* watched, QEvent* event)
             }
         }
     }
+
     return false;
 }
 
@@ -88,7 +88,6 @@ bool SListView::eventFilter(QObject* watched, QEvent* event)
 void SListView::configuring()
 {
     this->initialize();
-
 }
 
 //------------------------------------------------------------------------------
@@ -102,10 +101,14 @@ void SListView::starting()
     m_listWidget = new(QListWidget);
     m_listWidget->setObjectName("SListViewWidget");
     m_listWidget->installEventFilter(this);
-    layout->addWidget( m_listWidget );
+    layout->addWidget(m_listWidget);
 
-    connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
-            SLOT(onItemDoubleClicked(QListWidgetItem*)));
+    connect(
+        m_listWidget,
+        SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+        this,
+        SLOT(onItemDoubleClicked(QListWidgetItem*))
+    );
 
     qtContainer->setLayout(layout);
 }
@@ -114,9 +117,9 @@ void SListView::starting()
 
 void SListView::stopping()
 {
-
     this->destroy();
 }
+
 //------------------------------------------------------------------------------
 
 void SListView::updating()

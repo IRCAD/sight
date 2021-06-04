@@ -56,19 +56,19 @@ const service::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
 IGrabber::IGrabber() noexcept
 {
     //Declare all signals
-    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    newSignal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-    newSignal< CameraStartedSignalType >   ( s_CAMERA_STARTED_SIG    );
-    newSignal< CameraStoppedSignalType >   ( s_CAMERA_STOPPED_SIG    );
-    newSignal< FramePresentedSignalType >  ( s_FRAME_PRESENTED_SIG   );
+    newSignal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
+    newSignal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
+    newSignal<CameraStartedSignalType>(s_CAMERA_STARTED_SIG);
+    newSignal<CameraStoppedSignalType>(s_CAMERA_STOPPED_SIG);
+    newSignal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG);
 
-    newSlot( s_START_CAMERA_SLOT, &IGrabber::startCamera, this );
-    newSlot( s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this );
-    newSlot( s_PAUSE_CAMERA_SLOT, &IGrabber::pauseCamera, this );
-    newSlot( s_PLAY_PAUSE_CAMERA_SLOT, &IGrabber::playPauseCamera, this );
-    newSlot( s_LOOP_VIDEO_SLOT, &IGrabber::toggleLoopMode, this );
-    newSlot( s_SET_POSITION_VIDEO_SLOT, &IGrabber::setPosition, this );
-    newSlot( s_PREVIOUS_IMAGE_SLOT, &IGrabber::previousImage, this);
+    newSlot(s_START_CAMERA_SLOT, &IGrabber::startCamera, this);
+    newSlot(s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this);
+    newSlot(s_PAUSE_CAMERA_SLOT, &IGrabber::pauseCamera, this);
+    newSlot(s_PLAY_PAUSE_CAMERA_SLOT, &IGrabber::playPauseCamera, this);
+    newSlot(s_LOOP_VIDEO_SLOT, &IGrabber::toggleLoopMode, this);
+    newSlot(s_SET_POSITION_VIDEO_SLOT, &IGrabber::setPosition, this);
+    newSlot(s_PREVIOUS_IMAGE_SLOT, &IGrabber::previousImage, this);
     newSlot(s_NEXT_IMAGE_SLOT, &IGrabber::nextImage, this);
     newSlot(s_SET_STEP_SLOT, &IGrabber::setStep, this);
 }
@@ -77,7 +77,6 @@ IGrabber::IGrabber() noexcept
 
 IGrabber::~IGrabber() noexcept
 {
-
 }
 
 // ----------------------------------------------------------------------------
@@ -124,7 +123,7 @@ void IGrabber::clearTimeline(data::FrameTL::sptr const& _tl)
         const core::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
 
         SPTR(data::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
-        auto destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
+        auto destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
         std::fill(destBuffer, destBuffer + _tl->getWidth() * _tl->getHeight() * _tl->getNumberOfComponents(), 0);
 
@@ -132,8 +131,9 @@ void IGrabber::clearTimeline(data::FrameTL::sptr const& _tl)
         _tl->clearTimeline();
         _tl->pushObject(buffer);
 
-        auto sigTL = _tl->signal< data::TimeLine::ObjectPushedSignalType >(
-            data::TimeLine::s_OBJECT_PUSHED_SIG );
+        auto sigTL = _tl->signal<data::TimeLine::ObjectPushedSignalType>(
+            data::TimeLine::s_OBJECT_PUSHED_SIG
+        );
         sigTL->asyncEmit(timestamp);
     }
 }
@@ -147,4 +147,4 @@ void IGrabber::setStartState(bool state)
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::service
+} // namespace sight::service

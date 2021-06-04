@@ -25,10 +25,11 @@
 #include <core/tools/NumericRoundCast.hxx>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::NumericRoundCastTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::NumericRoundCastTest);
 
 namespace sight::core::tools
 {
+
 namespace ut
 {
 
@@ -82,7 +83,6 @@ void NumericRoundCastTest::castDoubleToIntTest()
     double val3               = 88.9005;
     unsigned short castedVal3 = core::tools::numericRoundCast<unsigned short>(val3);
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned short>(89), castedVal3);
-
 }
 
 //------------------------------------------------------------------------------
@@ -114,9 +114,9 @@ void NumericRoundCastTest::castDoubleToFloatTest()
     castedVal = core::tools::numericRoundCast<float>(val);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-4564.851f, castedVal, 0.00000001);
 
-    val       = -84.851/3.0;
+    val       = -84.851 / 3.0;
     castedVal = core::tools::numericRoundCast<float>(val);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-84.851f/3.0f, castedVal, 0.00000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-84.851f / 3.0f, castedVal, 0.00000001);
 }
 
 //------------------------------------------------------------------------------
@@ -139,4 +139,5 @@ void NumericRoundCastTest::castIntToIntTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::core::tools

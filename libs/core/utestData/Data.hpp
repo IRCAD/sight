@@ -34,6 +34,7 @@ namespace sight::utestData
 class UTESTDATA_CLASS_API Data
 {
 public:
+
     UTESTDATA_API static std::filesystem::path dir();
 
     static const std::string s_TEST_DATA_DIR_ENV_VAR;

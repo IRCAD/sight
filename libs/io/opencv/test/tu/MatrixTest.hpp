@@ -37,7 +37,7 @@ class MatrixTest : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    CPPUNIT_TEST_SUITE( MatrixTest );
+    CPPUNIT_TEST_SUITE(MatrixTest);
     CPPUNIT_TEST(copyFromCvFloat);
     CPPUNIT_TEST(copyToCvFloat);
     CPPUNIT_TEST(copyFromCvDouble);
@@ -49,6 +49,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -65,7 +66,6 @@ public:
     ///Tests the copy from/to ::cv::Mat rvec tvec
     void copyFromRvecTvec();
     void copyToRvecTvec();
-
 };
 
 }

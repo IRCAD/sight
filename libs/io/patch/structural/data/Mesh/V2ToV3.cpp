@@ -53,16 +53,18 @@ V2ToV3::~V2ToV3()
 
 // ----------------------------------------------------------------------------
 
-V2ToV3::V2ToV3( const V2ToV3& cpy ) :
+V2ToV3::V2ToV3(const V2ToV3& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V2ToV3::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V2ToV3::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -71,13 +73,14 @@ void V2ToV3::apply( const sight::atoms::Object::sptr& previous,
 
     // Create helper
     io::atoms::patch::helper::Object helper(current);
-    if (current->getAttributes().find("point_tex_coords") == current->getAttributes().end())
+    if(current->getAttributes().find("point_tex_coords") == current->getAttributes().end())
     {
-        helper.addAttribute("point_tex_coords", sight::atoms::Object::sptr() );
+        helper.addAttribute("point_tex_coords", sight::atoms::Object::sptr());
     }
-    if (current->getAttributes().find("cell_tex_coords") == current->getAttributes().end())
+
+    if(current->getAttributes().find("cell_tex_coords") == current->getAttributes().end())
     {
-        helper.addAttribute("cell_tex_coords", sight::atoms::Object::sptr() );
+        helper.addAttribute("cell_tex_coords", sight::atoms::Object::sptr());
     }
 }
 

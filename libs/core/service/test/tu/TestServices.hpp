@@ -30,6 +30,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -39,7 +40,8 @@ namespace ut
 class TestConfigService : public service::IService
 {
 public:
-    SIGHT_DECLARE_SERVICE(TestConfigService, service::IService)
+
+    SIGHT_DECLARE_SERVICE(TestConfigService, service::IService);
     TestConfigService() noexcept :
         m_isUpdated(false)
     {
@@ -56,29 +58,34 @@ public:
     }
 
 protected:
+
     //------------------------------------------------------------------------------
 
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void updating() override
     {
     }
+
     //------------------------------------------------------------------------------
 
-    void info( std::ostream& _sstream ) override
+    void info(std::ostream& _sstream) override
     {
         _sstream << "TestConfigService";
     }
@@ -91,12 +98,13 @@ protected:
  */
 class TestServiceImplementationImage : public TestConfigService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(TestServiceImplementationImage, service::ut::TestConfigService)
+
+    SIGHT_DECLARE_SERVICE(TestServiceImplementationImage, service::ut::TestConfigService);
     TestServiceImplementationImage() noexcept
     {
     }
+
     virtual ~TestServiceImplementationImage() noexcept
     {
     }
@@ -106,24 +114,27 @@ public:
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void updating() override
     {
         m_isUpdated = true;
     }
-
 };
 
 } //namespace ut
+
 } //namespace sight::service

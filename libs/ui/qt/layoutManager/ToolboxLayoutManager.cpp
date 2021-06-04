@@ -35,8 +35,10 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-fwGuiRegisterMacro( sight::ui::qt::ToolboxLayoutManager,
-                    sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    sight::ui::qt::ToolboxLayoutManager,
+    sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
@@ -55,9 +57,8 @@ ToolboxLayoutManager::~ToolboxLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void ToolboxLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
+void ToolboxLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
 {
-
     ui::qt::container::QtContainer::sptr parentContainer =
         ui::qt::container::QtContainer::dynamicCast(parent);
 
@@ -72,8 +73,8 @@ void ToolboxLayoutManager::createLayout( ui::base::container::fwContainer::sptr 
     sv->setWidgetResizable(true);
     layout->addWidget(sv);
 
-    const std::list< ViewInfo>& views = this->getViewsInfo();
-    for ( ViewInfo viewInfo : views)
+    const std::list<ViewInfo>& views = this->getViewsInfo();
+    for(ViewInfo viewInfo : views)
     {
         int leftBorder;
         int topBorder;
@@ -99,10 +100,10 @@ void ToolboxLayoutManager::createLayout( ui::base::container::fwContainer::sptr 
             std::uint8_t rgba[4];
             data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
             std::stringstream ss;
-            ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-               << static_cast< short >(rgba[1]) << ','
-               << static_cast< short >(rgba[2]) << ','
-               << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+            ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+            << static_cast<short>(rgba[1]) << ','
+            << static_cast<short>(rgba[2]) << ','
+            << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
             panel->setStyleSheet(style + qApp->styleSheet());
         }
@@ -116,19 +117,20 @@ void ToolboxLayoutManager::createLayout( ui::base::container::fwContainer::sptr 
         {
             QScrollArea* scrollArea = new QScrollArea(toolbox);
             scrollArea->setWidget(panel);
-            scrollArea->setWidgetResizable( true );
+            scrollArea->setWidgetResizable(true);
             if(!viewInfo.m_backgroundColor.empty())
             {
                 std::uint8_t rgba[4];
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-                   << static_cast< short >(rgba[1]) << ','
-                   << static_cast< short >(rgba[2]) << ','
-                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+                << static_cast<short>(rgba[1]) << ','
+                << static_cast<short>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 scrollArea->setStyleSheet(style + qApp->styleSheet());
             }
+
             index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
         }
         else

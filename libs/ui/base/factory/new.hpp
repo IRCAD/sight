@@ -35,7 +35,8 @@ class GuiBaseObject;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME ) New();
+template<class CLASSNAME>
+SPTR(CLASSNAME) New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -44,18 +45,19 @@ template<class CLASSNAME > SPTR( CLASSNAME ) New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) New();
+friend SPTR(CLASSNAME) New();
 
 Key()
 {
 }
 };
 
-UI_BASE_API SPTR( ::sight::ui::base::GuiBaseObject ) New( const ::sight::ui::base::registry::KeyType& classname );
+UI_BASE_API SPTR(::sight::ui::base::GuiBaseObject) New(const ::sight::ui::base::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) guiObj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) guiObj = std::make_shared<CLASSNAME>(Key());
     return guiObj;
 }
 

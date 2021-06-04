@@ -66,7 +66,7 @@ std::string Demangler::getLeafClassname() const
     const size_t lt_pos = demangled.find(LT);
     size_t colons_pos   = demangled.rfind(COLONS, lt_pos);
 
-    colons_pos = (colons_pos == std::string::npos) ? 0 : colons_pos+COLONS.size();
+    colons_pos = (colons_pos == std::string::npos) ? 0 : colons_pos + COLONS.size();
     return demangled.replace(0, colons_pos, "");
 }
 
@@ -84,9 +84,9 @@ std::string Demangler::demangle() const
 {
     const char* mangled = m_name.c_str();
 #ifndef _WIN32
-    char* c_demangled = abi::__cxa_demangle( mangled, 0, 0, 0);
+    char* c_demangled = abi::__cxa_demangle(mangled, 0, 0, 0);
     std::string res;
-    if (c_demangled)
+    if(c_demangled)
     {
         res = c_demangled;
         free(c_demangled);
@@ -96,11 +96,12 @@ std::string Demangler::demangle() const
     {
         res = mangled;
     }
+
     return res;
 #else
     static std::vector<std::string> keywords;
     typedef std::vector<std::string>::iterator keyword_iterator;
-    if ( keywords.empty() )
+    if(keywords.empty())
     {
         keywords.push_back("__cdecl");
         keywords.push_back("class ");
@@ -108,18 +109,21 @@ std::string Demangler::demangle() const
         keywords.push_back("struct ");
         keywords.push_back("union ");
     }
+
     std::string res(mangled);
-    for (keyword_iterator iter = keywords.begin(); iter != keywords.end(); ++iter )
+    for(keyword_iterator iter = keywords.begin() ; iter != keywords.end() ; ++iter)
     {
-        while (res.find(*iter) != std::string::npos)
+        while(res.find(*iter) != std::string::npos)
         {
             res = res.replace(res.find(*iter), iter->size(), "");
         }
-        while (res.find(" *") != std::string::npos)
+
+        while(res.find(" *") != std::string::npos)
         {
             res = res.replace(res.find(" *"), 2, "*");
         }
-        while (res.find(" &") != std::string::npos)
+
+        while(res.find(" &") != std::string::npos)
         {
             res = res.replace(res.find(" &"), 2, "&");
         }

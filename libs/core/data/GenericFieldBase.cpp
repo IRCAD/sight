@@ -27,7 +27,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-std::ostream& operator<<( std::ostream& _os, const data::GenericFieldBase& lf )
+std::ostream& operator<<(std::ostream& _os, const data::GenericFieldBase& lf)
 {
     return lf.toOStream(_os);
 }

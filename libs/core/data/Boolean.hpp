@@ -27,7 +27,7 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Boolean));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Boolean));
 namespace sight::data
 {
 
@@ -36,25 +36,26 @@ namespace sight::data
  *
  * Boolean object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API Boolean : public GenericField< bool >
+class DATA_CLASS_API Boolean : public GenericField<bool>
 {
 public:
-    SIGHT_DECLARE_CLASS(Boolean, data::Object)
+
+    SIGHT_DECLARE_CLASS(Boolean, data::Object);
 
     //------------------------------------------------------------------------------
 
     static sptr New(const bool val = false)
     {
-        return GenericFieldFactory< Boolean >(val);
+        return GenericFieldFactory<Boolean>(val);
     }
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Boolean));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Boolean));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Boolean( data::Object::Key key ) noexcept;
+    DATA_API Boolean(data::Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
@@ -62,11 +63,10 @@ public:
     DATA_API virtual ~Boolean() noexcept;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
 };
 
 } // namespace sight::data

@@ -34,7 +34,7 @@ struct FwRenderQt3DRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwRenderQt3DRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwRenderQt3DRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

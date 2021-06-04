@@ -38,7 +38,9 @@
 
 namespace sight::data
 {
+
 class Camera;
+
 }
 
 namespace sight::module::io::video
@@ -104,10 +106,9 @@ namespace sight::module::io::video
  */
 class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public service::IGrabber
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::service::IGrabber);
 
     /// Constructor. Do nothing.
     MODULE_IO_VIDEO_API SFrameGrabber() noexcept;
@@ -155,8 +156,8 @@ protected:
 
 private:
 
-    typedef std::vector< std::filesystem::path > ImageFilesType;
-    typedef std::vector< double > ImageTimestampsType;
+    typedef std::vector<std::filesystem::path> ImageFilesType;
+    typedef std::vector<double> ImageTimestampsType;
 
     /// Initializes the video reader, start the timer.
     void readVideo(const std::filesystem::path& file);

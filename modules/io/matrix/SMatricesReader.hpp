@@ -85,10 +85,9 @@ namespace sight::module::io::matrix
 
 class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::service::IReader
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatricesReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SMatricesReader, sight::io::base::service::IReader);
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatricesReader() noexcept;
@@ -117,7 +116,7 @@ public:
         ///timestamp
         core::HiResClock::HiResClockType timestamp;
         ///vector of matrices (std::array<float, 16>).
-        std::vector< std::array< float, 16 > > matrices;
+        std::vector<std::array<float, 16> > matrices;
     };
 
 protected:
@@ -158,9 +157,9 @@ private:
 
     bool m_isPlaying; ///<flag if the service is playing.
 
-    std::ifstream* m_filestream;///< input filestream
+    std::ifstream* m_filestream; ///< input filestream
 
-    std::vector< TimeStampedMatrices > m_tsMatrices;///< vector of TimeStampedMatrices read from csv file.
+    std::vector<TimeStampedMatrices> m_tsMatrices; ///< vector of TimeStampedMatrices read from csv file.
 
     core::thread::Timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
 

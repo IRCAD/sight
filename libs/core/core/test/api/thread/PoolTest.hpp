@@ -26,25 +26,27 @@
 
 namespace sight::core::thread
 {
+
 namespace ut
 {
 
 class PoolTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PoolTest );
-CPPUNIT_TEST( basicTest );
-CPPUNIT_TEST( defaultPoolTest );
+CPPUNIT_TEST_SUITE(PoolTest);
+CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(defaultPoolTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void basicTest();
     void defaultPoolTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::core::thread

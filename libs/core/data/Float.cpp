@@ -26,20 +26,20 @@
 #include "data/GenericField.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( sight::data::Float );
+SIGHT_REGISTER_DATA(sight::data::Float);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-Float::Float( ) noexcept
+Float::Float() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Float::Float( data::Object::Key ) noexcept
+Float::Float(data::Object::Key) noexcept
 {
 }
 
@@ -50,13 +50,17 @@ Float::~Float() noexcept
 }
 
 //------------------------------------------------------------------------------
-void Float::shallowCopy(const Object::csptr& _source )
+void Float::shallowCopy(const Object::csptr& _source)
 {
     Float::csptr other = Float::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_value = other->m_value;
 }
 
@@ -65,10 +69,14 @@ void Float::shallowCopy(const Object::csptr& _source )
 void Float::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Float::csptr other = Float::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
     m_value = other->m_value;
 }
 

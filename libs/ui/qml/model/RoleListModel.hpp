@@ -26,15 +26,19 @@
 
 namespace sight::ui::qml
 {
+
 namespace model
 {
+
 /**
  * @brief   RoleListModel allowing the creation of a ListModel with customizable role
  */
 class RoleListModel : public QAbstractListModel
 {
 Q_OBJECT
+
 public:
+
     /// Constructor
     explicit RoleListModel(QObject* parent = nullptr);
 
@@ -66,10 +70,13 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
 private:
+
     /// roles of the qml file to fill
     QHash<int, QByteArray> m_roles;
     /// data to send to the qml file
     QList<QHash<QByteArray, QVariant> > m_data;
 };
+
 } // namespace model
+
 } // namespace sight::ui::qml

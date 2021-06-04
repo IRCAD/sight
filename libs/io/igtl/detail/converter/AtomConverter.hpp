@@ -27,8 +27,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  *
  * @brief class to manage conversion between data::Object and RawMessage(contain serialized atom)
@@ -37,6 +39,7 @@ class IO_IGTL_CLASS_API AtomConverter :
     public IConverter
 {
 public:
+
     /// Constructor
     IO_IGTL_API AtomConverter();
 
@@ -88,4 +91,5 @@ private:
 };
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

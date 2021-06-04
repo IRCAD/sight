@@ -35,15 +35,15 @@
 
 namespace sight::module::sync
 {
+
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a Matrix4.
  */
 class MODULE_SYNC_CLASS_API SMatrixSynchronizer : public service::ISynchronizer
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatrixSynchronizer, service::ISynchronizer)
+    SIGHT_DECLARE_SERVICE(SMatrixSynchronizer, service::ISynchronizer);
 
     /**
      * @brief Constructor.
@@ -62,6 +62,7 @@ public:
     typedef core::com::Slot<void (core::HiResClock::HiResClockType)> UpdateMatrixSlotType;
 
 protected:
+
     /**
      * @brief This method is used to configure the service.
      *
@@ -99,7 +100,6 @@ private:
 
     /// This function fills the Matrix4 with the current buffer content of the MatrixTL
     void updateMatrix(core::HiResClock::HiResClockType timestamp);
-
 };
 
 } //namespace sight::module::sync

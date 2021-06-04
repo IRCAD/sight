@@ -26,20 +26,24 @@
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
 class DicomSeriesCampTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( DicomSeriesCampTest );
+CPPUNIT_TEST_SUITE(DicomSeriesCampTest);
 CPPUNIT_TEST(propertiesTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -48,6 +52,9 @@ public:
 };
 
 } //namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } //namespace sight::data

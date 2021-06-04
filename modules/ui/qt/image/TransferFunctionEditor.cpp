@@ -66,7 +66,8 @@ TransferFunctionEditor::TransferFunctionEditor()
 {
     FW_DEPRECATED_MSG(
         "`module::ui::qt::image::TransferFunctionEditor` is deprecated, please use `module::ui::qt::image::STransferFunction` instead.",
-        "22.0");
+        "22.0"
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -84,12 +85,12 @@ void TransferFunctionEditor::configuring()
     const ConfigType srvConfig = this->getConfigTree();
 
     bool useDefaultPath = true;
-    if (srvConfig.count("config"))
+    if(srvConfig.count("config"))
     {
         const ConfigType config = srvConfig.get_child("config");
 
         const auto pathCfg = config.equal_range("path");
-        for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
+        for(auto itCfg = pathCfg.first ; itCfg != pathCfg.second ; ++itCfg)
         {
             const auto path = core::runtime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
@@ -100,7 +101,8 @@ void TransferFunctionEditor::configuring()
 
         useDefaultPath = (value == "yes");
     }
-    if (useDefaultPath)
+
+    if(useDefaultPath)
     {
         const auto pathRoot = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "tf");
         m_paths.push_back(pathRoot);
@@ -198,7 +200,7 @@ void TransferFunctionEditor::stopping()
 
 void TransferFunctionEditor::swapping(const KeyType& key)
 {
-    if (key == s_CURRENT_TF_INPUT)
+    if(key == s_CURRENT_TF_INPUT)
     {
         this->updateTransferFunctionPreset();
     }
@@ -230,23 +232,24 @@ void TransferFunctionEditor::deleteTF()
     messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
     sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
-        data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+        data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
         SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-        if( poolTF->size() > 1 )
+        if(poolTF->size() > 1)
         {
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
             data::helper::Composite compositeHelper(poolTF);
-            SIGHT_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
+            SIGHT_ASSERT("TF '" + selectedTFKey + "' missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
 
             {
-                auto sig = poolTF->signal< data::Composite::RemovedObjectsSignalType >(
-                    data::Composite::s_REMOVED_OBJECTS_SIG);
+                auto sig = poolTF->signal<data::Composite::RemovedObjectsSignalType>(
+                    data::Composite::s_REMOVED_OBJECTS_SIG
+                );
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 compositeHelper.notify();
             }
@@ -263,7 +266,8 @@ void TransferFunctionEditor::deleteTF()
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
-                sight::ui::base::dialog::IMessageDialog::WARNING );
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
     }
 }
@@ -273,7 +277,7 @@ void TransferFunctionEditor::deleteTF()
 void TransferFunctionEditor::newTF()
 {
     std::string newName = m_selectedTF->getName();
-    if( this->hasTransferFunctionName(newName) )
+    if(this->hasTransferFunctionName(newName))
     {
         newName = this->createTransferFunctionName(newName);
     }
@@ -281,10 +285,10 @@ void TransferFunctionEditor::newTF()
     sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
-    inputDialog.setInput( newName );
+    inputDialog.setInput(newName);
     newName = inputDialog.getInput();
 
-    if (!newName.empty())
+    if(!newName.empty())
     {
         if(!this->hasTransferFunctionName(newName))
         {
@@ -293,14 +297,14 @@ void TransferFunctionEditor::newTF()
             pNewTransferFunction = data::Object::copy(m_selectedTF);
             pNewTransferFunction->setName(newName);
 
-            data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+            data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
             SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
             data::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
 
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
-            m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count()-1);
+            m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count() - 1);
             this->updateTransferFunction();
 
             compositeHelper.notify();
@@ -310,7 +314,8 @@ void TransferFunctionEditor::newTF()
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
-                sight::ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
     }
 }
@@ -327,9 +332,9 @@ void TransferFunctionEditor::reinitializeTFPool()
     messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
     sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
-        data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+        data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
         SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
         data::helper::Composite compositeHelper(poolTF);
@@ -352,14 +357,14 @@ void TransferFunctionEditor::renameTF()
     sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
-    inputDialog.setInput( newName );
+    inputDialog.setInput(newName);
     newName = inputDialog.getInput();
 
-    if (!newName.empty() && newName != str)
+    if(!newName.empty() && newName != str)
     {
-        if( !this->hasTransferFunctionName(newName) )
+        if(!this->hasTransferFunctionName(newName))
         {
-            data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+            data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
             SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
             data::TransferFunction::sptr pTF;
@@ -386,7 +391,8 @@ void TransferFunctionEditor::renameTF()
             messageBox.show();
         }
     }
-    if ( newName.empty() )
+
+    if(newName.empty())
     {
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
@@ -401,14 +407,15 @@ void TransferFunctionEditor::renameTF()
 
 void TransferFunctionEditor::importTF()
 {
-    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     data::helper::Composite compositeHelper(poolTF);
 
     data::TransferFunction::sptr tf         = data::TransferFunction::New();
-    io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-        "::sight::module::io::atoms::SReader");
+    io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
+        "::sight::module::io::atoms::SReader"
+    );
 
     reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
@@ -418,16 +425,16 @@ void TransferFunctionEditor::importTF()
     reader->stop().wait();
     service::OSR::unregisterService(reader);
 
-    if (!tf->getName().empty())
+    if(!tf->getName().empty())
     {
-        if( this->hasTransferFunctionName( tf->getName() ) )
+        if(this->hasTransferFunctionName(tf->getName()))
         {
-            tf->setName( this->createTransferFunctionName( tf->getName() ) );
+            tf->setName(this->createTransferFunctionName(tf->getName()));
         }
 
         compositeHelper.add(tf->getName(), tf);
         m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
-        this->presetChoice(static_cast<int>((*poolTF).size()-1));
+        this->presetChoice(static_cast<int>((*poolTF).size() - 1));
 
         compositeHelper.notify();
     }
@@ -437,8 +444,9 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
-        "::sight::module::io::atoms::SWriter");
+    io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
+        "::sight::module::io::atoms::SWriter"
+    );
 
     writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
@@ -454,7 +462,7 @@ void TransferFunctionEditor::exportTF()
 void TransferFunctionEditor::initTransferFunctions()
 {
     // Get transfer function composite (pool TF)
-    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     data::helper::Composite compositeHelper(poolTF);
@@ -467,19 +475,19 @@ void TransferFunctionEditor::initTransferFunctions()
     }
 
     // Test if transfer function composite has few TF
-    if( poolTF->size() <= 1 )
+    if(poolTF->size() <= 1)
     {
         // Parse all TF contained in uiTF module's resources
-        std::vector< std::filesystem::path > paths;
-        for(std::filesystem::path dirPath :  m_paths)
+        std::vector<std::filesystem::path> paths;
+        for(std::filesystem::path dirPath : m_paths)
         {
-            SIGHT_ASSERT("Invalid directory path '"+dirPath.string()+"'", std::filesystem::exists(dirPath));
-            for(std::filesystem::directory_iterator it(dirPath);
-                it != std::filesystem::directory_iterator();
-                ++it )
+            SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+            for(std::filesystem::directory_iterator it(dirPath) ;
+                it != std::filesystem::directory_iterator() ;
+                ++it)
             {
-                if(!std::filesystem::is_directory(*it) &&
-                   it->path().extension().string() == ".json")
+                if(!std::filesystem::is_directory(*it)
+                   && it->path().extension().string() == ".json")
                 {
                     paths.push_back(*it);
                 }
@@ -487,15 +495,16 @@ void TransferFunctionEditor::initTransferFunctions()
         }
 
         data::TransferFunction::sptr tf         = data::TransferFunction::New();
-        io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-            "::sight::module::io::atoms::SReader");
+        io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
+            "::sight::module::io::atoms::SReader"
+        );
         reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
         core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
         srvCfg->addConfigurationElement(fileCfg);
 
-        for( std::filesystem::path file :  paths )
+        for(std::filesystem::path file : paths)
         {
             fileCfg->setValue(file.string());
             reader->setConfiguration(srvCfg);
@@ -504,20 +513,23 @@ void TransferFunctionEditor::initTransferFunctions()
             reader->update();
             reader->stop();
 
-            if (!tf->getName().empty())
+            if(!tf->getName().empty())
             {
-                data::TransferFunction::sptr newTF = data::Object::copy< data::TransferFunction >(tf);
-                if( this->hasTransferFunctionName( newTF->getName() ) )
+                data::TransferFunction::sptr newTF = data::Object::copy<data::TransferFunction>(tf);
+                if(this->hasTransferFunctionName(newTF->getName()))
                 {
-                    newTF->setName( this->createTransferFunctionName( newTF->getName() ) );
+                    newTF->setName(this->createTransferFunctionName(newTF->getName()));
                 }
 
                 compositeHelper.add(newTF->getName(), newTF);
             }
+
             tf->initTF();
         }
+
         service::OSR::unregisterService(reader);
     }
+
     compositeHelper.notify();
 
     this->updateTransferFunctionPreset();
@@ -527,30 +539,30 @@ void TransferFunctionEditor::initTransferFunctions()
 
 void TransferFunctionEditor::updateTransferFunctionPreset()
 {
-    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
-    for(data::Composite::value_type elt :  *poolTF)
+    for(data::Composite::value_type elt : *poolTF)
     {
-        m_pTransferFunctionPreset->addItem( elt.first.c_str() );
+        m_pTransferFunctionPreset->addItem(elt.first.c_str());
     }
 
     std::string currentTFName        = defaultTFName;
-    data::TransferFunction::csptr tf = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
+    data::TransferFunction::csptr tf = this->getInput<data::TransferFunction>(s_CURRENT_TF_INPUT);
 
-    if (tf)
+    if(tf)
     {
         currentTFName = tf->getName();
     }
-    else if (m_selectedTF)
+    else if(m_selectedTF)
     {
         currentTFName = m_selectedTF->getName();
     }
 
-    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(currentTFName) );
+    int index = m_pTransferFunctionPreset->findText(QString::fromStdString(currentTFName));
     index = std::max(index, 0);
 
     this->presetChoice(index);
@@ -560,7 +572,7 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
 
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName) const
 {
-    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
     return poolTF->find(_sName) != poolTF->end();
 }
@@ -572,10 +584,10 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
     bool bHasTransferFunctionName = true;
     std::string newName           = _sBasename;
     int cpt                       = 1;
-    while (bHasTransferFunctionName)
+    while(bHasTransferFunctionName)
     {
         std::stringstream tmpStr;
-        tmpStr <<  _sBasename <<  "_" <<  cpt;
+        tmpStr << _sBasename << "_" << cpt;
         newName                  = tmpStr.str();
         bHasTransferFunctionName = this->hasTransferFunctionName(newName);
         cpt++;
@@ -588,13 +600,13 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
 
 void TransferFunctionEditor::updateTransferFunction()
 {
-    data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
+    data::Composite::sptr poolTF = this->getInOut<data::Composite>(s_TF_POOL_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     std::string newSelectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
-    SIGHT_DEBUG("Transfer function selected : " +  newSelectedTFKey);
+    SIGHT_DEBUG("Transfer function selected : " + newSelectedTFKey);
 
-    SIGHT_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
+    SIGHT_ASSERT("TF '" + newSelectedTFKey + "' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
     data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 
@@ -610,9 +622,9 @@ void TransferFunctionEditor::updateTransferFunction()
 service::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push( s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

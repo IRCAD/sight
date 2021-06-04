@@ -25,21 +25,22 @@
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/Image.hpp>
 
-#include <utestData/generator/Image.hpp>
-
 #include <filter/image/MinMaxPropagation.hpp>
 
+#include <utestData/generator/Image.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::MinMaxPropagationTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::MinMaxPropagationTest);
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-static size_t computeOffset( const size_t x, const size_t y, const size_t z, data::Image::sptr image )
+static size_t computeOffset(const size_t x, const size_t y, const size_t z, data::Image::sptr image)
 {
     const data::Image::Size size = image->getSize2();
     return z * size[0] * size[1] + y * size[0] + x;
@@ -47,20 +48,20 @@ static size_t computeOffset( const size_t x, const size_t y, const size_t z, dat
 
 //------------------------------------------------------------------------------
 
-static void drawCube( data::Image::sptr image, const std::uint8_t value)
+static void drawCube(data::Image::sptr image, const std::uint8_t value)
 {
     const auto dumpLock = image->lock();
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, value);
 
-    for( size_t x = 10; x < 20; ++x  )
+    for(size_t x = 10 ; x < 20 ; ++x)
     {
-        for( size_t y = 10; y < 20; ++y  )
+        for(size_t y = 10 ; y < 20 ; ++y)
         {
-            for( size_t z = 10; z < 20; ++z  )
+            for(size_t z = 10 ; z < 20 ; ++z)
             {
-                image->setPixelBuffer( computeOffset(x, y, z, image), bufferValue.get() );
+                image->setPixelBuffer(computeOffset(x, y, z, image), bufferValue.get());
             }
         }
     }
@@ -83,9 +84,9 @@ void MinMaxPropagationTest::tearDown()
 void MinMaxPropagationTest::minPropagTest()
 {
     // Create two 32*32*32*8 images
-    const data::Image::Size SIZE       = {{ 32, 32, 32 }};
-    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const data::Image::Size SIZE       = {{32, 32, 32}};
+    const data::Image::Spacing SPACING = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
     const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
@@ -95,25 +96,25 @@ void MinMaxPropagationTest::minPropagTest()
     utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     // Draw a cube at 10,10,10 with a 255 value
-    drawCube( imageIn, 255 );
+    drawCube(imageIn, 255);
 
     MinMaxPropagation propagator(imageIn, imageOut, nullptr);
 
-    MinMaxPropagation::SeedsType seed = {{ {15, 15, 15} }};
+    MinMaxPropagation::SeedsType seed = {{{15, 15, 15}}};
 
     // Propagate at 15,15,15 with a 255 value (same as cube)
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN );
+    propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
     const auto dumpLockIn  = imageIn->lock();
     const auto dumpLockOut = imageOut->lock();
 
     // Check that the image is not changed because the propagated value is the same
-    for( size_t index = 0; index < imageIn->getSizeInBytes(); ++index )
+    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
@@ -122,21 +123,21 @@ void MinMaxPropagationTest::minPropagTest()
     }
 
     // Check that the cube is changed with a "3" propagated value
-    drawCube( imageIn, 1 );
+    drawCube(imageIn, 1);
 
     value = 3;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN );
+    propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for( size_t index = 0; index < imageIn->getSizeInBytes(); ++index )
+    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
 
-        if( valueIn == 1 )
+        if(valueIn == 1)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(3), valueOut);
         }
@@ -147,16 +148,16 @@ void MinMaxPropagationTest::minPropagTest()
     }
 
     // Check that the entire image is completely filled with propagated value
-    seed = {{ {0, 0, 0} }};
+    seed = {{{0, 0, 0}}};
 
     value = 4;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN );
+    propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
-    for( size_t index = 0; index < imageIn->getSizeInBytes(); ++index )
+    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
 
@@ -169,9 +170,9 @@ void MinMaxPropagationTest::minPropagTest()
 void MinMaxPropagationTest::maxPropagTest()
 {
     // Create two 32*32*32*8 images
-    const data::Image::Size SIZE       = {{ 32, 32, 32 }};
-    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const data::Image::Size SIZE       = {{32, 32, 32}};
+    const data::Image::Spacing SPACING = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
     const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
@@ -181,45 +182,45 @@ void MinMaxPropagationTest::maxPropagTest()
     utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     // Draw a cube at 10,10,10 with a 2 value
-    drawCube( imageIn, 2 );
+    drawCube(imageIn, 2);
 
     MinMaxPropagation propagator(imageIn, imageOut, nullptr);
 
-    MinMaxPropagation::SeedsType seed = {{ {15, 15, 15} }};
+    MinMaxPropagation::SeedsType seed = {{{15, 15, 15}}};
 
     // Propagate at 15,15,15 with a 3 value
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX );
+    propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
     const auto dumpLockIn  = imageIn->lock();
     const auto dumpLockOut = imageOut->lock();
 
     // Check that the entire image is completely filled with propagated value
-    for( size_t index = 0; index < imageIn->getSizeInBytes(); ++index )
+    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(3), valueOut);
     }
 
     // Propagate at 0,0,0 with a 2 value (outside cube)
-    seed  = {{ {0, 0, 0} }};
+    seed  = {{{0, 0, 0}}};
     value = 2;
 
-    bufferValue = data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+    bufferValue = data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX );
+    propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
     // Check that the entire image is completely filled with propagated value
-    for( size_t index = 0; index < imageIn->getSizeInBytes(); ++index )
+    for(size_t index = 0 ; index < imageIn->getSizeInBytes() ; ++index)
     {
         const std::uint8_t valueIn  = imageIn->at<std::uint8_t>(index);
         const std::uint8_t valueOut = imageOut->at<std::uint8_t>(index);
 
-        if( valueIn == 0 )
+        if(valueIn == 0)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(2), valueOut);
         }
@@ -236,9 +237,9 @@ void MinMaxPropagationTest::maxPropagTest()
 void MinMaxPropagationTest::radiusTest()
 {
     // Create two 32*32*32*8 images
-    const data::Image::Size SIZE       = {{ 33, 33, 33 }};
-    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const data::Image::Size SIZE       = {{33, 33, 33}};
+    const data::Image::Spacing SPACING = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
     const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
@@ -249,15 +250,15 @@ void MinMaxPropagationTest::radiusTest()
 
     MinMaxPropagation propagator(imageIn, imageOut, nullptr);
 
-    MinMaxPropagation::SeedsType seed = {{ {16, 16, 16} }};
+    MinMaxPropagation::SeedsType seed = {{{16, 16, 16}}};
 
     // Propagate at 16,16,16 with a 3 value
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value );
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
-    propagator.propagate( seed, bufferValue.get(), 3.5, true, MinMaxPropagation::MIN );
+    propagator.propagate(seed, bufferValue.get(), 3.5, true, MinMaxPropagation::MIN);
 
     const auto dumpLockOut = imageOut->lock();
 
@@ -284,4 +285,5 @@ void MinMaxPropagationTest::radiusTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

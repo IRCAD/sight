@@ -23,21 +23,23 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/macros.hpp>
 
 #include <istream>
 
 namespace sight::core::memory
 {
+
 namespace stream
 {
+
 namespace in
 {
 
 class CORE_CLASS_API IFactory
 {
 public:
+
     virtual ~IFactory()
     {
     }
@@ -50,9 +52,10 @@ public:
 protected:
 
     virtual SPTR(std::istream) get() = 0;
-
 };
 
 } // namespace in
+
 } // namespace stream
+
 } // namespace sight::core::memory

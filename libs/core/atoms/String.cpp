@@ -24,7 +24,7 @@
 
 #include "atoms/registry/macros.hpp"
 
-fwAtomsRegisterMacro( sight::atoms::String );
+fwAtomsRegisterMacro(sight::atoms::String);
 
 namespace sight::atoms
 {

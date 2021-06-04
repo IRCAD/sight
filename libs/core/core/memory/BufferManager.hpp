@@ -25,7 +25,6 @@
 #include "core/config.hpp"
 #include "core/memory/BufferInfo.hpp"
 #include "core/memory/FileHolder.hpp"
-
 #include <core/base.hpp>
 #include <core/BaseObject.hpp>
 #include <core/com/Signal.hpp>
@@ -36,7 +35,9 @@
 
 namespace sight::core::thread
 {
+
 class Worker;
+
 }
 
 namespace sight::core::memory
@@ -46,10 +47,14 @@ class IPolicy;
 
 namespace stream
 {
+
 namespace in
 {
+
 class IFactory;
+
 }
+
 }
 
 class BufferManager;
@@ -83,11 +88,11 @@ public:
 
     typedef BufferInfo::SizeType SizeType;
 
-    typedef core::com::Signal< void () > UpdatedSignalType;
+    typedef core::com::Signal<void ()> UpdatedSignalType;
 
-    typedef std::map< ConstBufferPtrType, BufferInfo > BufferInfoMapType;
+    typedef std::map<ConstBufferPtrType, BufferInfo> BufferInfoMapType;
 
-    SIGHT_DECLARE_CLASS(BufferManager, core::BaseObject)
+    SIGHT_DECLARE_CLASS(BufferManager, core::BaseObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     BufferManager();
@@ -138,8 +143,11 @@ public:
      * @param size requested size for allocation
      * @param policy BufferObject's allocation policy
      */
-    CORE_API virtual std::shared_future<void> allocateBuffer(BufferPtrType bufferPtr, SizeType size,
-                                                             const core::memory::BufferAllocationPolicy::sptr& policy);
+    CORE_API virtual std::shared_future<void> allocateBuffer(
+        BufferPtrType bufferPtr,
+        SizeType size,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
 
     /**
      * @brief Hook called when a request is made to set BufferObject's buffer from an external buffer
@@ -149,10 +157,12 @@ public:
      * @param size requested size for allocation
      * @param policy BufferObject's allocation policy
      */
-    CORE_API virtual std::shared_future<void> setBuffer(BufferPtrType bufferPtr,
-                                                        core::memory::BufferManager::BufferType buffer,
-                                                        SizeType size,
-                                                        const core::memory::BufferAllocationPolicy::sptr& policy);
+    CORE_API virtual std::shared_future<void> setBuffer(
+        BufferPtrType bufferPtr,
+        core::memory::BufferManager::BufferType buffer,
+        SizeType size,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
 
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
@@ -224,10 +234,16 @@ public:
      *
      * @return true on success
      * @{ */
-    CORE_API std::shared_future<bool> writeBuffer(ConstBufferType buffer, SizeType size,
-                                                  std::filesystem::path& path);
-    CORE_API std::shared_future<bool> readBuffer(BufferType buffer, SizeType size,
-                                                 std::filesystem::path& path);
+    CORE_API std::shared_future<bool> writeBuffer(
+        ConstBufferType buffer,
+        SizeType size,
+        std::filesystem::path& path
+    );
+    CORE_API std::shared_future<bool> readBuffer(
+        BufferType buffer,
+        SizeType size,
+        std::filesystem::path& path
+    );
     /**  @} */
 
     /**
@@ -235,7 +251,8 @@ public:
      *
      * @return
      */
-    SPTR(UpdatedSignalType) getUpdatedSignal(){
+    SPTR(UpdatedSignalType) getUpdatedSignal()
+    {
         return m_updatedSig;
     };
 
@@ -255,7 +272,7 @@ public:
     /**
      * @brief Sets the dump policy
      */
-    CORE_API void setDumpPolicy( const SPTR(core::memory::IPolicy)& policy );
+    CORE_API void setDumpPolicy(const SPTR(core::memory::IPolicy)& policy);
 
     /**
      * @brief Returns the dump policy
@@ -267,13 +284,14 @@ public:
      */
     CORE_API std::shared_future<StreamInfo> getStreamInfo(const ConstBufferPtrType bufferPtr) const;
 
-    CORE_API std::shared_future<void> setIStreamFactory(BufferPtrType bufferPtr,
-                                                        const SPTR(core::memory::stream::in::IFactory)& factory,
-                                                        SizeType size,
-                                                        core::memory::FileHolder fsFile,
-                                                        core::memory::FileFormatType format,
-                                                        const core::memory::BufferAllocationPolicy::sptr& policy
-                                                        );
+    CORE_API std::shared_future<void> setIStreamFactory(
+        BufferPtrType bufferPtr,
+        const SPTR(core::memory::stream::in::IFactory)& factory,
+        SizeType size,
+        core::memory::FileHolder fsFile,
+        core::memory::FileFormatType format,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
 
     CORE_API LoadingModeType getLoadingMode() const;
     CORE_API void setLoadingMode(LoadingModeType mode);
@@ -290,6 +308,7 @@ public:
     {
         return m_mutex;
     }
+
 protected:
 
     /**
@@ -297,10 +316,17 @@ protected:
      * @{ */
     virtual void registerBufferImpl(BufferPtrType bufferPtr);
     virtual void unregisterBufferImpl(BufferPtrType bufferPtr);
-    virtual void allocateBufferImpl(BufferPtrType bufferPtr, SizeType size,
-                                    const core::memory::BufferAllocationPolicy::sptr& policy);
-    virtual void setBufferImpl(BufferPtrType bufferPtr, core::memory::BufferManager::BufferType buffer, SizeType size,
-                               const core::memory::BufferAllocationPolicy::sptr& policy);
+    virtual void allocateBufferImpl(
+        BufferPtrType bufferPtr,
+        SizeType size,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
+    virtual void setBufferImpl(
+        BufferPtrType bufferPtr,
+        core::memory::BufferManager::BufferType buffer,
+        SizeType size,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
     virtual void reallocateBufferImpl(BufferPtrType bufferPtr, SizeType newSize);
     virtual void destroyBufferImpl(BufferPtrType bufferPtr);
     virtual void swapBufferImpl(BufferPtrType bufA, BufferPtrType bufB);
@@ -313,13 +339,14 @@ protected:
     bool readBufferImpl(BufferType buffer, SizeType size, std::filesystem::path& path);
     BufferInfoMapType getBufferInfosImpl() const;
     StreamInfo getStreamInfoImpl(const ConstBufferPtrType bufferPtr) const;
-    void setIStreamFactoryImpl(BufferPtrType bufferPtr,
-                               const SPTR(core::memory::stream::in::IFactory)& factory,
-                               SizeType size,
-                               core::memory::FileHolder fsFile,
-                               core::memory::FileFormatType format,
-                               const core::memory::BufferAllocationPolicy::sptr& policy
-                               );
+    void setIStreamFactoryImpl(
+        BufferPtrType bufferPtr,
+        const SPTR(core::memory::stream::in::IFactory)& factory,
+        SizeType size,
+        core::memory::FileHolder fsFile,
+        core::memory::FileFormatType format,
+        const core::memory::BufferAllocationPolicy::sptr& policy
+    );
     /**  @} */
 
     /**
@@ -346,4 +373,4 @@ protected:
     mutable core::mt::ReadWriteMutex m_mutex;
 };
 
-}
+} // namespace sight::core

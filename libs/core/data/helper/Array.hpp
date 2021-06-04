@@ -23,10 +23,9 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/Array.hpp>
 
 #include <core/memory/BufferObject.hpp>
-
-#include <data/Array.hpp>
 
 namespace sight::data
 {
@@ -40,27 +39,26 @@ namespace helper
  */
 class DATA_DEPRECATED_CLASS_API Array
 {
-
 public:
 
     /// Shared pointer type
-    typedef std::shared_ptr < data::helper::Array > sptr;
+    typedef std::shared_ptr<data::helper::Array> sptr;
     /// Const shared pointer type
-    typedef std::shared_ptr < const data::helper::Array > csptr;
+    typedef std::shared_ptr<const data::helper::Array> csptr;
     /// Unique pointer type
-    typedef std::unique_ptr < data::helper::Array > uptr;
+    typedef std::unique_ptr<data::helper::Array> uptr;
     /// Const unique pointer type
-    typedef std::unique_ptr < const data::helper::Array > cuptr;
+    typedef std::unique_ptr<const data::helper::Array> cuptr;
 
     //------------------------------------------------------------------------------
 
     static sptr New(data::Array::sptr array)
     {
-        return std::make_shared< data::helper::Array >(array);
+        return std::make_shared<data::helper::Array>(array);
     }
 
     [[deprecated("deprecated in sight 22.0, please use data::Array")]]
-    DATA_API Array(const data::Array::sptr& array );
+    DATA_API Array(const data::Array::sptr& array);
 
     DATA_API virtual ~Array();
 
@@ -82,8 +80,11 @@ public:
      * to array 'id', component index 'component'
      *
      */
-    DATA_API virtual void setItem(const data::Array::IndexType& id, const size_t component,
-                                  const void* value);
+    DATA_API virtual void setItem(
+        const data::Array::IndexType& id,
+        const size_t component,
+        const void* value
+    );
 
     ///
     /**
@@ -105,7 +106,8 @@ public:
      *
      * @return Array buffer pointer casted to T
      */
-    template< typename T > T* getItem(const data::Array::IndexType& id, const size_t component = 0);
+    template<typename T>
+    T* getItem(const data::Array::IndexType& id, const size_t component = 0);
 
     /**
      * @brief Copies the data into the buffer pointed by <value>
@@ -114,8 +116,11 @@ public:
      * @param[out] value Buffer to write into
      */
     DATA_API virtual void getItem(const data::Array::IndexType& id, void* value) const;
-    DATA_API virtual void getItem(const data::Array::IndexType& id, const size_t component,
-                                  void* value) const;
+    DATA_API virtual void getItem(
+        const data::Array::IndexType& id,
+        const size_t component,
+        void* value
+    ) const;
 
     /**
      * @brief Getter for the array buffer
@@ -146,7 +151,7 @@ public:
         const data::Array::SizeType& size,
         size_t nbOfComponents,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
-        );
+    );
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
     DATA_API virtual char* begin();
@@ -155,8 +160,10 @@ public:
     DATA_API virtual const char* end() const;
 
     /// Returns the begining/end of the buffer, casted to T
-    template< typename T > T* begin();
-    template< typename T > T* end();
+    template<typename T>
+    T* begin();
+    template<typename T>
+    T* end();
 
     /**
      * @brief Get a pointer to the value described by given parameters
@@ -168,9 +175,12 @@ public:
      * @return buffer item pointer
      * @{
      */
-    DATA_API char* getBufferPtr( const data::Array::IndexType& id, size_t component, size_t sizeOfType );
-    DATA_API const char* getBufferPtr( const data::Array::IndexType& id, size_t component,
-                                       size_t sizeOfType ) const;
+    DATA_API char* getBufferPtr(const data::Array::IndexType& id, size_t component, size_t sizeOfType);
+    DATA_API const char* getBufferPtr(
+        const data::Array::IndexType& id,
+        size_t component,
+        size_t sizeOfType
+    ) const;
     ///@}
 
     /// Returns a copy of current lock on array
@@ -190,16 +200,15 @@ protected:
         void* buf,
         bool takeOwnership                                = false,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
-        );
+    );
 
     data::Array::sptr m_array;
     core::memory::BufferObject::Lock m_lock;
-
 };
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 T* Array::begin()
 {
     return static_cast<T*>(this->getBuffer());
@@ -207,18 +216,18 @@ T* Array::begin()
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 T* Array::end()
 {
-    return reinterpret_cast<T*> (static_cast<char*>(this->getBuffer()) + m_array->getSizeInBytes());
+    return reinterpret_cast<T*>(static_cast<char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 T* Array::getItem(const data::Array::IndexType& id, const size_t component)
 {
-    return static_cast<T*> (this->getItem(id, component));
+    return static_cast<T*>(this->getItem(id, component));
 }
 
 } // namespace helper

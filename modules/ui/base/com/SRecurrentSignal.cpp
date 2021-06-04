@@ -36,6 +36,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -48,9 +49,9 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
     m_timeStep(100),
     m_sigRepeated(RepeatedSignalType::New())
 {
-    m_sigRepeated = newSignal< RepeatedSignalType >(s_REPEATED_SIGNAL);
+    m_sigRepeated = newSignal<RepeatedSignalType>(s_REPEATED_SIGNAL);
 
-    newSignal< RepeatStoppedSignalType >( s_REPEAT_STOPPED_SIGNAL );
+    newSignal<RepeatStoppedSignalType>(s_REPEAT_STOPPED_SIGNAL);
 }
 
 // ----------------------------------------------------------------------------
@@ -60,10 +61,10 @@ void SRecurrentSignal::configuring()
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     core::runtime::ConfigurationElement::sptr timeStepConfig = m_configuration->findConfigurationElement("timeStep");
-    SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig );
-    if( timeStepConfig )
+    SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig);
+    if(timeStepConfig)
     {
-        m_timeStep = ::boost::lexical_cast< unsigned int >( timeStepConfig->getValue() );
+        m_timeStep = ::boost::lexical_cast<unsigned int>(timeStepConfig->getValue());
     }
 }
 
@@ -73,7 +74,7 @@ void SRecurrentSignal::starting()
 {
     m_timer = m_associatedWorker->createTimer();
     core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
-    m_timer->setFunction( std::bind( &SRecurrentSignal::updating, this)  );
+    m_timer->setFunction(std::bind(&SRecurrentSignal::updating, this));
     m_timer->setDuration(duration);
     m_timer->start();
 }
@@ -83,7 +84,7 @@ void SRecurrentSignal::starting()
 void SRecurrentSignal::stopping()
 {
     m_timer->stop();
-    auto sig = this->signal< RepeatStoppedSignalType >( s_REPEAT_STOPPED_SIGNAL );
+    auto sig = this->signal<RepeatStoppedSignalType>(s_REPEAT_STOPPED_SIGNAL);
     sig->emit();
 }
 
@@ -96,5 +97,7 @@ void SRecurrentSignal::updating()
 }
 
 // ----------------------------------------------------------------------------
+
 } // namespace com
-}  // namespace sight::module::ui::base
+
+} // namespace sight::module::ui::base

@@ -61,7 +61,8 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     IO_DICOM_API static const ::gdcm::PhotometricInterpretation getPhotometricInterpretation(
-        const data::Image::csptr& image);
+        const data::Image::csptr& image
+    );
 
     /**
      * @brief Convert a surface representation mode (Sight) into recommended presentation type (DICOM).
@@ -70,7 +71,8 @@ public:
      * @return Corresponding recommended presentation type.
      */
     IO_DICOM_API static ::gdcm::Surface::VIEWType convertToPresentationType(
-        data::Material::RepresentationType representationMode);
+        data::Material::RepresentationType representationMode
+    );
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (Sight).
@@ -78,7 +80,8 @@ public:
      * @return Corresponding representation mode
      */
     IO_DICOM_API static data::Material::RepresentationType convertToRepresentationMode(
-        ::gdcm::Surface::VIEWType presentationType);
+        ::gdcm::Surface::VIEWType presentationType
+    );
 
     /**
      * @brief Convert a 3D point to the closest frame number index
@@ -86,8 +89,10 @@ public:
      * @param[in] point 3D point
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API static std::size_t convertPointToFrameNumber(const data::Image::csptr& image,
-                                                              const data::Point::csptr& point);
+    IO_DICOM_API static std::size_t convertPointToFrameNumber(
+        const data::Image::csptr& image,
+        const data::Point::csptr& point
+    );
 
     /**
      * @brief Convert a frame number to a Z coordinate
@@ -95,10 +100,12 @@ public:
      * @param[in] frameNumber Frame number
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API static double convertFrameNumberToZCoordinate(const data::Image::csptr& image,
-                                                               const std::size_t frameNumber);
-
+    IO_DICOM_API static double convertFrameNumberToZCoordinate(
+        const data::Image::csptr& image,
+        const std::size_t frameNumber
+    );
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

@@ -71,7 +71,7 @@ void SStyleSelector::starting()
     const auto styleRc = core::runtime::getModuleResourcePath("sight::module::ui::qt");
 
     // Stores each rcc & qss
-    for(auto& p: std::filesystem::directory_iterator(styleRc))
+    for(auto& p : std::filesystem::directory_iterator(styleRc))
     {
         std::filesystem::path f = p;
 
@@ -80,11 +80,13 @@ void SStyleSelector::starting()
             const std::string filename = f.filename().replace_extension("").string();
 
             std::string name = filename;
-            std::transform(filename.begin(), filename.end(), name.begin(),
-                           [](unsigned char c) -> unsigned char { return std::toupper(c); });
+            std::transform(
+                filename.begin(),
+                filename.end(),
+                name.begin(),
+                [](unsigned char c) -> unsigned char {return std::toupper(c);});
 
             m_styleMap[name] = f.replace_extension("");
-
         }
     }
 
@@ -103,7 +105,6 @@ void SStyleSelector::stopping()
 
 void SStyleSelector::updating()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -123,7 +124,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 
     // Load ressources
     const bool resourceLoaded = QResource::registerResource(path.replace_extension(".rcc").string().c_str());
-    SIGHT_ASSERT("Cannot load resources '"+path.replace_extension(".rcc").string() + "'.", resourceLoaded);
+    SIGHT_ASSERT("Cannot load resources '" + path.replace_extension(".rcc").string() + "'.", resourceLoaded);
 
     // Load stylesheet.
     QFile data(QString::fromStdString(path.replace_extension(".qss").string()));
@@ -152,4 +153,4 @@ void SStyleSelector::updateFromPrefs()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module

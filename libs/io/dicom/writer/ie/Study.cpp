@@ -28,21 +28,25 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Study::Study(const SPTR(::gdcm::Writer)& writer,
-             const SPTR(io::dicom::container::DicomInstance)& instance,
-             const data::Study::csptr& study,
-             const core::log::Logger::sptr& logger,
-             ProgressCallback progress,
-             CancelRequestedCallback cancel) :
-    io::dicom::writer::ie::InformationEntity< data::Study >(writer, instance, study,
-                                                            logger, progress, cancel)
+Study::Study(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const data::Study::csptr& study,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::writer::ie::InformationEntity<data::Study>(writer, instance, study,
+                                                          logger, progress, cancel)
 {
 }
 
@@ -68,12 +72,15 @@ void Study::writeGeneralStudyModule()
     //TODO: >getConsultingPhysicianName() contains only 1 value, gdcm wants a list (VM : 1-N).
     ::gdcm::String<> consultingPhysisicianName[] = {m_object->getConsultingPhysicianName()};
 
-    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x009C>(consultingPhysisicianName, 1,
-                                                                                        dataset);
+    io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x009C>(
+        consultingPhysisicianName,
+        1,
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1030>(m_object->getDescription(), dataset);
 
     // Study 's accession number - Type 2
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x0050 >("", dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0050>("", dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -87,15 +94,23 @@ void Study::writePatientStudyModule()
     // Following tags are represented as Decimal String, in GDCM DS = Double.
     // To avoid exception of stod, we need to test first if string is empty.
     io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1020>(
-        m_object->getPatientSize().empty() ? 0. : std::stod(m_object->getPatientSize()), dataset);
+        m_object->getPatientSize().empty() ? 0. : std::stod(m_object->getPatientSize()),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1030>(
-        m_object->getPatientWeight().empty() ? 0. : std::stod(m_object->getPatientWeight()), dataset);
+        m_object->getPatientWeight().empty() ? 0. : std::stod(m_object->getPatientWeight()),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0010, 0x1022>(
-        m_object->getPatientBodyMassIndex().empty() ? 0. : std::stod(m_object->getPatientBodyMassIndex()), dataset);
+        m_object->getPatientBodyMassIndex().empty() ? 0. : std::stod(m_object->getPatientBodyMassIndex()),
+        dataset
+    );
 }
 
 //------------------------------------------------------------------------------
 
-}// namespace ie
+} // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

@@ -46,8 +46,7 @@ public:
 
 private:
 
-    sight::core::thread::Worker::sptr m_worker { nullptr };
-
+    sight::core::thread::Worker::sptr m_worker {nullptr};
 };
 
 } // namespace ExTimeLine.

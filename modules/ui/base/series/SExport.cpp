@@ -44,6 +44,7 @@ namespace sight::module::ui::base
 
 namespace series
 {
+
 //------------------------------------------------------------------------------
 
 const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
@@ -70,8 +71,8 @@ SExport::~SExport() noexcept
 service::IService::KeyConnectionsMap SExport::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
-    connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT );
+    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT);
+    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT);
 
     return connections;
 }
@@ -88,9 +89,9 @@ void SExport::configuring()
 void SExport::starting()
 {
     this->actionServiceStarting();
-    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
 
-    for( data::Series::sptr series :  seriesDB->getContainer() )
+    for(data::Series::sptr series : seriesDB->getContainer())
     {
         if(series == this->getSeries())
         {
@@ -110,13 +111,13 @@ void SExport::stopping()
 
 void SExport::updating()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>(s_SERIESDB_INOUT);
+    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
     data::Series::sptr series     = this->getSeries();
 
     std::string description = series->getDescription();
 
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if (activitySeries)
+    if(activitySeries)
     {
         activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
         std::string id                               = activitySeries->getActivityConfigId();
@@ -133,7 +134,10 @@ void SExport::updating()
     }
 
     description = sight::ui::base::dialog::InputDialog::showInputDialog(
-        "Export activity", "Enter the series description", description);
+        "Export activity",
+        "Enter the series description",
+        description
+    );
 
     if(!description.empty())
     {
@@ -156,7 +160,7 @@ void SExport::updating()
 
 //------------------------------------------------------------------------------
 
-void SExport::info(std::ostream& _sstream )
+void SExport::info(std::ostream& _sstream)
 {
     // Update message
     _sstream << std::string("SExport");
@@ -166,7 +170,7 @@ void SExport::info(std::ostream& _sstream )
 
 data::Series::sptr SExport::getSeries()
 {
-    data::Series::sptr series = this->getInOut< data::Series>("series");
+    data::Series::sptr series = this->getInOut<data::Series>("series");
     return series;
 }
 
@@ -174,7 +178,7 @@ data::Series::sptr SExport::getSeries()
 
 void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
 {
-    for( data::Series::sptr series :  addedSeries )
+    for(data::Series::sptr series : addedSeries)
     {
         if(series == this->getSeries())
         {
@@ -187,7 +191,7 @@ void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
 
 void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 {
-    for( data::Series::sptr series :  removedSeries )
+    for(data::Series::sptr series : removedSeries)
     {
         if(series == this->getSeries())
         {
@@ -199,4 +203,5 @@ void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 //------------------------------------------------------------------------------
 
 } // namespace series
+
 } // namespace sight::module::ui::base

@@ -31,7 +31,7 @@
 
 #include <itkCastImageFilter.h>
 
-template < typename OUTPUT_PIXELTYPE >
+template<typename OUTPUT_PIXELTYPE>
 struct ItkImageCaster
 {
     using OutputImageType = ::itk::Image<OUTPUT_PIXELTYPE, 3>;
@@ -44,13 +44,13 @@ struct ItkImageCaster
 
     //------------------------------------------------------------------------------
 
-    template< typename INPUT_PIXELTYPE >
+    template<typename INPUT_PIXELTYPE>
     void operator()(Params& p)
     {
         using InputImageType = ::itk::Image<INPUT_PIXELTYPE, 3>;
 
         // Convert to ITK.
-        typename InputImageType::Pointer tmp = sight::io::itk::itkImageFactory< InputImageType >(p.i_img);
+        typename InputImageType::Pointer tmp = sight::io::itk::itkImageFactory<InputImageType>(p.i_img);
 
         // Cast to the desired pixel type.
         auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();
@@ -62,7 +62,7 @@ struct ItkImageCaster
 
 //------------------------------------------------------------------------------
 
-template <typename OUTPUT_PIXELTYPE>
+template<typename OUTPUT_PIXELTYPE>
 typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const sight::data::Image::csptr& _img)
 {
     using CasterType = ItkImageCaster<OUTPUT_PIXELTYPE>;
@@ -72,7 +72,7 @@ typename ::itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const sight::data::Im
 
     const auto inType = _img->getType();
 
-    sight::core::tools::Dispatcher< sight::core::tools::SupportedDispatcherTypes, CasterType >::invoke(inType, p);
+    sight::core::tools::Dispatcher<sight::core::tools::SupportedDispatcherTypes, CasterType>::invoke(inType, p);
 
     return p.o_img;
 }

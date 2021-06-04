@@ -40,4 +40,5 @@ AdaptorRegistryType& getAdaptorRegistry()
 }
 
 } // namespace registry.
+
 } // namespace sight::viz::qt3d.

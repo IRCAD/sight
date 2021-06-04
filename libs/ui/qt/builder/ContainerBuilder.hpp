@@ -33,6 +33,7 @@
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -43,8 +44,12 @@ namespace builder
 class UI_QT_CLASS_API ContainerBuilder : public ui::base::builder::IContainerBuilder
 {
 public:
-    SIGHT_DECLARE_CLASS(ContainerBuilder, ui::base::builder::IContainerBuilder,
-                        ui::base::factory::New< ContainerBuilder >)
+
+    SIGHT_DECLARE_CLASS(
+        ContainerBuilder,
+        ui::base::builder::IContainerBuilder,
+        ui::base::factory::New<ContainerBuilder>
+    )
 
     UI_QT_API ContainerBuilder(ui::base::GuiBaseObject::Key key);
 
@@ -55,7 +60,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent container must be instanced.
      */
-    UI_QT_API void createContainer( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createContainer(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -66,8 +71,10 @@ public:
     UI_QT_API void setParent(ui::base::container::fwContainer::sptr parent) override;
 
 protected:
+
     ui::qt::container::QtContainer::sptr m_parent;
 };
 
 } // namespace builder
+
 } // namespace sight::ui::base

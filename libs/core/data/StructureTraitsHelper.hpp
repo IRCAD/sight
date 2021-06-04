@@ -35,17 +35,15 @@ namespace sight::data
  */
 class DATA_CLASS_API StructureTraitsHelper
 {
-
 public:
 
-    typedef ::boost::bimaps::bimap< data::StructureTraits::StructureClass, std::string > ClassTranslatorType;
+    typedef ::boost::bimaps::bimap<data::StructureTraits::StructureClass, std::string> ClassTranslatorType;
     /// Map to translate structure class (string vs enum)
     DATA_API static const ClassTranslatorType s_CLASSTRANSLATOR;
 
-    typedef ::boost::bimaps::bimap< data::StructureTraits::Category, std::string > CategoryTranslatorType;
+    typedef ::boost::bimaps::bimap<data::StructureTraits::Category, std::string> CategoryTranslatorType;
     /// Map to translate structure categories (string vs enum)
     DATA_API static const CategoryTranslatorType s_CATEGORYTRANSLATOR;
-
 };
 
 } // namespace sight::data

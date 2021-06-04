@@ -33,10 +33,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::dicom::ut::NoFilterCustomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::NoFilterCustomTest);
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -63,8 +64,10 @@ void NoFilterCustomTest::simpleApplication()
     const std::string filename       = "71-CT-DICOM_SEG";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -79,8 +82,8 @@ void NoFilterCustomTest::simpleApplication()
     dicomSeriesB->deepCopy(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesB);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainerA;
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainerB;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainerA;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainerB;
     dicomSeriesContainerA.push_back(dicomSeriesA);
     dicomSeriesContainerB.push_back(dicomSeriesB);
 
@@ -96,19 +99,23 @@ void NoFilterCustomTest::simpleApplication()
 
     // Compare the two series
     CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA.size(), dicomSeriesContainerB.size());
-    for(unsigned int j = 0; j < dicomSeriesContainerA.size(); ++j)  // For every series
+    for(unsigned int j = 0 ; j < dicomSeriesContainerA.size() ; ++j) // For every series
     {
-        for(unsigned int i = 0; i < dicomSeriesContainerA[j]->getDicomContainer().size(); ++i) // For every instances
+        for(unsigned int i = 0 ; i < dicomSeriesContainerA[j]->getDicomContainer().size() ; ++i) // For every instances
         {
-            CPPUNIT_ASSERT(std::memcmp(dicomSeriesContainerA[j]->getDicomContainer().at(i)->getBuffer(),
-                                       dicomSeriesContainerB[j]->getDicomContainer().at(i)->getBuffer(),
-                                       dicomSeriesContainerA[j]->getDicomContainer().at(i)->getSize()) == 0 );
+            CPPUNIT_ASSERT(
+                std::memcmp(
+                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->getBuffer(),
+                    dicomSeriesContainerB[j]->getDicomContainer().at(i)->getBuffer(),
+                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->getSize()
+                ) == 0
+            );
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API CardinalLayoutManagerBase : public IViewLayoutManager
 {
 public:
 
-    SIGHT_DECLARE_CLASS(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
+    SIGHT_DECLARE_CLASS(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager);
 
     /// Defines all possible positions for a CardinalLayout
     typedef enum

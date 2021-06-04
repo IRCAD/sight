@@ -31,10 +31,11 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::EdgeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::EdgeTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -43,8 +44,8 @@ namespace ut
 void EdgeTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void EdgeTest::tearDown()
@@ -71,4 +72,5 @@ void EdgeTest::methode1()
 }
 
 } //namespace ut
+
 } //namespace sight::data

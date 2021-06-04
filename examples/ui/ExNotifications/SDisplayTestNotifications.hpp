@@ -45,9 +45,9 @@ namespace ExNotifications
  */
 class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IAction
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, ::sight::ui::base::IAction)
+
+    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, ::sight::ui::base::IAction);
 
     /**
      * @name Constructor/Destructor
@@ -90,7 +90,6 @@ private:
     bool m_displayAll {false};
     /// Use centralized Mode.
     bool m_useSNotifier {true};
-
 };
 
 } // namespace ExNotifications

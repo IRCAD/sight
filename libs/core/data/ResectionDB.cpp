@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( sight::data::ResectionDB );
+SIGHT_REGISTER_DATA(sight::data::ResectionDB);
 
 namespace sight::data
 {
@@ -44,8 +44,8 @@ ResectionDB::ResectionDB(data::Object::Key)
     m_sigResectionAdded = ResectionAddedSignalType::New();
     m_sigSafePartAdded  = SafePartAddedSignalType::New();
 
-    m_signals( s_RESECTION_ADDED_SIG,  m_sigResectionAdded)
-        ( s_SAFE_PART_ADDED_SIG,  m_sigSafePartAdded);
+    m_signals(s_RESECTION_ADDED_SIG, m_sigResectionAdded)
+        (s_SAFE_PART_ADDED_SIG, m_sigSafePartAdded);
 }
 
 //------------------------------------------------------------------------------
@@ -56,13 +56,17 @@ ResectionDB::~ResectionDB()
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::shallowCopy(const Object::csptr& _source )
+void ResectionDB::shallowCopy(const Object::csptr& _source)
 {
     ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
 }
 
 //------------------------------------------------------------------------------
@@ -70,10 +74,14 @@ void ResectionDB::shallowCopy(const Object::csptr& _source )
 void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -85,9 +93,9 @@ ResectionDB::ResectionContainerType::size_type ResectionDB::getNumberOfResection
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::addResection(const data::Resection::sptr& resection )
+void ResectionDB::addResection(const data::Resection::sptr& resection)
 {
-    m_resections.push_back( resection );
+    m_resections.push_back(resection);
 }
 
 //------------------------------------------------------------------------------

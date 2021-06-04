@@ -33,16 +33,23 @@
 
 namespace sight::core::thread
 {
+
 class Worker;
+
 } //namespace thread
 
 namespace sight::ui::qt
 {
+
 //-----------------------------------------------------------------------------
 
-UI_QT_API SPTR(core::thread::Worker) getQtWorker(int& argc, char** argv,
-                                                 std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
-                                                 const std::string& name, const std::string& version);
+UI_QT_API SPTR(core::thread::Worker) getQtWorker(
+    int& argc,
+    char** argv,
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
+    const std::string& name,
+    const std::string& version
+);
 
 //-----------------------------------------------------------------------------
 

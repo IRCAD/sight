@@ -40,7 +40,8 @@ namespace helper
 class IO_VTK_CLASS_API vtkLambdaCommand : public vtkCommand
 {
 public:
-    typedef std::function< void (vtkObject*, unsigned long, void*) > Callback;
+
+    typedef std::function<void (vtkObject*, unsigned long, void*)> Callback;
 
     vtkTypeMacro(vtkLambdaCommand, vtkCommand)
 
@@ -70,6 +71,7 @@ protected:
     vtkLambdaCommand()
     {
     }
+
     ~vtkLambdaCommand()
     {
     }
@@ -78,4 +80,5 @@ protected:
 };
 
 } // namespace helper
+
 } // namespace sight::io::vtk

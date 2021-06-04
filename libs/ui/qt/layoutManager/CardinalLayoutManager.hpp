@@ -43,11 +43,13 @@ namespace sight::ui::qt
  */
 class UI_QT_CLASS_API CardinalLayoutManager : public ui::base::layoutManager::CardinalLayoutManagerBase
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(CardinalLayoutManager, ui::base::layoutManager::CardinalLayoutManagerBase,
-                        ui::base::factory::New< CardinalLayoutManager >)
+    SIGHT_DECLARE_CLASS(
+        CardinalLayoutManager,
+        ui::base::layoutManager::CardinalLayoutManagerBase,
+        ui::base::factory::New<CardinalLayoutManager>
+    )
 
     UI_QT_API CardinalLayoutManager(ui::base::GuiBaseObject::Key key);
 
@@ -58,7 +60,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.

@@ -26,15 +26,21 @@
 
 namespace DataCampHelper
 {
+
 typedef std::vector<std::string> PropertiesNameType;
 
 void visitProperties(const std::string& className, const PropertiesNameType& vecProp);
 
-void compareSimplePropertyValue(sight::data::Object::sptr obj,
-                                const std::string& propertyPath,
-                                const std::string& value);
+void compareSimplePropertyValue(
+    sight::data::Object::sptr obj,
+    const std::string& propertyPath,
+    const std::string& value
+);
 
-void compareObjectPropertyValue(sight::data::Object::sptr obj,
-                                const std::string& propertyPath,
-                                sight::data::Object::sptr value);
+void compareObjectPropertyValue(
+    sight::data::Object::sptr obj,
+    const std::string& propertyPath,
+    sight::data::Object::sptr value
+);
+
 } // namespace DataCampHelper

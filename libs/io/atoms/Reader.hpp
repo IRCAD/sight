@@ -31,11 +31,15 @@
 
 namespace sight::atoms
 {
+
 class Base;
+
 }
 namespace sight::io::zip
 {
+
 class IReadArchive;
+
 }
 
 namespace sight::io::atoms
@@ -43,17 +47,17 @@ namespace sight::io::atoms
 
 class IO_ATOMS_CLASS_API Reader
 {
-
 public:
 
-    IO_ATOMS_API SPTR(sight::atoms::Base) read( const SPTR(io::zip::IReadArchive)& archive,
-                                                const std::filesystem::path& rootFilename = "root.json",
-                                                FormatType format                         = JSON ) const;
+    IO_ATOMS_API SPTR(sight::atoms::Base) read(
+        const SPTR(io::zip::IReadArchive) & archive,
+        const std::filesystem::path& rootFilename = "root.json",
+        FormatType format                         = JSON
+    ) const;
 
 protected:
 
     SPTR(sight::atoms::Base) m_atom;
-
 };
 
 }

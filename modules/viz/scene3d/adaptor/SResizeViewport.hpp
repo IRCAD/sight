@@ -55,11 +55,10 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SResizeViewport final : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SResizeViewport, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SResizeViewport, ::sight::viz::scene3d::IAdaptor);
 
     /// Initializes slots.
     MODULE_VIZ_SCENE3D_API SResizeViewport() noexcept;
@@ -93,11 +92,10 @@ private:
     void revert();
 
     /// Defines the initial viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_previousViewportDimensions { 0.f, 0.f, 1.f, 1.f };
+    sight::viz::scene3d::Layer::ViewportConfigType m_previousViewportDimensions {0.f, 0.f, 1.f, 1.f};
 
     /// Defines the configured viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_newViewportDimensions { 0.f, 0.f, 1.f, 1.f };
-
+    sight::viz::scene3d::Layer::ViewportConfigType m_newViewportDimensions {0.f, 0.f, 1.f, 1.f};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

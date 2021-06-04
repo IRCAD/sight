@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Mesh))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Mesh))
 {
     builder
     .tag("object_version", "4")
@@ -48,5 +48,4 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Mesh))
     .property("array_map", &::sight::data::Mesh::m_arrayMap)
     //.property("attributes", &::sight::data::Mesh::m_attributes) // It uses a mapper to convert attributes property.
     ;
-
 }

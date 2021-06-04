@@ -34,7 +34,6 @@ namespace sight::module::ui::qt::image
  */
 class MODULE_UI_QT_CLASS_API Plugin : public core::runtime::Plugin
 {
-
 public:
 
     /// Destroys the plugin.
@@ -45,7 +44,6 @@ public:
 
     /// Stops the plugin, does nothing here.
     MODULE_UI_QT_API void stop() noexcept override;
-
 };
 
 } // namespace sight::module::ui::qt::image.

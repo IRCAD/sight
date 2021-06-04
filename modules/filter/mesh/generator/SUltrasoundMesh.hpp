@@ -34,13 +34,17 @@
 
 namespace sight::data
 {
+
 class Mesh;
+
 }
 
 namespace sight::module::filter::mesh
 {
+
 namespace generator
 {
+
 /**
  * @brief Generates the mesh used to display the ultrasound image.
  *
@@ -74,11 +78,10 @@ namespace generator
  */
 class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::ISimulator
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, service::IService)
+    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, service::IService);
 
     /// Create slots.
     MODULE_FILTER_MESH_API SUltrasoundMesh() noexcept;
@@ -154,7 +157,8 @@ private:
 
     /// Stores mesh positions.
     ::boost::multi_array<float, 3> m_meshPositionArray;
-
 };
+
 } // namespace generator.
+
 } // namespace sight::module::filter::mesh.

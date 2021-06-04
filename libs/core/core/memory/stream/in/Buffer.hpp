@@ -24,23 +24,25 @@
 
 #include "core/config.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
-
 #include <core/macros.hpp>
 
 #include <functional>
 
 namespace sight::core::memory
 {
+
 namespace stream
 {
+
 namespace in
 {
 
 class CORE_CLASS_API Buffer : public IFactory
 {
 public:
-    typedef SPTR (void) LockType;
-    typedef std::function< LockType() > CounterFactoryType;
+
+    typedef SPTR(void) LockType;
+    typedef std::function<LockType()> CounterFactoryType;
 
     Buffer(void* buf, size_t size);
     Buffer(void* buf, size_t size, CounterFactoryType counterFactory);
@@ -55,5 +57,7 @@ protected:
 };
 
 } // namespace in
+
 } // namespace stream
+
 } // namespace sight::core::memory

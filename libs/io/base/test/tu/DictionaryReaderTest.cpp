@@ -35,10 +35,11 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::base::ut::DictionaryReaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::base::ut::DictionaryReaderTest);
 
 namespace sight::io::base
 {
+
 namespace ut
 {
 
@@ -59,7 +60,7 @@ void DictionaryReaderTest::setUp()
 void DictionaryReaderTest::tearDown()
 {
     // Clean up after the test run.
-    if( std::filesystem::exists(m_tmpDictionaryFilePath))
+    if(std::filesystem::exists(m_tmpDictionaryFilePath))
     {
         bool suppr;
         suppr = std::filesystem::remove(m_tmpDictionaryFilePath);
@@ -75,7 +76,7 @@ void DictionaryReaderTest::test_1()
     data::StructureTraits::sptr expectedSkin = data::StructureTraits::New();
     expectedSkin->setType("Skin");
     expectedSkin->setClass(data::StructureTraits::ENVIRONMENT);
-    expectedSkin->setColor(data::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 100.0/100.0f));
+    expectedSkin->setColor(data::Color::New(255.0f / 255.0f, 179.0f / 255.0f, 140.0f / 255.0f, 100.0 / 100.0f));
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);
@@ -109,7 +110,6 @@ void DictionaryReaderTest::test_1()
     CPPUNIT_ASSERT_EQUAL(struct1->getAnatomicRegion(), expectedSkin->getAnatomicRegion());
     CPPUNIT_ASSERT_EQUAL(struct1->getPropertyCategory(), expectedSkin->getPropertyCategory());
     CPPUNIT_ASSERT_EQUAL(struct1->getPropertyType(), expectedSkin->getPropertyType());
-
 }
 
 //------------------------------------------------------------------------------
@@ -133,8 +133,8 @@ void DictionaryReaderTest::test_2()
 
 void DictionaryReaderTest::test_3()
 {
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() /
-                              "NoDictionary.dic";
+    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder()
+                              / "NoDictionary.dic";
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     io::base::reader::DictionaryReader::sptr dictionaryReader = io::base::reader::DictionaryReader::New();
@@ -165,7 +165,6 @@ void DictionaryReaderTest::test_4()
 
 void DictionaryReaderTest::test_5()
 {
-
     // Set up context before running a test.
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
@@ -178,6 +177,7 @@ void DictionaryReaderTest::test_5()
 
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::Exception);
 }
+
 //------------------------------------------------------------------------------
 void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictionaryFile)
 {
@@ -185,7 +185,7 @@ void DictionaryReaderTest::generateDictionaryFile(std::filesystem::path dictiona
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
 
-    file<<"Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+    file << "Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
 
     file.close();
 }
@@ -198,7 +198,7 @@ void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(std::files
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
-    file<<"Skin(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+    file << "Skin(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -209,7 +209,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(std::filesyst
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    file<<"Skin;(255,179,140,100);Boy;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+    file << "Skin;(255,179,140,100);Boy;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -220,11 +220,12 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem:
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    file<<"Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+    file << "Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::io::base

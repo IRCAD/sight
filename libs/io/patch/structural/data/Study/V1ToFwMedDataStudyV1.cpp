@@ -52,16 +52,18 @@ V1ToFwMedDataStudyV1::~V1ToFwMedDataStudyV1()
 
 // ----------------------------------------------------------------------------
 
-V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1( const V1ToFwMedDataStudyV1& cpy ) :
+V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1(const V1ToFwMedDataStudyV1& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V1ToFwMedDataStudyV1::apply(const sight::atoms::Object::sptr& previous,
-                                 const sight::atoms::Object::sptr& current,
-                                 io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V1ToFwMedDataStudyV1::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 

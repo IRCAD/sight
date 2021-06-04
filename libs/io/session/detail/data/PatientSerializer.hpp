@@ -36,7 +36,7 @@ class PatientSerializer : public IDataSerializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PatientSerializer, IDataSerializer)
+    SIGHT_DECLARE_CLASS(PatientSerializer, IDataSerializer);
 
     /// Delete default copy constructors and assignment operators
     PatientSerializer(const PatientSerializer&)            = delete;

@@ -29,9 +29,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 ///converterRegisterMacro need to be called by every converter
-#define converterRegisterMacro( ClassName ) \
-    static io::igtl::detail::DataConverter::Registry< ClassName > BOOST_PP_CAT( s__factory__record__, __LINE__);
+#define converterRegisterMacro(ClassName) \
+    static io::igtl::detail::DataConverter::Registry<ClassName> BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 /**
  *
@@ -41,13 +42,13 @@ namespace sight::io::igtl::detail
  */
 class IO_IGTL_CLASS_API DataConverter
 {
-
 public:
+
     /// Constructor
     IO_IGTL_API DataConverter();
 
     ///Typedef to a DataConverter::sptr
-    typedef SPTR (DataConverter) sptr;
+    typedef SPTR(DataConverter) sptr;
 
     ///Destructor
     IO_IGTL_API ~DataConverter();
@@ -59,11 +60,11 @@ public:
     IO_IGTL_API static void registerConverter(converter::IConverter::sptr c);
 
     ///Class Registry used by the macro to register new converter in the m_converters
-    template <typename T>
+    template<typename T>
     class Registry
     {
-
     public:
+
         Registry()
         {
             DataConverter::registerConverter(T::New());
@@ -90,9 +91,11 @@ public:
      *
      * @return igtl message smart pointer
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer getStatusMessage(int igtlCode,
-                                                              int igtlSubCode,
-                                                              const std::string& errMsg) const;
+    IO_IGTL_API ::igtl::MessageBase::Pointer getStatusMessage(
+        int igtlCode,
+        int igtlSubCode,
+        const std::string& errMsg
+    ) const;
 
     /**
      * @brief get capability message
@@ -102,10 +105,12 @@ public:
     IO_IGTL_API ::igtl::MessageBase::Pointer getCapabilitiesMessage() const;
 
 private:
+
     /// a vector of IConverter smart pointer
-    std::vector<converter::IConverter::sptr > m_converters;
+    std::vector<converter::IConverter::sptr> m_converters;
 
     /// default converter used when no converter to OpenIGTLink standard message is found
     converter::IConverter::sptr m_defaultConverter;
 };
-}//namespace sight::io::igtl::detail
+
+} //namespace sight::io::igtl::detail

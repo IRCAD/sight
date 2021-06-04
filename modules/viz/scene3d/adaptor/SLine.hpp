@@ -32,7 +32,9 @@
 
 namespace sight::data
 {
+
 class Material;
+
 }
 
 namespace sight::module::viz::scene3d::adaptor
@@ -69,11 +71,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLine final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::ITransformable
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SLine() noexcept;
@@ -122,26 +123,25 @@ private:
     void updateLength(float _length);
 
     /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Contains the material data.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Contains the manual object of the line.
-    ::Ogre::ManualObject* m_line { nullptr };
+    ::Ogre::ManualObject* m_line {nullptr};
 
     /// Defines the length of the line (in mm).
-    float m_length { 50.f };
+    float m_length {50.f};
 
     /// Defines the color of the line.
     ::Ogre::ColourValue m_color;
 
     /// Enables if the line is dashed or not.
-    bool m_dashed { false };
+    bool m_dashed {false};
 
     /// Defines the length of one dash.
-    float m_dashLength { 2.5f };
-
+    float m_dashLength {2.5f};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

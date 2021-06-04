@@ -38,17 +38,16 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API GuiRegistry : public ui::base::GuiBaseObject
 {
-
 public:
 
-    typedef std::map< std::string, ui::base::container::fwContainer::sptr > ContainerMapType;
-    typedef std::map< std::string, ui::base::container::fwMenuBar::sptr >   MenuBarMapType;
-    typedef std::map< std::string, ui::base::container::fwToolBar::sptr >   ToolBarMapType;
-    typedef std::map< std::string, ui::base::container::fwMenu::sptr >      MenuMapType;
-    typedef std::vector< std::string >                           ParentSidsType;
-    typedef std::map< std::string, ParentSidsType > ActionToParentMapType;
+    typedef std::map<std::string, ui::base::container::fwContainer::sptr> ContainerMapType;
+    typedef std::map<std::string, ui::base::container::fwMenuBar::sptr> MenuBarMapType;
+    typedef std::map<std::string, ui::base::container::fwToolBar::sptr> ToolBarMapType;
+    typedef std::map<std::string, ui::base::container::fwMenu::sptr> MenuMapType;
+    typedef std::vector<std::string> ParentSidsType;
+    typedef std::map<std::string, ParentSidsType> ActionToParentMapType;
 
-    SIGHT_DECLARE_CLASS(GuiRegistry, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(GuiRegistry, ui::base::GuiBaseObject);
 
     /**
      * @brief   Constructor.
@@ -242,7 +241,6 @@ protected:
 
     /// Parent sid can be Menu sid or ToolBar sid
     static ActionToParentMapType m_actionSIDToParentSID;
-
 };
 
 } // namespace sight::ui::base

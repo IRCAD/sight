@@ -47,15 +47,17 @@
 namespace sight::filter::image
 {
 
-template <class PIX>
+template<class PIX>
 class MIPMatchingRegistration;
 
 /**
  * @brief Helper type containing the parameters and return values from MIPMatchingRegistration::registerImage()
  * for use with the Dispatcher.
  */
-struct RegistrationDispatch {
-    struct Parameters {
+struct RegistrationDispatch
+{
+    struct Parameters
+    {
         data::Image::csptr fixed;
         data::Image::csptr moving;
         data::Matrix4::sptr transform;
@@ -66,8 +68,11 @@ struct RegistrationDispatch {
     template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
-        filter::image::MIPMatchingRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed,
-                                                                         params.transform);
+        filter::image::MIPMatchingRegistration<PIXELTYPE>::registerImage(
+            params.moving,
+            params.fixed,
+            params.transform
+        );
     }
 };
 
@@ -77,7 +82,7 @@ struct RegistrationDispatch {
  *
  * @tparam PIX Subpixel type of the images.
  */
-template <typename PIX>
+template<typename PIX>
 class MIPMatchingRegistration
 {
 public:
@@ -90,12 +95,20 @@ public:
      *
      * @pre The transformed moving image must approximately match
      */
-    static void registerImage(const data::Image::csptr& _moving,
-                              const data::Image::csptr& _fixed,
-                              data::Matrix4::sptr& _transform);
+    static void registerImage(
+        const data::Image::csptr& _moving,
+        const data::Image::csptr& _fixed,
+        data::Matrix4::sptr& _transform
+    );
 
 private:
-    enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
+
+    enum class Direction : unsigned int
+    {
+        X = 0,
+        Y = 1,
+        Z = 2
+    };
 
     using Image3DType    = ::itk::Image<PIX, 3>;
     using Image2DType    = ::itk::Image<float, 2>;
@@ -124,16 +137,26 @@ private:
 
 //------------------------------------------------------------------------------
 
-template <class PIX>
-void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _moving,
-                                                 const data::Image::csptr& _fixed,
-                                                 data::Matrix4::sptr& _transform)
+template<class PIX>
+void MIPMatchingRegistration<PIX>::registerImage(
+    const data::Image::csptr& _moving,
+    const data::Image::csptr& _fixed,
+    data::Matrix4::sptr& _transform
+)
 {
-    const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing2().begin(), _fixed->getSpacing2().end(), 1.,
-                                                    std::multiplies<double>());
+    const double fixedVoxelVolume = std::accumulate(
+        _fixed->getSpacing2().begin(),
+        _fixed->getSpacing2().end(),
+        1.,
+        std::multiplies<double>()
+    );
 
-    const double movingVoxelVolume = std::accumulate(_moving->getSpacing2().begin(), _moving->getSpacing2().end(), 1.,
-                                                     std::multiplies<double>());
+    const double movingVoxelVolume = std::accumulate(
+        _moving->getSpacing2().begin(),
+        _moving->getSpacing2().end(),
+        1.,
+        std::multiplies<double>()
+    );
 
     data::Image::csptr fixed  = _fixed,
                        moving = _moving;
@@ -162,10 +185,10 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
     const auto transX = matchTemplate(fixedMipX, movingMipX);
     const auto transY = matchTemplate(fixedMipY, movingMipY);
 
-    const std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
+    const std::array<double, 3> res {{transY[0], transX[1], transY[1]}};
 
     data::Matrix4::sptr translation = data::Matrix4::New();
-    for(std::uint8_t i = 0; i != 3; ++i)
+    for(std::uint8_t i = 0 ; i != 3 ; ++i)
     {
         translation->setCoefficient(i, 3, res[i]);
     }
@@ -175,9 +198,11 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
 
 //------------------------------------------------------------------------------
 
-template <class PIX>
+template<class PIX>
 typename MIPMatchingRegistration<PIX>::Image2DPtrType MIPMatchingRegistration<PIX>::computeMIP(
-    Image3DPtrType const& img, Direction d)
+    Image3DPtrType const& img,
+    Direction d
+)
 {
     auto filter = MIPFilterType::New();
     filter->SetInput(img);
@@ -188,9 +213,11 @@ typename MIPMatchingRegistration<PIX>::Image2DPtrType MIPMatchingRegistration<PI
 
 //------------------------------------------------------------------------------
 
-template <class PIX>
-typename MIPMatchingRegistration<PIX>::Image2DType::PointType
-MIPMatchingRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtrType const& img)
+template<class PIX>
+typename MIPMatchingRegistration<PIX>::Image2DType::PointType MIPMatchingRegistration<PIX>::matchTemplate(
+    Image2DPtrType const& _template,
+    Image2DPtrType const& img
+)
 {
     // The correlation filter works in pixel space and as such, requires that images occupy the same physical space, ie
     // have the same origin and spacings. Spacing is already OK thanks to the previous resampling, we deal with the

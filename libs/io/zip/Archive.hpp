@@ -36,7 +36,7 @@ class IO_ZIP_CLASS_API Archive
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Archive)
+    SIGHT_DECLARE_CLASS(Archive);
 
     /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
     Archive(const Archive&)            = delete;

@@ -27,14 +27,17 @@
 #include <data/Patient.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::PatientTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::PatientTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -59,7 +62,7 @@ void PatientTest::propertiesTest()
     const std::string patient_id                              = "42";
     const std::string birth_date                              = "19830214";
     const std::string sex                                     = "M";
-    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields", "name", "patient_id", "birth_date", "sex" };
+    const ::DataCampHelper::PropertiesNameType dataProperties = {"fields", "name", "patient_id", "birth_date", "sex"};
 
     data::Patient::sptr obj = data::Patient::New();
     obj->setName(name);
@@ -77,6 +80,9 @@ void PatientTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } //namespace sight::data

@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::qt::calibration
 {
+
 /**
  * @brief   SCameraSeriesEditor service is used to display the extrinsic calibration of a camera series.
  *
@@ -60,7 +61,8 @@ class MODULE_UI_QT_CLASS_API SCameraSeriesEditor : public QObject,
 Q_OBJECT;
 
 public:
-    SIGHT_DECLARE_SERVICE(SCameraSeriesEditor, sight::ui::base::IEditor)
+
+    SIGHT_DECLARE_SERVICE(SCameraSeriesEditor, sight::ui::base::IEditor);
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;
@@ -122,12 +124,12 @@ protected:
      */
     void clearLabels();
 
-    QPointer< QLabel > m_description; ///< description of camera series
+    QPointer<QLabel> m_description; ///< description of camera series
 
-    QVector< QPointer< QLabel > > m_matrixLabels; ///< Labels for matrix's elements
+    QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
 
     /// Index of the camera in cameraSeries used to display extrinsic matrix.
     size_t m_camIndex;
-
 };
+
 } // namespace sight::module::ui::qt::calibration

@@ -24,6 +24,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace custom
 {
 
@@ -45,4 +46,5 @@ IFilter::FilterType ICustom::getFilterType() const
 }
 
 } // namespace custom
+
 } // namespace sight::filter::dicom

@@ -44,22 +44,26 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(const data::DicomSeries::csptr& dicomSeries,
-                 const SPTR(::gdcm::Reader)& reader,
-                 const io::dicom::container::DicomInstance::sptr& instance,
-                 const data::ModelSeries::sptr& series,
-                 const core::log::Logger::sptr& logger,
-                 ProgressCallback progress,
-                 CancelRequestedCallback cancel) :
-    io::dicom::reader::ie::InformationEntity< data::ModelSeries >(dicomSeries, reader, instance, series,
-                                                                  logger, progress, cancel)
+Surface::Surface(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(::gdcm::Reader)& reader,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const data::ModelSeries::sptr& series,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::reader::ie::InformationEntity<data::ModelSeries>(dicomSeries, reader, instance, series,
+                                                                logger, progress, cancel)
 {
 }
 
@@ -81,7 +85,7 @@ bool Surface::loadSegmentedPropertyRegistry(const std::filesystem::path& filepat
 void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
 {
     // Retrieve Surface Reader
-    SPTR(::gdcm::SurfaceReader) surfaceReader = std::static_pointer_cast< ::gdcm::SurfaceReader >(m_reader);
+    SPTR(::gdcm::SurfaceReader) surfaceReader = std::static_pointer_cast< ::gdcm::SurfaceReader>(m_reader);
 
     // Retrieve dataset
     const ::gdcm::DataSet& dataset = surfaceReader->GetFile().GetDataSet();
@@ -97,7 +101,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
     data::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
 
     // Lambda used to display reading errors
-    auto displayError = [&](const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+    auto displayError = [&](const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
                             const std::string& error)
                         {
                             std::string segmentLabel = segment->GetSegmentLabel();
@@ -118,7 +122,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
     for(const auto& segment : segmentContainer)
     {
         // We only handle segment containing one surface
-        if (segment->GetSurfaceCount() != 1 || segment->GetSurfaces().size() != 1)
+        if(segment->GetSurfaceCount() != 1 || segment->GetSurfaces().size() != 1)
         {
             displayError(segment, "Unsupported surface count.");
             continue;
@@ -131,8 +135,8 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
         const ::gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
 
         // Get the associated surface of the current segmentation
-        const auto& surfaceContainer                           = segment->GetSurfaces();
-        const ::gdcm::SmartPointer< ::gdcm::Surface >& surface = surfaceContainer[0];
+        const auto& surfaceContainer                          = segment->GetSurfaces();
+        const ::gdcm::SmartPointer< ::gdcm::Surface>& surface = surfaceContainer[0];
 
         try
         {
@@ -159,29 +163,30 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
 
     // Update the reconstruction DB
     m_object->setReconstructionDB(reconstructionDB);
-
 }
 
 //------------------------------------------------------------------------------
 
-std::string getStructureTypeFromSegmentIdentification(const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
-                                                      const io::dicom::helper::SegmentedPropertyRegistry& registry)
+std::string getStructureTypeFromSegmentIdentification(
+    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    const io::dicom::helper::SegmentedPropertyRegistry& registry
+)
 {
     // Lambda used to format single entry
     const auto format = [&](const ::gdcm::SegmentHelper::BasicCodedEntry& entry) -> std::string
                         {
                             if(!entry.IsEmpty())
                             {
-                                return "(" + ::gdcm::LOComp::Trim(entry.CV.c_str()) +
-                                       ";" + ::gdcm::LOComp::Trim(entry.CSD.c_str()) +
-                                       ";" + ::gdcm::LOComp::Trim(entry.CM.c_str()) + ")";
+                                return "(" + ::gdcm::LOComp::Trim(entry.CV.c_str())
+                                       + ";" + ::gdcm::LOComp::Trim(entry.CSD.c_str())
+                                       + ";" + ::gdcm::LOComp::Trim(entry.CM.c_str()) + ")";
                             }
 
                             return "";
                         };
 
     // Lambda used to format multiple entries
-    const auto formatVector = [&](const std::vector< ::gdcm::SegmentHelper::BasicCodedEntry >& entries) -> std::string
+    const auto formatVector = [&](const std::vector< ::gdcm::SegmentHelper::BasicCodedEntry>& entries) -> std::string
                               {
                                   std::string result;
 
@@ -194,19 +199,22 @@ std::string getStructureTypeFromSegmentIdentification(const ::gdcm::SmartPointer
                               };
 
     // Retrieve Structure Type from segment identification
-    return registry.getStructureType(format(segment->GetPropertyType()),
-                                     format(segment->GetPropertyCategory()),
-                                     formatVector(segment->GetPropertyTypeModifiers()),
-                                     format(segment->GetAnatomicRegion()),
-                                     formatVector(segment->GetAnatomicRegionModifiers()));
-
+    return registry.getStructureType(
+        format(segment->GetPropertyType()),
+        format(segment->GetPropertyCategory()),
+        formatVector(segment->GetPropertyTypeModifiers()),
+        format(segment->GetAnatomicRegion()),
+        formatVector(segment->GetAnatomicRegionModifiers())
+    );
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& reconstruction,
-                                            const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
-                                            const ::gdcm::Item& segmentItem)
+void Surface::readSurfaceSegmentationModule(
+    const data::Reconstruction::sptr& reconstruction,
+    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    const ::gdcm::Item& segmentItem
+)
 {
     // Retrieve segment's dataset
     const ::gdcm::DataSet& segmentDataset = segmentItem.GetNestedDataSet();
@@ -221,7 +229,7 @@ void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& re
     auto privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(structureTypeTag).c_str());
     if(segmentDataset.FindDataElement(structureTypeTag))
     {
-        const auto structureType = io::dicom::helper::DicomDataReader::getTagValue< 0x5649, 0x1000 >(segmentDataset);
+        const auto structureType = io::dicom::helper::DicomDataReader::getTagValue<0x5649, 0x1000>(segmentDataset);
         reconstruction->setStructureType(structureType);
     }
     // Structure Type from Segment Identification
@@ -246,7 +254,7 @@ void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& re
     privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
     if(segmentDataset.FindDataElement(computedMaskVolumeTag))
     {
-        ::gdcm::Attribute< 0x5649, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1 > attribute;
+        ::gdcm::Attribute<0x5649, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1> attribute;
         attribute.SetFromDataSet(segmentDataset);
         const double volume = attribute.GetValue();
         reconstruction->setComputedMaskVolume(volume);
@@ -255,13 +263,14 @@ void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& re
     {
         reconstruction->setComputedMaskVolume(data::Reconstruction::s_NO_COMPUTED_MASK_VOLUME);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruction,
-                                    const ::gdcm::SmartPointer< ::gdcm::Surface >& surface)
+void Surface::readSurfaceMeshModule(
+    const data::Reconstruction::sptr& reconstruction,
+    const ::gdcm::SmartPointer< ::gdcm::Surface>& surface
+)
 {
     // Create material
     data::Material::sptr material = data::Material::New();
@@ -284,7 +293,7 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
 
     // Set reconstruction's color
     data::Color::sptr color = data::Color::New();
-    color->setRGBA( rgba );
+    color->setRGBA(rgba);
     material->setDiffuse(color);
 
     // Recommended Presentation Type
@@ -293,14 +302,14 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
     material->setRepresentationMode(representationMode);
 
     // Manifold
-    if (surface->GetManifold() == ::gdcm::Surface::YES)
+    if(surface->GetManifold() == ::gdcm::Surface::YES)
     {
         throw io::dicom::exception::Failed("Manifold meshes are not supported by the selected reader.");
     }
 
     // Mesh Primitive
-    ::gdcm::SmartPointer< ::gdcm::MeshPrimitive > meshPrimitive = surface->GetMeshPrimitive();
-    if (meshPrimitive->GetPrimitiveType() != ::gdcm::MeshPrimitive::TRIANGLE)
+    ::gdcm::SmartPointer< ::gdcm::MeshPrimitive> meshPrimitive = surface->GetMeshPrimitive();
+    if(meshPrimitive->GetPrimitiveType() != ::gdcm::MeshPrimitive::TRIANGLE)
     {
         throw io::dicom::exception::Failed("The primitive type is not supported by the selected reader.");
     }
@@ -322,7 +331,7 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
     // Surface Points Normals
     const ::gdcm::ByteValue* normalCoordinates = surface->GetVectorCoordinateData().GetByteValue();
     const char* normalCoordinatesPointer       = nullptr;
-    if (!surface->GetVectorCoordinateData().IsEmpty())
+    if(!surface->GetVectorCoordinateData().IsEmpty())
     {
         // Check that the surface contains normals
         if(!normalCoordinates || !normalCoordinates->GetPointer())
@@ -334,7 +343,7 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
 
         // Compute number of normal coordinates
         const unsigned long normalCoordinateSize = normalCoordinates->GetLength() / sizeof(float);
-        if ((normalCoordinateSize / 3) != surface->GetNumberOfVectors() || normalCoordinateSize != pointCoordinatesSize)
+        if((normalCoordinateSize / 3) != surface->GetNumberOfVectors() || normalCoordinateSize != pointCoordinatesSize)
         {
             throw io::dicom::exception::Failed("Normal coordinates data are corrupted.");
         }
@@ -342,7 +351,7 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
 
     // Triangle Point Index List
     const ::gdcm::ByteValue* pointIndices = meshPrimitive->GetPrimitiveData().GetByteValue();
-    if (!pointIndices || !pointIndices->GetPointer())
+    if(!pointIndices || !pointIndices->GetPointer())
     {
         throw io::dicom::exception::Failed("No triangle point index list found.");
     }
@@ -358,13 +367,14 @@ void Surface::readSurfaceMeshModule(const data::Reconstruction::sptr& reconstruc
                                                         reinterpret_cast<const float*>(normalCoordinatesPointer));
 
     // Set the reconstruction
-    reconstruction->setMaterial( material );
-    reconstruction->setMesh( surfaceContainer.convertToData() );
-
+    reconstruction->setMaterial(material);
+    reconstruction->setMesh(surfaceContainer.convertToData());
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

@@ -33,16 +33,21 @@
 
 namespace sight::data
 {
+
 class DicomSeries;
+
 }
 
 namespace sight::data
 {
+
 class Series;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
 
@@ -57,7 +62,7 @@ public:
     typedef  std::shared_ptr<DicomInstance> sptr;
 
     /// SOP Instance Container Type
-    typedef std::vector< std::string > SOPInstanceUIDContainerType;
+    typedef std::vector<std::string> SOPInstanceUIDContainerType;
 
     /// Constructor
     IO_DICOM_API DicomInstance();
@@ -68,17 +73,21 @@ public:
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      * @param[in] logger Logger
      */
-    IO_DICOM_API DicomInstance(const CSPTR(data::Series)& series,
-                               const SPTR(core::log::Logger)& logger = nullptr,
-                               bool isMultiFiles                     = true);
+    IO_DICOM_API DicomInstance(
+        const CSPTR(data::Series)& series,
+        const SPTR(core::log::Logger)& logger = nullptr,
+        bool isMultiFiles                     = true
+    );
 
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries from which the instance is created
      * @param[in] logger Logger
      */
-    IO_DICOM_API DicomInstance(const CSPTR(data::DicomSeries)& dicomSeries,
-                               const SPTR(core::log::Logger)& logger = nullptr);
+    IO_DICOM_API DicomInstance(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(core::log::Logger)& logger = nullptr
+    );
 
     /// Copy constructor
     IO_DICOM_API DicomInstance(const DicomInstance& dicomInstance);
@@ -165,6 +174,7 @@ public:
     }
 
 protected:
+
     /**
      * @brief Compute SOPClassUID
      * @param[in] series Series
@@ -208,4 +218,5 @@ private:
 };
 
 } //namespace container
+
 } //namespace sight::io::dicom

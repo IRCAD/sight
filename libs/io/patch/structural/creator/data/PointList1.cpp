@@ -28,8 +28,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -49,7 +51,7 @@ PointList1::~PointList1()
 
 // ----------------------------------------------------------------------------
 
-PointList1::PointList1( const PointList1& cpy ) :
+PointList1::PointList1(const PointList1& cpy) :
     io::atoms::patch::IStructuralCreator(cpy)
 {
 }
@@ -69,5 +71,7 @@ sight::atoms::Object::sptr PointList1::create()
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

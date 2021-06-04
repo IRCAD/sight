@@ -64,11 +64,10 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IController
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SManagePointList, ::sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SManagePointList, ::sight::service::IController);
 
     /// Initialize slots.
     MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;
@@ -120,7 +119,7 @@ private:
     /// Allows to add an ID label the points.
     bool m_label {false};
 
-    float m_tolerance { 10.f };
-
+    float m_tolerance {10.f};
 };
+
 } // ctrlPicking

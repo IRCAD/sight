@@ -23,7 +23,6 @@
 #include "data/RawBufferTL.hpp"
 
 #include "data/timeline/RawBuffer.hpp"
-
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
@@ -32,21 +31,21 @@
 
 #include <functional>
 
-SIGHT_REGISTER_DATA( sight::data::RawBufferTL );
+SIGHT_REGISTER_DATA(sight::data::RawBufferTL);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-RawBufferTL::RawBufferTL ( data::Object::Key key ) :
+RawBufferTL::RawBufferTL(data::Object::Key key) :
     BufferTL(key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-RawBufferTL::~RawBufferTL ()
+RawBufferTL::~RawBufferTL()
 {
 }
 
@@ -55,17 +54,21 @@ RawBufferTL::~RawBufferTL ()
 void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
     core::mt::WriteLock writeLock(m_tlMutex);
     core::mt::WriteLock readLock(other->m_tlMutex);
 
-    for(TimelineType::value_type elt :  other->m_timeline)
+    for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(data::timeline::RawBuffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -75,11 +78,13 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
 //------------------------------------------------------------------------------
 
-CSPTR(data::timeline::RawBuffer) RawBufferTL::getClosestBuffer( core::HiResClock::HiResClockType timestamp,
-                                                                DirectionType direction) const
+CSPTR(data::timeline::RawBuffer) RawBufferTL::getClosestBuffer(
+    core::HiResClock::HiResClockType timestamp,
+    DirectionType direction
+) const
 {
     CSPTR(data::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
-    return std::dynamic_pointer_cast< const data::timeline::RawBuffer >(buffer);
+    return std::dynamic_pointer_cast<const data::timeline::RawBuffer>(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +92,7 @@ CSPTR(data::timeline::RawBuffer) RawBufferTL::getClosestBuffer( core::HiResClock
 CSPTR(data::timeline::RawBuffer) RawBufferTL::getBuffer(core::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(data::timeline::Object) buffer = this->getObject(timestamp);
-    return std::dynamic_pointer_cast< const data::timeline::RawBuffer >(buffer);
+    return std::dynamic_pointer_cast<const data::timeline::RawBuffer>(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -108,12 +113,12 @@ SPTR(data::timeline::Object) RawBufferTL::createObject(core::HiResClock::HiResCl
 
 SPTR(data::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiResClockType timestamp)
 {
-    return std::make_shared< data::timeline::RawBuffer >(
+    return std::make_shared<data::timeline::RawBuffer>(
         timestamp,
         (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
-        ::boost::bind( &::boost::pool<>::free, m_pool, _1)
-        );
+        ::boost::bind(&::boost::pool<>::free, m_pool, _1)
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +126,7 @@ SPTR(data::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiRe
 bool RawBufferTL::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
     CSPTR(data::timeline::RawBuffer) srcObj =
-        std::dynamic_pointer_cast< const data::timeline::RawBuffer >(obj);
+        std::dynamic_pointer_cast<const data::timeline::RawBuffer>(obj);
     return srcObj != NULL;
 }
 

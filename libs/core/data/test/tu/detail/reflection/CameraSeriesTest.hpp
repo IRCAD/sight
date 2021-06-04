@@ -26,28 +26,35 @@
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
 class CameraSeriesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( CameraSeriesTest );
-CPPUNIT_TEST( propertiesTest );
+CPPUNIT_TEST_SUITE(CameraSeriesTest);
+CPPUNIT_TEST(propertiesTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void propertiesTest();
-
 };
+
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace ardata

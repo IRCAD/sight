@@ -29,12 +29,14 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::viz::scene3d::helper::ut::SceneTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::SceneTest);
 
 namespace sight::viz::scene3d
 {
+
 namespace helper
 {
+
 namespace ut
 {
 
@@ -54,7 +56,7 @@ void SceneTest::tearDown()
 
 void SceneTest::getNodeById()
 {
-    auto ogreRoot = Utils::getOgreRoot();
+    auto ogreRoot                      = Utils::getOgreRoot();
     ::Ogre::SceneManager* sceneManager = ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
     ::Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
@@ -106,5 +108,7 @@ void SceneTest::getNodeById()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace helper
+
 } //namespace sight::viz::scene3d

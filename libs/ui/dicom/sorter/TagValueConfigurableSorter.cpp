@@ -24,9 +24,9 @@
 
 #include "ui/dicom/widget/QTagSelectorWidget.hpp"
 
-#include <dcmtk/dcmdata/dcdeftag.h>
-
 #include <filter/dicom/registry/macros.hpp>
+
+#include <dcmtk/dcmdata/dcdeftag.h>
 
 #include <QApplication>
 #include <QDialog>
@@ -35,10 +35,11 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwDicomIOFilterRegisterMacro( ::sight::ui::dicom::sorter::TagValueConfigurableSorter );
+fwDicomIOFilterRegisterMacro(::sight::ui::dicom::sorter::TagValueConfigurableSorter);
 
 namespace sight::ui::dicom
 {
+
 namespace sorter
 {
 
@@ -70,7 +71,6 @@ std::string TagValueConfigurableSorter::getName() const
 
 std::string TagValueConfigurableSorter::getDescription() const
 {
-
     return TagValueConfigurableSorter::s_FILTER_DESCRIPTION;
 }
 
@@ -121,4 +121,5 @@ void TagValueConfigurableSorter::configureWithGUI()
 }
 
 } // namespace sorter
+
 } // namespace sight::ui::dicom

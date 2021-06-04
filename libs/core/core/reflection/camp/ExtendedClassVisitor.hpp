@@ -40,36 +40,42 @@ public:
     {
         ClassVisitor::visit(property);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const SimpleProperty& property)
     {
         ClassVisitor::visit(property);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const ArrayProperty& property)
     {
         ClassVisitor::visit(property);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const EnumProperty& property)
     {
         ClassVisitor::visit(property);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const UserProperty& property)
     {
         ClassVisitor::visit(property);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const Function& function)
     {
         ClassVisitor::visit(function);
     }
+
     //------------------------------------------------------------------------------
 
     virtual void visit(const MapProperty&)

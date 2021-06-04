@@ -27,7 +27,7 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Float));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Float));
 
 namespace sight::data
 {
@@ -37,25 +37,26 @@ namespace sight::data
  *
  * Float object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API Float : public GenericField< float >
+class DATA_CLASS_API Float : public GenericField<float>
 {
 public:
-    SIGHT_DECLARE_CLASS(Float, data::Object)
+
+    SIGHT_DECLARE_CLASS(Float, data::Object);
 
     //------------------------------------------------------------------------------
 
     static sptr New(const float val = 0.f)
     {
-        return GenericFieldFactory< Float >(val);
+        return GenericFieldFactory<Float>(val);
     }
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Float));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Float));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Float( data::Object::Key key ) noexcept;
+    DATA_API Float(data::Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
@@ -63,7 +64,7 @@ public:
     DATA_API virtual ~Float() noexcept;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

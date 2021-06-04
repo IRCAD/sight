@@ -22,7 +22,7 @@
 
 #pragma once
 
-#if defined(linux) || defined(__linux) || defined (__APPLE__)
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
 
 #include "core/runtime/detail/dl/Native.hpp"
 
@@ -33,6 +33,7 @@ namespace sight::core::runtime
 
 namespace detail
 {
+
 namespace dl
 {
 
@@ -42,13 +43,12 @@ namespace dl
  */
 struct Posix : public Native
 {
-
     /**
      * @brief       Constructor.
      *
      * @param[in]   modulePath  a path to the module to manage
      */
-    Posix( const std::filesystem::path& modulePath ) noexcept;
+    Posix(const std::filesystem::path& modulePath) noexcept;
 
     /**
      * @brief   Destructor.
@@ -67,7 +67,7 @@ struct Posix : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol( const std::string& name ) const override;
+    void* getSymbol(const std::string& name) const override;
 
     /**
      * @see core::runtime::dl::Native#load
@@ -85,7 +85,6 @@ struct Posix : public Native
          * @brief   The handle of the loaded module.
          */
         void* m_handle;
-
 };
 
 } // namespace dl

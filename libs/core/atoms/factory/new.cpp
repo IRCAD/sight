@@ -32,7 +32,7 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-atoms::Base::sptr New( const atoms::registry::KeyType& classname )
+atoms::Base::sptr New(const atoms::registry::KeyType& classname)
 {
     return atoms::registry::get()->create(classname);
 }

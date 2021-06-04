@@ -24,9 +24,12 @@
 
 namespace sight::core::memory
 {
+
 namespace camp
 {
 
 runner runner::r;
+
 }
+
 }

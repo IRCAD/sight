@@ -53,8 +53,12 @@ namespace sight::geometry::data
    t1 = [-d1.(p1-p2) + d2.(p1-p2) * (d1.d2)]/delta
    @endverbatim
  */
-GEOMETRY_DATA_API bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray2,
-                                         fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine);
+GEOMETRY_DATA_API bool getClosestPoints(
+    const fwLine& _ray1,
+    const fwLine& _ray2,
+    fwVec3d& _pointOnThis,
+    fwVec3d& _pointOnfwLine
+);
 
 /**
  * @brief Compute the projection of a point in a given direction.
@@ -62,7 +66,7 @@ GEOMETRY_DATA_API bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API fwVec3d getClosestPoint( const fwLine& _ray, const fwVec3d& _point);
+GEOMETRY_DATA_API fwVec3d getClosestPoint(const fwLine& _ray, const fwVec3d& _point);
 
 /**
  * @brief Compute the projection of a point in a given direction and test if this intersection is inside a given radius.
@@ -82,8 +86,13 @@ GEOMETRY_DATA_API bool intersect(const fwLine& _ray, double _radius, const fwVec
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect(const fwLine& _line, double _radius, const fwVec3d& _origin, const fwVec3d& _direction,
-                                 fwVec3d& _point);
+GEOMETRY_DATA_API bool intersect(
+    const fwLine& _line,
+    double _radius,
+    const fwVec3d& _origin,
+    const fwVec3d& _direction,
+    fwVec3d& _point
+);
 
 /**
  * @brief Give the intersection between a plane and a line. The result is returned in a point (_point).
@@ -97,7 +106,14 @@ GEOMETRY_DATA_API bool intersect(const fwLine& _line, double _radius, const fwVe
  *  @param [out] _front true if the dot product of the plane normal and ths positive Z axis (0,0,1) is positive.
  *  @return true if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect( const fwLine& _line, const fwVec3d& _v1,  const fwVec3d& _v2, const fwVec3d& _v3,
-                                  fwVec3d& _point, fwVec3d& _barycentric, bool& _front);
+GEOMETRY_DATA_API bool intersect(
+    const fwLine& _line,
+    const fwVec3d& _v1,
+    const fwVec3d& _v2,
+    const fwVec3d& _v3,
+    fwVec3d& _point,
+    fwVec3d& _barycentric,
+    bool& _front
+);
 
 }

@@ -170,7 +170,7 @@ void SSlider::starting()
     m_textLabel = new QLabel();
     m_textLabel->setText(m_text);
 
-    if( !m_hasEditBox )
+    if(!m_hasEditBox)
     {
         m_valueLabel = new QLabel();
         m_valueLabel->setText(QString::number(m_value));
@@ -182,37 +182,37 @@ void SSlider::starting()
     m_maxValueLabel = new QLabel();
     m_maxValueLabel->setText(QString::number(m_maxValue));
 
-    layout->addWidget( m_textLabel );
+    layout->addWidget(m_textLabel);
 
-    if( !m_hasEditBox )
+    if(!m_hasEditBox)
     {
-        layout->addWidget( m_valueLabel );
+        layout->addWidget(m_valueLabel);
     }
-    layout->addWidget( m_minValueLabel );
-    layout->addWidget( m_valueSlider );
-    layout->addWidget( m_maxValueLabel );
 
-    if( m_hasEditBox )
+    layout->addWidget(m_minValueLabel);
+    layout->addWidget(m_valueSlider);
+    layout->addWidget(m_maxValueLabel);
+
+    if(m_hasEditBox)
     {
         m_valueEdit = new QLineEdit("");
-        m_valueEdit->setMaximumWidth( 70 );
+        m_valueEdit->setMaximumWidth(70);
         m_valueEdit->setInputMask("#0000");
 
-        isConnected = QObject::connect( m_valueEdit, SIGNAL(returnPressed()), this, SLOT(editValue()) );
+        isConnected = QObject::connect(m_valueEdit, SIGNAL(returnPressed()), this, SLOT(editValue()));
         SIGHT_ASSERT("editingFinished Signal failed to connect to onTextChanged Slot.", isConnected);
 
-        layout->addWidget( m_valueEdit );
+        layout->addWidget(m_valueEdit);
     }
 
-    if( m_hasResetButton )
+    if(m_hasResetButton)
     {
-        m_resetButton = new QPushButton("R");  // "R" is codename for Reset !
+        m_resetButton = new QPushButton("R"); // "R" is codename for Reset !
 
         isConnected = QObject::connect(m_resetButton, SIGNAL(clicked()), this, SLOT(resetValue()));
         SIGHT_ASSERT("clicked Signal failed to connect to resetValue Slot.", isConnected);
 
-        layout->addWidget( m_resetButton );
-
+        layout->addWidget(m_resetButton);
     }
 
     qtContainer->setLayout(layout);
@@ -224,11 +224,11 @@ void SSlider::starting()
 
 void SSlider::stopping()
 {
-
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
 
     this->destroy();
 }
+
 //------------------------------------------------------------------------------
 
 void SSlider::updating()
@@ -251,20 +251,20 @@ void SSlider::sliderPressed()
 //------------------------------------------------------------------------------
 void SSlider::resetValue()
 {
-    setValue( m_defaultValue, true );
+    setValue(m_defaultValue, true);
 }
 
 //------------------------------------------------------------------------------
 void SSlider::changeValue()
 {
-    SIGHT_ASSERT( "m_valueSlider must not be null",        nullptr != m_valueSlider );
-    SIGHT_ASSERT( "m_sigValueChanged must not be null",    nullptr != m_sigValueChanged );
+    SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
+    SIGHT_ASSERT("m_sigValueChanged must not be null", nullptr != m_sigValueChanged);
 
     int value = m_valueSlider->sliderPosition();
     m_valueSlider->setSliderPosition(value);
 
     // we use either an edit box or a label to display the current value
-    if( !m_hasEditBox )
+    if(!m_hasEditBox)
     {
         SIGHT_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
 
@@ -287,21 +287,21 @@ void SSlider::changeValue()
 
 void SSlider::editValue()
 {
-    SIGHT_ASSERT("m_valueEdit must not be null", false );// && nullptr != m_valueEdit);
+    SIGHT_ASSERT("m_valueEdit must not be null", false); // && nullptr != m_valueEdit);
 
     QString strValue = m_valueEdit->text();
 
-    setValue( strValue.toInt(), true );
+    setValue(strValue.toInt(), true);
 }
 
 //------------------------------------------------------------------------------
 
-void SSlider::setValue( int value, bool _bForced )
+void SSlider::setValue(int value, bool _bForced)
 {
     SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
 
     // we use either an edit box or a label to display the current value
-    if( !m_hasEditBox )
+    if(!m_hasEditBox)
     {
         SIGHT_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
 
@@ -314,7 +314,7 @@ void SSlider::setValue( int value, bool _bForced )
         m_valueEdit->setText(QString::number(value));
     }
 
-    if( !m_sliderPressed || !m_isUpdatedOnRelease || _bForced )
+    if(!m_sliderPressed || !m_isUpdatedOnRelease || _bForced)
     {
         m_value = value;
         m_valueSlider->setValue(value);
@@ -332,8 +332,8 @@ void SSlider::setMinValue(int value)
     SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
 
     m_minValue = value;
-    m_valueSlider->setMinimum( value );
-    m_minValueLabel->setText( QString::number(value));
+    m_valueSlider->setMinimum(value);
+    m_minValueLabel->setText(QString::number(value));
 }
 
 //------------------------------------------------------------------------------
@@ -344,8 +344,8 @@ void SSlider::setMaxValue(int value)
     SIGHT_ASSERT("m_maxValueLabel must not be null", nullptr != m_maxValueLabel);
 
     m_maxValue = value;
-    m_valueSlider->setMaximum( value );
-    m_maxValueLabel->setText( QString::number(value));
+    m_valueSlider->setMaximum(value);
+    m_maxValueLabel->setText(QString::number(value));
 }
 
 //------------------------------------------------------------------------------

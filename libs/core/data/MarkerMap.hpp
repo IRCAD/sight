@@ -23,7 +23,6 @@
 #pragma once
 
 #include "data/config.hpp"
-
 #include <data/Object.hpp>
 
 #include <array>
@@ -41,11 +40,12 @@ namespace sight::data
 class DATA_CLASS_API MarkerMap : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(MarkerMap, data::Object, data::factory::New< MarkerMap >)
+
+    SIGHT_DECLARE_CLASS(MarkerMap, data::Object, data::factory::New<MarkerMap>);
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;
-    typedef std::vector< PointType > MarkerType;
+    typedef std::vector<PointType> MarkerType;
 
     /**
      * @brief Constructor
@@ -58,7 +58,7 @@ public:
     DATA_API ~MarkerMap() override;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
@@ -79,10 +79,11 @@ public:
     DATA_API size_t count() const;
 
     /// Adds a new marker in the container
-    DATA_API void setMarker(const KeyType& _id, const MarkerType& _marker );
+    DATA_API void setMarker(const KeyType& _id, const MarkerType& _marker);
 
 private:
-    typedef std::map< KeyType, MarkerType > ContainerType;
+
+    typedef std::map<KeyType, MarkerType> ContainerType;
 
     /// Map containing the markers, sorted by their identifier
     ContainerType m_markers;

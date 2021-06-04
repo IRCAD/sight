@@ -28,18 +28,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 /**
  * @brief Study Information Entity class
  */
-class IO_DICOM_CLASS_API Study : public io::dicom::reader::ie::InformationEntity< data::Study >
+class IO_DICOM_CLASS_API Study : public io::dicom::reader::ie::InformationEntity<data::Study>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries used to access computed tag values.
@@ -50,13 +52,15 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API Study(const CSPTR(data::DicomSeries)& dicomSeries,
-                       const SPTR(::gdcm::Reader)& reader,
-                       const SPTR(io::dicom::container::DicomInstance)& instance,
-                       const data::Study::sptr& study,
-                       const core::log::Logger::sptr& logger = nullptr,
-                       ProgressCallback progress             = nullptr,
-                       CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API Study(
+        const CSPTR(data::DicomSeries)& dicomSeries,
+        const SPTR(::gdcm::Reader)& reader,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Study::sptr& study,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~Study();
@@ -72,9 +76,10 @@ public:
      * @see PS 3.3 C.7.2.2
      */
     IO_DICOM_API virtual void readPatientStudyModule();
-
 };
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

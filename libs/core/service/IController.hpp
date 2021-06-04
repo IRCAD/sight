@@ -34,10 +34,9 @@ namespace sight::service
  */
 class SERVICE_CLASS_API IController : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IController, service::IService)
+    SIGHT_DECLARE_SERVICE(IController, service::IService);
 
 protected:
 
@@ -46,7 +45,6 @@ protected:
 
     ///@brief IController destructor. Do nothing.
     SERVICE_API virtual ~IController();
-
 };
 
 }

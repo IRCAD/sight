@@ -68,7 +68,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SScaleValues : public sight::viz::scene2d::IA
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScaleValues, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SScaleValues, ::sight::viz::scene2d::IAdaptor);
 
     /// Constructor, set the x and y spacing to 10
     MODULE_VIZ_SCENE2D_API SScaleValues() noexcept;

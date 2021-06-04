@@ -61,7 +61,7 @@ SPropagator::SPropagator() :
     newSlot(s_SET_ORIENTATION_SLOT, &SPropagator::setOrientation, this);
     newSlot(s_RESET_DRAWING, &SPropagator::resetDrawing, this);
 
-    m_sigDrawn = newSignal< DrawnSignalType >(s_DRAWN_SIG);
+    m_sigDrawn = newSignal<DrawnSignalType>(s_DRAWN_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,11 +76,11 @@ void SPropagator::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
 
-    m_value     = config.get< int >("value", 1);
-    m_overwrite = config.get< bool >("overwrite", true);
-    m_radius    = config.get< double >("radius", std::numeric_limits<double>::infinity());
+    m_value     = config.get<int>("value", 1);
+    m_overwrite = config.get<bool>("overwrite", true);
+    m_radius    = config.get<double>("radius", std::numeric_limits<double>::infinity());
 
-    const std::string mode = config.get< std::string >("mode", "min");
+    const std::string mode = config.get<std::string>("mode", "min");
 
     if(mode == "min")
     {
@@ -99,7 +99,7 @@ void SPropagator::configuring()
         SIGHT_FATAL("Unknown mode '" + mode + "'. Accepted values are 'min', 'max' or 'minmax'.");
     }
 
-    const std::string orientation = config.get< std::string >("orientation", "axial");
+    const std::string orientation = config.get<std::string>("orientation", "axial");
 
     if(orientation == "sagital")
     {
@@ -123,21 +123,21 @@ void SPropagator::configuring()
 
 void SPropagator::starting()
 {
-    const auto imgInLock     = this->getLockedInput< data::Image >(s_IMAGE_IN);
-    const auto imgOutLock    = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto imgInLock     = this->getLockedInput<data::Image>(s_IMAGE_IN);
+    const auto imgOutLock    = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
     data::Image::csptr imgIn = imgInLock.get_shared();
     data::Image::sptr imgOut = imgOutLock.get_shared();
 
     SIGHT_ASSERT("'imageIn' does not exist", imgIn);
     SIGHT_ASSERT("'imageOut' does not exist", imgOut);
 
-    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
-                   data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
+    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn)
+                   && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
 
     SIGHT_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
     SIGHT_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
 
-    if (isValid)
+    if(isValid)
     {
         m_propagator = std::make_unique<sight::filter::image::MinMaxPropagation>(imgIn, imgOut, nullptr);
         m_lineDrawer = std::make_unique<sight::filter::image::LineDrawer>(imgOut, nullptr);
@@ -218,7 +218,7 @@ void SPropagator::setEnumParameter(std::string val, std::string key)
         {
             m_mode = sight::filter::image::MinMaxPropagation::MIN;
         }
-        else if (val == "max")
+        else if(val == "max")
         {
             m_mode = sight::filter::image::MinMaxPropagation::MAX;
         }
@@ -247,8 +247,8 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 {
     SIGHT_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
 
-    const auto imgInLock    = this->getLockedInput< data::Image >(s_IMAGE_IN);
-    const auto imgOutLock   = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto imgInLock    = this->getLockedInput<data::Image>(s_IMAGE_IN);
+    const auto imgOutLock   = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
     data::Image::sptr image = imgOutLock.get_shared();
 
     SIGHT_ASSERT("'image' does not exist", image);
@@ -260,9 +260,11 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
-    CoordinatesType newPoint = {{ static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[0]),
-                                  static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[1]),
-                                  static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[2]) }};
+    CoordinatesType newPoint = {{static_cast<CoordinatesType::value_type>(pickingInfo.m_worldPos[0]),
+        static_cast<CoordinatesType::value_type>(pickingInfo.m_worldPos[1]),
+        static_cast<CoordinatesType::value_type>(pickingInfo.m_worldPos[2])
+    }
+    };
 
     bool imgBufferModified = false;
     if(pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)
@@ -276,16 +278,28 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     }
     else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
-        const auto diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
-                                             val.get(), thickness, m_overwrite);
+        const auto diff = m_lineDrawer->draw(
+            m_orientation,
+            m_oldPoint,
+            newPoint,
+            val.get(),
+            thickness,
+            m_overwrite
+        );
         m_oldPoint = newPoint;
 
         imgBufferModified = this->appendDiff(diff);
     }
     else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
     {
-        const auto diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
-                                             val.get(), thickness, m_overwrite);
+        const auto diff = m_lineDrawer->draw(
+            m_orientation,
+            m_oldPoint,
+            newPoint,
+            val.get(),
+            thickness,
+            m_overwrite
+        );
 
         imgBufferModified = this->appendDiff(diff);
 
@@ -311,7 +325,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
     if(imgBufferModified)
     {
-        auto sig = image->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
+        auto sig = image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
@@ -335,14 +349,14 @@ bool SPropagator::appendDiff(const sight::filter::image::ImageDiff& diff)
 
 sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSeeds() const
 {
-    const auto imgOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto imgOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
     const data::Image::Size& imgSize = imgOut->getSize2();
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
     const size_t nbElts = m_diff.getNumberOfElements();
-    for(size_t i = 0; i < nbElts; ++i)
+    for(size_t i = 0 ; i < nbElts ; ++i)
     {
         data::Image::IndexType index = m_diff.getElementDiffIndex(i);
         sight::filter::image::MinMaxPropagation::CoordinatesType coords;

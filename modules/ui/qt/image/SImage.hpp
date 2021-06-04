@@ -56,9 +56,10 @@ class MODULE_UI_QT_CLASS_API SImage : public QObject,
                                       public sight::ui::base::IEditor
 {
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SImage() noexcept;
@@ -89,13 +90,15 @@ protected:
     /// This method is used to configure the class parameters.
     MODULE_UI_QT_API void configuring() override;
 
-    /** @} */
+/** @} */
+
 private:
 
     std::filesystem::path m_path; /// Path of the image
-    int m_width{-1}; /// Width of the image (pixels)
-    int m_height{-1}; /// Height of the image (pixels)
+    int m_width {-1};             /// Width of the image (pixels)
+    int m_height {-1};            /// Height of the image (pixels)
 };
 
 }
+
 }

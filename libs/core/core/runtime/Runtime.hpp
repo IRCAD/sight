@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/runtime/RuntimeException.hpp"
-
 #include <core/macros.hpp>
 
 #include <filesystem>
@@ -33,12 +32,14 @@
 
 namespace sight::core::runtime
 {
+
 class Module;
 struct ConfigurationElement;
 struct Extension;
 class IExecutable;
 class ExecutableFactory;
 struct IPlugin;
+
 }
 
 namespace sight::core::runtime
@@ -50,14 +51,15 @@ namespace sight::core::runtime
 class CORE_CLASS_API Runtime
 {
 public:
+
     /**
      * @name    Type Definitions
      */
     //@{
     /// Defines the module container type.
-    typedef std::set< std::shared_ptr<Module> >     ModuleContainer;
+    typedef std::set<std::shared_ptr<Module> > ModuleContainer;
     /// Defines the extension container type.
-    typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer;
+    typedef std::set<std::shared_ptr<Extension> > ExtensionContainer;
     /// Defines the extension container type.
     typedef ExtensionContainer::iterator ExtensionIterator;
     //@}
@@ -104,7 +106,7 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    CORE_API virtual void addModules( const std::filesystem::path& repository ) = 0;
+    CORE_API virtual void addModules(const std::filesystem::path& repository) = 0;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -114,7 +116,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    CORE_API virtual std::shared_ptr< Module > findModule( const std::string& identifier ) const = 0;
+    CORE_API virtual std::shared_ptr<Module> findModule(const std::string& identifier) const = 0;
 
     /**
      * @name    Extensions
@@ -135,7 +137,7 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    CORE_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const = 0;
+    CORE_API virtual std::shared_ptr<Extension> findExtension(const std::string& identifier) const = 0;
 
     //@}
 
@@ -152,10 +154,10 @@ protected:
 private:
 
     /// Defines the executable factory container type.
-    typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
+    typedef std::set<std::shared_ptr<ExecutableFactory> > ExecutableFactoryContainer;
 
     /// Defines the plugin container type.
-    typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
+    typedef std::vector<std::shared_ptr<IPlugin> > PluginContainer;
 
     /// The runtime instance.
     static std::shared_ptr<Runtime> m_instance;

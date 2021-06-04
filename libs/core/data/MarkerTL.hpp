@@ -34,17 +34,18 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline that stores groups of markers.
  */
-class DATA_CLASS_API MarkerTL : public data::GenericTL< float[8] >
+class DATA_CLASS_API MarkerTL : public data::GenericTL<float [8]>
 {
 public:
-    SIGHT_DECLARE_CLASS(MarkerTL, data::TimeLine, data::factory::New< MarkerTL >)
+
+    SIGHT_DECLARE_CLASS(MarkerTL, data::TimeLine, data::factory::New<MarkerTL>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API MarkerTL( data::Object::Key key ) :
-        data::GenericTL< float[8] >(key)
+    DATA_API MarkerTL(data::Object::Key key) :
+        data::GenericTL<float [8]>(key)
     {
     }
 };

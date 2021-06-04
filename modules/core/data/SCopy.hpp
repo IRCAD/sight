@@ -85,11 +85,10 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API SCopy final : public module::data::ICamp
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCopy, ::sight::module::data::ICamp)
+    SIGHT_DECLARE_SERVICE(SCopy, ::sight::module::data::ICamp);
 
     /// Creates the service.
     MODULE_DATA_API SCopy();
@@ -130,7 +129,6 @@ private:
 
     /// Determines when the data is copied (start or update)
     ModeType m_mode;
-
 };
 
 } // namespace sight::module::data.

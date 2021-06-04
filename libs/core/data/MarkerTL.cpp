@@ -27,6 +27,6 @@
 namespace sight::data
 {
 
-SIGHT_REGISTER_DATA( sight::data::MarkerTL )
+SIGHT_REGISTER_DATA(sight::data::MarkerTL)
 
 } // namespace sight::data

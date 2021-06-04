@@ -37,10 +37,14 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 class ProgressDialog;
+
 }
+
 }
 
 namespace sight::module::ui::base
@@ -52,15 +56,14 @@ namespace sight::module::ui::base
 
 class MODULE_UI_BASE_CLASS_API SJobBar : public ::sight::ui::base::IDialogEditor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SJobBar, ::sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SJobBar, ::sight::ui::base::IDialogEditor);
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of showJob slot
-    typedef core::com::Slot< void ( core::jobs::IJob::sptr ) >  ShowJobSlot;
+    typedef core::com::Slot<void (core::jobs::IJob::sptr)> ShowJobSlot;
 
     /**
      * @brief Constructor. Do nothing.
@@ -77,7 +80,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief This method emit a signal.
@@ -96,17 +99,16 @@ protected:
     /**
      * @brief showJob slot's method
      */
-    MODULE_UI_BASE_API virtual void showJob( core::jobs::IJob::sptr iJob );
+    MODULE_UI_BASE_API virtual void showJob(core::jobs::IJob::sptr iJob);
 
-    typedef std::set< SPTR(::sight::ui::base::dialog::ProgressDialog) > ProgressDialogs;
+    typedef std::set<SPTR(::sight::ui::base::dialog::ProgressDialog)> ProgressDialogs;
     ProgressDialogs m_progressDialogs;
 
-    typedef core::com::Signal<void () > StartedSignalType;
-    typedef core::com::Signal<void () > EndedSignalType;
+    typedef core::com::Signal<void ()> StartedSignalType;
+    typedef core::com::Signal<void ()> EndedSignalType;
 
     SPTR(StartedSignalType) m_sigStarted;
     SPTR(EndedSignalType) m_sigEnded;
-
 };
 
 } // namespace sight::module::ui::base

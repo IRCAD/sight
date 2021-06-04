@@ -33,6 +33,7 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
 
@@ -59,4 +60,5 @@ struct runner
 runner runner::r;
 
 } // namespace creator
+
 } // namespace sight::io::patch::structural

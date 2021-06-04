@@ -37,7 +37,6 @@ namespace sight::module::viz::scene3d
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SightOgreListener final : public ::Ogre::LogListener
 {
-
 public:
 
     /// Does nothing.
@@ -48,11 +47,13 @@ public:
     /**
      * @brief Set Ogre log on Sight log depending on it's LogLevel.
      */
-    MODULE_VIZ_SCENE3D_API void messageLogged(const ::Ogre::String& _message,
-                                              ::Ogre::LogMessageLevel _lml,
-                                              bool,
-                                              const ::Ogre::String&,
-                                              bool& _skipThisMessage) override;
+    MODULE_VIZ_SCENE3D_API void messageLogged(
+        const ::Ogre::String& _message,
+        ::Ogre::LogMessageLevel _lml,
+        bool,
+        const ::Ogre::String&,
+        bool& _skipThisMessage
+    ) override;
 };
 
 /// This class is started when the module is loaded.
@@ -72,14 +73,13 @@ public:
 private:
 
     /// Contains the Ogre's log manager.
-    ::Ogre::LogManager* m_logManager { nullptr };
+    ::Ogre::LogManager* m_logManager {nullptr};
 
     /// Contains the Ogre's log.
-    ::Ogre::Log* m_log { nullptr };
+    ::Ogre::Log* m_log {nullptr};
 
     /// Contains the Ogre listener.
-    SightOgreListener* m_listener { nullptr };
-
+    SightOgreListener* m_listener {nullptr};
 };
 
 } // namespace sight::module::viz::scene3d.

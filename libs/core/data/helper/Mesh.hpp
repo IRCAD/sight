@@ -24,11 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/helper/Array.hpp"
+#include <data/Mesh.hpp>
 
 #include <core/memory/BufferObject.hpp>
 #include <core/tools/Type.hpp>
-
-#include <data/Mesh.hpp>
 
 namespace sight::data
 {
@@ -45,22 +44,22 @@ class DATA_DEPRECATED_CLASS_API Mesh
 public:
 
     /// Shared pointer type
-    typedef std::shared_ptr < data::helper::Mesh > sptr;
+    typedef std::shared_ptr<data::helper::Mesh> sptr;
     /// Const shared pointer type
-    typedef std::shared_ptr < const data::helper::Mesh > csptr;
+    typedef std::shared_ptr<const data::helper::Mesh> csptr;
     /// Unique pointer type
-    typedef std::unique_ptr < data::helper::Mesh > uptr;
+    typedef std::unique_ptr<data::helper::Mesh> uptr;
     /// Const unique pointer type
-    typedef std::unique_ptr < const data::helper::Mesh > cuptr;
+    typedef std::unique_ptr<const data::helper::Mesh> cuptr;
 
     //------------------------------------------------------------------------------
 
     static sptr New(data::Mesh::sptr mesh)
     {
-        return std::make_shared< data::helper::Mesh >(mesh);
+        return std::make_shared<data::helper::Mesh>(mesh);
     }
 
-    DATA_API Mesh( data::Mesh::sptr mesh );
+    DATA_API Mesh(data::Mesh::sptr mesh);
 
     DATA_API virtual ~Mesh();
 
@@ -83,9 +82,11 @@ public:
      * @brief Insert a point into the mesh.
      * @see insertNextPoint
      */
-    DATA_API data::Mesh::PointId insertNextPoint(data::Mesh::PointValueType x,
-                                                 data::Mesh::PointValueType y,
-                                                 data::Mesh::PointValueType z);
+    DATA_API data::Mesh::PointId insertNextPoint(
+        data::Mesh::PointValueType x,
+        data::Mesh::PointValueType y,
+        data::Mesh::PointValueType z
+    );
 
     /**
      * @brief Set a point coordinates.
@@ -102,10 +103,12 @@ public:
      * @brief Set a point coordinates.
      * @see setPoint
      */
-    DATA_API void setPoint(data::Mesh::PointId id,
-                           data::Mesh::PointValueType x,
-                           data::Mesh::PointValueType y,
-                           data::Mesh::PointValueType z);
+    DATA_API void setPoint(
+        data::Mesh::PointId id,
+        data::Mesh::PointValueType x,
+        data::Mesh::PointValueType y,
+        data::Mesh::PointValueType z
+    );
 
     /**
      * @brief Set a point color.
@@ -192,9 +195,11 @@ public:
      *
      * @throw data::Exception
      */
-    DATA_API data::Mesh::CellId insertNextCell(data::Mesh::CellTypesEnum type,
-                                               const data::Mesh::CellId* cell,
-                                               size_t nb );
+    DATA_API data::Mesh::CellId insertNextCell(
+        data::Mesh::CellTypesEnum type,
+        const data::Mesh::CellId* cell,
+        size_t nb
+    );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
@@ -204,52 +209,61 @@ public:
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    DATA_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
-                                               data::Mesh::PointId p2 );
+    DATA_API data::Mesh::CellId insertNextCell(
+        data::Mesh::PointId p1,
+        data::Mesh::PointId p2
+    );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    DATA_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
-                                               data::Mesh::PointId p2,
-                                               data::Mesh::PointId p3 );
+    DATA_API data::Mesh::CellId insertNextCell(
+        data::Mesh::PointId p1,
+        data::Mesh::PointId p2,
+        data::Mesh::PointId p3
+    );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    DATA_API data::Mesh::CellId insertNextCell(data::Mesh::PointId p1,
-                                               data::Mesh::PointId p2,
-                                               data::Mesh::PointId p3,
-                                               data::Mesh::PointId p4,
-                                               data::Mesh::CellTypesEnum type = data::Mesh::QUAD);
+    DATA_API data::Mesh::CellId insertNextCell(
+        data::Mesh::PointId p1,
+        data::Mesh::PointId p2,
+        data::Mesh::PointId p3,
+        data::Mesh::PointId p4,
+        data::Mesh::CellTypesEnum type = data::Mesh::QUAD
+    );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    template <typename T> data::Mesh::CellId insertNextCell(data::Mesh::CellTypesEnum type,
-                                                            const T& pointsBegin,
-                                                            const T& pointsEnd );
+    template<typename T>
+    data::Mesh::CellId insertNextCell(
+        data::Mesh::CellTypesEnum type,
+        const T& pointsBegin,
+        const T& pointsEnd
+    );
 
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::PointsMultiArrayType          getPoints() const;
+    DATA_API data::Mesh::PointsMultiArrayType getPoints() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::CellTypesMultiArrayType       getCellTypes() const;
+    DATA_API data::Mesh::CellTypesMultiArrayType getCellTypes() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::CellDataMultiArrayType        getCellData() const;
+    DATA_API data::Mesh::CellDataMultiArrayType getCellData() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
     DATA_API data::Mesh::CellDataOffsetsMultiArrayType getCellDataOffsets() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::PointColorsMultiArrayType     getPointColors() const;
+    DATA_API data::Mesh::PointColorsMultiArrayType getPointColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::CellColorsMultiArrayType      getCellColors() const;
+    DATA_API data::Mesh::CellColorsMultiArrayType getCellColors() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
+    DATA_API data::Mesh::PointNormalsMultiArrayType getPointNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
+    DATA_API data::Mesh::CellNormalsMultiArrayType getCellNormals() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
+    DATA_API data::Mesh::PointTexCoordsMultiArrayType getPointTexCoords() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
-    DATA_API data::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
+    DATA_API data::Mesh::CellTexCoordsMultiArrayType getCellTexCoords() const;
 
     /// Returns the internal data::Mesh
     DATA_API data::Mesh::csptr getMesh() const;
@@ -274,7 +288,6 @@ protected:
     data::helper::Array::sptr m_helperCellNormals;
     data::helper::Array::sptr m_helperPointTexCoords;
     data::helper::Array::sptr m_helperCellTexCoords;
-
 };
 
 } // namespace helper

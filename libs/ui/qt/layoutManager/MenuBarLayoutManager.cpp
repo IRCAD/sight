@@ -30,11 +30,14 @@
 #include <QMenuBar>
 #include <QString>
 
-fwGuiRegisterMacro( sight::ui::qt::layoutManager::MenuBarLayoutManager,
-                    sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    sight::ui::qt::layoutManager::MenuBarLayoutManager,
+    sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
+
 namespace layoutManager
 {
 
@@ -52,18 +55,17 @@ MenuBarLayoutManager::~MenuBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::createLayout( ui::base::container::fwMenuBar::sptr parent )
+void MenuBarLayoutManager::createLayout(ui::base::container::fwMenuBar::sptr parent)
 {
-
     m_parent = ui::qt::container::QtMenuBarContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwMenuBar to QtMenuBarContainer failed", m_parent);
 
     QMenuBar* menuBar = m_parent->getQtMenuBar();
 
-    for ( std::string name : m_menuNames)
+    for(std::string name : m_menuNames)
     {
         ui::qt::container::QtMenuContainer::sptr menu = ui::qt::container::QtMenuContainer::New();
-        QMenu* qtMenu                                 = menuBar->addMenu(QString::fromStdString( name ));
+        QMenu* qtMenu                                 = menuBar->addMenu(QString::fromStdString(name));
         menu->setQtMenu(qtMenu);
         m_menus.push_back(menu);
     }
@@ -83,7 +85,8 @@ void MenuBarLayoutManager::destroyLayout()
 void MenuBarLayoutManager::menuIsVisible(ui::base::container::fwMenu::sptr fwMenu, bool isVisible)
 {
     ui::qt::container::QtMenuContainer::sptr menuContainer = ui::qt::container::QtMenuContainer::dynamicCast(
-        fwMenu);
+        fwMenu
+    );
     QMenu* menu = menuContainer->getQtMenu();
     menu->setVisible(isVisible);
 }
@@ -93,7 +96,8 @@ void MenuBarLayoutManager::menuIsVisible(ui::base::container::fwMenu::sptr fwMen
 void MenuBarLayoutManager::menuIsEnabled(ui::base::container::fwMenu::sptr fwMenu, bool isEnabled)
 {
     ui::qt::container::QtMenuContainer::sptr menuContainer = ui::qt::container::QtMenuContainer::dynamicCast(
-        fwMenu);
+        fwMenu
+    );
     QMenu* menu = menuContainer->getQtMenu();
     menu->setEnabled(isEnabled);
 }
@@ -101,4 +105,5 @@ void MenuBarLayoutManager::menuIsEnabled(ui::base::container::fwMenu::sptr fwMen
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::qt

@@ -33,6 +33,7 @@ namespace sight::io::patch::semantic
 class PatchLoader
 {
 public:
+
     /// Computes VersionsManager's link and version tables.
     IO_PATCH_API static void loadPatches();
 

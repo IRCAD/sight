@@ -44,18 +44,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(const SPTR(io::dicom::container::DicomInstance)& instance,
-                                         const std::filesystem::path& destinationPath,
-                                         const core::log::Logger::sptr& logger,
-                                         ProgressCallback progress,
-                                         CancelRequestedCallback cancel) :
+SpatialFiducialsIOD::SpatialFiducialsIOD(
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const std::filesystem::path& destinationPath,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel)
 {
 }
@@ -77,12 +81,13 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     // Retrieve image
     data::Image::csptr image = imageSeries->getImage();
 
-    data::Vector::sptr distances = image->getField< data::Vector >(
-        data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distances = image->getField<data::Vector>(
+        data::fieldHelper::Image::m_imageDistancesId
+    );
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
-    SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer >();
+    SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer>();
 
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
@@ -120,10 +125,12 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
 
     // Write document
     io::dicom::helper::FileWriter::write(m_destinationPath, writer);
-
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace iod
+
 } // namespace writer
+
 } // namespace sight::io::dicom

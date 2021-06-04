@@ -30,8 +30,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -51,7 +53,7 @@ Equipment1::~Equipment1()
 
 // ----------------------------------------------------------------------------
 
-Equipment1::Equipment1( const Equipment1& cpy ) :
+Equipment1::Equipment1(const Equipment1& cpy) :
     io::atoms::patch::IStructuralCreator(cpy)
 {
 }
@@ -71,5 +73,7 @@ sight::atoms::Object::sptr Equipment1::create()
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

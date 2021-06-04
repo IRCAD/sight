@@ -36,10 +36,9 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SQuit : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SQuit, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SQuit, ::sight::ui::base::IAction);
 
     /**
      * @brief Constructor. Do nothing.
@@ -71,8 +70,7 @@ protected:
     /*
      * @brief This method gives information about the class.
      */
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
-
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 };
 
 } // namespace sight::module::ui::base

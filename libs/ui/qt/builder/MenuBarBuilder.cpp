@@ -33,11 +33,14 @@
 #include <QMainWindow>
 #include <QMenuBar>
 
-fwGuiRegisterMacro( ::sight::ui::base::builder::MenuBarBuilder,
-                    ::sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY);
+fwGuiRegisterMacro(
+    ::sight::ui::base::builder::MenuBarBuilder,
+    ::sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY
+);
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -55,23 +58,24 @@ MenuBarBuilder::~MenuBarBuilder()
 
 //-----------------------------------------------------------------------------
 
-void MenuBarBuilder::createMenuBar( ui::base::container::fwContainer::sptr parent )
+void MenuBarBuilder::createMenuBar(ui::base::container::fwContainer::sptr parent)
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
-    if ( !window )
+    QMainWindow* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    if(!window)
     {
-        window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
+        window = qobject_cast<QMainWindow*>(m_parent->getQtContainer()->parent());
     }
-    SIGHT_ASSERT("The parent container must be a QMainWindow", window );
-    if (window)
+
+    SIGHT_ASSERT("The parent container must be a QMainWindow", window);
+    if(window)
     {
         ui::qt::container::QtMenuBarContainer::sptr menuBarContainer =
             ui::qt::container::QtMenuBarContainer::New();
         QMenuBar* menuBar = new QMenuBar(0);
         menuBarContainer->setQtMenuBar(menuBar);
-        window->setMenuBar( menuBar );
+        window->setMenuBar(menuBar);
         m_menuBar = menuBarContainer;
 
         if(!m_backgroundColor.empty())
@@ -79,14 +83,13 @@ void MenuBarBuilder::createMenuBar( ui::base::container::fwContainer::sptr paren
             std::uint8_t rgba[4];
             data::tools::Color::hexaStringToRGBA(m_backgroundColor, rgba);
             std::stringstream ss;
-            ss << "QMenuBar, QMenu { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-               << static_cast< short >(rgba[1]) << ','
-               << static_cast< short >(rgba[2]) << ','
-               << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+            ss << "QMenuBar, QMenu { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+            << static_cast<short>(rgba[1]) << ','
+            << static_cast<short>(rgba[2]) << ','
+            << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
             menuBar->setStyleSheet(qApp->styleSheet() + style);
         }
-
     }
 }
 
@@ -96,20 +99,23 @@ void MenuBarBuilder::destroyMenuBar()
 {
     SIGHT_ASSERT("The menu is not initialized", m_menuBar);
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
-    if ( !window )
+    QMainWindow* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    if(!window)
     {
-        window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
+        window = qobject_cast<QMainWindow*>(m_parent->getQtContainer()->parent());
     }
-    SIGHT_ASSERT("The parent container must be a QMainWindow", window );
-    if (window)
+
+    SIGHT_ASSERT("The parent container must be a QMainWindow", window);
+    if(window)
     {
-        window->setMenuBar( NULL );
+        window->setMenuBar(NULL);
     }
+
     m_menuBar->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace builder
+
 } // namespace sight::ui::base

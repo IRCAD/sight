@@ -106,10 +106,9 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API SManage : public service::IController
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SManage, ::sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SManage, ::sight::service::IController);
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SManage() noexcept;
@@ -128,9 +127,9 @@ public:
     static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
     static const core::com::Slots::SlotKeyType s_REMOVE_IF_PRESENT_SLOT;
     static const core::com::Slots::SlotKeyType s_CLEAR_SLOT;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -174,18 +173,17 @@ protected:
 
     /// Removes all objects.
     void clear();
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
     void internalAdd(bool _copy);
 
-    std::string m_objectUid; ///< uid of the object
+    std::string m_objectUid;    ///< uid of the object
     std::string m_compositeKey; ///< key of the object to manage in the composite
-    std::string m_fieldName; ///< name of the field to manage in the object
-
+    std::string m_fieldName;    ///< name of the field to manage in the object
 };
 
 } // sight::module::data

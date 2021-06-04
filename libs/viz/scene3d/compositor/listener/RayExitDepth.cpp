@@ -32,8 +32,10 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace compositor
 {
+
 namespace listener
 {
 
@@ -41,7 +43,6 @@ namespace listener
 
 RayExitDepthListener::RayExitDepthListener()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -52,22 +53,27 @@ RayExitDepthListener::~RayExitDepthListener()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
-                                                              const ::Ogre::String& _schemeName,
-                                                              ::Ogre::Material* _originalMaterial,
-                                                              unsigned short /*_lodIndex*/,
-                                                              const ::Ogre::Renderable* /*_renderable*/)
+::Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
+    unsigned short /*_schemeIndex*/,
+    const ::Ogre::String& _schemeName,
+    ::Ogre::Material* _originalMaterial,
+    unsigned short /*_lodIndex*/,
+    const ::Ogre::Renderable* /*_renderable*/
+)
 {
     ::Ogre::Technique* newTechnique = nullptr;
-    const auto mtlName = _originalMaterial->getName();
+    const auto mtlName              = _originalMaterial->getName();
 
     if(_schemeName == "VolumeEntries_FrontFacesMin" && !::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat"))
     {
         auto entryPointsMtl   = ::Ogre::MaterialManager::getSingleton().getByName("RayEntryPoints", RESOURCE_GROUP);
         auto frontFaceMinTech = entryPointsMtl->getTechnique("FrontFacesMin");
 
-        newTechnique = viz::scene3d::helper::Technique::copyToMaterial(frontFaceMinTech, _schemeName,
-                                                                       _originalMaterial);
+        newTechnique = viz::scene3d::helper::Technique::copyToMaterial(
+            frontFaceMinTech,
+            _schemeName,
+            _originalMaterial
+        );
     }
 
     return newTechnique;

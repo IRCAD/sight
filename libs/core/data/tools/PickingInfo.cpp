@@ -30,7 +30,6 @@ PickingInfo::PickingInfo()
     m_worldPos[0] = 0.;
     m_worldPos[1] = 0.;
     m_worldPos[2] = 0.;
-
 }
 
 }

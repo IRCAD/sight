@@ -30,23 +30,23 @@
 #include <map>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Landmarks));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Landmarks));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a list of 3D points inside groups.
  */
 class DATA_CLASS_API Landmarks : public Object
 {
-
 public:
 
-    typedef std::array< float, 4 > ColorType;
-    typedef std::array< double, 3 > PointType;
+    typedef std::array<float, 4> ColorType;
+    typedef std::array<double, 3> PointType;
     typedef float SizeType;
-    typedef std::vector< PointType > PointContainer;
-    typedef std::vector< std::string > GroupNameContainer;
+    typedef std::vector<PointType> PointContainer;
+    typedef std::vector<std::string> GroupNameContainer;
 
     enum class Shape
     {
@@ -71,9 +71,9 @@ public:
         PointContainer m_points;
     };
 
-    SIGHT_DECLARE_CLASS(Landmarks, data::Object, data::factory::New< Landmarks >)
+    SIGHT_DECLARE_CLASS(Landmarks, data::Object, data::factory::New<Landmarks>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Landmarks));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Landmarks));
 
     /**
      * @brief Constructor
@@ -85,7 +85,7 @@ public:
     DATA_API virtual ~Landmarks();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -95,9 +95,13 @@ public:
      *
      * @throw data::Exception if a group exists with the given name
      */
-    DATA_API void addGroup(const std::string& name, const ColorType& color = {{1.0f, 1.0f, 1.0f, 1.0f}},
-                           const SizeType size = 1.0f, const Shape shape = Shape::SPHERE,
-                           const bool visibility = true);
+    DATA_API void addGroup(
+        const std::string& name,
+        const ColorType& color = {{1.0f, 1.0f, 1.0f, 1.0f}},
+        const SizeType size    = 1.0f,
+        const Shape shape      = Shape::SPHERE,
+        const bool visibility  = true
+    );
 
     /// Return all group names
     DATA_API const GroupNameContainer getGroupNames() const;
@@ -223,52 +227,52 @@ public:
      * @{
      */
     /// Type of signal when a group is added
-    typedef core::com::Signal< void (std::string name) > GroupAddedSignalType;
+    typedef core::com::Signal<void (std::string name)> GroupAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_GROUP_ADDED_SIG;
 
     /// Type of signal when a group is removed
-    typedef core::com::Signal< void (std::string name) > GroupRemovedSignalType;
+    typedef core::com::Signal<void (std::string name)> GroupRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_GROUP_REMOVED_SIG;
 
     /// Type of signal when a point is added
-    typedef core::com::Signal< void (std::string name) > PointAddedSignalType;
+    typedef core::com::Signal<void (std::string name)> PointAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_ADDED_SIG;
 
     /// Type of signal when a point is removed
-    typedef core::com::Signal< void (std::string name, size_t index) > PointRemovedSignalType;
+    typedef core::com::Signal<void (std::string name, size_t index)> PointRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_REMOVED_SIG;
 
     /// Type of signal when a point is inserted
-    typedef core::com::Signal< void (std::string name, size_t index) > PointInsertedSignalType;
+    typedef core::com::Signal<void (std::string name, size_t index)> PointInsertedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_INSERTED_SIG;
 
     /// Type of signal when a point is modified
-    typedef core::com::Signal< void (std::string name, size_t index) > PointModifiedSigType;
+    typedef core::com::Signal<void (std::string name, size_t index)> PointModifiedSigType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_MODIFIED_SIG;
 
     /// Type of signal when group properties changed
-    typedef core::com::Signal< void (std::string name) > GroupModifiedSignalType;
+    typedef core::com::Signal<void (std::string name)> GroupModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_GROUP_MODIFIED_SIG;
 
     /// Type of signal when a group is renamed
-    typedef core::com::Signal< void (std::string oldName, std::string newName) > GroupRenamedSignalType;
+    typedef core::com::Signal<void (std::string oldName, std::string newName)> GroupRenamedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_GROUP_RENAMED_SIG;
 
     /// Type of signal when point is selected
-    typedef core::com::Signal< void (std::string name, size_t index) > PointSelectedSignalType;
+    typedef core::com::Signal<void (std::string name, size_t index)> PointSelectedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_SELECTED_SIG;
 
     /// Type of signal when point is deselected
-    typedef core::com::Signal< void (std::string name, size_t index) > PointDeselectedSignalType;
+    typedef core::com::Signal<void (std::string name, size_t index)> PointDeselectedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_DESELECTED_SIG;
 
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 private:
 
-    typedef std::map< std::string, LandmarksGroup > LandmarksContainer;
+    typedef std::map<std::string, LandmarksGroup> LandmarksContainer;
     LandmarksContainer m_landmarks;
 }; // end class Landmarks
 

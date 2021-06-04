@@ -42,30 +42,31 @@
 namespace sight::filter::image
 {
 
-typedef typename ::itk::Image< float, 3 > RegisteredImageType;
+typedef typename ::itk::Image<float, 3> RegisteredImageType;
 
 //------------------------------------------------------------------------------
 
 class RegistrationObserver : public ::itk::Command
 {
 public:
+
     typedef  RegistrationObserver Self;
     typedef ::itk::Command Superclass;
-    typedef ::itk::SmartPointer<Self>   Pointer;
-    itkNewMacro( Self )
+    typedef ::itk::SmartPointer<Self> Pointer;
+    itkNewMacro(Self)
 
     /// Command to be executed. Updates the progress bar.
     void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
     {
         const itk::Object* constCaller = caller;
-        Execute( constCaller, event);
+        Execute(constCaller, event);
     }
 
     /// Const overload of the above method.
     void Execute(const ::itk::Object*, const ::itk::EventObject& event) override
     {
         {
-            if( ::itk::IterationEvent().CheckEvent( &event ) )
+            if(::itk::IterationEvent().CheckEvent(&event))
             {
                 m_iterationCallback();
             }
@@ -87,23 +88,24 @@ private:
     }
 
     std::function<void()> m_iterationCallback;
-
 };
 
 //------------------------------------------------------------------------------
 
-void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
-                                          const data::Image::csptr& _reference,
-                                          const data::Matrix4::sptr& _trf,
-                                          MetricType _metric,
-                                          const MultiResolutionParametersType& _multiResolutionParameters,
-                                          RealType _samplingPercentage,
-                                          double _minStep,
-                                          unsigned long _maxIterations,
-                                          IterationCallbackType _callback)
+void AutomaticRegistration::registerImage(
+    const data::Image::csptr& _target,
+    const data::Image::csptr& _reference,
+    const data::Matrix4::sptr& _trf,
+    MetricType _metric,
+    const MultiResolutionParametersType& _multiResolutionParameters,
+    RealType _samplingPercentage,
+    double _minStep,
+    unsigned long _maxIterations,
+    IterationCallbackType _callback
+)
 {
-    typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                          RealType >::Pointer metric;
+    typename ::itk::ImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                         RealType>::Pointer metric;
 
     data::Image::csptr ref = _reference;
     data::Image::csptr tgt = _target;
@@ -126,27 +128,29 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     {
         case MEAN_SQUARES:
             metric =
-                ::itk::MeanSquaresImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                        RealType >::New();
+                ::itk::MeanSquaresImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                                       RealType>::New();
             break;
+
         case NORMALIZED_CORRELATION:
             metric =
-                ::itk::CorrelationImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                        RealType >::New();
+                ::itk::CorrelationImageToImageMetricv4<RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                                       RealType>::New();
             break;
+
         case MUTUAL_INFORMATION:
         {
             auto mutInfoMetric =
-                ::itk::MattesMutualInformationImageToImageMetricv4< RegisteredImageType, RegisteredImageType,
-                                                                    RegisteredImageType,
-                                                                    RealType >::New();
+                ::itk::MattesMutualInformationImageToImageMetricv4<RegisteredImageType, RegisteredImageType,
+                                                                   RegisteredImageType,
+                                                                   RealType>::New();
             // TODO: find a strategy to compute the appropriate number of bins or let the user set it.
             // More bins means better precision but longer evaluation.
             mutInfoMetric->SetNumberOfHistogramBins(20);
             metric = mutInfoMetric;
+            break;
         }
 
-        break;
         default:
             SIGHT_FATAL("Unknown metric");
     }
@@ -156,10 +160,10 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     ::itk::Matrix<RealType, 3, 3> m;
     ::itk::Vector<RealType, 3> t;
 
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         t[i] = _trf->getCoefficient(i, 3);
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
             m(i, j) = _trf->getCoefficient(i, j);
         }
@@ -204,8 +208,8 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     optimizerScales[4] = translationScale;
     optimizerScales[5] = translationScale;
 
-    m_optimizer->SetScales( optimizerScales );
-    m_optimizer->SetDoEstimateLearningRateAtEachIteration( true );
+    m_optimizer->SetScales(optimizerScales);
+    m_optimizer->SetDoEstimateLearningRateAtEachIteration(true);
     m_optimizer->SetMinimumStepLength(_minStep);
 
     // The solution is the transform returned when optimization ends.
@@ -213,8 +217,8 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     m_optimizer->SetNumberOfIterations(_maxIterations);
 
     // The fixed image isn't transformed, nearest neighbor interpolation is enough.
-    auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
-    auto movingInterpolator = ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType >::New();
+    auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction<RegisteredImageType, RealType>::New();
+    auto movingInterpolator = ::itk::LinearInterpolateImageFunction<RegisteredImageType, RealType>::New();
 
     metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
     metric->SetMovingInterpolator(movingInterpolator.GetPointer());
@@ -224,12 +228,12 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
-    shrinkFactorsPerLevel.SetSize( numberOfLevels );
+    shrinkFactorsPerLevel.SetSize(numberOfLevels);
     RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
-    smoothingSigmasPerLevel.SetSize( numberOfLevels );
+    smoothingSigmasPerLevel.SetSize(numberOfLevels);
 
     // We set the shrink factor and smoothing Sigma for each stage.
-    for( std::uint8_t i = 0; i < numberOfLevels; ++i  )
+    for(std::uint8_t i = 0 ; i < numberOfLevels ; ++i)
     {
         const auto& stageParameters = _multiResolutionParameters[i];
         shrinkFactorsPerLevel[i]   = stageParameters.first;
@@ -242,13 +246,13 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
 
     m_registrator->SetMetricSamplingPercentage(_samplingPercentage);
 
-    const auto samplingStrategy = _samplingPercentage < 1.0 ?
-                                  RegistrationMethodType::REGULAR : RegistrationMethodType::NONE;
+    const auto samplingStrategy = _samplingPercentage < 1.0
+                                  ? RegistrationMethodType::REGULAR : RegistrationMethodType::NONE;
 
     m_registrator->SetMetricSamplingStrategy(samplingStrategy);
     m_registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
-    m_registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
-    m_registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
+    m_registrator->SetSmoothingSigmasPerLevel(smoothingSigmasPerLevel);
+    m_registrator->SetShrinkFactorsPerLevel(shrinkFactorsPerLevel);
     m_registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
     RegistrationObserver::Pointer observer = RegistrationObserver::New();
@@ -256,7 +260,7 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     if(_callback)
     {
         observer->setCallback(_callback);
-        m_optimizer->AddObserver( ::itk::IterationEvent(), observer );
+        m_optimizer->AddObserver(::itk::IterationEvent(), observer);
     }
 
     try
@@ -265,7 +269,7 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
         m_registrator->Update();
         this->getCurrentMatrix(_trf);
     }
-    catch( ::itk::ExceptionObject& err )
+    catch(::itk::ExceptionObject& err)
     {
         SIGHT_ERROR("Error while registering : " << err);
     }
@@ -350,8 +354,10 @@ void AutomaticRegistration::getCurrentMatrix(const data::Matrix4::sptr& _trf) co
 
 //------------------------------------------------------------------------------
 
-void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::TransformType* _itkMat,
-                                               const data::Matrix4::sptr& _f4sMat) const
+void AutomaticRegistration::convertToF4sMatrix(
+    const AutomaticRegistration::TransformType* _itkMat,
+    const data::Matrix4::sptr& _f4sMat
+) const
 {
     ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
     ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
@@ -363,10 +369,10 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
     }
 
     // Convert ::itk::RigidTransform to f4s matrix.
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
         _f4sMat->setCoefficient(i, 3, offset[i]);
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
             _f4sMat->setCoefficient(i, j, rigidMat(i, j));
         }

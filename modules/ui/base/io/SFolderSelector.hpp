@@ -30,6 +30,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace io
 {
 
@@ -52,13 +53,14 @@ namespace io
 class MODULE_UI_BASE_CLASS_API SFolderSelector : public ::sight::ui::base::IAction
 {
 public:
-    SIGHT_DECLARE_SERVICE(SFolderSelector, sight::ui::base::IAction)
+
+    SIGHT_DECLARE_SERVICE(SFolderSelector, sight::ui::base::IAction);
 
     /**
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal< void ( std::filesystem::path ) > FolderSelectedSignalType;
+    typedef core::com::Signal<void (std::filesystem::path)> FolderSelectedSignalType;
     static const core::com::Signals::SignalKeyType s_FOLDER_SELECTED_SIG;
     /// @}
 
@@ -86,4 +88,5 @@ private:
 };
 
 } // namespace io
+
 } // namespace sight::module::ui::base

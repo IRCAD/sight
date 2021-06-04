@@ -47,10 +47,9 @@ namespace sight::viz::base
 
 class VIZ_BASE_CLASS_API IRender : public ui::base::IGuiContainer
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IRender, ui::base::IGuiContainer)
+    SIGHT_DECLARE_SERVICE(IRender, ui::base::IGuiContainer);
 
 protected:
 
@@ -63,7 +62,6 @@ protected:
      * @brief   Destructor. Do nothing.
      */
     VIZ_BASE_API virtual ~IRender() noexcept;
-
 };
 
 } // namespace sight::viz::baseVTK

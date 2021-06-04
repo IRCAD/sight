@@ -29,12 +29,12 @@
 #include "viz/scene3d/TransferFunction.hpp"
 #include "viz/scene3d/vr/PreIntegrationTable.hpp"
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {
@@ -61,13 +61,13 @@ public:
     };
 
     /// Array of 4 vertex indices.
-    typedef std::array< unsigned, 4 > CubeFacePositionList;
+    typedef std::array<unsigned, 4> CubeFacePositionList;
 
     /// Maps a face name to an array of 4 vertex indices.
-    typedef std::map< CubeFace, CubeFacePositionList > CubeFacePositionsMap;
+    typedef std::map<CubeFace, CubeFacePositionList> CubeFacePositionsMap;
 
     /// Lists vertex indices pairs that form edges.
-    typedef std::array< std::pair<unsigned, unsigned>, 12 > CubeEdgeList;
+    typedef std::array<std::pair<unsigned, unsigned>, 12> CubeEdgeList;
 
     /// Maps each cube faces to 4 vertex indices.
     VIZ_SCENE3D_API static const CubeFacePositionsMap s_cubeFaces;
@@ -83,11 +83,13 @@ public:
      * @param imageTexture         Texture holding the 3D image to be rendered.
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
-    VIZ_SCENE3D_API IVolumeRenderer(std::string parentId,
-                                    ::Ogre::SceneManager* const sceneManager,
-                                    ::Ogre::SceneNode* const volumeNode,
-                                    ::Ogre::TexturePtr imageTexture,
-                                    PreIntegrationTable& preintegrationTable);
+    VIZ_SCENE3D_API IVolumeRenderer(
+        std::string parentId,
+        ::Ogre::SceneManager* const sceneManager,
+        ::Ogre::SceneNode* const volumeNode,
+        ::Ogre::TexturePtr imageTexture,
+        PreIntegrationTable& preintegrationTable
+    );
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API virtual ~IVolumeRenderer();
@@ -119,12 +121,16 @@ protected:
     /// @deprecated Use scaleTranslateCube(const data::Image::Spacing&, const data::Image::Origin&). It will be
     /// removed in sight 22.0
     [[deprecated("It will be remove in sight 22.0")]]
-    VIZ_SCENE3D_API void scaleTranslateCube(const data::Image::SpacingType& spacing,
-                                            const data::Image::OriginType& origin);
+    VIZ_SCENE3D_API void scaleTranslateCube(
+        const data::Image::SpacingType& spacing,
+        const data::Image::OriginType& origin
+    );
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    VIZ_SCENE3D_API void scaleTranslateCube(const data::Image::Spacing& spacing,
-                                            const data::Image::Origin& origin);
+    VIZ_SCENE3D_API void scaleTranslateCube(
+        const data::Image::Spacing& spacing,
+        const data::Image::Origin& origin
+    );
 
     /// Computes the camera's plane.
     VIZ_SCENE3D_API ::Ogre::Plane getCameraPlane() const;
@@ -161,7 +167,6 @@ protected:
 
     /// Intersection between the image and the clipping box.
     ::Ogre::Vector3 m_clippedImagePositions[8];
-
 };
 
 //-----------------------------------------------------------------------------

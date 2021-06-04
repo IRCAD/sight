@@ -47,7 +47,7 @@ void ProgressToLogger::operator()(float percent, const std::string& msg)
     SIGHT_NOT_USED(msg);
 #endif
     // fixme io precision
-    SIGHT_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
+    SIGHT_INFO(m_prefix << msg << " " << (int) (percent * 100) << m_postfix);
 }
 
 }

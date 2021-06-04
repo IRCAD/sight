@@ -34,7 +34,7 @@ struct FwDataRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwDataRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwDataRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

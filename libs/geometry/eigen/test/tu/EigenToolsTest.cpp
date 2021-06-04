@@ -24,15 +24,16 @@
 
 #include <data/Matrix4.hpp>
 
-#include <Eigen/Geometry>
-
 #include <geometry/eigen/helper.hpp>
 
+#include <Eigen/Geometry>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::geometry::eigen::ut::EigenToolsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::eigen::ut::EigenToolsTest);
 
 namespace sight::geometry::eigen
 {
+
 namespace ut
 {
 
@@ -54,14 +55,13 @@ void EigenToolsTest::tearDown()
 
 void EigenToolsTest::eigenToF4s()
 {
-
-    Eigen::Matrix< double, 4, 4> mat;
+    Eigen::Matrix<double, 4, 4> mat;
 
     data::Matrix4::sptr f4sRes = data::Matrix4::New();
 
-    for(unsigned int r = 0; r < 3; ++r)
+    for(unsigned int r = 0 ; r < 3 ; ++r)
     {
-        for(unsigned int c = 0; c < 3; ++c)
+        for(unsigned int c = 0 ; c < 3 ; ++c)
         {
             mat(r, c) = EigenToolsTest::random<double>(-1.f, 1.f);
         }
@@ -78,12 +78,18 @@ void EigenToolsTest::eigenToF4s()
 
     f4sRes = geometry::eigen::helper::toF4s(mat);
 
-    for(unsigned int r = 0; r < 4; ++r)
+    for(unsigned int r = 0 ; r < 4 ; ++r)
     {
-        for(unsigned int c = 0; c < 4; ++c)
+        for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Elements differ at (" + std::to_string(r) + ","  + std::to_string(
-                                                     c) + ")", mat(r, c), f4sRes->getCoefficient(r, c), 0.0000000001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "Elements differ at (" + std::to_string(r) + "," + std::to_string(
+                    c
+                ) + ")",
+                mat(r, c),
+                f4sRes->getCoefficient(r, c),
+                0.0000000001
+            );
         }
     }
 }
@@ -92,13 +98,13 @@ void EigenToolsTest::eigenToF4s()
 
 void EigenToolsTest::f4sToEigen()
 {
-    Eigen::Matrix< float, 4, 4> eigenRes;
+    Eigen::Matrix<float, 4, 4> eigenRes;
 
     data::Matrix4::sptr mat = data::Matrix4::New();
 
-    for(unsigned int r = 0; r < 3; ++r)
+    for(unsigned int r = 0 ; r < 3 ; ++r)
     {
-        for(unsigned int c = 0; c < 3; ++c)
+        for(unsigned int c = 0 ; c < 3 ; ++c)
         {
             mat->setCoefficient(r, c, random<float>(-1.f, 1.f));
         }
@@ -113,17 +119,23 @@ void EigenToolsTest::f4sToEigen()
     mat->setCoefficient(3, 2, 0);
     mat->setCoefficient(3, 3, 1);
 
-    eigenRes = geometry::eigen::helper::toEigen< float >(mat);
+    eigenRes = geometry::eigen::helper::toEigen<float>(mat);
 
     data::Matrix4::sptr mat2 = geometry::eigen::helper::toF4s(eigenRes);
 
-    for(unsigned int r = 0; r < 4; ++r)
+    for(unsigned int r = 0 ; r < 4 ; ++r)
     {
-        for(unsigned int c = 0; c < 4; ++c)
+        for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Elements differ at (" + std::to_string(r) + ","  + std::to_string(
-                                                     c) + ")", mat->getCoefficient(r, c), eigenRes(r, c)
-                                                 , 0.0000000001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "Elements differ at (" + std::to_string(r) + "," + std::to_string(
+                    c
+                ) + ")",
+                mat->getCoefficient(r, c),
+                eigenRes(r, c)
+                ,
+                0.0000000001
+            );
         }
     }
 }
@@ -136,7 +148,7 @@ void EigenToolsTest::eigenMatToRvecTvec()
     ::Eigen::AngleAxisd rotVec = ::Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
 
     ::Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
-    ::Eigen::Vector3d expected_tvec( 0.3, 0.4, 0.5);
+    ::Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
@@ -144,16 +156,26 @@ void EigenToolsTest::eigenMatToRvecTvec()
     geometry::eigen::helper::RvecTvecType actualRvecTvec =
         geometry::eigen::helper::eigenMatToRvecTvec(m);
 
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("RVecs differ at "+ std::to_string(i)
-                                             , expected_rvec(i), actualRvecTvec.first(i), 0.0000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "RVecs differ at " + std::to_string(i)
+            ,
+            expected_rvec(i),
+            actualRvecTvec.first(i),
+            0.0000000001
+        );
     }
 
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("TVecs differ at "+ std::to_string(i)
-                                             , expected_tvec(i), actualRvecTvec.second(i), 0.0000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "TVecs differ at " + std::to_string(i)
+            ,
+            expected_tvec(i),
+            actualRvecTvec.second(i),
+            0.0000000001
+        );
     }
 }
 
@@ -165,7 +187,7 @@ void EigenToolsTest::f4sMatToRvecTvec()
     ::Eigen::AngleAxisd rotVec = ::Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
 
     ::Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
-    ::Eigen::Vector3d expected_tvec( 0.3, 0.4, 0.5);
+    ::Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
 
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
@@ -175,16 +197,26 @@ void EigenToolsTest::f4sMatToRvecTvec()
     geometry::eigen::helper::RvecTvecType actualRvecTvec =
         geometry::eigen::helper::f4sMatToRvecTvec(data::Matrix4::constCast(trf));
 
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("RVecs differ at "+ std::to_string(i)
-                                             , expected_rvec(i), actualRvecTvec.first(i), 0.0000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "RVecs differ at " + std::to_string(i)
+            ,
+            expected_rvec(i),
+            actualRvecTvec.first(i),
+            0.0000000001
+        );
     }
 
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("TVecs differ at "+ std::to_string(i)
-                                             , expected_tvec(i), actualRvecTvec.second(i), 0.0000000001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            "TVecs differ at " + std::to_string(i)
+            ,
+            expected_tvec(i),
+            actualRvecTvec.second(i),
+            0.0000000001
+        );
     }
 }
 
@@ -192,21 +224,27 @@ void EigenToolsTest::f4sMatToRvecTvec()
 
 void EigenToolsTest::float16ToEigen()
 {
-    std::array<float, 16 > mat16 = {{ 0.1f, 0.2f, 0.3f, 1.f,
-                                      0.4f, 0.5f, 0.6f,  2.f,
-                                      0.7f, 0.8f, 0.9f, 3.f,
-                                      0.f,  0.f,  0.f,  1.f }};
+    std::array<float, 16> mat16 = {{0.1f, 0.2f, 0.3f, 1.f,
+        0.4f, 0.5f, 0.6f, 2.f,
+        0.7f, 0.8f, 0.9f, 3.f,
+        0.f, 0.f, 0.f, 1.f
+    }
+    };
 
-    ::Eigen::Matrix< double, 4, 4, ::Eigen::RowMajor> mat;
+    ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> mat;
 
     mat = geometry::eigen::helper::toEigen(mat16);
 
-    for(unsigned int r = 0; r < 4; ++r)
+    for(unsigned int r = 0 ; r < 4 ; ++r)
     {
-        for(unsigned int c = 0; c < 4; ++c)
+        for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Matrices differ at ("+std::to_string(r)+" , "+std::to_string(c)+")",
-                                                 mat16[4*r+c], mat(r, c), 0.00000000001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "Matrices differ at (" + std::to_string(r) + " , " + std::to_string(c) + ")",
+                mat16[4 * r + c],
+                mat(r, c),
+                0.00000000001
+            );
         }
     }
 }
@@ -214,4 +252,5 @@ void EigenToolsTest::float16ToEigen()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::geometry::eigen

@@ -23,6 +23,7 @@
 #include "ProcessingTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
@@ -30,16 +31,16 @@
 #include <service/IController.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::viz::scene2d::ut::ProcessingTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::viz::scene2d::ut::ProcessingTest);
 
 namespace sight::module::viz::scene2d
 {
+
 namespace ut
 {
 
@@ -74,35 +75,36 @@ void ProcessingTest::histogramTest()
     data::Histogram::sptr histogram = data::Histogram::New();
 
     // Create image.
-    image->resize(sizeX, sizeY,  sizeZ, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
+    image->resize(sizeX, sizeY, sizeZ, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
-    auto itr            = image->begin< ImageType >();
-    const auto itrEnd   = image->end< ImageType >();
+    auto itr            = image->begin<ImageType>();
+    const auto itrEnd   = image->end<ImageType>();
 
     int count = 0;
-    for(; itr != itrEnd; ++itr)
+    for( ; itr != itrEnd ; ++itr)
     {
-        if(count < imageSize/4)
+        if(count < imageSize / 4)
         {
             *itr = 10;
         }
-        else if( count < imageSize/2)
+        else if(count < imageSize / 2)
         {
             *itr = 20;
         }
-        else if( count < 3*imageSize/4)
+        else if(count < 3 * imageSize / 4)
         {
             *itr = 30;
         }
-        else if( count < imageSize)
+        else if(count < imageSize)
         {
             *itr = 40;
         }
+
         ++count;
     }
 
-    auto srv = service::add< service::IController >(implementation, "");
+    auto srv = service::add<service::IController>(implementation, "");
     CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
     service::IService::ConfigType config;
@@ -119,19 +121,20 @@ void ProcessingTest::histogramTest()
     service::OSR::unregisterService(srv);
 
     data::Histogram::fwHistogramValues values = histogram->getValues();
-    CPPUNIT_ASSERT_EQUAL((size_t) 40-10+1, values.size());
+    CPPUNIT_ASSERT_EQUAL((size_t) 40 - 10 + 1, values.size());
 
     CPPUNIT_ASSERT_EQUAL((float) 10, histogram->getMinValue());
 
     CPPUNIT_ASSERT_EQUAL((float) 40, histogram->getMaxValue());
 
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(10, 11));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(20, 21));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(30, 31));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(40, 41));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize / 4, histogram->getNbPixels(10, 11));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize / 4, histogram->getNbPixels(20, 21));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize / 4, histogram->getNbPixels(30, 31));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize / 4, histogram->getNbPixels(40, 41));
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::module::viz::scene2d

@@ -34,6 +34,7 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace vr
 {
 
@@ -42,8 +43,12 @@ static std::mutex s_compositorManagerLock;
 
 //------------------------------------------------------------------------------
 
-RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::uint8_t _rqGroup,
-                                       compositor::Core::StereoModeType _stereoMode, bool _enableMixedRendering) :
+RayEntryCompositor::RayEntryCompositor(
+    const std::string& _compositorName,
+    std::uint8_t _rqGroup,
+    compositor::Core::StereoModeType _stereoMode,
+    bool _enableMixedRendering
+) :
     m_compositorName(_compositorName)
 {
     auto& cm = ::Ogre::CompositorManager::getSingleton();
@@ -63,16 +68,20 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
 
         switch(_stereoMode)
         {
-            case compositor::Core::StereoModeType::NONE: break;
+            case compositor::Core::StereoModeType::NONE:
+                break;
+
             case compositor::Core::StereoModeType::STEREO:
                 nbViewpoints = 2;
                 heightFactor = 0.5f;
                 break;
+
             case compositor::Core::StereoModeType::AUTOSTEREO_5:
                 nbViewpoints = 5;
                 heightFactor = 0.5f;
                 widthFactor  = 0.6f;
                 break;
+
             case compositor::Core::StereoModeType::AUTOSTEREO_8:
                 nbViewpoints = 8;
                 heightFactor = 0.5f;
@@ -82,7 +91,7 @@ RayEntryCompositor::RayEntryCompositor(const std::string& _compositorName, std::
 
         const auto schemePrefix = std::string("VolumeEntries") + (nbViewpoints > 1 ? "AutoStereo" : "");
 
-        for(std::uint8_t i = 0; i < nbViewpoints; ++i)
+        for(std::uint8_t i = 0 ; i < nbViewpoints ; ++i)
         {
             const auto schemeSuffix  = nbViewpoints > 1 ? std::to_string(i) : "";
             const auto texTargetName = m_compositorName + "Texture" + schemeSuffix;
@@ -170,4 +179,5 @@ const std::string& RayEntryCompositor::getName() const
 //------------------------------------------------------------------------------
 
 } // namespace vr
+
 } // namespace sight::viz::scene3d

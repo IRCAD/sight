@@ -43,8 +43,10 @@ public:
      * @param[in] _sceneMgr Scene manager
      * @return the Ogre scene node, null if not found
      */
-    VIZ_SCENE3D_API static ::Ogre::SceneNode* getNodeById(viz::scene3d::SRender::OgreObjectIdType _nodeId,
-                                                          ::Ogre::SceneNode* _sceneNode);
+    VIZ_SCENE3D_API static ::Ogre::SceneNode* getNodeById(
+        viz::scene3d::SRender::OgreObjectIdType _nodeId,
+        ::Ogre::SceneNode* _sceneNode
+    );
 };
 
 } // namespace helper

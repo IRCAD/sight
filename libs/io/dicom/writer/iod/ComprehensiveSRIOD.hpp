@@ -28,8 +28,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace iod
 {
 
@@ -38,8 +40,8 @@ namespace iod
  */
 class IO_DICOM_CLASS_API ComprehensiveSRIOD : public io::dicom::writer::iod::InformationObjectDefinition
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share informations between modules
@@ -49,12 +51,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API ComprehensiveSRIOD(const SPTR(io::dicom::container::DicomInstance)& instance,
-                                    const std::filesystem::path& destinationPath,
-                                    bool use3DSR                          = false,
-                                    const core::log::Logger::sptr& logger = nullptr,
-                                    ProgressCallback progress             = nullptr,
-                                    CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API ComprehensiveSRIOD(
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const std::filesystem::path& destinationPath,
+        bool use3DSR                          = false,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~ComprehensiveSRIOD();
@@ -63,11 +67,13 @@ public:
     IO_DICOM_API void write(const data::Series::csptr& series) override;
 
 protected:
+
     /// True if we must use 3DSR
     bool m_use3DSR;
-
 };
 
 } // namespace iod
+
 } // namespace writer
+
 } // namespace sight::io::dicom

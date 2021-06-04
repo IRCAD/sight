@@ -27,10 +27,11 @@
 #include <core/thread/Worker.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::thread::ut::PoolTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::thread::ut::PoolTest);
 
 namespace sight::core::thread
 {
+
 namespace ut
 {
 
@@ -40,6 +41,7 @@ void PoolTest::setUp()
 {
     // Set up context before running a test.
 }
+
 //------------------------------------------------------------------------------
 
 void PoolTest::tearDown()
@@ -62,7 +64,7 @@ struct PoolTestHandler
 
     void nextStep()
     {
-        ::std::this_thread::sleep_for( ::std::chrono::milliseconds(10));
+        ::std::this_thread::sleep_for(::std::chrono::milliseconds(10));
         this->nextStepNoSleep();
     }
 
@@ -93,9 +95,9 @@ void PoolTest::basicTest()
         core::thread::Pool pool(1);
 
         std::vector< ::std::shared_future<void> > futures;
-        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
-        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
-        futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+        futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
 
         std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
@@ -110,10 +112,11 @@ void PoolTest::basicTest()
         core::thread::Pool pool(10);
 
         std::vector< ::std::shared_future<void> > futures;
-        for(int i = 0; i < 50; ++i)
+        for(int i = 0 ; i < 50 ; ++i)
         {
-            futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+            futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
         }
+
         std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
         CPPUNIT_ASSERT_EQUAL(50, handler.m_step);
@@ -126,15 +129,14 @@ void PoolTest::basicTest()
         {
             core::thread::Pool pool(10);
 
-            for(int i = 0; i < 50; ++i)
+            for(int i = 0 ; i < 50 ; ++i)
             {
-                pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) );
+                pool.post(::std::bind(&PoolTestHandler::nextStep, &handler));
             }
         }
         CPPUNIT_ASSERT_EQUAL(50, handler.m_step);
         CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -146,17 +148,18 @@ void PoolTest::defaultPoolTest()
     core::thread::Pool& pool = core::thread::getDefaultPool();
 
     std::vector< ::std::shared_future<void> > futures;
-    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
-    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
-    futures.push_back( pool.post( ::std::bind( &PoolTestHandler::nextStep, &handler) ));
+    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
+    futures.push_back(pool.post(::std::bind(&PoolTestHandler::nextStep, &handler)));
 
     std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
     CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
     CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
-
 }
+
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::core::thread

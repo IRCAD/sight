@@ -30,10 +30,11 @@
 #include <geometry/data/VectorFunctions.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::geometry::data::ut::VectorFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::VectorFunctionsTest);
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
@@ -57,12 +58,12 @@ void VectorFunctionsTest::checkDot()
 {
     // Dot product
     const double V1_X = 0.1;
-    const double V1_Y = std::rand()%30+0.1;
-    const double V1_Z = std::rand()%20+0.4;
+    const double V1_Y = std::rand() % 30 + 0.1;
+    const double V1_Z = std::rand() % 20 + 0.4;
 
-    const double V2_X = std::rand()%50+0.4;
+    const double V2_X = std::rand() % 50 + 0.4;
     const double V2_Y = 0.5;
-    const double V2_Z = std::rand()%10+0.8;
+    const double V2_Z = std::rand() % 10 + 0.8;
 
     const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
     const fwVec3d V2 = {V2_X, V2_Y, V2_Z};
@@ -71,7 +72,7 @@ void VectorFunctionsTest::checkDot()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::dot");
-        for(int i = 0; i < 2000000; ++i)
+        for(int i = 0 ; i < 2000000 ; ++i)
         {
             result = geometry::data::dot(V1, V2);
         }
@@ -80,7 +81,7 @@ void VectorFunctionsTest::checkDot()
     result = geometry::data::dot(V1, V2);
 #endif
 
-    double dotResult = V1_X * V2_X + V1_Y  *V2_Y + V1_Z * V2_Z;
+    double dotResult = V1_X * V2_X + V1_Y * V2_Y + V1_Z * V2_Z;
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(dotResult, result, 0.00001);
 }
@@ -103,7 +104,7 @@ void VectorFunctionsTest::checkCross()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::cross");
-        for(int i = 0; i < 2000000; ++i)
+        for(int i = 0 ; i < 2000000 ; ++i)
         {
             result = geometry::data::cross(V1, V2);
         }
@@ -112,9 +113,9 @@ void VectorFunctionsTest::checkCross()
     result = geometry::data::cross(V1, V2);
 #endif
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROOS_X, result[0],  0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Y, result[1],  0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Z, result[2],  0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROOS_X, result[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Y, result[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Z, result[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +129,7 @@ void VectorFunctionsTest::checkNormalize()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::normalize");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             v    = {0.4, 0.5, 0.6};
             norm = geometry::data::normalize(v);
@@ -141,9 +142,9 @@ void VectorFunctionsTest::checkNormalize()
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(NORM, norm, 0.00001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4/NORM, v[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5/NORM, v[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6/NORM, v[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4 / NORM, v[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 / NORM, v[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6 / NORM, v[2], 0.00001);
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +170,7 @@ void VectorFunctionsTest::checkVecLength()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::normalize");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             length = geometry::data::vecLength(v);
         }
@@ -206,14 +207,13 @@ void VectorFunctionsTest::checkOperators()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::operator/");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             vec3  = {1.0, 2.0, 3.0};
             vec3 += addVec;
         }
     }
 #else
-
     vec3  = {1.0, 2.0, 3.0};
     vec3 += addVec;
 #endif
@@ -271,13 +271,15 @@ void VectorFunctionsTest::checkOperators()
     int testEven = (vec10 == res6);
     CPPUNIT_ASSERT_EQUAL(testEven, 1);
 
-    fwVec3d vec11 = { 1.0, 2.0, 3.0 };
-    fwVec3d res7  = { 1.0000001, 2.05, 3.000000000000009 };
+    fwVec3d vec11 = {1.0, 2.0, 3.0};
+    fwVec3d res7  = {1.0000001, 2.05, 3.000000000000009};
 
     int testUneven = (vec11 != res7);
     CPPUNIT_ASSERT_EQUAL(testUneven, 1);
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace ut
+
 } //namespace sight::geometry::data

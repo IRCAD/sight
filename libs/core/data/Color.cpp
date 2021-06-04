@@ -27,22 +27,26 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::Color );
+SIGHT_REGISTER_DATA(sight::data::Color);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-Color::Color ( data::Object::Key )
+Color::Color(data::Object::Key)
 {
     m_vRGBA.fill(1.0);
 }
 
 //------------------------------------------------------------------------------
 
-Color::sptr Color::New(Color::ColorType red, Color::ColorType green, Color::ColorType blue,
-                       Color::ColorType alpha)
+Color::sptr Color::New(
+    Color::ColorType red,
+    Color::ColorType green,
+    Color::ColorType blue,
+    Color::ColorType alpha
+)
 {
     Color::sptr color = data::Color::New();
     color->m_vRGBA = {red, green, blue, alpha};
@@ -51,19 +55,23 @@ Color::sptr Color::New(Color::ColorType red, Color::ColorType green, Color::Colo
 
 //------------------------------------------------------------------------------
 
-Color::~Color ()
+Color::~Color()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Color::shallowCopy(const Object::csptr& _source )
+void Color::shallowCopy(const Object::csptr& _source)
 {
     Color::csptr other = Color::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_vRGBA = other->m_vRGBA;
 }
 
@@ -72,30 +80,34 @@ void Color::shallowCopy(const Object::csptr& _source )
 void Color::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Color::csptr other = Color::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
     m_vRGBA = other->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
 
-void Color::setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha )
+void Color::setRGBA(const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha)
 {
     m_vRGBA = {red, green, blue, alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void Color::setRGBA(const std::string& hexaColor )
+void Color::setRGBA(const std::string& hexaColor)
 {
     SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << hexaColor,
-            hexaColor[0] == '#'
-            && ( hexaColor.length() == 7 || hexaColor.length() == 9)
-        );
+        hexaColor[0] == '#'
+        && (hexaColor.length() == 7 || hexaColor.length() == 9)
+    );
 
     const std::string redString = hexaColor.substr(1, 2);
     const std::string greenString = hexaColor.substr(3, 2);
@@ -112,7 +124,7 @@ void Color::setRGBA(const std::string& hexaColor )
     iss.str(blueString);
     iss >> std::hex >> b;
 
-    if (hexaColor.length() == 9)
+    if(hexaColor.length() == 9)
     {
         const std::string alphaString = hexaColor.substr(7, 2);
         iss.clear();
@@ -121,11 +133,11 @@ void Color::setRGBA(const std::string& hexaColor )
     }
 
     this->setRGBA(
-        static_cast<float>(r)/255.0f,
-        static_cast<float>(g)/255.0f,
-        static_cast<float>(b)/255.0f,
-        static_cast<float>(a)/255.0f
-        );
+        static_cast<float>(r) / 255.0f,
+        static_cast<float>(g) / 255.0f,
+        static_cast<float>(b) / 255.0f,
+        static_cast<float>(a) / 255.0f
+    );
 }
 
 //------------------------------------------------------------------------------

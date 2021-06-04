@@ -53,7 +53,7 @@ class UI_BASE_CLASS_API View : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(View, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(View, ui::base::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 

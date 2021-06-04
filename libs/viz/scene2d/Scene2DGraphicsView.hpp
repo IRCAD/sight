@@ -52,31 +52,31 @@ public:
 
     VIZ_SCENE2D_API void resizeEvent(QResizeEvent* _event);
 
-    VIZ_SCENE2D_API void mouseReleaseEvent ( QMouseEvent* _event );
+    VIZ_SCENE2D_API void mouseReleaseEvent(QMouseEvent* _event);
 
-    VIZ_SCENE2D_API void mousePressEvent ( QMouseEvent* _event );
+    VIZ_SCENE2D_API void mousePressEvent(QMouseEvent* _event);
 
-    VIZ_SCENE2D_API void mouseMoveEvent ( QMouseEvent* _event );
+    VIZ_SCENE2D_API void mouseMoveEvent(QMouseEvent* _event);
 
-    VIZ_SCENE2D_API void mouseDoubleClickEvent ( QMouseEvent* _event );
+    VIZ_SCENE2D_API void mouseDoubleClickEvent(QMouseEvent* _event);
 
-    VIZ_SCENE2D_API void wheelEvent ( QWheelEvent* _event );
+    VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event);
 
     VIZ_SCENE2D_API void updateFromViewport();
 
-    VIZ_SCENE2D_API void setViewport( scene2d::data::Viewport::sptr viewport );
+    VIZ_SCENE2D_API void setViewport(scene2d::data::Viewport::sptr viewport);
 
-    VIZ_SCENE2D_API void setSceneRender( SPTR(viz::scene2d::SRender) sceneRender );
+    VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::SRender) sceneRender);
 
 protected:
 
     scene2d::data::Viewport::sptr m_viewport;
     WPTR(viz::scene2d::SRender) m_scene2DRender;
 
-    scene2d::data::Event::Button getScene2DButtonFromEvent( QMouseEvent* _event );
-    scene2d::data::Event::Modifier getScene2DModifierFromEvent( QInputEvent* _event );
+    scene2d::data::Event::Button getScene2DButtonFromEvent(QMouseEvent* _event);
+    scene2d::data::Event::Modifier getScene2DModifierFromEvent(QInputEvent* _event);
 
-    void paintEvent ( QPaintEvent* event );
-
+    void paintEvent(QPaintEvent* event);
 };
+
 } // namespace sight::viz::scene2d

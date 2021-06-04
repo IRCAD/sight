@@ -36,7 +36,7 @@ class SeriesDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesDeserializer, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(SeriesDeserializer, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     SeriesDeserializer(const SeriesDeserializer&)            = delete;

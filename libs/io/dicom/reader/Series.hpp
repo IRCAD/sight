@@ -28,6 +28,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
 
@@ -38,10 +39,10 @@ class IO_DICOM_CLASS_API Series
 {
 public:
 
-    typedef std::map< SPTR(io::dicom::container::DicomInstance), data::Series::sptr > SeriesContainerMapType;
+    typedef std::map<SPTR(io::dicom::container::DicomInstance), data::Series::sptr> SeriesContainerMapType;
 
-    typedef std::function< void (std::uint64_t) > ProgressCallback;
-    typedef std::function< bool () > CancelRequestedCallback;
+    typedef std::function<void (std::uint64_t)> ProgressCallback;
+    typedef std::function<bool ()> CancelRequestedCallback;
 
     /// Constructor
     IO_DICOM_API Series();
@@ -76,6 +77,7 @@ public:
     {
         m_progressCallback = callback;
     }
+
     /**
      * @brief Set cancel callback
      * @param[in] callback Cancel callback
@@ -95,11 +97,13 @@ protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(io::dicom::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-        const data::DicomSeries::csptr& dicomSeries);
+        const data::DicomSeries::csptr& dicomSeries
+    );
 
     /// Get referenced series when dealing with Structured Report
     SPTR(io::dicom::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-        const data::DicomSeries::csptr& dicomSeries);
+        const data::DicomSeries::csptr& dicomSeries
+    );
 
     /// Series Container Map
     SeriesContainerMapType m_seriesContainerMap;
@@ -115,8 +119,8 @@ protected:
 
     /// Enable buffer rotation
     bool m_enableBufferRotation;
-
 };
 
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace reader
+
+} // namespace sight::io::dicom

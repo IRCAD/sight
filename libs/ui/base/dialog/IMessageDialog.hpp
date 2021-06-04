@@ -29,17 +29,18 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic message box for IHM.
  */
 class UI_BASE_CLASS_API IMessageDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IMessageDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMessageDialog, ui::base::GuiBaseObject);
 
     /// Icon type
     typedef enum
@@ -60,7 +61,6 @@ public:
         YES    = 1 << 2,
         NO     = 1 << 3,
         CANCEL = 1 << 4,
-
         YES_NO = YES | NO
     } Buttons;
 
@@ -79,10 +79,10 @@ public:
     UI_BASE_API virtual void setMessage(const std::string& msg) = 0;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_BASE_API virtual void setIcon( Icons icon) = 0;
+    UI_BASE_API virtual void setIcon(Icons icon) = 0;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_BASE_API virtual void addButton(Buttons button ) = 0;
+    UI_BASE_API virtual void addButton(Buttons button) = 0;
 
     /// Set the default button
     UI_BASE_API virtual void setDefaultButton(Buttons button) = 0;
@@ -92,8 +92,8 @@ public:
 
     /// Show the message box and return the clicked button.
     UI_BASE_API virtual Buttons show() = 0;
-
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

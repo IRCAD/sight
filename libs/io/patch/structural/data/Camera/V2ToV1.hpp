@@ -39,7 +39,8 @@ namespace Camera
 class IO_PATCH_CLASS_API V2ToV1 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(V2ToV1, patch::structural::data::Camera::V2ToV1, new V2ToV1)
+
+    SIGHT_DECLARE_CLASS(V2ToV1, patch::structural::data::Camera::V2ToV1, new V2ToV1);
 
     /// Constructor
     IO_PATCH_API V2ToV1();
@@ -48,7 +49,7 @@ public:
     IO_PATCH_API ~V2ToV1();
 
     /// Copy constructor
-    IO_PATCH_API V2ToV1( const V2ToV1& cpy );
+    IO_PATCH_API V2ToV1(const V2ToV1& cpy);
 
     /**
      * @brief Applies patch
@@ -58,8 +59,8 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace Camera

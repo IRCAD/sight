@@ -28,8 +28,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -49,7 +51,7 @@ Landmarks1::~Landmarks1()
 
 // ----------------------------------------------------------------------------
 
-Landmarks1::Landmarks1( const Landmarks1& cpy ) :
+Landmarks1::Landmarks1(const Landmarks1& cpy) :
     io::atoms::patch::IStructuralCreator(cpy)
 {
 }
@@ -69,5 +71,7 @@ sight::atoms::Object::sptr Landmarks1::create()
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

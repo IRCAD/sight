@@ -29,8 +29,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -48,7 +50,7 @@ ActivitySeries1::~ActivitySeries1()
 
 // ----------------------------------------------------------------------------
 
-ActivitySeries1::ActivitySeries1( const ActivitySeries1& cpy ) :
+ActivitySeries1::ActivitySeries1(const ActivitySeries1& cpy) :
     Series1(cpy)
 {
 }
@@ -67,5 +69,7 @@ sight::atoms::Object::sptr ActivitySeries1::create()
 }
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

@@ -55,11 +55,10 @@ namespace sight::module::viz::qt3d::adaptor
  */
 class MODULE_VIZ_QT3D_CLASS_API SMaterial : public sight::viz::qt3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::qt3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::qt3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_QT3D_API SMaterial() noexcept;
@@ -102,7 +101,7 @@ protected:
 private:
 
     /// Contains a Qt3D Material.
-    QPointer< sight::viz::qt3d::data::Material > m_material;
+    QPointer<sight::viz::qt3d::data::Material> m_material;
 
     /// Specifies adaptor's name.
     std::string m_materialName;

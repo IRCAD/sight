@@ -87,7 +87,7 @@ class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IOperator);
 
     /// Initializes the slots and member variables.
     MODULE_FILTER_VISION_API SColourImageMasking() noexcept;

@@ -41,23 +41,25 @@ namespace sight::core::runtime
 
 namespace
 {
-template< typename E >
+
+template<typename E>
 struct Apply
 {
     //------------------------------------------------------------------------------
 
-    void operator() ( E e )
+    void operator()(E e)
     {
         e->apply();
     }
 };
+
 }
 
 //------------------------------------------------------------------------------
 
 Profile::sptr Profile::New()
 {
-    return std::make_shared< detail::profile::Profile >();
+    return std::make_shared<detail::profile::Profile>();
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +74,7 @@ Profile::Profile() :
 
 Profile::~Profile()
 {
-    if (m_argv)
+    if(m_argv)
     {
         delete[] m_argv;
     }
@@ -83,10 +85,11 @@ Profile::~Profile()
 void Profile::setParams(int argc, char** argv)
 {
     ParamsContainer params;
-    for(int i = 0; i < argc; ++i)
+    for(int i = 0 ; i < argc ; ++i)
     {
-        params.push_back( std::string(argv[i]) );
+        params.push_back(std::string(argv[i]));
     }
+
     this->setParams(params);
 }
 
@@ -96,7 +99,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 {
     m_params = params;
 
-    if (m_argv)
+    if(m_argv)
     {
         delete[] m_argv;
     }
@@ -106,15 +109,15 @@ void Profile::setParams(const Profile::ParamsContainer& params)
     m_argv = new char*[m_params.size()];
 
     // for each string, allocate memory in the character array and copy
-    for(size_t i = 0; i < m_params.size(); i++)
+    for(size_t i = 0 ; i < m_params.size() ; i++)
     {
         size_t paramSize = m_params[i].size();
-        m_argv[i] = new char[paramSize+1];
+        m_argv[i] = new char [paramSize + 1];
 #ifndef _WIN32
         strncpy(m_argv[i], m_params[i].c_str(), paramSize);
         m_argv[i][paramSize] = '\0';
 #else
-        strncpy_s(m_argv[i], paramSize+1, m_params[i].c_str(), paramSize);
+        strncpy_s(m_argv[i], paramSize + 1, m_params[i].c_str(), paramSize);
 #endif
     }
 }

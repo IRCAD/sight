@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(ResectionDB))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (ResectionDB))
 {
     builder
     .tag("object_version", "1")

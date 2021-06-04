@@ -34,7 +34,6 @@ namespace sight::module::io::igtl
  */
 struct MODULE_IO_IGTL_CLASS_API Plugin : public core::runtime::Plugin
 {
-
     /// Destructor
     MODULE_IO_IGTL_API ~Plugin() noexcept;
 
@@ -43,7 +42,6 @@ struct MODULE_IO_IGTL_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides
     MODULE_IO_IGTL_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::io::igtl

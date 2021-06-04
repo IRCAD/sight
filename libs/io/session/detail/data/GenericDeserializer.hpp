@@ -37,7 +37,7 @@ class GenericDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericDeserializer<T>, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(GenericDeserializer<T>, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     GenericDeserializer(const GenericDeserializer&)            = delete;

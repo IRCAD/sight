@@ -47,10 +47,14 @@ class UI_QT_CLASS_API FrameLayoutManager : public QObject,
                                            public ui::base::layoutManager::IFrameLayoutManager
 {
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_CLASS(FrameLayoutManager, ui::base::layoutManager::IFrameLayoutManager,
-                        ui::base::factory::New< FrameLayoutManager >)
+    SIGHT_DECLARE_CLASS(
+        FrameLayoutManager,
+        ui::base::layoutManager::IFrameLayoutManager,
+        ui::base::factory::New<FrameLayoutManager>
+    )
 
     UI_QT_API FrameLayoutManager(ui::base::GuiBaseObject::Key key);
 
@@ -67,6 +71,7 @@ public:
     UI_QT_API void destroyFrame() override;
 
 private Q_SLOTS:
+
     void onCloseFrame();
 
 private:

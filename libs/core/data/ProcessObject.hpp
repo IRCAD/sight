@@ -30,10 +30,12 @@
 
 namespace sight::data
 {
+
 class Field;
+
 }
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ProcessObject));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ProcessObject));
 
 namespace sight::data
 {
@@ -44,13 +46,14 @@ namespace sight::data
 class DATA_CLASS_API ProcessObject : public Object
 {
 public:
-    SIGHT_DECLARE_CLASS(ProcessObject, data::Object, data::factory::New< ProcessObject >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ProcessObject));
+    SIGHT_DECLARE_CLASS(ProcessObject, data::Object, data::factory::New<ProcessObject>);
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ProcessObject));
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;
-    typedef std::map< ParamNameType, data::Object::sptr > ProcessObjectMapType;
+    typedef std::map<ParamNameType, data::Object::sptr> ProcessObjectMapType;
 
     /**
      * @brief Constructor
@@ -75,7 +78,7 @@ public:
      * @param[in] name Input name
      * @return null sptr if input is not found
      */
-    template< class OBJECTTYPE >
+    template<class OBJECTTYPE>
     typename OBJECTTYPE::sptr getInput(const ParamNameType& name);
 
     /**
@@ -90,25 +93,25 @@ public:
      * @param[in] name Output name
      * @return null sptr if output is not found
      */
-    template< class OBJECTTYPE >
+    template<class OBJECTTYPE>
     typename OBJECTTYPE::sptr getOutput(const ParamNameType& name);
 
     /**
      * @{
      * @brief Retrieve the input data.
      */
-    const ProcessObjectMapType& getInputs () const;
+    const ProcessObjectMapType& getInputs() const;
 
-    void setInputs (const ProcessObjectMapType& val);
+    void setInputs(const ProcessObjectMapType& val);
     /// @}
 
     /**
      * @{
      * @briefRetrieve the output data.
      */
-    const ProcessObjectMapType& getOutputs () const;
+    const ProcessObjectMapType& getOutputs() const;
 
-    void setOutputs (const ProcessObjectMapType& val);
+    void setOutputs(const ProcessObjectMapType& val);
     /// @}
 
     /**
@@ -148,7 +151,7 @@ public:
     DATA_API void clearOutputs();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& source ) override;
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
@@ -191,44 +194,44 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-template< class OBJECTTYPE >
+template<class OBJECTTYPE>
 inline typename OBJECTTYPE::sptr ProcessObject::getInput(const ProcessObject::ParamNameType& name)
 {
-    return OBJECTTYPE::dynamicCast( this->getInput( name ) );
+    return OBJECTTYPE::dynamicCast(this->getInput(name));
 }
 
 //-----------------------------------------------------------------------------
 
-template< class OBJECTTYPE >
+template<class OBJECTTYPE>
 inline typename OBJECTTYPE::sptr ProcessObject::getOutput(const ProcessObject::ParamNameType& name)
 {
-    return OBJECTTYPE::dynamicCast( this->getOutput( name ) );
+    return OBJECTTYPE::dynamicCast(this->getOutput(name));
 }
 
 //-----------------------------------------------------------------------------
 
-inline const ProcessObject::ProcessObjectMapType& ProcessObject::getInputs () const
+inline const ProcessObject::ProcessObjectMapType& ProcessObject::getInputs() const
 {
     return m_inputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ProcessObject::setInputs (const ProcessObject::ProcessObjectMapType& val)
+inline void ProcessObject::setInputs(const ProcessObject::ProcessObjectMapType& val)
 {
     m_inputs = val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const ProcessObject::ProcessObjectMapType& ProcessObject::getOutputs () const
+inline const ProcessObject::ProcessObjectMapType& ProcessObject::getOutputs() const
 {
     return m_outputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ProcessObject::setOutputs (const ProcessObject::ProcessObjectMapType& val)
+inline void ProcessObject::setOutputs(const ProcessObject::ProcessObjectMapType& val)
 {
     m_outputs = val;
 }

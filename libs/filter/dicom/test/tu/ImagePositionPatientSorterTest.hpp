@@ -30,6 +30,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -38,12 +39,13 @@ namespace ut
  */
 class ImagePositionPatientSorterTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImagePositionPatientSorterTest );
-CPPUNIT_TEST( simpleApplication );
-CPPUNIT_TEST( applyFilterOnMultipleVolumeImage );
+CPPUNIT_TEST_SUITE(ImagePositionPatientSorterTest);
+CPPUNIT_TEST(simpleApplication);
+CPPUNIT_TEST(applyFilterOnMultipleVolumeImage);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -53,8 +55,8 @@ public:
 
     /// Apply the filter on an unsupported multiple volume image
     void applyFilterOnMultipleVolumeImage();
-
 };
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

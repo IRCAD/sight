@@ -32,6 +32,7 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
@@ -53,7 +54,8 @@ RelatedStudy::~RelatedStudy()
 
 IValidator::ValidationType RelatedStudy::validate(
     const activity::extension::ActivityInfo& activityInfo,
-    const data::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection
+) const
 {
     IValidator::ValidationType validation;
 
@@ -69,7 +71,7 @@ IValidator::ValidationType RelatedStudy::validate(
         ::boost::algorithm::trim(instanceUIDRef);
 
         data::Vector::ContainerType::const_iterator it;
-        for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
+        for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
             data::Series::sptr series = data::Series::dynamicCast(*it);
             data::Study::sptr study   = series->getStudy();
@@ -98,4 +100,5 @@ IValidator::ValidationType RelatedStudy::validate(
 //-----------------------------------------------------------------------------
 
 } // namespace validator
+
 } // namespace sight::activity

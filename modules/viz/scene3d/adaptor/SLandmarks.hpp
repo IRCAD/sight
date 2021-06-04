@@ -93,11 +93,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
     public sight::viz::scene3d::ITransformable,
     public sight::viz::scene3d::interactor::IInteractor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLandmarks, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SLandmarks, ::sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;
@@ -123,8 +122,14 @@ public:
      * @param _dx width displacement of the mouse since the last event.
      * @param _dx height displacement of the mouse since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(MouseButton _button, Modifier _mod,
-                                               int _x, int _y, int _dx, int _dy) override;
+    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
+        MouseButton _button,
+        Modifier _mod,
+        int _x,
+        int _y,
+        int _dx,
+        int _dy
+    ) override;
 
     /**
      * @brief Resets m_pickedData.
@@ -177,11 +182,13 @@ private:
     /// Stores data used to display one landmark.
     struct Landmark
     {
-        Landmark(::Ogre::SceneNode* _node,
-                 ::Ogre::ManualObject* _object,
-                 std::string _groupName,
-                 size_t _index,
-                 sight::viz::scene3d::Text* _label) :
+        Landmark(
+            ::Ogre::SceneNode* _node,
+            ::Ogre::ManualObject* _object,
+            std::string _groupName,
+            size_t _index,
+            sight::viz::scene3d::Text* _label
+        ) :
             m_node(_node),
             m_object(_object),
             m_groupName(_groupName),
@@ -190,25 +197,25 @@ private:
         {
         }
 
-        ::Ogre::SceneNode* m_node { nullptr };      /*!< Contains the node of the landmark */
-        ::Ogre::ManualObject* m_object { nullptr }; /*!< Contains the manual object that represent the landmark */
-        std::string m_groupName { "" };             /*!< Defines the group name of the landmark */
-        size_t m_index { 0 };                       /*!< Defines the index of the landmark */
-        sight::viz::scene3d::Text* m_label { nullptr };  /*!< Defines the text label of the landmark (can be nullptr) */
+        ::Ogre::SceneNode* m_node {nullptr};          /*!< Contains the node of the landmark */
+        ::Ogre::ManualObject* m_object {nullptr};     /*!< Contains the manual object that represent the landmark */
+        std::string m_groupName {""};                 /*!< Defines the group name of the landmark */
+        size_t m_index {0};                           /*!< Defines the index of the landmark */
+        sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
     /// Stores data used to hightlight the selected landmark.
     struct SelectedLandmark
     {
-        SelectedLandmark(core::thread::Timer::sptr _timer, std::shared_ptr< Landmark > _landmark) :
+        SelectedLandmark(core::thread::Timer::sptr _timer, std::shared_ptr<Landmark> _landmark) :
             m_timer(_timer),
             m_landmark(_landmark)
         {
         }
 
         core::thread::Timer::sptr m_timer;
-        std::shared_ptr< Landmark > m_landmark;
-        bool m_show { false };
+        std::shared_ptr<Landmark> m_landmark;
+        bool m_show {false};
     };
 
     typedef data::helper::MedicalImage::Orientation OrientationMode;
@@ -317,13 +324,13 @@ private:
      * @param _y Y screen coordinate.
      * @return The picked world coordinates.
      */
-    std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
+    std::optional< ::Ogre::Vector3> getNearestPickedPosition(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
      */
-    void hideLandmark(std::shared_ptr< Landmark > _landmark);
+    void hideLandmark(std::shared_ptr<Landmark> _landmark);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
@@ -331,58 +338,59 @@ private:
      * @param imageLock boolean to know if the image is present and locked.
      * @param _landmarks landmarks data in which the landmarks should be hidden.
      */
-    void hideMyLandmark(std::shared_ptr<Landmark> _landmark,
-                        const bool imageLock,
-                        data::Landmarks::csptr _landmarks);
+    void hideMyLandmark(
+        std::shared_ptr<Landmark> _landmark,
+        const bool imageLock,
+        data::Landmarks::csptr _landmarks
+    );
 
     /// Contains the root scene node.
-    ::Ogre::SceneNode* m_transNode { nullptr };
+    ::Ogre::SceneNode* m_transNode {nullptr};
 
     /// Contains the material data.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Stores each landmarks points.
-    std::vector< std::shared_ptr< Landmark > > m_manualObjects;
+    std::vector<std::shared_ptr<Landmark> > m_manualObjects;
 
     /// Enables labels.
-    bool m_enableLabels { true };
+    bool m_enableLabels {true};
 
     /// Defines the label font size in points.
-    size_t m_fontSize { 16 };
+    size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
-    std::string m_fontSource { "DejaVuSans.ttf" };
+    std::string m_fontSource {"DejaVuSans.ttf"};
 
     /// Stores informations about the selected landmark.
-    std::list< std::shared_ptr< SelectedLandmark > > m_selectedLandmarks;
+    std::list<std::shared_ptr<SelectedLandmark> > m_selectedLandmarks;
 
     /// Define a mutex to synchronized methods working with selected landmark.
     std::mutex m_selectedMutex;
 
     /// Defines the image orientation.
-    OrientationMode m_orientation { OrientationMode::Z_AXIS };
+    OrientationMode m_orientation {OrientationMode::Z_AXIS};
 
     /// Stores the current position index for each axis.
-    std::array<float, 3> m_currentSlicePos { 0.f, 0.f, 0.f };
+    std::array<float, 3> m_currentSlicePos {0.f, 0.f, 0.f};
 
     /// Defines whether or not interactions are enabled with distances.
-    bool m_interactive { true };
+    bool m_interactive {true};
 
     /// Defines the priority of the interactor.
-    int m_priority { 2 };
+    int m_priority {2};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    std::shared_ptr< Landmark > m_pickedData { nullptr };
+    std::shared_ptr<Landmark> m_pickedData {nullptr};
 
     /// Defines the mask used to filter out entities when the distance is auto snapped.
-    std::uint32_t m_queryMask { 0xFFFFFFFF };
+    std::uint32_t m_queryMask {0xFFFFFFFF};
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_landmarksQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
-
+    std::uint32_t m_landmarksQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -79,27 +79,27 @@ std::streamsize openFile(
     const char* const password = key.empty() ? nullptr : key.c_str();
 
     const int nRet = zipOpenNewFileInZip5(
-        zipDescriptor, // zipFile file
-        filename, // const char *filename : the filename in zip
-        &zfileinfo, // const zip_fileinfo *zipfi: contain supplemental information
-        nullptr, // (UNUSED) const void *extrafield_local: buffer to store the local header
-                 // extra field data
-        0, // (UNUSED) uint16_t size_extrafield_local: size of extrafield_local buffer
-        nullptr, // const void *extrafield_global: buffer to store the global header extra
-                 // field data
-        0, // uint16_t size_extrafield_global: size of extrafield_local buffer
-        nullptr, // const char *comment: buffer for comment string
-        Z_DEFLATED, // int method: contain the compression method
+        zipDescriptor,         // zipFile file
+        filename,              // const char *filename : the filename in zip
+        &zfileinfo,            // const zip_fileinfo *zipfi: contain supplemental information
+        nullptr,               // (UNUSED) const void *extrafield_local: buffer to store the local header
+                               // extra field data
+        0,                     // (UNUSED) uint16_t size_extrafield_local: size of extrafield_local buffer
+        nullptr,               // const void *extrafield_global: buffer to store the global header extra
+                               // field data
+        0,                     // uint16_t size_extrafield_global: size of extrafield_local buffer
+        nullptr,               // const char *comment: buffer for comment string
+        Z_DEFLATED,            // int method: contain the compression method
         Z_DEFAULT_COMPRESSION, // int level: contain the level of compression
-        0, // int raw: use 0 to disable
-        0, // (UNUSED) int windowBits: use default value
-        0, // (UNUSED) int memLevel: use default value
-        0, // (UNUSED) int strategy: use default value
-        password, // const char *password: NULL means no encryption
-        0, // (UNUSED) unsigned long crc_for_crypting,
-        666, // unsigned long version_madeby
-        0, // uint16_t flag_base: use default value
-        1 // int zip64: use 0 to disable
+        0,                     // int raw: use 0 to disable
+        0,                     // (UNUSED) int windowBits: use default value
+        0,                     // (UNUSED) int memLevel: use default value
+        0,                     // (UNUSED) int strategy: use default value
+        password,              // const char *password: NULL means no encryption
+        0,                     // (UNUSED) unsigned long crc_for_crypting,
+        666,                   // unsigned long version_madeby
+        0,                     // uint16_t flag_base: use default value
+        1                      // int zip64: use 0 to disable
     );
 
     return nRet;

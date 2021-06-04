@@ -69,7 +69,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public serv
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLabelImageToBinaryImage, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SLabelImageToBinaryImage, service::IOperator);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage();

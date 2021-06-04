@@ -31,10 +31,11 @@
 #undef GLM_ENABLE_EXPERIMENTAL
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::MatrixRegressorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::MatrixRegressorTest);
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -58,27 +59,28 @@ void MatrixRegressorTest::identityTest()
 
     data::Vector::sptr matList = data::Vector::New();
 
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0 ; i < 5 ; ++i)
     {
         matList->getContainer().push_back(id);
     }
 
-    const std::vector< MatrixRegressor::PointType > ptList = {{
-                                                                  { 0., 0., 0., 1. },
-                                                                  { 0., 0., 1., 1. },
-                                                                  { 0., 1., 0., 1. },
-                                                                  { 0., 1., 1., 1. },
-                                                                  { 1., 0., 0., 1. },
-                                                                  { 1., 0., 1., 1. },
-                                                                  { 1., 1., 0., 1. },
-                                                                  { 1., 1., 1., 1. }
-                                                              }};
+    const std::vector<MatrixRegressor::PointType> ptList = {{
+        {0., 0., 0., 1.},
+        {0., 0., 1., 1.},
+        {0., 1., 0., 1.},
+        {0., 1., 1., 1.},
+        {1., 0., 0., 1.},
+        {1., 0., 1., 1.},
+        {1., 1., 0., 1.},
+        {1., 1., 1., 1.}
+    }
+    };
 
     MatrixRegressor regressor(matList, ptList);
 
     data::Matrix4::sptr res = regressor.minimize(id);
 
-    for(int i = 0; i < 16; ++i)
+    for(int i = 0 ; i < 16 ; ++i)
     {
         const double expected = id->getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
@@ -106,16 +108,17 @@ void MatrixRegressorTest::avgTranslationTest()
     matList->getContainer().push_back(trans1);
     matList->getContainer().push_back(trans2);
 
-    const std::vector< MatrixRegressor::PointType > ptList = {{
-                                                                  { 0., 0., 0., 1. },
-                                                                  { 0., 0., 1., 1. },
-                                                                  { 0., 1., 0., 1. },
-                                                                  { 0., 1., 1., 1. },
-                                                                  { 1., 0., 0., 1. },
-                                                                  { 1., 0., 1., 1. },
-                                                                  { 1., 1., 0., 1. },
-                                                                  { 1., 1., 1., 1. }
-                                                              }};
+    const std::vector<MatrixRegressor::PointType> ptList = {{
+        {0., 0., 0., 1.},
+        {0., 0., 1., 1.},
+        {0., 1., 0., 1.},
+        {0., 1., 1., 1.},
+        {1., 0., 0., 1.},
+        {1., 0., 1., 1.},
+        {1., 1., 0., 1.},
+        {1., 1., 1., 1.}
+    }
+    };
 
     MatrixRegressor regressor(matList, ptList);
 
@@ -126,14 +129,13 @@ void MatrixRegressorTest::avgTranslationTest()
 
     geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
 
-    for(int i = 0; i < 16; ++i)
+    for(int i = 0 ; i < 16 ; ++i)
     {
         const double expected = expectedMat->getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, result, 1e-3);
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -152,16 +154,17 @@ void MatrixRegressorTest::avgRotationTest()
     matList->getContainer().push_back(id);
     matList->getContainer().push_back(rot);
 
-    const std::vector< MatrixRegressor::PointType > ptList = {{
-                                                                  { 0., 0., 0., 1. },
-                                                                  { 0., 0., 1., 1. },
-                                                                  { 0., 1., 0., 1. },
-                                                                  { 0., 1., 1., 1. },
-                                                                  { 1., 0., 0., 1. },
-                                                                  { 1., 0., 1., 1. },
-                                                                  { 1., 1., 0., 1. },
-                                                                  { 1., 1., 1., 1. }
-                                                              }};
+    const std::vector<MatrixRegressor::PointType> ptList = {{
+        {0., 0., 0., 1.},
+        {0., 0., 1., 1.},
+        {0., 1., 0., 1.},
+        {0., 1., 1., 1.},
+        {1., 0., 0., 1.},
+        {1., 0., 1., 1.},
+        {1., 1., 0., 1.},
+        {1., 1., 1., 1.}
+    }
+    };
 
     MatrixRegressor regressor(matList, ptList);
 
@@ -170,15 +173,16 @@ void MatrixRegressorTest::avgRotationTest()
     ::glm::dmat4 glmRes = geometry::data::getMatrixFromTF3D(res);
 
     // Extract the rotation from the result.
-    double scale = std::pow(::glm::determinant(glmRes), 1./3.);
+    double scale = std::pow(::glm::determinant(glmRes), 1. / 3.);
 
     // Remove the scale from the matrix. This is required by the ::glm::toQuat() function.
     ::glm::dvec3 angles = ::glm::eulerAngles(::glm::toQuat(glmRes / scale));
 
-    CPPUNIT_ASSERT(::glm::all( ::glm::epsilonEqual(angles, ::glm::dvec3(0., 0., ::glm::pi<double>() / 4.), 1e-3)));
+    CPPUNIT_ASSERT(::glm::all(::glm::epsilonEqual(angles, ::glm::dvec3(0., 0., ::glm::pi<double>() / 4.), 1e-3)));
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

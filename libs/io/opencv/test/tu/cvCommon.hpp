@@ -30,19 +30,20 @@
 
 namespace sight::io::opencv
 {
+
 namespace ut
 {
 
 //------------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 struct getCvFormat;
 
-#define declareCvFormat(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4 ) \
-    template <> \
+#define declareCvFormat(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
+    template<> \
     struct getCvFormat<_TYPE> \
     { \
-        static const std::array< std::int32_t, 4 > type; \
+        static const std::array<std::int32_t, 4> type; \
     };
 
 declareCvFormat(std::uint8_t, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4)
@@ -55,26 +56,33 @@ declareCvFormat(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
 
 //------------------------------------------------------------------------------
 
-template <typename T>
-::cv::Mat genCvImage(  const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
-                       std::uint8_t _numChannels)
+template<typename T>
+::cv::Mat genCvImage(
+    const std::vector<T>& _imageBuffer,
+    size_t _w,
+    size_t _h,
+    size_t _d,
+    std::uint8_t _numChannels
+)
 {
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
 
     std::vector<int> cvSize;
     if(_d > 0)
     {
-        cvSize.push_back( static_cast<int>(_d) );
+        cvSize.push_back(static_cast<int>(_d));
     }
+
     if(_h > 0)
     {
-        cvSize.push_back( static_cast<int>(_h) );
+        cvSize.push_back(static_cast<int>(_h));
     }
     else
     {
-        cvSize.push_back( static_cast<int>(1) );
+        cvSize.push_back(static_cast<int>(1));
     }
-    cvSize.push_back( static_cast<int>(_w) );
+
+    cvSize.push_back(static_cast<int>(_w));
 
     const auto cvType = getCvFormat<T>::type[_numChannels - 1];
     ::cv::Mat cvImage = ::cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
@@ -84,7 +92,7 @@ template <typename T>
 
 //------------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
@@ -98,7 +106,7 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
     {
         std::uniform_int_distribution<> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
-        for(size_t i = 0; i < imageSize; ++i)
+        for(size_t i = 0 ; i < imageSize ; ++i)
         {
             auto value   = dist(engine);
             T boundValue = static_cast<T>(value);
@@ -109,7 +117,7 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
     {
         std::uniform_real_distribution<> dist(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 
-        for(size_t i = 0; i < imageSize; ++i)
+        for(size_t i = 0 ; i < imageSize ; ++i)
         {
             auto value   = dist(engine);
             T boundValue = static_cast<T>(value);
@@ -124,4 +132,4 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 
 } // namespace ut
 
-}// namespace sight::io::opencv
+} // namespace sight::io::opencv

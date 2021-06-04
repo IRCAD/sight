@@ -26,29 +26,33 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/DicomSeries.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-SpatialFiducials::SpatialFiducials(const data::DicomSeries::csptr& dicomSeries,
-                                   const SPTR(::gdcm::Reader)& reader,
-                                   const io::dicom::container::DicomInstance::sptr& instance,
-                                   const data::Image::sptr& image,
-                                   const core::log::Logger::sptr& logger,
-                                   ProgressCallback progress,
-                                   CancelRequestedCallback cancel) :
-    io::dicom::reader::ie::InformationEntity< data::Image >(dicomSeries, reader, instance, image,
-                                                            logger, progress, cancel)
+SpatialFiducials::SpatialFiducials(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(::gdcm::Reader)& reader,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const data::Image::sptr& image,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::reader::ie::InformationEntity<data::Image>(dicomSeries, reader, instance, image,
+                                                          logger, progress, cancel)
 {
 }
 
@@ -63,7 +67,7 @@ SpatialFiducials::~SpatialFiducials()
 void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 {
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
     if(!pointList)
     {
         pointList = data::PointList::New();
@@ -71,46 +75,50 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
     }
 
     const ::gdcm::DataElement& graphicCoordinatesDataElement =
-        fiducialDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x0318) );
-    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > graphicCoordinatesDataSequence =
+        fiducialDataset.GetDataElement(::gdcm::Tag(0x0070, 0x0318));
+    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> graphicCoordinatesDataSequence =
         graphicCoordinatesDataElement.GetValueAsSQ();
 
     const std::string label =
-        io::dicom::helper::DicomDataReader::getTagValue< 0x0070, 0x030F >(fiducialDataset);
+        io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x030F>(fiducialDataset);
 
-    for(unsigned int i = 1; i <= graphicCoordinatesDataSequence->GetNumberOfItems(); ++i)
+    for(unsigned int i = 1 ; i <= graphicCoordinatesDataSequence->GetNumberOfItems() ; ++i)
     {
-        ::gdcm::Item graphicCoordinatesItem = graphicCoordinatesDataSequence->GetItem(i);
+        ::gdcm::Item graphicCoordinatesItem              = graphicCoordinatesDataSequence->GetItem(i);
         const ::gdcm::DataSet& graphicCoordinatesDataset = graphicCoordinatesItem.GetNestedDataSet();
 
         // 2D Points
-        ::gdcm::Attribute< 0x0070, 0x0022 > coordinatesAttribute;
+        ::gdcm::Attribute<0x0070, 0x0022> coordinatesAttribute;
         coordinatesAttribute.SetFromDataElement(graphicCoordinatesDataset.GetDataElement(::gdcm::Tag(0x0070, 0x0022)));
         const float* pointValues = coordinatesAttribute.GetValues();
 
         // Frame number
         const ::gdcm::DataElement& referencedImageDataElement =
-            graphicCoordinatesDataset.GetDataElement( ::gdcm::Tag(0x0008, 0x1140) );
-        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageDataSequence =
+            graphicCoordinatesDataset.GetDataElement(::gdcm::Tag(0x0008, 0x1140));
+        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> referencedImageDataSequence =
             referencedImageDataElement.GetValueAsSQ();
         ::gdcm::Item referencedImageItem        = referencedImageDataSequence->GetItem(1);
         ::gdcm::DataSet& referencedImageDataset = referencedImageItem.GetNestedDataSet();
 
         int frameNumber =
-            io::dicom::helper::DicomDataReader::getTagValue< 0x0008, 0x1160, int >(referencedImageDataset);
+            io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1160, int>(referencedImageDataset);
         double zCoordinate =
             io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, frameNumber);
 
-        data::Point::sptr point = data::Point::New(static_cast<double>(pointValues[0]),
-                                                   static_cast<double>(pointValues[1]), zCoordinate);
+        data::Point::sptr point = data::Point::New(
+            static_cast<double>(pointValues[0]),
+            static_cast<double>(pointValues[1]),
+            zCoordinate
+        );
         point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
         pointList->getPoints().push_back(point);
-
     }
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

@@ -26,6 +26,7 @@
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -58,8 +59,10 @@ ISlideViewBuilder::~ISlideViewBuilder()
 
 void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _config)
 {
-    SIGHT_ASSERT("Bad configuration name " + _config->getName() + ", must be 'slideView'",
-                 _config->getName() == "slideView");
+    SIGHT_ASSERT(
+        "Bad configuration name " + _config->getName() + ", must be 'slideView'",
+        _config->getName() == "slideView"
+    );
 
     if(_config->hasAttribute(s_H_ALIGN_CONFIG))
     {
@@ -74,10 +77,13 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SIGHT_FATAL("Wrong value '"+ hAlign +"' for '" + s_H_ALIGN_CONFIG +
-                        "' attribute (require 'left' or 'right')");
+            SIGHT_FATAL(
+                "Wrong value '" + hAlign + "' for '" + s_H_ALIGN_CONFIG
+                + "' attribute (require 'left' or 'right')"
+            );
         }
     }
+
     if(_config->hasAttribute(s_V_ALIGN_CONFIG))
     {
         const std::string vAlign = _config->getExistingAttributeValue(s_V_ALIGN_CONFIG);
@@ -91,22 +97,25 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SIGHT_FATAL("Wrong value '"+ vAlign +"' for '" + s_V_ALIGN_CONFIG +
-                        "' attribute (require 'top' or 'bottom')");
+            SIGHT_FATAL(
+                "Wrong value '" + vAlign + "' for '" + s_V_ALIGN_CONFIG
+                + "' attribute (require 'top' or 'bottom')"
+            );
         }
     }
 
     if(_config->hasAttribute(s_WIDTH_CONFIG))
     {
         std::string width = _config->getExistingAttributeValue(s_WIDTH_CONFIG);
-        if(width[width.size()-1] == '%')
+        if(width[width.size() - 1] == '%')
         {
-            width = width.substr(0, width.size()-1);
+            width = width.substr(0, width.size() - 1);
         }
         else
         {
             m_percentWidth = false;
         }
+
         m_width = std::stoi(width);
         SIGHT_ASSERT("Height must be upper to 0", m_width >= 0);
     }
@@ -114,14 +123,15 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
     if(_config->hasAttribute(s_HEIGHT_CONFIG))
     {
         std::string height = _config->getExistingAttributeValue(s_HEIGHT_CONFIG);
-        if(height[height.size()-1] == '%')
+        if(height[height.size() - 1] == '%')
         {
-            height = height.substr(0, height.size()-1);
+            height = height.substr(0, height.size() - 1);
         }
         else
         {
             m_percentHeight = false;
         }
+
         m_height = std::stoi(height);
         SIGHT_ASSERT("Height must be upper to 0", m_height >= 0);
     }
@@ -129,30 +139,36 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
     if(_config->hasAttribute(s_H_OFFSET_CONFIG))
     {
         std::string offset = _config->getExistingAttributeValue(s_H_OFFSET_CONFIG);
-        if(offset[offset.size()-1] == '%')
+        if(offset[offset.size() - 1] == '%')
         {
             m_percentHOffset = true;
-            offset           = offset.substr(0, offset.size()-1);
+            offset           = offset.substr(0, offset.size() - 1);
         }
+
         m_hOffset = std::stoi(offset);
     }
 
     if(_config->hasAttribute(s_V_OFFSET_CONFIG))
     {
         std::string offset = _config->getExistingAttributeValue(s_V_OFFSET_CONFIG);
-        if(offset[offset.size()-1] == '%')
+        if(offset[offset.size() - 1] == '%')
         {
             m_percentVOffset = true;
-            offset           = offset.substr(0, offset.size()-1);
+            offset           = offset.substr(0, offset.size() - 1);
         }
+
         m_vOffset = std::stoi(offset);
     }
 
     if(_config->hasAttribute(s_OPACITY_CONFIG))
     {
         m_opacity = std::stod(_config->getExistingAttributeValue(s_OPACITY_CONFIG));
-        SIGHT_ASSERT("Opacity must be in [0 - 1]; actual: " + std::to_string(
-                         m_opacity), m_opacity >= 0. && m_opacity <= 1.);
+        SIGHT_ASSERT(
+            "Opacity must be in [0 - 1]; actual: " + std::to_string(
+                m_opacity
+            ),
+            m_opacity >= 0. && m_opacity <= 1.
+        );
     }
 
     if(_config->hasAttribute(s_ANIMATABLE_CONFIG))
@@ -169,8 +185,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '"+ animatable +"' for '" + s_ANIMATABLE_CONFIG +
-                "' attribute (require 'true' or 'false')");
+                "Wrong value '" + animatable + "' for '" + s_ANIMATABLE_CONFIG
+                + "' attribute (require 'true' or 'false')"
+            );
         }
     }
 
@@ -196,8 +213,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '"+ align +"' for '" + s_ANIMATABLE_ALIGN_CONFIG +
-                "' attribute (require 'left', 'right', 'top' or 'bottom')");
+                "Wrong value '" + align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
+                + "' attribute (require 'left', 'right', 'top' or 'bottom')"
+            );
         }
     }
 
@@ -260,4 +278,5 @@ ui::base::container::fwContainer::sptr ISlideViewBuilder::getContainer() const
 //-----------------------------------------------------------------------------
 
 } // namespace builder.
+
 } // namespace sight::ui::base.

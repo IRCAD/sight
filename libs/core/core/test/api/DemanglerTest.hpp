@@ -28,16 +28,18 @@
 
 namespace sight::core
 {
+
 namespace ut
 {
 
 class DemanglerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( DemanglerTest );
-CPPUNIT_TEST( classNameTest );
+CPPUNIT_TEST_SUITE(DemanglerTest);
+CPPUNIT_TEST(classNameTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -46,4 +48,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::core

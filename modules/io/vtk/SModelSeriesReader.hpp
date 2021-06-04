@@ -33,7 +33,9 @@
 
 namespace sight::core::jobs
 {
+
 class IJob;
+
 }
 
 namespace sight::module::io::vtk
@@ -65,11 +67,11 @@ namespace sight::module::io::vtk
  */
 class MODULE_IO_VTK_CLASS_API SModelSeriesReader : public sight::io::base::service::IReader
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SModelSeriesReader, sight::io::base::service::IReader)
 
-    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
+    SIGHT_DECLARE_SERVICE(SModelSeriesReader, sight::io::base::service::IReader);
+
+    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -135,7 +137,7 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    MODULE_IO_VTK_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -144,10 +146,9 @@ private:
      * @param[in] _file path to the file to read.
      * @param[out] _mesh data::Mesh::sptr, the loaded mesh.
      */
-    void loadMesh( const std::filesystem::path& _file, data::Mesh::sptr _mesh);
+    void loadMesh(const std::filesystem::path& _file, data::Mesh::sptr _mesh);
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
-
 };
 
 } // namespace sight::module::io::vtk

@@ -34,7 +34,8 @@ namespace sight::ui::base
 class UI_BASE_CLASS_API IApplication : public ui::base::GuiBaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(IApplication, ui::base::GuiBaseObject)
+
+    SIGHT_DECLARE_CLASS(IApplication, ui::base::GuiBaseObject);
 
     /// Constructor. Do nothing.
     UI_BASE_API IApplication();
@@ -42,7 +43,7 @@ public:
     UI_BASE_API virtual ~IApplication();
 
     /// Tells the application to exit with a returncode
-    UI_BASE_API virtual void exit( int returncode ) = 0;
+    UI_BASE_API virtual void exit(int returncode) = 0;
 
     /// Sets if confirmation is required when exiting application
     void setConfirm(bool confirm)
@@ -54,6 +55,7 @@ public:
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
 protected:
+
     /// Asks confirmation before exiting application.
     bool m_confirm;
 };

@@ -32,6 +32,7 @@
 
 namespace sight::ui::qt
 {
+
 namespace container
 {
 
@@ -49,12 +50,13 @@ QtContainer::~QtContainer() noexcept
 {
     SIGHT_ASSERT(
         "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
-        m_container == nullptr );
+        m_container == nullptr
+    );
 }
 
 //-----------------------------------------------------------------------------
 
-void QtContainer::setLayout( QLayout* const layout )
+void QtContainer::setLayout(QLayout* const layout)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
@@ -88,7 +90,7 @@ void QtContainer::clean()
         // This block layouting when there is a lot of child
         m_container->setUpdatesEnabled(false);
 
-        for( QLayoutItem* child = oldLayout->takeAt(0); nullptr != child; child = oldLayout->takeAt(0))
+        for(QLayoutItem* child = oldLayout->takeAt(0) ; nullptr != child ; child = oldLayout->takeAt(0))
         {
             delete child;
         }
@@ -170,4 +172,5 @@ void QtContainer::setEnabled(bool isEnabled)
 //-----------------------------------------------------------------------------
 
 } // namespace container
+
 } // namespace sight::ui::qt

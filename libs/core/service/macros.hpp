@@ -38,36 +38,36 @@ namespace sight::service
  * @name Macros for declaring service to object association
  */
 
-#define __FWSERVICE_REGISTER_MACRO( ServiceType, ServiceImpl )                                    \
-    class BOOST_PP_CAT (  ServiceTypeConceptCheck, __LINE__ )                                      \
-    {                                                                                              \
-    public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef< ServiceType >));               \
-    };                                                                                             \
-    class BOOST_PP_CAT (  ServiceImplConceptCheck, __LINE__ )                                      \
-    {                                                                                              \
-    public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef< ServiceImpl >));               \
-    };                                                                                             \
-    static ::sight::service::ServiceFactoryRegistry< ServiceImpl >                                    \
-    BOOST_PP_CAT( serviceRegistry, __LINE__) ( #ServiceImpl, #ServiceType );
+#define __FWSERVICE_REGISTER_MACRO(ServiceType, ServiceImpl) \
+    class BOOST_PP_CAT (ServiceTypeConceptCheck, __LINE__) \
+        { \
+        public : \
+            BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef<ServiceType>)); \
+}; \
+    class BOOST_PP_CAT (ServiceImplConceptCheck, __LINE__) \
+        { \
+        public : \
+            BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef<ServiceImpl>)); \
+}; \
+    static ::sight::service::ServiceFactoryRegistry<ServiceImpl> \
+    BOOST_PP_CAT(serviceRegistry, __LINE__)( #ServiceImpl, #ServiceType);
 
-#define __FWSERVICE_REGISTER_OBJECT_MACRO( ServiceImpl, ServiceObject )                           \
-    class BOOST_PP_CAT (  ServiceObjectConceptCheck, __LINE__ )                                    \
-    {                                                                                              \
-    public:                                                                                        \
-        BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef< ServiceObject >));             \
-    };                                                                                             \
-    static ::sight::service::ServiceObjectFactoryRegistry                                             \
-    BOOST_PP_CAT( serviceObjectRegistry, __LINE__) ( #ServiceImpl, #ServiceObject );
+#define __FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject) \
+    class BOOST_PP_CAT (ServiceObjectConceptCheck, __LINE__) \
+        { \
+        public : \
+            BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef<ServiceObject>)); \
+}; \
+    static ::sight::service::ServiceObjectFactoryRegistry \
+    BOOST_PP_CAT(serviceObjectRegistry, __LINE__)( #ServiceImpl, #ServiceObject);
 
 //@{
 
-#define __FWSERVICE_REGISTER_MACRO_2(ServiceImpl, ServiceObject)                                  \
+#define __FWSERVICE_REGISTER_MACRO_2(ServiceImpl, ServiceObject) \
     __FWSERVICE_REGISTER_MACRO(ServiceImpl, ServiceObject)
 
-#define __FWSERVICE_REGISTER_MACRO_3(ServiceType, ServiceImpl, ServiceObject)                     \
-    __FWSERVICE_REGISTER_MACRO(ServiceType, ServiceImpl)                                          \
+#define __FWSERVICE_REGISTER_MACRO_3(ServiceType, ServiceImpl, ServiceObject) \
+    __FWSERVICE_REGISTER_MACRO(ServiceType, ServiceImpl) \
     __FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
 
 /**
@@ -75,14 +75,10 @@ namespace sight::service
  * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
  */
 #if !BOOST_PP_VARIADICS_MSVC
-
 #define SIGHT_REGISTER_SERVICE(...) BOOST_PP_OVERLOAD(__FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__)
-
 #else
-
 #define SIGHT_REGISTER_SERVICE(...) \
     BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
-
 #endif
 
 #define SIGHT_REGISTER_SERVICE_OBJECT(ServiceImpl, ServiceObject) \

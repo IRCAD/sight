@@ -31,12 +31,12 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class ImageExtruderTest : public CPPUNIT_NS::TestFixture
 {
-
 CPPUNIT_TEST_SUITE(ImageExtruderTest);
 CPPUNIT_TEST(extrudeTriangleMesh);
 CPPUNIT_TEST(extrudeQuadMesh);
@@ -54,19 +54,19 @@ public:
 
 private:
 
-    const core::tools::Type m_type { "int8" };
+    const core::tools::Type m_type {"int8"};
 
-    const data::Image::PixelFormat m_format { data::Image::PixelFormat::GRAY_SCALE };
+    const data::Image::PixelFormat m_format {data::Image::PixelFormat::GRAY_SCALE};
 
-    const data::Image::Size m_size { 8, 16, 24 };
+    const data::Image::Size m_size {8, 16, 24};
 
-    const data::Image::Origin m_origin { 0.f, 0.f, 0.f };
+    const data::Image::Origin m_origin {0.f, 0.f, 0.f};
 
-    const data::Image::Spacing m_spacing { 1.f, 1.f, 1.f };
+    const data::Image::Spacing m_spacing {1.f, 1.f, 1.f};
 
     data::Image::sptr m_image;
-
 };
 
 } // namespace ut.
+
 } // namespace sight::filter::image.

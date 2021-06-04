@@ -33,12 +33,13 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
 //------------------------------------------------------------------------------
 
-typedef std::map< core::tools::Type, ::gdcm::PixelFormat::ScalarType > PixelTypeConversionMapType;
+typedef std::map<core::tools::Type, ::gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
     {core::tools::Type::create("uint8"), ::gdcm::PixelFormat::UINT8},
@@ -63,29 +64,32 @@ const ::gdcm::PixelFormat DicomDataTools::getPixelType(const data::Image::csptr&
     {
         return it->second;
     }
+
     return ::gdcm::PixelFormat::UNKNOWN;
 }
 
 //------------------------------------------------------------------------------
 
-const ::gdcm::PhotometricInterpretation
-DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
+const ::gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
     ::gdcm::PhotometricInterpretation pi;
     const size_t components = image->getNumberOfComponents();
 
     // Attempt a guess (VTK do the same choice)
-    switch (components)
+    switch(components)
     {
         case 1: // It could well be MONOCHROME1
             pi = ::gdcm::PhotometricInterpretation::MONOCHROME2;
             break;
+
         case 3: // It could well be YBR
             pi = ::gdcm::PhotometricInterpretation::RGB;
             break;
+
         case 4: // It could well be CMYK
             pi = ::gdcm::PhotometricInterpretation::ARGB;
             break;
+
         default:
             SIGHT_ERROR("Photometric interpretation not found");
             pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
@@ -98,16 +102,20 @@ DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 //------------------------------------------------------------------------------
 
 ::gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
-    data::Material::RepresentationType representationMode)
+    data::Material::RepresentationType representationMode
+)
 {
-    switch (representationMode)
+    switch(representationMode)
     {
         case data::Material::SURFACE:
             return ::gdcm::Surface::SURFACE;
+
         case data::Material::POINT:
             return ::gdcm::Surface::POINTS;
+
         case data::Material::WIREFRAME:
             return ::gdcm::Surface::WIREFRAME;
+
         default:
             SIGHT_WARN("Representation type not handle (changed to : SURFACE)");
             return ::gdcm::Surface::SURFACE;
@@ -117,16 +125,20 @@ DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 //------------------------------------------------------------------------------
 
 data::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
-    ::gdcm::Surface::VIEWType presentationType)
+    ::gdcm::Surface::VIEWType presentationType
+)
 {
-    switch (presentationType)
+    switch(presentationType)
     {
         case ::gdcm::Surface::SURFACE:
             return data::Material::SURFACE;
+
         case ::gdcm::Surface::WIREFRAME:
             return data::Material::WIREFRAME;
+
         case ::gdcm::Surface::POINTS:
             return data::Material::POINT;
+
         default:
             SIGHT_WARN("Presentation type not handle (changed to : SURFACE)");
             return data::Material::SURFACE;
@@ -135,8 +147,10 @@ data::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
 
 //------------------------------------------------------------------------------
 
-std::size_t DicomDataTools::convertPointToFrameNumber(const data::Image::csptr& image,
-                                                      const data::Point::csptr& point)
+std::size_t DicomDataTools::convertPointToFrameNumber(
+    const data::Image::csptr& image,
+    const data::Point::csptr& point
+)
 {
     // Retrieve Z spacing
     const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
@@ -149,16 +163,20 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const data::Image::csptr& 
 
     // Compute frame number
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
-                             frameNumber < 1 || frameNumber > image->getSize2()[2]);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed("Coordinates out of image bounds."),
+        frameNumber<1 || frameNumber> image->getSize2()[2]
+    );
 
     return frameNumber;
 }
 
 //------------------------------------------------------------------------------
 
-double DicomDataTools::convertFrameNumberToZCoordinate(const data::Image::csptr& image,
-                                                       const std::size_t frameNumber)
+double DicomDataTools::convertFrameNumberToZCoordinate(
+    const data::Image::csptr& image,
+    const std::size_t frameNumber
+)
 {
     // Retrieve Z spacing
     const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
@@ -167,9 +185,11 @@ double DicomDataTools::convertFrameNumberToZCoordinate(const data::Image::csptr&
     const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
 
     // Compute coordinate
-    const std::size_t frameIndex = (frameNumber-1);
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
-                             frameIndex >= image->getSize2()[2]);
+    const std::size_t frameIndex = (frameNumber - 1);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed("Coordinates out of image bounds."),
+        frameIndex >= image->getSize2()[2]
+    );
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;
@@ -178,4 +198,5 @@ double DicomDataTools::convertFrameNumberToZCoordinate(const data::Image::csptr&
 //------------------------------------------------------------------------------
 
 } //namespace helper
+
 } //namespace sight::io::dicom

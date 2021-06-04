@@ -36,7 +36,7 @@ class StudyDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(StudyDeserializer, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(StudyDeserializer, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     StudyDeserializer(const StudyDeserializer&)            = delete;

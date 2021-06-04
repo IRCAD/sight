@@ -26,8 +26,10 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace mapper
 {
+
 namespace registry
 {
 
@@ -35,10 +37,12 @@ struct FwAtomConversionRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwAtomConversionRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwAtomConversionRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
+
 } // namespace mapper
+
 } // namespace sight::atoms::conversion

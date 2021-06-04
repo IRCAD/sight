@@ -38,6 +38,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -49,7 +50,7 @@ static const std::string s_BORDER_CONFIG = "border";
 
 SView::SView()
 {
-    m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
+    m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +80,7 @@ void SView::starting()
 {
     this->::sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -88,7 +89,7 @@ void SView::starting()
     }
 
     QWidget* widget = new QWidget();
-    layout->addWidget( widget );
+    layout->addWidget(widget);
 
     auto subContainer = ::sight::ui::qt::container::QtContainer::New();
 
@@ -100,10 +101,10 @@ void SView::starting()
 
     m_configManager = service::IAppConfigManager::New();
 
-    if (!m_mainActivityId.empty())
+    if(!m_mainActivityId.empty())
     {
         data::ActivitySeries::sptr activity = this->createMainActivity();
-        if (activity)
+        if(activity)
         {
             this->launchActivity(activity);
         }
@@ -114,7 +115,7 @@ void SView::starting()
 
 void SView::stopping()
 {
-    if (m_configManager && m_configManager->isStarted())
+    if(m_configManager && m_configManager->isStarted())
     {
         m_configManager->stopAndDestroy();
     }
@@ -137,34 +138,37 @@ void SView::updating()
 
 void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
-    if (this->validateActivity(activitySeries))
+    if(this->validateActivity(activitySeries))
     {
-        if (m_configManager->isStarted())
+        if(m_configManager->isStarted())
         {
             m_configManager->stopAndDestroy();
         }
+
         sight::activity::extension::ActivityInfo info;
         info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
-        replaceMap["AS_UID"]       = activitySeries->getID();
-        replaceMap[ "WID_PARENT" ] = m_wid;
+        replaceMap["AS_UID"]     = activitySeries->getID();
+        replaceMap["WID_PARENT"] = m_wid;
         std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
         try
         {
-            m_configManager->setConfig( info.appConfig.id, replaceMap );
+            m_configManager->setConfig(info.appConfig.id, replaceMap);
             m_configManager->launch();
 
             m_sigActivityLaunched->asyncEmit(activitySeries);
         }
-        catch( std::exception& e )
+        catch(std::exception& e)
         {
-            sight::ui::base::dialog::MessageDialog::show("Activity launch failed",
-                                                         e.what(),
-                                                         sight::ui::base::dialog::IMessageDialog::CRITICAL);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Activity launch failed",
+                e.what(),
+                sight::ui::base::dialog::IMessageDialog::CRITICAL
+            );
             SIGHT_ERROR(e.what());
         }
     }
@@ -172,5 +176,6 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-}// namespace activity
-}// namespace sight::module::ui::qt
+} // namespace activity
+
+} // namespace sight::module::ui::qt

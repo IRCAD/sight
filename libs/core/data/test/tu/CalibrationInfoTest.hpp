@@ -26,16 +26,18 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class CalibrationInfoTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( CalibrationInfoTest );
+CPPUNIT_TEST_SUITE(CalibrationInfoTest);
 CPPUNIT_TEST(calibrationInfoTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -46,4 +48,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data

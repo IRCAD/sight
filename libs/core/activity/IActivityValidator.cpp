@@ -46,19 +46,19 @@ const
 
     data::Composite::sptr composite = activity->getData();
 
-    for (activity::extension::ActivityRequirement req: info.requirements)
+    for(activity::extension::ActivityRequirement req : info.requirements)
     {
-        if ((req.minOccurs == 1 && req.maxOccurs == 1) ||
-            (req.minOccurs == 0 && req.maxOccurs == 0) ||
-            req.create)          // One object is required
+        if((req.minOccurs == 1 && req.maxOccurs == 1)
+           || (req.minOccurs == 0 && req.maxOccurs == 0)
+           || req.create) // One object is required
         {
-            data::Object::sptr obj = composite->at< data::Object >(req.name);
-            if (!obj)
+            data::Object::sptr obj = composite->at<data::Object>(req.name);
+            if(!obj)
             {
                 validation.first   = false;
                 validation.second += "\n - The parameter '" + req.name + "' is required but is not defined.";
             }
-            else if (obj->getClassname() != req.type)
+            else if(obj->getClassname() != req.type)
             {
                 validation.first   = false;
                 validation.second += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
@@ -66,60 +66,62 @@ const
             else
             {
                 IValidator::ValidationType val = this->checkObject(obj, req.validator);
-                if (!val.first)
+                if(!val.first)
                 {
                     validation.first   = false;
                     validation.second += "\n - The parameter '" + req.name + "' is not valid: " + val.second;
                 }
             }
         }
-        else if (req.container == "vector")
+        else if(req.container == "vector")
         {
-            data::Vector::sptr vector = composite->at< data::Vector >(req.name);
-            if (!vector)
+            data::Vector::sptr vector = composite->at<data::Vector>(req.name);
+            if(!vector)
             {
                 validation.first   = false;
                 validation.second += "\n - The parameter '" + req.name + "' must be a Vector of '" + req.type + "'.";
             }
             else
             {
-                unsigned int nbObj = static_cast<unsigned int >(vector->size());
-                if (nbObj < req.minOccurs)
+                unsigned int nbObj = static_cast<unsigned int>(vector->size());
+                if(nbObj < req.minOccurs)
                 {
                     validation.first   = false;
-                    validation.second += "\n - The parameter '" + req.name + "' must contain at least " +
-                                         std::to_string(req.minOccurs) + " objects.";
+                    validation.second += "\n - The parameter '" + req.name + "' must contain at least "
+                                         + std::to_string(req.minOccurs) + " objects.";
                 }
-                else if (nbObj > req.maxOccurs)
+                else if(nbObj > req.maxOccurs)
                 {
                     validation.first   = false;
-                    validation.second += "\n - The parameter '" + req.name + "' must contain at most " +
-                                         std::to_string(req.maxOccurs) + " objects.";
+                    validation.second += "\n - The parameter '" + req.name + "' must contain at most "
+                                         + std::to_string(req.maxOccurs) + " objects.";
                 }
                 else
                 {
                     bool isValid = true;
-                    for (data::Object::sptr obj : *vector)
+                    for(data::Object::sptr obj : *vector)
                     {
-                        if (!obj)
+                        if(!obj)
                         {
                             validation.first   = false;
-                            validation.second += "\n - The parameter '" + req.name +
-                                                 "' must contain valid objects of type '" + req.type + "'.";
+                            validation.second += "\n - The parameter '" + req.name
+                                                 + "' must contain valid objects of type '" + req.type + "'.";
                             isValid = false;
                         }
-                        if (obj->getClassname() != req.type)
+
+                        if(obj->getClassname() != req.type)
                         {
                             validation.first   = false;
-                            validation.second += "\n - The parameter '" + req.name +
-                                                 "' must contain only objects of type '" + req.type + "'.";
+                            validation.second += "\n - The parameter '" + req.name
+                                                 + "' must contain only objects of type '" + req.type + "'.";
                             isValid = false;
                         }
                     }
-                    if (isValid)
+
+                    if(isValid)
                     {
                         IValidator::ValidationType val = this->checkObject(vector, req.validator);
-                        if (!val.first)
+                        if(!val.first)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name + "' is not valid: " + val.second;
@@ -130,80 +132,79 @@ const
         }
         else // container == composite
         {
-            data::Composite::sptr currentComposite = composite->at< data::Composite >(req.name);
-            if (!currentComposite)
+            data::Composite::sptr currentComposite = composite->at<data::Composite>(req.name);
+            if(!currentComposite)
             {
                 validation.first   = false;
-                validation.second += "\n - The parameter '" + req.name + "' must be a Composite of '" +
-                                     req.type + "'.";
+                validation.second += "\n - The parameter '" + req.name + "' must be a Composite of '"
+                                     + req.type + "'.";
             }
             else
             {
                 unsigned int nbObj = static_cast<unsigned int>(currentComposite->size());
-                if (nbObj < req.minOccurs)
+                if(nbObj < req.minOccurs)
                 {
                     validation.first   = false;
-                    validation.second += "\n - The parameter '" + req.name + "' must contain at least " +
-                                         std::to_string(req.minOccurs) + " objects.";
+                    validation.second += "\n - The parameter '" + req.name + "' must contain at least "
+                                         + std::to_string(req.minOccurs) + " objects.";
                 }
-                else if (nbObj > req.maxOccurs)
+                else if(nbObj > req.maxOccurs)
                 {
                     validation.first   = false;
-                    validation.second += "\n - The parameter '" + req.name + "' must contain at most " +
-                                         std::to_string(req.minOccurs) + " objects.";
+                    validation.second += "\n - The parameter '" + req.name + "' must contain at most "
+                                         + std::to_string(req.minOccurs) + " objects.";
                 }
                 else
                 {
                     bool isValid = true;
 
-                    for (auto elt : *currentComposite)
+                    for(auto elt : *currentComposite)
                     {
                         std::string key        = elt.first;
                         data::Object::sptr obj = elt.second;
                         activity::extension::ActivityRequirementKey reqKey;
                         bool keyIsFound = false;
-                        for (activity::extension::ActivityRequirementKey keyElt: req.keys)
+                        for(activity::extension::ActivityRequirementKey keyElt : req.keys)
                         {
-                            if (key == keyElt.key)
+                            if(key == keyElt.key)
                             {
                                 reqKey     = keyElt;
                                 keyIsFound = true;
                             }
                         }
-                        if (!keyIsFound)
-                        {
-                            validation.first   = false;
-                            validation.second += "\n - The parameter '" + req.name +
-                                                 "' has an invalid key : '" + key + "'.";
-                            isValid = false;
 
-                        }
-                        else if (!obj)
+                        if(!keyIsFound)
                         {
                             validation.first   = false;
-                            validation.second += "\n - The parameter '" + req.name +
-                                                 "' must contain valid objects of type '" + req.type + "'.";
+                            validation.second += "\n - The parameter '" + req.name
+                                                 + "' has an invalid key : '" + key + "'.";
+                            isValid = false;
+                        }
+                        else if(!obj)
+                        {
+                            validation.first   = false;
+                            validation.second += "\n - The parameter '" + req.name
+                                                 + "' must contain valid objects of type '" + req.type + "'.";
                             isValid = false;
                         }
                         // FIXME We can not validate the type of object extracted with 'camp' path.
-                        else if (reqKey.path.empty() && obj->getClassname() != req.type)
+                        else if(reqKey.path.empty() && obj->getClassname() != req.type)
                         {
                             validation.first   = false;
-                            validation.second += "\n - The parameter '" + req.name +
-                                                 "' must contain only objects of type '" + req.type + "'.";
+                            validation.second += "\n - The parameter '" + req.name
+                                                 + "' must contain only objects of type '" + req.type + "'.";
                             isValid = false;
                         }
                     }
 
-                    if (isValid)
+                    if(isValid)
                     {
                         IValidator::ValidationType val = this->checkObject(currentComposite, req.validator);
-                        if (!val.first)
+                        if(!val.first)
                         {
                             validation.first   = false;
                             validation.second += "\n - The parameter '" + req.name + "' is not valid: " + val.second;
                         }
-
                     }
                 }
             }
@@ -228,17 +229,18 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
 
     // Check if all the activity config parameters are present
     activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
-    for (auto param : appConfigInfo.parameters)
+    for(auto param : appConfigInfo.parameters)
     {
-        if (param.isSeshat())
+        if(param.isSeshat())
         {
             std::string path = param.by;
-            if (path.substr(0, 1) == "!")
+            if(path.substr(0, 1) == "!")
             {
                 path.replace(0, 1, "@");
             }
+
             data::Object::sptr obj = data::reflection::getObject(composite, path);
-            if (!obj)
+            if(!obj)
             {
                 validation.first   = false;
                 validation.second += "\n - invalid sesh@ path : '" + path + "'";
@@ -251,14 +253,16 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkObject(const data::Object::csptr& object,
-                                                           const std::string& validatorImpl) const
+IValidator::ValidationType IActivityValidator::checkObject(
+    const data::Object::csptr& object,
+    const std::string& validatorImpl
+) const
 {
     activity::IValidator::ValidationType validation;
     validation.first  = true;
     validation.second = "";
 
-    if (validatorImpl.empty())
+    if(validatorImpl.empty())
     {
         validation.first  = true;
         validation.second = "Validator implementation is empty, assuming it is valid.";
@@ -269,7 +273,7 @@ IValidator::ValidationType IActivityValidator::checkObject(const data::Object::c
         activity::IValidator::sptr validator           = activity::validator::factory::New(validatorImpl);
         activity::IObjectValidator::sptr dataValidator = activity::IObjectValidator::dynamicCast(validator);
 
-        if (!dataValidator)
+        if(!dataValidator)
         {
             validation.first  = false;
             validation.second = "Validator '" + validatorImpl + "' cannot be instantiated";

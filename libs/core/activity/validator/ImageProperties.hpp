@@ -29,6 +29,7 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
@@ -38,8 +39,12 @@ namespace validator
 class ACTIVITY_CLASS_API ImageProperties : public activity::IObjectValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(ImageProperties, activity::IObjectValidator,
-                        activity::validator::factory::New< ImageProperties >)
+
+    SIGHT_DECLARE_CLASS(
+        ImageProperties,
+        activity::IObjectValidator,
+        activity::validator::factory::New<ImageProperties>
+    )
 
     /// Constructor. Do nothing.
     ACTIVITY_API ImageProperties(activity::IValidator::Key key);
@@ -53,16 +58,18 @@ public:
      */
     ACTIVITY_API virtual IValidator::ValidationType validate(
         const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection
+    ) const override;
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see activity::IValidator::validate
      */
-    ACTIVITY_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
+    ACTIVITY_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const
     override;
 };
 
 } // namespace validator
+
 } // namespace sight::activity

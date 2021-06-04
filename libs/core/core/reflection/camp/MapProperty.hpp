@@ -36,8 +36,8 @@ class CORE_CLASS_API MapProperty : public Property
 {
 public:
 
-    typedef std::pair< Value, Value > ValuePair;
-    typedef std::pair< UserObject, UserObject> ObjectPair;
+    typedef std::pair<Value, Value> ValuePair;
+    typedef std::pair<UserObject, UserObject> ObjectPair;
 
     CORE_API MapProperty(const std::string& name, Type elementType);
     /**
@@ -98,6 +98,6 @@ private:
     Type m_elementType; ///< Type of the individual elements of the map
 };
 
-}  // namespace camp
+} // namespace camp
 
 CAMP_TYPE(camp::MapProperty::ValuePair);

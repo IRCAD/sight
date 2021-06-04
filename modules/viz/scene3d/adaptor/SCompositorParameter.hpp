@@ -71,11 +71,10 @@ class CompositorListener;
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public ::sight::viz::scene3d::IParameter
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCompositorParameter, ::sight::viz::scene3d::IParameter)
+    SIGHT_DECLARE_SERVICE(SCompositorParameter, ::sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;
@@ -118,7 +117,6 @@ private:
     ::Ogre::CompositorInstance* m_compositor;
 
     friend class CompositorListener;
-
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

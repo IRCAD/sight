@@ -36,10 +36,9 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrame
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrame, ::sight::ui::base::IFrame)
+    SIGHT_DECLARE_SERVICE(SFrame, ::sight::ui::base::IFrame);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SFrame() noexcept;
@@ -79,9 +78,8 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
     ///@}
-
 };
 
 } // namespace sight::module::ui::base

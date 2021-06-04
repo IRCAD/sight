@@ -46,7 +46,7 @@ class PasswordKeeper::PasswordKeeperImpl final
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PasswordKeeperImpl)
+    SIGHT_DECLARE_CLASS(PasswordKeeperImpl);
 
     /// Delete default copy constructors and assignment operators
     PasswordKeeperImpl(const PasswordKeeperImpl&)            = delete;

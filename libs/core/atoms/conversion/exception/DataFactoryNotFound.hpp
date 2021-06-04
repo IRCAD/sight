@@ -28,17 +28,19 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace exception
 {
 
 /// Throw this exception when an object classname is not found exception in data::factory.
 struct ATOMS_CLASS_API DataFactoryNotFound : core::Exception
 {
-    ATOMS_API DataFactoryNotFound( const std::string& err ) :
+    ATOMS_API DataFactoryNotFound(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::atoms::conversion

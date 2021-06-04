@@ -71,13 +71,17 @@ void SFrustumList::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
-    m_near     = config.get< float >(s_NEAR_CONFIG, m_near);
-    m_far      = config.get< float >(s_FAR_CONFIG, m_far);
-    m_color    = config.get< std::string >(s_COLOR_CONFIG, m_color);
-    m_capacity = config.get< unsigned int >(s_NB_MAX_CONFIG, m_capacity);
+    m_near     = config.get<float>(s_NEAR_CONFIG, m_near);
+    m_far      = config.get<float>(s_FAR_CONFIG, m_far);
+    m_color    = config.get<std::string>(s_COLOR_CONFIG, m_color);
+    m_capacity = config.get<unsigned int>(s_NB_MAX_CONFIG, m_capacity);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,12 +96,13 @@ void SFrustumList::starting()
     m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
-    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+        "::sight::module::viz::scene3d::adaptor::SMaterial"
+    );
     m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setRenderService(this->getRenderService());
     m_materialAdaptor->setLayerID(this->m_layerID);
     m_materialAdaptor->setShadingMode("ambient");
     m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
@@ -119,7 +124,7 @@ service::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 void SFrustumList::updating()
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode                      = this->getTransformNode(rootSceneNode);
+    m_sceneNode = this->getTransformNode(rootSceneNode);
     m_sceneNode->attachObject(m_frustumList.front());
 
     this->requestRender();
@@ -151,11 +156,15 @@ void SFrustumList::setVisible(bool _visible)
 void SFrustumList::addFrustum()
 {
     //Get camera parameters
-    const auto cameraData = this->getLockedInput< data::Camera >(s_CAMERA_INPUT);
+    const auto cameraData = this->getLockedInput<data::Camera>(s_CAMERA_INPUT);
 
     ::Ogre::Camera* ogreCamera =
-        this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
-                                                             + std::to_string(m_currentCamIndex)));
+        this->getSceneManager()->createCamera(
+            ::Ogre::String(
+                this->getID() + "_camera"
+                + std::to_string(m_currentCamIndex)
+            )
+        );
     ogreCamera->setMaterial(m_materialAdaptor->getMaterial());
     ogreCamera->setVisible(m_isVisible);
     ogreCamera->setDebugDisplayEnabled(m_isVisible);
@@ -165,28 +174,29 @@ void SFrustumList::addFrustum()
     {
         ogreCamera->setNearClipDistance(m_near);
     }
+
     if(m_far != 0.f)
     {
         ogreCamera->setFarClipDistance(m_far);
     }
 
     // Set data to camera
-    const float width  = static_cast< float >(cameraData->getWidth());
-    const float height = static_cast< float >(cameraData->getHeight());
-    ::Ogre::Matrix4 m =
+    const float width  = static_cast<float>(cameraData->getWidth());
+    const float height = static_cast<float>(cameraData->getHeight());
+    ::Ogre::Matrix4 m  =
         sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*cameraData, width, height, m_near, m_far);
     ogreCamera->setCustomProjectionMatrix(true, m);
 
     // Set position
     ::Ogre::Affine3 ogreMat;
     {
-        const auto transform = this->getLockedInput< data::Matrix4 >(s_TRANSFORM_INPUT);
+        const auto transform = this->getLockedInput<data::Matrix4>(s_TRANSFORM_INPUT);
 
-        for(size_t lt = 0; lt < 4; lt++)
+        for(size_t lt = 0 ; lt < 4 ; lt++)
         {
-            for(size_t ct = 0; ct < 4; ct++)
+            for(size_t ct = 0 ; ct < 4 ; ct++)
             {
-                ogreMat[ct][lt] = static_cast< ::Ogre::Real >(transform->getCoefficient(ct, lt));
+                ogreMat[ct][lt] = static_cast< ::Ogre::Real>(transform->getCoefficient(ct, lt));
             }
         }
     }
@@ -209,6 +219,7 @@ void SFrustumList::addFrustum()
         //Remove the oldest one
         this->getSceneManager()->destroyCamera(m_frustumList.back());
     }
+
     //Add the new one
     m_frustumList.push_front(ogreCamera);
 

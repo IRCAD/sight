@@ -29,6 +29,7 @@ namespace sight::ui::base
 
 namespace layoutManager
 {
+
 //-----------------------------------------------------------------------------
 
 const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY = "sight::ui::base::TabLayoutManager";
@@ -47,75 +48,88 @@ TabLayoutManagerBase::~TabLayoutManagerBase()
 
 //-----------------------------------------------------------------------------
 
-void TabLayoutManagerBase::initialize( ConfigurationType configuration)
+void TabLayoutManagerBase::initialize(ConfigurationType configuration)
 {
-    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                 configuration->getName() == "layout");
+    SIGHT_ASSERT(
+        "Bad configuration name " << configuration->getName() << ", must be layout",
+        configuration->getName() == "layout"
+    );
 
-    const std::vector < ConfigurationType > vectViews = configuration->find("view");
+    const std::vector<ConfigurationType> vectViews = configuration->find("view");
     m_views.clear();
-    for (const ConfigurationType& view : vectViews)
+    for(const ConfigurationType& view : vectViews)
     {
         ViewInfo vi;
-        if( view->hasAttribute("border") )
+        if(view->hasAttribute("border"))
         {
             const std::string border = view->getExistingAttributeValue("border");
             vi.m_border = std::stoi(border);
         }
         else
         {
-            if( view->hasAttribute("leftBorder") )
+            if(view->hasAttribute("leftBorder"))
             {
                 const std::string border = view->getExistingAttributeValue("leftBorder");
                 vi.m_leftBorder = std::stoi(border);
             }
-            if( view->hasAttribute("topBorder") )
+
+            if(view->hasAttribute("topBorder"))
             {
                 const std::string border = view->getExistingAttributeValue("topBorder");
                 vi.m_topBorder = std::stoi(border);
             }
-            if( view->hasAttribute("rightBorder") )
+
+            if(view->hasAttribute("rightBorder"))
             {
                 const std::string border = view->getExistingAttributeValue("rightBorder");
                 vi.m_rightBorder = std::stoi(border);
             }
-            if( view->hasAttribute("bottomBorder") )
+
+            if(view->hasAttribute("bottomBorder"))
             {
                 const std::string border = view->getExistingAttributeValue("bottomBorder");
                 vi.m_bottomBorder = std::stoi(border);
             }
         }
-        if( view->hasAttribute("caption") )
+
+        if(view->hasAttribute("caption"))
         {
             vi.m_caption = view->getExistingAttributeValue("caption");
         }
-        if( view->hasAttribute("minWidth") )
+
+        if(view->hasAttribute("minWidth"))
         {
             const std::string width = view->getExistingAttributeValue("minWidth");
             vi.m_minSize.first = std::stoi(width);
         }
-        if( view->hasAttribute("minHeight") )
+
+        if(view->hasAttribute("minHeight"))
         {
             const std::string height = view->getExistingAttributeValue("minHeight");
             vi.m_minSize.second = std::stoi(height);
         }
-        if( view->hasAttribute("selected") )
+
+        if(view->hasAttribute("selected"))
         {
             const std::string isSelected = view->getExistingAttributeValue("selected");
-            SIGHT_ASSERT("The value "<<isSelected<<" it's incorrect, it should either be yes or no.",
-                         isSelected == "yes" || isSelected == "no");
+            SIGHT_ASSERT(
+                "The value " << isSelected << " it's incorrect, it should either be yes or no.",
+                isSelected == "yes" || isSelected == "no"
+            );
             vi.m_isSelect = (isSelected == "yes");
         }
 
-        if( view->hasAttribute("useScrollBar") )
+        if(view->hasAttribute("useScrollBar"))
         {
             const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-            SIGHT_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                         (useScrollBar == "yes") || (useScrollBar == "no"));
+            SIGHT_ASSERT(
+                "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
+                (useScrollBar == "yes") || (useScrollBar == "no")
+            );
             vi.m_useScrollBar = (useScrollBar == "yes");
         }
 
-        if( view->hasAttribute("backgroundColor") )
+        if(view->hasAttribute("backgroundColor"))
         {
             const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
             if(!hexaColor.empty())
@@ -123,9 +137,9 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
                 SIGHT_ASSERT(
                     "Color string should start with '#' and followed by 6 or 8 "
                     "hexadecimal digits. Given color: " << hexaColor,
-                        hexaColor[0] == '#'
-                        && ( hexaColor.length() == 7 || hexaColor.length() == 9)
-                    );
+                    hexaColor[0] == '#'
+                    && (hexaColor.length() == 7 || hexaColor.length() == 9)
+                );
                 vi.m_backgroundColor = hexaColor;
             }
         }
@@ -137,4 +151,5 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

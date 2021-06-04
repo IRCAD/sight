@@ -44,7 +44,6 @@ public:
     PostWindowRenderListener(SRenderStats& _renderStatsAdaptor) :
         m_renderStatsAdaptor(_renderStatsAdaptor)
     {
-
     }
 
     //------------------------------------------------------------------------------
@@ -58,7 +57,7 @@ public:
 
             std::ostringstream statStream;
             statStream << "FPS=" << static_cast<int>(frameStats.lastFPS) << std::endl
-                       << "Triangle count=" << frameStats.triangleCount  << std::endl;
+            << "Triangle count=" << frameStats.triangleCount << std::endl;
 
             m_renderStatsAdaptor.m_statsText->setText(statStream.str());
 
@@ -71,7 +70,6 @@ private:
     SRenderStats& m_renderStatsAdaptor;
 
     std::uint8_t m_frameCount {100}; // Start at 100 to trigger text creation after the first frame.
-
 };
 
 static const std::string s_COLOR_CONFIG       = "color";
@@ -82,14 +80,12 @@ static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
 
 SRenderStats::SRenderStats() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 SRenderStats::~SRenderStats() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -124,11 +120,15 @@ void SRenderStats::starting()
 
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
 
-    m_statsText = sight::viz::scene3d::Text::New(this->getID() + "_fpsText",
-                                                 this->getSceneManager(),
-                                                 textContainer,
-                                                 m_fontSource, m_fontSize, dpi,
-                                                 this->getLayer()->getDefaultCamera());
+    m_statsText = sight::viz::scene3d::Text::New(
+        this->getID() + "_fpsText",
+        this->getSceneManager(),
+        textContainer,
+        m_fontSource,
+        m_fontSize,
+        dpi,
+        this->getLayer()->getDefaultCamera()
+    );
 
     m_statsText->setPosition(0.01f, 0.01f);
     m_statsText->setTextColor(m_textColor);
@@ -143,7 +143,6 @@ void SRenderStats::starting()
 
 void SRenderStats::updating()
 {
-
 }
 
 //------------------------------------------------------------------------------

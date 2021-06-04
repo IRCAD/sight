@@ -28,23 +28,24 @@
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a timeline of template objects. All objects have the same maximum number of elements,
  *          nevertheless it is not mandatory to provide all elements.
  */
-template < class BUFFER_TYPE >
+template<class BUFFER_TYPE>
 class GenericTL : public BufferTL
 {
-
 public:
-    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, data::Object)
 
-    typedef data::timeline::GenericObject< BUFFER_TYPE > BufferType;
+    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, data::Object);
+
+    typedef data::timeline::GenericObject<BUFFER_TYPE> BufferType;
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    GenericTL( data::Object::Key key );
+    GenericTL(data::Object::Key key);
 
     /// Destructor
     virtual ~GenericTL();
@@ -57,8 +58,10 @@ public:
      * @param timestamp timestamp used to find the closest buffer
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
-    CSPTR(BufferType) getClosestBuffer( core::HiResClock::HiResClockType timestamp,
-                                        DirectionType direction = BOTH) const;
+    CSPTR(BufferType) getClosestBuffer(
+        core::HiResClock::HiResClockType timestamp,
+        DirectionType direction = BOTH
+    ) const;
 
     /// Returns the buffer matching the specified timestamp, returns NULL if object is not found
     CSPTR(BufferType) getBuffer(core::HiResClock::HiResClockType timestamp) const;
@@ -87,9 +90,9 @@ public:
     unsigned int getMaxElementNum() const;
 
 protected:
+
     /// maximum number of elements inside a single buffer
     unsigned int m_maxElementNum;
-
 }; // class GenericTL
 
 } // namespace sight::data

@@ -50,12 +50,12 @@ FrameGraph::FrameGraph(Qt3DCore::QNode* _parent) :
                     m_renderStateSet = new Qt3DRender::QRenderStateSet(m_clearBuffers);
 
                     // Adds a render state to avoid culling.
-                    QPointer< Qt3DRender::QCullFace > const culling = new Qt3DRender::QCullFace();
+                    QPointer<Qt3DRender::QCullFace> const culling = new Qt3DRender::QCullFace();
                     culling->setMode(Qt3DRender::QCullFace::NoCulling);
                     m_renderStateSet->addRenderState(culling);
 
                     // Adds a render state to add depth test.
-                    QPointer< Qt3DRender::QDepthTest > const depthTest = new Qt3DRender::QDepthTest();
+                    QPointer<Qt3DRender::QDepthTest> const depthTest = new Qt3DRender::QDepthTest();
                     depthTest->setDepthFunction(Qt3DRender::QDepthTest::Less);
                     m_renderStateSet->addRenderState(depthTest);
                 }
@@ -131,13 +131,15 @@ QVector<Qt3DRender::QFrameGraphNode*> FrameGraph::getAllNodes()
 
 //------------------------------------------------------------------------------
 
-void FrameGraph::getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes,
-                                Qt3DRender::QFrameGraphNode* _currentNode)
+void FrameGraph::getAllNodesRec(
+    QVector<Qt3DRender::QFrameGraphNode*>& _nodes,
+    Qt3DRender::QFrameGraphNode* _currentNode
+)
 {
     auto children = _currentNode->children();
     if(!children.isEmpty())
     {
-        for(int i = 0; i < children.size(); i++)
+        for(int i = 0 ; i < children.size() ; i++)
         {
             if(qobject_cast<Qt3DRender::QFrameGraphNode*>(children[i]) != nullptr)
             {
@@ -153,7 +155,7 @@ void FrameGraph::getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes,
 void FrameGraph::addNode(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent)
 {
     auto nodes = this->getAllNodes();
-    for(int i = 0; i < nodes.size(); i++)
+    for(int i = 0 ; i < nodes.size() ; i++)
     {
         if(qobject_cast<Qt3DRender::QFrameGraphNode*>(nodes[i])->parentFrameGraphNode() == _parent)
         {

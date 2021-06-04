@@ -28,8 +28,10 @@
 
 namespace sight::data
 {
+
 namespace fieldHelper
 {
+
 /**
  * @brief   Centralization of all identifiers used for communication and storage of dynamic attributes
  * @note    probably not dynamic enough but allows at least to have an overview of information that can be exchanged
@@ -56,7 +58,7 @@ struct DATA_CLASS_API Image
     DATA_API static const std::string m_distanceVisibility;
     DATA_API static const std::string m_commentId;
     DATA_API static const std::string m_colorId;
-    DATA_API static const std::string m_labelId;         ///< to assign a label
+    DATA_API static const std::string m_labelId;          ///< to assign a label
     DATA_API static const std::string m_relatedServiceId; ///< to store uid (simple) of service which create the
     // object
     DATA_API static const std::string m_imageLabelId;

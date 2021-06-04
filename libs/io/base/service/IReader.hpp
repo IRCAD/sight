@@ -49,9 +49,9 @@ namespace sight::io::base::service
  */
 class IO_BASE_CLASS_API IReader : public sight::service::IService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(IReader, sight::service::IService)
+
+    SIGHT_DECLARE_SERVICE(IReader, sight::service::IService);
 
     /**
      * @name Slots API
@@ -85,7 +85,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IO_BASE_API virtual std::vector< std::string > getSupportedExtensions();
+    IO_BASE_API virtual std::vector<std::string> getSupportedExtensions();
 
     /**
      * @brief   returns  the title of selector dialog box
@@ -235,7 +235,7 @@ protected:
     std::string m_windowTitle;
 
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
-    bool m_readFailed{false};
+    bool m_readFailed {false};
 
 private:
 

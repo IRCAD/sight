@@ -61,7 +61,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::IOperator
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMatrixRegressor, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SMatrixRegressor, service::IOperator);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SMatrixRegressor();

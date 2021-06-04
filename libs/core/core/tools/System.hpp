@@ -61,7 +61,8 @@ public:
      * @return  created folder
      */
     CORE_API static const std::filesystem::path getTemporaryFolder(
-        const std::string& subFolderPrefix = "" ) noexcept;
+        const std::string& subFolderPrefix = ""
+    ) noexcept;
 
     /**
      * @brief   Returns the pid of a temporary folder
@@ -108,7 +109,6 @@ public:
 protected:
 
     static std::string s_tempPrefix;
-
 };
 
 } // namespace sight::core::tools

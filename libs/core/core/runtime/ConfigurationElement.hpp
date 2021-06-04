@@ -25,7 +25,6 @@
 #include "core/config.hpp"
 #include "core/runtime/ConfigurationElementContainer.hpp"
 #include "core/runtime/RuntimeException.hpp"
-
 #include <core/base.hpp>
 
 #include <map>
@@ -36,6 +35,7 @@
 
 namespace sight::core::runtime
 {
+
 class Module;
 // Deprecated, kept for compatibility
 typedef Module Bundle;
@@ -44,10 +44,10 @@ typedef Module Bundle;
  * @brief   Defines the configuration element class.
  * @deprecated use ::boost::property::ptree instead.
  */
-struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
-                                               public std::enable_shared_from_this< ConfigurationElement >
+struct CORE_CLASS_API ConfigurationElement : public ConfigurationElementContainer,
+                                             public std::enable_shared_from_this<ConfigurationElement>
 {
-    SIGHT_DECLARE_CLASS(ConfigurationElement)
+    SIGHT_DECLARE_CLASS(ConfigurationElement);
 
     /**
      * @brief       ConfigurationElement factory.
@@ -63,7 +63,7 @@ struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContai
     /**
      * @brief   Defines the attribute pair type.
      */
-    typedef std::pair< bool, std::string > AttributePair;
+    typedef std::pair<bool, std::string> AttributePair;
 
     /**
      * @brief   Defines the a class for attributes exceptions.
@@ -78,7 +78,7 @@ struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContai
      *
      * @return  a shared pointer to a module instance
      */
-    CORE_API const std::shared_ptr< Module > getModule() const noexcept;
+    CORE_API const std::shared_ptr<Module> getModule() const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -162,8 +162,10 @@ struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContai
     /**
      * @brief   Print contents
      */
-    CORE_API friend std::ostream& operator<<(std::ostream& _sstream,
-                                             ConfigurationElement& _configurationElement);
+    CORE_API friend std::ostream& operator<<(
+        std::ostream& _sstream,
+        ConfigurationElement& _configurationElement
+    );
 
     /**
      * @brief       Find recursively all the corresponding configuration elements.
@@ -175,12 +177,12 @@ struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContai
      *                              ( if value is empty, this doesn't check the value )
      * @param[in]   depth           depth of the recursion
      */
-    CORE_API std::vector < ConfigurationElement::sptr > find(
+    CORE_API std::vector<ConfigurationElement::sptr> find(
         std::string name           = "",
         std::string attribute      = "",
         std::string attributeValue = "",
         int depth                  = 1
-        );
+    );
 
     /**
      * @brief       Used only because this class inherit from enable_shared_from_this

@@ -22,21 +22,22 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <io/dimse/SeriesEnquirer.hpp>
 #include <io/dimse/SeriesRetriever.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 #include <filesystem>
 
 namespace sight::io::dimse
 {
+
 namespace ut
 {
 
 class SeriesEnquirerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesEnquirerTest );
+CPPUNIT_TEST_SUITE(SeriesEnquirerTest);
 // Disabled until PACS available
 // CPPUNIT_TEST( initializeConnection );
 // CPPUNIT_TEST( pushSeries );
@@ -61,6 +62,7 @@ public:
     void pushSeries();
 
 protected:
+
     io::dimse::SeriesEnquirer::sptr m_seriesEnquirer;
     io::dimse::SeriesRetriever::sptr m_seriesRetriever;
 
@@ -81,8 +83,8 @@ protected:
 
     /// Move application port
     unsigned short m_moveApplicationPort;
-
 };
 
 } // namespace ut
+
 } // namespace sight::io::dimse

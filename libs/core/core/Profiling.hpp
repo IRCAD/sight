@@ -36,6 +36,7 @@ namespace sight::core
 class fwProfileScope
 {
 public:
+
     fwProfileScope(const char* label) :
         m_label(label)
     {
@@ -63,6 +64,7 @@ public:
 class fwProfileFrameTimer
 {
 public:
+
     fwProfileFrameTimer(double interval) :
         m_interval(interval),
         m_average(0),
@@ -113,6 +115,7 @@ public:
 class fwProfileScopeAvg
 {
 public:
+
     fwProfileScopeAvg(const char* label, fwProfileFrameTimer& frameTimer) :
         m_label(label),
         m_frameTimer(frameTimer)
@@ -124,11 +127,11 @@ public:
     {
         m_timer.stop();
 
-        if( m_frameTimer.tick(m_timer.getElapsedTimeInMilliSec()) )
+        if(m_frameTimer.tick(m_timer.getElapsedTimeInMilliSec()))
         {
             std::stringstream log;
-            log << "TIMER (avg over " << m_frameTimer.m_interval << "s) : " << m_label <<
-                " = " << m_frameTimer.m_average << " ms.";
+            log << "TIMER (avg over " << m_frameTimer.m_interval << "s) : " << m_label
+            << " = " << m_frameTimer.m_average << " ms.";
             core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
             m_frameTimer.reset();
         }
@@ -148,6 +151,7 @@ public:
 class fwProfileFrame
 {
 public:
+
     fwProfileFrame(const char* label, fwProfileFrameTimer& frameTimer) :
         m_label(label),
         m_frameTimer(frameTimer)
@@ -174,15 +178,16 @@ public:
 class fwProfileFrameAvg
 {
 public:
+
     fwProfileFrameAvg(const char* label, fwProfileFrameTimer& frameTimer) :
         m_label(label),
         m_frameTimer(frameTimer)
     {
-        if( m_frameTimer.tick() )
+        if(m_frameTimer.tick())
         {
             std::stringstream log;
-            log << "FRAME (avg over " << m_frameTimer.m_interval << "s) : " << m_label <<
-                " = " << m_frameTimer.m_average << " ms.";
+            log << "FRAME (avg over " << m_frameTimer.m_interval << "s) : " << m_label
+            << " = " << m_frameTimer.m_average << " ms.";
             core::log::SpyLogger::getSpyLogger().info(log.str(), __FILE__, __LINE__);
             m_frameTimer.reset();
         }
@@ -199,33 +204,29 @@ public:
 };
 
 #ifndef FW_PROFILING_DISABLED
-
 /// Display the elapsed time inside a code block
 #define FW_PROFILE(_label) \
-    core::fwProfileScope BOOST_PP_CAT( profiler, __LINE__ ) (_label);
+    core::fwProfileScope BOOST_PP_CAT(profiler, __LINE__)(_label);
 
 /// Display the elapsed time inside a code block, every N seconds
 #define FW_PROFILE_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT( frameTimer, __LINE__ ) (interval); \
-    core::fwProfileScopeAvg BOOST_PP_CAT( profiler, __LINE__ ) (_label, BOOST_PP_CAT( frameTimer, __LINE__ ));
+    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    core::fwProfileScopeAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block
 #define FW_PROFILE_FRAME(_label) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT( frameTimer, __LINE__ ) (0); \
-    core::fwProfileFrame BOOST_PP_CAT( profiler, __LINE__ ) (_label, BOOST_PP_CAT( frameTimer, __LINE__ ));
+    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(0); \
+    core::fwProfileFrame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block, every N seconds
 #define FW_PROFILE_FRAME_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT( frameTimer, __LINE__ ) (interval); \
-    core::fwProfileFrameAvg BOOST_PP_CAT( profiler, __LINE__ ) (_label, BOOST_PP_CAT( frameTimer, __LINE__ ));
-
+    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    core::fwProfileFrameAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 #else // FW_PROFILING_DISABLED
-
 #define FW_PROFILE(_label)
 #define FW_PROFILE_AVG(_label, interval)
 #define FW_PROFILE_FRAME(_label)
 #define FW_PROFILE_FRAME_AVG(_label, interval)
-
 #endif // FW_PROFILING_DISABLED
 
 } //namespace sight::core

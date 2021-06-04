@@ -45,12 +45,13 @@ namespace dl
 class Library
 {
 public:
+
     /**
      * @brief       Constructor.
      *
      * @param[in]   modulePath      a path pointing the module to load without any extension information
      */
-    Library( const std::filesystem::path& modulePath ) noexcept;
+    Library(const std::filesystem::path& modulePath) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
@@ -120,7 +121,7 @@ public:
      *
      * @param[in]   path  search path
      */
-    void setSearchPath( const std::filesystem::path& path ) noexcept
+    void setSearchPath(const std::filesystem::path& path) noexcept
     {
         m_implementor->setSearchPath(path);
     }
@@ -138,7 +139,7 @@ private:
     /**
      * @brief   The native module implementator.
      */
-    std::unique_ptr< Native > m_implementor;
+    std::unique_ptr<Native> m_implementor;
 
     /**
      * @brief   Assignment operator.

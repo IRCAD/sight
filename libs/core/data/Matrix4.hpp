@@ -28,7 +28,7 @@
 #include <array>
 #include <iostream>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Matrix4));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Matrix4));
 
 namespace sight::data
 {
@@ -38,15 +38,15 @@ namespace sight::data
  */
 class DATA_CLASS_API Matrix4 : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Matrix4, data::Object, data::factory::New< Matrix4 >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Matrix4));
+    SIGHT_DECLARE_CLASS(Matrix4, data::Object, data::factory::New<Matrix4>);
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Matrix4));
 
     typedef double TM3DType;
     typedef std::array<TM3DType, 16> TMCoefArray;
-    typedef std::array< std::array< TM3DType, 4 >, 4 > MatrixType;
+    typedef std::array<std::array<TM3DType, 4>, 4> MatrixType;
 
     /**
      * @brief Constructor
@@ -58,15 +58,15 @@ public:
     DATA_API virtual ~Matrix4();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Getters/setters
-    TMCoefArray& getCoefficients ();
-    const TMCoefArray& getCoefficients () const;
-    void setCoefficients (const TMCoefArray& _vCoefficients);
+    TMCoefArray& getCoefficients();
+    const TMCoefArray& getCoefficients() const;
+    void setCoefficients(const TMCoefArray& _vCoefficients);
 
     /**
      * @{
@@ -82,14 +82,16 @@ public:
     /// Print the coefficients of the matrix
     friend std::ostream& operator<<(std::ostream& s, const Matrix4& mat)
     {
-        for(size_t l = 0; l < MATRIX_SIZE; l++)
+        for(size_t l = 0 ; l < MATRIX_SIZE ; l++)
         {
-            for(size_t c = 0; c < MATRIX_SIZE; c++)
+            for(size_t c = 0 ; c < MATRIX_SIZE ; c++)
             {
                 s << mat.getCoefficient(l, c) << "\t";
             }
+
             s << std::endl;
         }
+
         return s;
     }
 
@@ -154,11 +156,12 @@ inline Matrix4::MatrixType Matrix4::getMatrix4x4() const
     // linear index to 2d.
     const Matrix4::MatrixType
         matrix4x4 {{
-                       {m_vCoefficients[0], m_vCoefficients[1], m_vCoefficients[2], m_vCoefficients[3]},
-                       {m_vCoefficients[4], m_vCoefficients[5], m_vCoefficients[6], m_vCoefficients[7]},
-                       {m_vCoefficients[8], m_vCoefficients[9], m_vCoefficients[10], m_vCoefficients[11]},
-                       {m_vCoefficients[12], m_vCoefficients[13], m_vCoefficients[14], m_vCoefficients[15]}
-                   }};
+        {m_vCoefficients[0], m_vCoefficients[1], m_vCoefficients[2], m_vCoefficients[3]},
+        {m_vCoefficients[4], m_vCoefficients[5], m_vCoefficients[6], m_vCoefficients[7]},
+        {m_vCoefficients[8], m_vCoefficients[9], m_vCoefficients[10], m_vCoefficients[11]},
+        {m_vCoefficients[12], m_vCoefficients[13], m_vCoefficients[14], m_vCoefficients[15]}
+    }
+    };
     return matrix4x4;
 }
 
@@ -167,10 +170,11 @@ inline Matrix4::MatrixType Matrix4::getMatrix4x4() const
 inline void Matrix4::setMatrix4x4(const Matrix4::MatrixType& _matrix)
 {
     // 2d to linear index.
-    m_vCoefficients = { _matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
-                        _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
-                        _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
-                        _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]};
+    m_vCoefficients = {_matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
+                       _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
+                       _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
+                       _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]
+    };
 }
 
 //-----------------------------------------------------------------------------

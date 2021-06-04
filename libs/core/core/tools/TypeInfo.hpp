@@ -28,6 +28,7 @@
 
 namespace sight::core::tools
 {
+
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
  *

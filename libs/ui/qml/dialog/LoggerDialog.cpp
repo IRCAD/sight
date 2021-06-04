@@ -33,10 +33,11 @@
 
 #include <filesystem>
 
-fwGuiRegisterMacro( ::sight::ui::qml::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::sight::ui::qml::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY);
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -110,11 +111,11 @@ bool LoggerDialog::show()
     auto critical =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/critical.svg");
     SIGHT_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
-    if (m_logger->count(core::log::Log::CRITICAL) > 0)
+    if(m_logger->count(core::log::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
     }
-    else if (m_logger->count(core::log::Log::WARNING) > 0)
+    else if(m_logger->count(core::log::Log::WARNING) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
     }
@@ -122,12 +123,13 @@ bool LoggerDialog::show()
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(information.string())));
     }
+
     // Create message
     std::stringstream ss;
-    ss << m_message.toStdString() <<
-        "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, " <<
-        m_logger->count(core::log::Log::WARNING) << " warning and " <<
-        m_logger->count(core::log::Log::INFORMATION) << " information messages.";
+    ss << m_message.toStdString()
+    << "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, "
+    << m_logger->count(core::log::Log::WARNING) << " warning and "
+    << m_logger->count(core::log::Log::INFORMATION) << " information messages.";
     emitMessage(QString::fromStdString(ss.str()));
 
     // get the icon of the details checkbox
@@ -148,27 +150,29 @@ bool LoggerDialog::show()
     core::log::Logger::ConstIteratorType it = m_logger->begin();
     model.addRole(Qt::UserRole + 1, "level");
     model.addRole(Qt::UserRole + 2, "message");
-    for(; it != m_logger->end(); ++it)
+    for( ; it != m_logger->end() ; ++it)
     {
         QString levelString = "Unkown";
         QHash<QByteArray, QVariant> data;
         core::log::Log::LevelType level = it->getLevel();
-        if (level == core::log::Log::INFORMATION)
+        if(level == core::log::Log::INFORMATION)
         {
             levelString = "Information";
         }
-        else if (level == core::log::Log::WARNING)
+        else if(level == core::log::Log::WARNING)
         {
             levelString = "Warning";
         }
-        else if (level == core::log::Log::CRITICAL)
+        else if(level == core::log::Log::CRITICAL)
         {
             levelString = "Critical";
         }
+
         data.insert("level", levelString);
         data.insert("message", QString::fromStdString(it->getMessage()));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
+
     SIGHT_ASSERT("The Logger need at least one error", !model.isEmpty());
 
     m_isOk = false;
@@ -227,4 +231,5 @@ void LoggerDialog::emitShown(const QUrl& shown)
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

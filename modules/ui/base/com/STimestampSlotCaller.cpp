@@ -34,6 +34,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -41,7 +42,6 @@ namespace com
 
 STimestampSlotCaller::STimestampSlotCaller()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -64,19 +64,19 @@ void STimestampSlotCaller::configuring()
     std::smatch match;
     std::string src, uid, key;
 
-    for(ConfigurationType elem :  slotCfgs.getElements())
+    for(ConfigurationType elem : slotCfgs.getElements())
     {
         src = elem->getValue();
-        if( std::regex_match(src, match, re) )
+        if(std::regex_match(src, match, re))
         {
-            SIGHT_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            SIGHT_ASSERT("Wrong value for attribute src: " << src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
             SIGHT_ASSERT("Missing hasSlotsId attribute", !uid.empty());
             SIGHT_ASSERT("Missing slotKey attribute", !key.empty());
 
-            m_slotInfos.push_back( std::make_pair(uid, key) );
+            m_slotInfos.push_back(std::make_pair(uid, key));
         }
     }
 }
@@ -99,10 +99,10 @@ void STimestampSlotCaller::updating()
         HasSlotIDType HasSlotId               = info.first;
         core::com::Slots::SlotKeyType slotKey = info.second;
 
-        if (core::tools::fwID::exist(HasSlotId))
+        if(core::tools::fwID::exist(HasSlotId))
         {
             core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
-            core::com::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast< core::com::HasSlots >(obj);
+            core::com::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast<core::com::HasSlots>(obj);
             SIGHT_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
@@ -122,4 +122,5 @@ void STimestampSlotCaller::stopping()
 //-----------------------------------------------------------------------------
 
 } // namespace com
+
 } // namespace sight::module::ui::base

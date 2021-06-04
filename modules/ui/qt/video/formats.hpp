@@ -32,13 +32,15 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
 //-----------------------------------------------------------------------------
 
-typedef ::boost::bimaps::bimap< QVideoFrame::PixelFormat, data::Camera::PixelFormat > PixelFormatTranslatorType;
+typedef ::boost::bimaps::bimap<QVideoFrame::PixelFormat, data::Camera::PixelFormat> PixelFormatTranslatorType;
 extern MODULE_UI_QT_API PixelFormatTranslatorType pixelFormatTranslator;
 
 } // video
+
 } // sight::module::ui::qt

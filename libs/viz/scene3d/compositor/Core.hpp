@@ -44,7 +44,7 @@ namespace compositor
 /**
  * Manages principal compositor for a layer's 3D scene
  */
-class VIZ_SCENE3D_CLASS_API Core   //TODO : Manage occlusion query
+class VIZ_SCENE3D_CLASS_API Core //TODO : Manage occlusion query
     //    The current commented ligns in this class are standing for occlusion query
     // purposes
     //    An example of working occlusion query is used in the experimental branch
@@ -52,7 +52,6 @@ class VIZ_SCENE3D_CLASS_API Core   //TODO : Manage occlusion query
     //public ::Ogre::FrameListener,
     //public ::Ogre::RenderTargetListener,
     //public ::Ogre::RenderObjectListener
-
 {
 public:
 
@@ -71,7 +70,7 @@ public:
     /// surfaces and volumes for some effects.
     static constexpr std::uint8_t s_VOLUME_RQ_GROUP_ID = s_SURFACE_RQ_GROUP_ID + 2;
 
-    typedef std::shared_ptr < Core > sptr;
+    typedef std::shared_ptr<Core> sptr;
 
     /// Default Compositor, one per "default" layer
     VIZ_SCENE3D_API Core(::Ogre::Viewport* viewport);
@@ -142,7 +141,7 @@ private:
     /// Cel shading activated
     ::Ogre::String m_celShadingName;
 
-    StereoModeType m_stereoMode { StereoModeType::NONE };
+    StereoModeType m_stereoMode {StereoModeType::NONE};
 
     //bool m_useOcclusionQuery;
 

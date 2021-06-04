@@ -27,7 +27,6 @@
 #include "core/com/util/convert_function_type.hpp"
 #include "core/config.hpp"
 #include "core/thread/Worker.hpp"
-
 #include <core/BaseObject.hpp>
 #include <core/mt/types.hpp>
 #include <core/spyLog.hpp>
@@ -38,7 +37,9 @@
 
 namespace sight::core::thread
 {
+
 class Worker;
+
 }
 
 namespace sight::core::com
@@ -46,14 +47,16 @@ namespace sight::core::com
 
 namespace util
 {
-template< typename T, typename R >
+
+template<typename T, typename R>
 struct WeakCall;
+
 }
 
-template< typename F >
+template<typename F>
 struct SlotRun;
 
-template< typename F >
+template<typename F>
 class Slot;
 
 struct SlotConnectionBase;
@@ -63,24 +66,23 @@ struct SlotConnectionBase;
  */
 struct CORE_CLASS_API SlotBase : virtual core::BaseObject
 {
-
     /**
      * @name typedefs
      * @{
      * Slot pointer types. */
-    typedef SPTR ( SlotBase ) sptr;
-    typedef WPTR ( SlotBase ) wptr;
-    typedef SPTR ( SlotBase const ) csptr;
-    typedef WPTR ( SlotBase const ) cwptr;
+    typedef SPTR(SlotBase) sptr;
+    typedef WPTR(SlotBase) wptr;
+    typedef SPTR(SlotBase const) csptr;
+    typedef WPTR(SlotBase const) cwptr;
 
     typedef std::string IDType;
     /**  @} */
 
     /// SlotBase::asyncRun return type.
-    typedef std::shared_future< void > VoidSharedFutureType;
+    typedef std::shared_future<void> VoidSharedFutureType;
 
     /// Connections container type
-    typedef std::set< CSPTR( SlotConnectionBase ) > ConnectionSetType;
+    typedef std::set<CSPTR(SlotConnectionBase)> ConnectionSetType;
 
     virtual ~SlotBase()
     {
@@ -117,13 +119,13 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**
      * @name Run helpers
      * @{ */
-    template< typename A1, typename A2, typename A3 >
+    template<typename A1, typename A2, typename A3>
     void run(A1 a1, A2 a2, A3 a3) const;
 
-    template< typename A1, typename A2 >
+    template<typename A1, typename A2>
     void run(A1 a1, A2 a2) const;
 
-    template< typename A1 >
+    template<typename A1>
     void run(A1 a1) const;
 
     CORE_API void run() const;
@@ -136,16 +138,16 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**
      * @name Call helpers
      * @{ */
-    template< typename R, typename A1, typename A2, typename A3 >
+    template<typename R, typename A1, typename A2, typename A3>
     R call(A1 a1, A2 a2, A3 a3) const;
 
-    template< typename R, typename A1, typename A2 >
+    template<typename R, typename A1, typename A2>
     R call(A1 a1, A2 a2) const;
 
-    template< typename R, typename A1 >
+    template<typename R, typename A1>
     R call(A1 a1) const;
 
-    template< typename R >
+    template<typename R>
     R call() const;
     /**  @} */
 
@@ -157,13 +159,13 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**
      * @name Asynchronous run helpers
      * @{ */
-    template< typename A1, typename A2, typename A3 >
+    template<typename A1, typename A2, typename A3>
     VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
 
-    template< typename A1, typename A2 >
+    template<typename A1, typename A2>
     VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
 
-    template< typename A1 >
+    template<typename A1>
     VoidSharedFutureType asyncRun(A1 a1) const;
 
     CORE_API VoidSharedFutureType asyncRun() const;
@@ -177,17 +179,17 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**
      * @name Asynchronous call helpers
      * @{ */
-    template< typename R, typename A1, typename A2, typename A3 >
-    std::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
+    template<typename R, typename A1, typename A2, typename A3>
+    std::shared_future<R> asyncCall(A1 a1, A2 a2, A3 a3) const;
 
-    template< typename R, typename A1, typename A2 >
-    std::shared_future< R > asyncCall(A1 a1, A2 a2) const;
+    template<typename R, typename A1, typename A2>
+    std::shared_future<R> asyncCall(A1 a1, A2 a2) const;
 
-    template< typename R, typename A1 >
-    std::shared_future< R > asyncCall(A1 a1) const;
+    template<typename R, typename A1>
+    std::shared_future<R> asyncCall(A1 a1) const;
 
-    template< typename R >
-    std::shared_future< R > asyncCall() const;
+    template<typename R>
+    std::shared_future<R> asyncCall() const;
     /**  @} */
 
     /// Returns number of connections.
@@ -196,30 +198,31 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();
     }
+
     protected:
 
         /// Copy constructor forbidden
-        SlotBase( const SlotBase& );
+        SlotBase(const SlotBase&);
 
         /// Copy operator forbidden
-        SlotBase& operator=( const SlotBase& );
+        SlotBase& operator=(const SlotBase&);
 
         /**
          * @name SlotBase's friends
          * @{ */
-        template < typename F >
+        template<typename F>
         friend struct SlotConnection;
 
-        template < typename F >
+        template<typename F>
         friend struct Signal;
 
-        template< typename T, typename R >
+        template<typename T, typename R>
         friend struct util::WeakCall;
 
         /**  @} */
 
         /// Returns F typeid name.
-        template < typename F >
+        template<typename F>
         std::string getTypeName() const
         {
             std::string signature = std::string("function_type(") + typeid(F).name() + ")";

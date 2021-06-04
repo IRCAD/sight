@@ -34,7 +34,7 @@ class CORE_CLASS_API SingleFolder : public ILocation
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SingleFolder, ILocation)
+    SIGHT_DECLARE_CLASS(SingleFolder, ILocation);
 
     /// String serialization function
     inline std::string toString() const override;

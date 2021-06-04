@@ -42,7 +42,6 @@ namespace sight::ui::qt
 /// Creates an auto-movable container.
 class UI_QT_CLASS_API Container : public QWidget
 {
-
 Q_OBJECT
 
 public:
@@ -52,7 +51,7 @@ public:
      * @param _position a function that allows this container to compute its own position from its parent.
      * @param _parent the parent of this container.
      */
-    explicit Container(std::function< QPoint(QWidget*) > _position, QWidget* _parent) :
+    explicit Container(std::function<QPoint(QWidget*)> _position, QWidget* _parent) :
         QWidget(_parent),
         m_position(_position)
     {
@@ -62,7 +61,6 @@ public:
     /// Destroys the Container.
     virtual ~Container()
     {
-
     }
 
     /**
@@ -77,20 +75,19 @@ public:
         {
             this->move(m_position(this->parentWidget()));
         }
+
         return QWidget::eventFilter(_object, _event);
     }
 
 private:
 
     /// Defines a function that computes a position relatively to a parent widget.
-    std::function< QPoint(QWidget*) > m_position;
-
+    std::function<QPoint(QWidget*)> m_position;
 };
 
 /// Creates a clickable QLabel.
 class UI_QT_CLASS_API ClickableQLabel : public QLabel
 {
-
 Q_OBJECT
 
 public:
@@ -104,7 +101,6 @@ public:
     /// Destroys the clickable QLabel.
     virtual ~ClickableQLabel()
     {
-
     }
 
 public Q_SLOTS:
@@ -179,11 +175,13 @@ namespace dialog
  */
 class UI_QT_CLASS_API NotificationDialog : public ui::base::dialog::INotificationDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(NotificationDialog, ui::base::dialog::INotificationDialog,
-                        ui::base::factory::New< NotificationDialog > )
+    SIGHT_DECLARE_CLASS(
+        NotificationDialog,
+        ui::base::dialog::INotificationDialog,
+        ui::base::factory::New<NotificationDialog>
+    )
 
     /// Initializes members.
     UI_QT_API NotificationDialog(ui::base::GuiBaseObject::Key key);
@@ -206,9 +204,9 @@ public:
 private:
 
     /// Pointer to the Popup QLabel.
-    QPointer< ClickableQLabel > m_msgBox { nullptr };
-
+    QPointer<ClickableQLabel> m_msgBox {nullptr};
 };
 
 } // namespace dialog.
+
 } // namespace sight::ui::qt.

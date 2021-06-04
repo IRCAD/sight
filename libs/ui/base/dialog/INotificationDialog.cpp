@@ -24,8 +24,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 const INotificationDialog::FactoryRegistryKeyType INotificationDialog::REGISTRY_KEY =
     "::ui::base::dialog::NotificationDialog";
 
@@ -87,4 +89,5 @@ void INotificationDialog::setDuration(int _durationInMs)
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } // namespace sight::ui::base

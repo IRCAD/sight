@@ -34,6 +34,7 @@ class QPushButton;
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
@@ -42,32 +43,31 @@ namespace dialog
  */
 class UI_QT_CLASS_API MessageDialog : public ui::base::dialog::IMessageDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New<MessageDialog>);
 
     UI_QT_API MessageDialog(ui::base::GuiBaseObject::Key key);
 
     UI_QT_API ~MessageDialog() override;
 
     /// Set the title of the message box
-    UI_QT_API void setTitle( const std::string& title ) override;
+    UI_QT_API void setTitle(const std::string& title) override;
 
     /// Set the message
-    UI_QT_API void setMessage( const std::string& msg ) override;
+    UI_QT_API void setMessage(const std::string& msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QT_API void setIcon( IMessageDialog::Icons icon) override;
+    UI_QT_API void setIcon(IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QT_API void addButton( IMessageDialog::Buttons button ) override;
+    UI_QT_API void addButton(IMessageDialog::Buttons button) override;
 
     /// Add a custom button to this dialog
     UI_QT_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
     /// Set the default buttons
-    UI_QT_API void setDefaultButton( IMessageDialog::Buttons button ) override;
+    UI_QT_API void setDefaultButton(IMessageDialog::Buttons button) override;
 
     /// Show the message box and return the clicked button.
     UI_QT_API Buttons show() override;
@@ -90,8 +90,9 @@ protected:
     ui::base::dialog::IMessageDialog::Icons m_icon;
 
     /// Stores custom buttons
-    QVector< QPushButton* > m_customButtons;
+    QVector<QPushButton*> m_customButtons;
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

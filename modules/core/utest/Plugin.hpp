@@ -48,7 +48,6 @@ struct MODULE_UTEST_CLASS_API Plugin : public core::runtime::Plugin
 
     /// Overrides stop method. Do nothing
     MODULE_UTEST_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::service

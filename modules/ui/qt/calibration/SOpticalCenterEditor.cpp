@@ -120,11 +120,11 @@ void SOpticalCenterEditor::stopping()
 
 void SOpticalCenterEditor::updating()
 {
-    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     SIGHT_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
 
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
     SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
@@ -146,8 +146,8 @@ void SOpticalCenterEditor::updating()
     const int deltaY  = static_cast<int>(camera->getHeight() / 5);
     const int deltaFY = static_cast<int>(camera->getFy() * .5);
 
-    m_cxSlider->setRange(cx - deltaX,  cx + deltaX);
-    m_cySlider->setRange(cy - deltaY,  cy + deltaY);
+    m_cxSlider->setRange(cx - deltaX, cx + deltaX);
+    m_cySlider->setRange(cy - deltaY, cy + deltaY);
     m_fySlider->setRange(fy - deltaFY, fy + deltaFY);
 
     m_cxSlider->setValue(cx);
@@ -176,9 +176,9 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 
 void SOpticalCenterEditor::onCxSliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
     SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
@@ -188,7 +188,7 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
     m_cxLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -199,9 +199,9 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
 void SOpticalCenterEditor::onCySliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
     SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
@@ -211,7 +211,7 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
     m_cyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -222,9 +222,9 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
 void SOpticalCenterEditor::onFySliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
     SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
@@ -234,7 +234,7 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 
     m_fyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();

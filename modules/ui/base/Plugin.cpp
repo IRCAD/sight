@@ -58,7 +58,7 @@ void Plugin::start()
 
     try
     {
-        core::runtime::EConfigurationElement::sptr prefConfig = core::runtime::EConfigurationElement::New( "filename" );
+        core::runtime::EConfigurationElement::sptr prefConfig = core::runtime::EConfigurationElement::New("filename");
         std::filesystem::path prefFile                        = sight::ui::base::preferences::getPreferencesFile();
         prefConfig->setValue(prefFile.string());
 
@@ -66,10 +66,10 @@ void Plugin::start()
         prefSrv->configure();
         prefSrv->start();
 
-        if ( m_preferences->find( "PREFERENCES_VERSION" ) == m_preferences->end() )
+        if(m_preferences->find("PREFERENCES_VERSION") == m_preferences->end())
         {
-            data::String::sptr version = data::String::New( "0.1" );
-            (*m_preferences)[ "PREFERENCES_VERSION" ] = version;
+            data::String::sptr version = data::String::New("0.1");
+            (*m_preferences)["PREFERENCES_VERSION"] = version;
         }
     }
     catch(core::Exception& e)
@@ -88,6 +88,7 @@ void Plugin::stop() noexcept
         prefSrv->stop();
         service::OSR::unregisterService(prefSrv);
     }
+
     m_preferences.reset();
 }
 

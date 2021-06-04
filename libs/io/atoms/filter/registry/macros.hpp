@@ -32,9 +32,9 @@ namespace sight::io::atoms::filter
 namespace registry
 {
 
-#define  fwAtomsFilterRegisterMacro( classname, objectKey )                           \
-    static sight::io::atoms::filter::IFilter::Registry< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
+#define  fwAtomsFilterRegisterMacro(classname, objectKey) \
+    static sight::io::atoms::filter::IFilter::Registry<classname> \
+    BOOST_PP_CAT(s__factory__record__object__, __LINE__)(objectKey);
 
 } // namespace registry
 

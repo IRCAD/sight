@@ -37,7 +37,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept final;
-
 };
 
 } // namespace sight::module::ui::dicom

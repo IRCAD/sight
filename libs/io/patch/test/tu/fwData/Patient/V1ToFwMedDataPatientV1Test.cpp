@@ -28,21 +28,24 @@
 #include <atoms/Object.hxx>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Patient/V1ToFwMedDataPatientV1.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Patient::V1ToFwMedDataPatientV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Patient::V1ToFwMedDataPatientV1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Patient
 {
 
@@ -105,21 +108,25 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     CPPUNIT_ASSERT(targetObj->getAttribute("birth_date"));
     CPPUNIT_ASSERT(targetObj->getAttribute("sex"));
 
-    sight::atoms::String::sptr name = targetObj->getAttribute< sight::atoms::String >("name");
+    sight::atoms::String::sptr name = targetObj->getAttribute<sight::atoms::String>("name");
     CPPUNIT_ASSERT_EQUAL(std::string("name^firstname"), name->getString());
 
-    sight::atoms::String::sptr patientId = targetObj->getAttribute< sight::atoms::String >("patient_id");
+    sight::atoms::String::sptr patientId = targetObj->getAttribute<sight::atoms::String>("patient_id");
     CPPUNIT_ASSERT_EQUAL(std::string("46539"), patientId->getString());
 
-    sight::atoms::String::sptr birthdate = targetObj->getAttribute< sight::atoms::String >("birth_date");
+    sight::atoms::String::sptr birthdate = targetObj->getAttribute<sight::atoms::String>("birth_date");
     CPPUNIT_ASSERT_EQUAL(std::string("20130613"), birthdate->getString());
 
-    sight::atoms::String::sptr sex = targetObj->getAttribute< sight::atoms::String >("sex");
+    sight::atoms::String::sptr sex = targetObj->getAttribute<sight::atoms::String>("sex");
     CPPUNIT_ASSERT_EQUAL(std::string("F"), sex->getString());
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Patient
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

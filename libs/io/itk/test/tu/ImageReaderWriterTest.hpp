@@ -32,17 +32,19 @@
 
 namespace sight::io::itk
 {
+
 namespace ut
 {
 
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageReaderWriterTest );
-CPPUNIT_TEST( testSaveLoadInr );
-CPPUNIT_TEST( stressTestInr );
+CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
+CPPUNIT_TEST(testSaveLoadInr);
+CPPUNIT_TEST(stressTestInr);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -53,8 +55,9 @@ public:
 private:
 
     void stressTestInrWithType(core::tools::Type type, int nbTest);
-    void checkSaveLoadInr( data::Image::sptr image );
+    void checkSaveLoadInr(data::Image::sptr image);
 };
 
 } //namespace ut
+
 } //namespace sight::io::itk

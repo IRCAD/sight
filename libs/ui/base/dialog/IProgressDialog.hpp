@@ -47,7 +47,7 @@ class UI_BASE_CLASS_API IProgressDialog : public ui::base::GuiBaseObject,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IProgressDialog, ui::base::GuiBaseObject, progressDialogFactory)
+    SIGHT_DECLARE_CLASS(IProgressDialog, ui::base::GuiBaseObject, progressDialogFactory);
 
     typedef std::string FactoryRegistryKeyType;
     typedef boost::function<void ()> CancelCallbackType;

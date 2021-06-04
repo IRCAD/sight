@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -32,6 +31,7 @@
 
 namespace sight::core::runtime
 {
+
 struct Extension;
 struct ExtensionRegistry;
 class IExecutable;
@@ -46,8 +46,9 @@ class Runtime;
 class CORE_CLASS_API Module
 {
 public:
+
     /// Defines the extension container type.
-    typedef std::set< SPTR( Extension ) >      ExtensionContainer;
+    typedef std::set<SPTR(Extension)> ExtensionContainer;
 
     virtual ~Module();
 
@@ -91,7 +92,7 @@ public:
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    CORE_API virtual SPTR( IPlugin ) getPlugin() const = 0;
+    CORE_API virtual SPTR(IPlugin) getPlugin() const = 0;
 
     /**
      * @brief       Retrieves the value of the given parameter
@@ -99,17 +100,17 @@ public:
      * @param[in]   identifier  a string containing a parameter identifier
      * @return      a string containing the parameter value
      */
-    CORE_API virtual const std::string getParameterValue( const std::string& identifier ) const = 0;
+    CORE_API virtual const std::string getParameterValue(const std::string& identifier) const = 0;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    CORE_API virtual bool hasParameter( const std::string& name ) const = 0;
+    CORE_API virtual bool hasParameter(const std::string& name) const = 0;
     /**
      * @brief   Returns the list of extensions contained in this module.
      */
-    CORE_API virtual ExtensionContainer getExtensions( ) const = 0;
+    CORE_API virtual ExtensionContainer getExtensions() const = 0;
 
     /**
      * @name        State Management
@@ -128,7 +129,6 @@ public:
      */
     CORE_API virtual bool isEnabled() const = 0;
     //@}
-
 };
 
 } // namespace sight::core::runtime

@@ -40,6 +40,7 @@ namespace helper
 class Shading
 {
 public:
+
     union ConstantValueType
     {
         std::array<bool, 4> b;
@@ -48,9 +49,9 @@ public:
         std::array<double, 4> d;
     };
     typedef std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
-                        ::Ogre::GpuProgramType, ConstantValueType > ShaderConstantType;
+                        ::Ogre::GpuProgramType, ConstantValueType> ShaderConstantType;
     typedef std::vector<ShaderConstantType> ShaderConstantsType;
-    typedef std::vector< std::pair< std::string, std::string > > GpuProgramParametersType;
+    typedef std::vector<std::pair<std::string, std::string> > GpuProgramParametersType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -81,8 +82,11 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _diffuseTexture is diffuse texture bound ?
      */
-    VIZ_SCENE3D_API static std::string getPermutation(data::Material::ShadingType _mode, bool _diffuseTexture,
-                                                      bool _vertexColor);
+    VIZ_SCENE3D_API static std::string getPermutation(
+        data::Material::ShadingType _mode,
+        bool _diffuseTexture,
+        bool _vertexColor
+    );
 
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
@@ -94,9 +98,12 @@ public:
      * sight 22.0
      */
     [[deprecated("Use 'data::Mesh::CellType' intead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
-    VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(data::Mesh::CellTypesEnum _primitiveType,
-                                                                  bool _diffuseTexture, bool _vertexColor,
-                                                                  bool _hasPrimitiveColor);
+    VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(
+        data::Mesh::CellTypesEnum _primitiveType,
+        bool _diffuseTexture,
+        bool _vertexColor,
+        bool _hasPrimitiveColor
+    );
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
      * @param[in] _primitiveType type of the primitive (only triangles, quads and tetrahedrons supported right now)
@@ -104,9 +111,12 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
      */
-    VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(data::Mesh::CellType _primitiveType,
-                                                                  bool _diffuseTexture, bool _vertexColor,
-                                                                  bool _hasPrimitiveColor);
+    VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(
+        data::Mesh::CellType _primitiveType,
+        bool _diffuseTexture,
+        bool _vertexColor,
+        bool _hasPrimitiveColor
+    );
 
     /**
      * @brief Modify the program name according to the permutation given in parameter.
@@ -116,8 +126,10 @@ public:
      * @param[in] _name name of the program
      * @param[in] _permutation new permutation to use
      */
-    VIZ_SCENE3D_API static std::string setPermutationInProgramName(const std::string& _name,
-                                                                   const std::string& _permutation);
+    VIZ_SCENE3D_API static std::string setPermutationInProgramName(
+        const std::string& _name,
+        const std::string& _permutation
+    );
 
     /**
      * @brief Replace the prefix in the program name with the prefix in parameters.
@@ -147,9 +159,11 @@ public:
      * @param[in] _enableLightConstants indicates whether or not the method should look into the light related constants
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
-    VIZ_SCENE3D_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
-                                                                   ::Ogre::GpuProgramType _shaderType,
-                                                                   bool _enableLightConstants = false);
+    VIZ_SCENE3D_API static ShaderConstantsType findShaderConstants(
+        ::Ogre::GpuProgramParametersSharedPtr params,
+        ::Ogre::GpuProgramType _shaderType,
+        bool _enableLightConstants = false
+    );
 
     /**
      * @brief Create a Sight data that can be used to interact with a shader parameter.
@@ -157,8 +171,10 @@ public:
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
      */
-    VIZ_SCENE3D_API static SPTR(data::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
-                                                                              ConstantValueType _value);
+    VIZ_SCENE3D_API static SPTR(data::Object) createObjectFromShaderParameter(
+        ::Ogre::GpuConstantType _type,
+        ConstantValueType _value
+    );
 
     /**
      * @brief Create a gpu program variant based from an existing gpu program.
@@ -171,12 +187,13 @@ public:
      * @param[in] _shaderType shader type (vertex, fragment or geometry)
      * @param[in] _baseName name of the base gpu program
      */
-    VIZ_SCENE3D_API static ::Ogre::GpuProgramPtr createProgramFrom(const std::string& _name,
-                                                                   const std::string& _sourceFileName,
-                                                                   const GpuProgramParametersType& _parameters,
-                                                                   ::Ogre::GpuProgramType _shaderType,
-                                                                   const std::string& _baseName);
-
+    VIZ_SCENE3D_API static ::Ogre::GpuProgramPtr createProgramFrom(
+        const std::string& _name,
+        const std::string& _sourceFileName,
+        const GpuProgramParametersType& _parameters,
+        ::Ogre::GpuProgramType _shaderType,
+        const std::string& _baseName
+    );
 };
 
 //-----------------------------------------------------------------------------

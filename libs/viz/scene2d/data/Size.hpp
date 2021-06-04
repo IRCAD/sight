@@ -28,6 +28,7 @@
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
@@ -41,9 +42,10 @@ public:
     {
     }
 
-    Size( double w, double h )
+    Size(double w, double h)
     {
-        m_w = w; m_h = h;
+        m_w = w;
+        m_h = h;
     }
 
     //------------------------------------------------------------------------------
@@ -55,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setWidth ( double w )
+    void setWidth(double w)
     {
         m_w = w;
     }
@@ -69,7 +71,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setHeight ( double h )
+    void setHeight(double h)
     {
         m_h = h;
     }
@@ -81,4 +83,5 @@ private:
 };
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

@@ -30,10 +30,11 @@
 #include <QGuiApplication>
 #include <QObject>
 
-fwGuiRegisterMacro( ::sight::ui::qml::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::sight::ui::qml::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -51,14 +52,14 @@ InputDialog::~InputDialog()
 
 //------------------------------------------------------------------------------
 
-void InputDialog::setTitle( const std::string& title )
+void InputDialog::setTitle(const std::string& title)
 {
     m_title = QString::fromStdString(title);
 }
 
 //------------------------------------------------------------------------------
 
-void InputDialog::setMessage( const std::string& msg )
+void InputDialog::setMessage(const std::string& msg)
 {
     m_message = QString::fromStdString(msg);
 }
@@ -112,7 +113,7 @@ std::string InputDialog::getInput()
 
 void InputDialog::resultDialog(const QVariant& msg, bool isOk)
 {
-    if (isOk)
+    if(isOk)
     {
         m_input = msg.toString();
     }
@@ -125,4 +126,5 @@ void InputDialog::resultDialog(const QVariant& msg, bool isOk)
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

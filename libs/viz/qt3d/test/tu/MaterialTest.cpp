@@ -47,7 +47,6 @@ namespace ut
 
 MaterialTest::MaterialTest()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,19 +83,37 @@ void MaterialTest::initializeMaterial()
     qt3dMaterial->updateRGBAMode(sightMaterial);
 
     // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast< float >(sightMaterial->ambient()->red()),
-                                 qt3dMaterial->getAmbient().redF(), 0.01f);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast< float >(sightMaterial->ambient()->green()), qt3dMaterial->getAmbient().greenF(), 0.01f);
+        static_cast<float>(sightMaterial->ambient()->red()),
+        qt3dMaterial->getAmbient().redF(),
+        0.01f
+    );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast< float >(sightMaterial->ambient()->blue()), qt3dMaterial->getAmbient().blueF(), 0.01f);
+        static_cast<float>(sightMaterial->ambient()->green()),
+        qt3dMaterial->getAmbient().greenF(),
+        0.01f
+    );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast<float>(sightMaterial->ambient()->blue()),
+        qt3dMaterial->getAmbient().blueF(),
+        0.01f
+    );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast< float >(sightMaterial->diffuse()->red()),
-                                 qt3dMaterial->getDiffuse().redF(), 0.01f);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast< float >(sightMaterial->diffuse()->green()), qt3dMaterial->getDiffuse().greenF(), 0.01f);
+        static_cast<float>(sightMaterial->diffuse()->red()),
+        qt3dMaterial->getDiffuse().redF(),
+        0.01f
+    );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
-        static_cast< float >(sightMaterial->diffuse()->blue()), qt3dMaterial->getDiffuse().blueF(), 0.01f);
+        static_cast<float>(sightMaterial->diffuse()->green()),
+        qt3dMaterial->getDiffuse().greenF(),
+        0.01f
+    );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(
+        static_cast<float>(sightMaterial->diffuse()->blue()),
+        qt3dMaterial->getDiffuse().blueF(),
+        0.01f
+    );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().x(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().y(), 0.00001);
@@ -117,8 +134,10 @@ void MaterialTest::initializeMaterial()
     auto edgeRenderPass = tech->renderPasses()[3];
 
     // Default polygonMode must be set to SURFACE.
-    CPPUNIT_ASSERT_EQUAL(Qt3DRender::QRasterMode::Fill,
-                         qobject_cast< Qt3DRender::QRasterMode* >(renderPass->renderStates()[0])->rasterMode());
+    CPPUNIT_ASSERT_EQUAL(
+        Qt3DRender::QRasterMode::Fill,
+        qobject_cast<Qt3DRender::QRasterMode*>(renderPass->renderStates()[0])->rasterMode()
+    );
     CPPUNIT_ASSERT_EQUAL(false, edgeRenderPass->isEnabled());
 
     // Default optionMode must be set to STANDARD.
@@ -126,11 +145,12 @@ void MaterialTest::initializeMaterial()
     CPPUNIT_ASSERT_EQUAL(false, cellNormalPass->isEnabled());
 
     //Default lightingMode must be set to PHONG.
-    CPPUNIT_ASSERT_EQUAL(static_cast< int >(sightMaterial->getShadingMode()),
-                         qvariant_cast< int >(tech->parameters()[2]->value()));
+    CPPUNIT_ASSERT_EQUAL(
+        static_cast<int>(sightMaterial->getShadingMode()),
+        qvariant_cast<int>(tech->parameters()[2]->value())
+    );
 
     delete qt3dMaterial;
-
 }
 
 //------------------------------------------------------------------------------

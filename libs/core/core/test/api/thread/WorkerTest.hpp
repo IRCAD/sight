@@ -26,26 +26,28 @@
 
 namespace sight::core::thread
 {
+
 namespace ut
 {
 
 class WorkerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( WorkerTest );
-CPPUNIT_TEST( basicTest );
+CPPUNIT_TEST_SUITE(WorkerTest);
+CPPUNIT_TEST(basicTest);
 // Disable timerTest because it fails randomly on a busy computer (see #253)
 //CPPUNIT_TEST( timerTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void basicTest();
     void timerTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::core::thread

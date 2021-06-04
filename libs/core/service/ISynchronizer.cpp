@@ -29,16 +29,14 @@ namespace sight::service
 
 ISynchronizer::ISynchronizer() noexcept
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
 ISynchronizer::~ISynchronizer() noexcept
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::service
+} // namespace sight::service

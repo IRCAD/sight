@@ -41,7 +41,7 @@ class VIZ_SCENE3D_CLASS_API IGraphicsWorker
 {
 public:
 
-    using TaskType = std::function<void()>;
+    using TaskType = std::function<void ()>;
 
     /// Constructor, initializes the worker.
     VIZ_SCENE3D_API IGraphicsWorker()
@@ -55,7 +55,6 @@ public:
 
     /// Adds a task at the back of the worker's task queue.
     VIZ_SCENE3D_API virtual void pushTask(TaskType _task) = 0;
-
 };
 
 //------------------------------------------------------------------------------

@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( sight::data::Edge );
+SIGHT_REGISTER_DATA(sight::data::Edge);
 
 namespace sight::data
 {
@@ -35,7 +35,7 @@ std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
-Edge::Edge( data::Object::Key ) :
+Edge::Edge(data::Object::Key) :
     m_fromPortIdentifier("not defined"),
     m_toPortIdentifier("not defined"),
     m_nature("not defined")
@@ -99,14 +99,18 @@ const std::string& Edge::getNature() const
 }
 
 //------------------------------------------------------------------------------
-void Edge::shallowCopy(const Object::csptr& _source )
+void Edge::shallowCopy(const Object::csptr& _source)
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
-    this->fieldShallowCopy( _source );
+    this->fieldShallowCopy(_source);
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier   = other->m_toPortIdentifier;
     m_nature             = other->m_nature;
@@ -117,14 +121,17 @@ void Edge::shallowCopy(const Object::csptr& _source )
 void Edge::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier   = other->m_toPortIdentifier;
     m_nature             = other->m_nature;
-
 }
 
 //------------------------------------------------------------------------------

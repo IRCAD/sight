@@ -31,6 +31,7 @@
 
 namespace sight::utestData
 {
+
 namespace generator
 {
 
@@ -39,7 +40,6 @@ namespace generator
  */
 class Image
 {
-
 public:
 
     /**
@@ -55,11 +55,13 @@ public:
      * @param origin    vector of image origin
      * @param type      image type
      */
-    [[deprecated("It will be removed in sight 22.0")]] UTESTDATA_API static void generateImage(data::Image::sptr image,
-                                                                                               data::Image::SizeType size,
-                                                                                               std::vector<double> spacing,
-                                                                                               std::vector<double> origin,
-                                                                                               core::tools::Type type);
+    [[deprecated("It will be removed in sight 22.0")]] UTESTDATA_API static void generateImage(
+        data::Image::sptr image,
+        data::Image::SizeType size,
+        std::vector<double> spacing,
+        std::vector<double> origin,
+        core::tools::Type type
+    );
 
     /**
      * @brief Generate an image with the given informations. Buffer is filled with 0.
@@ -70,12 +72,14 @@ public:
      * @param type      image type
      * @param format    image format
      */
-    UTESTDATA_API static void generateImage(data::Image::sptr image,
-                                            data::Image::Size size,
-                                            data::Image::Spacing spacing,
-                                            data::Image::Origin origin,
-                                            core::tools::Type type,
-                                            data::Image::PixelFormat format);
+    UTESTDATA_API static void generateImage(
+        data::Image::sptr image,
+        data::Image::Size size,
+        data::Image::Spacing spacing,
+        data::Image::Origin origin,
+        core::tools::Type type,
+        data::Image::PixelFormat format
+    );
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     UTESTDATA_API static void generateRandomImage(data::Image::sptr image, core::tools::Type type);
@@ -87,20 +91,22 @@ public:
     UTESTDATA_API static void randomizeArray(data::Array::sptr array);
 
     /// Creates an Array with the given type and size and fills buffer with random values.
-    UTESTDATA_API static data::Array::sptr createRandomizedArray(const std::string& type,
-                                                                 data::Array::SizeType sizes);
+    UTESTDATA_API static data::Array::sptr createRandomizedArray(
+        const std::string& type,
+        data::Array::SizeType sizes
+    );
 
     /// Fill array with random value
     template<typename TYPE>
     static void randomizeArray(const data::Array::sptr& array)
     {
         const auto dumpLock = array->lock();
-        auto iter           = array->begin< TYPE >();
-        const auto end      = array->end< TYPE >();
+        auto iter           = array->begin<TYPE>();
+        const auto end      = array->end<TYPE>();
 
-        for (; iter != end; ++iter)
+        for( ; iter != end ; ++iter)
         {
-            *iter = static_cast<TYPE>(rand()%256);
+            *iter = static_cast<TYPE>(rand() % 256);
         }
     }
 
@@ -111,14 +117,14 @@ public:
     {
         data::Array::sptr array = data::Array::New();
 
-        array->resize( core::tools::Type::create<TYPE>(), sizes, 1, true );
+        array->resize(core::tools::Type::create<TYPE>(), sizes, 1, true);
 
-        Image::randomizeArray<TYPE>( array );
+        Image::randomizeArray<TYPE>(array);
 
         return array;
     }
-
 };
 
 } // namespace generator
+
 } // namespace sight::utestData

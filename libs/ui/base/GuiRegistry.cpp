@@ -54,8 +54,10 @@ GuiRegistry::~GuiRegistry()
 
 void GuiRegistry::registerSIDContainer(std::string sid, ui::base::container::fwContainer::sptr container)
 {
-    SIGHT_ASSERT("The service '"+sid+"' is already registered in the container map, it cannot be added twice.",
-                 m_globalSIDToFwContainer.find(sid) == m_globalSIDToFwContainer.end());
+    SIGHT_ASSERT(
+        "The service '" + sid + "' is already registered in the container map, it cannot be added twice.",
+        m_globalSIDToFwContainer.find(sid) == m_globalSIDToFwContainer.end()
+    );
     m_globalSIDToFwContainer[sid] = container;
 }
 
@@ -63,16 +65,21 @@ void GuiRegistry::registerSIDContainer(std::string sid, ui::base::container::fwC
 
 void GuiRegistry::unregisterSIDContainer(std::string sid)
 {
-    bool service_exists = core::tools::fwID::exist(sid );
-    SIGHT_INFO_IF("The service '"+sid +"' does not exist.", !service_exists );
+    bool service_exists = core::tools::fwID::exist(sid);
+    SIGHT_INFO_IF("The service '" + sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
-        service::IService::sptr service = service::get( sid );
-        SIGHT_ASSERT("The service '"+sid+"' must be stopped before unregistering the container.", service->isStopped());
+        service::IService::sptr service = service::get(sid);
+        SIGHT_ASSERT(
+            "The service '" + sid + "' must be stopped before unregistering the container.",
+            service->isStopped()
+        );
     }
 
-    SIGHT_ASSERT("The service '"+sid+"' is not registered in the container map, it cannot be removed.",
-                 m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end());
+    SIGHT_ASSERT(
+        "The service '" + sid + "' is not registered in the container map, it cannot be removed.",
+        m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end()
+    );
 
     // Removes container in SID container map
     m_globalSIDToFwContainer.erase(sid);
@@ -83,10 +90,11 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
 ui::base::container::fwContainer::sptr GuiRegistry::getSIDContainer(std::string sid)
 {
     // Returns container in SID container map, null if  not found.
-    if (!hasSIDContainer(sid))
+    if(!hasSIDContainer(sid))
     {
         return nullptr;
     }
+
     return m_globalSIDToFwContainer[sid];
 }
 
@@ -102,8 +110,10 @@ bool GuiRegistry::hasSIDContainer(std::string sid)
 
 void GuiRegistry::registerWIDContainer(std::string wid, ui::base::container::fwContainer::sptr container)
 {
-    SIGHT_ASSERT("The wid container '"+wid+"' is already registered in the container map, it cannot be added twice.",
-                 m_globalWIDToFwContainer.find(wid) == m_globalWIDToFwContainer.end());
+    SIGHT_ASSERT(
+        "The wid container '" + wid + "' is already registered in the container map, it cannot be added twice.",
+        m_globalWIDToFwContainer.find(wid) == m_globalWIDToFwContainer.end()
+    );
     m_globalWIDToFwContainer[wid] = container;
 }
 
@@ -111,8 +121,10 @@ void GuiRegistry::registerWIDContainer(std::string wid, ui::base::container::fwC
 
 void GuiRegistry::unregisterWIDContainer(std::string wid)
 {
-    SIGHT_ASSERT("The wid container '"+wid+"' is not registered in the container map.",
-                 m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end());
+    SIGHT_ASSERT(
+        "The wid container '" + wid + "' is not registered in the container map.",
+        m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end()
+    );
 
     // Removes container in WID container map
     m_globalWIDToFwContainer.erase(wid);
@@ -123,10 +135,11 @@ void GuiRegistry::unregisterWIDContainer(std::string wid)
 ui::base::container::fwContainer::sptr GuiRegistry::getWIDContainer(std::string wid)
 {
     // Returns container in WID container map, null if  not found.
-    if (!hasWIDContainer(wid))
+    if(!hasWIDContainer(wid))
     {
         return nullptr;
     }
+
     return m_globalWIDToFwContainer[wid];
 }
 
@@ -142,8 +155,10 @@ bool GuiRegistry::hasWIDContainer(std::string wid)
 
 void GuiRegistry::registerSIDMenuBar(std::string sid, ui::base::container::fwMenuBar::sptr menuBar)
 {
-    SIGHT_ASSERT("The menuBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                 m_globalSIDToFwMenuBar.find(sid) == m_globalSIDToFwMenuBar.end());
+    SIGHT_ASSERT(
+        "The menuBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
+        m_globalSIDToFwMenuBar.find(sid) == m_globalSIDToFwMenuBar.end()
+    );
     m_globalSIDToFwMenuBar[sid] = menuBar;
 }
 
@@ -151,17 +166,21 @@ void GuiRegistry::registerSIDMenuBar(std::string sid, ui::base::container::fwMen
 
 void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 {
-    bool service_exists = core::tools::fwID::exist(sid );
-    SIGHT_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists );
+    bool service_exists = core::tools::fwID::exist(sid);
+    SIGHT_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
-        service::IService::sptr service = service::get( sid );
-        SIGHT_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
-                     service->isStopped());
+        service::IService::sptr service = service::get(sid);
+        SIGHT_ASSERT(
+            "The service '" + sid + "' must be stopped before unregistering the menuBar.",
+            service->isStopped()
+        );
     }
 
-    SIGHT_ASSERT("The menuBar '"+sid+"' is not registered in the container map, it cannot be removed.",
-                 m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end());
+    SIGHT_ASSERT(
+        "The menuBar '" + sid + "' is not registered in the container map, it cannot be removed.",
+        m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end()
+    );
 
     // Removes container in SID container map
     m_globalSIDToFwMenuBar.erase(sid);
@@ -171,8 +190,10 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
 
 ui::base::container::fwMenuBar::sptr GuiRegistry::getSIDMenuBar(std::string sid)
 {
-    SIGHT_ASSERT("The menuBar '"+sid+"' is not registered in the container map.",
-                 m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end());
+    SIGHT_ASSERT(
+        "The menuBar '" + sid + "' is not registered in the container map.",
+        m_globalSIDToFwMenuBar.find(sid) != m_globalSIDToFwMenuBar.end()
+    );
     // returns container in SID container map
     return m_globalSIDToFwMenuBar[sid];
 }
@@ -181,8 +202,10 @@ ui::base::container::fwMenuBar::sptr GuiRegistry::getSIDMenuBar(std::string sid)
 
 void GuiRegistry::registerSIDToolBar(std::string sid, ui::base::container::fwToolBar::sptr toolBar)
 {
-    SIGHT_ASSERT("The toolBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                 m_globalSIDToFwToolBar.find(sid) == m_globalSIDToFwToolBar.end());
+    SIGHT_ASSERT(
+        "The toolBar '" + sid + "' is already registered in the container map, it cannot be added twice.",
+        m_globalSIDToFwToolBar.find(sid) == m_globalSIDToFwToolBar.end()
+    );
     m_globalSIDToFwToolBar[sid] = toolBar;
 }
 
@@ -190,17 +213,21 @@ void GuiRegistry::registerSIDToolBar(std::string sid, ui::base::container::fwToo
 
 void GuiRegistry::unregisterSIDToolBar(std::string sid)
 {
-    bool service_exists = core::tools::fwID::exist(sid );
-    SIGHT_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists );
+    bool service_exists = core::tools::fwID::exist(sid);
+    SIGHT_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
-        service::IService::sptr service = service::get( sid );
-        SIGHT_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
-                     service->isStopped());
+        service::IService::sptr service = service::get(sid);
+        SIGHT_ASSERT(
+            "The service '" + sid + "' must be stopped before unregistering the menuBar.",
+            service->isStopped()
+        );
     }
 
-    SIGHT_ASSERT("The toolBar '"+sid+"' is not registered in the container map, it cannot be removed.",
-                 m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end());
+    SIGHT_ASSERT(
+        "The toolBar '" + sid + "' is not registered in the container map, it cannot be removed.",
+        m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end()
+    );
 
     // Removes container in SID container map
     m_globalSIDToFwToolBar.erase(sid);
@@ -210,8 +237,10 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
 
 ui::base::container::fwToolBar::sptr GuiRegistry::getSIDToolBar(std::string sid)
 {
-    SIGHT_ASSERT("The toolBar '"+sid+"' is not registered in the container map.",
-                 m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end());
+    SIGHT_ASSERT(
+        "The toolBar '" + sid + "' is not registered in the container map.",
+        m_globalSIDToFwToolBar.find(sid) != m_globalSIDToFwToolBar.end()
+    );
     // returns container in SID container map
     return m_globalSIDToFwToolBar[sid];
 }
@@ -220,8 +249,10 @@ ui::base::container::fwToolBar::sptr GuiRegistry::getSIDToolBar(std::string sid)
 
 void GuiRegistry::registerSIDMenu(std::string sid, ui::base::container::fwMenu::sptr menu)
 {
-    SIGHT_ASSERT("The menu '" + sid + "' is already registered in the container map, it cannot be added twice.",
-                 m_globalSIDToFwMenu.find(sid) == m_globalSIDToFwMenu.end());
+    SIGHT_ASSERT(
+        "The menu '" + sid + "' is already registered in the container map, it cannot be added twice.",
+        m_globalSIDToFwMenu.find(sid) == m_globalSIDToFwMenu.end()
+    );
     m_globalSIDToFwMenu[sid] = menu;
 }
 
@@ -229,16 +260,18 @@ void GuiRegistry::registerSIDMenu(std::string sid, ui::base::container::fwMenu::
 
 void GuiRegistry::unregisterSIDMenu(std::string sid)
 {
-    bool service_exists = core::tools::fwID::exist(sid );
-    SIGHT_INFO_IF("The menu "<<sid <<" does not exist.", !service_exists );
+    bool service_exists = core::tools::fwID::exist(sid);
+    SIGHT_INFO_IF("The menu " << sid << " does not exist.", !service_exists);
     if(service_exists)
     {
-        service::IService::sptr service = service::get( sid );
+        service::IService::sptr service = service::get(sid);
         SIGHT_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->isStopped());
     }
 
-    SIGHT_ASSERT("The menu '"+sid+"' is not registered in the container map, it cannot be removed.",
-                 m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end());
+    SIGHT_ASSERT(
+        "The menu '" + sid + "' is not registered in the container map, it cannot be removed.",
+        m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end()
+    );
 
     // Removes container in SID container map
     m_globalSIDToFwMenu.erase(sid);
@@ -248,8 +281,10 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
 
 ui::base::container::fwMenu::sptr GuiRegistry::getSIDMenu(std::string sid)
 {
-    SIGHT_ASSERT("The menu '"+sid+"' is not registered in the container map.",
-                 m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end());
+    SIGHT_ASSERT(
+        "The menu '" + sid + "' is not registered in the container map.",
+        m_globalSIDToFwMenu.find(sid) != m_globalSIDToFwMenu.end()
+    );
     // returns container in SID container map
     return m_globalSIDToFwMenu[sid];
 }
@@ -258,13 +293,19 @@ ui::base::container::fwMenu::sptr GuiRegistry::getSIDMenu(std::string sid)
 
 void GuiRegistry::registerActionSIDToParentSID(std::string actionSid, std::string parentSid)
 {
-    if ( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
         // Action already exist in map
-        SIGHT_ASSERT("The action '" + actionSid + "' already exists for the parent '" + parentSid+"'",
-                     std::find(m_actionSIDToParentSID[actionSid].begin(), m_actionSIDToParentSID[actionSid].end(),
-                               parentSid) == m_actionSIDToParentSID[actionSid].end());
+        SIGHT_ASSERT(
+            "The action '" + actionSid + "' already exists for the parent '" + parentSid + "'",
+            std::find(
+                m_actionSIDToParentSID[actionSid].begin(),
+                m_actionSIDToParentSID[actionSid].end(),
+                parentSid
+            ) == m_actionSIDToParentSID[actionSid].end()
+        );
     }
+
     m_actionSIDToParentSID[actionSid].push_back(parentSid);
 }
 
@@ -272,21 +313,25 @@ void GuiRegistry::registerActionSIDToParentSID(std::string actionSid, std::strin
 
 void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::string parentSid)
 {
+    SIGHT_ASSERT(
+        "The action '" + actionSid + "' is not registered.",
+        m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end()
+    );
 
-    SIGHT_ASSERT("The action '"+actionSid+"' is not registered.",
-                 m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
-
-    if (m_actionSIDToParentSID[actionSid].size() == 1)
+    if(m_actionSIDToParentSID[actionSid].size() == 1)
     {
         // Action has one parent
-        bool service_exists = core::tools::fwID::exist(actionSid );
-        SIGHT_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists );
+        bool service_exists = core::tools::fwID::exist(actionSid);
+        SIGHT_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists);
         if(service_exists)
         {
-            service::IService::sptr service = service::get( actionSid );
-            SIGHT_ASSERT("The service '" + actionSid + "' must be stopped before unregistering the action.",
-                         service->isStopped());
+            service::IService::sptr service = service::get(actionSid);
+            SIGHT_ASSERT(
+                "The service '" + actionSid + "' must be stopped before unregistering the action.",
+                service->isStopped()
+            );
         }
+
         m_actionSIDToParentSID.erase(actionSid);
     }
     else
@@ -294,8 +339,10 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
         // Action has several parents
         ParentSidsType::iterator iter =
             std::find(m_actionSIDToParentSID[actionSid].begin(), m_actionSIDToParentSID[actionSid].end(), parentSid);
-        SIGHT_ASSERT("The action with the sid '"+actionSid+"' has no parent named '"+ parentSid +"'",
-                     iter != m_actionSIDToParentSID[actionSid].end());
+        SIGHT_ASSERT(
+            "The action with the sid '" + actionSid + "' has no parent named '" + parentSid + "'",
+            iter != m_actionSIDToParentSID[actionSid].end()
+        );
         m_actionSIDToParentSID[actionSid].erase(iter);
     }
 }
@@ -304,33 +351,36 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
 
 void GuiRegistry::actionServiceStopping(std::string actionSid)
 {
-    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        for(std::string parentSid :  parentSids)
+        for(std::string parentSid : parentSids)
         {
-            bool service_exists = core::tools::fwID::exist(parentSid );
-            SIGHT_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
-                          !service_exists );
+            bool service_exists = core::tools::fwID::exist(parentSid);
+            SIGHT_INFO_IF(
+                "The service '" + parentSid + "' managing the action '" + actionSid + "' does not exist.",
+                !service_exists
+            );
             if(service_exists)
             {
-                service::IService::sptr service     = service::get( parentSid );
+                service::IService::sptr service     = service::get(parentSid);
                 ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
-                if (menuSrv)
+                if(menuSrv)
                 {
                     menuSrv->actionServiceStopping(actionSid);
                 }
-                else if (toolbarSrv)
+                else if(toolbarSrv)
                 {
                     toolbarSrv->actionServiceStopping(actionSid);
                 }
                 else
                 {
                     SIGHT_FATAL(
-                        "The service '"+parentSid+"' managing the action '"+actionSid+
-                        "' must be managed by a menu or a toolBar");
+                        "The service '" + parentSid + "' managing the action '" + actionSid
+                        + "' must be managed by a menu or a toolBar"
+                    );
                 }
             }
         }
@@ -341,33 +391,36 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
 
 void GuiRegistry::actionServiceStarting(std::string actionSid)
 {
-    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        for(std::string parentSid :  parentSids)
+        for(std::string parentSid : parentSids)
         {
-            bool service_exists = core::tools::fwID::exist(parentSid );
-            SIGHT_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
-                          !service_exists );
+            bool service_exists = core::tools::fwID::exist(parentSid);
+            SIGHT_INFO_IF(
+                "The service '" + parentSid + "' managing the action '" + actionSid + "' does not exist.",
+                !service_exists
+            );
             if(service_exists)
             {
-                service::IService::sptr service     = service::get( parentSid );
+                service::IService::sptr service     = service::get(parentSid);
                 ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
-                if (menuSrv)
+                if(menuSrv)
                 {
                     menuSrv->actionServiceStarting(actionSid);
                 }
-                else if (toolbarSrv)
+                else if(toolbarSrv)
                 {
                     toolbarSrv->actionServiceStarting(actionSid);
                 }
                 else
                 {
                     SIGHT_FATAL(
-                        "The service '"+parentSid+"' managing the action '"+actionSid+
-                        "' must be managed by a menu or a toolBar");
+                        "The service '" + parentSid + "' managing the action '" + actionSid
+                        + "' must be managed by a menu or a toolBar"
+                    );
                 }
             }
         }
@@ -378,34 +431,36 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
 void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 {
-    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
-
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        for(std::string parentSid :  parentSids)
+        for(std::string parentSid : parentSids)
         {
-            bool service_exists = core::tools::fwID::exist(parentSid );
-            SIGHT_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
-                          !service_exists );
+            bool service_exists = core::tools::fwID::exist(parentSid);
+            SIGHT_INFO_IF(
+                "The service '" + parentSid + "' managing the action '" + actionSid + "' does not exist.",
+                !service_exists
+            );
             if(service_exists)
             {
-                service::IService::sptr service     = service::get( parentSid );
+                service::IService::sptr service     = service::get(parentSid);
                 ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
-                if (menuSrv)
+                if(menuSrv)
                 {
                     menuSrv->actionServiceSetActive(actionSid, isActive);
                 }
-                else if (toolbarSrv)
+                else if(toolbarSrv)
                 {
                     toolbarSrv->actionServiceSetActive(actionSid, isActive);
                 }
                 else
                 {
                     SIGHT_FATAL(
-                        "The service '"+parentSid+"' managing the action '"+actionSid+
-                        "' must be managed by a menu or a toolBar");
+                        "The service '" + parentSid + "' managing the action '" + actionSid
+                        + "' must be managed by a menu or a toolBar"
+                    );
                 }
             }
         }
@@ -416,34 +471,36 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 
 void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecutable)
 {
-    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
-
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        for(std::string parentSid :  parentSids)
+        for(std::string parentSid : parentSids)
         {
-            bool service_exists = core::tools::fwID::exist(parentSid );
-            SIGHT_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
-                          !service_exists );
+            bool service_exists = core::tools::fwID::exist(parentSid);
+            SIGHT_INFO_IF(
+                "The service '" + parentSid + "' managing the action '" + actionSid + "' does not exist.",
+                !service_exists
+            );
             if(service_exists)
             {
-                service::IService::sptr service     = service::get( parentSid );
+                service::IService::sptr service     = service::get(parentSid);
                 ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
-                if (menuSrv)
+                if(menuSrv)
                 {
                     menuSrv->actionServiceSetExecutable(actionSid, isExecutable);
                 }
-                else if (toolbarSrv)
+                else if(toolbarSrv)
                 {
                     toolbarSrv->actionServiceSetExecutable(actionSid, isExecutable);
                 }
                 else
                 {
                     SIGHT_FATAL(
-                        "The service '"+parentSid+"' managing the action '"+actionSid+
-                        "' must be managed by a menu or a toolBar");
+                        "The service '" + parentSid + "' managing the action '" + actionSid
+                        + "' must be managed by a menu or a toolBar"
+                    );
                 }
             }
         }
@@ -454,33 +511,36 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
 
 void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
 {
-    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    if(m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end())
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        for(std::string parentSid :  parentSids)
+        for(std::string parentSid : parentSids)
         {
-            bool service_exists = core::tools::fwID::exist(parentSid );
-            SIGHT_INFO_IF("The service '"+parentSid +"' managing the action '" + actionSid+"' does not exist.",
-                          !service_exists );
+            bool service_exists = core::tools::fwID::exist(parentSid);
+            SIGHT_INFO_IF(
+                "The service '" + parentSid + "' managing the action '" + actionSid + "' does not exist.",
+                !service_exists
+            );
             if(service_exists)
             {
-                service::IService::sptr service     = service::get( parentSid );
+                service::IService::sptr service     = service::get(parentSid);
                 ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
                 ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
-                if (menuSrv)
+                if(menuSrv)
                 {
                     menuSrv->actionServiceSetVisible(actionSid, isVisible);
                 }
-                else if (toolbarSrv)
+                else if(toolbarSrv)
                 {
                     toolbarSrv->actionServiceSetVisible(actionSid, isVisible);
                 }
                 else
                 {
                     SIGHT_FATAL(
-                        "The service '"+parentSid+"' managing the action '"+actionSid+
-                        "' must be managed by a menu or a toolBar");
+                        "The service '" + parentSid + "' managing the action '" + actionSid
+                        + "' must be managed by a menu or a toolBar"
+                    );
                 }
             }
         }
@@ -489,4 +549,4 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui

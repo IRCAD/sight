@@ -45,7 +45,7 @@ std::string getString(const std::type_info& ti)
 {
 #ifndef WIN32
     char* demangled = abi::__cxa_demangle(ti.name(), 0, 0, 0);
-    if (demangled)
+    if(demangled)
     {
         std::string res(demangled);
         free(demangled);
@@ -73,7 +73,7 @@ std::string getString(const TypeInfo& ti)
 template<>
 std::string getString(const signed char& c)
 {
-    return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short) c);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ std::string getString(const signed char& c)
 template<>
 std::string getString(const char& c)
 {
-    return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short) c);
 }
 
 //------------------------------------------------------------------------------
@@ -89,9 +89,9 @@ std::string getString(const char& c)
 template<>
 std::string getString(const unsigned char& c)
 {
-    return boost::lexical_cast<std::string>((short)c);
+    return boost::lexical_cast<std::string>((short) c);
 }
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::core

@@ -29,7 +29,7 @@
 
 #include <functional>
 
-SIGHT_REGISTER_DATA( sight::data::ProcessObject );
+SIGHT_REGISTER_DATA(sight::data::ProcessObject);
 
 namespace sight::data
 {
@@ -56,6 +56,7 @@ data::Object::sptr ProcessObject::getValue(const ParamNameType& name, const Proc
     {
         object = iter->second;
     }
+
     return object;
 }
 
@@ -79,7 +80,7 @@ void ProcessObject::setValue(const ParamNameType& name, data::Object::sptr objec
 {
     std::pair<ProcessObjectMapType::iterator, bool> res;
     res = params.insert(ProcessObjectMapType::value_type(name, object));
-    if( !res.second )
+    if(!res.second)
     {
         res.first->second = object;
     }
@@ -104,9 +105,12 @@ void ProcessObject::setOutputValue(const ParamNameType& name, data::Object::sptr
 ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObjectMapType& params) const
 {
     ParamNameVectorType names;
-    std::transform( params.begin(), params.end(),
-                    std::back_inserter(names),
-                    std::bind(&ProcessObjectMapType::value_type::first, std::placeholders::_1) );
+    std::transform(
+        params.begin(),
+        params.end(),
+        std::back_inserter(names),
+        std::bind(&ProcessObjectMapType::value_type::first, std::placeholders::_1)
+    );
     return names;
 }
 
@@ -147,13 +151,17 @@ void ProcessObject::clearParams(ProcessObjectMapType& params)
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::shallowCopy(const Object::csptr& source )
+void ProcessObject::shallowCopy(const Object::csptr& source)
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(source);
 
     m_inputs  = other->m_inputs;
     m_outputs = other->m_outputs;
@@ -164,10 +172,14 @@ void ProcessObject::shallowCopy(const Object::csptr& source )
 void ProcessObject::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(source, cache);
 
     this->clearInputs();
     this->clearOutputs();

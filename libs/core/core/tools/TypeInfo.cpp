@@ -84,7 +84,7 @@ bool operator==(const TypeInfo& lhs, const TypeInfo& rhs)
 // typeinfo can have different ptr on the same strucure !!!!
 //http://gcc.gnu.org/ml/gcc/2002-05/msg02085.html
 {
-    return strcmp(lhs.type_info().name(), rhs.type_info().name() ) == 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name()) == 0;
 }
 
 //------------------------------------------------------------------------------
@@ -98,28 +98,28 @@ bool operator!=(const TypeInfo& lhs, const TypeInfo& rhs)
 
 bool operator<(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name(), rhs.type_info().name() ) < 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name()) < 0;
 }
 
 //------------------------------------------------------------------------------
 
 bool operator>(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name(), rhs.type_info().name() ) > 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name()) > 0;
 }
 
 //------------------------------------------------------------------------------
 
 bool operator<=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name(), rhs.type_info().name() ) <= 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name()) <= 0;
 }
 
 //------------------------------------------------------------------------------
 
 bool operator>=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name(), rhs.type_info().name() ) >= 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name()) >= 0;
 }
 
 } // end namespace sight::core::tools

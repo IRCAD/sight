@@ -35,8 +35,10 @@
 #include <QScrollArea>
 #include <QStyle>
 
-fwGuiRegisterMacro( sight::ui::qt::LineLayoutManager,
-                    sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
+fwGuiRegisterMacro(
+    sight::ui::qt::LineLayoutManager,
+    sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY
+)
 
 namespace sight::ui::qt
 {
@@ -55,7 +57,7 @@ LineLayoutManager::~LineLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
+void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
@@ -66,13 +68,13 @@ void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr par
 
     Orientation orientation = this->getOrientation();
 
-    if( orientation == VERTICAL )
+    if(orientation == VERTICAL)
     {
         layout->setDirection(QBoxLayout::TopToBottom);
     }
 
-    const std::list< ViewInfo>& views = this->getViewsInfo();
-    for ( ViewInfo viewInfo : views)
+    const std::list<ViewInfo>& views = this->getViewsInfo();
+    for(ViewInfo viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
         {
@@ -117,6 +119,7 @@ void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr par
             {
                 panel = new QWidget();
             }
+
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
             panel->setContentsMargins(leftBorder, topBorder, rightBorder, bottomBorder);
             if(!viewInfo.m_toolTip.empty())
@@ -133,10 +136,10 @@ void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr par
                 std::uint8_t rgba[4];
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-                   << static_cast< short >(rgba[1]) << ','
-                   << static_cast< short >(rgba[2]) << ','
-                   << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+                << static_cast<short>(rgba[1]) << ','
+                << static_cast<short>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 panel->setStyleSheet(style + qApp->styleSheet());
             }
@@ -145,26 +148,26 @@ void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr par
             {
                 QScrollArea* scrollArea = new QScrollArea();
                 scrollArea->setWidget(panel);
-                scrollArea->setWidgetResizable( true );
+                scrollArea->setWidgetResizable(true);
                 if(!viewInfo.m_backgroundColor.empty())
                 {
                     std::uint8_t rgba[4];
                     data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                     std::stringstream ss;
-                    ss << "QWidget { background-color: rgba(" << static_cast< short >(rgba[0]) << ','
-                       << static_cast< short >(rgba[1]) << ','
-                       << static_cast< short >(rgba[2]) << ','
-                       << (static_cast< float >(rgba[3])/255.f)*100 << "%); } ";
+                    ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
+                    << static_cast<short>(rgba[1]) << ','
+                    << static_cast<short>(rgba[2]) << ','
+                    << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
                     const QString style = QString::fromStdString(ss.str());
                     scrollArea->setStyleSheet(style + qApp->styleSheet());
                 }
 
-                layout->addWidget( scrollArea );
+                layout->addWidget(scrollArea);
                 layout->setStretchFactor(scrollArea, viewInfo.m_proportion);
             }
             else
             {
-                layout->addWidget( panel );
+                layout->addWidget(panel);
                 layout->setStretchFactor(panel, viewInfo.m_proportion);
             }
 
@@ -172,7 +175,6 @@ void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr par
             {
                 subContainer->setVisible(false);
             }
-
         }
     }
 }

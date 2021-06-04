@@ -26,16 +26,18 @@
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
 class SignalsTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( SignalsTest );
 
-    CPPUNIT_TEST( buildTest );
-    CPPUNIT_TEST( hasSignalsTest );
+    CPPUNIT_TEST_SUITE(SignalsTest);
+
+    CPPUNIT_TEST(buildTest);
+    CPPUNIT_TEST(hasSignalsTest);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -49,4 +51,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::core::com

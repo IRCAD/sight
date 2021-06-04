@@ -31,6 +31,7 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
 
@@ -75,7 +76,7 @@ data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageB
 
 IConverter::sptr TrackingStopConverter::New()
 {
-    return std::make_shared< TrackingStopConverter >();
+    return std::make_shared<TrackingStopConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,4 +94,5 @@ std::string const& TrackingStopConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

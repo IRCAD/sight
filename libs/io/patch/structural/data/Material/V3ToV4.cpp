@@ -58,16 +58,18 @@ V3ToV4::~V3ToV4()
 
 // ----------------------------------------------------------------------------
 
-V3ToV4::V3ToV4( const V3ToV4& cpy ) :
+V3ToV4::V3ToV4(const V3ToV4& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void V3ToV4::apply( const sight::atoms::Object::sptr& previous,
-                    const sight::atoms::Object::sptr& current,
-                    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+void V3ToV4::apply(
+    const sight::atoms::Object::sptr& previous,
+    const sight::atoms::Object::sptr& current,
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -77,7 +79,7 @@ void V3ToV4::apply( const sight::atoms::Object::sptr& previous,
     io::atoms::patch::helper::Object helper(current);
 
     // Retrieve and remove lighting attribute, then update shading mode
-    sight::atoms::Boolean::sptr lighting = previous->getAttribute< sight::atoms::Boolean >("lighting");
+    sight::atoms::Boolean::sptr lighting = previous->getAttribute<sight::atoms::Boolean>("lighting");
     bool bLighting                       = lighting->getValue();
 
     helper.removeAttribute("lighting");
@@ -88,8 +90,8 @@ void V3ToV4::apply( const sight::atoms::Object::sptr& previous,
     }
 
     // Switch diffuse and ambient
-    sight::atoms::Object::sptr ambient = current->getAttribute< sight::atoms::Object >("ambient");
-    sight::atoms::Object::sptr diffuse = current->getAttribute< sight::atoms::Object >("diffuse");
+    sight::atoms::Object::sptr ambient = current->getAttribute<sight::atoms::Object>("ambient");
+    sight::atoms::Object::sptr diffuse = current->getAttribute<sight::atoms::Object>("diffuse");
 
     // Replace diffuse by previous ambient
     helper.replaceAttribute("diffuse", ambient);
@@ -97,14 +99,14 @@ void V3ToV4::apply( const sight::atoms::Object::sptr& previous,
 
     // Set ambient to 0.05f
 
-    sight::atoms::Sequence::sptr ambientSeq = diffuse->getAttribute< sight::atoms::Sequence >("rgba");
-    sight::atoms::Numeric::sptr r           = std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[0]);
+    sight::atoms::Sequence::sptr ambientSeq = diffuse->getAttribute<sight::atoms::Sequence>("rgba");
+    sight::atoms::Numeric::sptr r           = std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[0]);
     r->setFromString(".05");
-    sight::atoms::Numeric::sptr g = std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[1]);
+    sight::atoms::Numeric::sptr g = std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[1]);
     g->setFromString(".05");
-    sight::atoms::Numeric::sptr b = std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[2]);
+    sight::atoms::Numeric::sptr b = std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[2]);
     b->setFromString(".05");
-    sight::atoms::Numeric::sptr a = std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[3]);
+    sight::atoms::Numeric::sptr a = std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[3]);
     a->setFromString("1.");
 }
 

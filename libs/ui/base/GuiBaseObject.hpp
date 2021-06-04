@@ -36,7 +36,6 @@ namespace sight::ui::base
  */
 class UI_BASE_CLASS_API GuiBaseObject : public ::sight::core::BaseObject
 {
-
 public:
 
     typedef ::sight::ui::base::factory::Key Key;
@@ -47,19 +46,21 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry(std::string functorKey)
         {
             ui::base::registry::get()->addFactory(functorKey, &ui::base::factory::New<T>);
         }
     };
 
-    SIGHT_DECLARE_CLASS(GuiBaseObject, core::BaseObject)
+    SIGHT_DECLARE_CLASS(GuiBaseObject, core::BaseObject);
 
 protected:
+
     /**
      * @name Constructor/Destructor
      * @{ */
@@ -67,12 +68,12 @@ protected:
     GuiBaseObject()
     {
     }
+
     virtual ~GuiBaseObject()
     {
     }
 
     /**  @} */
-
 };
 
 } // namespace sight::ui::base

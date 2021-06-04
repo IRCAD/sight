@@ -24,4 +24,4 @@
 
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( ExTimeLine::MessageTL )
+SIGHT_REGISTER_DATA(ExTimeLine::MessageTL)

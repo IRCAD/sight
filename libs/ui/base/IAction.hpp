@@ -40,7 +40,7 @@ class UI_BASE_CLASS_API IAction : public ::sight::service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IAction, service::IService)
+    SIGHT_DECLARE_SERVICE(IAction, service::IService);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**

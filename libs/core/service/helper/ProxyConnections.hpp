@@ -36,9 +36,9 @@ namespace helper
 /// Helper class to register proxy connections.
 struct ProxyConnections
 {
-    typedef std::pair< std::string, core::com::Signals::SignalKeyType > SignalInfoType;
-    typedef std::pair< std::string, core::com::Slots::SlotKeyType > SlotInfoType;
-    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+    typedef std::pair<std::string, core::com::Signals::SignalKeyType> SignalInfoType;
+    typedef std::pair<std::string, core::com::Slots::SlotKeyType> SlotInfoType;
+    typedef std::vector<SlotInfoType> SlotInfoContainerType;
     typedef std::string UIDType;
     typedef std::string KeyType;
     typedef std::pair<UIDType, KeyType> ProxyEltType;
@@ -68,24 +68,28 @@ struct ProxyConnections
     {
         m_signals.push_back(std::make_pair(uid, key));
     }
+
     //------------------------------------------------------------------------------
 
     void addSignalConnection(const SignalInfoType& pair)
     {
         m_signals.push_back(pair);
     }
+
     //------------------------------------------------------------------------------
 
     void addSlotConnection(UIDType uid, KeyType key)
     {
         m_slots.push_back(std::make_pair(uid, key));
     }
+
     //------------------------------------------------------------------------------
 
     void addSlotConnection(const SlotInfoType& pair)
     {
         m_slots.push_back(pair);
     }
+
     //------------------------------------------------------------------------------
 
     bool empty() const

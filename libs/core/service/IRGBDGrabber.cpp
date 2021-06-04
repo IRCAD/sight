@@ -37,9 +37,8 @@ IRGBDGrabber::IRGBDGrabber() noexcept
 
 IRGBDGrabber::~IRGBDGrabber() noexcept
 {
-
 }
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::service
+} // namespace sight::service

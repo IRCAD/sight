@@ -24,6 +24,7 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -38,7 +39,6 @@ StandardButton::StandardButton()
 
 StandardButton::~StandardButton()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -59,4 +59,5 @@ const StandardButton::ButtonList& StandardButton::getButton()
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

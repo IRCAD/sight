@@ -37,7 +37,9 @@ class Module;
 
 namespace io
 {
+
 class ModuleDescriptorReader;
+
 } // namespace io
 
 /**
@@ -51,9 +53,9 @@ struct CORE_CLASS_API Extension : public ModuleElement,
      */
     typedef enum
     {
-        UnknownValidity,    ///< The extension has not been validated.
-        Valid,              ///< The extension passed the validation.
-        Invalid             ///< The extension failed the validation.
+        UnknownValidity, ///< The extension has not been validated.
+        Valid,           ///< The extension passed the validation.
+        Invalid          ///< The extension failed the validation.
     } Validity;
 
     /**
@@ -116,18 +118,22 @@ struct CORE_CLASS_API Extension : public ModuleElement,
      *
      * @todo        test parameters validity
      */
-    Extension( std::shared_ptr<Module> module, const std::string& id, const std::string& point,
-               const xmlNodePtr xmlNode );
+    Extension(
+        std::shared_ptr<Module> module,
+        const std::string& id,
+        const std::string& point,
+        const xmlNodePtr xmlNode
+    );
 
     private:
 
-        const std::string m_id;     ///< A string containing the extension identifier.
-        const std::string m_point;  ///< A string containing the extension point identifier the extension will be
-                                    // connected to.
-        xmlDocPtr m_xmlDoc;         ///< A pointer to the xml document that contains the xml node representing the
-                                    // extension
-        xmlNodePtr m_xmlNode;       ///< A pointer to the xml node that represents the extension
-        Validity m_validity;        ///< The validity state of the extension
+        const std::string m_id;    ///< A string containing the extension identifier.
+        const std::string m_point; ///< A string containing the extension point identifier the extension will be
+        // connected to.
+        xmlDocPtr m_xmlDoc; ///< A pointer to the xml document that contains the xml node representing the
+        // extension
+        xmlNodePtr m_xmlNode; ///< A pointer to the xml node that represents the extension
+        Validity m_validity;  ///< The validity state of the extension
 
         /**
          * @brief   Assignment operator.
@@ -135,7 +141,6 @@ struct CORE_CLASS_API Extension : public ModuleElement,
          * @remark  Assignment is forbidden.
          */
         void operator=(const Extension&) noexcept;
-
 };
 
 } // namespace sight::core::runtime

@@ -29,6 +29,7 @@
 
 namespace sight::module::ui::console
 {
+
 //-----------------------------------------------------------------------------
 
 SIGHT_REGISTER_PLUGIN("::sight::module::ui::console::Plugin");
@@ -63,7 +64,7 @@ void Plugin::stop() noexcept
 
 int Plugin::run() noexcept
 {
-    m_worker->post( []() {core::runtime::getCurrentProfile()->setup(); } );
+    m_worker->post([](){core::runtime::getCurrentProfile()->setup();});
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
     core::runtime::getCurrentProfile()->cleanup();

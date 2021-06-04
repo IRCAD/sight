@@ -54,6 +54,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace model
 {
 
@@ -63,11 +64,11 @@ static const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
 SOrganTransformation::SOrganTransformation() noexcept :
-    m_saveButton( 0 ),
-    m_loadButton( 0 ),
-    m_resetButton( 0 ),
-    m_reconstructionListBox( 0 ),
-    m_saveCount( 0 )
+    m_saveButton(0),
+    m_loadButton(0),
+    m_resetButton(0),
+    m_reconstructionListBox(0),
+    m_saveCount(0)
 {
 }
 
@@ -89,40 +90,42 @@ void SOrganTransformation::configuring()
 void SOrganTransformation::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    QGroupBox* groupBox = new QGroupBox(tr("Organs") );
-    layout->addWidget( groupBox);
+    QGroupBox* groupBox = new QGroupBox(tr("Organs"));
+    layout->addWidget(groupBox);
 
     QVBoxLayout* layoutGroupBox = new QVBoxLayout();
     groupBox->setLayout(layoutGroupBox);
 
-    m_selectAllCheckBox     = new QCheckBox(tr("Select All")  );
-    m_reconstructionListBox = new QListWidget( groupBox);
-    m_resetButton           = new QPushButton(tr("Reset") );
-    m_saveButton            = new QPushButton(tr("Save") );
-    m_loadButton            = new QPushButton(tr("Load") );
+    m_selectAllCheckBox     = new QCheckBox(tr("Select All"));
+    m_reconstructionListBox = new QListWidget(groupBox);
+    m_resetButton           = new QPushButton(tr("Reset"));
+    m_saveButton            = new QPushButton(tr("Save"));
+    m_loadButton            = new QPushButton(tr("Load"));
     m_saveSelectionComboBox = new QComboBox();
 
-    QObject::connect(m_reconstructionListBox,
-                     SIGNAL(itemClicked(QListWidgetItem*)),
-                     this,
-                     SLOT(onReconstructionCheck(QListWidgetItem*)));
+    QObject::connect(
+        m_reconstructionListBox,
+        SIGNAL(itemClicked(QListWidgetItem*)),
+        this,
+        SLOT(onReconstructionCheck(QListWidgetItem*))
+    );
     QObject::connect(m_resetButton, SIGNAL(clicked()), this, SLOT(onResetClick()));
     QObject::connect(m_saveButton, SIGNAL(clicked()), this, SLOT(onSaveClick()));
     QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadClick()));
     QObject::connect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
-    layoutGroupBox->addWidget( m_selectAllCheckBox, 0);
-    layoutGroupBox->addWidget( m_reconstructionListBox, 1);
-    layoutGroupBox->addWidget( m_resetButton, 0);
-    layoutGroupBox->addWidget( m_saveButton, 0);
-    layoutGroupBox->addWidget( m_saveSelectionComboBox, 0);
-    layoutGroupBox->addWidget( m_loadButton, 0);
+    layoutGroupBox->addWidget(m_selectAllCheckBox, 0);
+    layoutGroupBox->addWidget(m_reconstructionListBox, 1);
+    layoutGroupBox->addWidget(m_resetButton, 0);
+    layoutGroupBox->addWidget(m_saveButton, 0);
+    layoutGroupBox->addWidget(m_saveSelectionComboBox, 0);
+    layoutGroupBox->addWidget(m_loadButton, 0);
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
     this->updating();
 }
@@ -131,10 +134,12 @@ void SOrganTransformation::starting()
 
 void SOrganTransformation::stopping()
 {
-    QObject::disconnect(m_reconstructionListBox,
-                        SIGNAL(itemClicked(QListWidgetItem*)),
-                        this,
-                        SLOT(onReconstructionCheck(QListWidgetItem*)));
+    QObject::disconnect(
+        m_reconstructionListBox,
+        SIGNAL(itemClicked(QListWidgetItem*)),
+        this,
+        SLOT(onReconstructionCheck(QListWidgetItem*))
+    );
     QObject::disconnect(m_resetButton, SIGNAL(clicked()), this, SLOT(onResetClick()));
     QObject::disconnect(m_saveButton, SIGNAL(clicked()), this, SLOT(onSaveClick()));
     QObject::disconnect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadClick()));
@@ -160,7 +165,7 @@ void SOrganTransformation::updating()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::info( ::std::ostream& sstream )
+void SOrganTransformation::info(::std::ostream& sstream)
 {
 }
 
@@ -171,29 +176,29 @@ void SOrganTransformation::refresh()
     m_reconstructionMap.clear();
     m_reconstructionListBox->clear();
 
-    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
     bool hasReconstructions = !series->getReconstructionDB().empty();
-    container->setEnabled( hasReconstructions );
+    container->setEnabled(hasReconstructions);
 
     if(hasReconstructions)
     {
-        data::Composite::sptr pComposite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
+        data::Composite::sptr pComposite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
 
-        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
-            m_reconstructionMap[ rec->getOrganName() ] = rec;
+            m_reconstructionMap[rec->getOrganName()] = rec;
         }
 
-        for( ReconstructionMapType::iterator it = m_reconstructionMap.begin(); it != m_reconstructionMap.end(); ++it )
+        for(ReconstructionMapType::iterator it = m_reconstructionMap.begin() ; it != m_reconstructionMap.end() ; ++it)
         {
             std::string organName = it->first;
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(organName), m_reconstructionListBox);
-            if( pComposite && pComposite->find(organName) != pComposite->end())
+            if(pComposite && pComposite->find(organName) != pComposite->end())
             {
                 item->setCheckState(Qt::Checked);
             }
@@ -201,6 +206,7 @@ void SOrganTransformation::refresh()
             {
                 item->setCheckState(Qt::Unchecked);
             }
+
             m_reconstructionListBox->addItem(item);
         }
     }
@@ -210,7 +216,7 @@ void SOrganTransformation::refresh()
 
 void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTransMat)
 {
-    auto sig = aTransMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = aTransMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -218,17 +224,17 @@ void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTran
 
 void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
-    data::Composite::sptr pComposite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
-    if (pComposite != nullptr)
+    data::Composite::sptr pComposite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
+    if(pComposite != nullptr)
     {
-        ::std::string item_name = currentItem->text().toStdString();
+        ::std::string item_name                    = currentItem->text().toStdString();
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
         data::helper::Composite aCompositeHelper(pComposite);
-        if ((currentItem->checkState()) == Qt::Checked)
+        if((currentItem->checkState()) == Qt::Checked)
         {
-            if (pComposite->find(item_name) == pComposite->end())
+            if(pComposite->find(item_name) == pComposite->end())
             {
                 aCompositeHelper.add(item_name, pMesh);
             }
@@ -239,11 +245,12 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
         }
         else
         {
-            if (pComposite->find(item_name) != pComposite->end())
+            if(pComposite->find(item_name) != pComposite->end())
             {
                 aCompositeHelper.remove(item_name);
             }
         }
+
         aCompositeHelper.notify();
     }
 }
@@ -252,16 +259,16 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 
 void SOrganTransformation::onResetClick()
 {
-    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
     //search the corresponding triangular mesh
-    for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
+    for(data::Reconstruction::sptr rec : series->getReconstructionDB())
     {
         data::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
         data::Matrix4::sptr pTmpMat =
-            pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
-        if (pTmpMat)
+            pTmpTrMesh->getField<data::Matrix4>(s_MATRIX_FIELD_NAME);
+        if(pTmpMat)
         {
             geometry::data::identity(pTmpMat);
             this->notitfyTransformationMatrix(pTmpMat);
@@ -275,16 +282,16 @@ void SOrganTransformation::onSaveClick()
 {
     InnerMatMappingType matMap;
 
-    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
     if(!series->getReconstructionDB().empty())
     {
-        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
             data::Mesh::sptr pTmpTrMesh = rec->getMesh();
             data::Matrix4::sptr pTmpMat =
-                pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
-            if (pTmpMat)
+                pTmpTrMesh->getField<data::Matrix4>(s_MATRIX_FIELD_NAME);
+            if(pTmpMat)
             {
                 data::Matrix4::sptr pCpyTmpMat;
                 pCpyTmpMat                  = data::Object::copy(pTmpMat);
@@ -304,21 +311,21 @@ void SOrganTransformation::onSaveClick()
 
 void SOrganTransformation::onLoadClick()
 {
-    if (m_saveSelectionComboBox->count() != 0)
+    if(m_saveSelectionComboBox->count() != 0)
     {
         InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
-        data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
         //search the corresponding triangular mesh
-        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
             data::Mesh::sptr pTmpTrMesh = rec->getMesh();
-            if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
+            if(matMap.find(pTmpTrMesh->getID()) != matMap.end())
             {
                 data::Matrix4::sptr pTmpMat =
-                    pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
-                if (pTmpMat)
+                    pTmpTrMesh->getField<data::Matrix4>(s_MATRIX_FIELD_NAME);
+                if(pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
                     this->notitfyTransformationMatrix(pTmpMat);
@@ -332,31 +339,29 @@ void SOrganTransformation::onLoadClick()
 
 void SOrganTransformation::onSelectAllChanged(int state)
 {
-
-    data::Composite::sptr composite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
+    data::Composite::sptr composite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
     data::helper::Composite compositeHelper(composite);
 
     if(state == Qt::Checked)
     {
         m_reconstructionListBox->setEnabled(false);
 
-        data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+        data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
-        for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
+        for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
             if(composite->find(rec->getOrganName()) == composite->end())
             {
                 compositeHelper.add(rec->getOrganName(), rec->getMesh());
             }
         }
-
     }
     else if(state == Qt::Unchecked)
     {
         m_reconstructionListBox->setEnabled(true);
 
         QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
-        for(QListWidgetItem* item :  itemList)
+        for(QListWidgetItem* item : itemList)
         {
             if(item->checkState() == Qt::Unchecked)
             {
@@ -366,21 +371,21 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
         this->refresh();
     }
-    compositeHelper.notify();
 
+    compositeHelper.notify();
 }
 
 //------------------------------------------------------------------------------
 
 void SOrganTransformation::addMeshTransform()
 {
-    data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
+    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
 
-    for(const data::Reconstruction::sptr& rec :  series->getReconstructionDB())
+    for(const data::Reconstruction::sptr& rec : series->getReconstructionDB())
     {
         data::Mesh::sptr mesh = rec->getMesh();
 
-        if (!mesh->getField( s_MATRIX_FIELD_NAME ))
+        if(!mesh->getField(s_MATRIX_FIELD_NAME))
         {
             data::helper::Field fieldHelper(mesh);
             fieldHelper.setField(s_MATRIX_FIELD_NAME, data::Matrix4::New());
@@ -408,4 +413,5 @@ service::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() 
 //------------------------------------------------------------------------------
 
 } // namespace model
+
 } // namespace sight::module::ui::qt

@@ -35,7 +35,6 @@ OrganListModel::OrganListModel() noexcept
 
 OrganListModel::~OrganListModel() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -63,10 +62,11 @@ void OrganListModel::updateModelSeries(const data::ModelSeries::sptr& modelSerie
 int OrganListModel::rowCount(const QModelIndex&) const
 {
     int count = 0;
-    if (m_modelSeries)
+    if(m_modelSeries)
     {
         count = static_cast<int>(m_modelSeries->getReconstructionDB().size());
     }
+
     return count;
 }
 
@@ -74,40 +74,47 @@ int OrganListModel::rowCount(const QModelIndex&) const
 
 QVariant OrganListModel::data(const QModelIndex& index, int role) const
 {
-    if (index.row() < 0)
+    if(index.row() < 0)
     {
         return QVariant();
     }
 
-    if (!m_modelSeries)
+    if(!m_modelSeries)
     {
         return QVariant();
     }
 
     const auto reconsctructions = m_modelSeries->getReconstructionDB();
     const size_t nbRec          = reconsctructions.size();
-    const size_t idx            = static_cast< size_t >(index.row());
+    const size_t idx            = static_cast<size_t>(index.row());
 
-    if (idx >= nbRec)
+    if(idx >= nbRec)
     {
         return QVariant();
     }
 
     const auto& rec = reconsctructions[idx];
-    switch (role)
+    switch(role)
     {
         case VisibilityRole:
             return rec->getIsVisible();
+
             break;
+
         case OrganNameRole:
             return QString::fromStdString(rec->getOrganName());
+
             break;
+
         case StructureTypeRole:
             return QString::fromStdString(rec->getStructureType());
+
             break;
+
         default:
             break;
     }
+
     return QVariant();
 }
 

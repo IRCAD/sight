@@ -28,6 +28,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -48,30 +49,33 @@ IToolBarLayoutManager::~IToolBarLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void IToolBarLayoutManager::initialize( ConfigurationType configuration)
+void IToolBarLayoutManager::initialize(ConfigurationType configuration)
 {
-    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-                 configuration->getName() == "layout");
+    SIGHT_ASSERT(
+        "Bad configuration name " << configuration->getName() << ", must be layout",
+        configuration->getName() == "layout"
+    );
 
     if(configuration->hasAttribute("style"))
     {
         const std::string style = configuration->getAttributeValue("style");
-        if(style == "ToolButtonIconOnly" || style == "ToolButtonTextOnly" || style == "ToolButtonTextBesideIcon" ||
-           style == "ToolButtonTextUnderIcon" || style == "ToolButtonFollowStyle")
+        if(style == "ToolButtonIconOnly" || style == "ToolButtonTextOnly" || style == "ToolButtonTextBesideIcon"
+           || style == "ToolButtonTextUnderIcon" || style == "ToolButtonFollowStyle")
         {
             m_style = style;
         }
         else
         {
             SIGHT_ERROR(
-                "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`");
+                "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`"
+            );
         }
     }
 
     core::runtime::ConfigurationElementContainer::Iterator iter;
-    for( iter = configuration->begin(); iter != configuration->end(); ++iter )
+    for(iter = configuration->begin() ; iter != configuration->end() ; ++iter)
     {
-        if( (*iter)->getName() == "menuItem" )
+        if((*iter)->getName() == "menuItem")
         {
             ConfigurationType toolBarItem = *iter;
             ActionInfo info;
@@ -79,74 +83,76 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
             SIGHT_ASSERT("Depreciated tag <enable>", !toolBarItem->hasAttribute("enable"));
 
             SIGHT_ASSERT("missing <name> attribute", toolBarItem->hasAttribute("name"));
-            if( toolBarItem->hasAttribute("name") )
+            if(toolBarItem->hasAttribute("name"))
             {
                 info.m_name = toolBarItem->getExistingAttributeValue("name");
             }
 
-            if( toolBarItem->hasAttribute("icon") )
+            if(toolBarItem->hasAttribute("icon"))
             {
                 info.m_icon = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon"));
             }
 
-            if( toolBarItem->hasAttribute("icon2") )
+            if(toolBarItem->hasAttribute("icon2"))
             {
                 SIGHT_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
                 info.m_icon2 = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
             }
 
-            if( toolBarItem->hasAttribute("style") )
+            if(toolBarItem->hasAttribute("style"))
             {
                 std::string style = toolBarItem->getExistingAttributeValue("style");
                 info.m_isCheckable = (style == "check");
                 info.m_isRadio     = (style == "radio");
             }
 
-            if( toolBarItem->hasAttribute("shortcut") )
+            if(toolBarItem->hasAttribute("shortcut"))
             {
                 info.m_shortcut = toolBarItem->getExistingAttributeValue("shortcut");
             }
+
             m_actionInfo.push_back(info);
         }
-        else if( (*iter)->getName() == "separator" )
+        else if((*iter)->getName() == "separator")
         {
             ActionInfo info;
             info.m_isSeparator = true;
 
-            if( (*iter)->hasAttribute("size") )
+            if((*iter)->hasAttribute("size"))
             {
-                info.m_size = ::boost::lexical_cast< int > ((*iter)->getExistingAttributeValue("size"));
+                info.m_size = ::boost::lexical_cast<int>((*iter)->getExistingAttributeValue("size"));
             }
 
-            m_actionInfo.push_back( info );
+            m_actionInfo.push_back(info);
         }
-        else if( (*iter)->getName() == "spacer" )
+        else if((*iter)->getName() == "spacer")
         {
             ActionInfo info;
             info.m_isSpacer = true;
-            m_actionInfo.push_back( info );
+            m_actionInfo.push_back(info);
         }
-        else if( (*iter)->getName() == "menu" )
+        else if((*iter)->getName() == "menu")
         {
             ActionInfo info;
             info.m_isMenu = true;
-            if( (*iter)->hasAttribute("name") )
+            if((*iter)->hasAttribute("name"))
             {
                 info.m_name = (*iter)->getExistingAttributeValue("name");
             }
 
-            if( (*iter)->hasAttribute("icon") )
+            if((*iter)->hasAttribute("icon"))
             {
-                info.m_icon = core::runtime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
+                info.m_icon = core::runtime::getModuleResourceFilePath((*iter)->getExistingAttributeValue("icon"));
             }
-            m_actionInfo.push_back( info );
+
+            m_actionInfo.push_back(info);
         }
-        else if( (*iter)->getName() == "editor" )
+        else if((*iter)->getName() == "editor")
         {
             ActionInfo info;
             info.m_isEditor = true;
 
-            m_actionInfo.push_back( info );
+            m_actionInfo.push_back(info);
         }
     }
 }
@@ -155,40 +161,43 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IToolBarLayoutManager::destroyActions()
 {
-    for( ui::base::container::fwMenuItem::sptr menuItem :  m_menuItems)
+    for(ui::base::container::fwMenuItem::sptr menuItem : m_menuItems)
     {
         menuItem->destroyContainer();
     }
+
     m_menuItems.clear();
-    for( ui::base::container::fwMenu::sptr menu :  m_menus)
+    for(ui::base::container::fwMenu::sptr menu : m_menus)
     {
         menu->destroyContainer();
     }
+
     m_menus.clear();
-    for( ui::base::container::fwContainer::sptr container :  m_containers)
+    for(ui::base::container::fwContainer::sptr container : m_containers)
     {
         container->destroyContainer();
     }
+
     m_containers.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwMenuItem::sptr > IToolBarLayoutManager::getMenuItems()
+std::vector<ui::base::container::fwMenuItem::sptr> IToolBarLayoutManager::getMenuItems()
 {
     return this->m_menuItems;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwMenu::sptr > IToolBarLayoutManager::getMenus()
+std::vector<ui::base::container::fwMenu::sptr> IToolBarLayoutManager::getMenus()
 {
     return this->m_menus;
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwContainer::sptr > IToolBarLayoutManager::getContainers()
+std::vector<ui::base::container::fwContainer::sptr> IToolBarLayoutManager::getContainers()
 {
     return this->m_containers;
 }
@@ -196,4 +205,5 @@ std::vector< ui::base::container::fwContainer::sptr > IToolBarLayoutManager::get
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

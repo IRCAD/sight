@@ -35,7 +35,9 @@
 
 namespace sight::data
 {
+
 class DicomSeries;
+
 }
 
 namespace sight::module::io::dicomweb
@@ -72,12 +74,12 @@ class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPuller, ::sight::service::IController )
+    SIGHT_DECLARE_SERVICE(SSeriesPuller, ::sight::service::IController);
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
-    typedef std::vector< std::string > InstanceUIDContainerType;
-    typedef std::map < std::string, unsigned int > InstanceCountMapType;
-    typedef std::map < std::string, WPTR(data::DicomSeries) > DicomSeriesMapType;
+    typedef std::vector<std::string> InstanceUIDContainerType;
+    typedef std::map<std::string, unsigned int> InstanceCountMapType;
+    typedef std::map<std::string, WPTR(data::DicomSeries)> DicomSeriesMapType;
 
     /**
      * @brief Constructor
@@ -160,14 +162,13 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname{"localhost"};
+    std::string m_serverHostname {"localhost"};
 
     /// Server port
-    int m_serverPort{4242};
+    int m_serverPort {4242};
 
     /// DICOM Folder path
     std::filesystem::path m_path;
-
 };
 
 } // namespace sight::module::io::dicomweb

@@ -23,18 +23,19 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/IService.hpp>
 
 namespace sight::service
 {
+
 /**
  * @brief   ICalibration is an interface API for calibration services.
  */
 class SERVICE_CLASS_API ICalibration : public service::IService
 {
 public:
-    SIGHT_DECLARE_SERVICE(ICalibration, service::IService)
+
+    SIGHT_DECLARE_SERVICE(ICalibration, service::IService);
 
     /// Constructor.
     SERVICE_API ICalibration() noexcept;

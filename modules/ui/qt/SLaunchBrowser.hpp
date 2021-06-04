@@ -38,7 +38,7 @@ class MODULE_UI_QT_CLASS_API SLaunchBrowser : public ::sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLaunchBrowser, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SLaunchBrowser, ::sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLaunchBrowser() noexcept;

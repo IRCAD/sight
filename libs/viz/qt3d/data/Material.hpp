@@ -33,8 +33,10 @@
 
 namespace Qt3DRender
 {
+
 class QParameter;
 class QTechnique;
+
 }
 
 namespace sight::viz::qt3d
@@ -48,7 +50,6 @@ namespace data
  */
 class VIZ_QT3D_CLASS_QT_API Material : public Qt3DRender::QMaterial
 {
-
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
@@ -130,21 +131,20 @@ Q_SIGNALS:
 private:
 
     /// Contains material ambient color.
-    QPointer< Qt3DRender::QParameter > m_ambientColor;
+    QPointer<Qt3DRender::QParameter> m_ambientColor;
 
     /// Contains material ambient color. Used in default fragment shader. Uses of another copy
     /// of the ambient color is needed due to incompatibilities between sheldon and qt3d rules.
-    QPointer< Qt3DRender::QParameter > m_ambientColorCopy;
+    QPointer<Qt3DRender::QParameter> m_ambientColorCopy;
 
     /// Contains material diffuse color.
-    QPointer< Qt3DRender::QParameter > m_diffuseColor;
+    QPointer<Qt3DRender::QParameter> m_diffuseColor;
 
     /// Contains material specular color.
-    QPointer< Qt3DRender::QParameter > m_specularColor;
+    QPointer<Qt3DRender::QParameter> m_specularColor;
 
     /// Contains material shininess.
-    QPointer< Qt3DRender::QParameter > m_shininess;
-
+    QPointer<Qt3DRender::QParameter> m_shininess;
 };
 
 } // namespace data.

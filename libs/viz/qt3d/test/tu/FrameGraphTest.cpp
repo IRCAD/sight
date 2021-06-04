@@ -48,7 +48,6 @@ namespace ut
 
 FrameGraphTest::FrameGraphTest()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -82,46 +81,45 @@ void FrameGraphTest::initializeFrameGraph()
     // Asserts QRenderSurfaceSelector exists.
     CPPUNIT_ASSERT_EQUAL(frameGraph->children().size(), 1);
 
-    auto renderSurfaceSelector = qobject_cast < Qt3DRender::QRenderSurfaceSelector* >(frameGraph->childNodes()[0]);
+    auto renderSurfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector*>(frameGraph->childNodes()[0]);
     CPPUNIT_ASSERT(renderSurfaceSelector != nullptr);
 
     // Asserts QViewport exists.
     CPPUNIT_ASSERT_EQUAL(renderSurfaceSelector->children().size(), 1);
 
-    auto viewport = qobject_cast < Qt3DRender::QViewport* >(renderSurfaceSelector->childNodes()[0]);
+    auto viewport = qobject_cast<Qt3DRender::QViewport*>(renderSurfaceSelector->childNodes()[0]);
     CPPUNIT_ASSERT(viewport != nullptr);
 
     // Asserts QCameraSelector exists.
     CPPUNIT_ASSERT_EQUAL(viewport->children().size(), 1);
 
-    auto cameraSelector = qobject_cast < Qt3DRender::QCameraSelector* >(viewport->childNodes()[0]);
+    auto cameraSelector = qobject_cast<Qt3DRender::QCameraSelector*>(viewport->childNodes()[0]);
     CPPUNIT_ASSERT(cameraSelector != nullptr);
 
     // Asserts QClearBuffers exists.
     CPPUNIT_ASSERT_EQUAL(cameraSelector->children().size(), 1);
 
-    auto clearBuffers = qobject_cast < Qt3DRender::QClearBuffers* >(cameraSelector->childNodes()[0]);
+    auto clearBuffers = qobject_cast<Qt3DRender::QClearBuffers*>(cameraSelector->childNodes()[0]);
     CPPUNIT_ASSERT(clearBuffers != nullptr);
 
     // Asserts QRenderStateSet exists.
     CPPUNIT_ASSERT_EQUAL(clearBuffers->children().size(), 1);
 
-    auto renderStateSet = qobject_cast < Qt3DRender::QRenderStateSet* >(clearBuffers->childNodes()[0]);
+    auto renderStateSet = qobject_cast<Qt3DRender::QRenderStateSet*>(clearBuffers->childNodes()[0]);
     CPPUNIT_ASSERT(renderStateSet != nullptr);
 
     // Asserts renderStateSet has right render states.
     CPPUNIT_ASSERT_EQUAL(renderStateSet->renderStates().size(), 2);
 
-    auto culling = qobject_cast < Qt3DRender::QCullFace* >(renderStateSet->renderStates()[0]);
+    auto culling = qobject_cast<Qt3DRender::QCullFace*>(renderStateSet->renderStates()[0]);
     CPPUNIT_ASSERT(culling != nullptr);
     CPPUNIT_ASSERT_EQUAL(culling->mode(), Qt3DRender::QCullFace::NoCulling);
 
-    auto depthTest = qobject_cast < Qt3DRender::QDepthTest* >(renderStateSet->renderStates()[1]);
+    auto depthTest = qobject_cast<Qt3DRender::QDepthTest*>(renderStateSet->renderStates()[1]);
     CPPUNIT_ASSERT(depthTest != nullptr);
     CPPUNIT_ASSERT_EQUAL(depthTest->depthFunction(), Qt3DRender::QDepthTest::Less);
 
     delete frameGraph;
-
 }
 
 //------------------------------------------------------------------------------

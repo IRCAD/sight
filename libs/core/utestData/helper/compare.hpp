@@ -31,13 +31,17 @@
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::utestData
 {
+
 namespace helper
 {
+
 typedef std::set<std::string> ExcludeSetType;
 
 /**
@@ -55,4 +59,5 @@ UTESTDATA_API bool compare(SPTR(data::Object) objRef,
                            ExcludeSetType excludeByPrefix = ExcludeSetType());
 
 } // namespace helper
+
 } // namespace sight::utestData

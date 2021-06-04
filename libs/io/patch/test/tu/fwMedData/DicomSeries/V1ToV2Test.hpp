@@ -26,19 +26,21 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace DicomSeries
 {
 
 /// Test structural patch to convert a data::DicomSeries from version '1' to version '2'.
 class V1ToV2Test : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( V1ToV2Test );
-CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE(V1ToV2Test);
+CPPUNIT_TEST(applyPatchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +55,9 @@ public:
 };
 
 } //namespace DicomSeries
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

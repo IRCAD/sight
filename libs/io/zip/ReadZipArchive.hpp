@@ -41,7 +41,7 @@ class IO_ZIP_CLASS_API ReadZipArchive : public IReadArchive
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ReadZipArchive, IReadArchive)
+    SIGHT_DECLARE_CLASS(ReadZipArchive, IReadArchive);
 
     //------------------------------------------------------------------------------
 

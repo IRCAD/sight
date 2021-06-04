@@ -105,7 +105,7 @@ friend class AppManager;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(IService, core::tools::Object)
+    SIGHT_DECLARE_SERVICE(IService, core::tools::Object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     typedef ::boost::property_tree::ptree ConfigType;

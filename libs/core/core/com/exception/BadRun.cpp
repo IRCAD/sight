@@ -23,7 +23,6 @@
 #include "core/com/exception/BadRun.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -32,7 +31,7 @@ namespace sight::core::com
 namespace exception
 {
 
-BadRun::BadRun ( const std::string& err ) :
+BadRun::BadRun(const std::string& err) :
     core::Exception(err)
 {
 }

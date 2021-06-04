@@ -58,13 +58,13 @@ const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFr
 
 SGrabberProxy::SGrabberProxy() noexcept
 {
-    newSlot( s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this );
+    newSlot(s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this);
 
-    newSlot( s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this );
-    newSlot( s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this );
-    newSlot( s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this );
-    newSlot( s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this );
-    newSlot( s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this );
+    newSlot(s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this);
+    newSlot(s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this);
+    newSlot(s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this);
+    newSlot(s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this);
+    newSlot(s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,23 +111,25 @@ void SGrabberProxy::configuring()
     {
         const auto& subConfig = itSubConfig->second;
 
-        m_type = subConfig.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB" ?
-                 CameraType::RGB :
-                 CameraType::RGBD;
+        m_type = subConfig.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB"
+                 ? CameraType::RGB
+                 : CameraType::RGBD;
 
         const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
-        SIGHT_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
-                      "'exclude' (to exclude the selection of the selector list).",
-                      mode == "exclude" || mode == "include" );
-        m_exclude = ( mode == "exclude" );
-        SIGHT_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
+        SIGHT_ASSERT(
+            "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+            "'exclude' (to exclude the selection of the selector list).",
+            mode == "exclude" || mode == "include"
+        );
+        m_exclude = (mode == "exclude");
+        SIGHT_DEBUG("selection mode => " << (m_exclude ? "Exclude" : "Include"));
 
         const auto selectionCfg = subConfig.equal_range("addSelection");
-        for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
+        for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
         {
             const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
             m_selectedServices.insert(service);
-            SIGHT_DEBUG( "add selection => " + service );
+            SIGHT_DEBUG("add selection => " + service);
 
             const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
             // Check if service is not empty.
@@ -137,13 +139,13 @@ void SGrabberProxy::configuring()
         }
 
         const auto configCfg = subConfig.equal_range("config");
-        for (auto itCfg = configCfg.first; itCfg != configCfg.second; ++itCfg)
+        for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
         {
             const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
             const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
             m_serviceToConfig[service].push_back(configId);
-            SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
         }
 
         m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
@@ -168,11 +170,15 @@ void SGrabberProxy::startCamera()
             const auto srvConfigFactory = service::extension::Config::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
-            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::sight::data::FrameTL",
-                                                                                 "::sight::service::IRGBDGrabber");
+            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
+                "::sight::data::FrameTL",
+                "::sight::service::IRGBDGrabber"
+            );
 
-            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::sight::data::FrameTL",
-                                                                                    "::sight::service::IGrabber");
+            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
+                "::sight::data::FrameTL",
+                "::sight::service::IGrabber"
+            );
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 
@@ -180,7 +186,7 @@ void SGrabberProxy::startCamera()
 
             size_t numCamerasInSeries = 1;
 
-            auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
+            auto cameraInput = this->getInput<data::Object>(s_CAMERA_INPUT);
             auto camera      = data::Camera::dynamicConstCast(cameraInput);
             if(camera)
             {
@@ -199,39 +205,45 @@ void SGrabberProxy::startCamera()
                 }
             }
 
-            std::vector< std::string > availableExtensionsSelector;
-            std::map< std::string, size_t> implToNumTL;
+            std::vector<std::string> availableExtensionsSelector;
+            std::map<std::string, size_t> implToNumTL;
 
             for(const auto& srvImpl : grabbersImpl)
             {
                 if(srvImpl != "::sight::module::io::video::SGrabberProxy")
                 {
-                    SIGHT_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
+                    SIGHT_DEBUG("Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
                     const auto config = this->getConfigTree();
 
                     // 1. Verify that we have the same number of timelines
-                    objectsType.erase(std::remove_if(objectsType.begin(), objectsType.end(),
-                                                     [ & ](const std::string& _type)
+                    objectsType.erase(
+                        std::remove_if(
+                            objectsType.begin(),
+                            objectsType.end(),
+                            [&](const std::string& _type)
                         {
                             return _type != "data::FrameTL";
-                        }), objectsType.end());
+                        }),
+                        objectsType.end()
+                    );
 
                     size_t numTL   = 0;
                     auto inoutsCfg = config.equal_range("inout");
-                    for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+                    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                     {
                         service::IService::ConfigType parameterCfg;
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
-                        SIGHT_DEBUG( "Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getInOut< data::Object >(key);
+                        SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
+                        const auto obj = this->getInOut<data::Object>(key);
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
                             ++numTL;
                         }
                     }
+
                     if(numTL > objectsType.size())
                     {
                         if(objectsType.size() == 1 && numCamerasInSeries == numTL)
@@ -276,12 +288,14 @@ void SGrabberProxy::startCamera()
                             {
                                 handledSourceType = data::Camera::DEVICE;
                             }
+
                             if(handledSourceType == sourceType)
                             {
                                 capsMatch = true;
                                 break;
                             }
                         }
+
                         if(!capsMatch)
                         {
                             continue;
@@ -302,9 +316,9 @@ void SGrabberProxy::startCamera()
                 {
                     // We need to test first if extension have specific configurations to include/exclude.
                     const auto configsIt = m_serviceToConfig.find(extension);
-                    std::vector< std::string > selectableConfigs;
+                    std::vector<std::string> selectableConfigs;
 
-                    if (!m_exclude) // Include mode
+                    if(!m_exclude) // Include mode
                     {
                         // Available service/configs are the ones the proxy's configuration.
                         if(configsIt != m_serviceToConfig.end())
@@ -324,37 +338,47 @@ void SGrabberProxy::startCamera()
                             const auto& excludedConfigs = configsIt->second;
                             const auto isExcludedConfig = [&excludedConfigs](const std::string& _cfgName) -> bool
                                                           {
-                                                              return std::find(excludedConfigs.begin(),
-                                                                               excludedConfigs.end(),
-                                                                               _cfgName) != excludedConfigs.end();
+                                                              return std::find(
+                                                                  excludedConfigs.begin(),
+                                                                  excludedConfigs.end(),
+                                                                  _cfgName
+                                                              ) != excludedConfigs.end();
                                                           };
 
                             // Remove the ones excluded by the grabber proxy.
-                            selectableConfigs.erase(std::remove_if(selectableConfigs.begin(), selectableConfigs.end(),
-                                                                   isExcludedConfig),
-                                                    selectableConfigs.end());
+                            selectableConfigs.erase(
+                                std::remove_if(
+                                    selectableConfigs.begin(),
+                                    selectableConfigs.end(),
+                                    isExcludedConfig
+                                ),
+                                selectableConfigs.end()
+                            );
                         }
                     }
 
                     // Fill the description list with the available config's descriptions.
-                    for (const auto& config : selectableConfigs)
+                    for(const auto& config : selectableConfigs)
                     {
                         const auto desc = config.empty() ? srvFactory->getServiceDescription(extension)
-                                          : srvConfigRegistry->getConfigDesc(config);
+                                                         : srvConfigRegistry->getConfigDesc(config);
                         descToExtension[desc] = std::make_pair(extension, config);
                         descriptions.push_back(desc);
                     }
                 }
 
                 std::string selectedDesc;
-                if (descriptions.size() == 0)
+                if(descriptions.size() == 0)
                 {
                     const std::string msg = "No video grabber implementation found.\n";
-                    sight::ui::base::dialog::MessageDialog::show("Error", msg,
-                                                                 sight::ui::base::dialog::MessageDialog::Icons::WARNING);
+                    sight::ui::base::dialog::MessageDialog::show(
+                        "Error",
+                        msg,
+                        sight::ui::base::dialog::MessageDialog::Icons::WARNING
+                    );
                     return;
                 }
-                else if (descriptions.size() == 1)
+                else if(descriptions.size() == 1)
                 {
                     /// Select the only remaining description.
                     selectedDesc = descriptions[0];
@@ -381,14 +405,15 @@ void SGrabberProxy::startCamera()
                 sight::ui::base::dialog::MessageDialog::show("Warning", msg);
                 return;
             }
+
             m_services.resize(implToNumTL[m_grabberImpl]);
 
             size_t srvCount = 0;
             for(auto& srv : m_services)
             {
-                srv = this->registerService< service::IGrabber>(m_grabberImpl);
+                srv = this->registerService<service::IGrabber>(m_grabberImpl);
 
-                auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
+                auto cameraInput = this->getInput<data::Object>(s_CAMERA_INPUT);
                 auto camera      = data::Camera::dynamicConstCast(cameraInput);
                 if(camera)
                 {
@@ -400,8 +425,10 @@ void SGrabberProxy::startCamera()
                     if(cameraSeries)
                     {
                         const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
-                        SIGHT_ASSERT("Not enough cameras in series to emulate the grabber",
-                                     srvCount < numCamerasInSeries);
+                        SIGHT_ASSERT(
+                            "Not enough cameras in series to emulate the grabber",
+                            srvCount < numCamerasInSeries
+                        );
 
                         srv->registerInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
                     }
@@ -410,12 +437,12 @@ void SGrabberProxy::startCamera()
                 size_t inputTLCount    = 0;
                 const auto proxyConfig = this->getConfigTree();
                 auto inoutsCfg         = proxyConfig.equal_range("inout");
-                for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+                for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getInOut< data::FrameTL >(key);
+                    auto frameTL = this->getInOut<data::FrameTL>(key);
                     if(frameTL)
                     {
                         if(m_services.size() > 1)
@@ -432,6 +459,7 @@ void SGrabberProxy::startCamera()
                             srv->registerInOut(frameTL, key);
                         }
                     }
+
                     ++inputTLCount;
                 }
 
@@ -441,23 +469,43 @@ void SGrabberProxy::startCamera()
 
                     core::runtime::ConfigurationElement::csptr srvCfg =
                         srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
-                    srv->setConfiguration( core::runtime::ConfigurationElement::constCast(srvCfg) );
+                    srv->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
                     srv->configure();
                 }
 
                 srv->setWorker(m_associatedWorker);
                 srv->start();
 
-                m_connections.connect(srv, service::IGrabber::s_POSITION_MODIFIED_SIG,
-                                      this->getSptr(), s_MODIFY_POSITION);
-                m_connections.connect(srv, service::IGrabber::s_DURATION_MODIFIED_SIG,
-                                      this->getSptr(), s_MODIFY_DURATION);
-                m_connections.connect(srv, service::IGrabber::s_CAMERA_STARTED_SIG,
-                                      this->getSptr(), s_FWD_START_CAMERA_SLOT);
-                m_connections.connect(srv, service::IGrabber::s_CAMERA_STOPPED_SIG,
-                                      this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
-                m_connections.connect(srv, service::IGrabber::s_FRAME_PRESENTED_SIG,
-                                      this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
+                m_connections.connect(
+                    srv,
+                    service::IGrabber::s_POSITION_MODIFIED_SIG,
+                    this->getSptr(),
+                    s_MODIFY_POSITION
+                );
+                m_connections.connect(
+                    srv,
+                    service::IGrabber::s_DURATION_MODIFIED_SIG,
+                    this->getSptr(),
+                    s_MODIFY_DURATION
+                );
+                m_connections.connect(
+                    srv,
+                    service::IGrabber::s_CAMERA_STARTED_SIG,
+                    this->getSptr(),
+                    s_FWD_START_CAMERA_SLOT
+                );
+                m_connections.connect(
+                    srv,
+                    service::IGrabber::s_CAMERA_STOPPED_SIG,
+                    this->getSptr(),
+                    s_FWD_STOP_CAMERA_SLOT
+                );
+                m_connections.connect(
+                    srv,
+                    service::IGrabber::s_FRAME_PRESENTED_SIG,
+                    this->getSptr(),
+                    s_FWD_PRESENT_FRAME_SLOT
+                );
 
                 ++srvCount;
             }
@@ -586,7 +634,7 @@ void SGrabberProxy::reconfigure()
 
 void SGrabberProxy::modifyPosition(int64_t position)
 {
-    auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+    auto sig = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
     sig->asyncEmit(static_cast<std::int64_t>(position));
 }
 
@@ -594,7 +642,7 @@ void SGrabberProxy::modifyPosition(int64_t position)
 
 void SGrabberProxy::modifyDuration(int64_t duration)
 {
-    auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+    auto sig = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
     sig->asyncEmit(static_cast<std::int64_t>(duration));
 }
 
@@ -602,7 +650,7 @@ void SGrabberProxy::modifyDuration(int64_t duration)
 
 void SGrabberProxy::fwdStartCamera()
 {
-    auto sig = this->signal< CameraStartedSignalType >( s_CAMERA_STARTED_SIG );
+    auto sig = this->signal<CameraStartedSignalType>(s_CAMERA_STARTED_SIG);
     sig->asyncEmit();
 }
 
@@ -610,7 +658,7 @@ void SGrabberProxy::fwdStartCamera()
 
 void SGrabberProxy::fwdStopCamera()
 {
-    auto sig = this->signal< CameraStoppedSignalType >( s_CAMERA_STOPPED_SIG );
+    auto sig = this->signal<CameraStoppedSignalType>(s_CAMERA_STOPPED_SIG);
     sig->asyncEmit();
 }
 
@@ -618,7 +666,7 @@ void SGrabberProxy::fwdStopCamera()
 
 void SGrabberProxy::fwdPresentFrame()
 {
-    auto sig = this->signal< FramePresentedSignalType >( s_FRAME_PRESENTED_SIG );
+    auto sig = this->signal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG);
     sig->asyncEmit();
 }
 

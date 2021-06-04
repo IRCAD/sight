@@ -30,8 +30,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -39,10 +41,9 @@ namespace dialog
  */
 class UI_BASE_CLASS_API ISelectorDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ISelectorDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ISelectorDialog, ui::base::GuiBaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -60,7 +61,7 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_BASE_API virtual void setSelections(std::vector< std::string > _selections) = 0;
+    UI_BASE_API virtual void setSelections(std::vector<std::string> _selections) = 0;
 
     /**
      * @brief Sets the selector title.
@@ -80,4 +81,5 @@ public:
 };
 
 } //namespace dialog
+
 } //namespace sight::ui::base

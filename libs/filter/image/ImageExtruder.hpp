@@ -48,7 +48,6 @@ namespace sight::filter::image
  */
 class FILTER_IMAGE_CLASS_API ImageExtruder final
 {
-
 public:
 
     /**
@@ -87,7 +86,6 @@ private:
         const ::glm::vec3 b;
         const ::glm::vec3 c;
     };
-
 };
 
-}// namespace sight::filter::image
+} // namespace sight::filter::image

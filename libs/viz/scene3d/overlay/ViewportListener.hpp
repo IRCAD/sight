@@ -32,6 +32,7 @@
 
 namespace sight::viz::scene3d::overlay
 {
+
 /**
  * @brief Listens to render events triggered for a given viewport and activates the overlays enabled for that viewport.
  */

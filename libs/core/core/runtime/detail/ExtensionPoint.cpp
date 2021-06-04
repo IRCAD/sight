@@ -35,11 +35,14 @@ namespace detail
 
 //------------------------------------------------------------------------------
 
-ExtensionPoint::ExtensionPoint( const std::shared_ptr< Module > bundle, const std::string& id,
-                                const std::filesystem::path& schema ) :
-    ModuleElement( bundle ),
-    m_id( filterID(id) ),
-    m_schema( schema )
+ExtensionPoint::ExtensionPoint(
+    const std::shared_ptr<Module> bundle,
+    const std::string& id,
+    const std::filesystem::path& schema
+) :
+    ModuleElement(bundle),
+    m_id(filterID(id)),
+    m_schema(schema)
 {
 }
 
@@ -52,32 +55,34 @@ const std::string& ExtensionPoint::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
+std::shared_ptr<io::Validator> ExtensionPoint::getExtensionValidator() const
 {
-    if( !m_schema.empty() && !m_validator )
+    if(!m_schema.empty() && !m_validator)
     {
         try
         {
             std::filesystem::path schemaPath = getModule()->getResourcesLocation() / m_schema;
-            SIGHT_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
+            SIGHT_DEBUG("Use this schema : " << schemaPath << " for this id : " << m_id);
             if(!std::filesystem::exists(schemaPath))
             {
                 // Allow to specify a schema defined elsewhere than this module
                 schemaPath = core::runtime::getResourceFilePath(m_schema);
             }
-            m_validator = std::make_shared< io::Validator >(schemaPath);
+
+            m_validator = std::make_shared<io::Validator>(schemaPath);
         }
-        catch( const std::exception& e )
+        catch(const std::exception& e)
         {
-            throw RuntimeException( "Error while creating a validator. " + std::string(e.what()) );
+            throw RuntimeException("Error while creating a validator. " + std::string(e.what()));
         }
     }
+
     return m_validator;
 }
 
 //------------------------------------------------------------------------------
 
-void ExtensionPoint::operator=( const ExtensionPoint& ) noexcept
+void ExtensionPoint::operator=(const ExtensionPoint&) noexcept
 {
 }
 

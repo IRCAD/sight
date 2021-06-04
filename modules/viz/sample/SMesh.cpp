@@ -64,9 +64,9 @@ void SMesh::configuring()
     const auto config = this->getConfigTree();
 
     auto inoutsCfg = config.equal_range("in");
-    for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
     {
-        if (itCfg->second.get<std::string>("<xmlattr>.key") == s_MESH_INPUT)
+        if(itCfg->second.get<std::string>("<xmlattr>.key") == s_MESH_INPUT)
         {
             m_meshAutoConnect =
                 itCfg->second.get_optional<std::string>("<xmlattr>.autoConnect").get_value_or("no") == "yes";
@@ -81,11 +81,12 @@ void SMesh::starting()
     this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
     const auto genericSceneId = this->getID() + "-genericScene";
     sight::ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
-    auto mesh = this->getLockedInput< data::Object>(s_MESH_INPUT);
+    auto mesh = this->getLockedInput<data::Object>(s_MESH_INPUT);
 
     // create and register the render service
     // create the frame configuration
@@ -121,13 +122,17 @@ void SMesh::starting()
     meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = service::add("::sight::module::viz::scene3d::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
-    m_meshSrv->registerInOut(std::const_pointer_cast< data::Object>(mesh->getConstSptr()), "mesh", true);
+    m_meshSrv->registerInOut(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
 
     m_cameraTransform = data::Matrix4::New();
-    m_connections.connect(m_cameraTransform, data::Object::s_MODIFIED_SIG,
-                          this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
+    m_connections.connect(
+        m_cameraTransform,
+        data::Object::s_MODIFIED_SIG,
+        this->getSptr(),
+        s_UPDATE_CAM_TRANSFORM_SLOT
+    );
 
     service::IService::ConfigType cameraConfig;
     cameraConfig.put("config.<xmlattr>.layer", "default");

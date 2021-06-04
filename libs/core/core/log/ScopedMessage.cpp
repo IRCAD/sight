@@ -28,6 +28,7 @@
 
 namespace sight::core
 {
+
 namespace log
 {
 
@@ -37,17 +38,17 @@ namespace log
 
 //-----------------------------------------------------------------------------
 
-ScopedMessage::ScopedMessage( const char* _file, int _line, std::string enterMessage, std::string leaveMessage) :
+ScopedMessage::ScopedMessage(const char* _file, int _line, std::string enterMessage, std::string leaveMessage) :
     m_file(_file),
     m_line(_line),
     m_leave(leaveMessage.empty() ? enterMessage : leaveMessage)
 {
     std::stringstream base;
-    base << "Timed{'file':'"<< m_file <<"','line':"<< m_line <<",";
+    base << "Timed{'file':'" << m_file << "','line':" << m_line << ",";
     m_baseMsg = base.str();
 
     std::stringstream oslStr;
-    oslStr << "[ENTERING SCOPE] "<<  m_baseMsg << "'entermessage':'" <<  enterMessage << "'}";
+    oslStr << "[ENTERING SCOPE] " << m_baseMsg << "'entermessage':'" << enterMessage << "'}";
     core::log::SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
     m_timer.start();
 }
@@ -57,10 +58,11 @@ ScopedMessage::ScopedMessage( const char* _file, int _line, std::string enterMes
 ScopedMessage::~ScopedMessage()
 {
     std::stringstream oslStr;
-    oslStr << "[LEAVING SCOPE] "<<  m_baseMsg << "'leavemessage':'" << m_leave <<"','elapsed':"<<
-        m_timer.getElapsedTimeInMilliSec() << "}";
+    oslStr << "[LEAVING SCOPE] " << m_baseMsg << "'leavemessage':'" << m_leave << "','elapsed':"
+    << m_timer.getElapsedTimeInMilliSec() << "}";
     SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
 }
 
 } // namespace log
+
 } // namespace sight::core

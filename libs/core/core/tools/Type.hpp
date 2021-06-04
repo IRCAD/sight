@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/tools/Stringizer.hpp"
-
 #include <core/base.hpp>
 
 #include <any>
@@ -42,17 +41,18 @@ namespace sight::core::tools
  **/
 class CORE_CLASS_API Type
 {
-
 public:
+
     struct CORE_CLASS_API ToolBase
     {
         CORE_API ToolBase();
         CORE_API virtual ~ToolBase()
         {
         }
+
         CORE_API ToolBase(const std::type_info& typeinfo);
-        CORE_API virtual std::string toString( std::any value ) const;
-        CORE_API virtual std::string toString( const void* ) const;
+        CORE_API virtual std::string toString(std::any value) const;
+        CORE_API virtual std::string toString(const void*) const;
 
         const std::type_info& m_typeinfo;
     };
@@ -64,8 +64,9 @@ public:
         virtual ~Tool()
         {
         }
-        virtual std::string toString( std::any value ) const;
-        virtual std::string toString( const void* ) const;
+
+        virtual std::string toString(std::any value) const;
+        virtual std::string toString(const void*) const;
     };
 
     typedef std::map<std::string, Type> TypeMapType;
@@ -87,18 +88,18 @@ public:
     /**
      * @brief  define an order (lexicographic) for Type
      */
-    CORE_API bool operator<( const Type& ) const;
+    CORE_API bool operator<(const Type&) const;
 
     /**
      * @brief   Set Type value according given template
      **/
-    template< class TYPE>
+    template<class TYPE>
     void setType();
 
     /**
      * @brief   Return true ff the Type value represents the TYPE
      **/
-    template< class TYPE>
+    template<class TYPE>
     bool isOfType() const;
 
     /**
@@ -124,12 +125,12 @@ public:
     /// return true iff the type is signed
     CORE_API bool isSigned() const;
 
-    CORE_API std::string toString( const void* ) const;
+    CORE_API std::string toString(const void*) const;
 
-    template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+    template<int SIZEOF, bool SIGNED, bool ISINTEGRAL>
     static const std::string& traitsToString();
 
-    template <typename T>
+    template<typename T>
     static Type create();
 
     CORE_API static Type create(std::string name);
@@ -193,28 +194,28 @@ public:
 
     typedef float FloatType;
     typedef double DoubleType;
-
 };
 
 //-----------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 std::string Type::Tool<T>::toString(std::any value) const
 {
-    return core::tools::getString( std::any_cast<const T> (value));
+    return core::tools::getString(std::any_cast<const T>(value));
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 std::string Type::Tool<T>::toString(const void* value) const
 {
-    const T& v = *(static_cast< const T* > (value));
-    return core::tools::getString( v );
+    const T& v = *(static_cast<const T*>(value));
+    return core::tools::getString(v);
 }
+
 //-----------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 Type::Tool<T>::Tool() :
     Type::ToolBase(typeid(T))
 {
@@ -222,7 +223,7 @@ Type::Tool<T>::Tool() :
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 Type Type::create()
 {
     Type t;
@@ -232,7 +233,7 @@ Type Type::create()
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 bool Type::isOfType() const
 {
     return *this == create<T>();
@@ -240,10 +241,10 @@ bool Type::isOfType() const
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 void Type::setType()
 {
-    m_name = Type::traitsToString< sizeof(T), std::is_signed<T>::value, std::is_integral<T>::value >();
+    m_name = Type::traitsToString<sizeof(T), std::is_signed<T>::value, std::is_integral<T>::value>();
 
     m_sizeof           = sizeof(T);
     m_isSigned         = std::is_signed<T>::value;
@@ -251,8 +252,8 @@ void Type::setType()
 
     m_tool = SPTR(ToolBase)(new Type::Tool<T>());
 
-    T min = static_cast< T >( std::numeric_limits< T >::lowest() );
-    T max = static_cast< T >( std::numeric_limits< T >::max() );
+    T min = static_cast<T>(std::numeric_limits<T>::lowest());
+    T max = static_cast<T>(std::numeric_limits<T>::max());
 
     m_min = min;
     m_max = max;
@@ -260,65 +261,77 @@ void Type::setType()
 
 //-----------------------------------------------------------------------------
 
-template <>
-CORE_API void Type::setType< void >();
+template<>
+CORE_API void Type::setType<void>();
 
 //-----------------------------------------------------------------------------
 
-template <>
-CORE_API void Type::setType< char >();
+template<>
+CORE_API void Type::setType<char>();
 
 //-----------------------------------------------------------------------------
 
 #ifdef linux
-
-template <>
-CORE_API void Type::setType< std::int64_t >();
+template<>
+CORE_API void Type::setType<std::int64_t>();
 
 //-----------------------------------------------------------------------------
 
-template <>
-CORE_API void Type::setType< std::uint64_t >();
-
+template<>
+CORE_API void Type::setType<std::uint64_t>();
 #endif // linux
 
 //-----------------------------------------------------------------------------
 
-template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+template<int SIZEOF, bool SIGNED, bool ISINTEGRAL>
 const std::string& Type::traitsToString()
 {
-    SIGHT_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
-                           << " " << (ISINTEGRAL ? "integral" : "floating")
-                           << " type with size : " << SIZEOF);
+    SIGHT_ERROR(
+        "unknown " << (SIGNED ? "signed" : "unsigned")
+        << " " << (ISINTEGRAL ? "integral" : "floating")
+        << " type with size : " << SIZEOF
+    );
     return Type::s_UNSPECIFIED_TYPENAME;
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 const std::pair<T, T> Type::minMax() const
 {
-    return std::pair<T, T>( std::any_cast< T >(m_min), std::any_cast< T >(m_max) );
+    return std::pair<T, T>(std::any_cast<T>(m_min), std::any_cast<T>(m_max));
 }
 
 //-----------------------------------------------------------------------------
 
-template<> CORE_API const std::string& Type::traitsToString< 1, true, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 2, true, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 4, true, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 8, true, true > ();
+template<>
+CORE_API const std::string& Type::traitsToString<1, true, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<2, true, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<4, true, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<8, true, true>();
 
-template<> CORE_API const std::string& Type::traitsToString< 1, false, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 2, false, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 4, false, true > ();
-template<> CORE_API const std::string& Type::traitsToString< 8, false, true > ();
+template<>
+CORE_API const std::string& Type::traitsToString<1, false, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<2, false, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<4, false, true>();
+template<>
+CORE_API const std::string& Type::traitsToString<8, false, true>();
 
-template<> CORE_API const std::string& Type::traitsToString< 4, true, false > ();
-template<> CORE_API const std::string& Type::traitsToString< 8, true, false > ();
+template<>
+CORE_API const std::string& Type::traitsToString<4, true, false>();
+template<>
+CORE_API const std::string& Type::traitsToString<8, true, false>();
 
 } //end namespace sight::core::tools
 
 namespace std
 {
-CORE_API std::ostream& operator<< (std::ostream& os, const ::sight::core::tools::Type& type);
+
+CORE_API std::ostream& operator<<(std::ostream& os, const ::sight::core::tools::Type& type);
+
 } // namespace std

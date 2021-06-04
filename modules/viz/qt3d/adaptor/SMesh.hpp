@@ -59,11 +59,10 @@ namespace sight::module::viz::qt3d::adaptor
  */
 class MODULE_VIZ_QT3D_CLASS_API SMesh : public sight::viz::qt3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::qt3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::qt3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_QT3D_API SMesh() noexcept;
@@ -106,14 +105,13 @@ private:
     void modifyVertices();
 
     /// Contains a Qt3D mesh.
-    QPointer< sight::viz::qt3d::data::Mesh > m_mesh;
+    QPointer<sight::viz::qt3d::data::Mesh> m_mesh;
 
     /// Specifies the material adaptor used to configure mesh material.
     std::string m_materialName;
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
-    bool m_autoResetCamera { false };
-
+    bool m_autoResetCamera {false};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor.

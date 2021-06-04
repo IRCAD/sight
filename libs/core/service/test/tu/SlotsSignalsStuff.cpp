@@ -36,21 +36,22 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
 SIGHT_REGISTER_DATA(Buffer);
 
-SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SBasicTest )
-SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SBasicTest, service::ut::Buffer );
-SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReaderTest )
-SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SReaderTest, service::ut::Buffer );
-SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShowTest )
-SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SShowTest, service::ut::Buffer );
-SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReader2Test )
-SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SReader2Test, service::ut::Buffer );
-SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test )
-SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SShow2Test, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SBasicTest);
+SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SBasicTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SReaderTest);
+SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SReaderTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SShowTest);
+SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SShowTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SReader2Test);
+SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SReader2Test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test);
+SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SShow2Test, service::ut::Buffer);
 
 const service::IService::KeyType IBasicTest::s_BUFFER_INOUT = "buffer";
 
@@ -79,7 +80,7 @@ void SBasicTest::stopping()
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping(const KeyType& )
+void SBasicTest::swapping(const KeyType&)
 {
     std::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
@@ -98,11 +99,11 @@ void SBasicTest::updating()
 
 void SReaderTest::updating()
 {
-    Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
+    Buffer::sptr buff = this->getInOut<Buffer>(s_BUFFER_INOUT);
 
     // Emit object Modified
     data::Object::ModifiedSignalType::sptr sig;
-    sig = buff->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
+    sig = buff->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -121,8 +122,8 @@ SShowTest::SShowTest() :
     m_receiveCount(0),
     m_changeCount(0)
 {
-    m_slotChange = core::com::newSlot( &SShowTest::change, this );
-    core::com::HasSlots::m_slots( s_CHANGE_SLOT, m_slotChange );
+    m_slotChange = core::com::newSlot(&SShowTest::change, this);
+    core::com::HasSlots::m_slots(s_CHANGE_SLOT, m_slotChange);
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +164,7 @@ SReader2Test::SReader2Test()
 {
     m_sigChanged = ChangedSignalType::New();
     // Register
-    core::com::HasSignals::m_signals( s_CHANGED_SIG,  m_sigChanged);
+    core::com::HasSignals::m_signals(s_CHANGED_SIG, m_sigChanged);
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +173,7 @@ void SReader2Test::updating()
 {
     // Emit object Modified
     SReader2Test::ChangedSignalType::sptr sig;
-    sig = this->signal< SReader2Test::ChangedSignalType >( SReader2Test::s_CHANGED_SIG );
+    sig = this->signal<SReader2Test::ChangedSignalType>(SReader2Test::s_CHANGED_SIG);
     sig->asyncEmit();
 }
 
@@ -193,11 +194,11 @@ SShow2Test::SShow2Test() :
 
 void SShow2Test::updating()
 {
-    Buffer::sptr buff = this->getInOut< Buffer >(s_BUFFER_INOUT);
+    Buffer::sptr buff = this->getInOut<Buffer>(s_BUFFER_INOUT);
 
     // Emit object Modified
     data::Object::ModifiedSignalType::sptr sig;
-    sig = buff->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
+    sig = buff->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_BUFFER_SLOT)));
         sig->asyncEmit();
@@ -221,4 +222,5 @@ void SShow2Test::updateBuffer()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

@@ -37,8 +37,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 const std::string AtomConverter::s_IGTL_TYPE          = "ATOMS";
 const std::string AtomConverter::s_FWDATA_OBJECT_TYPE = data::Object::classname();
 
@@ -76,10 +78,12 @@ data::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     typedef io::igtl::detail::archiver::MemoryReadArchive MemoryReadArchiveType;
     io::atoms::Reader reader;
 
-    RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast< RawMessage* >(src.GetPointer()));
+    RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(src.GetPointer()));
 
-    MemoryReadArchiveType::sptr memoryReader = std::make_shared<MemoryReadArchiveType>(&msg->getMessage()[0],
-                                                                                       msg->getMessage().size());
+    MemoryReadArchiveType::sptr memoryReader = std::make_shared<MemoryReadArchiveType>(
+        &msg->getMessage()[0],
+        msg->getMessage().size()
+    );
 
     sight::atoms::Base::sptr atomObj = reader.read(memoryReader);
     data::Object::sptr obj           = sight::atoms::conversion::convert(sight::atoms::Object::dynamicCast(atomObj));
@@ -91,7 +95,7 @@ data::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
 IConverter::sptr AtomConverter::New()
 {
-    return std::make_shared< AtomConverter >();
+    return std::make_shared<AtomConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,4 +113,5 @@ std::string const& AtomConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

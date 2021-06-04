@@ -25,10 +25,10 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <locale.h>
 #include <QCursor>
-
-#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -42,20 +42,19 @@ namespace sight::ui::qml
 App::App(int& argc, char** argv) :
     QGuiApplication(argc, argv)
 {
-
-    setlocale(LC_ALL, "C"); // needed for mfo save process
+    setlocale(LC_ALL, "C");          // needed for mfo save process
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
 
     std::string appName = "No name";
 
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
 
-    if (profile)
+    if(profile)
     {
         appName = profile->getName();
     }
 
-    this->setApplicationName( QString::fromStdString(appName) );
+    this->setApplicationName(QString::fromStdString(appName));
 
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 }
@@ -70,7 +69,6 @@ void App::aboutToQuit()
 
 void App::onExit()
 {
-
     QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QGuiApplication::restoreOverrideCursor();
 

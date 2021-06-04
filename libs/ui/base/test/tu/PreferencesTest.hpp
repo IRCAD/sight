@@ -29,6 +29,7 @@
 
 namespace sight::ui::base::preferences
 {
+
 namespace ut
 {
 
@@ -37,14 +38,15 @@ namespace ut
  */
 class PreferencesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PreferencesTest );
-CPPUNIT_TEST( runtimeTest );
-CPPUNIT_TEST( helperTest );
-CPPUNIT_TEST( passwordTest );
-CPPUNIT_TEST( cleanup );
+CPPUNIT_TEST_SUITE(PreferencesTest);
+CPPUNIT_TEST(runtimeTest);
+CPPUNIT_TEST(helperTest);
+CPPUNIT_TEST(passwordTest);
+CPPUNIT_TEST(cleanup);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,9 +57,11 @@ public:
     void cleanup();
 
 private:
+
     core::runtime::Profile::sptr m_profile;
     std::filesystem::path m_preferencesPath;
 };
 
 } //namespace ut
+
 } //namespace sight::ui::base::preferences

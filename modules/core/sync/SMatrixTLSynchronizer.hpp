@@ -83,7 +83,7 @@ class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public service::ISynchronize
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatrixTLSynchronizer, service::ISynchronizer)
+    SIGHT_DECLARE_SERVICE(SMatrixTLSynchronizer, service::ISynchronizer);
 
     typedef core::com::Signal<void (int)> MatrixSynchronizedSignalType;
     typedef core::com::Signal<void (int)> MatrixUnsynchronizedSignalType;

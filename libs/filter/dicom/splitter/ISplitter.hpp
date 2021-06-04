@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -38,7 +39,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ISplitter : public filter::dicom::IFilter
 {
 public:
-    SIGHT_DECLARE_CLASS(ISplitter, filter::dicom::IFilter)
+
+    SIGHT_DECLARE_CLASS(ISplitter, filter::dicom::IFilter);
 
     /// Destructor
     FILTER_DICOM_API virtual ~ISplitter();
@@ -47,9 +49,11 @@ public:
     FILTER_DICOM_API FilterType getFilterType() const override;
 
 protected:
+
     /// Constructor
     FILTER_DICOM_API ISplitter();
 };
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

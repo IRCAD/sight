@@ -33,6 +33,7 @@
 
 namespace sight::ui::base
 {
+
 namespace registry
 {
 
@@ -58,28 +59,33 @@ ui::base::container::fwMenuBar::sptr MenuBar::getParent()
 
 //-----------------------------------------------------------------------------
 
-ui::base::container::fwMenu::sptr MenuBar::getFwMenu(std::string menuSid,
-                                                     std::vector< ui::base::container::fwMenu::sptr > menus)
+ui::base::container::fwMenu::sptr MenuBar::getFwMenu(
+    std::string menuSid,
+    std::vector<ui::base::container::fwMenu::sptr> menus
+)
 {
-    SIGHT_ASSERT("The menu '" + menuSid + "'declared in '"+ m_sid +"' is not found",
-                 m_menuSids.find(menuSid) != m_menuSids.end());
-    ui::base::container::fwMenu::sptr menu = menus.at( m_menuSids[menuSid].first );
+    SIGHT_ASSERT(
+        "The menu '" + menuSid + "'declared in '" + m_sid + "' is not found",
+        m_menuSids.find(menuSid) != m_menuSids.end()
+    );
+    ui::base::container::fwMenu::sptr menu = menus.at(m_menuSids[menuSid].first);
     return menu;
 }
 
 //-----------------------------------------------------------------------------
 
-void MenuBar::initialize( core::runtime::ConfigurationElement::sptr configuration)
+void MenuBar::initialize(core::runtime::ConfigurationElement::sptr configuration)
 {
     SIGHT_ASSERT(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
-        configuration->getName() == "registry");
+        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName() + "'",
+        configuration->getName() == "registry"
+    );
 
     // index represents associated menu with position in menus vector
     unsigned int index = 0;
     // initialize m_menuSids map with configuration
-    std::vector < ConfigurationType > vectMenus = configuration->find("menu");
-    for( ConfigurationType menu :  vectMenus)
+    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
+    for(ConfigurationType menu : vectMenus)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
 
@@ -89,40 +95,49 @@ void MenuBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
             if(menu->hasAttribute("start"))
             {
                 std::string startValue = menu->getAttributeValue("start");
-                SIGHT_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: "
-                             + startValue +"'", startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT(
+                    "[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: "
+                    + startValue + "'",
+                    startValue == "yes" || startValue == "no"
+                );
                 start = (startValue == "yes");
             }
+
             std::string sid = menu->getAttributeValue("sid");
             m_menuSids[sid] = SIDMenuMapType::mapped_type(index, start);
         }
+
         index++;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void MenuBar::manage(std::vector< ui::base::container::fwMenu::sptr > menus )
+void MenuBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 {
     ui::base::container::fwMenu::sptr menu;
-    for( SIDMenuMapType::value_type sid :  m_menuSids)
+    for(SIDMenuMapType::value_type sid : m_menuSids)
     {
-        SIGHT_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
-                                     << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
-                     sid.second.first < menus.size());
-        menu = menus.at( sid.second.first );
+        SIGHT_ASSERT(
+            "The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+            << (sid.second.first + 1) << " menus in <registry>, but only " << menus.size() << " in <layout>.",
+            sid.second.first < menus.size()
+        );
+        menu = menus.at(sid.second.first);
         ui::base::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            SIGHT_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                         core::tools::fwID::exist(sid.first ) );
-            service::IService::sptr service = service::get( sid.first );
+            SIGHT_ASSERT(
+                "Menu '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                core::tools::fwID::exist(sid.first)
+            );
+            service::IService::sptr service = service::get(sid.first);
             service->start();
         }
         else
         {
-            bool service_exists = core::tools::fwID::exist(sid.first );
-            if (!service_exists || service::get( sid.first )->isStopped())
+            bool service_exists = core::tools::fwID::exist(sid.first);
+            if(!service_exists || service::get(sid.first)->isStopped())
             {
                 ui::base::GuiRegistry::actionServiceStopping(sid.first);
             }
@@ -134,15 +149,18 @@ void MenuBar::manage(std::vector< ui::base::container::fwMenu::sptr > menus )
 
 void MenuBar::unmanage()
 {
-    for( SIDMenuMapType::value_type sid :  m_menuSids)
+    for(SIDMenuMapType::value_type sid : m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {
-            SIGHT_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                         core::tools::fwID::exist(sid.first ) );
-            service::IService::sptr service = service::get( sid.first );
+            SIGHT_ASSERT(
+                "Menu '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                core::tools::fwID::exist(sid.first)
+            );
+            service::IService::sptr service = service::get(sid.first);
             service->stop().wait();
         }
+
         ui::base::GuiRegistry::unregisterSIDMenu(sid.first);
     }
 }
@@ -150,4 +168,5 @@ void MenuBar::unmanage()
 //-----------------------------------------------------------------------------
 
 } // namespace registry
+
 } //namespace sight::ui::base

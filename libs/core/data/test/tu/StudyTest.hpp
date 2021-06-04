@@ -28,12 +28,13 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class StudyTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( StudyTest );
+CPPUNIT_TEST_SUITE(StudyTest);
 CPPUNIT_TEST(instanceUIDTest);
 CPPUNIT_TEST(dateTest);
 CPPUNIT_TEST(timeTest);
@@ -43,6 +44,7 @@ CPPUNIT_TEST(patientAgeTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,8 +57,10 @@ public:
     void patientAgeTest();
 
 private:
+
     Study::sptr m_study;
 };
 
 } //namespace ut
+
 } //namespace sight::data

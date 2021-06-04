@@ -26,11 +26,13 @@
 
 namespace sight::atoms
 {
+
 namespace registry
 {
 
-#define fwAtomsRegisterMacro( classname )                                  \
-    static sight::atoms::Base::Registry< classname > s__factory__record__ ## __LINE__;
+#define fwAtomsRegisterMacro(classname) \
+    static sight::atoms::Base::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // end namespace registry
+
 } // end namespace sight::atoms

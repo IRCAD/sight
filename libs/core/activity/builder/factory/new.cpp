@@ -26,18 +26,22 @@
 
 namespace sight::activity
 {
+
 namespace builder
 {
+
 namespace factory
 {
 
 //------------------------------------------------------------------------------
 
-activity::IBuilder::sptr New( const activity::builder::registry::KeyType& classname )
+activity::IBuilder::sptr New(const activity::builder::registry::KeyType& classname)
 {
     return activity::builder::registry::get()->create(classname);
 }
 
 } // namespace factory
+
 } // namespace builder
+
 } // namespace sight::activity

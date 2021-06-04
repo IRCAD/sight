@@ -93,7 +93,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(module::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(module::ui::qt::image::SMultipleTF, sight::ui::base::IEditor);
 
     /// Creates the editor.
     MODULE_UI_QT_API SMultipleTF();

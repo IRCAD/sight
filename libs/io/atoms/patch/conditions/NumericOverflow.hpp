@@ -29,15 +29,18 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace conditions
 {
+
 /**
  * @brief Applies condition on numeric value.
  */
 class IO_ATOMS_CLASS_API NumericOverflow : public Abstract
 {
 public:
-    SIGHT_DECLARE_CLASS(NumericOverflow, Abstract, new NumericOverflow)
+
+    SIGHT_DECLARE_CLASS(NumericOverflow, Abstract, new NumericOverflow);
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Numerical test
@@ -53,13 +56,16 @@ public:
     IO_ATOMS_API static NumericOverflow::sptr New(sight::atoms::Base::sptr defaultValue);
 
 protected:
+
     NumericOverflow()
     {
     }
+
     NumericOverflow(sight::atoms::Base::sptr defaultValue);
 
     sight::atoms::Numeric::sptr m_treshold;
 };
 
 } // namesapce conditions
+
 } // namesapce fwAtomsPatch

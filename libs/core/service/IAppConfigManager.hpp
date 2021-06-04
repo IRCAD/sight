@@ -31,6 +31,7 @@
 
 namespace sight::service
 {
+
 /**
  * @brief This class provides an interface to manage configurations template.
  * @deprecated This class is no longer supported, use service::AppConfigManager.
@@ -38,7 +39,8 @@ namespace sight::service
 class SERVICE_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object)
+
+    SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object);
 
     /// Constructor. Do nothing.
 
@@ -66,16 +68,20 @@ public:
      * @param configId the identifier of the requested config.
      * @param replaceFields the associations between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(const std::string& configId,
-                                       const FieldAdaptorType& replaceFields = FieldAdaptorType()) = 0;
+    SERVICE_API virtual void setConfig(
+        const std::string& configId,
+        const FieldAdaptorType& replaceFields = FieldAdaptorType()
+    )                                         = 0;
 
     /**
      * @brief Set configuration
      * @param configId the identifier of the requested config.
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(const std::string& configId,
-                                       const data::Composite::csptr& replaceFields) = 0;
+    SERVICE_API virtual void setConfig(
+        const std::string& configId,
+        const data::Composite::csptr& replaceFields
+    ) = 0;
 
     /// Get config root
     SERVICE_API virtual data::Object::sptr getConfigRoot() const = 0;
@@ -102,12 +108,13 @@ public:
     SERVICE_API virtual void destroy() = 0;
 
 protected:
+
     enum ConfigState
     {
         STATE_CREATED,
         STATE_STARTED,
         STATE_STOPPED,
-        STATE_DESTROYED,
+        STATE_DESTROYED
     };
 
     /// XML Configuration tree
@@ -128,7 +135,6 @@ inline IAppConfigManager::IAppConfigManager() :
 
 inline IAppConfigManager::~IAppConfigManager()
 {
-
 }
 
 //------------------------------------------------------------------------------

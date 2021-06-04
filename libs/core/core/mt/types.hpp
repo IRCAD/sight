@@ -29,14 +29,15 @@
 
 namespace sight::core
 {
+
 namespace mt
 {
 
 typedef ::boost::mutex Mutex;
-typedef ::boost::unique_lock< Mutex > ScopedLock;
+typedef ::boost::unique_lock<Mutex> ScopedLock;
 
 typedef ::boost::recursive_mutex RecursiveMutex;
-typedef ::boost::unique_lock< RecursiveMutex > RecursiveScopedLock;
+typedef ::boost::unique_lock<RecursiveMutex> RecursiveScopedLock;
 
 /// Defines a single writer, multiple readers mutex.
 typedef ::boost::shared_mutex ReadWriteMutex;
@@ -44,22 +45,23 @@ typedef ::boost::shared_mutex ReadWriteMutex;
  * @brief Defines a lock of read type for read/write mutex.
  * @note Multiple read lock can be done.
  */
-typedef ::boost::shared_lock< ReadWriteMutex > ReadLock;
+typedef ::boost::shared_lock<ReadWriteMutex> ReadLock;
 /**
  * @brief Defines a lock of write type for read/write mutex.
  * @note Only one write lock can be done at once.
  */
-typedef ::boost::unique_lock< ReadWriteMutex > WriteLock;
+typedef ::boost::unique_lock<ReadWriteMutex> WriteLock;
 /**
  * @brief Defines an upgradable lock type for read/write mutex.
  * @note Only one upgradable lock can be done at once but there may be multiple read lock.
  */
-typedef ::boost::upgrade_lock< ReadWriteMutex > ReadToWriteLock;
+typedef ::boost::upgrade_lock<ReadWriteMutex> ReadToWriteLock;
 /**
  * @brief Defines a write lock upgraded from ReadToWriteLock.
  * @note Only one upgradable lock can be done at once but there may be multiple read lock.
  */
-typedef ::boost::upgrade_to_unique_lock< ReadWriteMutex > UpgradeToWriteLock;
+typedef ::boost::upgrade_to_unique_lock<ReadWriteMutex> UpgradeToWriteLock;
 
 } //namespace mt
+
 } //namespace sight::core

@@ -35,7 +35,9 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 
 namespace sight::io::atoms::filter
@@ -46,8 +48,8 @@ namespace sight::io::atoms::filter
  */
 class IO_ATOMS_CLASS_API IFilter : public core::BaseObject
 {
-
 public:
+
     /// Factory key used by IFilter implementations
     typedef io::atoms::filter::factory::Key Key;
 
@@ -57,17 +59,18 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry(std::string functorKey)
         {
             io::atoms::filter::registry::get()->addFactory(functorKey, &io::atoms::filter::factory::New<T>);
         }
     };
 
-    SIGHT_DECLARE_CLASS(IFilter)
+    SIGHT_DECLARE_CLASS(IFilter);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor.
@@ -78,7 +81,6 @@ public:
 
     /// Applies the filter onto the specified object
     IO_ATOMS_API virtual void apply(const SPTR(sight::atoms::Object)& object) = 0;
-
 };
 
 } //fwAtomsFilter

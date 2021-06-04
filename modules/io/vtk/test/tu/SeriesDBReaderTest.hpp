@@ -26,6 +26,7 @@
 
 namespace sight::module::io::vtk
 {
+
 namespace ut
 {
 
@@ -34,12 +35,13 @@ namespace ut
  */
 class SeriesDBReaderTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesDBReaderTest );
-CPPUNIT_TEST( testSeriesDBReader );
-CPPUNIT_TEST( testMergeSeriesDBReader );
+CPPUNIT_TEST_SUITE(SeriesDBReaderTest);
+CPPUNIT_TEST(testSeriesDBReader);
+CPPUNIT_TEST(testMergeSeriesDBReader);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -49,4 +51,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::module::io::vtk

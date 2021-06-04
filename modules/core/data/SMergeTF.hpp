@@ -56,10 +56,9 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API SMergeTF final : public service::IController
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SMergeTF, ::sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SMergeTF, ::sight::service::IController);
 
     /// Creates the service.
     MODULE_DATA_API SMergeTF() noexcept;
@@ -100,14 +99,15 @@ private:
      * @param _value the value used to get interpolated colors in the window/level space.
      * @return The final blended color.
      */
-    sight::data::TransferFunction::TFColor mergeColors(const sight::data::Composite::csptr _tfPool,
-                                                       sight::data::TransferFunction::TFValueType _value,
-                                                       const sight::data::TransferFunction::csptr& _already_locked_tf)
+    sight::data::TransferFunction::TFColor mergeColors(
+        const sight::data::Composite::csptr _tfPool,
+        sight::data::TransferFunction::TFValueType _value,
+        const sight::data::TransferFunction::csptr& _already_locked_tf
+    )
     const;
 
     /// Handles all connections between this service and all TF.
     core::com::helper::SigSlotConnection m_connections;
-
 };
 
 } // namespace sight::module::data.

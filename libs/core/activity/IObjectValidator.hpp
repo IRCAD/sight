@@ -31,7 +31,9 @@
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::activity
@@ -45,15 +47,15 @@ namespace sight::activity
  */
 class ACTIVITY_CLASS_API IObjectValidator : public activity::IValidator
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IObjectValidator, activity::IValidator)
+    SIGHT_DECLARE_CLASS(IObjectValidator, activity::IValidator);
 
     /// Does nothing.
     ACTIVITY_API virtual ValidationType validate(
         const activity::extension::ActivityInfo&,
-        const CSPTR(data::Vector)& ) const override
+        const CSPTR(data::Vector)&
+    ) const override
     {
         ValidationType validation;
         validation.first  = true;
@@ -65,8 +67,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::Object)& currentData ) const = 0;
-
+    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::Object)& currentData) const = 0;
 };
 
 } // namespace sight::activity

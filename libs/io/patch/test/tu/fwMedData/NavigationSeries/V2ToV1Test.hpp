@@ -26,19 +26,21 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace NavigationSeries
 {
 
 /// Test structural patch to convert a data::NavigationSeries from version '2' to version '1'.
 class V2ToV1Test : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( V2ToV1Test );
-CPPUNIT_TEST( applyPatchTest );
+CPPUNIT_TEST_SUITE(V2ToV1Test);
+CPPUNIT_TEST(applyPatchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +55,9 @@ public:
 };
 
 } //namespace NavigationSeries
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

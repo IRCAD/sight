@@ -26,7 +26,6 @@
 
 #include <service/macros.hpp>
 
-
 namespace ExTimeLine
 {
 
@@ -70,9 +69,8 @@ void SMain::configuring()
 
 //------------------------------------------------------------------------------
 
-void SMain::swapping( )
+void SMain::swapping()
 {
-
 }
 
 //------------------------------------------------------------------------------

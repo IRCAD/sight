@@ -34,10 +34,12 @@ class IBuilder;
 
 namespace builder
 {
+
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -46,21 +48,24 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) activity::builder::factory::New();
+friend SPTR(CLASSNAME) activity::builder::factory::New();
 
 Key()
 {
 }
 };
 
-ACTIVITY_API SPTR( activity::IBuilder ) New( const activity::builder::registry::KeyType& classname );
+ACTIVITY_API SPTR(activity::IBuilder) New(const activity::builder::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) builder = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) builder = std::make_shared<CLASSNAME>(Key());
     return builder;
 }
 
 } // namespace factory
+
 } // namespace builder
+
 } // namespace sight::activity

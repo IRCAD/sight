@@ -34,25 +34,29 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
  * @brief   MultiSelectorDialog allowing the choice of an element among severals (_selections)
  */
 
-class UI_QML_CLASS_API MultiSelectorDialog :  public QObject,
-                                              public ui::base::dialog::IMultiSelectorDialog
-
+class UI_QML_CLASS_API MultiSelectorDialog : public QObject,
+                                             public ui::base::dialog::IMultiSelectorDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    SIGHT_DECLARE_CLASS(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
-                        ui::base::factory::New< MultiSelectorDialog >)
+    SIGHT_DECLARE_CLASS(
+        MultiSelectorDialog,
+        ui::base::dialog::IMultiSelectorDialog,
+        ui::base::factory::New<MultiSelectorDialog>
+    )
 
     UI_QML_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 
@@ -79,10 +83,12 @@ public:
     UI_QML_API void setMessage(const std::string& msg) override;
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void messageChanged();
 
 protected Q_SLOTS:
+
     /// slot getting the result of the dialog when a button is pressed
     void resultDialog(QVariant checkList, bool state);
 
@@ -96,4 +102,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

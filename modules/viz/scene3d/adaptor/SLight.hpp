@@ -36,7 +36,9 @@
 
 namespace Ogre
 {
+
 class Light;
+
 }
 
 namespace sight::module::viz::scene3d::adaptor
@@ -72,11 +74,10 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SLight final : public ::sight::viz::scene3d::ILight
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLight, ::sight::viz::scene3d::ILight)
+    SIGHT_DECLARE_SERVICE(SLight, ::sight::viz::scene3d::ILight);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API SLight() noexcept;
@@ -212,40 +213,40 @@ protected:
 private:
 
     /// Containes the Ogre light managed by this adaptor.
-    ::Ogre::Light* m_light { nullptr };
+    ::Ogre::Light* m_light {nullptr};
 
     /// Defines the name of the associated Ogre light.
     std::string m_lightName;
 
     /// Sets the type of the associated Ogre light.
-    ::Ogre::Light::LightTypes m_lightType { ::Ogre::Light::LT_DIRECTIONAL };
+    ::Ogre::Light::LightTypes m_lightType {::Ogre::Light::LT_DIRECTIONAL};
 
     /// Enables the light.
-    bool m_switchedOn { true };
+    bool m_switchedOn {true};
 
     /// Defines the angle in degrees defining the rotation of the light around x axis.
-    float m_thetaOffset { 0.f };
+    float m_thetaOffset {0.f};
 
     /// Defines the angle in degrees defining the rotation of the light around y axis.
-    float m_phiOffset { 0.f };
+    float m_phiOffset {0.f};
 
     /// Contains the node used to attach the light
-    ::Ogre::SceneNode* m_lightNode { nullptr };
+    ::Ogre::SceneNode* m_lightNode {nullptr};
 
     /// Defines the visual feedback visibility state.
-    bool m_visualFeedback { false };
+    bool m_visualFeedback {false};
 
     /// Contains the material used for the feedback visualization.
-    data::Material::sptr m_material { nullptr };
+    data::Material::sptr m_material {nullptr};
 
     /// Contains the sphere at the light position.
-    ::Ogre::ManualObject* m_lightPosition { nullptr };
+    ::Ogre::ManualObject* m_lightPosition {nullptr};
 
     /// Defines the length of the visual feedback object.
-    float m_length { 50.f };
+    float m_length {50.f};
 
     /// Contains objects used for the directional light visual feedback.
-    std::pair< ::Ogre::ManualObject*, ::Ogre::ManualObject* > m_directionalFeedback { nullptr, nullptr };
+    std::pair< ::Ogre::ManualObject*, ::Ogre::ManualObject*> m_directionalFeedback {nullptr, nullptr};
 };
 
 //------------------------------------------------------------------------------

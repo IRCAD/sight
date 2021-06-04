@@ -32,6 +32,7 @@
 
 namespace sight::core::tools
 {
+
 namespace random
 {
 
@@ -44,7 +45,7 @@ namespace random
  *
  * @return returns a random value uniformly distributed in the range [min..max)
  */
-template <typename T>
+template<typename T>
 T getValue(T min, T max, std::uint32_t seedVal = static_cast<std::uint32_t>(std::time(nullptr)))
 {
     SIGHT_ASSERT("Wrong min/max value", min <= max);
@@ -52,7 +53,7 @@ T getValue(T min, T max, std::uint32_t seedVal = static_cast<std::uint32_t>(std:
             std::is_floating_point<T>::value,
             std::uniform_real_distribution<T>,
             std::uniform_int_distribution<T>
-            >::type DistroType;
+    >::type DistroType;
 
     std::mt19937 gen(seedVal);
     DistroType dist(min, max);
@@ -69,17 +70,21 @@ T getValue(T min, T max, std::uint32_t seedVal = static_cast<std::uint32_t>(std:
  * @pre  min <= max
  * @pre  CONTAINER type same as template T
  */
-template <typename T, typename CONTAINER>
-void fillContainer(T min, T max, CONTAINER& randContainer,
-                   std::uint32_t seedVal = static_cast<std::uint32_t>(std::time(nullptr)))
+template<typename T, typename CONTAINER>
+void fillContainer(
+    T min,
+    T max,
+    CONTAINER& randContainer,
+    std::uint32_t seedVal = static_cast<std::uint32_t>(std::time(nullptr))
+)
 {
     SIGHT_ASSERT("Wrong min/max value", min <= max);
-    SIGHT_ASSERT("Container type not same as T", (std::is_same< T, typename CONTAINER::value_type>::value) );
+    SIGHT_ASSERT("Container type not same as T", (std::is_same<T, typename CONTAINER::value_type>::value));
     typedef typename std::conditional<
             std::is_floating_point<T>::value,
             std::uniform_real_distribution<T>,
             std::uniform_int_distribution<T>
-            >::type DistroType;
+    >::type DistroType;
 
     std::mt19937 gen(seedVal);
     DistroType dist(min, max);
@@ -88,4 +93,5 @@ void fillContainer(T min, T max, CONTAINER& randContainer,
 }
 
 } // namespace random
+
 } // namespace sight::core::tools

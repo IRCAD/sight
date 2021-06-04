@@ -30,6 +30,7 @@
 
 namespace sight::geometry::vtk
 {
+
 //------------------------------------------------------------------------------
 
 data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh, const bool useScalarAsWeights)
@@ -49,5 +50,7 @@ data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh, const bool u
     const data::Point::sptr center = data::Point::New(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
     return center;
 }
+
 //------------------------------------------------------------------------------
+
 } // namespace sight::geometry::vtk

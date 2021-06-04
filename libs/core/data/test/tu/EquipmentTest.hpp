@@ -34,11 +34,12 @@ namespace ut
 
 class EquipmentTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( EquipmentTest );
+CPPUNIT_TEST_SUITE(EquipmentTest);
 CPPUNIT_TEST(institutionNameTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -46,8 +47,10 @@ public:
     void institutionNameTest();
 
 private:
+
     Equipment::sptr m_equipment;
 };
 
 } //namespace ut
+
 } //namespace sight::data

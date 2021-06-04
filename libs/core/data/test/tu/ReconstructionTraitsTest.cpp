@@ -26,10 +26,11 @@
 #include <data/StructureTraits.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ReconstructionTraitsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ReconstructionTraitsTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -38,8 +39,8 @@ namespace ut
 void ReconstructionTraitsTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void ReconstructionTraitsTest::tearDown()
@@ -68,10 +69,11 @@ void ReconstructionTraitsTest::creation()
     recTraits->setMeshOpNode(opMeskNode);
 
     CPPUNIT_ASSERT_EQUAL(ID, recTraits->getIdentifier());
-    CPPUNIT_ASSERT(structure == recTraits->getStructureTraits() );
-    CPPUNIT_ASSERT(opMaskNode == recTraits->getMaskOpNode() );
-    CPPUNIT_ASSERT(opMeskNode == recTraits->getMeshOpNode() );
+    CPPUNIT_ASSERT(structure == recTraits->getStructureTraits());
+    CPPUNIT_ASSERT(opMaskNode == recTraits->getMaskOpNode());
+    CPPUNIT_ASSERT(opMeskNode == recTraits->getMeshOpNode());
 }
 
 } //namespace ut
+
 } //namespace sight::data

@@ -26,16 +26,18 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
-class GetObjectTest :  public CPPUNIT_NS::TestFixture
+class GetObjectTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( GetObjectTest );
-CPPUNIT_TEST( getTest );
-CPPUNIT_TEST( invalidPathTest );
+CPPUNIT_TEST_SUITE(GetObjectTest);
+CPPUNIT_TEST(getTest);
+CPPUNIT_TEST(invalidPathTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,9 +48,10 @@ public:
 
     void getTest();
     void invalidPathTest();
-
 };
 
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace sight::data

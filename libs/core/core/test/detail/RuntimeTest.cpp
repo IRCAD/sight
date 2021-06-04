@@ -33,12 +33,14 @@
 #include <regex>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::detail::ut::RuntimeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::detail::ut::RuntimeTest);
 
 namespace sight::core::runtime
 {
+
 namespace detail
 {
+
 namespace ut
 {
 
@@ -64,7 +66,6 @@ void RuntimeTest::tearDown()
 //------------------------------------------------------------------------------
 
 #if defined(linux) || defined(__linux) || defined(__APPLE__)
-
 void RuntimeTest::testPosix()
 {
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
@@ -74,15 +75,16 @@ void RuntimeTest::testPosix()
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     const auto name = nativeLibrary->getName();
 
-    CPPUNIT_ASSERT_EQUAL( std::string("sight_module_utest"), name);
+    CPPUNIT_ASSERT_EQUAL(std::string("sight_module_utest"), name);
 
     const auto path = nativeLibrary->getFullPath();
-    CPPUNIT_ASSERT_EQUAL(  (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX /
-                            std::filesystem::path("libsight_module_utest.so")).string(), path.string() );
+    CPPUNIT_ASSERT_EQUAL(
+        (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX
+         / std::filesystem::path("libsight_module_utest.so")).string(),
+        path.string()
+    );
 }
-
 #elif defined(WIN32)
-
 //------------------------------------------------------------------------------
 
 void RuntimeTest::testWin32()
@@ -94,11 +96,14 @@ void RuntimeTest::testWin32()
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getName();
 
-    CPPUNIT_ASSERT_EQUAL( std::string("sight_module_utest"), nativeName);
+    CPPUNIT_ASSERT_EQUAL(std::string("sight_module_utest"), nativeName);
 
     auto path = nativeLibrary->getFullPath();
-    CPPUNIT_ASSERT_EQUAL( (core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX /
-                           std::filesystem::path("sight_module_utest.dll")).string(), path.string() );
+    CPPUNIT_ASSERT_EQUAL(
+        (core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX
+         / std::filesystem::path("sight_module_utest.dll")).string(),
+        path.string()
+    );
 }
 #endif
 
@@ -113,13 +118,13 @@ void RuntimeTest::testRuntime()
     const auto moduleStr                    = "::sight::module::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
-    auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));
+    auto bundle = std::dynamic_pointer_cast<core::runtime::detail::Module>(runtime.findModule(moduleStr));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnabled());
 
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
-    auto bundle2 = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));
+    auto bundle2 = std::dynamic_pointer_cast<core::runtime::detail::Module>(runtime.findModule(moduleStr));
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnabled());
 }
@@ -127,5 +132,7 @@ void RuntimeTest::testRuntime()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace detail
+
 } // namespace fwRuntime

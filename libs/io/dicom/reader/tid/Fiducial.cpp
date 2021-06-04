@@ -29,25 +29,29 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/Boolean.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace tid
 {
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(const data::DicomSeries::csptr& dicomSeries,
-                   const SPTR(::gdcm::Reader)& reader,
-                   const io::dicom::container::DicomInstance::sptr& instance,
-                   const data::Image::sptr& image,
-                   const core::log::Logger::sptr& logger) :
-    io::dicom::reader::tid::TemplateID< data::Image >(dicomSeries, reader, instance, image, logger)
+Fiducial::Fiducial(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(::gdcm::Reader)& reader,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const data::Image::sptr& image,
+    const core::log::Logger::sptr& logger
+) :
+    io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
 {
 }
 
@@ -61,20 +65,20 @@ Fiducial::~Fiducial()
 
 void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 {
-    if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature") &&
-       !node->getSubNodeContainer().empty())
+    if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature")
+       && !node->getSubNodeContainer().empty())
     {
         std::string label = "";
         double x, y, z;
         bool foundLandmark = false;
-        for(const SPTR(io::dicom::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
+        for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
         {
             // Read label
-            if(subNode->getCodedAttribute() ==
-               io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
+            if(subNode->getCodedAttribute()
+               == io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
             {
                 SPTR(io::dicom::container::sr::DicomSRTextNode) intentNode =
-                    std::dynamic_pointer_cast< io::dicom::container::sr::DicomSRTextNode >(subNode);
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRTextNode>(subNode);
                 if(intentNode)
                 {
                     label = intentNode->getTextValue();
@@ -84,7 +88,7 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
             else if(subNode->getType() == "SCOORD")
             {
                 SPTR(io::dicom::container::sr::DicomSRSCoordNode) scoordNode =
-                    std::dynamic_pointer_cast< io::dicom::container::sr::DicomSRSCoordNode >(subNode);
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoordNode>(subNode);
                 if(scoordNode && scoordNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
@@ -97,13 +101,16 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
                     if(!scoordNode->getSubNodeContainer().empty())
                     {
                         SPTR(io::dicom::container::sr::DicomSRImageNode) imageNode =
-                            std::dynamic_pointer_cast< io::dicom::container::sr::DicomSRImageNode >(
-                                *scoordNode->getSubNodeContainer().begin());
+                            std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRImageNode>(
+                                *scoordNode->getSubNodeContainer().begin()
+                            );
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getFrameNumber();
-                            z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object,
-                                                                                                   frameNumber);
+                            z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
+                                m_object,
+                                frameNumber
+                            );
                             foundLandmark = true;
                         }
                     }
@@ -113,7 +120,7 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
             else if(subNode->getType() == "SCOORD3D")
             {
                 SPTR(io::dicom::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                    std::dynamic_pointer_cast< io::dicom::container::sr::DicomSRSCoord3DNode >(subNode);
+                    std::dynamic_pointer_cast<io::dicom::container::sr::DicomSRSCoord3DNode>(subNode);
                 if(scoord3DNode && scoord3DNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
@@ -125,14 +132,12 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
                     foundLandmark = true;
                 }
             }
-
         }
 
         if(foundLandmark)
         {
             this->addLandmark(x, y, z, label);
         }
-
     }
 }
 
@@ -144,7 +149,7 @@ void Fiducial::addLandmark(double x, double y, double z, const std::string& labe
     point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
 
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
 
     if(!pointList)
     {
@@ -159,5 +164,7 @@ void Fiducial::addLandmark(double x, double y, double z, const std::string& labe
 //------------------------------------------------------------------------------
 
 } // namespace tid
+
 } // namespace reader
+
 } // namespace sight::io::dicom

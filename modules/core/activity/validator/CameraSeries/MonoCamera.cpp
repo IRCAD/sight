@@ -29,6 +29,7 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace CameraSeries
 {
 
@@ -38,19 +39,17 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraS
 
 MonoCamera::MonoCamera(sight::activity::IValidator::Key key)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 MonoCamera::~MonoCamera()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
+sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -59,17 +58,17 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
 
     data::CameraSeries::csptr cameraSeries = data::CameraSeries::dynamicConstCast(currentData);
 
-    if (!cameraSeries)
+    if(!cameraSeries)
     {
         validation.first  = false;
         validation.second = "Current data should be a CameraSeries.";
     }
     else
     {
-        if (cameraSeries->getNumberOfCameras() == 1)
+        if(cameraSeries->getNumberOfCameras() == 1)
         {
             data::Camera::sptr camera = cameraSeries->getCamera(0);
-            if (!camera->getIsCalibrated())
+            if(!camera->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The CameraSeries should be calibrated.";
@@ -88,4 +87,5 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
 //-----------------------------------------------------------------------------
 
 } // namespace CameraSeries
+
 } // namespace sight::module::activity::validator

@@ -26,22 +26,25 @@
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
-class CompareObjectsTest :  public CPPUNIT_NS::TestFixture
+class CompareObjectsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( CompareObjectsTest );
-CPPUNIT_TEST( compareImageTest );
-CPPUNIT_TEST( compareReconstructionTest );
-CPPUNIT_TEST( compareBufferTest );
-CPPUNIT_TEST( compareEmpty );
-CPPUNIT_TEST( exceptionTest );
-CPPUNIT_TEST( compareSeriesDBTest );
+CPPUNIT_TEST_SUITE(CompareObjectsTest);
+CPPUNIT_TEST(compareImageTest);
+CPPUNIT_TEST(compareReconstructionTest);
+CPPUNIT_TEST(compareBufferTest);
+CPPUNIT_TEST(compareEmpty);
+CPPUNIT_TEST(exceptionTest);
+CPPUNIT_TEST(compareSeriesDBTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -58,6 +61,9 @@ public:
 };
 
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace sight::data

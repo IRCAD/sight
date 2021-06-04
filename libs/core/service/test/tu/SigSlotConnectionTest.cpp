@@ -25,18 +25,19 @@
 #include "SlotsSignalsStuff.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::SigSlotConnectionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::SigSlotConnectionTest);
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -69,7 +70,7 @@ void SigSlotConnectionTest::basicTest()
     showTestSrv->setWorker(activeWorkers->getWorker(core::thread::ActiveWorkers::s_DEFAULT_WORKER));
 
     data::Object::ModifiedSignalType::sptr sig =
-        buffer->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );
+        buffer->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
     CPPUNIT_ASSERT_EQUAL(0, showTestSrv->m_receiveCount);
 
@@ -88,4 +89,5 @@ void SigSlotConnectionTest::basicTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

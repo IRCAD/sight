@@ -28,10 +28,11 @@
 
 #include <utility>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Edge));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Edge));
 
 namespace sight::data
 {
+
 /**
  * @brief This class defines an edge object.
  *
@@ -40,8 +41,9 @@ namespace sight::data
 class DATA_CLASS_API Edge : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(Edge, data::Object, data::factory::New< Edge >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Edge));
+
+    SIGHT_DECLARE_CLASS(Edge, data::Object, data::factory::New<Edge>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Edge));
 
     DATA_API static std::string NATURE_FLOW;
     DATA_API static std::string NATURE_DATA;
@@ -50,12 +52,12 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Edge( data::Object::Key key );
+    DATA_API Edge(data::Object::Key key);
     /// Destructor
     DATA_API virtual ~Edge();
 
     /// @brief do a shallow copy of edge
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// @brief do a deep copy of edge
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -92,8 +94,8 @@ public:
 protected:
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
-    std::string m_toPortIdentifier; // "ID_SIZEX" , ...
-    std::string m_nature; // "FLOW" , "FWDATA"
+    std::string m_toPortIdentifier;   // "ID_SIZEX" , ...
+    std::string m_nature;             // "FLOW" , "FWDATA"
 };
 
 } // namespace sight::data

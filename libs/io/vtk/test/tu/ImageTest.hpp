@@ -29,6 +29,7 @@
 
 namespace sight::io::vtk
 {
+
 namespace ut
 {
 
@@ -37,21 +38,22 @@ namespace ut
  */
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageTest );
-CPPUNIT_TEST( testImageToVtk );
-CPPUNIT_TEST( testFromVtk );
+CPPUNIT_TEST_SUITE(ImageTest);
+CPPUNIT_TEST(testImageToVtk);
+CPPUNIT_TEST(testFromVtk);
 
-CPPUNIT_TEST( fromToVtkTest );
-CPPUNIT_TEST( mhdReaderTest );
-CPPUNIT_TEST( mhdWriterTest );
-CPPUNIT_TEST( vtiReaderTest );
-CPPUNIT_TEST( vtiWriterTest );
-CPPUNIT_TEST( vtkReaderTest );
-CPPUNIT_TEST( vtkWriterTest );
+CPPUNIT_TEST(fromToVtkTest);
+CPPUNIT_TEST(mhdReaderTest);
+CPPUNIT_TEST(mhdWriterTest);
+CPPUNIT_TEST(vtiReaderTest);
+CPPUNIT_TEST(vtiWriterTest);
+CPPUNIT_TEST(vtkReaderTest);
+CPPUNIT_TEST(vtkWriterTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -66,8 +68,8 @@ public:
     void vtiWriterTest();
     void vtkReaderTest();
     void vtkWriterTest();
-
 };
 
 } // namespace ut
+
 } // namespace sight::io::vtk

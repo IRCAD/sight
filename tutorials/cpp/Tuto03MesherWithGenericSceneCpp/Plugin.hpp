@@ -38,6 +38,7 @@ namespace Tuto03MesherWithGenericSceneCpp
 class TUTO03MESHERWITHGENERICSCENECPP_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:
+
     /// Constructor.
     TUTO03MESHERWITHGENERICSCENECPP_API Plugin() noexcept;
 
@@ -56,7 +57,7 @@ public:
 
 private:
 
-    std::unique_ptr< sight::service::AppManager > m_appManager;
+    std::unique_ptr<sight::service::AppManager> m_appManager;
 
     sight::core::com::SlotBase::sptr m_slotRecSelected;
     sight::core::com::SlotBase::sptr m_slotEmptySelection;

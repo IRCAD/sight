@@ -26,14 +26,18 @@
 
 namespace sight::io::base
 {
+
 namespace reader
 {
+
 namespace registry
 {
 
-#define SIGHT_REGISTER_IO_READER( classname )                                  \
-    static sight::io::base::reader::IObjectReader::Registry< classname > s__factory__record__ ## __LINE__;
+#define SIGHT_REGISTER_IO_READER(classname) \
+    static sight::io::base::reader::IObjectReader::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // end namespace registry
+
 } // end namespace reader
+
 } // end namespace sight::io::base

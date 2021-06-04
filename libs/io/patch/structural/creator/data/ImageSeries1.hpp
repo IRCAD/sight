@@ -27,18 +27,19 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
 /// Structural creator for data::ImageSeries version '1'.
 class IO_PATCH_CLASS_API ImageSeries1 : public io::patch::structural::creator::data::Series1
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ImageSeries1, io::patch::structural::creator::data::Series1, new ImageSeries1)
+    SIGHT_DECLARE_CLASS(ImageSeries1, io::patch::structural::creator::data::Series1, new ImageSeries1);
 
     /// Constructor
     IO_PATCH_API ImageSeries1();
@@ -47,13 +48,14 @@ public:
     IO_PATCH_API ~ImageSeries1();
 
     /// Copy constructor
-    IO_PATCH_API ImageSeries1( const ImageSeries1& cpy );
+    IO_PATCH_API ImageSeries1(const ImageSeries1& cpy);
 
     /// Creates the specified object (sets 'image' attribute) and calls creator 'Series1'.
     IO_PATCH_API sight::atoms::Object::sptr create() override;
-
 };
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

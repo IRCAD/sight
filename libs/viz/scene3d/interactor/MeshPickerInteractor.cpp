@@ -89,12 +89,15 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
                 case MouseButton::LEFT:
                     info.m_eventId = _pressed ? PickingEventType::MOUSE_LEFT_DOWN : PickingEventType::MOUSE_LEFT_UP;
                     break;
+
                 case MouseButton::RIGHT:
                     info.m_eventId = _pressed ? PickingEventType::MOUSE_RIGHT_DOWN : PickingEventType::MOUSE_RIGHT_UP;
                     break;
+
                 case MouseButton::MIDDLE:
                     info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
                     break;
+
                 default:
                     SIGHT_ERROR("Unknow button");
                     break;
@@ -104,6 +107,7 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
             {
                 info.m_modifierMask |= data::tools::PickingInfo::CTRL;
             }
+
             if(static_cast<bool>(_mod & Modifier::SHIFT))
             {
                 info.m_modifierMask |= data::tools::PickingInfo::SHIFT;
@@ -115,8 +119,10 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
             }
             else
             {
-                SIGHT_ERROR("You must first set the signal sent using 'MeshPickerInteractor::setPointClickedSig'"
-                            " for this interactor to work.");
+                SIGHT_ERROR(
+                    "You must first set the signal sent using 'MeshPickerInteractor::setPointClickedSig'"
+                    " for this interactor to work."
+                );
             }
         }
     }

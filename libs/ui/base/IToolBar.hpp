@@ -38,7 +38,7 @@ class UI_BASE_CLASS_API IToolBar : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IToolBar, service::IService)
+    SIGHT_DECLARE_SERVICE(IToolBar, service::IService);
 
     /// Method called when an action service is stopping
     UI_BASE_API void actionServiceStopping(std::string actionSrvSID);

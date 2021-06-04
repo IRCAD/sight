@@ -32,10 +32,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -82,7 +83,9 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
-    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series,
+    const core::log::Logger::sptr& logger
+)
 const
 {
     if(m_tag == DCM_UndefinedTagKey)
@@ -93,7 +96,7 @@ const
 
     DicomSeriesContainerType result;
 
-    typedef std::vector< core::memory::BufferObject::sptr > InstanceContainerType;
+    typedef std::vector<core::memory::BufferObject::sptr> InstanceContainerType;
 
     // Create a container to store the instances
     InstanceContainerType instances;
@@ -107,7 +110,7 @@ const
         const core::memory::BufferObject::sptr bufferObj = item.second;
         const size_t buffSize                            = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast< char* >( lock.getBuffer() );
+        char* buffer = static_cast<char*>(lock.getBuffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -115,10 +118,12 @@ const
 
         DcmFileFormat fileFormat;
         fileFormat.transferInit();
-        if (!fileFormat.read(is).good())
+        if(!fileFormat.read(is).good())
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << item.first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << item.first << "')"
+            );
         }
 
         fileFormat.loadAllDataIntoMemory();
@@ -147,6 +152,7 @@ const
     {
         series->addBinary(index++, buffer);
     }
+
     series->setNumberOfInstances(series->getDicomContainer().size());
     result.push_back(series);
 
@@ -154,4 +160,5 @@ const
 }
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

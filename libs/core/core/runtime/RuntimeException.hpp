@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 #include <exception>
@@ -38,7 +37,6 @@ namespace sight::core::runtime
  */
 struct CORE_CLASS_API RuntimeException : public core::Exception
 {
-
     /**
      * @brief       Copy constructor.
      *
@@ -57,7 +55,6 @@ struct CORE_CLASS_API RuntimeException : public core::Exception
      * @brief   Destructor : does nothing.
      */
     CORE_API ~RuntimeException() noexcept override;
-
 };
 
 } // namespace sight::core::runtime

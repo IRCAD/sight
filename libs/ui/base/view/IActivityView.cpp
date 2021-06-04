@@ -42,6 +42,7 @@
 
 namespace sight::ui::base
 {
+
 namespace view
 {
 
@@ -78,7 +79,7 @@ void IActivityView::configuring()
 void IActivityView::launchActivitySeries(data::Series::sptr series)
 {
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
-    if (activitySeries)
+    if(activitySeries)
     {
         this->launchActivity(activitySeries);
     }
@@ -93,11 +94,13 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
 
     std::tie(isValid, message) = this->activity::IActivityLauncher::validateActivity(activitySeries);
 
-    if (!isValid)
+    if(!isValid)
     {
-        ui::base::dialog::MessageDialog::show("Activity launch",
-                                              message,
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        ui::base::dialog::MessageDialog::show(
+            "Activity launch",
+            message,
+            ui::base::dialog::IMessageDialog::CRITICAL
+        );
     }
 
     return isValid;
@@ -109,17 +112,19 @@ data::ActivitySeries::sptr IActivityView::createMainActivity() const
 {
     data::ActivitySeries::sptr actSeries = this->activity::IActivityLauncher::createMainActivity();
 
-    if (nullptr == actSeries)
+    if(nullptr == actSeries)
     {
         ui::base::dialog::MessageDialog::show(
             "Main activity",
             "The main activity " + m_mainActivityId + " can not be launched. \n"
-            "This activity needs parameters that cannot be defined",
-            ui::base::dialog::IMessageDialog::INFO);
+                                                      "This activity needs parameters that cannot be defined",
+            ui::base::dialog::IMessageDialog::INFO
+        );
     }
 
     return actSeries;
 }
 
 } // namespace view
+
 } // namespace sight::ui::base

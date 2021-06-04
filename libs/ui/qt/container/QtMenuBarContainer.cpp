@@ -26,6 +26,7 @@
 
 namespace sight::ui::qt
 {
+
 namespace container
 {
 
@@ -51,7 +52,7 @@ void QtMenuBarContainer::clean()
     m_menuBar->clear();
 
     QList<QMenu*> list = m_menuBar->findChildren<QMenu*>();
-    Q_FOREACH (QMenu* m, list)
+    Q_FOREACH(QMenu* m, list)
     {
         m->hide();
         delete m;
@@ -88,4 +89,5 @@ QMenuBar* QtMenuBarContainer::getQtMenuBar()
 //-----------------------------------------------------------------------------
 
 } // namespace container
+
 } // namespace sight::ui::qt

@@ -35,12 +35,12 @@ namespace vr
 //-----------------------------------------------------------------------------
 
 const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
-    { IVolumeRenderer::Z_POSITIVE, {{ 3, 4, 1, 0 }} },
-    { IVolumeRenderer::Z_NEGATIVE, {{ 2, 5, 7, 6 }} },
-    { IVolumeRenderer::Y_POSITIVE, {{ 2, 6, 3, 0 }} },
-    { IVolumeRenderer::Y_NEGATIVE, {{ 1, 4, 7, 5 }} },
-    { IVolumeRenderer::X_POSITIVE, {{ 0, 1, 5, 2 }} },
-    { IVolumeRenderer::X_NEGATIVE, {{ 6, 7, 4, 3 }} }
+    {IVolumeRenderer::Z_POSITIVE, {{3, 4, 1, 0}}},
+    {IVolumeRenderer::Z_NEGATIVE, {{2, 5, 7, 6}}},
+    {IVolumeRenderer::Y_POSITIVE, {{2, 6, 3, 0}}},
+    {IVolumeRenderer::Y_NEGATIVE, {{1, 4, 7, 5}}},
+    {IVolumeRenderer::X_POSITIVE, {{0, 1, 5, 2}}},
+    {IVolumeRenderer::X_NEGATIVE, {{6, 7, 4, 3}}}
 };
 
 /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
@@ -57,19 +57,22 @@ static const ::Ogre::Vector3 s_imagePositions[8] = {
 
 //-----------------------------------------------------------------------------
 
-const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = { {
-                                                                         { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
-                                                                         { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
-                                                                         { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
-                                                                     } };
+const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = {{
+    {0, 1}, {1, 4}, {4, 3}, {3, 0},
+    {0, 2}, {1, 5}, {4, 7}, {3, 6},
+    {2, 5}, {5, 7}, {7, 6}, {6, 2}
+}
+};
 
 //-----------------------------------------------------------------------------
 
-IVolumeRenderer::IVolumeRenderer(std::string parentId,
-                                 ::Ogre::SceneManager* const sceneManager,
-                                 ::Ogre::SceneNode* const volumeNode,
-                                 ::Ogre::TexturePtr imageTexture,
-                                 PreIntegrationTable& preintegrationTable) :
+IVolumeRenderer::IVolumeRenderer(
+    std::string parentId,
+    ::Ogre::SceneManager* const sceneManager,
+    ::Ogre::SceneNode* const volumeNode,
+    ::Ogre::TexturePtr imageTexture,
+    PreIntegrationTable& preintegrationTable
+) :
     m_parentId(parentId),
     m_sceneManager(sceneManager),
     m_3DOgreTexture(imageTexture),
@@ -87,14 +90,12 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
 
 IVolumeRenderer::~IVolumeRenderer()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void IVolumeRenderer::updateVolumeTF()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -104,12 +105,13 @@ void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
     const ::Ogre::Vector3 min = clippingBox.getMinimum();
     const ::Ogre::Vector3 max = clippingBox.getMaximum();
 
-    for(unsigned i = 0; i < 8; ++i)
+    for(unsigned i = 0 ; i < 8 ; ++i)
     {
         m_clippedImagePositions[i] = ::Ogre::Vector3(
             ::boost::algorithm::clamp(s_imagePositions[i].x, min.x, max.x),
             ::boost::algorithm::clamp(s_imagePositions[i].y, min.y, max.y),
-            ::boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z));
+            ::boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z)
+        );
     }
 }
 
@@ -117,27 +119,30 @@ void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 
 void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::scaleTranslateCube(const data::Image::SpacingType& spacing,
-                                         const data::Image::OriginType& origin)
+void IVolumeRenderer::scaleTranslateCube(
+    const data::Image::SpacingType& spacing,
+    const data::Image::OriginType& origin
+)
 {
-    SIGHT_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
-                 spacing.size() == 3 && origin.size() == 3);
+    SIGHT_ASSERT(
+        "Image origin and spacing must be three-dimensional for volume rendering.",
+        spacing.size() == 3 && origin.size() == 3
+    );
 
     m_volumeSceneNode->resetToInitialState();
 
-    const double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
-    const double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
-    const double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
+    const double width  = static_cast<double>(m_3DOgreTexture->getWidth()) * spacing[0];
+    const double height = static_cast<double>(m_3DOgreTexture->getHeight()) * spacing[1];
+    const double depth  = static_cast<double>(m_3DOgreTexture->getDepth()) * spacing[2];
 
     const ::Ogre::Vector3 scaleFactors(
-        static_cast<float>(width ),
+        static_cast<float>(width),
         static_cast<float>(height),
-        static_cast<float>(depth ));
+        static_cast<float>(depth));
 
     const ::Ogre::Vector3 ogreOrigin(
         static_cast<float>(origin[0]),
@@ -149,19 +154,21 @@ void IVolumeRenderer::scaleTranslateCube(const data::Image::SpacingType& spacing
 }
 
 /// Scale the volume based on the image's spacing and move it to the image origin.
-void IVolumeRenderer::scaleTranslateCube(const data::Image::Spacing& spacing,
-                                         const data::Image::Origin& origin)
+void IVolumeRenderer::scaleTranslateCube(
+    const data::Image::Spacing& spacing,
+    const data::Image::Origin& origin
+)
 {
     m_volumeSceneNode->resetToInitialState();
 
-    const double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
-    const double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
-    const double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
+    const double width  = static_cast<double>(m_3DOgreTexture->getWidth()) * spacing[0];
+    const double height = static_cast<double>(m_3DOgreTexture->getHeight()) * spacing[1];
+    const double depth  = static_cast<double>(m_3DOgreTexture->getDepth()) * spacing[2];
 
     const ::Ogre::Vector3 scaleFactors(
-        static_cast<float>(width ),
+        static_cast<float>(width),
         static_cast<float>(height),
-        static_cast<float>(depth ));
+        static_cast<float>(depth));
 
     const ::Ogre::Vector3 ogreOrigin(
         static_cast<float>(origin[0]),
@@ -179,7 +186,7 @@ void IVolumeRenderer::scaleTranslateCube(const data::Image::Spacing& spacing,
     return ::Ogre::Plane(
         m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
         m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition())
-        );
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -188,7 +195,7 @@ unsigned IVolumeRenderer::computeSampleDistance(const ::Ogre::Plane& cameraPlane
 {
     // get the cube's closest and furthest vertex to the camera
     const auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-                      { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+                      {return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2);};
 
     const auto closestVtxIterator = std::min_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
     const auto closestVtxIndex    = std::distance(m_clippedImagePositions, closestVtxIterator);

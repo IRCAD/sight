@@ -36,6 +36,7 @@ namespace exceptions
 class BadExtension : public io::atoms::patch::exceptions::Base
 {
 public:
+
     BadExtension(const std::string& message);
     virtual ~BadExtension() noexcept
     {
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

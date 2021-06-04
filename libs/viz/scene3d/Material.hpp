@@ -41,6 +41,7 @@ class R2VBRenderable;
 class VIZ_SCENE3D_CLASS_API Material
 {
 public:
+
     typedef std::unique_ptr<Material> uptr;
 
     /// Name of the default used as a base for the instance created by this adaptor
@@ -53,17 +54,21 @@ public:
     VIZ_SCENE3D_API ~Material();
 
     /// Updates material options mode (standard, point normals or cells normals)
-    VIZ_SCENE3D_API void updateOptionsMode(int _optionsMode );
+    VIZ_SCENE3D_API void updateOptionsMode(int _optionsMode);
 
     /// Updates material polygon mode (surface, point or wireframe)
-    VIZ_SCENE3D_API void updatePolygonMode( int _polygonMode );
+    VIZ_SCENE3D_API void updatePolygonMode(int _polygonMode);
 
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
-    VIZ_SCENE3D_API void updateShadingMode(int _shadingMode, int _numLights, bool _hasDiffuseTexture,
-                                           bool useTextureAlpha);
+    VIZ_SCENE3D_API void updateShadingMode(
+        int _shadingMode,
+        int _numLights,
+        bool _hasDiffuseTexture,
+        bool useTextureAlpha
+    );
 
     /// Update material color in fixed function pipeline
-    VIZ_SCENE3D_API void updateRGBAMode( data::Material::sptr _sightMaterial );
+    VIZ_SCENE3D_API void updateRGBAMode(data::Material::sptr _sightMaterial);
 
     void setHasMeshNormal(bool _hasMeshNormal);
     void setHasUV(bool _hasUV);
@@ -98,25 +103,25 @@ private:
     ::Ogre::MaterialPtr m_material;
 
     /// Defines if the associated mesh has a normal layer
-    bool m_hasMeshNormal { true };
+    bool m_hasMeshNormal {true};
 
     /// Defines if the associated mesh has a a texture coordinates layer
-    bool m_hasUV { false };
+    bool m_hasUV {false};
 
     /// Defines if the associated mesh has a a per vertex color layer
-    bool m_hasVertexColor { false };
+    bool m_hasVertexColor {false};
 
     /// Defines if the associated mesh has a a per primitive color layer
-    bool m_hasPrimitiveColor { false };
+    bool m_hasPrimitiveColor {false};
 
     /// Primitive type of the associated mesh
-    data::Mesh::CellType m_primitiveType { data::Mesh::CellType::TRIANGLE };
+    data::Mesh::CellType m_primitiveType {data::Mesh::CellType::TRIANGLE};
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
 
     /// Size of the mesh, used either to adjust the size of normals or to expand billboards
-    ::Ogre::Real m_meshSize { 1.f };
+    ::Ogre::Real m_meshSize {1.f};
 
     /// Name of the material template
     std::string m_templateName;
@@ -155,7 +160,7 @@ inline void Material::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::s
 
 inline void Material::setPrimitiveType(data::Mesh::CellTypesEnum _type)
 {
-    m_primitiveType = static_cast< data::Mesh::CellType >(_type);
+    m_primitiveType = static_cast<data::Mesh::CellType>(_type);
 }
 
 //------------------------------------------------------------------------------

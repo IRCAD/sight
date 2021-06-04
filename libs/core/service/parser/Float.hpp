@@ -22,11 +22,11 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/parser/GenericField.hpp>
 
 namespace sight::service
 {
+
 namespace parser
 {
 
@@ -36,8 +36,10 @@ namespace parser
 class Float : public GenericField
 {
 public:
-    SIGHT_DECLARE_SERVICE(Float, service::IXMLParser)
+
+    SIGHT_DECLARE_SERVICE(Float, service::IXMLParser);
 };
 
 } //namespace parser
+
 } //namespace sight::service

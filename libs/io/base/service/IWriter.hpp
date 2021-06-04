@@ -50,9 +50,9 @@ namespace sight::io::base::service
  */
 class IO_BASE_CLASS_API IWriter : public sight::service::IService
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(IWriter, sight::service::IService)
+
+    SIGHT_DECLARE_SERVICE(IWriter, sight::service::IService);
 
     /**
      * @name Slots API
@@ -211,7 +211,7 @@ protected:
     std::string m_windowTitle;
 
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
-    bool m_writeFailed{false};
+    bool m_writeFailed {false};
 
 private:
 

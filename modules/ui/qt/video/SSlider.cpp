@@ -30,19 +30,19 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QHBoxLayout>
 #include <QString>
 #include <QTime>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <chrono>
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
-
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
@@ -72,9 +72,9 @@ SSlider::SSlider() noexcept :
     m_sliderPressed(false)
 {
     /// Slot to change the position of the slider
-    newSlot(s_SET_POSITION_SLIDER_SLOT,  &SSlider::setPosition, this);
+    newSlot(s_SET_POSITION_SLIDER_SLOT, &SSlider::setPosition, this);
     /// Slot to change the duration of the slider
-    newSlot(s_SET_DURATION_SLIDER_SLOT,  &SSlider::setDuration, this);
+    newSlot(s_SET_DURATION_SLIDER_SLOT, &SSlider::setDuration, this);
 
     m_sigPositionChanged = newSignal<PositionChangedSignalType>(s_POSITION_CHANGED_SIG);
 }
@@ -167,6 +167,7 @@ void SSlider::sliderPressed()
 {
     m_sliderPressed = true;
 }
+
 //------------------------------------------------------------------------------
 
 void SSlider::setPosition(int64_t newPos)
@@ -205,4 +206,5 @@ void SSlider::setDuration(int64_t duration)
 //------------------------------------------------------------------------------
 
 } //namespace video
+
 } //namespace sight::module::ui::qt

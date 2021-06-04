@@ -28,18 +28,19 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace data
 {
+
 namespace ModelSeries
 {
 
 /// Structural patch to convert a data::ModelSeries from version '2' to version '3'.
 class IO_PATCH_CLASS_API V2ToV3 : public io::atoms::patch::IStructuralPatch
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(V2ToV3, patch::structural::data::ModelSeries::V2ToV3, new V2ToV3)
+    SIGHT_DECLARE_CLASS(V2ToV3, patch::structural::data::ModelSeries::V2ToV3, new V2ToV3);
 
     /// Initialiaze members.
     IO_PATCH_API V2ToV3();
@@ -64,10 +65,12 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& _previous,
         const sight::atoms::Object::sptr& _current,
-        io::atoms::patch::IPatch::NewVersionsType& _newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& _newVersions
+    ) override;
 };
 
 } // namespace ModelSeries
+
 } // namespace data
+
 } // namespace sight::io::patch::structural

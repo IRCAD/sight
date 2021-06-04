@@ -70,10 +70,10 @@ namespace sight::module::debug
 #ifndef WIN32
 //------------------------------------------------------------------------------
 
-std::string demangle( std::string mangled )
+std::string demangle(std::string mangled)
 {
-    char* c_demangled = abi::__cxa_demangle( mangled.c_str(), 0, 0, 0);
-    if (c_demangled)
+    char* c_demangled = abi::__cxa_demangle(mangled.c_str(), 0, 0, 0);
+    if(c_demangled)
     {
         std::string res(c_demangled);
         free(c_demangled);
@@ -87,29 +87,32 @@ std::string demangle( std::string mangled )
 
 //------------------------------------------------------------------------------
 
-std::string decode( char* message)
+std::string decode(char* message)
 {
     std::string msg(message);
     std::string res(message);
 
     std::string::size_type popen = msg.find('(');
-    if ( popen != std::string::npos )
+    if(popen != std::string::npos)
     {
         std::string::size_type plus = msg.find('+');
-        res = std::string(message, popen+1) + " ";
-        std::string mangled( message, popen+1, plus -popen -1 );
+        res = std::string(message, popen + 1) + " ";
+        std::string mangled(message, popen + 1, plus - popen - 1);
         res += demangle(mangled) + " ";
-        res += std::string( message + plus, message + strlen(message) );
+        res += std::string(message + plus, message + strlen(message));
     }
+
     return res;
 }
 
 //------------------------------------------------------------------------------
 
-void bt_sighandler(int sig, siginfo_t* info,
-                   void* secret)
+void bt_sighandler(
+    int sig,
+    siginfo_t* info,
+    void* secret
+)
 {
-
     void* trace[16];
     int i, trace_size = 0;
     const ucontext_t* uc = reinterpret_cast<const ucontext_t*>(secret);
@@ -118,13 +121,14 @@ void bt_sighandler(int sig, siginfo_t* info,
     ss << "Got signal " << sig;
 
     /* Do something useful with siginfo_t */
-    if (sig == SIGSEGV)
+    if(sig == SIGSEGV)
     {
         ss << " faulty address is " << info->si_addr;
 #ifndef __APPLE__
         ss << " from " << uc->uc_mcontext.gregs[REG_EIP];
 #endif
     }
+
     ss << std::endl;
 
     trace_size = backtrace(trace, 16);
@@ -135,23 +139,23 @@ void bt_sighandler(int sig, siginfo_t* info,
 
     char** messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */
-    ss <<  "    [bt] Execution path:" << std::endl;
-    for (i = 1; i < trace_size; ++i)
+    ss << "    [bt] Execution path:" << std::endl;
+    for(i = 1 ; i < trace_size ; ++i)
     {
-        ss <<  "    [bt] " <<  decode(messages[i]) << std::endl;
+        ss << "    [bt] " << decode(messages[i]) << std::endl;
     }
 
-    if (sig == SIGSEGV)
+    if(sig == SIGSEGV)
     {
-        SIGHT_FATAL("SIGSEV signal " + ss.str() );
+        SIGHT_FATAL("SIGSEV signal " + ss.str());
         exit(0);
     }
     else
     {
-        SIGHT_ERROR("SIGUSR1 signal " + ss.str() );
+        SIGHT_ERROR("SIGUSR1 signal " + ss.str());
     }
-
 }
+
 //------------------------------------------------------------------------------
 
 void installSIGSEVBacktrace()
@@ -165,9 +169,7 @@ void installSIGSEVBacktrace()
     sigaction(SIGSEGV, &sa, nullptr);
     sigaction(SIGUSR1, &sa, nullptr);
 }
-
 #else // if  win32
-
 const size_t nbChar = 100;
 #if _MSC_VER > 1499 // Visual C++ 2008 only
 //------------------------------------------------------------------------------
@@ -180,49 +182,58 @@ BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG
 #endif
 {
     std::list<std::string>* pLoadedModules = reinterpret_cast<std::list<std::string>*>(UserContext);
-    pLoadedModules->push_back(std::string((char*)ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
+    pLoadedModules->push_back(std::string((char*) ModuleName) + "\t" + ::boost::lexical_cast<std::string>(ModuleBase));
     return true;
 }
 
 /**
  * Dumps the backtrace on a stream
  */
-void printDump(std::list<std::string>& loadedModules, std::list<std::string>& callStack,
-               std::list<std::string>& fileStack)
+void printDump(
+    std::list<std::string>& loadedModules,
+    std::list<std::string>& callStack,
+    std::list<std::string>& fileStack
+)
 {
     std::stringstream stream;
 
     // Dumps the loaded modules on the stream
     stream << "-----------------------------------------" << std::endl;
     stream << "\nLoaded Modules\n";
-    for(std::list<std::string>::const_iterator it = loadedModules.begin(); it != loadedModules.end(); ++it)
+    for(std::list<std::string>::const_iterator it = loadedModules.begin() ; it != loadedModules.end() ; ++it)
     {
         stream << "> " << *it << std::endl;
     }
+
     stream << "-----------------------------------------" << std::endl;
     // Dumps the call stack on the stream
     stream << "\nCallStack\n";
-    for(std::list<std::string>::const_iterator it = callStack.begin(), it2 = fileStack.begin();
-        it != callStack.end() && it2 != fileStack.end(); ++it, ++it2)
+    for(std::list<std::string>::const_iterator it = callStack.begin(), it2 = fileStack.begin() ;
+        it != callStack.end() && it2 != fileStack.end() ; ++it, ++it2)
     {
         stream << "> " << *it << std::endl;
         stream << "   " << *it2 << std::endl;
     }
+
     stream << "-----------------------------------------" << std::endl;
 
-    SIGHT_ERROR(stream.str() );
+    SIGHT_ERROR(stream.str());
 }
 
 /**
  * Loads the elements of the call stack in a list
  * @param exceptionInfos are useful information on the exception
  */
-void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::list<std::string>& callStack,
-                   std::list<std::string>& fileStack)
+void LoadCallStack(
+    EXCEPTION_POINTERS* exceptionInfos,
+    HANDLE& hProcess,
+    std::list<std::string>& callStack,
+    std::list<std::string>& fileStack
+)
 {
     STACKFRAME64 tempStackFrame;
     CONTEXT context = *(exceptionInfos->ContextRecord);
-    memset( &tempStackFrame, 0, sizeof(STACKFRAME64) );
+    memset(&tempStackFrame, 0, sizeof(STACKFRAME64));
     DWORD machineType;
 
 #ifdef _M_IX86
@@ -255,17 +266,26 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::li
 #error "Platform not supported!"
 #endif
 
-    ULONG64 buffer[(sizeof(SYMBOL_INFO) + nbChar*sizeof(TCHAR) + sizeof(ULONG64) + 1) / sizeof(ULONG64)];
+    ULONG64 buffer[(sizeof(SYMBOL_INFO) + nbChar * sizeof(TCHAR) + sizeof(ULONG64) + 1) / sizeof(ULONG64)];
     PSYMBOL_INFO pSymbol = reinterpret_cast<PSYMBOL_INFO>(buffer);
-    PSTR undecoratedName = (PSTR)malloc(sizeof(TCHAR) * nbChar);
+    PSTR undecoratedName = (PSTR) malloc(sizeof(TCHAR) * nbChar);
 
     pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
     pSymbol->MaxNameLen   = nbChar;
     DWORD lineDisplacement;
-    IMAGEHLP_LINE64 lineInfo = { sizeof(IMAGEHLP_LINE64) };
+    IMAGEHLP_LINE64 lineInfo = {sizeof(IMAGEHLP_LINE64)};
 
-    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, nullptr,
-                      SymFunctionTableAccess64, SymGetModuleBase64, nullptr))
+    while(StackWalk64(
+              machineType,
+              hProcess,
+              GetCurrentThread(),
+              &tempStackFrame,
+              &context,
+              nullptr,
+              SymFunctionTableAccess64,
+              SymGetModuleBase64,
+              nullptr
+    ))
     {
         // Sanity stack check
         if(tempStackFrame.AddrPC.Offset == 0)
@@ -278,13 +298,17 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::li
         if(SymFromAddr(hProcess, tempStackFrame.AddrPC.Offset, &symDisplacement, pSymbol))
         {
             UnDecorateSymbolName(pSymbol->Name, undecoratedName, MAX_SYM_NAME, UNDNAME_COMPLETE);
-            callStack.push_back(std::string((char*)undecoratedName) + "+" +
-                                ::boost::lexical_cast<std::string>(symDisplacement));
+            callStack.push_back(
+                std::string((char*) undecoratedName) + "+"
+                + ::boost::lexical_cast<std::string>(symDisplacement)
+            );
 
             if(SymGetLineFromAddr64(hProcess, tempStackFrame.AddrPC.Offset, &lineDisplacement, &lineInfo))
             {
-                fileStack.push_back(std::string(lineInfo.FileName) + "\tl:" +
-                                    ::boost::lexical_cast<std::string>(lineInfo.LineNumber));
+                fileStack.push_back(
+                    std::string(lineInfo.FileName) + "\tl:"
+                    + ::boost::lexical_cast<std::string>(lineInfo.LineNumber)
+                );
             }
             else
             {
@@ -295,6 +319,7 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE& hProcess, std::li
         {
         }
     }
+
     free(undecoratedName);
 }
 
@@ -310,7 +335,7 @@ static LONG WINAPI UnhandledExpFilter(PEXCEPTION_POINTERS pExceptionInfo)
     /// List of the elements on the file stack
     std::list<std::string> fileStack;
 
-    SymSetOptions(SYMOPT_UNDNAME|SYMOPT_DEFERRED_LOADS|SYMOPT_LOAD_LINES);
+    SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES);
     hProcess = GetCurrentProcess();
 
     if(SymInitialize(hProcess, nullptr, TRUE))
@@ -331,7 +356,6 @@ void installSIGSEVBacktrace()
 {
     SetUnhandledExceptionFilter(UnhandledExpFilter);
 }
-
-#endif
+#endif // ifndef WIN32
 
 } // namespace sight::module::debug

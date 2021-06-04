@@ -26,19 +26,21 @@
 
 namespace sight::atoms
 {
+
 namespace ut
 {
 
-class NumericTest :  public CPPUNIT_NS::TestFixture
+class NumericTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( NumericTest );
-CPPUNIT_TEST( emptyTest );
-CPPUNIT_TEST( intTest );
-CPPUNIT_TEST( floatingTest );
-CPPUNIT_TEST( mixedTest );
+CPPUNIT_TEST_SUITE(NumericTest);
+CPPUNIT_TEST(emptyTest);
+CPPUNIT_TEST(intTest);
+CPPUNIT_TEST(floatingTest);
+CPPUNIT_TEST(mixedTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -47,8 +49,8 @@ public:
     void intTest();
     void floatingTest();
     void mixedTest();
-
 };
 
-}  // namespace ut
-}  // namespace sight::atoms
+} // namespace ut
+
+} // namespace sight::atoms

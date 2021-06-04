@@ -31,26 +31,28 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <io/atoms/types.hpp>
 #include <io/atoms/Writer.hpp>
 #include <io/zip/IReadArchive.hpp>
 #include <io/zip/IWriteArchive.hpp>
 
+#include <cppunit/extensions/HelperMacros.h>
+
 namespace sight::io::atoms
 {
+
 namespace ut
 {
 
-class BoostIOTest :  public CPPUNIT_NS::TestFixture
+class BoostIOTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( BoostIOTest );
-CPPUNIT_TEST( readWriteZipTest );
-CPPUNIT_TEST( readWriteDirTest );
+CPPUNIT_TEST_SUITE(BoostIOTest);
+CPPUNIT_TEST(readWriteZipTest);
+CPPUNIT_TEST(readWriteDirTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -61,6 +63,7 @@ public:
     static void cleanSequence(sight::atoms::Sequence& seq);
 
 protected:
+
     struct SequenceGenerator
     {
         std::string META_KEY_0;
@@ -103,16 +106,16 @@ protected:
             m_seq = sight::atoms::Sequence::New();
 
             core::memory::BufferObject::sptr bo                  = core::memory::BufferObject::New();
-            const core::memory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
+            const core::memory::BufferObject::SizeType BUFF_SIZE = 1 * 1024 * 1024; // 1Mo
             bo->allocate(BUFF_SIZE);
             blob->setBufferObject(bo);
 
             core::memory::BufferObject::Lock lock(bo->lock());
             void* v            = lock.getBuffer();
             std::uint8_t* buff = static_cast<std::uint8_t*>(v);
-            for (size_t i = 0; i < BUFF_SIZE; ++i)
+            for(size_t i = 0 ; i < BUFF_SIZE ; ++i)
             {
-                buff[i] = static_cast<std::uint8_t>(i%256);
+                buff[i] = static_cast<std::uint8_t>(i % 256);
             }
 
             sight::atoms::Boolean::sptr boolFalse = sight::atoms::Boolean::New(false);
@@ -196,24 +199,24 @@ protected:
             sight::atoms::Numeric::sptr readNum2  = sight::atoms::Numeric::dynamicCast((*readSeq)[9]);
             sight::atoms::Boolean::sptr readBoolT = sight::atoms::Boolean::dynamicCast((*readSeq)[10]);
 
-            CPPUNIT_ASSERT( readObj0  );
-            CPPUNIT_ASSERT( readObj1  );
-            CPPUNIT_ASSERT( readBlob  );
-            CPPUNIT_ASSERT( readMap   );
-            CPPUNIT_ASSERT( readSeq2  );
-            CPPUNIT_ASSERT( readBoolF );
-            CPPUNIT_ASSERT( readNum   );
-            CPPUNIT_ASSERT( readStr   );
-            CPPUNIT_ASSERT( !readNull );
-            CPPUNIT_ASSERT( readNum2  );
-            CPPUNIT_ASSERT( readBoolT );
+            CPPUNIT_ASSERT(readObj0);
+            CPPUNIT_ASSERT(readObj1);
+            CPPUNIT_ASSERT(readBlob);
+            CPPUNIT_ASSERT(readMap);
+            CPPUNIT_ASSERT(readSeq2);
+            CPPUNIT_ASSERT(readBoolF);
+            CPPUNIT_ASSERT(readNum);
+            CPPUNIT_ASSERT(readStr);
+            CPPUNIT_ASSERT(!readNull);
+            CPPUNIT_ASSERT(readNum2);
+            CPPUNIT_ASSERT(readBoolT);
 
             core::memory::BufferObject::sptr bo     = blob->getBufferObject();
             core::memory::BufferObject::sptr readBo = readBlob->getBufferObject();
 
-            CPPUNIT_ASSERT( readBo );
+            CPPUNIT_ASSERT(readBo);
 
-            CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
+            CPPUNIT_ASSERT_EQUAL(bo->getSize(), readBo->getSize());
 
             core::memory::BufferObject::Lock lock(bo->lock());
             core::memory::BufferObject::Lock readLock(readBo->lock());
@@ -224,45 +227,50 @@ protected:
             char* readBuff = static_cast<char*>(readV);
 
             CPPUNIT_ASSERT(readBlob);
-            for (size_t i = 0; i < bo->getSize(); ++i)
+            for(size_t i = 0 ; i < bo->getSize() ; ++i)
             {
-                CPPUNIT_ASSERT_EQUAL( buff[i], readBuff[i] );
+                CPPUNIT_ASSERT_EQUAL(buff[i], readBuff[i]);
             }
 
-            CPPUNIT_ASSERT_EQUAL( readObj0, readObj1 );
-            CPPUNIT_ASSERT_EQUAL( readSeq, readSeq2 );
+            CPPUNIT_ASSERT_EQUAL(readObj0, readObj1);
+            CPPUNIT_ASSERT_EQUAL(readSeq, readSeq2);
 
-            CPPUNIT_ASSERT_EQUAL( META_VALUE_0, readObj0->getMetaInfo(META_KEY_0) );
-            CPPUNIT_ASSERT_EQUAL( META_VALUE_1, readObj0->getMetaInfo(META_KEY_1) );
-            CPPUNIT_ASSERT_EQUAL( META_VALUE_2, readObj0->getMetaInfo(META_KEY_2) );
-            CPPUNIT_ASSERT_EQUAL( META_VALUE_3, readObj0->getMetaInfo(META_KEY_3) );
+            CPPUNIT_ASSERT_EQUAL(META_VALUE_0, readObj0->getMetaInfo(META_KEY_0));
+            CPPUNIT_ASSERT_EQUAL(META_VALUE_1, readObj0->getMetaInfo(META_KEY_1));
+            CPPUNIT_ASSERT_EQUAL(META_VALUE_2, readObj0->getMetaInfo(META_KEY_2));
+            CPPUNIT_ASSERT_EQUAL(META_VALUE_3, readObj0->getMetaInfo(META_KEY_3));
 
-            CPPUNIT_ASSERT_EQUAL( obj->getAttributes().size(), readObj0->getAttributes().size() );
+            CPPUNIT_ASSERT_EQUAL(obj->getAttributes().size(), readObj0->getAttributes().size());
 
-            CPPUNIT_ASSERT_EQUAL( sight::atoms::Base::sptr(readBlob), readObj0->getAttribute(ATTR_NAME_0) );
-            CPPUNIT_ASSERT_EQUAL( sight::atoms::Base::sptr(readMap ), readObj0->getAttribute(ATTR_NAME_1) );
-            CPPUNIT_ASSERT_EQUAL( sight::atoms::Base::sptr(readStr ), readObj0->getAttribute(ATTR_NAME_2) );
-            CPPUNIT_ASSERT_EQUAL( sight::atoms::Base::sptr(readNum ), readObj0->getAttribute(ATTR_NAME_3) );
-            CPPUNIT_ASSERT_EQUAL( sight::atoms::Base::sptr(), readObj0->getAttribute(ATTR_NAME_4) );
+            CPPUNIT_ASSERT_EQUAL(sight::atoms::Base::sptr(readBlob), readObj0->getAttribute(ATTR_NAME_0));
+            CPPUNIT_ASSERT_EQUAL(sight::atoms::Base::sptr(readMap), readObj0->getAttribute(ATTR_NAME_1));
+            CPPUNIT_ASSERT_EQUAL(sight::atoms::Base::sptr(readStr), readObj0->getAttribute(ATTR_NAME_2));
+            CPPUNIT_ASSERT_EQUAL(sight::atoms::Base::sptr(readNum), readObj0->getAttribute(ATTR_NAME_3));
+            CPPUNIT_ASSERT_EQUAL(sight::atoms::Base::sptr(), readObj0->getAttribute(ATTR_NAME_4));
 
-            CPPUNIT_ASSERT_EQUAL( boolFalse->getValue(), readBoolF->getValue() );
-            CPPUNIT_ASSERT_EQUAL( boolTrue->getValue(), readBoolT->getValue() );
-            CPPUNIT_ASSERT_EQUAL( num->getString(), readNum->getString() );
-            CPPUNIT_ASSERT_EQUAL( num2->getString(), readNum2->getString() );
-            CPPUNIT_ASSERT_EQUAL( str->getValue(), readStr->getValue() );
+            CPPUNIT_ASSERT_EQUAL(boolFalse->getValue(), readBoolF->getValue());
+            CPPUNIT_ASSERT_EQUAL(boolTrue->getValue(), readBoolT->getValue());
+            CPPUNIT_ASSERT_EQUAL(num->getString(), readNum->getString());
+            CPPUNIT_ASSERT_EQUAL(num2->getString(), readNum2->getString());
+            CPPUNIT_ASSERT_EQUAL(str->getValue(), readStr->getValue());
         }
     };
 
-    void readProcess(SequenceGenerator& gen,
-                     io::zip::IReadArchive::sptr readArchive,
-                     const std::filesystem::path& rootFilename,
-                     const io::atoms::FormatType& formatType = io::atoms::JSON);
+    void readProcess(
+        SequenceGenerator& gen,
+        io::zip::IReadArchive::sptr readArchive,
+        const std::filesystem::path& rootFilename,
+        const io::atoms::FormatType& formatType = io::atoms::JSON
+    );
 
-    void writeProcess(SequenceGenerator& gen,
-                      io::zip::IWriteArchive::sptr writeArchive,
-                      const std::filesystem::path& rootFilename,
-                      io::atoms::FormatType format );
+    void writeProcess(
+        SequenceGenerator& gen,
+        io::zip::IWriteArchive::sptr writeArchive,
+        const std::filesystem::path& rootFilename,
+        io::atoms::FormatType format
+    );
 };
 
-}  // namespace ut
-}  // namespace sight::io::atoms
+} // namespace ut
+
+} // namespace sight::io::atoms

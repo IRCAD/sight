@@ -26,6 +26,7 @@
 
 namespace sight::io::base
 {
+
 namespace reader
 {
 
@@ -36,7 +37,7 @@ struct FwDataIOReaderRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwDataIOReaderRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwDataIOReaderRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

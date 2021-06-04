@@ -28,6 +28,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -35,7 +36,6 @@ namespace ut
 
 class ServiceRetarder
 {
-
 public:
 
     ServiceRetarder() :
@@ -59,18 +59,20 @@ public:
 class Buffer : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(Buffer, data::Object, data::factory::New< Buffer >)
 
-    Buffer( data::Object::Key )
+    SIGHT_DECLARE_CLASS(Buffer, data::Object, data::factory::New<Buffer>);
+
+    Buffer(data::Object::Key)
     {
     }
+
     ~Buffer()
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy( const Object::csptr&, DeepCopyCacheType& ) override
+    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType&) override
     {
     }
 };
@@ -80,7 +82,8 @@ public:
 class IBasicTest : public service::IService
 {
 public:
-    SIGHT_DECLARE_SERVICE(IBasicTest, service::IService)
+
+    SIGHT_DECLARE_SERVICE(IBasicTest, service::IService);
 
     static const KeyType s_BUFFER_INOUT;
 };
@@ -90,7 +93,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SBasicTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SBasicTest, IBasicTest);
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -104,6 +107,7 @@ protected:
     void configuring() override
     {
     }
+
     void starting() override;
     void stopping() override;
     void swapping(const KeyType& key) override;
@@ -116,7 +120,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SReaderTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SReaderTest, IBasicTest);
 
     SReaderTest()
     {
@@ -129,21 +133,25 @@ protected:
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void swapping() override
     {
     }
+
     void updating() override;
 };
 
@@ -153,9 +161,9 @@ class SReader2Test : public IBasicTest
 {
 public:
 
-    typedef core::com::Signal< void () > ChangedSignalType;
+    typedef core::com::Signal<void ()> ChangedSignalType;
 
-    SIGHT_DECLARE_SERVICE(SReader2Test, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SReader2Test, IBasicTest);
 
     SReader2Test();
 
@@ -168,21 +176,25 @@ protected:
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void swapping() override
     {
     }
+
     void updating() override;
 
     ChangedSignalType::sptr m_sigChanged;
@@ -195,7 +207,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShowTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SShowTest, IBasicTest);
 
     SShowTest();
 
@@ -214,21 +226,25 @@ protected:
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void swapping() override
     {
     }
+
     void updating() override;
 
     KeyConnectionsMap getAutoConnections() const override;
@@ -245,7 +261,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShow2Test, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SShow2Test, IBasicTest);
 
     static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 
@@ -260,21 +276,25 @@ protected:
     void configuring() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void starting() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void stopping() override
     {
     }
+
     //------------------------------------------------------------------------------
 
     void swapping() override
     {
     }
+
     void updating() override;
 
     /// Slot to receive update
@@ -284,4 +304,5 @@ protected:
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

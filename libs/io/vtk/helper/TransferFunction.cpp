@@ -26,6 +26,7 @@
 
 namespace sight::io::vtk
 {
+
 namespace helper
 {
 
@@ -35,32 +36,33 @@ void TransferFunction::toVtkLookupTable(
     data::TransferFunction::csptr tf,
     vtkSmartPointer<vtkLookupTable> lt,
     bool allowTransparency,
-    unsigned int size )
+    unsigned int size
+)
 {
     // Configures basic parameters
-    lt->SetNumberOfTableValues( size );
+    lt->SetNumberOfTableValues(size);
     lt->SetScaleToLinear();
 
     data::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
 
-    lt->SetTableRange( minMax.first, minMax.second );
+    lt->SetTableRange(minMax.first, minMax.second);
 
-    double delta = ( minMax.second - minMax.first ) / (double) (size - 1);
+    double delta = (minMax.second - minMax.first) / (double) (size - 1);
     data::TransferFunction::TFColor interpolatedColor;
 
-    if ( allowTransparency )
+    if(allowTransparency)
     {
-        for( unsigned int k = 0; k < size; ++k )
+        for(unsigned int k = 0 ; k < size ; ++k)
         {
-            interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
+            interpolatedColor = tf->getInterpolatedColor(k * delta + minMax.first);
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
         }
     }
     else
     {
-        for( unsigned int k = 0; k < size; ++k )
+        for(unsigned int k = 0 ; k < size ; ++k)
         {
-            interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
+            interpolatedColor = tf->getInterpolatedColor(k * delta + minMax.first);
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);
         }
     }
@@ -74,19 +76,19 @@ void TransferFunction::toBWVtkLookupTable(
     double rangeMin,
     double rangeMax,
     vtkSmartPointer<vtkLookupTable> lt,
-    unsigned int size )
+    unsigned int size
+)
 {
-
     // Configures basic parameters
-    lt->Allocate( static_cast<int>(size), static_cast<int>(size) );
+    lt->Allocate(static_cast<int>(size), static_cast<int>(size));
     lt->SetScaleToLinear();
 
     lt->SetRampToLinear();
-    lt->SetTableRange( rangeMin, rangeMax );
-    lt->SetAlphaRange( 1.0, 1.0 );
-    lt->SetHueRange( 0.0, 0.0 );
-    lt->SetSaturationRange( 0.0, 0.0 );
-    lt->SetValueRange( 0.0, 1.0 );
+    lt->SetTableRange(rangeMin, rangeMax);
+    lt->SetAlphaRange(1.0, 1.0);
+    lt->SetHueRange(0.0, 0.0);
+    lt->SetSaturationRange(0.0, 0.0);
+    lt->SetValueRange(0.0, 1.0);
 
     lt->Build();
 
@@ -96,4 +98,5 @@ void TransferFunction::toBWVtkLookupTable(
 //------------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::io::vtk

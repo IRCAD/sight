@@ -77,7 +77,6 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------

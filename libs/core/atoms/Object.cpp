@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwAtomsRegisterMacro( sight::atoms::Object );
+fwAtomsRegisterMacro(sight::atoms::Object);
 
 namespace sight::atoms
 {
@@ -43,10 +43,11 @@ void Object::setAttribute(const std::string& key, const Base::sptr& value)
 Base::sptr Object::getAttribute(const std::string& key) const
 {
     AttributesType::const_iterator iterAttr = m_attributes.find(key);
-    if (iterAttr != m_attributes.end())
+    if(iterAttr != m_attributes.end())
     {
         return iterAttr->second;
     }
+
     return Base::sptr();
 }
 
@@ -64,16 +65,16 @@ Base::sptr Object::clone() const
     Object::sptr obj = Object::New();
     obj->m_metaInfos = m_metaInfos;
 
-    for(const AttributesType::value_type& elem :  m_attributes)
+    for(const AttributesType::value_type& elem : m_attributes)
     {
-        if ( elem.second )
+        if(elem.second)
         {
-            obj->m_attributes.insert( AttributesType::value_type(elem.first, elem.second->clone() ) );
+            obj->m_attributes.insert(AttributesType::value_type(elem.first, elem.second->clone()));
         }
         else
         {
             Base::sptr nullData;
-            obj->m_attributes.insert( AttributesType::value_type(elem.first, nullData) );
+            obj->m_attributes.insert(AttributesType::value_type(elem.first, nullData));
         }
     }
 
@@ -96,6 +97,7 @@ std::string Object::getMetaInfo(const std::string& key) const
     {
         return iterMetaInfos->second;
     }
+
     return "";
 }
 
@@ -134,4 +136,4 @@ void Object::clearMetaInfo()
     m_metaInfos.clear();
 }
 
-}  // namespace sight::atoms
+} // namespace sight::atoms

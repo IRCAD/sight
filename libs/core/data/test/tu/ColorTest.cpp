@@ -31,10 +31,11 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ColorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ColorTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -43,8 +44,8 @@ namespace ut
 void ColorTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void ColorTest::tearDown()
@@ -105,7 +106,7 @@ void ColorTest::methode3()
     // fuchsia float values
     const float R = 1.f;
     const float G = 0.f;
-    const float B = 110.f/255.f;
+    const float B = 110.f / 255.f;
     const float A = 1.f;
 
     data::Color::sptr color = data::Color::New();
@@ -119,4 +120,5 @@ void ColorTest::methode3()
 }
 
 } //namespace ut
+
 } //namespace sight::data

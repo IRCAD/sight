@@ -24,7 +24,7 @@
 
 #include "atoms/registry/macros.hpp"
 
-fwAtomsRegisterMacro( sight::atoms::Blob );
+fwAtomsRegisterMacro(sight::atoms::Blob);
 
 namespace sight::atoms
 {
@@ -74,13 +74,14 @@ Base::sptr Blob::clone() const
         bufferObjectDest->allocate(m_bufferObject->getSize());
 
         core::memory::BufferObject::Lock lockerSource(m_bufferObject);
-        char* buffSrc = static_cast< char* >( lockerSource.getBuffer() );
+        char* buffSrc = static_cast<char*>(lockerSource.getBuffer());
 
         core::memory::BufferObject::Lock lockerDest(bufferObjectDest);
-        char* buffDest = static_cast< char* >( lockerDest.getBuffer() );
+        char* buffDest = static_cast<char*>(lockerDest.getBuffer());
 
-        std::copy(buffSrc, buffSrc + m_bufferObject->getSize(), buffDest );
+        std::copy(buffSrc, buffSrc + m_bufferObject->getSize(), buffDest);
     }
+
     return cloneBlob;
 }
 

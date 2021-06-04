@@ -40,28 +40,32 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-
 struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Listener
 {
-
     virtual ~FragmentsInfoMaterialListener()
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual ::Ogre::Technique* handleSchemeNotFound(unsigned short, const ::Ogre::String& _schemeName,
-                                                    ::Ogre::Material* _originalMaterial, unsigned short,
-                                                    const ::Ogre::Renderable*)
+    virtual ::Ogre::Technique* handleSchemeNotFound(
+        unsigned short,
+        const ::Ogre::String& _schemeName,
+        ::Ogre::Material* _originalMaterial,
+        unsigned short,
+        const ::Ogre::Renderable*
+)
     {
         ::Ogre::Technique* newTech = nullptr;
 
         if(_schemeName == "PrimitiveID_MS")
         {
             ::Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
-            newTech                        = sight::viz::scene3d::helper::Technique::copyToMaterial(defaultTech,
-                                                                                                    _schemeName,
-                                                                                                    _originalMaterial);
+            newTech = sight::viz::scene3d::helper::Technique::copyToMaterial(
+                defaultTech,
+                _schemeName,
+                _originalMaterial
+            );
 
             const ::Ogre::Technique::Passes& passes = newTech->getPasses();
             for(const auto pass : passes)
@@ -74,14 +78,13 @@ struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Lis
 
         return newTech;
     }
-
 };
 
 static const service::IService::KeyType s_IMAGE_INOUT        = "image";
 static const service::IService::KeyType s_DEPTH_INOUT        = "depth";
 static const service::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
 
-static std::unique_ptr< FragmentsInfoMaterialListener > s_MATERIAL_LISTENER = nullptr;
+static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = nullptr;
 
 //-----------------------------------------------------------------------------
 
@@ -93,7 +96,6 @@ SFragmentsInfo::SFragmentsInfo() noexcept
 
 SFragmentsInfo::~SFragmentsInfo() noexcept
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +132,7 @@ void SFragmentsInfo::starting()
 
     if(!s_MATERIAL_LISTENER)
     {
-        s_MATERIAL_LISTENER = std::make_unique< FragmentsInfoMaterialListener >();
+        s_MATERIAL_LISTENER = std::make_unique<FragmentsInfoMaterialListener>();
         ::Ogre::MaterialManager::getSingleton().addListener(s_MATERIAL_LISTENER.get());
     }
 
@@ -158,7 +160,7 @@ void SFragmentsInfo::starting()
 
 void SFragmentsInfo::updating() noexcept
 {
-    const auto imageW = this->getWeakInOut< data::Image >(s_IMAGE_INOUT);
+    const auto imageW = this->getWeakInOut<data::Image>(s_IMAGE_INOUT);
     {
         const auto image = imageW.lock();
         if(image)
@@ -167,12 +169,12 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(text, image.get_shared(), m_flipImage);
 
             const auto sig =
-                image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
     }
 
-    const auto depthW = this->getWeakInOut< data::Image >(s_DEPTH_INOUT);
+    const auto depthW = this->getWeakInOut<data::Image>(s_DEPTH_INOUT);
     {
         const auto depth = depthW.lock();
         if(depth)
@@ -181,12 +183,12 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(depthText, depth.get_shared(), m_flipImage);
 
             const auto depthSig =
-                depth->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                depth->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             depthSig->asyncEmit();
         }
     }
 
-    const auto primitiveIDW = this->getWeakInOut< data::Image>(s_PRIMITIVE_ID_INOUT);
+    const auto primitiveIDW = this->getWeakInOut<data::Image>(s_PRIMITIVE_ID_INOUT);
     {
         const auto primitiveID = primitiveIDW.lock();
         if(primitiveID)
@@ -195,7 +197,7 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(primitiveIDText, primitiveID.get_shared(), m_flipImage);
 
             const auto primitiveIDSig =
-                primitiveID->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                primitiveID->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             primitiveIDSig->asyncEmit();
         }
     }
@@ -265,15 +267,17 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
        }*/
 
     const bool retrieveDepth =
-        this->getWeakInOut< data::Image >(s_DEPTH_INOUT).lock().operator bool();
+        this->getWeakInOut<data::Image>(s_DEPTH_INOUT).lock().operator bool();
 
     const bool retrievePrimitiveID =
-        this->getWeakInOut< data::Image >(s_PRIMITIVE_ID_INOUT).lock().operator bool();
+        this->getWeakInOut<data::Image>(s_PRIMITIVE_ID_INOUT).lock().operator bool();
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
-    m_compositor = cmpMngr.create(m_compositorName,
-                                  sight::viz::scene3d::RESOURCE_GROUP);
+    m_compositor = cmpMngr.create(
+        m_compositorName,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
 
     ::Ogre::CompositionTechnique* const technique = m_compositor->createTechnique();
 
@@ -315,7 +319,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
             globalTargetPass->setOutputName(m_targetName);
             globalTargetPass->setInputMode(Ogre::CompositionTargetPass::InputMode::IM_PREVIOUS);
             ::Ogre::CompositionPass* const targetOutputCompPass = globalTargetPass->createPass(
-                ::Ogre::CompositionPass::PT_RENDERQUAD);
+                ::Ogre::CompositionPass::PT_RENDERQUAD
+            );
             targetOutputCompPass->setMaterialName("ForwardDepth_M");
             targetOutputCompPass->setInput(0, localName);
         }
@@ -343,7 +348,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
     ::Ogre::CompositionTargetPass* const targetOutputPass = technique->getOutputTargetPass();
     {
         ::Ogre::CompositionPass* const targetOutputCompPass = targetOutputPass->createPass(
-            ::Ogre::CompositionPass::PT_RENDERQUAD);
+            ::Ogre::CompositionPass::PT_RENDERQUAD
+        );
         targetOutputCompPass->setMaterialName("Forward_M");
         targetOutputCompPass->setInput(0, m_targetName, 0);
     }

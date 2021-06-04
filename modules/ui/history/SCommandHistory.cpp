@@ -39,7 +39,6 @@
 namespace sight::module::ui::history
 {
 
-
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
 
@@ -57,8 +56,8 @@ SCommandHistory::SCommandHistory()
     newSlot(s_REDO_SLOT, &SCommandHistory::redo, this);
     newSlot(s_CLEAR_SLOT, &SCommandHistory::clear, this);
 
-    m_canUndoSig = newSignal< CanDoSignalType >( s_CANUNDO_SIGNAL );
-    m_canRedoSig = newSignal< CanDoSignalType >( s_CANREDO_SIGNAL );
+    m_canUndoSig = newSignal<CanDoSignalType>(s_CANUNDO_SIGNAL);
+    m_canRedoSig = newSignal<CanDoSignalType>(s_CANREDO_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,8 +72,8 @@ void SCommandHistory::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
 
-    auto maxCommands = config.get_optional< size_t >("maxCommands");
-    auto maxMemory   = config.get_optional< size_t >("maxMemory");
+    auto maxCommands = config.get_optional<size_t>("maxCommands");
+    auto maxMemory   = config.get_optional<size_t>("maxMemory");
 
     if(maxCommands.is_initialized())
     {
@@ -85,7 +84,6 @@ void SCommandHistory::configuring()
     {
         m_undoRedoManager.setHistorySize(maxMemory.value());
     }
-
 }
 
 //-----------------------------------------------------------------------------

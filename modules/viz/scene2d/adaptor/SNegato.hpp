@@ -77,7 +77,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SNegato : public sight::viz::scene2d::IAdapto
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SNegato, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SNegato, ::sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SNegato() noexcept;
 

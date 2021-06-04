@@ -35,7 +35,7 @@ namespace ut
 
 class SeriesTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesTest );
+CPPUNIT_TEST_SUITE(SeriesTest);
 
 CPPUNIT_TEST(attrPatientTest);
 CPPUNIT_TEST(attrStudyTest);
@@ -50,6 +50,7 @@ CPPUNIT_TEST(attrDescriptionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -65,11 +66,12 @@ public:
     void attrDescriptionTest();
 
 protected:
-    typedef std::vector < SPTR(data::Series) > SeriesVectorType;
+
+    typedef std::vector<SPTR(data::Series)> SeriesVectorType;
 
     SeriesVectorType m_series;
-
 };
 
 } //namespace ut
+
 } //namespace sight::data

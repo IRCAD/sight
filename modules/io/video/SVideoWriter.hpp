@@ -52,10 +52,9 @@ namespace sight::module::io::video
  */
 class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::service::IWriter
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SVideoWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SVideoWriter, sight::io::base::service::IWriter);
 
     /// Constructor.
     MODULE_IO_VIDEO_API SVideoWriter() noexcept;
@@ -114,13 +113,13 @@ private:
     UPTR(::cv::VideoWriter) m_writer;
 
     /// opencv image type ( CV_8UC3, CV_8UC4, ...)
-    int m_imageType{0};
+    int m_imageType {0};
 
     /// flag if the service is recording.
-    bool m_isRecording{false};
+    bool m_isRecording {false};
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
-    std::vector< core::HiResClock::HiResClockType > m_timestamps;
+    std::vector<core::HiResClock::HiResClockType> m_timestamps;
 
     /// Extension selected in file dialog
     std::string m_selectedExtension;
@@ -130,7 +129,6 @@ private:
 
     ///  static string containing the codec to use
     static const std::string s_AVC1_CODEC;
-
 };
 
 } // videoOpenCV

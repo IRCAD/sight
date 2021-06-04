@@ -22,22 +22,25 @@
 
 #include "ui/base/dialog/LoggerDialog.hpp"
 
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
-
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <functional>
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
 //-----------------------------------------------------------------------------
 
 bool LoggerDialog::showLoggerDialog(
-    const std::string& title, const std::string& message, const core::log::Logger::sptr& logger)
+    const std::string& title,
+    const std::string& message,
+    const core::log::Logger::sptr& logger
+)
 {
     ui::base::dialog::LoggerDialog dialog(title, message, logger);
     return dialog.show();
@@ -108,4 +111,5 @@ bool LoggerDialog::show()
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } //namespace sight::ui::base

@@ -30,12 +30,14 @@
 #include <camp/class.hpp>
 #include <camp/userobject.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::reflection::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::reflection::ut::ObjectTest);
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -67,11 +69,12 @@ void ObjectTest::callFunctionTest()
     CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("sight::data::Object")).to<bool>());
     CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("sight::data::Image")).to<bool>());
     CPPUNIT_ASSERT(!campObj.call("is_a", ::camp::Args("sight::data::Float")).to<bool>());
-
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace sight::data

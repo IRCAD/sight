@@ -606,7 +606,6 @@ void SOpenvslam::saveTrajectories()
             m_trajectoriesFormat
         );
     }
-
     // If Openvslam is offline we cannot save trajectories anymore.
     else
     {

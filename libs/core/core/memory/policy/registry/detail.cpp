@@ -26,8 +26,10 @@
 
 namespace sight::core::memory
 {
+
 namespace policy
 {
+
 namespace registry
 {
 
@@ -35,10 +37,12 @@ struct FwMemoryPolicyRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwMemoryPolicyRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwMemoryPolicyRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 
 } // namespace registry
+
 } // namespace policy
+
 } // namespace sight::core::memory

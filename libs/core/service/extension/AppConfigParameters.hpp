@@ -44,10 +44,9 @@ namespace extension
  */
 class SERVICE_CLASS_API AppConfigParameters : public core::BaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(AppConfigParameters, core::BaseObject, new AppConfigParameters)
+    SIGHT_DECLARE_CLASS(AppConfigParameters, core::BaseObject, new AppConfigParameters);
 
     /// Return the default global instance of AppConfigParameters
     SERVICE_API static AppConfigParameters::sptr getDefault();
@@ -66,7 +65,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    SERVICE_API const FieldAdaptorType& getParameters( const std::string& extensionId ) const;
+    SERVICE_API const FieldAdaptorType& getParameters(const std::string& extensionId) const;
 
     /**
      * @brief Clear the registry.
@@ -76,7 +75,7 @@ public:
 
 protected:
 
-    typedef std::map< std::string, FieldAdaptorType > Registry;
+    typedef std::map<std::string, FieldAdaptorType> Registry;
 
     /// Container of parameter information
     Registry m_reg;
@@ -89,7 +88,6 @@ protected:
 
     /// The global instance of the app config parameters.
     static AppConfigParameters::sptr s_appConfigParameters;
-
 };
 
 } // namespace extension

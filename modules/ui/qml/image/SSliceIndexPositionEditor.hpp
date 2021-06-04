@@ -88,9 +88,10 @@ class MODULE_UI_QML_CLASS_QT_API SSliceIndexPositionEditor : public sight::ui::q
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_QT_API SSliceIndexPositionEditor() noexcept;
@@ -99,16 +100,18 @@ public:
     MODULE_UI_QML_QT_API virtual ~SSliceIndexPositionEditor() noexcept;
 
 Q_SIGNALS:
+
     void setSliceRange(int min, int max);
     void setSliceValue(int value);
     void setSliceType(int type);
 
 public Q_SLOTS:
+
     /// This method is called when the slider is moved. Notify the slice index is modified.
     MODULE_UI_QML_QT_API void onSliceIndex(int index);
 
     /// This method is called when the slice type selected changes. Notify the slice type is modified.
-    MODULE_UI_QML_QT_API void onSliceType( int type );
+    MODULE_UI_QML_QT_API void onSliceType(int type);
 
 protected:
 
@@ -142,7 +145,7 @@ protected:
     MODULE_UI_QML_QT_API void updateSliceIndexFromImg();
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QML_QT_API void updateSliceTypeFromImg(Orientation type );
+    MODULE_UI_QML_QT_API void updateSliceTypeFromImg(Orientation type);
 
 private:
 
@@ -164,7 +167,7 @@ private:
     int getSliceIndex() const;
 
     /// @brief The field IDs for the slice index.
-    static const std::string* SLICE_INDEX_FIELDID[ 3 ];
+    static const std::string* SLICE_INDEX_FIELDID[3];
 };
 
 } // uiImageQml

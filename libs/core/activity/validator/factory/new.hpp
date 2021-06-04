@@ -34,10 +34,12 @@ class IValidator;
 
 namespace validator
 {
+
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -46,22 +48,27 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) activity::validator::factory::New();
+friend SPTR(CLASSNAME) activity::validator::factory::New();
 
 Key()
 {
 }
 };
 
-ACTIVITY_API SPTR( activity::IValidator ) New( const activity::validator::registry::KeyType&
-                                               classname );
+ACTIVITY_API SPTR(activity::IValidator) New(
+    const activity::validator::registry::KeyType&
+    classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) validator = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) validator = std::make_shared<CLASSNAME>(Key());
     return validator;
 }
 
 } // namespace factory
+
 } // namespace validator
+
 } // namespace sight::activity

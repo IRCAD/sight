@@ -44,7 +44,6 @@ V2ToV3::V2ToV3() :
     m_targetClassname = "::sight::data::Image";
     m_originVersion   = "2";
     m_targetVersion   = "3";
-
 }
 
 // ----------------------------------------------------------------------------
@@ -55,7 +54,7 @@ V2ToV3::~V2ToV3()
 
 // ----------------------------------------------------------------------------
 
-V2ToV3::V2ToV3( const V2ToV3& cpy ) :
+V2ToV3::V2ToV3(const V2ToV3& cpy) :
     io::atoms::patch::IStructuralPatch(cpy)
 {
 }
@@ -65,7 +64,8 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 void V2ToV3::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -75,17 +75,17 @@ void V2ToV3::apply(
     // Create helper
     io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::Numeric::sptr components = current->getAttribute< sight::atoms::Numeric >("nb_components");
+    sight::atoms::Numeric::sptr components = current->getAttribute<sight::atoms::Numeric>("nb_components");
     size_t nbComponents                    = components->getValue<size_t>();
-    if (nbComponents == 1)
+    if(nbComponents == 1)
     {
         helper.addAttribute("pixel_format", sight::atoms::String::New("GRAY_SCALE"));
     }
-    else if (nbComponents == 3)
+    else if(nbComponents == 3)
     {
         helper.addAttribute("pixel_format", sight::atoms::String::New("RGB"));
     }
-    else if (nbComponents == 4)
+    else if(nbComponents == 4)
     {
         helper.addAttribute("pixel_format", sight::atoms::String::New("RGBA"));
     }
@@ -93,7 +93,6 @@ void V2ToV3::apply(
     {
         helper.addAttribute("pixel_format", sight::atoms::String::New("UNDEFINED"));
     }
-
 }
 
 } // namespace Image

@@ -25,29 +25,29 @@
 #include "data/BufferTL.hpp"
 #include "data/config.hpp"
 #include "data/timeline/RawBuffer.hpp"
-
 #include <data/factory/new.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(RawBufferTL));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (RawBufferTL));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a timeline of buffers. It implements basic features of the Timeline interface such as
  *          pushing or retrieving objects. Allocation must be done by inherited classes.
  */
 class DATA_CLASS_API RawBufferTL : public BufferTL
 {
-
 public:
-    SIGHT_DECLARE_CLASS(RawBufferTL, data::TimeLine, data::factory::New< RawBufferTL >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(RawBufferTL));
+
+    SIGHT_DECLARE_CLASS(RawBufferTL, data::TimeLine, data::factory::New<RawBufferTL>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (RawBufferTL));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API RawBufferTL( data::Object::Key key );
+    DATA_API RawBufferTL(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~RawBufferTL();
@@ -61,7 +61,9 @@ public:
      * @param direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(data::timeline::RawBuffer) getClosestBuffer(
-        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const;
+        core::HiResClock::HiResClockType timestamp,
+        DirectionType direction = BOTH
+    ) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
     DATA_API virtual CSPTR(data::timeline::RawBuffer) getBuffer(core::HiResClock::HiResClockType timestamp)
@@ -86,7 +88,6 @@ public:
 
     /// Check if the type of an object is compatible with this timeline
     DATA_API bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
-
 }; // class RawBufferTL
 
 } // namespace sight::data

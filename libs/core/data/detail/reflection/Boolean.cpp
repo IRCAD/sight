@@ -26,12 +26,12 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Boolean))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Boolean))
 {
     builder
     .tag("object_version", "1")
     .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object >()
-    .property("value",  (bool sight::data::Boolean::*) &::sight::data::Boolean::m_value)
+    .base< ::sight::data::Object>()
+    .property("value", (bool sight::data::Boolean::*) &::sight::data::Boolean::m_value)
     ;
 }

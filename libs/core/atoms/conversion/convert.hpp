@@ -28,11 +28,15 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::atoms::conversion
@@ -56,7 +60,7 @@ namespace sight::atoms::conversion
  * @note Only std::map with key value : string, int or real are managed
  * @note Only std::map with type value : data::Object::sptr, bool, enum, string, int or real are managed
  */
-ATOMS_API SPTR(atoms::Object) convert( const SPTR(data::Object) &data );
+ATOMS_API SPTR(atoms::Object) convert(const SPTR(data::Object) & data);
 
 /**
  * @brief Converts a data::Object to a atoms::Object.
@@ -65,8 +69,10 @@ ATOMS_API SPTR(atoms::Object) convert( const SPTR(data::Object) &data );
  * @return Returns the converted atom.
  * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
  */
-ATOMS_API SPTR(atoms::Object) convert( const SPTR(data::Object) &dataObj,
-                                       DataVisitor::AtomCacheType& cache );
+ATOMS_API SPTR(atoms::Object) convert(
+    const SPTR(data::Object) & dataObj,
+    DataVisitor::AtomCacheType& cache
+);
 
 /**
  * @brief Helper to convert a atoms::Object to a data::Object
@@ -83,9 +89,9 @@ ATOMS_API SPTR(atoms::Object) convert( const SPTR(data::Object) &dataObj,
  * @note see notes of convert(data::Object::sptr data) method
  */
 ATOMS_API SPTR(data::Object) convert(
-    const SPTR(atoms::Object) &atom,
+    const SPTR(atoms::Object) & atom,
     const AtomVisitor::IReadPolicy& uuidPolicy = AtomVisitor::ChangePolicy()
-    );
+);
 
 /**
  * @brief Converts a atoms::Object to a data::Object
@@ -98,8 +104,10 @@ ATOMS_API SPTR(data::Object) convert(
  * @throw atoms::conversion::exception::DataFactoryNotFound if the data class is not found in data::factory
  * @throw atoms::conversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
  */
-ATOMS_API SPTR(data::Object) convert( const SPTR(atoms::Object) &atomObj,
-                                      AtomVisitor::DataCacheType& cache,
-                                      const AtomVisitor::IReadPolicy& uuidPolicy );
+ATOMS_API SPTR(data::Object) convert(
+    const SPTR(atoms::Object) & atomObj,
+    AtomVisitor::DataCacheType& cache,
+    const AtomVisitor::IReadPolicy& uuidPolicy
+);
 
 } // end namespace sight::atoms::conversion

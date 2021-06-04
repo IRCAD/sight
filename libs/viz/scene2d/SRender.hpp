@@ -43,6 +43,7 @@
 
 namespace sight::viz::scene2d
 {
+
 // Not declared in the #include because of mutual inclusion.
 class Scene2DGraphicsView;
 
@@ -97,10 +98,9 @@ class IAdaptor;
  */
 class VIZ_SCENE2D_CLASS_API SRender : public viz::base::IRender
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender)
+    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;
@@ -131,16 +131,16 @@ public:
     VIZ_SCENE2D_API scene2d::data::Axis::sptr getAxis(const std::string& id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
-    VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event );
+    VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    VIZ_SCENE2D_API scene2d::data::Coord mapToScene( const scene2d::data::Coord& coord ) const;
+    VIZ_SCENE2D_API scene2d::data::Coord mapToScene(const scene2d::data::Coord& coord) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
 
     /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
-    VIZ_SCENE2D_API void updateSceneSize( float ratioPercent = 0 );
+    VIZ_SCENE2D_API void updateSceneSize(float ratioPercent = 0);
 
 protected:
 
@@ -168,7 +168,7 @@ protected:
 private:
 
     /// A ConfigurationElement type representing a configuration.
-    typedef SPTR (core::runtime::ConfigurationElement) ConfigurationType;
+    typedef SPTR(core::runtime::ConfigurationElement) ConfigurationType;
 
     /// Create the QtContainer, the scene, the viewport, the view.
     void startContext();
@@ -177,20 +177,20 @@ private:
     void stopContext();
 
     /// Get the axis configuration specifications
-    void configureAxis ( ConfigurationType _conf );
+    void configureAxis(ConfigurationType _conf);
 
     /// Get the viewport configuration specifications, create a new viewport.
-    void configureViewport ( ConfigurationType _conf );
+    void configureViewport(ConfigurationType _conf);
 
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
-    void configureScene( ConfigurationType _conf );
+    void configureScene(ConfigurationType _conf);
 
     /// Get the adaptor configuration specifications, push back the id attribute in the m_objectsID2AdaptorIDVector map,
     /// create a SceneAdaptor2D,
     /// set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
-    void configureAdaptor ( ConfigurationType _conf );
+    void configureAdaptor(ConfigurationType _conf);
 
-    std::map<std::string, scene2d::data::Axis::sptr > m_axisMap;
+    std::map<std::string, scene2d::data::Axis::sptr> m_axisMap;
 
     /// The render configuration.
     ConfigurationType m_sceneConfiguration;

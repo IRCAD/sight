@@ -26,18 +26,22 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 //-----------------------------------------------------------------------------
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
-                                                                               [this]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [this]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
-            })).wait();
+                m_implementation                     = ui::base::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
+            })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -56,8 +60,8 @@ void MultiSelectorDialog::setTitle(std::string title)
 IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
-    std::function< R() > func = std::bind( &IMultiSelectorDialog::show, m_implementation);
-    std::shared_future< R > f = core::thread::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
+    std::function<R()> func = std::bind(&IMultiSelectorDialog::show, m_implementation);
+    std::shared_future<R> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
 
     f.wait();
     return f.get();
@@ -70,7 +74,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
-                m_implementation->setSelections( _selections );
+                m_implementation->setSelections(_selections);
             }).wait();
 }
 
@@ -81,11 +85,12 @@ void MultiSelectorDialog::setMessage(const std::string& msg)
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
-                m_implementation->setMessage( msg );
+                m_implementation->setMessage(msg);
             }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } //namespace sight::ui::base

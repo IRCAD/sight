@@ -26,14 +26,15 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
 /// Test ActiveWorkers API
 class ProxyTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ProxyTest );
-CPPUNIT_TEST( basicTest );
+CPPUNIT_TEST_SUITE(ProxyTest);
+CPPUNIT_TEST(basicTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +44,8 @@ public:
 
     /// Test using ActiveWorkers API
     void basicTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::service

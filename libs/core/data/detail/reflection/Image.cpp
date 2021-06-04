@@ -27,7 +27,7 @@
 #include <core/memory/camp/mapper.hpp>
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Image))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Image))
 {
     builder
     .tag("object_version", "3")
@@ -45,7 +45,7 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Image))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Image)(PixelFormat))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Image) (PixelFormat))
 {
     builder
     .value("UNDEFINED", sight::data::Image::PixelFormat::UNDEFINED)

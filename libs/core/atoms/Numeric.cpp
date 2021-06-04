@@ -30,7 +30,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-fwAtomsRegisterMacro( sight::atoms::Numeric );
+fwAtomsRegisterMacro(sight::atoms::Numeric);
 
 namespace sight::atoms
 {
@@ -48,24 +48,24 @@ Base::sptr Numeric::clone() const
 
 std::string Numeric::getString() const
 {
-    SIGHT_THROW_EXCEPTION_IF( atoms::Exception("Empty numeric atom"), m_value.which() == 0);
+    SIGHT_THROW_EXCEPTION_IF(atoms::Exception("Empty numeric atom"), m_value.which() == 0);
     return ::boost::lexical_cast<std::string>(m_value);
 }
 
 //------------------------------------------------------------------------------
 
-template < typename T >
-bool lexicalCast( Numeric::ValueType& v, const std::string& s )
+template<typename T>
+bool lexicalCast(Numeric::ValueType& v, const std::string& s)
 {
     bool ok = false;
 
     try
     {
-        T val = ::boost::lexical_cast< T >( s );
+        T val = ::boost::lexical_cast<T>(s);
         v  = val;
         ok = true;
     }
-    catch ( const ::boost::bad_lexical_cast&)
+    catch(const ::boost::bad_lexical_cast&)
     {
     }
     return ok;
@@ -78,35 +78,35 @@ Numeric::ValueType Numeric::valueFromString(const std::string& s, Numeric::Numer
     Numeric::ValueType res;
     SIGHT_ASSERT("Invalid variant type requested", EMPTY <= type && type <= DOUBLE);
 
-    if ( type == EMPTY)
+    if(type == EMPTY)
     {
         SIGHT_THROW_EXCEPTION_IF(
-            atoms::Exception( std::string("Unable to get numeric from '") + s + "'"),
-            !(lexicalCast< std::int64_t >(res, s)
-              || lexicalCast< std::uint64_t >(res, s)
-              || lexicalCast< double >(res, s))
-            );
+            atoms::Exception(std::string("Unable to get numeric from '") + s + "'"),
+            !(lexicalCast<std::int64_t>(res, s)
+              || lexicalCast<std::uint64_t>(res, s)
+              || lexicalCast<double>(res, s))
+        );
     }
-    else if ( type == INT)
+    else if(type == INT)
     {
         SIGHT_THROW_EXCEPTION_IF(
-            atoms::Exception( std::string("Unable to get int64 numeric from '") + s + "'"),
-            !lexicalCast< std::int64_t >(res, s)
-            );
+            atoms::Exception(std::string("Unable to get int64 numeric from '") + s + "'"),
+            !lexicalCast<std::int64_t>(res, s)
+        );
     }
-    else if ( type == UINT)
+    else if(type == UINT)
     {
         SIGHT_THROW_EXCEPTION_IF(
-            atoms::Exception( std::string("Unable to get uint64 numeric from '") + s + "'"),
-            !lexicalCast< std::uint64_t >(res, s)
-            );
+            atoms::Exception(std::string("Unable to get uint64 numeric from '") + s + "'"),
+            !lexicalCast<std::uint64_t>(res, s)
+        );
     }
-    else if ( type == DOUBLE)
+    else if(type == DOUBLE)
     {
         SIGHT_THROW_EXCEPTION_IF(
-            atoms::Exception( std::string("Unable to get double numeric from '") + s + "'"),
-            !lexicalCast< double >(res, s)
-            );
+            atoms::Exception(std::string("Unable to get double numeric from '") + s + "'"),
+            !lexicalCast<double>(res, s)
+        );
     }
 
     return res;
@@ -119,4 +119,4 @@ void Numeric::setFromString(const std::string& s, Numeric::NumericType type)
     m_value = Numeric::valueFromString(s, type);
 }
 
-}
+} // namespace sight::atoms

@@ -79,7 +79,7 @@ void STransform::starting()
     ::Ogre::SceneNode* const rootSceneNode = sceneManager->getRootSceneNode();
     SIGHT_ASSERT("Root scene node not found", rootSceneNode);
 
-    if (!m_parentTransformId.empty())
+    if(!m_parentTransformId.empty())
     {
         m_parentTransformNode = this->getTransformNode(m_parentTransformId, rootSceneNode);
     }
@@ -98,7 +98,7 @@ void STransform::starting()
 void STransform::updating()
 {
     {
-        const auto transform = this->getLockedInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
+        const auto transform = this->getLockedInOut<data::Matrix4>(s_TRANSFORM_INOUT);
         m_ogreTransform = ::Ogre::Affine3(sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 

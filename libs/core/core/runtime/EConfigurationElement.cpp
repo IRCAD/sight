@@ -28,7 +28,7 @@ namespace sight::core::runtime
 {
 
 EConfigurationElement::EConfigurationElement(const std::string& name) :
-    core::runtime::ConfigurationElement( std::shared_ptr< core::runtime::Module >(), name )
+    core::runtime::ConfigurationElement(std::shared_ptr<core::runtime::Module>(), name)
 {
 }
 
@@ -38,25 +38,25 @@ EConfigurationElement::~EConfigurationElement()
 
 //------------------------------------------------------------------------------
 
-EConfigurationElement::sptr EConfigurationElement::addConfigurationElement( const std::string& name )
+EConfigurationElement::sptr EConfigurationElement::addConfigurationElement(const std::string& name)
 {
     EConfigurationElement::sptr cfg = EConfigurationElement::New(name);
-    this->core::runtime::ConfigurationElement::addConfigurationElement( cfg );
+    this->core::runtime::ConfigurationElement::addConfigurationElement(cfg);
     return cfg;
 }
 
 //------------------------------------------------------------------------------
 
-void EConfigurationElement::addConfigurationElement( EConfigurationElement::sptr element )
+void EConfigurationElement::addConfigurationElement(EConfigurationElement::sptr element)
 {
-    this->core::runtime::ConfigurationElement::addConfigurationElement( element );
+    this->core::runtime::ConfigurationElement::addConfigurationElement(element);
 }
 
 //------------------------------------------------------------------------------
 
 void EConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) noexcept
 {
-    this->core::runtime::ConfigurationElement::setAttributeValue( name, value );
+    this->core::runtime::ConfigurationElement::setAttributeValue(name, value);
 }
 
 //------------------------------------------------------------------------------

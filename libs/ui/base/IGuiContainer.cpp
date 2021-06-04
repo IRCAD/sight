@@ -76,10 +76,10 @@ void IGuiContainer::initialize()
     SIGHT_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
 
     // Create view registry
-    m_viewRegistry = ui::base::registry::View::New( this->getID() );
+    m_viewRegistry = ui::base::registry::View::New(this->getID());
     // find View configuration
-    std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
-    if ( !vectViewMng.empty() )
+    std::vector<ConfigurationType> vectViewMng = m_configuration->find("registry");
+    if(!vectViewMng.empty())
     {
         m_viewRegistryConfig = vectViewMng.at(0);
         m_viewRegistry->initialize(m_viewRegistryConfig);
@@ -87,23 +87,25 @@ void IGuiContainer::initialize()
 
     // Create initializeLayoutManager
     // find gui configuration
-    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    if( !vectGui.empty() )
+    std::vector<ConfigurationType> vectGui = m_configuration->find("gui");
+    if(!vectGui.empty())
     {
-        SIGHT_ASSERT("["+this->getID()+"' ] No <registry> tag is allowed in the <gui> section",
-                     vectGui.at(0)->find("registry").empty());
+        SIGHT_ASSERT(
+            "[" + this->getID() + "' ] No <registry> tag is allowed in the <gui> section",
+            vectGui.at(0)->find("registry").empty()
+        );
 
         // find view LayoutManager configuration
-        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        if( !vectLayoutMng.empty() )
+        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("layout");
+        if(!vectLayoutMng.empty())
         {
             m_viewLayoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager( m_viewLayoutConfig );
+            this->initializeLayoutManager(m_viewLayoutConfig);
             m_viewLayoutManagerIsCreated = true;
         }
 
         // find toolBarBuilder configuration
-        std::vector < ConfigurationType > vectTBBuilder = vectGui.at(0)->find("toolBar");
+        std::vector<ConfigurationType> vectTBBuilder = vectGui.at(0)->find("toolBar");
         if(!vectTBBuilder.empty())
         {
             m_toolBarConfig = vectTBBuilder.at(0);
@@ -113,8 +115,8 @@ void IGuiContainer::initialize()
         }
 
         // find slideView configuration
-        std::vector < ConfigurationType > vectSlideCfg = vectGui.at(0)->find("slideView");
-        for (const auto& slideCfg : vectSlideCfg)
+        std::vector<ConfigurationType> vectSlideCfg = vectGui.at(0)->find("slideView");
+        for(const auto& slideCfg : vectSlideCfg)
         {
             this->initializeSlideViewBuilder(slideCfg);
         }
@@ -125,12 +127,16 @@ void IGuiContainer::initialize()
 
 void IGuiContainer::create()
 {
-    SIGHT_ASSERT("["+this->getID()+"'] View must be initialized, don't forget to call 'initialize()' in "
-                 "'configuring()' method.", m_viewRegistry);
+    SIGHT_ASSERT(
+        "[" + this->getID() + "'] View must be initialized, don't forget to call 'initialize()' in "
+                              "'configuring()' method.",
+        m_viewRegistry
+    );
     ui::base::container::fwContainer::sptr parent = m_viewRegistry->getParent();
     SIGHT_ASSERT("Parent container is unknown.", parent);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >([this, &parent]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        [this, &parent]
         {
             SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
@@ -138,18 +144,21 @@ void IGuiContainer::create()
                 ui::base::factory::New(ui::base::builder::IContainerBuilder::REGISTRY_KEY);
             m_containerBuilder = ui::base::builder::IContainerBuilder::dynamicCast(guiObj);
 
-            SIGHT_ASSERT("Cannot create main container: factory failed for '"
-                         + ui::base::builder::IContainerBuilder::REGISTRY_KEY + "'",
-                         m_containerBuilder);
+            SIGHT_ASSERT(
+                "Cannot create main container: factory failed for '"
+                + ui::base::builder::IContainerBuilder::REGISTRY_KEY + "'",
+                m_containerBuilder
+            );
             m_containerBuilder->createContainer(parent);
 
             ui::base::container::fwContainer::sptr container = m_containerBuilder->getContainer();
 
-            if ( m_viewLayoutManagerIsCreated )
+            if(m_viewLayoutManagerIsCreated)
             {
-                if (m_hasToolBar)
+                if(m_hasToolBar)
                 {
-                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                        [&]
                     {
                         m_toolBarBuilder->createToolBar(parent);
                     }).wait();
@@ -157,17 +166,19 @@ void IGuiContainer::create()
                     m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
-                core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                    [&]
                 {
                     m_viewLayoutManager->createLayout(container);
                 }).wait();
 
-                std::vector< ui::base::container::fwContainer::sptr > views = m_viewLayoutManager->getSubViews();
+                std::vector<ui::base::container::fwContainer::sptr> views = m_viewLayoutManager->getSubViews();
 
-                for (const auto& slideBuilder : m_slideViewBuilders)
+                for(const auto& slideBuilder : m_slideViewBuilders)
                 {
                     SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
-                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                        [&]
                     {
                         slideBuilder->createContainer(container);
                     }).wait();
@@ -185,14 +196,15 @@ void IGuiContainer::destroy()
 {
     SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
-    if ( m_viewLayoutManagerIsCreated )
+    if(m_viewLayoutManagerIsCreated)
     {
-        if (m_hasToolBar)
+        if(m_hasToolBar)
         {
             m_viewRegistry->unmanageToolBar();
             SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-            core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+            core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+                [&]
                 {
                     m_toolBarBuilder->destroyToolBar();
                 }).wait();
@@ -201,16 +213,18 @@ void IGuiContainer::destroy()
         m_viewRegistry->unmanage();
         SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            [&]
             {
                 m_viewLayoutManager->destroyLayout();
             }).wait();
     }
 
-    for (const auto& slideBuilder : m_slideViewBuilders)
+    for(const auto& slideBuilder : m_slideViewBuilders)
     {
         SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            [&]
             {
                 slideBuilder->destroyContainer();
             }).wait();
@@ -223,15 +237,17 @@ void IGuiContainer::destroy()
 
 void IGuiContainer::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'layout', actual: '"
-                 +layoutConfig->getName()+ "'",
-                 layoutConfig->getName() == "layout");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'layout', actual: '"
+        + layoutConfig->getName() + "'",
+        layoutConfig->getName() == "layout"
+    );
     SIGHT_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(layoutManagerClassName);
     m_viewLayoutManager = ui::base::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "+ layoutManagerClassName, m_viewLayoutManager);
+    SIGHT_ASSERT("ClassFactoryRegistry failed for class " + layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
 }
@@ -240,14 +256,18 @@ void IGuiContainer::initializeLayoutManager(ConfigurationType layoutConfig)
 
 void IGuiContainer::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
-                 +toolBarConfig->getName()+ "'",
-                 toolBarConfig->getName() == "toolBar");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'toolBar', actual: '"
+        + toolBarConfig->getName() + "'",
+        toolBarConfig->getName() == "toolBar"
+    );
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder = ui::base::builder::IToolBarBuilder::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "+ ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
-                 m_toolBarBuilder);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " + ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
+        m_toolBarBuilder
+    );
 
     m_toolBarBuilder->initialize(toolBarConfig);
 }
@@ -256,16 +276,22 @@ void IGuiContainer::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 void IGuiContainer::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'slideView', actual: '"
-                 +slideViewConfig->getName()+ "'",
-                 slideViewConfig->getName() == "slideView");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'slideView', actual: '"
+        + slideViewConfig->getName() + "'",
+        slideViewConfig->getName() == "slideView"
+    );
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
-        ui::base::builder::ISlideViewBuilder::REGISTRY_KEY);
+        ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
+    );
     ui::base::builder::ISlideViewBuilder::sptr slideViewBuildfer = ui::base::builder::ISlideViewBuilder::dynamicCast(
-        guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "+ ui::base::builder::ISlideViewBuilder::REGISTRY_KEY,
-                 slideViewBuildfer);
+        guiObj
+    );
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " + ui::base::builder::ISlideViewBuilder::REGISTRY_KEY,
+        slideViewBuildfer
+    );
 
     slideViewBuildfer->initialize(slideViewConfig);
 
@@ -283,13 +309,16 @@ ui::base::container::fwContainer::sptr IGuiContainer::getContainer()
 
 void IGuiContainer::setParent(std::string wid)
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [this, &wid]
         {
             m_viewRegistry->setParent(wid);
             ui::base::container::fwContainer::sptr parent = m_viewRegistry->getParent();
             SIGHT_ASSERT("Parent container is unknown.", parent);
             m_containerBuilder->setParent(parent);
-        } ));
+        })
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -338,4 +367,4 @@ void IGuiContainer::hide()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui

@@ -26,9 +26,9 @@
 
 #include <core/BaseObject.hpp>
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgrePrerequisites.h>
-#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {
@@ -38,7 +38,6 @@ namespace picker
 
 class VIZ_SCENE3D_CLASS_API IPicker
 {
-
 public:
 
     /// Construct all members.
@@ -108,7 +107,6 @@ protected:
 
     /// Returns the scene node containing the default camera.
     ::Ogre::SceneNode* getCameraSceneNode() const;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -121,5 +119,6 @@ inline ::Ogre::MovableObject* IPicker::getSelectedObject() const
 
 //-----------------------------------------------------------------------------
 
-}
-}
+} // namespace picker
+
+} // namespace sight::viz

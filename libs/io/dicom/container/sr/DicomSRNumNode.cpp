@@ -26,17 +26,21 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
 //------------------------------------------------------------------------------
 
-DicomSRNumNode::DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-                               const std::string& relationship,
-                               const double numValue,
-                               const DicomCodedAttribute& measurementUnits) :
+DicomSRNumNode::DicomSRNumNode(
+    const DicomCodedAttribute& codedAttribute,
+    const std::string& relationship,
+    const double numValue,
+    const DicomCodedAttribute& measurementUnits
+) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "NUM", relationship),
     m_numValue(numValue),
     m_measurementUnits(measurementUnits)
@@ -63,21 +67,21 @@ void DicomSRNumNode::write(::gdcm::DataSet& dataset) const
 
 void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet& dataset) const
 {
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
     ::gdcm::Item item;
     item.SetVLToUndefined();
     ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Add numerical value - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValues< double, 0x0040, 0xa30a >(&m_numValue, 1, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0040, 0xa30a>(&m_numValue, 1, itemDataset);
 
     // Add measured units code sequence - Type 1
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence =
         this->createConceptNameCodeSequence(m_measurementUnits);
     io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
 
     sequence->AddItem(item);
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue< 0x0040, 0xa300 >(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0040, 0xa300>(sequence, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -92,5 +96,7 @@ void DicomSRNumNode::print(std::ostream& os) const
 //------------------------------------------------------------------------------
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

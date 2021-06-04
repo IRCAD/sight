@@ -35,10 +35,12 @@ const IWindowInteractor::FactoryRegistryKeyType IWindowInteractor::REGISTRY_KEY 
 IWindowInteractor::sptr IWindowInteractor::createManager()
 {
     IWindowInteractor::sptr manager = viz::qt3d::factory::New(
-        viz::qt3d::IWindowInteractor::REGISTRY_KEY );
+        viz::qt3d::IWindowInteractor::REGISTRY_KEY
+    );
     SIGHT_ASSERT(
         "The factory process to create an IWindowInteractor, failed. Missing Qt or Wx component ?",
-        manager );
+        manager
+    );
     return manager;
 }
 

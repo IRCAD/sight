@@ -28,7 +28,9 @@
 
 namespace thread
 {
+
 class Timer;
+
 }
 
 namespace ExTimeLine
@@ -60,9 +62,10 @@ namespace ExTimeLine
 class EXTIMELINE_CLASS_API SConsumer : public sight::service::IService
 {
 public:
+
     EXTIMELINE_API static const sight::core::com::Slots::SlotKeyType s_CONSUME_SLOT;
 
-    SIGHT_DECLARE_SERVICE(SConsumer, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SConsumer, sight::service::IService);
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API virtual ~SConsumer() noexcept;
@@ -87,7 +90,7 @@ protected:
 private:
 
     /// Timer used to read messages periodically
-    SPTR( sight::core::thread::Timer ) m_timer;
+    SPTR(sight::core::thread::Timer) m_timer;
 
     /// Id of the receiver
     unsigned int m_receiverId;
@@ -96,4 +99,4 @@ private:
     unsigned int m_period;
 };
 
-}  // namespace ExTimeLine
+} // namespace ExTimeLine

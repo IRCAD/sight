@@ -29,10 +29,11 @@
 #include <data/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::activity::validator::ut::MonoCameraTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::activity::validator::ut::MonoCameraTest);
 
 namespace sight::module::activity::validator
 {
+
 namespace ut
 {
 
@@ -77,30 +78,43 @@ void MonoCameraTest::testValidator()
     {
         cameraSeries->addCamera(camera);
         validation = objValidator->validate(cameraSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSeries with a non-calibrated camera should NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "CameraSeries with a non-calibrated camera should NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         validation = objValidator->validate(camera);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Validator on other object should not be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Validator on other object should not be valid",
+            false,
+            validation.first
+        );
     }
     {
         camera->setIsCalibrated(true);
         validation = objValidator->validate(cameraSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSeries with a calibrated camera should be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "CameraSeries with a calibrated camera should be valid",
+            true,
+            validation.first
+        );
     }
     {
         camera2->setIsCalibrated(true);
         cameraSeries->addCamera(camera2);
         validation = objValidator->validate(cameraSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSeries with two cameras should NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "CameraSeries with two cameras should NOT be valid",
+            false,
+            validation.first
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::module::activity::validator

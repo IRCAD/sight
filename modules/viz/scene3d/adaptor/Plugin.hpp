@@ -32,7 +32,6 @@ namespace sight::module::viz::scene3d::adaptor
 /// This class is started when the module is loaded.
 class MODULE_VIZ_SCENE3D_CLASS_API Plugin : public core::runtime::Plugin
 {
-
 public:
 
     /// Destroys the plugin.
@@ -43,7 +42,6 @@ public:
 
     /// Stops the plugin, does nothing here.
     MODULE_VIZ_SCENE3D_API void stop() noexcept override;
-
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

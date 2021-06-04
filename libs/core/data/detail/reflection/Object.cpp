@@ -26,11 +26,11 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Object))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Object))
 {
     builder
     .property("fields", &::sight::data::Object::m_fields)
-    .function("classname", (const std::string& (sight::data::Object::*)() const) & sight::data::Object::getClassname)
+    .function("classname", (const std::string& (sight::data::Object::*) () const) & sight::data::Object::getClassname)
     .function("is_a", (bool (sight::data::Object::*)(const std::string&) const) & sight::data::Object::isA)
     ;
 }

@@ -57,14 +57,13 @@ static const std::string s_DYNAMIC_CONFIG      = "dynamic";
 
 STexture::STexture() noexcept
 {
-    m_sigTextureSwapped = newSignal< TextureSwappedSignalType >( s_TEXTURE_SWAPPED_SIG );
+    m_sigTextureSwapped = newSignal<TextureSwappedSignalType>(s_TEXTURE_SWAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 STexture::~STexture() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -95,10 +94,13 @@ void STexture::starting()
     this->getRenderService()->makeCurrent();
 
     m_texture =
-        ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-                                                            m_textureName,
-                                                            sight::viz::scene3d::RESOURCE_GROUP,
-                                                            true).first);
+        ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>(
+            ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                m_textureName,
+                sight::viz::scene3d::RESOURCE_GROUP,
+                true
+            ).first
+        );
 
     this->updating();
 }
@@ -118,7 +120,7 @@ service::IService::KeyConnectionsMap STexture::getAutoConnections() const
 void STexture::updating()
 {
     // Retrieves associated Sight image
-    const auto image = this->getLockedInput< data::Image>(s_TEXTURE_INOUT);
+    const auto image = this->getLockedInput<data::Image>(s_TEXTURE_INOUT);
 
     if(image->getAllocatedSizeInBytes() != 0)
     {
@@ -156,6 +158,7 @@ bool STexture::isValid() const
 
     return false;
 }
+
 //------------------------------------------------------------------------------
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -28,13 +28,17 @@
 
 namespace sight::core::runtime
 {
+
 namespace io
 {
+
 namespace ProfileReader
 {
 
-CORE_API std::shared_ptr< core::runtime::Profile > createProfile(const std::filesystem::path& path );
+CORE_API std::shared_ptr<core::runtime::Profile> createProfile(const std::filesystem::path& path);
+
 }
+
 }
 
 }

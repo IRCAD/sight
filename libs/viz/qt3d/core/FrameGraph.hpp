@@ -30,10 +30,12 @@
 
 namespace Qt3DRender
 {
+
 class QCameraSelector;
 class QRenderStateSet;
 class QRenderSurfaceSelector;
 class QViewport;
+
 }
 
 namespace sight::viz::qt3d
@@ -50,7 +52,6 @@ namespace core
  */
 class VIZ_QT3D_CLASS_QT_API FrameGraph : public Qt3DRender::QFrameGraphNode
 {
-
 /// These typedefs are used for Q_PROPERTY, the macro doesn't work with namespaces.
 typedef Qt3DCore::QEntity QEntity;
 typedef Qt3DRender::QClearBuffers QClearBuffers;
@@ -59,14 +60,17 @@ Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(
-    QEntity* camera
-    READ getCamera WRITE setCamera NOTIFY cameraChanged)
+    QEntity * camera
+    READ getCamera WRITE setCamera NOTIFY cameraChanged
+)
 Q_PROPERTY(
     QColor clearColor
-    READ getClearColor WRITE setClearColor NOTIFY clearColorChanged)
+    READ getClearColor WRITE setClearColor NOTIFY clearColorChanged
+)
 Q_PROPERTY(
     QClearBuffers::BufferType buffersToClear
-    READ getBuffersToClear WRITE setBuffersToClear NOTIFY buffersToClearChanged)
+    READ getBuffersToClear WRITE setBuffersToClear NOTIFY buffersToClearChanged
+)
 
 public:
 
@@ -120,21 +124,20 @@ private:
     void getAllNodesRec(QVector<Qt3DRender::QFrameGraphNode*>& _nodes, Qt3DRender::QFrameGraphNode* _currentNode);
 
     ///Contains a viewport allowing to choose which portion of the screen is rendered. Default is the whole screen.
-    QPointer< Qt3DRender::QViewport > m_viewport;
+    QPointer<Qt3DRender::QViewport> m_viewport;
 
     /// Contains a camera selector to choose camera from which the scene will be rendered.
-    QPointer< Qt3DRender::QCameraSelector > m_cameraSelector;
+    QPointer<Qt3DRender::QCameraSelector> m_cameraSelector;
 
     /// Contains a clear buffer object allowing to control clear color and which buffers are cleared before rendering.
-    QPointer< Qt3DRender::QClearBuffers > m_clearBuffers;
+    QPointer<Qt3DRender::QClearBuffers> m_clearBuffers;
 
     /// Contains a render surface selector. Needed to set a proper rendering context.
-    QPointer< Qt3DRender::QRenderSurfaceSelector > m_renderSurfaceSelector;
+    QPointer<Qt3DRender::QRenderSurfaceSelector> m_renderSurfaceSelector;
 
     /// Contains a render state set which can be filled with render states allowing to control options such as culling
     /// or depth test.
-    QPointer< Qt3DRender::QRenderStateSet > m_renderStateSet;
-
+    QPointer<Qt3DRender::QRenderStateSet> m_renderStateSet;
 };
 
 } // namespace core.

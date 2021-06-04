@@ -25,15 +25,17 @@
 #include "SlotsSignalsStuff.hpp"
 
 #include <core/thread/ActiveWorkers.hpp>
+
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::SlotsSignalsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::SlotsSignalsTest);
 //
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -112,7 +114,6 @@ void SlotsSignalsTest::comObjectServiceTest()
     activeWorkers->addWorker("worker2", worker2);
 
     {
-
         SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
         service::OSR::registerService(readerTestSrv);
         readerTestSrv->registerInOut(buffer, IBasicTest::s_BUFFER_INOUT);
@@ -255,7 +256,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     readerTestSrv->update();
 
-    std::this_thread::sleep_for( std::chrono::seconds(8));
+    std::this_thread::sleep_for(std::chrono::seconds(8));
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
     IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
@@ -272,4 +273,5 @@ void SlotsSignalsTest::blockConnectionTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

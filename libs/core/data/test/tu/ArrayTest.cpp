@@ -26,10 +26,11 @@
 #include <data/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ArrayTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ArrayTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -38,7 +39,6 @@ namespace ut
 void ArrayTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 //-----------------------------------------------------------------------------
@@ -79,33 +79,33 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), array->getType().sizeOf());
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getNumberOfComponents()); //deprecated
-    CPPUNIT_ASSERT(  array->empty() );
-    CPPUNIT_ASSERT(  array->getBuffer() == nullptr );
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getNumberOfComponents()); //deprecated
+    CPPUNIT_ASSERT(array->empty());
+    CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UNSPECIFIED_TYPE, array->getType());
 
     std::uint16_t* buffer = new std::uint16_t[1000];
 
-    for (std::uint16_t i = 0; i < 1000; i++)
+    for(std::uint16_t i = 0 ; i < 1000 ; i++)
     {
         buffer[i] = i;
     }
 
     array->setBuffer(buffer, false, size, core::tools::Type::s_UINT16, core::memory::BufferNewPolicy::New());
 
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {2, 20};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(  buffer[0], array->at< std::uint16_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  buffer[10], array->at< std::uint16_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(  buffer[999], array->at< std::uint16_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(  buffer[326], array->at< std::uint16_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(  buffer[947], array->at< std::uint16_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(  buffer[238], array->at< std::uint16_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL(buffer[0], array->at<std::uint16_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(buffer[10], array->at<std::uint16_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(buffer[999], array->at<std::uint16_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(buffer[326], array->at<std::uint16_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(buffer[947], array->at<std::uint16_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(buffer[238], array->at<std::uint16_t>({8, 23}));
     CPPUNIT_ASSERT_EQUAL(false, array->getIsBufferOwner());
 
     array->clear();
@@ -130,40 +130,40 @@ void ArrayTest::resize()
 
     data::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
 
-    for (; iter != array->end<std::uint32_t>(); ++iter)
+    for( ; iter != array->end<std::uint32_t>() ; ++iter)
     {
         *iter = count++;
     }
 
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 40};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 
     data::Array::SizeType newSize = {100, 10};
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4*10*100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 400};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({99, 9}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({26, 3}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({47, 9}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({38, 2}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({99, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({26, 3}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({47, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({38, 2}));
 
     newSize.clear();
     newSize = {25, 40};
@@ -175,12 +175,12 @@ void ArrayTest::resize()
         data::Array::OffsetType stride = {4, 100};
         CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({24, 39}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({1, 13}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({22, 37}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({13, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({24, 39}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({1, 13}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({22, 37}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({13, 9}));
 
     newSize.clear();
 
@@ -189,17 +189,17 @@ void ArrayTest::resize()
     array->resize(newSize, core::tools::Type::s_UINT16, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {2, 4, 40};
-        CPPUNIT_ASSERT(array->getStrides() == stride );
+        CPPUNIT_ASSERT(array->getStrides() == stride);
     }
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 0, 1}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({0, 9, 99}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 6, 32}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({0, 7, 94}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({0, 9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({0, 6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({0, 7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({0, 8, 23}));
 
     //test deprecated API with component
     newSize = {10, 100};
@@ -207,18 +207,18 @@ void ArrayTest::resize()
     array->resize(core::tools::Type::s_UINT16, newSize, 2, false);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2*100*10*2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
     {
         data::Array::OffsetType stride = {4, 40};
-        CPPUNIT_ASSERT(array->getStrides() == stride );
+        CPPUNIT_ASSERT(array->getStrides() == stride);
     }
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 }
 
 //-----------------------------------------------------------------------------
@@ -235,59 +235,60 @@ void ArrayTest::reallocate()
     std::uint32_t count                          = 0;
     data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
     data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
-    for (; iter != iterEnd; ++iter)
+    for( ; iter != iterEnd ; ++iter)
     {
         *iter = count++;
     }
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 
     data::Array::SizeType newSize = {100, 100};
 
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*100*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({10, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({99, 9}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({26, 3}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({47, 9}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({38, 2}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 100 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({10, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({99, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({26, 3}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({47, 9}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({38, 2}));
 
     std::uint32_t value = 1859;
     array->at<std::uint32_t>({50, 90}) = value;
-    CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({50, 90}));
+    CPPUNIT_ASSERT_EQUAL(value, array->at<std::uint32_t>({50, 90}));
 
     std::uint32_t value2 = 25464;
     array->at<std::uint32_t>({99, 99}) = value2;
-    CPPUNIT_ASSERT_EQUAL(  value2, array->at< std::uint32_t >({99, 99}));
+    CPPUNIT_ASSERT_EQUAL(value2, array->at<std::uint32_t>({99, 99}));
 
     {
         // deprecated API
         array->resize(newSize, 2, true);
         CPPUNIT_ASSERT(newSize == array->getSize());
-        CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*100*100*2), array->getSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({5, 0}));
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(998), array->at< std::uint32_t >({99, 4}));
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({63, 1}));
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(946), array->at< std::uint32_t >({73, 4}));
-        CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({19, 1}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 100 * 100 * 2), array->getSizeInBytes());
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({5, 0}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(998), array->at<std::uint32_t>({99, 4}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({63, 1}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(946), array->at<std::uint32_t>({73, 4}));
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({19, 1}));
 
-        CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({25, 45}));
+        CPPUNIT_ASSERT_EQUAL(value, array->at<std::uint32_t>({25, 45}));
 
         std::uint32_t value3 = 45643;
         array->at<std::uint32_t>({35, 48}) = value3;
-        CPPUNIT_ASSERT_EQUAL(  value3, array->at< std::uint32_t >({35, 48}));
+        CPPUNIT_ASSERT_EQUAL(value3, array->at<std::uint32_t>({35, 48}));
 
         std::uint32_t value4 = 16165;
         array->at<std::uint32_t>({99, 99}) = value4;
-        CPPUNIT_ASSERT_EQUAL(  value4, array->at< std::uint32_t >({99, 99}));
+        CPPUNIT_ASSERT_EQUAL(value4, array->at<std::uint32_t>({99, 99}));
 
         newSize.clear();
     }
@@ -295,25 +296,25 @@ void ArrayTest::reallocate()
     newSize = {2, 100, 100};
     array->resize(newSize, core::tools::Type::s_UINT32, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*2*100*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 5, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({1, 99, 4}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 63, 1}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({1, 73, 4}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 19, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 2 * 100 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 5, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({1, 99, 4}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({0, 63, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({1, 73, 4}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({0, 19, 1}));
 
-    CPPUNIT_ASSERT_EQUAL(  value, array->at< std::uint32_t >({0, 25, 45}));
+    CPPUNIT_ASSERT_EQUAL(value, array->at<std::uint32_t>({0, 25, 45}));
 
-    CPPUNIT_ASSERT_EQUAL(  value2, array->at< std::uint32_t >({1, 99, 49}));
+    CPPUNIT_ASSERT_EQUAL(value2, array->at<std::uint32_t>({1, 99, 49}));
 
     std::uint32_t value3 = 2156;
     array->at<std::uint32_t>({0, 35, 48}) = value3;
-    CPPUNIT_ASSERT_EQUAL(  value3, array->at< std::uint32_t >({0, 35, 48}));
+    CPPUNIT_ASSERT_EQUAL(value3, array->at<std::uint32_t>({0, 35, 48}));
 
     std::uint32_t value4 = 105;
     array->at<std::uint32_t>({1, 99, 99}) = value4;
-    CPPUNIT_ASSERT_EQUAL(  value4, array->at< std::uint32_t >({1, 99, 99}));
+    CPPUNIT_ASSERT_EQUAL(value4, array->at<std::uint32_t>({1, 99, 99}));
 
     newSize.clear();
 
@@ -321,38 +322,38 @@ void ArrayTest::reallocate()
 
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 
     newSize = {2, 10, 100};
     array->resize(newSize, core::tools::Type::s_UINT16, true);
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100*2), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 0, 1}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({0, 9, 99}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({0, 6, 32}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({0, 7, 94}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({0, 8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100 * 2), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({0, 9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({0, 6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({0, 7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({0, 8, 23}));
 
     newSize = {10, 100};
     array->resize(newSize, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(2*10*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 2}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({2, 65}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({6, 47}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), array->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 2}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({2, 65}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({6, 47}));
 
     array->clear();
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(0), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------
@@ -371,7 +372,7 @@ void ArrayTest::copy()
     data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
     data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
 
-    for (; iter != iterEnd; ++iter)
+    for( ; iter != iterEnd ; ++iter)
     {
         *iter = count++;
     }
@@ -380,44 +381,68 @@ void ArrayTest::copy()
     auto deepCopyArrayLock          = deepCopyArray->lock();
 
     // check deepCopy
-    CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
     CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 0}),
-                          deepCopyArray->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 1}),
-                          deepCopyArray->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({9, 99}),
-                          deepCopyArray->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({6, 32}),
-                          deepCopyArray->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({7, 94}),
-                          deepCopyArray->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({8, 23}),
-                          deepCopyArray->at< std::uint32_t >({8, 23}));
-    CPPUNIT_ASSERT_EQUAL( true, deepCopyArray->getIsBufferOwner());
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({0, 0}),
+        deepCopyArray->at<std::uint32_t>({0, 0})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({0, 1}),
+        deepCopyArray->at<std::uint32_t>({0, 1})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({9, 99}),
+        deepCopyArray->at<std::uint32_t>({9, 99})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({6, 32}),
+        deepCopyArray->at<std::uint32_t>({6, 32})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({7, 94}),
+        deepCopyArray->at<std::uint32_t>({7, 94})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({8, 23}),
+        deepCopyArray->at<std::uint32_t>({8, 23})
+    );
+    CPPUNIT_ASSERT_EQUAL(true, deepCopyArray->getIsBufferOwner());
 
     data::Array::csptr deepCopyArray2 = data::Object::copy(array);
     auto deepCopyArrayLock2           = deepCopyArray->lock();
 
-    CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
     CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 0}),
-                          deepCopyArray->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({0, 1}),
-                          deepCopyArray->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({9, 99}),
-                          deepCopyArray->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({6, 32}),
-                          deepCopyArray->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({7, 94}),
-                          deepCopyArray->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL( array->at< std::uint32_t >({8, 23}),
-                          deepCopyArray->at< std::uint32_t >({8, 23}));
-    CPPUNIT_ASSERT_EQUAL( true, deepCopyArray->getIsBufferOwner());
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({0, 0}),
+        deepCopyArray->at<std::uint32_t>({0, 0})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({0, 1}),
+        deepCopyArray->at<std::uint32_t>({0, 1})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({9, 99}),
+        deepCopyArray->at<std::uint32_t>({9, 99})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({6, 32}),
+        deepCopyArray->at<std::uint32_t>({6, 32})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({7, 94}),
+        deepCopyArray->at<std::uint32_t>({7, 94})
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        array->at<std::uint32_t>({8, 23}),
+        deepCopyArray->at<std::uint32_t>({8, 23})
+    );
+    CPPUNIT_ASSERT_EQUAL(true, deepCopyArray->getIsBufferOwner());
 }
 
 //-----------------------------------------------------------------------------
@@ -456,7 +481,7 @@ void ArrayTest::bufferAccessTest()
     data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
     data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
 
-    for (; iter != iterEnd; ++iter)
+    for( ; iter != iterEnd ; ++iter)
     {
         *iter = count++;
     }
@@ -492,6 +517,7 @@ void ArrayTest::bufferAccessTest()
             CPPUNIT_ASSERT_NO_THROW(++itr);
             ++val;
         }
+
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), val);
     }
     {
@@ -532,7 +558,7 @@ void ArrayTest::constArrayTest()
 
     std::uint32_t count                       = 0;
     data::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
-    for (; iter != array->end<std::uint32_t>(); ++iter)
+    for( ; iter != array->end<std::uint32_t>() ; ++iter)
     {
         *iter = count++;
     }
@@ -540,22 +566,22 @@ void ArrayTest::constArrayTest()
     data::Array::csptr array2 = data::Object::copy(array);
     const auto lock2          = array2->lock();
 
-    CPPUNIT_ASSERT_EQUAL(  static_cast<size_t>(4*10*100), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(0), array->at< std::uint32_t >(0));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(10), array->at< std::uint32_t >(10));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(999), array->at< std::uint32_t >(999));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(326), array->at< std::uint32_t >(326));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(947), array->at< std::uint32_t >({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(  static_cast<std::uint32_t>(238), array->at< std::uint32_t >({8, 23}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 10 * 100), array->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>(0));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>(10));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>(999));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>(326));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 
-    auto it1        = array->begin< std::uint32_t >();
-    auto it2        = array2->begin< std::uint32_t >();
-    const auto end1 = array->end< std::uint32_t >();
-    const auto end2 = array2->end< std::uint32_t >();
+    auto it1        = array->begin<std::uint32_t>();
+    auto it2        = array2->begin<std::uint32_t>();
+    const auto end1 = array->end<std::uint32_t>();
+    const auto end2 = array2->end<std::uint32_t>();
 
     while(it1 != end1 && it2 != end2)
     {
@@ -577,7 +603,7 @@ void ArrayTest::emptyIteratorTest()
     data::Array::Iterator<std::uint32_t> iterForFilling = array->begin<std::uint32_t>();
     const auto end                                      = array->end<std::uint32_t>();
 
-    for (; iterForFilling != end; ++iterForFilling)
+    for( ; iterForFilling != end ; ++iterForFilling)
     {
         *iterForFilling = count++;
     }
@@ -587,19 +613,20 @@ void ArrayTest::emptyIteratorTest()
     data::Array::Iterator<std::uint32_t> maxIter;
 
     std::uint32_t maxValue = *iter;
-    for (; iter != end; ++iter)
+    for( ; iter != end ; ++iter)
     {
-        if (*iter > maxValue)
+        if(*iter > maxValue)
         {
             maxIter  = iter;
             maxValue = *iter;
         }
     }
-    CPPUNIT_ASSERT_EQUAL(*maxIter, count-1);
 
+    CPPUNIT_ASSERT_EQUAL(*maxIter, count - 1);
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

@@ -30,12 +30,14 @@
 
 namespace sight::viz::qt3d
 {
+
 namespace registry
 {
 
-#define fwRenderQt3DRegisterMacro( Qt3DRenderInteractorMngClassname, FunctorKey )                               \
-    static sight::viz::qt3d::IWindowInteractor::Registry< Qt3DRenderInteractorMngClassname >    \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
+#define fwRenderQt3DRegisterMacro(Qt3DRenderInteractorMngClassname, FunctorKey) \
+    static sight::viz::qt3d::IWindowInteractor::Registry<Qt3DRenderInteractorMngClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace registry.
+
 } // namespace sight::viz::qt3d.

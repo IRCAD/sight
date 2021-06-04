@@ -89,7 +89,7 @@ public:
     {
     }
 
-    SIGHT_DECLARE_SERVICE(SSeriesDBReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SSeriesDBReader, sight::io::base::service::IReader);
 
     /**
      * @brief Configure the vtk file path.

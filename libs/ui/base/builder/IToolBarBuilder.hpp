@@ -41,7 +41,8 @@ namespace builder
 class UI_BASE_CLASS_API IToolBarBuilder : public ui::base::GuiBaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(IToolBarBuilder, ui::base::GuiBaseObject)
+
+    SIGHT_DECLARE_CLASS(IToolBarBuilder, ui::base::GuiBaseObject);
 
     typedef std::string RegistryKeyType;
 
@@ -80,14 +81,14 @@ public:
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
-    UI_BASE_API virtual void initialize( core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief Instantiate layout with parent toolBar.
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    UI_BASE_API virtual void createToolBar( ui::base::container::fwContainer::sptr parent ) = 0;
+    UI_BASE_API virtual void createToolBar(ui::base::container::fwContainer::sptr parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -100,14 +101,14 @@ protected:
     /// ToolBar.
     ui::base::container::fwToolBar::sptr m_toolBar;
 
-    std::pair< int, int > m_toolBitmapSize;
+    std::pair<int, int> m_toolBitmapSize;
 
     Alignment m_alignment;
 
     /// Background color. Use an empty string to use the default background color, else, set an hexadecimal value.
     std::string m_backgroundColor;
-
 };
 
 } // namespace builder
+
 } // namespace sight::ui::base

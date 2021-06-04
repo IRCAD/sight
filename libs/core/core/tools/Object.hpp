@@ -36,7 +36,7 @@ class CORE_CLASS_API Object : public core::BaseObject,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Object, core::BaseObject)
+    SIGHT_DECLARE_CLASS(Object, core::BaseObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default copy constructors and assignment operators

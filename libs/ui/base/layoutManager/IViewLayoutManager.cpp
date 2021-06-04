@@ -30,6 +30,7 @@
 
 namespace sight::ui::base
 {
+
 namespace layoutManager
 {
 
@@ -49,16 +50,17 @@ IViewLayoutManager::~IViewLayoutManager()
 
 void IViewLayoutManager::destroySubViews()
 {
-    for( ui::base::container::fwContainer::sptr container :  m_subViews)
+    for(ui::base::container::fwContainer::sptr container : m_subViews)
     {
         container->destroyContainer();
     }
+
     m_subViews.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< ui::base::container::fwContainer::sptr > IViewLayoutManager::getSubViews()
+std::vector<ui::base::container::fwContainer::sptr> IViewLayoutManager::getSubViews()
 {
     return this->m_subViews;
 }
@@ -66,4 +68,5 @@ std::vector< ui::base::container::fwContainer::sptr > IViewLayoutManager::getSub
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

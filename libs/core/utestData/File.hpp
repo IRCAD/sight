@@ -34,9 +34,11 @@ namespace sight::utestData
 class UTESTDATA_CLASS_API File
 {
 public:
-    UTESTDATA_API static bool contentEquals(const std::filesystem::path& lfile,
-                                            const std::filesystem::path& rfile);
 
+    UTESTDATA_API static bool contentEquals(
+        const std::filesystem::path& lfile,
+        const std::filesystem::path& rfile
+    );
 };
 
 } // namespace sight::utestData

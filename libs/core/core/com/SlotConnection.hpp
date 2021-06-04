@@ -30,48 +30,49 @@
 namespace sight::core::com
 {
 
-template < typename F >
+template<typename F>
 struct Signal;
 
-template < typename F >
+template<typename F>
 struct SlotConnection;
 
 /**
  * @brief Slot connection implementation.
  * This class is for internal use purpose.
  */
-template < typename ... A >
-struct CORE_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
+template<typename ... A>
+struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef void SignatureType ( A ... );
-    typedef SlotConnection< SignatureType > SelfType;
+    typedef void SignatureType(A ...);
+    typedef SlotConnection<SignatureType> SelfType;
 
-    typedef SPTR ( SelfType ) sptr;
+    typedef SPTR(SelfType) sptr;
 
-    typedef Signal< SignatureType > SignalType;
-    typedef SPTR ( SignalType )      SignalSptrType;
-    typedef WPTR ( SignalType )      SignalWptrType;
+    typedef Signal<SignatureType> SignalType;
+    typedef SPTR(SignalType)      SignalSptrType;
+    typedef WPTR(SignalType)      SignalWptrType;
 
-    typedef SlotRun< SignatureType > SlotWrapperType;
-    typedef SPTR ( SlotWrapperType )  SlotWrapperSptrType;
+    typedef SlotRun<SignatureType> SlotWrapperType;
+    typedef SPTR(SlotWrapperType)  SlotWrapperSptrType;
 
-    typedef SlotRun< SignatureType > SlotRunType;
-    typedef SPTR ( SlotRunType )      SlotRunSptrType;
+    typedef SlotRun<SignatureType> SlotRunType;
+    typedef SPTR(SlotRunType)      SlotRunSptrType;
 
-    typedef std::pair< bool, SlotRunType* > PairType;
+    typedef std::pair<bool, SlotRunType*> PairType;
     /**  @} */
 
     /// Build a new connection with the given signal and slot.
-    static sptr New( const SignalSptrType& signal, const SlotRunSptrType& slot );
+    static sptr New(const SignalSptrType& signal, const SlotRunSptrType& slot);
 
     /// Build a new connection with the given signal, slot and wrapper.
-    static sptr New( const SignalSptrType& signal,
-                     const SPTR( SlotBase )& slot,
-                     const SlotWrapperSptrType& slotWrapper
-                     );
+    static sptr New(
+        const SignalSptrType& signal,
+        const SPTR(SlotBase)& slot,
+        const SlotWrapperSptrType& slotWrapper
+    );
 
     /// Disconnect the related slot.
     void disconnect();
@@ -79,17 +80,18 @@ struct CORE_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
     ~SlotConnection();
 
     /// Build a new connection with the given signal and slot.
-    SlotConnection( const SignalSptrType& signal, const SlotRunSptrType& slot );
+    SlotConnection(const SignalSptrType& signal, const SlotRunSptrType& slot);
 
     /// Build a new connection with the given signal, slot and wrapper.
-    SlotConnection( const SignalSptrType& signal,
-                    const SPTR( SlotBase )& slot,
-                    const SlotWrapperSptrType& slotWrapper
-                    );
+    SlotConnection(
+        const SignalSptrType& signal,
+        const SPTR(SlotBase)& slot,
+        const SlotWrapperSptrType& slotWrapper
+    );
 
     protected:
 
-        template < typename F >
+        template<typename F>
         friend struct Signal;
 
         /// Connect the related Signal and Slot together.
@@ -99,7 +101,7 @@ struct CORE_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
         void disconnectSignalNoLock(const SignalSptrType& sig);
 
         /// *NOT THREAD SAFE* Disconnect the related slot.
-        void disconnectSlotNoLock(const SPTR( SlotBase )& slot);
+        void disconnectSlotNoLock(const SPTR(SlotBase)& slot);
 
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
         void disconnectWeakLock();
@@ -117,7 +119,7 @@ struct CORE_CLASS_API SlotConnection< void (A ...) > : SlotConnectionBase
         SignalWptrType m_signal;
 
         /// Related Slot.
-        WPTR( SlotBase ) m_connectedSlot;
+        WPTR(SlotBase) m_connectedSlot;
 
         /// Slot wrapper.
         SlotWrapperSptrType m_slotWrapper;

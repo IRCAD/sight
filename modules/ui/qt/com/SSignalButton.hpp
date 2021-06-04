@@ -89,13 +89,12 @@ namespace com
 class MODULE_UI_QT_CLASS_API SSignalButton : public QObject,
                                              public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSignalButton, ::sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSignalButton, ::sight::ui::base::IEditor);
 
     /// Creates signals and slots.
     MODULE_UI_QT_API SSignalButton() noexcept;
@@ -152,22 +151,22 @@ private:
     /// SLOT: hides he button.
     void hide();
 
-    typedef core::com::Signal< void () > ClickedSignalType;
+    typedef core::com::Signal<void ()> ClickedSignalType;
     /// Contains the signal emitted when button is clicked.
-    ClickedSignalType::sptr m_sigClicked { nullptr };
+    ClickedSignalType::sptr m_sigClicked {nullptr};
 
-    typedef core::com::Signal< void (bool) > ToggledSignalType;
+    typedef core::com::Signal<void (bool)> ToggledSignalType;
     /// Contains the signal emitted when button is checked/unchecked
-    ToggledSignalType::sptr m_sigToggled { nullptr };
+    ToggledSignalType::sptr m_sigToggled {nullptr};
 
     /// Contains the button
-    QPointer <QPushButton> m_button { nullptr };
+    QPointer<QPushButton> m_button {nullptr};
 
     /// Defines the button's text.
-    std::string m_text { "" };
+    std::string m_text {""};
 
     /// Defines the button's text when it is checked.
-    std::string m_text2 { "" };
+    std::string m_text2 {""};
 
     /// Defines the path of the button's icon.
     std::filesystem::path m_icon;
@@ -176,24 +175,24 @@ private:
     std::filesystem::path m_icon2;
 
     /// Defines if the button is checkable.
-    bool m_checkable { false };
+    bool m_checkable {false};
 
     /// Defines if the button is executable.
-    bool m_executable { true };
+    bool m_executable {true};
 
     /// Defines if the button is checked at start.
-    bool m_checkAtStart { false };
+    bool m_checkAtStart {false};
 
     /// Defines the icon width.
-    unsigned m_iconWidth { 0 };
+    unsigned m_iconWidth {0};
 
     /// Defines the icon height.
-    unsigned m_iconHeight { 0 };
+    unsigned m_iconHeight {0};
 
     /// Defines the button tooltip.
-    std::string m_toolTip { "" };
-
+    std::string m_toolTip {""};
 };
 
 } // namespace com.
+
 } // namespace sight::module::ui::base.

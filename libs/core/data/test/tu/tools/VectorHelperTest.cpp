@@ -27,14 +27,15 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <data/String.hpp>
 #include <data/helper/Vector.hpp>
+#include <data/String.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::tools::ut::VectorHelperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::VectorHelperTest);
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
@@ -70,7 +71,7 @@ void VectorHelperTest::testHelper()
     std::condition_variable condition;
 
     data::Vector::ContainerType addedVectors;
-    std::function<void ( data::Vector::ContainerType)> fnAdd =
+    std::function<void(data::Vector::ContainerType)> fnAdd =
         [&](data::Vector::ContainerType f)
         {
             {
@@ -81,15 +82,15 @@ void VectorHelperTest::testHelper()
             condition.notify_one();
         };
 
-    auto slotAdded = core::com::newSlot( fnAdd );
+    auto slotAdded = core::com::newSlot(fnAdd);
     slotAdded->setWorker(worker);
-    auto sigAdded = vector->signal< data::Vector::AddedObjectsSignalType>(data::Vector::s_ADDED_OBJECTS_SIG);
+    auto sigAdded = vector->signal<data::Vector::AddedObjectsSignalType>(data::Vector::s_ADDED_OBJECTS_SIG);
     sigAdded->connect(slotAdded);
 
     unsigned int numRemovedNotif = 0;
     data::Vector::ContainerType removedVectors;
 
-    std::function<void ( data::Vector::ContainerType)> fnRemove =
+    std::function<void(data::Vector::ContainerType)> fnRemove =
         [&](data::Vector::ContainerType f)
         {
             {
@@ -99,13 +100,14 @@ void VectorHelperTest::testHelper()
             }
             condition.notify_one();
         };
-    auto slotRemoved = core::com::newSlot( fnRemove );
+    auto slotRemoved = core::com::newSlot(fnRemove);
     slotRemoved->setWorker(worker);
-    auto sigRemoved = vector->signal< data::Vector::RemovedObjectsSignalType>(
-        data::Vector::s_REMOVED_OBJECTS_SIG);
+    auto sigRemoved = vector->signal<data::Vector::RemovedObjectsSignalType>(
+        data::Vector::s_REMOVED_OBJECTS_SIG
+    );
     sigRemoved->connect(slotRemoved);
 
-    auto clearArrays = [&]() { addedVectors.clear(); removedVectors.clear(); };
+    auto clearArrays = [&](){addedVectors.clear(); removedVectors.clear();};
 
     {
         // Test add()
@@ -119,7 +121,7 @@ void VectorHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numAddedNotif == 1; });
+        condition.wait(lock, [&]{return numAddedNotif == 1;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(2), addedVectors.size());
         CPPUNIT_ASSERT_EQUAL(size_t(0), removedVectors.size());
@@ -143,7 +145,7 @@ void VectorHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numAddedNotif == 2; });
+        condition.wait(lock, [&]{return numAddedNotif == 2;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(1), addedVectors.size());
         CPPUNIT_ASSERT_EQUAL(size_t(0), removedVectors.size());
@@ -165,7 +167,7 @@ void VectorHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numRemovedNotif == 1; });
+        condition.wait(lock, [&]{return numRemovedNotif == 1;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(0), addedVectors.size());
         CPPUNIT_ASSERT_EQUAL(size_t(2), removedVectors.size());
@@ -189,7 +191,7 @@ void VectorHelperTest::testHelper()
     {
         // Check notification
         std::unique_lock<std::mutex> lock(mutex);
-        condition.wait(lock, [&] { return numAddedNotif == 3 && numRemovedNotif == 2; });
+        condition.wait(lock, [&]{return numAddedNotif == 3 && numRemovedNotif == 2;});
 
         CPPUNIT_ASSERT_EQUAL(size_t(1), addedVectors.size());
         CPPUNIT_ASSERT_EQUAL(size_t(2), removedVectors.size());
@@ -205,4 +207,5 @@ void VectorHelperTest::testHelper()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data::tools

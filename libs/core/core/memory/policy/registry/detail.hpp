@@ -23,9 +23,8 @@
 #pragma once
 
 #include "core/config.hpp"
-
-#include <core/macros.hpp>
 #include <core/FactoryRegistry.hpp>
+#include <core/macros.hpp>
 
 #include <string>
 
@@ -36,15 +35,18 @@ class IPolicy;
 
 namespace policy
 {
+
 namespace registry
 {
 
 typedef std::string KeyType;
 
-typedef core::FactoryRegistry< SPTR(core::memory::IPolicy) (), KeyType > Type;
+typedef core::FactoryRegistry<SPTR(core::memory::IPolicy)(), KeyType> Type;
 
 CORE_API SPTR(Type) get();
 
 } // namespace registry
+
 } // namespace policy
+
 } // namespace sight::core::memory

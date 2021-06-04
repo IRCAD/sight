@@ -46,7 +46,6 @@ namespace extension
  */
 class SERVICE_CLASS_API Factory : public core::BaseObject
 {
-
 public:
 
     typedef std::string KeyType;
@@ -54,39 +53,47 @@ public:
     typedef std::pair<std::string, std::string> StringPair;
 
     /// We keep boost here because std implementation does not support a pair of std::string as key
-    typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
-    typedef std::function< SPTR(service::IService)() > FactoryType;
+    typedef ::boost::unordered_map<StringPair, bool> SupportMapType;
+    typedef std::function<SPTR(service::IService)()> FactoryType;
 
-    SIGHT_DECLARE_CLASS(Factory, core::BaseObject, new Factory)
+    SIGHT_DECLARE_CLASS(Factory, core::BaseObject, new Factory);
 
     /// Return the unique Instance, create it if required at first access
     SERVICE_API static Factory::sptr getDefault();
 
     /// Parse module information to retrieve service declaration
-    SERVICE_API void parseBundleInformation( );
+    SERVICE_API void parseBundleInformation();
 
-    SERVICE_API void addServiceFactory( FactoryType _factory,
-                                        const std::string& simpl,
-                                        const std::string& stype);
+    SERVICE_API void addServiceFactory(
+        FactoryType _factory,
+        const std::string& simpl,
+        const std::string& stype
+    );
 
-    SERVICE_API void addObjectFactory( const std::string& simpl,
-                                       const std::string& oimpl);
+    SERVICE_API void addObjectFactory(
+        const std::string& simpl,
+        const std::string& oimpl
+    );
 
     /// Create a service from a factory type
-    SERVICE_API SPTR(IService) create( const std::string& _srvImpl ) const;
+    SERVICE_API SPTR(IService) create(const std::string& _srvImpl) const;
 
     /// Create a service from a factory type and verify that it is an inherited type of _srvType
-    SERVICE_API SPTR(IService) create( const std::string& _srvType, const std::string& _srvImpl ) const;
+    SERVICE_API SPTR(IService) create(const std::string& _srvType, const std::string& _srvImpl) const;
 
     SERVICE_API void clearFactory();
 
     /// return a vector of service implementation
-    SERVICE_API std::vector< std::string > getImplementationIdFromObjectAndType(const std::string& _object,
-                                                                                const std::string& _type) const;
+    SERVICE_API std::vector<std::string> getImplementationIdFromObjectAndType(
+        const std::string& _object,
+        const std::string& _type
+    ) const;
 
     /// return the default service implementation for an object
-    SERVICE_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& _object,
-                                                                         const std::string& _type ) const;
+    SERVICE_API std::string getDefaultImplementationIdFromObjectAndType(
+        const std::string& _object,
+        const std::string& _type
+    ) const;
 
     /// return the objects registered for a given service.
     SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& _srvImpl) const;
@@ -110,8 +117,11 @@ public:
      * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
      * @return true if service type supported
      */
-    SERVICE_API bool support(const std::string& _object, const std::string& _srvType,
-                             const std::string& _srvImpl) const;
+    SERVICE_API bool support(
+        const std::string& _object,
+        const std::string& _srvType,
+        const std::string& _srvImpl
+    ) const;
 
     /**
      * @brief returns the registered factory keys.
@@ -126,17 +136,17 @@ private:
         std::vector<std::string> objectImpl;
         std::string desc;
         std::string tags;
-        std::shared_ptr< core::runtime::Module > module;
+        std::shared_ptr<core::runtime::Module> module;
         FactoryType factory;
         bool objectsSetFromModule {false}; // True if the objects implementation are set from the module information
     };
-    typedef std::unordered_map< KeyType, ServiceInfo > SrvRegContainer;
+    typedef std::unordered_map<KeyType, ServiceInfo> SrvRegContainer;
 
     /**
      * @brief print services informations
      * @warning not thread-safe
      */
-    void printInfoMap( const SrvRegContainer& src ) const;
+    void printInfoMap(const SrvRegContainer& src) const;
 
     /**
      * @brief Trace services not declared in plugin.xml
@@ -153,4 +163,5 @@ private:
 };
 
 } // namespace extension
+
 } // namespace sight::service

@@ -24,6 +24,7 @@
 
 namespace sight::io::itk
 {
+
 namespace helper
 {
 
@@ -33,9 +34,9 @@ Transform::MatrixType Transform::convertToITK(const data::Matrix4::csptr& _inTrf
 {
     MatrixType itkMat;
 
-    for(std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             itkMat(i, j) = _inTrf->getCoefficient(i, j);
         }
@@ -50,9 +51,9 @@ void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _o
 {
     SIGHT_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
 
-    for(std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             _outTrf->setCoefficient(i, j, _inTrf(i, j));
         }
@@ -61,5 +62,6 @@ void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _o
 
 //-----------------------------------------------------------------------------
 
-}// namespace helper
-}// namespace sight::io::itk
+} // namespace helper
+
+} // namespace sight::io::itk

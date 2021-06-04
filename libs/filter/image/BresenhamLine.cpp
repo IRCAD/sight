@@ -29,8 +29,11 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-BresenhamLine::PathType BresenhamLine::draw(const data::helper::MedicalImage::Orientation orientation,
-                                            const CoordinatesType& startCoord, const CoordinatesType& endCoord)
+BresenhamLine::PathType BresenhamLine::draw(
+    const data::helper::MedicalImage::Orientation orientation,
+    const CoordinatesType& startCoord,
+    const CoordinatesType& endCoord
+)
 {
     size_t dim0 = 0, dim1 = 1;
 
@@ -40,10 +43,12 @@ BresenhamLine::PathType BresenhamLine::draw(const data::helper::MedicalImage::Or
             dim0 = 1;
             dim1 = 2;
             break;
+
         case data::helper::MedicalImage::Y_AXIS:
             dim0 = 0;
             dim1 = 2;
             break;
+
         case data::helper::MedicalImage::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
@@ -56,9 +61,11 @@ BresenhamLine::PathType BresenhamLine::draw(const data::helper::MedicalImage::Or
     const CoordinatesType::value_type endY   = endCoord[dim1];
 
     const std::int64_t dx = std::abs(
-        static_cast< std::int64_t >(endX) - static_cast< std::int64_t >(beginX));
+        static_cast<std::int64_t>(endX) - static_cast<std::int64_t>(beginX)
+    );
     const std::int64_t dy = std::abs(
-        static_cast< std::int64_t >(endY) - static_cast< std::int64_t >(beginY));
+        static_cast<std::int64_t>(endY) - static_cast<std::int64_t>(beginY)
+    );
 
     const int sx = (endX < beginX) ? -1 : 1;
     const int sy = (endY < beginY) ? -1 : 1;
@@ -79,12 +86,13 @@ BresenhamLine::PathType BresenhamLine::draw(const data::helper::MedicalImage::Or
         std::int64_t cx       = static_cast<std::int64_t>(currentCoord[dim0]);
         std::int64_t cy       = static_cast<std::int64_t>(currentCoord[dim1]);
 
-        if(e2 > -static_cast< std::int64_t >(dy))
+        if(e2 > -static_cast<std::int64_t>(dy))
         {
             e  -= dy;
             cx += sx;
         }
-        if(e2 < static_cast< std::int64_t >(dx))
+
+        if(e2 < static_cast<std::int64_t>(dx))
         {
             e  += dx;
             cy += sy;

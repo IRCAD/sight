@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace modifier
 {
 
@@ -38,7 +39,8 @@ namespace modifier
 class FILTER_DICOM_CLASS_API IModifier : public filter::dicom::IFilter
 {
 public:
-    SIGHT_DECLARE_CLASS(IModifier, filter::dicom::IFilter)
+
+    SIGHT_DECLARE_CLASS(IModifier, filter::dicom::IFilter);
 
     /// Destructor
     FILTER_DICOM_API virtual ~IModifier();
@@ -47,10 +49,11 @@ public:
     FILTER_DICOM_API FilterType getFilterType() const override;
 
 protected:
+
     /// Constructor
     FILTER_DICOM_API IModifier();
-
 };
 
 } // namespace modifier
+
 } // namespace sight::filter::dicom

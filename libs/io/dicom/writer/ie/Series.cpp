@@ -36,21 +36,25 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Series::Series(const SPTR(::gdcm::Writer)& writer,
-               const SPTR(io::dicom::container::DicomInstance)& instance,
-               const data::Series::csptr& series,
-               const core::log::Logger::sptr& logger,
-               ProgressCallback progress,
-               CancelRequestedCallback cancel) :
-    io::dicom::writer::ie::InformationEntity< data::Series>(writer, instance, series,
-                                                            logger, progress, cancel)
+Series::Series(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const data::Series::csptr& series,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::writer::ie::InformationEntity<data::Series>(writer, instance, series,
+                                                           logger, progress, cancel)
 {
 }
 
@@ -83,12 +87,12 @@ void Series::writeGeneralSeriesModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0060>(m_object->getLaterality(), dataset);
 
     ::boost::posix_time::ptime ptime = ::boost::posix_time::second_clock::local_time();
-    const std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
+    const std::string fulldate       = ::boost::posix_time::to_iso_string(ptime);
     // Split iso time in YYYYMMDDTHHMMSS
     ::boost::char_separator<char> sep("T");
     ::boost::tokenizer< ::boost::char_separator<char> > tokens(fulldate, sep);
     ::boost::tokenizer< ::boost::char_separator<char> >::iterator tok_iter = tokens.begin();
-    const std::string date = *tok_iter;
+    const std::string date                                                 = *tok_iter;
     tok_iter++;
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0021>(date, dataset);
 
@@ -97,16 +101,20 @@ void Series::writeGeneralSeriesModule()
 
     // Performing physicians name - Type 3
     data::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
-    if (!performingPhysicians.empty())
+    if(!performingPhysicians.empty())
     {
         ::gdcm::String<>* physicians = new ::gdcm::String<>[performingPhysicians.size()];
-        unsigned int count = 0;
-        for(std::string physician: performingPhysicians)
+        unsigned int count           = 0;
+        for(std::string physician : performingPhysicians)
         {
             physicians[count++] = ::gdcm::String<>(physician);
         }
-        io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x1050>(physicians, count,
-                                                                                            dataset);
+
+        io::dicom::helper::DicomDataWriter::setTagValues< ::gdcm::String<>, 0x0008, 0x1050>(
+            physicians,
+            count,
+            dataset
+        );
     }
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1030>(m_object->getProtocolName(), dataset);
@@ -116,21 +124,37 @@ void Series::writeGeneralSeriesModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x0015>(m_object->getBodyPartExamined(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x5100>(m_object->getPatientPosition(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x2210>(
-        m_object->getAnatomicalOrientationType(), dataset);
+        m_object->getAnatomicalOrientationType(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0253>(
-        m_object->getPerformedProcedureStepID(), dataset);
+        m_object->getPerformedProcedureStepID(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0244>(
-        m_object->getPerformedProcedureStepStartDate(), dataset);
+        m_object->getPerformedProcedureStepStartDate(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0245>(
-        m_object->getPerformedProcedureStepStartTime(), dataset);
+        m_object->getPerformedProcedureStepStartTime(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0250>(
-        m_object->getPerformedProcedureStepEndDate(), dataset);
+        m_object->getPerformedProcedureStepEndDate(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0251>(
-        m_object->getPerformedProcedureStepEndTime(), dataset);
+        m_object->getPerformedProcedureStepEndTime(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0254>(
-        m_object->getPerformedProcedureStepDescription(), dataset);
+        m_object->getPerformedProcedureStepDescription(),
+        dataset
+    );
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0280>(
-        m_object->getPerformedProcedureComments(), dataset);
+        m_object->getPerformedProcedureComments(),
+        dataset
+    );
 
     const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(m_object);
     if(imageSeries)
@@ -142,23 +166,27 @@ void Series::writeGeneralSeriesModule()
             io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1041>
                 (std::stoi(imageSeries->getContrastVolume()), dataset);
         }
+
         io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1042>(imageSeries->getContrastStartTime(), dataset);
         io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1043>(imageSeries->getContrastStopTime(), dataset);
         if(!imageSeries->getContrastTotalDose().empty())
         {
             io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1044>
-                (std::stoi(imageSeries->getContrastTotalDose()),  dataset);
+                (std::stoi(imageSeries->getContrastTotalDose()), dataset);
         }
+
         if(!imageSeries->getContrastFlowRate().empty())
         {
             io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1046>
                 (std::stoi(imageSeries->getContrastFlowRate()), dataset);
         }
+
         if(!imageSeries->getContrastFlowDuration().empty())
         {
             io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1047>
                 (std::stoi(imageSeries->getContrastFlowDuration()), dataset);
         }
+
         io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1048>
             (imageSeries->getContrastIngredient(), dataset);
         if(!imageSeries->getContrastIngredientConcentration().empty())
@@ -166,6 +194,7 @@ void Series::writeGeneralSeriesModule()
             io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1049>
                 (std::stoi(imageSeries->getContrastIngredientConcentration()), dataset);
         }
+
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0022>(imageSeries->getAcquisitionDate(), dataset);
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0032>(imageSeries->getAcquisitionTime(), dataset);
     }
@@ -202,7 +231,7 @@ void Series::writeSRDocumentSeriesModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
     // Serie's number - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011>(0, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>(0, dataset);
 
     // Referenced Performed Procedure Step Sequence  - Type 2
     io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0008, 0x1111>(dataset);
@@ -225,11 +254,12 @@ void Series::writeSpatialFiducialsSeriesModule()
     // Series's modality - Type 1
     dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("FID", dataset);
-
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

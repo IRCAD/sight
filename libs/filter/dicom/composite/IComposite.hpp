@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace composite
 {
 
@@ -38,9 +39,10 @@ namespace composite
 class FILTER_DICOM_CLASS_API IComposite : public filter::dicom::IFilter
 {
 public:
-    SIGHT_DECLARE_CLASS(IComposite, filter::dicom::IFilter)
 
-    typedef std::vector< filter::dicom::IFilter::sptr > FilterContainerType;
+    SIGHT_DECLARE_CLASS(IComposite, filter::dicom::IFilter);
+
+    typedef std::vector<filter::dicom::IFilter::sptr> FilterContainerType;
 
     /// Destructor
     FILTER_DICOM_API virtual ~IComposite();
@@ -50,7 +52,9 @@ public:
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series,
+        const core::log::Logger::sptr& logger
+    ) const override;
 
     /**
      * @brief Apply every filters without throwing any exceptions.
@@ -58,27 +62,32 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FILTER_DICOM_API DicomSeriesContainerType forcedApply(
-        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const;
+        const data::DicomSeries::sptr& series,
+        const core::log::Logger::sptr& logger
+    ) const;
 
     /// Add a filter to the composite
     FILTER_DICOM_API void addChild(
-        const filter::dicom::IFilter::sptr& filter);
+        const filter::dicom::IFilter::sptr& filter
+    );
 
     /// Remove a filter from the composite
     FILTER_DICOM_API void removeChild(
-        const filter::dicom::IFilter::sptr& filter);
+        const filter::dicom::IFilter::sptr& filter
+    );
 
     /// Return composite container
     FILTER_DICOM_API FilterContainerType& getChildren();
 
 protected:
+
     /// Constructor
     FILTER_DICOM_API IComposite();
 
     /// Filter container
     FilterContainerType m_filterContainer;
-
 };
 
 } // namespace composite
+
 } // namespace sight::filter::dicom

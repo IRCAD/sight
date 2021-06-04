@@ -26,19 +26,21 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace ut
 {
 
 /// Test the ContainOneSkin validator
 class ContainOneSkinTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ContainOneSkinTest );
-CPPUNIT_TEST( testValidator );
-CPPUNIT_TEST( testValidatorWithVector );
-CPPUNIT_TEST( testValidatorWithComposite );
+CPPUNIT_TEST_SUITE(ContainOneSkinTest);
+CPPUNIT_TEST(testValidator);
+CPPUNIT_TEST(testValidatorWithVector);
+CPPUNIT_TEST(testValidatorWithComposite);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -49,4 +51,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::module::activity::validator

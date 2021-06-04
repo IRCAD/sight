@@ -39,7 +39,6 @@ namespace ut
 
 GenericSceneTest::GenericSceneTest()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ void GenericSceneTest::initializeEmptyScene()
     CPPUNIT_ASSERT(sceneQml->getRenderSettings() != nullptr);
 
     CPPUNIT_ASSERT_EQUAL(scene->getCameraController()->camera(), scene->getCamera());
-    CPPUNIT_ASSERT_EQUAL(qobject_cast< Qt3DRender::QCamera* >(scene->getFrameGraph()->getCamera()), scene->getCamera());
+    CPPUNIT_ASSERT_EQUAL(qobject_cast<Qt3DRender::QCamera*>(scene->getFrameGraph()->getCamera()), scene->getCamera());
 
     delete scene;
     delete sceneQml;

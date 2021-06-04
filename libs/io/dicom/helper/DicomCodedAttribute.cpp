@@ -26,13 +26,15 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
 //------------------------------------------------------------------------------
 
-DicomCodedAttribute::DicomCodedAttributeVectorType
-DicomCodedAttribute::convertEntryToCodedAttribute(const std::string& entry)
+DicomCodedAttribute::DicomCodedAttributeVectorType DicomCodedAttribute::convertEntryToCodedAttribute(
+    const std::string& entry
+)
 {
     DicomCodedAttributeVectorType result;
 
@@ -102,6 +104,7 @@ bool DicomCodedAttribute::checkAndFormatEntry(std::string& entry, bool multipleV
         {
             entry += attribute;
         }
+
         return true;
     }
 
@@ -111,4 +114,5 @@ bool DicomCodedAttribute::checkAndFormatEntry(std::string& entry, bool multipleV
 //------------------------------------------------------------------------------
 
 } //namespace helper
+
 } //namespace sight::io::dicom

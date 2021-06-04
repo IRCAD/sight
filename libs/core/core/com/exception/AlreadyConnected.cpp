@@ -23,7 +23,6 @@
 #include "core/com/exception/AlreadyConnected.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -32,7 +31,7 @@ namespace sight::core::com
 namespace exception
 {
 
-AlreadyConnected::AlreadyConnected ( const std::string& err ) :
+AlreadyConnected::AlreadyConnected(const std::string& err) :
     core::Exception(err)
 {
 }

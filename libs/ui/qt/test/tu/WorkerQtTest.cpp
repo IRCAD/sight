@@ -22,11 +22,13 @@
 
 #include "WorkerQtTest.hpp"
 
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
-#include <core/thread/ActiveWorkers.hpp>
+#include <ui/qt/App.hpp>
+#include <ui/qt/WorkerQt.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -34,13 +36,10 @@
 #include <QSharedPointer>
 #include <QTimer>
 
-#include <ui/qt/App.hpp>
-#include <ui/qt/WorkerQt.hpp>
-
 #include <functional>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::ui::qt::ut::WorkerQtTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::qt::ut::WorkerQtTest);
 
 namespace sight::ui::qt
 {
@@ -63,7 +62,7 @@ struct TestHandler
 
     void nextStep()
     {
-        std::this_thread::sleep_for( std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         this->nextStepNoSleep();
     }
 
@@ -104,16 +103,16 @@ void WorkerQtTest::setUp()
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [](int& argc, char** argv)
-          {
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+        [](int& argc, char** argv)
+        {
 #if QT_VERSION < 0x050000
-              bool guiEnabled = false;
+            bool guiEnabled = false;
 #else
-              bool guiEnabled = true;
+            bool guiEnabled = true;
 #endif
-              return QSharedPointer< QApplication > (new ui::qt::App(argc, argv, guiEnabled));
-          };
+            return QSharedPointer<QApplication>(new ui::qt::App(argc, argv, guiEnabled));
+        };
     m_worker = ui::qt::getQtWorker(argc, argv, callback, "", "");
 }
 
@@ -146,11 +145,11 @@ void WorkerQtTest::twiceInitTest()
 void runBasicTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     handler.setWorkerId(worker->getThreadId());
-    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
-    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
-    worker->post( std::bind( &TestHandler::nextStep, std::ref(handler)) );
+    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
+    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
+    worker->post(std::bind(&TestHandler::nextStep, std::ref(handler)));
 
-    worker->post( std::bind( &QApplication::quit ) );
+    worker->post(std::bind(&QApplication::quit));
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +177,7 @@ void WorkerQtTest::postFromInsideTest()
 {
     TestHandler handler;
 
-    m_worker->post( std::bind(runBasicTest, std::ref(handler), m_worker) );
+    m_worker->post(std::bind(runBasicTest, std::ref(handler), m_worker));
 
     m_worker->getFuture().wait();
 
@@ -196,7 +195,7 @@ void doNothing()
 void runFromOutsideTest(TestHandler& handler, core::thread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
-    worker->postTask<void>( std::bind( doNothing ) ).wait();
+    worker->postTask<void>(std::bind(doNothing)).wait();
 
     runBasicTest(handler, worker);
 }
@@ -234,9 +233,11 @@ static CppUnit::Exception exception;
 
 //-----------------------------------------------------------------------------
 
-void runBasicTimerTest( TestHandler& handler,
-                        const core::thread::Timer::sptr& timer,
-                        core::thread::Timer::TimeDurationType duration )
+void runBasicTimerTest(
+    TestHandler& handler,
+    const core::thread::Timer::sptr& timer,
+    core::thread::Timer::TimeDurationType duration
+)
 {
     timer->start();
 
@@ -251,11 +252,13 @@ void runBasicTimerTest( TestHandler& handler,
 
 //-----------------------------------------------------------------------------
 
-void oneShotBasicTimerTest(int& i,
-                           TestHandler& handler,
-                           const core::thread::Timer::sptr& timer,
-                           core::thread::Timer::TimeDurationType duration,
-                           const core::thread::Worker::sptr& worker )
+void oneShotBasicTimerTest(
+    int& i,
+    TestHandler& handler,
+    const core::thread::Timer::sptr& timer,
+    core::thread::Timer::TimeDurationType duration,
+    const core::thread::Worker::sptr& worker
+)
 {
     handler.nextStepNoSleep();
 
@@ -278,7 +281,7 @@ void oneShotBasicTimerTest(int& i,
             CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
         }
         QT_TEST_END;
-        worker->post( std::bind( &QApplication::quit ) );
+        worker->post(std::bind(&QApplication::quit));
     }
 }
 
@@ -297,23 +300,29 @@ void WorkerQtTest::basicTimerTest()
     timer->setFunction(
         std::bind(
             &oneShotBasicTimerTest,
-            std::ref(i), handler, std::ref(timer), duration, std::ref(m_worker) )
-        );
+            std::ref(i),
+            handler,
+            std::ref(timer),
+            duration,
+            std::ref(m_worker)
+        )
+    );
     timer->setDuration(duration);
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    m_worker->post( std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration) );
+    m_worker->post(std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration));
 
     core::thread::Worker::FutureType future = m_worker->getFuture();
     future.wait();
 
-    CPPUNIT_ASSERT_EQUAL( 0, std::any_cast<int>( future.get() ) );
+    CPPUNIT_ASSERT_EQUAL(0, std::any_cast<int>(future.get()));
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::ui::qt

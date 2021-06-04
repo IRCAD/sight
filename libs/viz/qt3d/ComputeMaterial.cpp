@@ -60,7 +60,8 @@ ComputeMaterial::ComputeMaterial(Qt3DCore::QNode* _parent) :
 
     //Initialize shader program
     const auto computeShaderPath = sight::core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d/glsl/quadToTriangleMesh_CP.glsl");
+        "viz_qt3d/glsl/quadToTriangleMesh_CP.glsl"
+    );
     const auto source = QUrl::fromLocalFile(QString::fromStdString(computeShaderPath.string()));
     m_computeShader->setComputeShaderCode(Qt3DRender::QShaderProgram::loadSource(source));
 
@@ -130,9 +131,10 @@ void ComputeMaterial::updateFrameGraph(viz::qt3d::core::FrameGraph* _frameGraph,
     }
 
     // Creates a new branch in the framegraph which is child of framegraph's camera selector.
-    _frameGraph->addNode(emptyNode,
-                         qobject_cast<Qt3DRender::QFrameGraphNode*>(_frameGraph->getCameraSelector()->parent()));
-
+    _frameGraph->addNode(
+        emptyNode,
+        qobject_cast<Qt3DRender::QFrameGraphNode*>(_frameGraph->getCameraSelector()->parent())
+    );
 }
 
 } //namespace sight::viz::qt3d

@@ -54,15 +54,15 @@ class MODULE_SYNC_CLASS_API SSignalGate : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSignalGate, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SSignalGate, sight::service::IController);
 
     /**
      * @name Signals API
      * @{
      */
     MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_ALL_RECEIVED_SIG;
-    typedef core::com::Signal< void () > AllReceivedSignalType;
-    typedef core::com::Slot< void () > ReceivedSignalType;
+    typedef core::com::Signal<void ()> AllReceivedSignalType;
+    typedef core::com::Slot<void ()> ReceivedSignalType;
     /** @} */
 
     /// Constructor
@@ -93,7 +93,7 @@ private:
     /// Keep track of received signals
     std::vector<bool> m_flags;
 
-    std::vector< ReceivedSignalType::sptr > m_waitingSlots;
+    std::vector<ReceivedSignalType::sptr> m_waitingSlots;
 
     /// Store all internal signal connections
     core::com::helper::SigSlotConnection m_connections;

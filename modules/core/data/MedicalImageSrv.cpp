@@ -22,11 +22,11 @@
 
 #include "MedicalImageSrv.hpp"
 
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-
-#include <data/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -36,7 +36,6 @@ namespace sight::module::data
 static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 
@@ -55,7 +54,7 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 
 void MedicalImageSrv::convertImage()
 {
-    auto pImg = this->getInOut< sight::data::Image >(s_IMAGE_INOUT);
+    auto pImg = this->getInOut<sight::data::Image>(s_IMAGE_INOUT);
 
     if(sight::data::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
@@ -64,9 +63,9 @@ void MedicalImageSrv::convertImage()
         isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg);
         isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg);
 
-        if (isModified)
+        if(isModified)
         {
-            auto sig = pImg->signal< sight::data::Object::ModifiedSignalType >( sight::data::Object::s_MODIFIED_SIG );
+            auto sig = pImg->signal<sight::data::Object::ModifiedSignalType>(sight::data::Object::s_MODIFIED_SIG);
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         }
     }
@@ -113,7 +112,7 @@ void MedicalImageSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::info( std::ostream& )
+void MedicalImageSrv::info(std::ostream&)
 {
 }
 

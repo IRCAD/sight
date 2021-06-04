@@ -41,7 +41,7 @@ Cursor::~Cursor()
 
 //-----------------------------------------------------------------------------
 
-void Cursor::setCursor( ui::base::ICursor::CursorType cursor)
+void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
 {
     if(m_implementation)
     {

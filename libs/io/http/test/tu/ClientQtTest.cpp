@@ -24,17 +24,18 @@
 
 #include <core/thread/ActiveWorkers.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/http/helper/Series.hpp>
 
 #include <ui/qt/App.hpp>
 #include <ui/qt/WorkerQt.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::http::ut::ClientQtTest );
+#include <utest/Exception.hpp>
+
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::ClientQtTest);
 
 namespace sight::io::http
 {
+
 namespace ut
 {
 
@@ -90,16 +91,16 @@ void ClientQtTest::setUp()
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [](int& argc, char** argv)
-          {
-              return QSharedPointer< QApplication > (new ui::qt::App(argc, argv, false));
-          };
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+        [](int& argc, char** argv)
+        {
+            return QSharedPointer<QApplication>(new ui::qt::App(argc, argv, false));
+        };
     m_worker = ui::qt::getQtWorker(argc, argv, callback, "", "");
 
     m_server.moveToThread(&m_thread);
-    m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });
-    m_thread.connect(&m_thread, &QThread::finished, [ = ] {m_server.close(); });
+    m_thread.connect(&m_thread, &QThread::started, [ = ]{m_server.listen();});
+    m_thread.connect(&m_thread, &QThread::finished, [ = ]{m_server.close();});
 }
 
 //------------------------------------------------------------------------------
@@ -113,7 +114,7 @@ void ClientQtTest::tearDown()
     m_thread.disconnect();
     m_server.disconnect();
 
-    m_worker->post( std::bind( &QCoreApplication::quit ) );
+    m_worker->post(std::bind(&QCoreApplication::quit));
     m_worker->getFuture().wait();
     m_worker.reset();
 
@@ -125,11 +126,14 @@ void ClientQtTest::tearDown()
 
 void ClientQtTest::get()
 {
-    m_server.connect( &m_server, &QTcpServer::newConnection, [ = ]
+    m_server.connect(
+        &m_server,
+        &QTcpServer::newConnection,
+        [ = ]
             {
                 QTcpSocket* socket = m_server.nextPendingConnection();
                 QByteArray data;
-                while( socket->isOpen() && socket->waitForReadyRead() )
+                while(socket->isOpen() && socket->waitForReadyRead())
                 {
                     data += socket->readAll();
 
@@ -138,10 +142,13 @@ void ClientQtTest::get()
                         break;
                     }
                 }
-                socket->write( "HTTP/1.1 200 OK\n"
-                               "Content-Type: application/json; charset=utf-8\n"
-                               "Content-Encoding: gzip\n"
-                               "Content-Length: 156\r\n\r\n" );
+
+                socket->write(
+                    "HTTP/1.1 200 OK\n"
+                    "Content-Type: application/json; charset=utf-8\n"
+                    "Content-Encoding: gzip\n"
+                    "Content-Length: 156\r\n\r\n"
+                );
                 socket->write(reinterpret_cast<char*>(getAnswer), sizeof(getAnswer));
                 socket->waitForBytesWritten();
 
@@ -150,7 +157,7 @@ void ClientQtTest::get()
 
     m_thread.start();
 
-    for(int i = 0; !m_server.isListening() && i < 10; ++i)
+    for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
     {
         QThread::sleep(1);
     }
@@ -176,11 +183,14 @@ void ClientQtTest::get()
 
 void ClientQtTest::post()
 {
-    m_server.connect( &m_server, &QTcpServer::newConnection, [ = ]
+    m_server.connect(
+        &m_server,
+        &QTcpServer::newConnection,
+        [ = ]
             {
                 QTcpSocket* socket = m_server.nextPendingConnection();
                 QByteArray data;
-                while( socket->isOpen() && socket->waitForReadyRead() )
+                while(socket->isOpen() && socket->waitForReadyRead())
                 {
                     data += socket->readAll();
 
@@ -189,7 +199,8 @@ void ClientQtTest::post()
                         break;
                     }
                 }
-                while( socket->isOpen() && socket->waitForReadyRead() )
+
+                while(socket->isOpen() && socket->waitForReadyRead())
                 {
                     data += socket->readAll();
 
@@ -198,10 +209,13 @@ void ClientQtTest::post()
                         break;
                     }
                 }
-                socket->write( "HTTP/1.1 200 OK\n"
-                               "Content-Type: application/json; charset=utf-8\n"
-                               "Content-Encoding: gzip\n"
-                               "Content-Length: 71\r\n\r\n" );
+
+                socket->write(
+                    "HTTP/1.1 200 OK\n"
+                    "Content-Type: application/json; charset=utf-8\n"
+                    "Content-Encoding: gzip\n"
+                    "Content-Length: 71\r\n\r\n"
+                );
                 socket->write(reinterpret_cast<char*>(postAnswer), sizeof(postAnswer));
                 socket->waitForBytesWritten();
 
@@ -210,7 +224,7 @@ void ClientQtTest::post()
 
     m_thread.start();
 
-    for(int i = 0; !m_server.isListening() && i < 10; ++i)
+    for(int i = 0 ; !m_server.isListening() && i < 10 ; ++i)
     {
         QThread::sleep(1);
     }

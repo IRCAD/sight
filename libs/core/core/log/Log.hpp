@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/BaseObject.hpp>
 
 #include <string>
@@ -83,7 +82,6 @@ protected:
 
     /// Log message
     std::string m_message;
-
 }; // class Logger
 
 } // namespace sight::core::log

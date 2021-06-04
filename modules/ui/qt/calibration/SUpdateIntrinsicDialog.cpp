@@ -22,18 +22,19 @@
 
 #include "modules/ui/qt/calibration/SUpdateIntrinsicDialog.hpp"
 
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QObject>
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-
 #include <sstream>
 
 namespace sight::module::ui::qt::calibration
 {
+
 //-----------------------------------------------------------------------------
 
 SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
@@ -128,7 +129,7 @@ SUpdateIntrinsicDialog::~SUpdateIntrinsicDialog()
 
 //-----------------------------------------------------------------------------
 
-void SUpdateIntrinsicDialog::setParameters(std::array< double, 12 >& parameters)
+void SUpdateIntrinsicDialog::setParameters(std::array<double, 12>& parameters)
 {
     m_calibration       = parameters;
     m_originCalibration = parameters;
@@ -151,7 +152,6 @@ void SUpdateIntrinsicDialog::onValidate()
 
 void SUpdateIntrinsicDialog::onPushCompute()
 {
-
     double height = m_height->text().toDouble();
     double width  = m_width->text().toDouble();
 
@@ -161,14 +161,18 @@ void SUpdateIntrinsicDialog::onPushCompute()
     if(std::abs(m_ratio - ratio) > 0.0001)
     {
         sight::ui::base::dialog::MessageDialog::sptr warningMess = sight::ui::base::dialog::MessageDialog::New();
-        warningMess->show("Warning", "The new resolution don't respect the original resolution ratio !"
-                          , sight::ui::base::dialog::IMessageDialog::WARNING);
+        warningMess->show(
+            "Warning",
+            "The new resolution don't respect the original resolution ratio !"
+            ,
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
         return;
     }
 
     //alpha : original resolution / new resolution (!! Ratio should be kept (16/9, 4/3 ...) !!!)
 
-    double alpha = m_originCalibration[1]/ height;
+    double alpha = m_originCalibration[1] / height;
 
     double fx_new, fy_new, cx_new, cy_new, k1_new, k2_new, p1_new, p2_new;
 
@@ -186,10 +190,10 @@ void SUpdateIntrinsicDialog::onPushCompute()
     //    k2_new = k2_old*alpha^4
     //    t1_new = t1_old*alpha^2
     //    t2_new = t2_old*alpha^2
-    k1_new = m_calibration[6]*(alpha*alpha);
-    k2_new = m_calibration[7]*(alpha*alpha*alpha*alpha);
-    p1_new = m_calibration[8]*(alpha*alpha);
-    p2_new = m_calibration[9]*(alpha*alpha);
+    k1_new = m_calibration[6] * (alpha * alpha);
+    k2_new = m_calibration[7] * (alpha * alpha * alpha * alpha);
+    p1_new = m_calibration[8] * (alpha * alpha);
+    p2_new = m_calibration[9] * (alpha * alpha);
 
     m_calibration[0] = width;
     m_calibration[1] = height;
@@ -209,7 +213,7 @@ void SUpdateIntrinsicDialog::onPushCompute()
 
 void SUpdateIntrinsicDialog::onPushReset()
 {
-    for(unsigned int i = 0; i < m_originCalibration.size(); ++i)
+    for(unsigned int i = 0 ; i < m_originCalibration.size() ; ++i)
     {
         m_calibration[i] = m_originCalibration[i];
     }
@@ -223,11 +227,11 @@ void SUpdateIntrinsicDialog::updateInfos()
 {
     std::stringstream out;
 
-    out<<m_calibration[0];
+    out << m_calibration[0];
     m_width->setText(out.str().c_str());
     out.str("");
 
-    out<<m_calibration[1];
+    out << m_calibration[1];
     m_height->setText(out.str().c_str());
     out.str("");
 

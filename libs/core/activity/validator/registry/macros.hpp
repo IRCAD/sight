@@ -29,15 +29,19 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
+
 namespace registry
 {
 
-#define fwActivitiesValidatorRegisterMacro( ValidatorClassname )   \
-    static sight::activity::IValidator::Registry< ValidatorClassname >                \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(ValidatorClassname) );
+#define fwActivitiesValidatorRegisterMacro(ValidatorClassname) \
+    static sight::activity::IValidator::Registry<ValidatorClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(ValidatorClassname));
 
 } // end namespace registry
+
 } // end namespace validator
+
 } // end namespace sight::activity

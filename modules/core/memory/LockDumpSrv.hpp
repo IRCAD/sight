@@ -46,10 +46,9 @@ namespace sight::module::memory
  */
 class MODULE_MEMORY_CLASS_API LockDumpSrv : public service::IController
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(LockDumpSrv, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(LockDumpSrv, sight::service::IController);
 
     /// Constructor. Does nothing
     MODULE_MEMORY_API LockDumpSrv() noexcept;
@@ -72,7 +71,7 @@ protected:
     MODULE_MEMORY_API void updating() override;
 
     /// Does nothing
-    MODULE_MEMORY_API void info( std::ostream& _sstream ) override;
+    MODULE_MEMORY_API void info(std::ostream& _sstream) override;
 
     /// Does nothing
     MODULE_MEMORY_API void configuring() override;
@@ -80,7 +79,6 @@ protected:
 private:
 
     data::ObjectLock m_objLock;
-
 };
 
 } // sight::module::memory

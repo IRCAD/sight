@@ -32,11 +32,14 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro( ::sight::ui::qml::dialog::SelectorDialog,
-                    ::sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    ::sight::ui::qml::dialog::SelectorDialog,
+    ::sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY
+);
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -54,7 +57,7 @@ SelectorDialog::~SelectorDialog()
 
 //------------------------------------------------------------------------------
 
-void SelectorDialog::setSelections(std::vector< std::string > _selections)
+void SelectorDialog::setSelections(std::vector<std::string> _selections)
 {
     this->m_selections = _selections;
 }
@@ -77,7 +80,8 @@ std::string SelectorDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml/dialog/SelectorDialog.qml");
+        "fwGuiQml/dialog/SelectorDialog.qml"
+    );
     // set the root context for the model
     engine->getRootContext()->setContextProperty("selectorModel", &model);
     // set the context for the new component
@@ -95,13 +99,14 @@ std::string SelectorDialog::show()
     // create all radiobutton
     model.addRole(Qt::UserRole + 1, "textOption");
     model.addRole(Qt::UserRole + 2, "check");
-    for(const std::string& selection :  m_selections)
+    for(const std::string& selection : m_selections)
     {
         QHash<QByteArray, QVariant> data;
         data.insert("check", false);
         data.insert("textOption", QString::fromStdString(selection));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
+
     SIGHT_ASSERT("The SelectorDialog need at least one option", !model.isEmpty());
 
     if(!m_message.isEmpty())
@@ -146,4 +151,5 @@ void SelectorDialog::addCustomButton(const std::string& label, std::function<voi
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

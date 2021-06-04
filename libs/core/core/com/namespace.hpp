@@ -258,4 +258,5 @@ namespace util
  * disconnection occurs.
  *
  */
+
 } // namespace sight::core::com

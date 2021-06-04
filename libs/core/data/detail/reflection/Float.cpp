@@ -26,12 +26,12 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Float))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Float))
 {
     builder
     .tag("object_version", "1")
     .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object >()
+    .base< ::sight::data::Object>()
     .property("value", (float sight::data::Float::*) &::sight::data::Float::m_value)
     ;
 }

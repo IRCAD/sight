@@ -28,18 +28,19 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace data
 {
+
 namespace NavigationSeries
 {
 
 /// Structural patch to convert a data::NavigationSeries from version '2' to version '1'.
 class IO_PATCH_CLASS_API V2ToV1 : public io::atoms::patch::IStructuralPatch
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(V2ToV1, patch::structural::data::NavigationSeries::V2ToV1, new V2ToV1)
+    SIGHT_DECLARE_CLASS(V2ToV1, patch::structural::data::NavigationSeries::V2ToV1, new V2ToV1);
 
     /// Initialiaze members.
     IO_PATCH_API V2ToV1();
@@ -64,10 +65,12 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& _previous,
         const sight::atoms::Object::sptr& _current,
-        io::atoms::patch::IPatch::NewVersionsType& _newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& _newVersions
+    ) override;
 };
 
 } // namespace NavigationSeries
+
 } // namespace data
+
 } // namespace sight::io::patch::structural

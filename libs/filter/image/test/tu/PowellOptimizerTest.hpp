@@ -26,6 +26,7 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -36,7 +37,7 @@ namespace ut
  */
 class PowellOptimizerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PowellOptimizerTest );
+CPPUNIT_TEST_SUITE(PowellOptimizerTest);
 CPPUNIT_TEST(parabolaTest);
 CPPUNIT_TEST(ackleyTest);
 CPPUNIT_TEST(sphereFunctionTest);
@@ -44,6 +45,7 @@ CPPUNIT_TEST(bealeFunctionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,4 +57,5 @@ public:
 };
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

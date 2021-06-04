@@ -32,8 +32,10 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 /**
  * @brief   This class allows us to show a pulse progress bar.
  */
@@ -45,8 +47,11 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    SIGHT_DECLARE_CLASS(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
-                        ui::base::factory::New< PulseProgressDialog >)
+    SIGHT_DECLARE_CLASS(
+        PulseProgressDialog,
+        ui::base::dialog::IPulseProgressDialog,
+        ui::base::factory::New<PulseProgressDialog>
+    )
 
     UI_QML_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 
@@ -61,10 +66,12 @@ public:
     UI_QML_API void show() override;
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void messageChanged();
 
 private:
+
     /// title of the progress dialog
     QString m_title;
     /// message of the progress dialog
@@ -72,7 +79,8 @@ private:
 
     /// event filter to filter shortcut event
     bool eventFilter(QObject* watched, QEvent* event) override;
-
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qml

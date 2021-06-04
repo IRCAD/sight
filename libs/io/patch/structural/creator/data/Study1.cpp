@@ -28,8 +28,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -47,7 +49,7 @@ Study1::~Study1()
 
 // ----------------------------------------------------------------------------
 
-Study1::Study1( const Study1& cpy ) :
+Study1::Study1(const Study1& cpy) :
     io::atoms::patch::IStructuralCreator(cpy)
 {
 }
@@ -70,5 +72,7 @@ sight::atoms::Object::sptr Study1::create()
 }
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

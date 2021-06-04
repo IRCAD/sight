@@ -26,7 +26,7 @@
 
 namespace scm = sight::core::memory;
 
-SIGHT_IMPLEMENT_REFLECTION((sight)(core)(memory)(BufferObject))
+SIGHT_IMPLEMENT_REFLECTION((sight) (core) (memory) (BufferObject))
 {
     builder.tag("buffer")
     .function("classname", &scm::BufferObject::className)
@@ -82,8 +82,11 @@ void BufferObject::destroy()
 
 //------------------------------------------------------------------------------
 
-void BufferObject::setBuffer(core::memory::BufferManager::BufferType buffer, SizeType size,
-                             const core::memory::BufferAllocationPolicy::sptr& policy)
+void BufferObject::setBuffer(
+    core::memory::BufferManager::BufferType buffer,
+    SizeType size,
+    const core::memory::BufferAllocationPolicy::sptr& policy
+)
 {
     m_bufferManager->setBuffer(&m_buffer, buffer, size, policy).get();
     m_allocPolicy = policy;
@@ -106,7 +109,7 @@ BufferObject::ConstLock BufferObject::lock() const
 
 //------------------------------------------------------------------------------
 
-void BufferObject::swap( const BufferObject::sptr& _source )
+void BufferObject::swap(const BufferObject::sptr& _source)
 {
     m_bufferManager->swapBuffer(&m_buffer, &(_source->m_buffer)).get();
 
@@ -124,12 +127,13 @@ BufferManager::StreamInfo BufferObject::getStreamInfo() const
 
 //------------------------------------------------------------------------------
 
-void BufferObject::setIStreamFactory(const SPTR(core::memory::stream::in::IFactory)& factory,
-                                     SizeType size,
-                                     const std::filesystem::path& sourceFile,
-                                     core::memory::FileFormatType format,
-                                     const core::memory::BufferAllocationPolicy::sptr& policy
-                                     )
+void BufferObject::setIStreamFactory(
+    const SPTR(core::memory::stream::in::IFactory)& factory,
+    SizeType size,
+    const std::filesystem::path& sourceFile,
+    core::memory::FileFormatType format,
+    const core::memory::BufferAllocationPolicy::sptr& policy
+)
 {
     m_size        = size;
     m_allocPolicy = policy;

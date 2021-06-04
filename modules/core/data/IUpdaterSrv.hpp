@@ -39,10 +39,9 @@ namespace sight::module::data
  */
 class MODULE_DATA_CLASS_API IUpdaterSrv : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IUpdaterSrv, service::IService)
+    SIGHT_DECLARE_SERVICE(IUpdaterSrv, service::IService);
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     MODULE_DATA_API IUpdaterSrv();

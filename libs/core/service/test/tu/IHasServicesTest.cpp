@@ -29,12 +29,13 @@
 #include <service/IHasServices.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::IHasServicesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::IHasServicesTest);
 
 //------------------------------------------------------------------------------
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -58,12 +59,12 @@ static const std::string srvType = "::sight::service::ut::TestSrvAutoconnect";
 
 struct TestIHasServices : public service::IHasServices
 {
-
     virtual ~TestIHasServices() noexcept
     {
         // just in case a test does not pass, we unregister all the services to avoid a crash
         this->unregisterServices();
     }
+
     //------------------------------------------------------------------------------
 
     void testConnection()
@@ -72,11 +73,11 @@ struct TestIHasServices : public service::IHasServices
         data::Boolean::sptr data2 = data::Boolean::New();
         data::Boolean::sptr data3 = data::Boolean::New();
 
-        auto sig1 = data1->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        auto sig2 = data2->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        auto sig3 = data3->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig1 = data1->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig2 = data2->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig3 = data3->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
-            auto testService = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService->registerInOut(data1, "data1", true);
             testService->registerInOut(data2, "data2", false);
             testService->registerInOut(data3, "data3", true);
@@ -94,7 +95,7 @@ struct TestIHasServices : public service::IHasServices
         }
 
         {
-            auto testService = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService->registerInOut(data1, "data1", true);
             testService->registerInOut(data2, "data2", true);
             testService->registerInOut(data3, "data3");
@@ -113,7 +114,7 @@ struct TestIHasServices : public service::IHasServices
 
         {
             // same test but with input instead of inout
-            auto testService = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService->registerInput(data1, "data1", true);
             testService->registerInput(data2, "data2", true);
             testService->registerInput(data3, "data3");
@@ -159,7 +160,7 @@ struct TestIHasServices : public service::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(data1 == refService1.lock()->getInOut< data::Boolean >("data1"));
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInOut<data::Boolean>("data1"));
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -189,7 +190,7 @@ struct TestIHasServices : public service::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(data1 == refService1.lock()->getInput< data::Boolean >("data1"));
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInput<data::Boolean>("data1"));
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -231,14 +232,14 @@ struct TestIHasServices : public service::IHasServices
             CPPUNIT_ASSERT(refService2.expired());
         }
         {
-            auto testService1 = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService1 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService1->registerInOut(data1, "data1", true);
             testService1->start();
 
-            auto testService2 = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService2 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService2->start();
 
-            auto testService3 = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService3 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService3->registerInOut(data1, "data1", true);
             testService3->start();
 
@@ -259,8 +260,9 @@ struct TestIHasServices : public service::IHasServices
         data::Boolean::sptr data3 = data::Boolean::New();
 
         {
-            auto testService = this->registerService< service::ut::TestServiceImplementation >(
-                "::sight::service::ut::TestServiceImplementation");
+            auto testService = this->registerService<service::ut::TestServiceImplementation>(
+                "::sight::service::ut::TestServiceImplementation"
+            );
             testService->registerInput(data1, "data1", true, false);
             testService->start();
 
@@ -282,12 +284,12 @@ struct TestIHasServices : public service::IHasServices
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
         }
 
-        auto sig1 = data1->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        auto sig2 = data2->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        auto sig3 = data3->signal< data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig1 = data1->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig2 = data2->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig3 = data3->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
         {
-            auto testService = this->registerService< service::ut::TestSrvAutoconnect >(srvType);
+            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
             testService->registerInput(data1, "data1", true, false);
             testService->start();
 
@@ -341,4 +343,5 @@ void IHasServicesTest::testOptionalInputs()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::service

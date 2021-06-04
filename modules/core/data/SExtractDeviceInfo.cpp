@@ -44,7 +44,6 @@ namespace sight::module::data
 
 SExtractDeviceInfo::SExtractDeviceInfo()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -61,10 +60,10 @@ void SExtractDeviceInfo::configuring()
     core::runtime::ConfigurationElement::csptr deviceConfig;
     if(configCfg)
     {
-
         deviceConfig = service::extension::Config::getDefault()->getServiceConfig(
             configCfg->getValue(),
-            "::sight::module::data::SExtractDeviceInfo");
+            "::sight::module::data::SExtractDeviceInfo"
+        );
     }
     else
     {
@@ -92,13 +91,13 @@ void SExtractDeviceInfo::starting()
 
 void SExtractDeviceInfo::updating()
 {
-    auto camera = this->getInOut< sight::data::Camera >("camera");
+    auto camera = this->getInOut<sight::data::Camera>("camera");
     SIGHT_ASSERT("Camera 'camera' not found.", camera);
 
     std::string device;
 
 #ifdef ANDROID
-    char model_string[PROP_VALUE_MAX+1];
+    char model_string[PROP_VALUE_MAX + 1];
     // __system_property_get("ro.product.model", model_string); this is deprecated
 
     std::string command = "getprop ro.product.model";
@@ -106,12 +105,13 @@ void SExtractDeviceInfo::updating()
     SIGHT_ASSERT("Unable to get the device name", file);
 
     char buffer[128];
-    while (!feof(file))
+    while(!feof(file))
     {
-        if ( fgets(buffer, 128, file) == NULL )
+        if(fgets(buffer, 128, file) == NULL)
         {
             break;
         }
+
         fputs(buffer, stdout);
     }
 
@@ -127,7 +127,7 @@ void SExtractDeviceInfo::updating()
 
     ConfigurationType config = m_devicesConfig[device];
     double width, height, fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
-    if (config)
+    if(config)
     {
         ConfigurationType intrinsicCfg = config->findConfigurationElement("intrinsic");
         SIGHT_ASSERT("Missing 'intrinsic' config element.", intrinsicCfg);
@@ -182,7 +182,7 @@ void SExtractDeviceInfo::updating()
     }
     else
     {
-        SIGHT_DEBUG(" Device "+ device + " not found, default calibration is set ");
+        SIGHT_DEBUG(" Device " + device + " not found, default calibration is set ");
 
         width  = 640.;
         height = 480.;
@@ -207,14 +207,16 @@ void SExtractDeviceInfo::updating()
     camera->setDistortionCoefficient(k1, k2, p1, p2, k3);
     camera->setSkew(skew);
 
-    SIGHT_DEBUG("cx: " << camera->getCx() << ", cy: "<< camera->getCy() <<
-                ", fx: "<< camera->getFx() <<  ", fy: " << camera->getFy());
+    SIGHT_DEBUG(
+        "cx: " << camera->getCx() << ", cy: " << camera->getCy()
+        << ", fx: " << camera->getFx() << ", fy: " << camera->getFy()
+    );
 
-    SIGHT_DEBUG("k1: " <<k1 << ", k2: "<< k2 << ", p1: "<< p1 <<  ", p2: " << p2 << ", k3: " << k3);
+    SIGHT_DEBUG("k1: " << k1 << ", k2: " << k2 << ", p1: " << p1 << ", p2: " << p2 << ", k3: " << k3);
 
     sight::data::Camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = camera->signal< sight::data::Camera::IntrinsicCalibratedSignalType >
-              ( sight::data::Camera::s_INTRINSIC_CALIBRATED_SIG);
+    sig = camera->signal<sight::data::Camera::IntrinsicCalibratedSignalType>
+              (sight::data::Camera::s_INTRINSIC_CALIBRATED_SIG);
     sig->asyncEmit();
 }
 

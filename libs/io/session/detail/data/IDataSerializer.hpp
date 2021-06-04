@@ -44,7 +44,7 @@ class IDataSerializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IDataSerializer)
+    SIGHT_DECLARE_CLASS(IDataSerializer);
 
     /// Delete default copy constructors and assignment operators
     IDataSerializer(const IDataSerializer&)            = delete;

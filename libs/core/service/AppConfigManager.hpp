@@ -62,7 +62,7 @@ class SERVICE_CLASS_API AppConfigManager : public service::IAppConfigManager,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared<AppConfigManager>)
+    SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared<AppConfigManager>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 

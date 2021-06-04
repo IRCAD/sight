@@ -54,7 +54,6 @@ namespace helper
  */
 class SERVICE_CLASS_API ConfigLauncher
 {
-
 public:
 
     typedef std::unique_ptr<ConfigLauncher> uptr;
@@ -70,16 +69,20 @@ public:
      * @param _config The config to parse.
      * @param _service Related service.
      */
-    SERVICE_API virtual void parseConfig(const service::IService::ConfigType& _config,
-                                         const service::IService::sptr& _service);
+    SERVICE_API virtual void parseConfig(
+        const service::IService::ConfigType& _config,
+        const service::IService::sptr& _service
+    );
 
     /**
      * @brief Launches Appconfig.
      * @param _srv  service to connect with config root object.
      * @param _optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter).
      */
-    SERVICE_API virtual void startConfig( service::IService::sptr _srv,
-                                          const FieldAdaptorType& _optReplaceMap = FieldAdaptorType() );
+    SERVICE_API virtual void startConfig(
+        service::IService::sptr _srv,
+        const FieldAdaptorType& _optReplaceMap = FieldAdaptorType()
+    );
 
     /// Stops/destroys AppConfig and disconnect connection with config root object.
     SERVICE_API virtual void stopConfig();
@@ -112,8 +115,8 @@ private:
 
     /// Stores key and uid of optional inputs.
     std::map<std::string, std::string> m_optionalInputs;
-
 };
 
 } // helper
+
 } // fwServices

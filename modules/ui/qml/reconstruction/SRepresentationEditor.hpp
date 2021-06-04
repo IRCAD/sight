@@ -93,7 +93,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SRepresentationEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SRepresentationEditor, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SRepresentationEditor() noexcept;
@@ -102,6 +102,7 @@ public:
     MODULE_UI_QML_API virtual ~SRepresentationEditor() noexcept;
 
 Q_SIGNALS:
+
     void materialChanged(int representationMode, int shadingMode, int optionMode);
 
 protected:
@@ -134,16 +135,15 @@ protected:
 protected Q_SLOTS:
 
     /// Called when the organ representation changed, it will update the reconstruction Material
-    void onChangeRepresentation( int id );
+    void onChangeRepresentation(int id);
     /// Called when the organ shading changed, it will update the reconstruction Material
-    void onChangeShading( int id );
+    void onChangeShading(int id);
     /// Called when the organ normal option changed, it will update the reconstruction Material
-    void onShowNormals(int state );
+    void onShowNormals(int state);
 
 private:
 
     data::Material::sptr m_material;
-
 };
 
 } // uiReconstructionQml

@@ -39,14 +39,16 @@
 
 namespace sight::core::runtime
 {
+
 namespace detail
 {
+
 namespace io
 {
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const Validator& validator )
+Validator::Validator(const Validator& validator)
 {
     m_xsd_content         = validator.m_xsd_content;
     m_schemaParserContext = validator.m_schemaParserContext;
@@ -55,21 +57,22 @@ Validator::Validator( const Validator& validator )
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const std::string& buffer )
+Validator::Validator(const std::string& buffer)
 {
     m_xsd_content = buffer;
 }
 
 //------------------------------------------------------------------------------
 
-Validator::Validator( const std::filesystem::path& path )
+Validator::Validator(const std::filesystem::path& path)
 {
-    std::string strPath( path.string() );
+    std::string strPath(path.string());
     // Checks the path validity.
-    if( std::filesystem::exists(path) == false || std::filesystem::is_directory(path) )
+    if(std::filesystem::exists(path) == false || std::filesystem::is_directory(path))
     {
-        throw RuntimeException( strPath + ": is not a valid path to an xml schema file." );
+        throw RuntimeException(strPath + ": is not a valid path to an xml schema file.");
     }
+
     m_xsd_content = strPath;
 }
 
@@ -83,7 +86,7 @@ Validator::~Validator()
 
 void Validator::clearErrorLog()
 {
-    m_errorLog.str( std::string() );
+    m_errorLog.str(std::string());
 }
 
 //------------------------------------------------------------------------------
@@ -102,52 +105,55 @@ void Validator::initializeContext()
         return;
     }
 
-    if ( !m_schemaParserContext )
+    if(!m_schemaParserContext)
     {
-        if (!(m_schemaParserContext = SchemaParserCtxtSptr(
-                  xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
-                  xmlSchemaFreeParserCtxt)
-              ) )
+        if(!(m_schemaParserContext = SchemaParserCtxtSptr(
+                 xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
+                 xmlSchemaFreeParserCtxt
+        )))
         {
             return;
         }
+
         // Set the structured error callback
-        xmlSchemaSetParserStructuredErrors(m_schemaParserContext.get(), Validator::ErrorHandler, this );
+        xmlSchemaSetParserStructuredErrors(m_schemaParserContext.get(), Validator::ErrorHandler, this);
     }
 
     // Load XML schema content
-    if (!m_schema)
+    if(!m_schema)
     {
-        m_schema = SchemaSptr( xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree );
+        m_schema = SchemaSptr(xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree);
     }
-    if (!m_schema)
+
+    if(!m_schema)
     {
         return;
     }
 
     // Create XML schemas validation context
-    if ( (m_schemaValidContext = SchemaValidCtxtSptr( xmlSchemaNewValidCtxt(m_schema.get()), xmlSchemaFreeValidCtxt)) )
+    if((m_schemaValidContext = SchemaValidCtxtSptr(xmlSchemaNewValidCtxt(m_schema.get()), xmlSchemaFreeValidCtxt)))
     {
         // Set the structured error callback
-        xmlSchemaSetValidStructuredErrors( m_schemaValidContext.get(), Validator::ErrorHandler, this );
+        xmlSchemaSetValidStructuredErrors(m_schemaValidContext.get(), Validator::ErrorHandler, this);
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool Validator::validate( const std::filesystem::path& xmlFile )
+bool Validator::validate(const std::filesystem::path& xmlFile)
 {
     int result;
 
     initializeContext();
 
-    xmlDocPtr xmlDoc = xmlParseFile( xmlFile.string().c_str() );
-    if (xmlDoc == NULL)
+    xmlDocPtr xmlDoc = xmlParseFile(xmlFile.string().c_str());
+    if(xmlDoc == NULL)
     {
-        throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string() );
+        throw std::ios_base::failure("Unable to parse the XML file " + xmlFile.string());
     }
+
     xmlNodePtr xmlRoot = xmlDocGetRootElement(xmlDoc);
-    if (xmlXIncludeProcessTreeFlags(xmlRoot, XML_PARSE_NOBASEFIX) == -1)
+    if(xmlXIncludeProcessTreeFlags(xmlRoot, XML_PARSE_NOBASEFIX) == -1)
     {
         xmlFreeDoc(xmlDoc);
         throw std::ios_base::failure(std::string("Unable to manage xinclude !"));
@@ -158,15 +164,15 @@ bool Validator::validate( const std::filesystem::path& xmlFile )
         return false;
     }
 
-    result = xmlSchemaValidateDoc(m_schemaValidContext.get(), xmlDoc );
+    result = xmlSchemaValidateDoc(m_schemaValidContext.get(), xmlDoc);
 
     xmlFreeDoc(xmlDoc);
 
-    if ( result != 0 )
+    if(result != 0)
     {
-        SIGHT_WARN("Validator::validation NOK, xml = " << xmlFile.string() );
-        SIGHT_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
-        SIGHT_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
+        SIGHT_WARN("Validator::validation NOK, xml = " << xmlFile.string());
+        SIGHT_WARN("Validator::validation NOK, xsd = " << getXsdContent());
+        SIGHT_ERROR("Validator::validation NOK, error log = " << getErrorLog());
     }
 
     return result == 0;
@@ -174,7 +180,7 @@ bool Validator::validate( const std::filesystem::path& xmlFile )
 
 //------------------------------------------------------------------------------
 
-bool Validator::validate( xmlNodePtr node )
+bool Validator::validate(xmlNodePtr node)
 {
     int result;
 
@@ -185,16 +191,16 @@ bool Validator::validate( xmlNodePtr node )
         return false;
     }
 
-    result = xmlSchemaValidateOneElement( m_schemaValidContext.get(), node );
+    result = xmlSchemaValidateOneElement(m_schemaValidContext.get(), node);
 
-    if ( result != 0 )
+    if(result != 0)
     {
         xmlBufferPtr buffer = xmlBufferCreate();
-        xmlNodeDump( buffer, node->doc, node, 1, 1 );
+        xmlNodeDump(buffer, node->doc, node, 1, 1);
         SIGHT_WARN("Validator::validation NOK, node :\n " << buffer->content);
-        xmlBufferFree( buffer );
-        SIGHT_WARN("Validator::validation NOK, xsd = " << getXsdContent() );
-        SIGHT_ERROR("Validator::validation NOK, error log = " << getErrorLog() );
+        xmlBufferFree(buffer);
+        SIGHT_WARN("Validator::validation NOK, xsd = " << getXsdContent());
+        SIGHT_ERROR("Validator::validation NOK, error log = " << getErrorLog());
     }
 
     return result == 0;
@@ -202,7 +208,7 @@ bool Validator::validate( xmlNodePtr node )
 
 //------------------------------------------------------------------------------
 
-void Validator::ErrorHandler( void* userData, xmlErrorPtr error )
+void Validator::ErrorHandler(void* userData, xmlErrorPtr error)
 {
     Validator* validator = (Validator*) userData;
 

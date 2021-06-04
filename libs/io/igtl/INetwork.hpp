@@ -44,6 +44,7 @@ namespace sight::io::igtl
 class IO_IGTL_CLASS_API INetwork
 {
 public:
+
     /**
      * @brief default constructor
      */
@@ -99,7 +100,7 @@ public:
      *
      *  @return Message
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header);
+    IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header);
 
     /**
      * @brief get socket
@@ -142,6 +143,7 @@ public:
     IO_IGTL_API std::string getDeviceNameOut() const;
 
 protected:
+
     /// client socket
     ::igtl::Socket::Pointer m_socket;
 
@@ -149,7 +151,7 @@ protected:
     bool m_filteringByDeviceName;
 
     /// Set of authorized device names
-    std::set< std::string > m_deviceNamesIn;
+    std::set<std::string> m_deviceNamesIn;
 
     /// device name in the sent message
     std::string m_deviceNameOut;

@@ -26,18 +26,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-InformationObjectDefinition::InformationObjectDefinition(const SPTR(io::dicom::container::DicomInstance)& instance,
-                                                         const std::filesystem::path& destinationPath,
-                                                         const core::log::Logger::sptr& logger,
-                                                         ProgressCallback progress,
-                                                         CancelRequestedCallback cancel) :
+InformationObjectDefinition::InformationObjectDefinition(
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const std::filesystem::path& destinationPath,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     m_instance(instance),
     m_destinationPath(destinationPath),
     m_logger(logger),
@@ -54,6 +58,9 @@ InformationObjectDefinition::~InformationObjectDefinition()
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace iod
+
 } // namespace writer
+
 } // namespace sight::io::dicom

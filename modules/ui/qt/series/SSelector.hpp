@@ -40,8 +40,10 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace series
 {
+
 /**
  * @brief This editor shows information about the medical data. It allows to manipulate (select, erase, ...)
  *        studies and series.
@@ -79,13 +81,12 @@ class MODULE_UI_QT_CLASS_API SSelector final :
     public QObject,
     public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor);
 
     /// Creates the signal and slots.
     MODULE_UI_QT_API SSelector();
@@ -123,8 +124,10 @@ protected Q_SLOTS:
      * @param _selection series to add in selection vector.
      * @param _deselection series to remove from selection vector.
      */
-    void onSelectedSeries(QVector< data::Series::sptr > _selection,
-                          QVector< data::Series::sptr > _deselection);
+    void onSelectedSeries(
+        QVector<data::Series::sptr> _selection,
+        QVector<data::Series::sptr> _deselection
+    );
 
     /**
      * @brief Sends a 'seriesDoubleClicked' signal when the user double click on a series.
@@ -137,13 +140,13 @@ protected Q_SLOTS:
      * @brief Removes series from seriesDB and notify.
      * @param _selection series to remove from seriesDB.
      */
-    void onRemoveSeries(QVector< data::Series::sptr > _selection);
+    void onRemoveSeries(QVector<data::Series::sptr> _selection);
 
 private:
 
     typedef core::com::Slot<void (data::SeriesDB::ContainerType)> RemoveSeriesSlotType;
 
-    typedef core::com::Signal< void ( SPTR( data::Series ) ) > SeriesDoubleClickedSignalType;
+    typedef core::com::Signal<void (SPTR(data::Series))> SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
     void addSeries(data::SeriesDB::ContainerType addedSeries);
@@ -155,29 +158,30 @@ private:
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
 
     /// Contains the selector widget.
-    QPointer< Selector > m_selectorWidget { nullptr };
+    QPointer<Selector> m_selectorWidget {nullptr};
 
     /// Contains the signal emitted when there is a double click on a series.
-    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked { nullptr };
+    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked {nullptr};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
     Selector::SeriesIconType m_seriesIcons;
 
     /// Defines if series can be removed.
-    bool m_allowedRemove { true };
+    bool m_allowedRemove {true};
 
     /// Defines the behaviour of the treeview selection mode.
-    QAbstractItemView::SelectionMode m_selectionMode { QAbstractItemView::ExtendedSelection };
+    QAbstractItemView::SelectionMode m_selectionMode {QAbstractItemView::ExtendedSelection};
 
     /// Allows selection of module::ui::qt::InsertSeries only.
-    bool m_insertMode { false };
+    bool m_insertMode {false};
 
     /// Defines the path of the remove study button icon.
     std::filesystem::path m_removeStudyIcon;
 
     /// Defines the path of the remove serie button icon.
     std::filesystem::path m_removeSerieIcon;
-
 };
+
 } // namespace series.
+
 } // namespace sight::module::ui::qt.

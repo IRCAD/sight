@@ -50,7 +50,7 @@ void Plugin::start()
 {
     SIGHT_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
     m_configurationName = this->getModule()->getParameterValue("config");
-    if( this->getModule()->hasParameter("parameters") )
+    if(this->getModule()->hasParameter("parameters"))
     {
         m_parametersName = this->getModule()->getParameterValue("parameters");
     }
@@ -60,21 +60,21 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng );
+    SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng);
     SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
     m_appConfigMng = service::AppConfigManager::New();
 
-    if( m_parametersName.empty() )
+    if(m_parametersName.empty())
     {
         const service::FieldAdaptorType fields;
-        m_appConfigMng->setConfig( m_configurationName, fields );
+        m_appConfigMng->setConfig(m_configurationName, fields);
     }
     else
     {
         const service::FieldAdaptorType& fields =
-            service::extension::AppConfigParameters::getDefault()->getParameters( m_parametersName );
-        m_appConfigMng->setConfig( m_configurationName, fields );
+            service::extension::AppConfigParameters::getDefault()->getParameters(m_parametersName);
+        m_appConfigMng->setConfig(m_configurationName, fields);
     }
 
     m_appConfigMng->launch();
@@ -90,7 +90,7 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-    SIGHT_ASSERT("The OSR is not initialized.", m_appConfigMng );
+    SIGHT_ASSERT("The OSR is not initialized.", m_appConfigMng);
     m_appConfigMng->stopAndDestroy();
     m_appConfigMng.reset();
 }

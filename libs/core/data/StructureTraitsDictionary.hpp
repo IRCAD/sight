@@ -26,10 +26,11 @@
 #include "data/Object.hpp"
 #include "data/StructureTraits.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(StructureTraitsDictionary));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (StructureTraitsDictionary));
 
 namespace sight::data
 {
+
 /**
  * @brief This class defines a dictionary of structure traits.
  *
@@ -39,8 +40,9 @@ namespace sight::data
 class DATA_CLASS_API StructureTraitsDictionary : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(StructureTraitsDictionary, data::Object, data::factory::New< StructureTraitsDictionary >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(StructureTraitsDictionary));
+
+    SIGHT_DECLARE_CLASS(StructureTraitsDictionary, data::Object, data::factory::New<StructureTraitsDictionary>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraitsDictionary));
 
     typedef std::vector<std::string> StructureTypeNameContainer;
 
@@ -73,18 +75,17 @@ public:
     DATA_API StructureTypeNameContainer getStructureTypeNames() const;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 
-    typedef std::map< std::string, data::StructureTraits::sptr > StructureTraitsMapType;
+    typedef std::map<std::string, data::StructureTraits::sptr> StructureTraitsMapType;
 
     /// map to register structure traits. Map key is structure type.
     StructureTraitsMapType m_structureTraitsMap;
-
 };
 
 } // namespace sight::data

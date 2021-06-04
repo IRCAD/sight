@@ -59,7 +59,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, sight::ui::base::IEditor);
 
     /// Creates the service.
     MODULE_UI_QT_API SOrganMaterialEditor() noexcept;
@@ -92,10 +92,10 @@ private:
     void stopping() final;
 
     /// Updates the UI according to the material (color and transparency widgets)
-    void refreshMaterial( );
+    void refreshMaterial();
 
     /// Notifies the material changes.
-    void materialNotification( );
+    void materialNotification();
 
     QPointer<QPushButton> m_diffuseColourButton;
     QPointer<QPushButton> m_ambientColourButton;
@@ -115,7 +115,6 @@ private Q_SLOTS:
 
     /// Slot: called when the ambient color button is clicked.
     void onAmbientColorButton();
-
 };
 
 } // uiReconstructionQt

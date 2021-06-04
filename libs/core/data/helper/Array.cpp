@@ -28,11 +28,14 @@ namespace sight::data
 namespace helper
 {
 
-Array::Array(const data::Array::sptr& array ) :
+Array::Array(const data::Array::sptr& array) :
     m_array(array)
 {
-    FW_DEPRECATED_MSG("::data::helper::Array is no longer supported, the methods have been moved to "
-                      "::sight::data::Array", "22.0");
+    FW_DEPRECATED_MSG(
+        "::data::helper::Array is no longer supported, the methods have been moved to "
+        "::sight::data::Array",
+        "22.0"
+    );
     SIGHT_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
@@ -41,7 +44,6 @@ Array::Array(const data::Array::sptr& array ) :
 
 Array::~Array()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -75,6 +77,7 @@ void Array::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocat
         core::memory::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }
+
     m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes(), policy);
     m_array->setIsBufferOwner(takeOwnership);
 }
@@ -87,9 +90,10 @@ void Array::setBuffer(
     const core::tools::Type& type,
     const data::Array::SizeType& size,
     size_t nbOfComponents,
-    core::memory::BufferAllocationPolicy::sptr policy)
+    core::memory::BufferAllocationPolicy::sptr policy
+)
 {
-    m_array->resize( type, size, nbOfComponents, false);
+    m_array->resize(type, size, nbOfComponents, false);
     this->setBuffer(buf, takeOwnership, policy);
 }
 
@@ -105,8 +109,9 @@ char* Array::begin()
 
 char* Array::end()
 {
-    return reinterpret_cast<char*> (static_cast<char*>(this->getBuffer()) + m_array->getSizeInBytes());
+    return reinterpret_cast<char*>(static_cast<char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
+
 //------------------------------------------------------------------------------
 
 const char* Array::begin() const
@@ -118,12 +123,12 @@ const char* Array::begin() const
 
 const char* Array::end() const
 {
-    return reinterpret_cast<const char*> (static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
+    return reinterpret_cast<const char*>(static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
 //-----------------------------------------------------------------------------
 
-char* Array::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t )
+char* Array::getBufferPtr(const data::Array::IndexType& id, size_t component, size_t)
 {
     size_t sizeOf = m_array->getType().sizeOf();
     size_t offset = m_array->getBufferOffset(id, component, sizeOf);
@@ -133,7 +138,7 @@ char* Array::getBufferPtr( const data::Array::IndexType& id, size_t component, s
 
 //------------------------------------------------------------------------------
 
-const char* Array::getBufferPtr( const data::Array::IndexType& id, size_t component, size_t ) const
+const char* Array::getBufferPtr(const data::Array::IndexType& id, size_t component, size_t) const
 {
     size_t sizeOf    = m_array->getType().sizeOf();
     size_t offset    = m_array->getBufferOffset(id, component, sizeOf);
@@ -148,8 +153,9 @@ void Array::setItem(const data::Array::IndexType& id, const void* value)
     size_t sizeOf   = m_array->getType().sizeOf();
     const char* val = static_cast<const char*>(value);
     char* item      = this->getBufferPtr(id, 0, sizeOf);
-    std::copy(val, val + m_array->getNumberOfComponents()*sizeOf, item);
+    std::copy(val, val + m_array->getNumberOfComponents() * sizeOf, item);
 }
+
 //------------------------------------------------------------------------------
 
 void Array::setItem(const data::Array::IndexType& id, const size_t component, const void* value)
@@ -176,7 +182,7 @@ void Array::getItem(const data::Array::IndexType& id, void* value) const
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, 0, sizeOf);
     char* val        = static_cast<char*>(value);
-    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+    std::copy(item, item + m_array->getNumberOfComponents() * sizeOf, val);
 }
 
 //------------------------------------------------------------------------------
@@ -186,7 +192,7 @@ void Array::getItem(const data::Array::IndexType& id, const size_t component, vo
     size_t sizeOf    = m_array->getType().sizeOf();
     const char* item = this->getBufferPtr(id, component, sizeOf);
     char* val        = static_cast<char*>(value);
-    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+    std::copy(item, item + m_array->getNumberOfComponents() * sizeOf, val);
 }
 
 //------------------------------------------------------------------------------

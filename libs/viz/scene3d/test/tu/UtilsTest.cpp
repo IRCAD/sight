@@ -29,7 +29,7 @@
 #include <random>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::viz::scene3d::ut::UtilsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::scene3d::ut::UtilsTest);
 
 namespace sight::viz::scene3d
 {
@@ -84,9 +84,9 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
         const ::Ogre::Matrix4 ogreMat0 = viz::scene3d::Utils::convertTM3DToOgreMx(mat0);
 
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), ogreMat0[l][c], epsilon);
             }
@@ -97,9 +97,9 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
         viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat0, mat0Copy);
 
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c), epsilon);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat0[l][c], mat0Copy->getCoefficient(l, c), epsilon);
@@ -110,9 +110,9 @@ void UtilsTest::convertOgreMatrixToTM3D()
     // Convert from ogre to Sight and back to ogre.
     {
         ::Ogre::Matrix4 ogreMat1;
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 ogreMat1[l][c] = dist(rng);
             }
@@ -121,9 +121,9 @@ void UtilsTest::convertOgreMatrixToTM3D()
         data::Matrix4::sptr mat1Copy = data::Matrix4::New();
         viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat1, mat1Copy);
 
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], mat1Copy->getCoefficient(l, c), epsilon);
             }
@@ -131,9 +131,9 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
         const ::Ogre::Matrix4 ogreMat1Copy = viz::scene3d::Utils::convertTM3DToOgreMx(mat1Copy);
 
-        for(std::uint8_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
-            for(std::uint8_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c], epsilon);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(mat1Copy->getCoefficient(l, c), ogreMat1Copy[l][c], epsilon);
@@ -145,4 +145,5 @@ void UtilsTest::convertOgreMatrixToTM3D()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::viz::scene3d

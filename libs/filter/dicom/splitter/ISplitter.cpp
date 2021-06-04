@@ -24,6 +24,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -45,4 +46,5 @@ IFilter::FilterType ISplitter::getFilterType() const
 }
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

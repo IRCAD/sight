@@ -28,7 +28,7 @@
 
 #include <list>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(List));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (List));
 
 namespace sight::data
 {
@@ -40,14 +40,13 @@ namespace sight::data
  */
 class DATA_CLASS_API List : public Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(List, data::Object, data::factory::New< List >)
+    SIGHT_DECLARE_CLASS(List, data::Object, data::factory::New<List>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(List));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (List));
 
-    typedef std::list< Object::sptr > ContainerType;
+    typedef std::list<Object::sptr> ContainerType;
 
     typedef ContainerType::value_type ValueType;
     typedef ContainerType::reference ReferenceType;
@@ -81,12 +80,12 @@ public:
     IteratorType begin();
     IteratorType end();
     ConstIteratorType begin() const;
-    ConstIteratorType end()   const;
+    ConstIteratorType end() const;
 
     ReverseIteratorType rbegin();
     ReverseIteratorType rend();
     ConstReverseIteratorType rbegin() const;
-    ConstReverseIteratorType rend()   const;
+    ConstReverseIteratorType rend() const;
 
     bool empty() const;
     SizeType size() const;
@@ -100,12 +99,12 @@ public:
     /// @brief get/set the list of data::Object
     /// @{
     ContainerType& getContainer();
-    const ContainerType& getContainer () const;
-    void setContainer (const ContainerType& val);
+    const ContainerType& getContainer() const;
+    void setContainer(const ContainerType& val);
     /// @}
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -222,15 +221,15 @@ inline List::ContainerType& List::getContainer()
 
 //-----------------------------------------------------------------------------
 
-inline const List::ContainerType& List::getContainer () const
+inline const List::ContainerType& List::getContainer() const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void List::setContainer (const List::ContainerType& val)
-{                                                                                                                                                                                         \
+inline void List::setContainer(const List::ContainerType& val)
+{ \
     m_container = val;
 }
 

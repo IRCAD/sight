@@ -38,4 +38,5 @@ Base::~Base() noexcept
 }
 
 } // namespace exceptions
+
 } // namespace sight::io::http

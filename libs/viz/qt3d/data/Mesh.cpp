@@ -51,7 +51,7 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
     auto defaultMaterial = new viz::qt3d::data::Material();
 
     m_material = defaultMaterial;
-    m_scene    = qobject_cast< sight::viz::qt3d::core::GenericScene* >(_parent);
+    m_scene    = qobject_cast<sight::viz::qt3d::core::GenericScene*>(_parent);
 
     m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
     m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
@@ -128,7 +128,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
     m_posAttrib->setVertexBaseType(Qt3DRender::QAttribute::Float);
     m_posAttrib->setVertexSize(m_vertexSize);
     m_posAttrib->setByteOffset(0);
-    m_posAttrib->setByteStride(3*sizeof(float));
+    m_posAttrib->setByteStride(3 * sizeof(float));
     m_posAttrib->setCount(m_numberOfPoints);
     m_posAttrib->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
 
@@ -139,7 +139,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
     m_normalAttrib->setVertexBaseType(Qt3DRender::QAttribute::Float);
     m_normalAttrib->setVertexSize(m_vertexSize);
     m_normalAttrib->setByteOffset(0);
-    m_normalAttrib->setByteStride(3*sizeof(float));
+    m_normalAttrib->setByteStride(3 * sizeof(float));
     m_normalAttrib->setCount(m_numberOfPoints);
     m_normalAttrib->setName(Qt3DRender::QAttribute::defaultNormalAttributeName());
 
@@ -167,9 +167,13 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
 void Mesh::centerCameraOnMesh()
 {
     auto camera = m_scene->getCamera();
-    camera->viewSphere(m_meshCenter,
-                       std::max(std::max(m_maxExtent.x()-m_minExtent.x(), m_maxExtent.y()-m_minExtent.y()),
-                                m_maxExtent.z()-m_minExtent.z()));
+    camera->viewSphere(
+        m_meshCenter,
+        std::max(
+            std::max(m_maxExtent.x() - m_minExtent.x(), m_maxExtent.y() - m_minExtent.y()),
+            m_maxExtent.z() - m_minExtent.z()
+        )
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -187,15 +191,15 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     // Declares data arrays which are associated with QBuffers.
     QByteArray posBufferData;
     posBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
-    float* rawPosBufferData = reinterpret_cast<float*>( posBufferData.data() );
+    float* rawPosBufferData = reinterpret_cast<float*>(posBufferData.data());
 
     QByteArray normalBufferData;
     normalBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
-    float* rawNormalBufferData = reinterpret_cast<float*>( normalBufferData.data() );
+    float* rawNormalBufferData = reinterpret_cast<float*>(normalBufferData.data());
 
     QByteArray indexBufferData;
     indexBufferData.resize(3 * static_cast<int>(_mesh->getNumberOfCells()) * static_cast<int>(sizeof(unsigned int)));
-    unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>( indexBufferData.data() );
+    unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
     // Checks if the mesh has normals. If not, generates them.
     if(!_mesh->hasPointNormals())
@@ -207,19 +211,19 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     bool minMaxSet = false;
 
     // Iterates over points and registers each point in position and normal buffers.
-    auto itrPt          = _mesh->begin< sight::data::iterator::ConstPointIterator >();
-    const auto endItrPt = _mesh->end< sight::data::iterator::ConstPointIterator >();
+    auto itrPt          = _mesh->begin<sight::data::iterator::ConstPointIterator>();
+    const auto endItrPt = _mesh->end<sight::data::iterator::ConstPointIterator>();
 
     unsigned int countPts = 0;
-    for(; itrPt != endItrPt; ++itrPt)
+    for( ; itrPt != endItrPt ; ++itrPt)
     {
-        rawPosBufferData[countPts]   = itrPt->point->x;
-        rawPosBufferData[countPts+1] = itrPt->point->y;
-        rawPosBufferData[countPts+2] = itrPt->point->z;
+        rawPosBufferData[countPts]     = itrPt->point->x;
+        rawPosBufferData[countPts + 1] = itrPt->point->y;
+        rawPosBufferData[countPts + 2] = itrPt->point->z;
 
-        rawNormalBufferData[countPts]   = itrPt->normal->nx;
-        rawNormalBufferData[countPts+1] = itrPt->normal->ny;
-        rawNormalBufferData[countPts+2] = itrPt->normal->nz;
+        rawNormalBufferData[countPts]     = itrPt->normal->nx;
+        rawNormalBufferData[countPts + 1] = itrPt->normal->ny;
+        rawNormalBufferData[countPts + 2] = itrPt->normal->nz;
 
         countPts += 3;
 
@@ -240,22 +244,27 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
             {
                 minX = itrPt->point->x;
             }
+
             if(itrPt->point->x > maxX)
             {
                 maxX = itrPt->point->x;
             }
+
             if(itrPt->point->y < minY)
             {
                 minY = itrPt->point->y;
             }
+
             if(itrPt->point->y > maxY)
             {
                 maxY = itrPt->point->y;
             }
+
             if(itrPt->point->z < minZ)
             {
                 maxZ = itrPt->point->z;
             }
+
             if(itrPt->point->z > maxZ)
             {
                 maxZ = itrPt->point->z;
@@ -267,12 +276,15 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     m_maxExtent = QVector3D(maxX, maxY, maxZ);
 
     m_meshCenter =
-        QVector3D((m_minExtent.x()+m_maxExtent.x())/2, (m_minExtent.y()+m_maxExtent.y())/2,
-                  (m_minExtent.z()+m_maxExtent.z())/2);
+        QVector3D(
+            (m_minExtent.x() + m_maxExtent.x()) / 2,
+            (m_minExtent.y() + m_maxExtent.y()) / 2,
+            (m_minExtent.z() + m_maxExtent.z()) / 2
+        );
 
     // Iterates over cells and registers points index in index buffer.
-    auto itrCell      = _mesh->begin< sight::data::iterator::ConstCellIterator >();
-    const auto endItr = _mesh->end< sight::data::iterator::ConstCellIterator >();
+    auto itrCell      = _mesh->begin<sight::data::iterator::ConstCellIterator>();
+    const auto endItr = _mesh->end<sight::data::iterator::ConstCellIterator>();
 
     bool isTriangleMesh = true;
 
@@ -280,7 +292,7 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     // Also, mesh composed of triangles and quads would probably not be handled properly
     // See comments in https://git.ircad.fr/sight/sight/-/merge_requests/476
     unsigned int countIndex = 0;
-    for(; itrCell != endItr; ++itrCell)
+    for( ; itrCell != endItr ; ++itrCell)
     {
         if(countIndex == 0 && itrCell->nbPoints == 4)
         {
@@ -288,25 +300,28 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
 
             // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
             // triangle mesh.
-            indexBufferData.resize(6 * static_cast<int>(_mesh->getNumberOfCells()) *
-                                   static_cast<int>(sizeof(unsigned int)));
-            rawIndexBufferData = reinterpret_cast<unsigned int*>( indexBufferData.data() );
+            indexBufferData.resize(
+                6 * static_cast<int>(_mesh->getNumberOfCells())
+                * static_cast<int>(sizeof(unsigned int))
+            );
+            rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
             m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
 
             this->addComputeEntityToScene(static_cast<int>(_mesh->getNumberOfCells()));
         }
 
-        SIGHT_WARN_IF("A mesh can contain only one type of primitive (quad or triangle).",
-                      (!isTriangleMesh && itrCell->nbPoints != 4) || (isTriangleMesh && itrCell->nbPoints != 3))
+        SIGHT_WARN_IF(
+            "A mesh can contain only one type of primitive (quad or triangle).",
+            (!isTriangleMesh && itrCell->nbPoints != 4) || (isTriangleMesh && itrCell->nbPoints != 3)
+        )
 
-        for(unsigned int i = 0; i < itrCell->nbPoints; ++i)
+        for(unsigned int i = 0 ; i < itrCell->nbPoints ; ++i)
         {
-
             auto pIdx = static_cast<unsigned int>(itrCell->pointIdx[i]);
 
             // If triangle mesh, only need to copy each point
-            if(isTriangleMesh || (i != itrCell->nbPoints-1))
+            if(isTriangleMesh || (i != itrCell->nbPoints - 1))
             {
                 rawIndexBufferData[countIndex] = pIdx;
 
@@ -316,9 +331,9 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
             // 6 points are defined, 4 with quad coordinates, and the last 2 points will be completed by compute shader
             else
             {
-                rawIndexBufferData[countIndex]   = 0;
-                rawIndexBufferData[countIndex+1] = pIdx;
-                rawIndexBufferData[countIndex+2] = 0;
+                rawIndexBufferData[countIndex]     = 0;
+                rawIndexBufferData[countIndex + 1] = pIdx;
+                rawIndexBufferData[countIndex + 2] = 0;
 
                 countIndex += 3;
             }

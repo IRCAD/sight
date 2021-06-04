@@ -32,6 +32,7 @@
 
 namespace sight::module::geometry::vision
 {
+
 /**
  * @brief   SReprojectionError Class used to compute the mean error of reprojection between 3d object points
  * and 2d image points.
@@ -85,10 +86,11 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public service::IController
 {
 public:
-    SIGHT_DECLARE_SERVICE(SReprojectionError, service::IController)
+
+    SIGHT_DECLARE_SERVICE(SReprojectionError, service::IController);
 
     /// Double changed signal type
-    typedef core::com::Signal< void (double) > ErrorComputedSignalType;
+    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
 
     MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT;
 
@@ -105,6 +107,7 @@ public:
     service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
+
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
@@ -130,7 +133,7 @@ private:
     void compute(core::HiResClock::HiResClockType timestamp);
 
     ///Slot called when a color value is changed
-    void setColorParameter(std::array< std::uint8_t, 4 > _val, std::string _key);
+    void setColorParameter(std::array<std::uint8_t, 4> _val, std::string _key);
     ///Slot called when a boolean value is changed
     void setBoolParameter(bool _val, std::string _key);
 
@@ -141,7 +144,7 @@ private:
     double m_patternWidth;
 
     /// 3D object points
-    std::vector< ::cv::Point3f > m_objectPoints;
+    std::vector< ::cv::Point3f> m_objectPoints;
     /// Camera Matrix (fx, fy, cx, cy)
     ::cv::Mat m_cameraMatrix;
     ///Distorsion coefficient
@@ -154,7 +157,7 @@ private:
     ::cv::Mat m_extrinsic;
 
     /// List of tags associated with each input matrix
-    std::vector< data::MarkerMap::KeyType> m_matricesTag;
+    std::vector<data::MarkerMap::KeyType> m_matricesTag;
 };
 
-}//namespace sight::module::geometry::vision
+} //namespace sight::module::geometry::vision

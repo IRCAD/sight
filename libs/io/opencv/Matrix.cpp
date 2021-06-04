@@ -33,11 +33,11 @@ void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst->setCoefficient(i, j, _src(i, j) );
+            _dst->setCoefficient(i, j, _src(i, j));
         }
     }
 }
@@ -48,14 +48,13 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
 {
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             _dst(i, j) = _src->getCoefficient(i, j);
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -64,11 +63,11 @@ void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst->setCoefficient(i, j, static_cast< double >(_src(i, j)) );
+            _dst->setCoefficient(i, j, static_cast<double>(_src(i, j)));
         }
     }
 }
@@ -79,11 +78,11 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44f& _dst)
 {
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst(i, j) = static_cast< float >(_src->getCoefficient(i, j));
+            _dst(i, j) = static_cast<float>(_src->getCoefficient(i, j));
         }
     }
 }
@@ -95,13 +94,17 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
     // Check validity of _rvec & _tvec.
     SIGHT_ASSERT("Rotation vector 'rvec' should be of size 1x3", _rvec.size().width == 1 && _rvec.size().height == 3);
     SIGHT_ASSERT("Rotation vector 'tvec' should be of size 1x3", _tvec.size().width == 1 && _tvec.size().height == 3);
-    SIGHT_ASSERT("Could not convert opencv matrix with multi-channels",
-                 _rvec.channels() == 1 && _tvec.channels() == 1 );
+    SIGHT_ASSERT(
+        "Could not convert opencv matrix with multi-channels",
+        _rvec.channels() == 1 && _tvec.channels() == 1
+    );
     // Check that _dst has correctly been initialized.
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
 
-    SIGHT_WARN_IF("OpenCV matrices has non-double type but will be cast in 'double'.",
-                  _rvec.type() != CV_64F || _tvec.type() != CV_64F );
+    SIGHT_WARN_IF(
+        "OpenCV matrices has non-double type but will be cast in 'double'.",
+        _rvec.type() != CV_64F || _tvec.type() != CV_64F
+    );
 
     ::cv::Mat drvec, dtvec;
     _rvec.convertTo(drvec, CV_64F);
@@ -110,15 +113,15 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
     ::cv::Mat rmat;
     ::cv::Rodrigues(drvec, rmat);
 
-    for(std::uint8_t i = 0; i < 3; ++i)
+    for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 3; ++j)
+        for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            _dst->setCoefficient(i, j, rmat.at< double >(i, j));
+            _dst->setCoefficient(i, j, rmat.at<double>(i, j));
         }
-        _dst->setCoefficient(i, 3, dtvec.at< double >(i));
-    }
 
+        _dst->setCoefficient(i, 3, dtvec.at<double>(i));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -134,39 +137,38 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat&
     _tvec = ::cv::Mat(1, 3, CV_64F);
 
     // First convert Sight to OpenCV 4x4 matrix.
-    copyToCv( _src, mat4x4);
+    copyToCv(_src, mat4x4);
 
     // Extract translation (_tvec) from mat4x4.
     _tvec = mat4x4(::cv::Rect(3, 0, 1, 3));
 
     // Convert to rotation vector.
-    ::cv::Rodrigues( mat4x4(::cv::Rect(0, 0, 3, 3)), _rvec);
-
+    ::cv::Rodrigues(mat4x4(::cv::Rect(0, 0, 3, 3)), _rvec);
 }
 
 //-----------------------------------------------------------------------------
 
 void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 {
-
     SIGHT_ASSERT("Size of OpenCV matrix should be 4x4", _src.cols == 4 && _src.rows == 4);
-    SIGHT_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1 );
+    SIGHT_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1);
     SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
 
-    SIGHT_WARN_IF("OpenCV matrix has non-double type but will be cast in 'double'.",
-                  _src.type() != CV_64F );
+    SIGHT_WARN_IF(
+        "OpenCV matrix has non-double type but will be cast in 'double'.",
+        _src.type() != CV_64F
+    );
 
     ::cv::Mat dmat;
     _src.convertTo(dmat, CV_64F);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             _dst->setCoefficient(i, j, dmat.at<double>(i, j));
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -178,14 +180,13 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _dst)
     // Reinitialize _dst.
     _dst = ::cv::Mat(4, 4, CV_64F);
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             _dst.at<double>(i, j) = _src->getCoefficient(i, j);
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------

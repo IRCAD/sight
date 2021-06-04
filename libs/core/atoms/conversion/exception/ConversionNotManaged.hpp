@@ -28,17 +28,19 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace exception
 {
 
 /// Throw this exception when a conversion between data and atom is not managed (error message explains the reasons)
 struct ATOMS_CLASS_API ConversionNotManaged : core::Exception
 {
-    ATOMS_API ConversionNotManaged( const std::string& err ) :
+    ATOMS_API ConversionNotManaged(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::atoms::conversion

@@ -36,34 +36,38 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 
-fwGuiRegisterMacro( ::sight::ui::qml::dialog::ProgressDialog,
-                    ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    ::sight::ui::qml::dialog::ProgressDialog,
+    ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY
+);
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::string& title, const std::string& message)
+ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key key, const std::string& title, const std::string& message)
 {
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     // find if toolBar exist on the ApplicationWindow
     const auto& rootObjects = engine->getRootObjects();
     QObject* toolBar        = nullptr;
-    for (const auto& root: rootObjects)
+    for(const auto& root : rootObjects)
     {
         toolBar = root->findChild<QObject*>("fwGuiQml_ProgressBar");
-        if (toolBar)
+        if(toolBar)
         {
             break;
         }
     }
+
     // TODO: find a way to remove the context from rootContext but instead only on the object
     engine->getRootContext()->setContextProperty("progressDialog", this);
-    if (toolBar)
+    if(toolBar)
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
@@ -91,8 +95,8 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
         m_dialog = m_window->findChild<QObject*>("dialog");
         SIGHT_ASSERT("The dialog is not found inside the window", m_dialog);
         QMetaObject::invokeMethod(m_dialog, "open");
-
     }
+
     m_visible = true;
     this->setTitle(title);
     this->setMessage(message);
@@ -102,7 +106,7 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
 
 ProgressDialog::~ProgressDialog()
 {
-    if (m_window)
+    if(m_window)
     {
         m_window->deleteLater();
     }
@@ -118,18 +122,19 @@ void ProgressDialog::operator()(float percent, std::string msg)
 {
     SIGHT_ASSERT("m_dialog not instanced", m_dialog);
     // check if the dialog box has been closed by the user and cancel the progress
-    if (!m_visible)
+    if(!m_visible)
     {
-        if (m_cancelCallback)
+        if(m_cancelCallback)
         {
             this->cancelPressed();
         }
+
         return;
     }
-    const int& value = static_cast<int>(percent*100);
+
+    const int& value = static_cast<int>(percent * 100);
     if(value != this->m_value)
     {
-
         this->m_value = value;
         this->setMessage(msg);
         this->setTitle(m_title.toStdString());
@@ -143,7 +148,7 @@ void ProgressDialog::setTitle(const std::string& title)
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
     m_title = QString::fromStdString(title);
-    if (m_window)
+    if(m_window)
     {
         Q_EMIT titleChanged();
     }
@@ -156,13 +161,14 @@ void ProgressDialog::setMessage(const std::string& msg)
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
     QString title   = m_title;
-    if (!title.isEmpty() && !this->m_window)
+    if(!title.isEmpty() && !this->m_window)
     {
         message += title;
         message += " - ";
     }
+
     message = message + QString::fromStdString(msg);
-    if (m_visible)
+    if(m_visible)
     {
         QMetaObject::invokeMethod(m_dialog, "changeValue", Q_ARG(QVariant, message), Q_ARG(QVariant, qreal(m_value)));
     }
@@ -186,4 +192,5 @@ void ProgressDialog::cancelPressed()
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

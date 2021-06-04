@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/com/Signal.hpp>
 #include <core/mt/types.hpp>
 
@@ -65,62 +64,62 @@ public:
     /**
      * @name Typedef used in IJob
      * @{ */
-    typedef SPTR (core::jobs::IJob) sptr;
-    typedef WPTR (core::jobs::IJob) wptr;
+    typedef SPTR(core::jobs::IJob) sptr;
+    typedef WPTR(core::jobs::IJob) wptr;
 
     /// Cancel request callback type
-    typedef std::function< bool () > CancelRequestCallback;
+    typedef std::function<bool ()> CancelRequestCallback;
 
     /// Job cancel callback type for cancel hook
-    typedef std::function< void (IJob&) > JobCancelHook;
+    typedef std::function<void (IJob&)> JobCancelHook;
 
     /// Log callback type for log hook
-    typedef std::function< void (IJob&, const std::string&) > LogHook;
+    typedef std::function<void (IJob&, const std::string&)> LogHook;
 
     /// Done work callback type for done work hook
-    typedef std::function< void (IJob&, std::uint64_t /*oldDoneWork*/) > DoneWorkHook;
+    typedef std::function<void (IJob&, std::uint64_t /*oldDoneWork*/)> DoneWorkHook;
 
     /// Work units callback type for total work unit hook
-    typedef std::function< void (IJob&, std::uint64_t /*oldTotalWorkUnits*/) > TotalWorkUnitsHook;
+    typedef std::function<void (IJob&, std::uint64_t /*oldTotalWorkUnits*/)> TotalWorkUnitsHook;
 
     /// Cancel callback type for cancel hook
-    typedef std::function< void () > CancelHook;
+    typedef std::function<void ()> CancelHook;
 
     /// State callback type for state hook
-    typedef std::function< void ( State ) > StateHook;
+    typedef std::function<void (State)> StateHook;
 
     /// Job cancel callback sequence type for cancel hook
-    typedef std::vector< JobCancelHook > CancelHookSeq;
+    typedef std::vector<JobCancelHook> CancelHookSeq;
 
     /// Done work callback sequence type for done work hook
-    typedef std::vector< DoneWorkHook > DoneWorkHookSeq;
+    typedef std::vector<DoneWorkHook> DoneWorkHookSeq;
 
     /// Work units callback sequence type for total work unit hook
-    typedef std::vector< TotalWorkUnitsHook > TotalWorkUnitsHookSeq;
+    typedef std::vector<TotalWorkUnitsHook> TotalWorkUnitsHookSeq;
 
     /// Log callback sequence type for log hook
-    typedef std::vector< LogHook > LogHookSeq;
+    typedef std::vector<LogHook> LogHookSeq;
 
     /// Log callback sequence type for state hook
-    typedef std::vector< StateHook > StateHookSeq;
+    typedef std::vector<StateHook> StateHookSeq;
 
     /// Log container type
-    typedef std::vector< std::string > Logs;
+    typedef std::vector<std::string> Logs;
 
     /// State signal type
-    typedef core::com::Signal< void () > StateSignal;
+    typedef core::com::Signal<void ()> StateSignal;
 
     /// Cancel request signal type
-    typedef core::com::Signal< void () > CancelRequestedSignal;
+    typedef core::com::Signal<void ()> CancelRequestedSignal;
 
     /// Done work signal type
-    typedef core::com::Signal< void (std::uint64_t, std::uint64_t) > DoneWorkSignal;
+    typedef core::com::Signal<void (std::uint64_t, std::uint64_t)> DoneWorkSignal;
 
     /// Log signal type
-    typedef core::com::Signal< void (std::string) > LogSignal;
+    typedef core::com::Signal<void (std::string)> LogSignal;
 
     /// Future type
-    typedef std::shared_future< void > SharedFuture;
+    typedef std::shared_future<void> SharedFuture;
     /**  @} */
 
     /**
@@ -272,19 +271,19 @@ protected:
     // workaround because of vs2010 issue : http://goo.gl/WHEkQ5
     // this is fixed in vs2012 : http://goo.gl/tvO3g7
     // TODO : remove when compiler is up to date
-    CORE_API std::function< void() > finishCallback();
+    CORE_API std::function<void()> finishCallback();
 
     /// Getter on the state without mutex lock
     CORE_API State getStateNoLock() const;
 
     /// Setter on the state
-    CORE_API void setState( State state );
+    CORE_API void setState(State state);
 
     /// Setter on the state without mutex lock
-    CORE_API void setStateNoLock( State state );
+    CORE_API void setStateNoLock(State state);
 
     /// Setter on done work units
-    CORE_API void doneWork( std::uint64_t units );
+    CORE_API void doneWork(std::uint64_t units);
 
     /**
      * @brief Setter on done work units
@@ -293,7 +292,7 @@ protected:
      * @param units new done work units
      * @param lock mutex to upgrade to write lock
      */
-    CORE_API void doneWork( std::uint64_t units, core::mt::ReadToWriteLock& lock );
+    CORE_API void doneWork(std::uint64_t units, core::mt::ReadToWriteLock& lock);
 
     /// Set done work units to total work units
     CORE_API void done();
@@ -312,7 +311,7 @@ protected:
      * @param units new total work units
      * @param lock mutex to upgrade to write lock
      */
-    CORE_API void setTotalWorkUnitsUpgradeLock( std::uint64_t units, core::mt::ReadToWriteLock& lock );
+    CORE_API void setTotalWorkUnitsUpgradeLock(std::uint64_t units, core::mt::ReadToWriteLock& lock);
 
     /**
      * @brief Add job cancel callback to sequence without mutex lock for cancel hook

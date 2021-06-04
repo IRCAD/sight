@@ -24,7 +24,6 @@
 
 #include "core/reflection/factory/new.hpp"
 #include "core/reflection/registry/detail.hpp"
-
 #include <core/macros.hpp>
 
 #include <camp/userobject.hpp>
@@ -41,7 +40,7 @@ struct UserObjectRegistry
     /**
      * @brief Register an object of type name in factory.
      */
-    UserObjectRegistry( const std::string& name )
+    UserObjectRegistry(const std::string& name)
     {
         core::reflection::registry::get()->addFactory(name, &core::reflection::factory::New<T>);
     }

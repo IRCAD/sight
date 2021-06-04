@@ -31,13 +31,14 @@
 
 namespace sight::core::memory
 {
+
 namespace tools
 {
 
 //------------------------------------------------------------------------------
 
-struct MemInfo {
-
+struct MemInfo
+{
     std::uint64_t total;
     std::uint64_t free;
     std::uint64_t buffered;
@@ -56,13 +57,12 @@ struct MemInfo {
         swaptotal  = 0;
         swapfree   = 0;
     }
-
 };
 
 //------------------------------------------------------------------------------
 
-struct Status {
-
+struct Status
+{
     std::uint64_t VmPeak;
     std::uint64_t VmSize;
     std::uint64_t VmLck;
@@ -87,14 +87,12 @@ struct Status {
         VmLib  = 0;
         VmPTE  = 0;
     }
-
 };
 
 //------------------------------------------------------------------------------
 
 class CORE_CLASS_API PosixMemoryMonitorTools
 {
-
 public:
 
     CORE_API PosixMemoryMonitorTools();
@@ -123,18 +121,18 @@ private:
     static std::uint64_t s_totalMemory;
 
     /* Extract numbers from a string between the start and end indices */
-    static std::uint64_t extract_number( char* str, int start, int end );
+    static std::uint64_t extract_number(char* str, int start, int end);
 
     /* Parse the contents of /proc/meminfo file into the meminfo structure */
-    static void get_memory_stats( MemInfo& meminfo );
+    static void get_memory_stats(MemInfo& meminfo);
 
-    static void printStatus( Status& stat );
+    static void printStatus(Status& stat);
 
-    static void analyseMemInfo( std::string& line, MemInfo& meminfo );
+    static void analyseMemInfo(std::string& line, MemInfo& meminfo);
 
-    static void analyseStatusLine( std::string& line, Status& stat );
+    static void analyseStatusLine(std::string& line, Status& stat);
 
-    static void getStatusOfPid( unsigned long pid, Status& stat);
+    static void getStatusOfPid(unsigned long pid, Status& stat);
 
     static void getAllStatus(Status& allStat);
 
@@ -142,6 +140,7 @@ private:
 };
 
 } // namespace tools
+
 } // namespace sight::core::memory
 
 #endif //defined(linux) || defined(__linux)

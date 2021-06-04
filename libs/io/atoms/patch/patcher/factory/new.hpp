@@ -38,7 +38,8 @@ class IPatcher;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -47,7 +48,7 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) io::atoms::patch::patcher::factory::New();
+friend SPTR(CLASSNAME) io::atoms::patch::patcher::factory::New();
 
 Key()
 {
@@ -55,11 +56,13 @@ Key()
 };
 
 IO_ATOMS_API SPTR(io::atoms::patch::patcher::IPatcher) New(
-    const io::atoms::patch::patcher::registry::KeyType& classname );
+    const io::atoms::patch::patcher::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
 
     return obj;
 }

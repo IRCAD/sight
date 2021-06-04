@@ -35,6 +35,7 @@
 
 namespace sight::io::http
 {
+
 namespace helper
 {
 
@@ -104,7 +105,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    for(const data::Series::sptr& s: series )
+    for(const data::Series::sptr& s : series)
     {
         result.push_back(s->getInstanceUID());
     }
@@ -113,4 +114,5 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 }
 
 } //helper
+
 } //fwNetworkIO

@@ -22,8 +22,8 @@
 
 #include "QmlEngine.hpp"
 
-#include <core/runtime/Runtime.hpp>
 #include <core/LazyInstantiator.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <QDir>
 #include <QQmlComponent>
@@ -46,10 +46,11 @@ QmlEngine::QmlEngine()
     // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
     const auto runtimePath = core::runtime::Runtime::getDefault()->getWorkingPath();
     const auto qmlDir      = runtimePath / "qml";
-    if (std::filesystem::exists(qmlDir))
+    if(std::filesystem::exists(qmlDir))
     {
         m_engine->addImportPath(QString::fromStdString(qmlDir.string()));
     }
+
     // Maybe still needed for MSVC ?
     // else
     // {
@@ -61,14 +62,13 @@ QmlEngine::QmlEngine()
 
 QmlEngine::~QmlEngine()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 SPTR(QmlEngine) QmlEngine::getDefault()
 {
-    auto engineInstance = core::LazyInstantiator< QmlEngine >::getInstance();
+    auto engineInstance = core::LazyInstantiator<QmlEngine>::getInstance();
     return engineInstance;
 }
 
@@ -117,4 +117,4 @@ QQmlContext* QmlEngine::getRootContext()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui

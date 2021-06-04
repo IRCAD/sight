@@ -63,27 +63,25 @@ void STransformDepthMap2mm::starting()
 
 void STransformDepthMap2mm::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void STransformDepthMap2mm::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void STransformDepthMap2mm::updating()
 {
-    data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
+    data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>(s_CAMERA_SERIES_INPUT);
     SIGHT_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
     data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
 
     const double scale = depthCamera->getScale();
 
-    auto originFrame = this->getInput< data::Image >(s_ORIGIN_FRAME_INPUT);
+    auto originFrame = this->getInput<data::Image>(s_ORIGIN_FRAME_INPUT);
     SIGHT_ASSERT("missing '" + s_ORIGIN_FRAME_INPUT + "' image", originFrame);
 
     data::mt::ObjectReadLock originLock(originFrame);
@@ -97,7 +95,7 @@ void STransformDepthMap2mm::updating()
 
     const auto size = originFrame->getSize2();
 
-    auto scaledFrame = this->getInOut< data::Image >(s_SCALED_FRAME_INOUT);
+    auto scaledFrame = this->getInOut<data::Image>(s_SCALED_FRAME_INOUT);
     SIGHT_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
 
     data::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
@@ -106,7 +104,7 @@ void STransformDepthMap2mm::updating()
     {
         scaledFrame->resize(size, originFrame->getType(), originFrame->getPixelFormat());
 
-        if (scaledFrame->getNumberOfComponents() != originFrame->getNumberOfComponents())
+        if(scaledFrame->getNumberOfComponents() != originFrame->getNumberOfComponents())
         {
             FW_DEPRECATED_MSG("Pixel format is not properly defined.", "sight 22.0");
             scaledFrame->setNumberOfComponents(originFrame->getNumberOfComponents());
@@ -124,16 +122,16 @@ void STransformDepthMap2mm::updating()
     const auto origDumpLock   = originFrame->lock();
     const auto scaledDumpLock = scaledFrame->lock();
 
-    auto depthBufferInItr     = originFrame->begin< std::uint16_t >();
-    const auto depthBufferEnd = originFrame->end< std::uint16_t >();
-    auto depthBufferOutItr    = scaledFrame->begin< std::uint16_t >();
+    auto depthBufferInItr     = originFrame->begin<std::uint16_t>();
+    const auto depthBufferEnd = originFrame->end<std::uint16_t>();
+    auto depthBufferOutItr    = scaledFrame->begin<std::uint16_t>();
 
-    for (; depthBufferInItr != depthBufferEnd; ++depthBufferInItr, ++depthBufferOutItr)
+    for( ; depthBufferInItr != depthBufferEnd ; ++depthBufferInItr, ++depthBufferOutItr)
     {
-        *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr)*scale);
+        *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr) * scale);
     }
 
-    auto sig = scaledFrame->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG );
+    auto sig = scaledFrame->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

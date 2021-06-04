@@ -52,14 +52,14 @@ const core::com::Slots::SlotKeyType IFrame::s_HIDE_SLOT        = "hide";
 const core::com::Signals::SignalKeyType IFrame::s_CLOSED_SIG = "closed";
 
 ui::base::container::fwContainer::wptr IFrame::m_progressWidget =
-    std::weak_ptr< ui::base::container::fwContainer >();
+    std::weak_ptr<ui::base::container::fwContainer>();
 
 IFrame::IFrame() :
     m_hasMenuBar(false),
     m_hasToolBar(false),
     m_closePolicy("exit")
 {
-    m_sigClosed = newSignal< ClosedSignalType >(s_CLOSED_SIG);
+    m_sigClosed = newSignal<ClosedSignalType>(s_CLOSED_SIG);
 
     newSlot(s_SET_VISIBLE_SLOT, &IFrame::setVisible, this);
     newSlot(s_SHOW_SLOT, &IFrame::show, this);
@@ -77,19 +77,19 @@ IFrame::~IFrame()
 void IFrame::initialize()
 {
     // find gui configuration
-    std::vector < ConfigurationType > vectGui    = m_configuration->find("gui");
-    std::vector < ConfigurationType > vectWindow = m_configuration->find("window");
+    std::vector<ConfigurationType> vectGui    = m_configuration->find("gui");
+    std::vector<ConfigurationType> vectWindow = m_configuration->find("window");
 
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
-        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("frame");
-        SIGHT_ASSERT("["+this->getID()+"' ] <frame> element must exist", !vectLayoutMng.empty());
+        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("frame");
+        SIGHT_ASSERT("[" + this->getID() + "' ] <frame> element must exist", !vectLayoutMng.empty());
         m_frameConfig = vectLayoutMng.at(0);
         this->initializeLayoutManager(m_frameConfig);
 
         // find menuBarBuilder configuration
-        std::vector < ConfigurationType > vectMBBuilder = vectGui.at(0)->find("menuBar");
+        std::vector<ConfigurationType> vectMBBuilder = vectGui.at(0)->find("menuBar");
         if(!vectMBBuilder.empty())
         {
             m_menuBarConfig = vectMBBuilder.at(0);
@@ -99,7 +99,7 @@ void IFrame::initialize()
         }
 
         // find toolBarBuilder configuration
-        std::vector < ConfigurationType > vectTBBuilder = vectGui.at(0)->find("toolBar");
+        std::vector<ConfigurationType> vectTBBuilder = vectGui.at(0)->find("toolBar");
         if(!vectTBBuilder.empty())
         {
             m_toolBarConfig = vectTBBuilder.at(0);
@@ -113,19 +113,22 @@ void IFrame::initialize()
     {
         ConfigurationType window = vectWindow.at(0);
         std::string onclose      = window->getAttributeValue("onclose");
-        if ( !onclose.empty() )
+        if(!onclose.empty())
         {
             m_closePolicy = onclose;
         }
-        SIGHT_ASSERT("["+this->getID()+"' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
-                     +CLOSE_POLICY_NOTIFY+"', '" +CLOSE_POLICY_EXIT+"' or '"+CLOSE_POLICY_MESSAGE+"'",
-                     m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
-                     || m_closePolicy == CLOSE_POLICY_MESSAGE);
+
+        SIGHT_ASSERT(
+            "[" + this->getID() + "' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
+            + CLOSE_POLICY_NOTIFY + "', '" + CLOSE_POLICY_EXIT + "' or '" + CLOSE_POLICY_MESSAGE + "'",
+            m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
+            || m_closePolicy == CLOSE_POLICY_MESSAGE
+        );
     }
 
     m_viewRegistry = ui::base::registry::View::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
+    std::vector<ConfigurationType> vectRegistry = m_configuration->find("registry");
     if(!vectRegistry.empty())
     {
         m_registryConfig = vectRegistry.at(0);
@@ -137,60 +140,72 @@ void IFrame::initialize()
 
 void IFrame::create()
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
-                 "'configuring()' method.", m_frameLayoutManager);
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
+                              "'configuring()' method.",
+        m_frameLayoutManager
+    );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_frameLayoutManager->createFrame();
-        })).wait();
+        })
+    ).wait();
 
     ui::base::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
-    if ( m_progressWidget.expired() )
+    if(m_progressWidget.expired())
     {
         m_progressWidget = frame;
     }
 
     ui::base::container::fwContainer::sptr container = m_frameLayoutManager->getContainer();
-    std::vector< ui::base::container::fwContainer::sptr > subViews;
+    std::vector<ui::base::container::fwContainer::sptr> subViews;
     subViews.push_back(container);
     m_viewRegistry->manage(subViews);
 
     ui::base::layoutManager::IFrameLayoutManager::CloseCallback fct;
 
-    if (m_closePolicy == CLOSE_POLICY_EXIT)
+    if(m_closePolicy == CLOSE_POLICY_EXIT)
     {
-        fct = std::bind( &ui::base::IFrame::onCloseExit, this);
+        fct = std::bind(&ui::base::IFrame::onCloseExit, this);
     }
-    else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
+    else if(m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
-        fct = std::bind( &ui::base::IFrame::onCloseNotify, this);
+        fct = std::bind(&ui::base::IFrame::onCloseNotify, this);
     }
     else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
     {
-        fct = std::bind( &ui::base::IFrame::onCloseMessage, this);
+        fct = std::bind(&ui::base::IFrame::onCloseMessage, this);
         auto app = ui::base::Application::New();
         app->setConfirm(true);
     }
 
     m_frameLayoutManager->setCloseCallback(fct);
 
-    if (m_hasMenuBar)
+    if(m_hasMenuBar)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_menuBarBuilder->createMenuBar(frame);
-            })).wait();
+            })
+        ).wait();
 
         m_viewRegistry->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
 
-    if (m_hasToolBar)
+    if(m_hasToolBar)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_toolBarBuilder->createToolBar(frame);
-            })).wait();
+            })
+        ).wait();
 
         m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
     }
@@ -202,49 +217,63 @@ void IFrame::destroy()
 {
     SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
-    if (m_hasToolBar)
+    if(m_hasToolBar)
     {
         m_viewRegistry->unmanageToolBar();
         SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_toolBarBuilder->destroyToolBar();
-            })).wait();
+            })
+        ).wait();
     }
 
-    if (m_hasMenuBar)
+    if(m_hasMenuBar)
     {
         m_viewRegistry->unmanageMenuBar();
         SIGHT_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_menuBarBuilder->destroyMenuBar();
-            })).wait();
+            })
+        ).wait();
     }
 
     m_viewRegistry->unmanage();
     SIGHT_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_frameLayoutManager->destroyFrame();
-        })).wait();
+        })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'frame', actual: '"
-                 +frameConfig->getName()+ "'",
-                 frameConfig->getName() == "frame");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'frame', actual: '"
+        + frameConfig->getName() + "'",
+        frameConfig->getName() == "frame"
+    );
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
-        ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
+        ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
+    );
     m_frameLayoutManager = ui::base::layoutManager::IFrameLayoutManager::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
-                 m_frameLayoutManager);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " << ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
+        m_frameLayoutManager
+    );
 
     m_frameLayoutManager->initialize(frameConfig);
 }
@@ -253,14 +282,18 @@ void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
 
 void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'menuBar', actual: '"
-                 +menuBarConfig->getName()+ "'",
-                 menuBarConfig->getName() == "menuBar");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'menuBar', actual: '"
+        + menuBarConfig->getName() + "'",
+        menuBarConfig->getName() == "menuBar"
+    );
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IMenuBarBuilder::REGISTRY_KEY);
     m_menuBarBuilder = ui::base::builder::IMenuBarBuilder::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IMenuBarBuilder::REGISTRY_KEY,
-                 m_menuBarBuilder);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " << ui::base::builder::IMenuBarBuilder::REGISTRY_KEY,
+        m_menuBarBuilder
+    );
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }
@@ -269,14 +302,18 @@ void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
 void IFrame::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
-                 +toolBarConfig->getName()+ "'",
-                 toolBarConfig->getName() == "toolBar");
+    SIGHT_ASSERT(
+        "[" + this->getID() + "' ] Wrong configuration name, expected: 'toolBar', actual: '"
+        + toolBarConfig->getName() + "'",
+        toolBarConfig->getName() == "toolBar"
+    );
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder = ui::base::builder::IToolBarBuilder::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
-                 m_toolBarBuilder);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " << ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
+        m_toolBarBuilder
+    );
 
     m_toolBarBuilder->initialize(toolBarConfig);
 }
@@ -334,4 +371,4 @@ void IFrame::hide()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui

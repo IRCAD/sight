@@ -42,7 +42,7 @@ class SessionSerializer final : public ISession
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionSerializer, ISession)
+    SIGHT_DECLARE_CLASS(SessionSerializer, ISession);
 
     /// Delete default constructors and assignment operators
     SessionSerializer(const SessionSerializer&)            = delete;

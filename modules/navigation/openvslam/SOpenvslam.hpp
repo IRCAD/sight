@@ -143,7 +143,7 @@ class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracke
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpenvslam, service::ITracker)
+    SIGHT_DECLARE_SERVICE(SOpenvslam, service::ITracker);
 
     /// Constructor. Initializes signals and slots.
     MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;

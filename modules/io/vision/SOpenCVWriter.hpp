@@ -28,6 +28,7 @@
 
 namespace sight::module::io::vision
 {
+
 /**
  * @brief SOpenCVWriter class exports data::CameraSeries in xml/yaml files using openCV
  *
@@ -78,7 +79,8 @@ namespace sight::module::io::vision
 class MODULE_IO_VISION_CLASS_API SOpenCVWriter : public sight::io::base::service::IWriter
 {
 public:
-    SIGHT_DECLARE_SERVICE(SOpenCVWriter, sight::io::base::service::IWriter)
+
+    SIGHT_DECLARE_SERVICE(SOpenCVWriter, sight::io::base::service::IWriter);
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVWriter();
@@ -123,7 +125,6 @@ protected:
 
     /// Returns managed path type, here service manages only single file
     MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
-
 };
 
 } //namespace sight::module::io::vision

@@ -29,22 +29,26 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Study::Study(const data::DicomSeries::csptr& dicomSeries,
-             const SPTR(::gdcm::Reader)& reader,
-             const io::dicom::container::DicomInstance::sptr& instance,
-             const data::Study::sptr& study,
-             const core::log::Logger::sptr& logger,
-             ProgressCallback progress,
-             CancelRequestedCallback cancel) :
-    io::dicom::reader::ie::InformationEntity< data::Study >(dicomSeries, reader, instance, study, logger,
-                                                            progress, cancel)
+Study::Study(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(::gdcm::Reader)& reader,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const data::Study::sptr& study,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::reader::ie::InformationEntity<data::Study>(dicomSeries, reader, instance, study, logger,
+                                                          progress, cancel)
 {
 }
 
@@ -73,12 +77,12 @@ void Study::readGeneralStudyModule()
     const std::string& studyTime = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0030>(dataset);
     m_object->setTime(studyTime);
 
-    const std::string& studyReferringPhysicianName
-        = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0090>(dataset);
+    const std::string& studyReferringPhysicianName =
+        io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0090>(dataset);
     m_object->setReferringPhysicianName(studyReferringPhysicianName);
 
-    const std::string& studyConsultingPhysicianName
-        = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x009C>(dataset);
+    const std::string& studyConsultingPhysicianName =
+        io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x009C>(dataset);
     m_object->setConsultingPhysicianName(studyConsultingPhysicianName);
 
     const std::string& studyDescription = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1030>(dataset);
@@ -101,13 +105,15 @@ void Study::readPatientStudyModule()
     const std::string& studyPatientWeight = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1030>(dataset);
     m_object->setPatientWeight(studyPatientWeight);
 
-    const std::string& studyPatientBodyMassIndex
-        = io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1022>(dataset);
+    const std::string& studyPatientBodyMassIndex =
+        io::dicom::helper::DicomDataReader::getTagValue<0x0010, 0x1022>(dataset);
     m_object->setPatientBodyMassIndex(studyPatientBodyMassIndex);
 }
 
 //------------------------------------------------------------------------------
 
-}// namespace ie
+} // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

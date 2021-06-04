@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Patient))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Patient))
 {
     builder
     .tag("object_version", "1")

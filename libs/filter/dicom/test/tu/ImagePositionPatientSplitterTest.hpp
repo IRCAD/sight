@@ -30,6 +30,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -38,12 +39,13 @@ namespace ut
  */
 class ImagePositionPatientSplitterTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImagePositionPatientSplitterTest );
-CPPUNIT_TEST( simpleApplication );
-CPPUNIT_TEST( negativeSpacingApplication );
+CPPUNIT_TEST_SUITE(ImagePositionPatientSplitterTest);
+CPPUNIT_TEST(simpleApplication);
+CPPUNIT_TEST(negativeSpacingApplication);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -57,4 +59,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

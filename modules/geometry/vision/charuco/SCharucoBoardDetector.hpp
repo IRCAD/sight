@@ -34,12 +34,15 @@
 
 namespace cv
 {
+
 namespace aruco
 {
+
 class Dictionary;
 class CharucoBoard;
 
 } //namespace cv
+
 } //namespace aruco
 
 namespace sight::module::geometry::vision::charuco
@@ -93,7 +96,8 @@ namespace sight::module::geometry::vision::charuco
 class MODULE_GEOMETRY_VISION_CLASS_API SCharucoBoardDetector : public service::IController
 {
 public:
-    SIGHT_DECLARE_SERVICE(SCharucoBoardDetector, sight::service::IController)
+
+    SIGHT_DECLARE_SERVICE(SCharucoBoardDetector, sight::service::IController);
 
     /**
      * @name Signals API
@@ -127,9 +131,11 @@ public:
      * @param timestamp time corresponding to the frame to process in the timeline
      * @return a pointlist where x, y are image coordinates of detected points, and z their ids.
      */
-    data::PointList::sptr detectCharucoBoard(const data::FrameTL::csptr tl,
-                                             const core::HiResClock::HiResClockType timestamp,
-                                             data::FrameTL::sptr tlDetection = nullptr);
+    data::PointList::sptr detectCharucoBoard(
+        const data::FrameTL::csptr tl,
+        const core::HiResClock::HiResClockType timestamp,
+        data::FrameTL::sptr tlDetection = nullptr
+    );
 
 protected:
 
@@ -206,7 +212,7 @@ private:
     float m_markerSize;
 
     /// Last valid charucoBoard points for each timeline
-    std::vector< data::PointList::sptr> m_cornerAndIdLists;
+    std::vector<data::PointList::sptr> m_cornerAndIdLists;
 
     /// Timestamp of the last managed image
     core::HiResClock::HiResClockType m_lastTimestamp;
@@ -215,11 +221,10 @@ private:
     int m_markerSizeInBits;
 
     /// Charuco dictionary
-    cv::Ptr< ::cv::aruco::Dictionary > m_dictionary;
+    cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
 
     /// Chessboard-aruco board
-    ::cv::Ptr< ::cv::aruco::CharucoBoard > m_board;
-
+    ::cv::Ptr< ::cv::aruco::CharucoBoard> m_board;
 };
 
 } //namespace sight::module::geometry::vision::charuco

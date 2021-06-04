@@ -28,8 +28,10 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -37,7 +39,8 @@ namespace data
 class IO_PATCH_CLASS_API Equipment1 : public io::atoms::patch::IStructuralCreator
 {
 public:
-    SIGHT_DECLARE_CLASS(Equipment1, io::atoms::patch::IStructuralCreator, new Equipment1)
+
+    SIGHT_DECLARE_CLASS(Equipment1, io::atoms::patch::IStructuralCreator, new Equipment1);
 
     /// Constructor
     IO_PATCH_API Equipment1();
@@ -46,13 +49,14 @@ public:
     IO_PATCH_API ~Equipment1();
 
     /// Copy constructor
-    IO_PATCH_API Equipment1( const Equipment1& cpy );
+    IO_PATCH_API Equipment1(const Equipment1& cpy);
 
     /// Create the specified object (sets 'institution_name' attribute).
     IO_PATCH_API sight::atoms::Object::sptr create() override;
-
 };
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

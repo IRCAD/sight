@@ -40,7 +40,7 @@ namespace sight::service
  *
 
  */
-SERVICE_API service::IService::sptr get( std::string uid );
+SERVICE_API service::IService::sptr get(std::string uid);
 
 //@}
 

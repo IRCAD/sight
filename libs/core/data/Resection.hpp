@@ -32,22 +32,23 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Resection));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Resection));
 namespace sight::data
 {
+
 /**
  * @brief This class defines a resection.
  */
 class DATA_CLASS_API Resection : public data::Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Resection, data::Object, data::factory::New< Resection >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Resection));
+    SIGHT_DECLARE_CLASS(Resection, data::Object, data::factory::New<Resection>);
 
-    typedef std::vector< data::Reconstruction::sptr > ResectionInputs;
-    typedef std::vector< data::Reconstruction::sptr > ResectionOutputs;
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Resection));
+
+    typedef std::vector<data::Reconstruction::sptr> ResectionInputs;
+    typedef std::vector<data::Reconstruction::sptr> ResectionOutputs;
 
     /**
      * @brief Constructor
@@ -59,7 +60,7 @@ public:
     DATA_API virtual ~Resection();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -70,42 +71,42 @@ public:
      */
     data::PlaneList::sptr& getPlaneList();
     const data::PlaneList::sptr& getPlaneList() const;
-    void setPlaneList (const data::PlaneList::sptr& _planeList);
+    void setPlaneList(const data::PlaneList::sptr& _planeList);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the inputs.
      */
-    ResectionInputs& getInputs ();
-    const ResectionInputs& getInputs () const;
-    void setInputs (const ResectionInputs& _vInputs);
+    ResectionInputs& getInputs();
+    const ResectionInputs& getInputs() const;
+    void setInputs(const ResectionInputs& _vInputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the outputs.
      */
-    ResectionOutputs& getOutputs ();
-    const ResectionOutputs& getOutputs () const;
-    void setOutputs (const ResectionOutputs& _vOutputs);
+    ResectionOutputs& getOutputs();
+    const ResectionOutputs& getOutputs() const;
+    void setOutputs(const ResectionOutputs& _vOutputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the IsSafePart.
      */
-    bool  getIsSafePart () const;
-    void setIsSafePart (const bool _isSafePart);
+    bool getIsSafePart() const;
+    void setIsSafePart(const bool _isSafePart);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the name.
      */
-    std::string& getName ();
-    const std::string& getName () const;
-    void setName (const std::string& _name);
+    std::string& getName();
+    const std::string& getName() const;
+    void setName(const std::string& _name);
 
     /// @}
 
@@ -113,8 +114,8 @@ public:
      * @{
      * @brief Get/Set value of the IsVisible.
      */
-    bool  getIsVisible () const;
-    void setIsVisible (const bool _isVisible);
+    bool getIsVisible() const;
+    void setIsVisible(const bool _isVisible);
 
     /// @}
 
@@ -122,8 +123,8 @@ public:
      * @{
      * @brief Get/Set value of the IsValid.
      */
-    bool  getIsValid () const;
-    void setIsValid (const bool _isValid);
+    bool getIsValid() const;
+    void setIsValid(const bool _isValid);
 
     /// @}
 
@@ -133,20 +134,20 @@ public:
      */
 
     /// Type of signal when a reconstruction is added
-    typedef core::com::Signal< void () > ReconstructionAddedSignalType;
+    typedef core::com::Signal<void ()> ReconstructionAddedSignalType;
 
     /// Key in m_signals map of signal m_sigReconstructionAdded
     DATA_API static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_ADDED_SIG;
 
     /// Type of signal when the resection visibility is modified
-    typedef core::com::Signal< void () > VisibilityModifiedSignalType;
+    typedef core::com::Signal<void ()> VisibilityModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
 
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -185,7 +186,6 @@ private:
     /**
      * @}
      */
-
 }; // end class Resection
 
 //-----------------------------------------------------------------------------
@@ -204,112 +204,112 @@ inline const data::PlaneList::sptr& Resection::getPlaneList() const
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setPlaneList (const data::PlaneList::sptr& _planeList)
+inline void Resection::setPlaneList(const data::PlaneList::sptr& _planeList)
 {
     m_planeList = _planeList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionInputs& Resection::getInputs ()
+inline Resection::ResectionInputs& Resection::getInputs()
 {
     return m_vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionInputs& Resection::getInputs () const
+inline const Resection::ResectionInputs& Resection::getInputs() const
 {
     return m_vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setInputs (const Resection::ResectionInputs& _vInputs)
+inline void Resection::setInputs(const Resection::ResectionInputs& _vInputs)
 {
     m_vInputs = _vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionOutputs& Resection::getOutputs ()
+inline Resection::ResectionOutputs& Resection::getOutputs()
 {
     return m_vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionOutputs& Resection::getOutputs () const
+inline const Resection::ResectionOutputs& Resection::getOutputs() const
 {
     return m_vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setOutputs (const Resection::ResectionOutputs& _vOutputs)
+inline void Resection::setOutputs(const Resection::ResectionOutputs& _vOutputs)
 {
     m_vOutputs = _vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool Resection::getIsSafePart () const
+inline bool Resection::getIsSafePart() const
 {
     return m_isSafePart;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setIsSafePart (const bool _isSafePart)
+inline void Resection::setIsSafePart(const bool _isSafePart)
 {
     m_isSafePart = _isSafePart;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Resection::getName ()
+inline std::string& Resection::getName()
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Resection::getName () const
+inline const std::string& Resection::getName() const
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setName (const std::string& _name)
+inline void Resection::setName(const std::string& _name)
 {
     m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool Resection::getIsVisible () const
+inline bool Resection::getIsVisible() const
 {
     return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setIsVisible (const bool _isVisible)
+inline void Resection::setIsVisible(const bool _isVisible)
 {
     m_isVisible = _isVisible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool Resection::getIsValid () const
+inline bool Resection::getIsValid() const
 {
     return m_isValid;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setIsValid (const bool _isValid)
+inline void Resection::setIsValid(const bool _isValid)
 {
     m_isValid = _isValid;
 }

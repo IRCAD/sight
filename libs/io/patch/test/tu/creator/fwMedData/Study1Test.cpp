@@ -29,14 +29,17 @@
 #include "io/patch/structural/creator/data/Study1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::creator::data::Study1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::creator::data::Study1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -63,16 +66,16 @@ void Study1Test::createTest()
 
     CPPUNIT_ASSERT(studyCreator);
     const std::string& classname = studyCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classname);
     const std::string& objectVersion = studyCreator->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     sight::atoms::Object::sptr study = studyCreator->create();
 
     const std::string& studyClassname = io::atoms::patch::helper::getClassname(study);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == studyClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == studyClassname);
     const std::string& studyObjectVersion = io::atoms::patch::helper::getVersion(study);
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == studyObjectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == studyObjectVersion);
 
     CPPUNIT_ASSERT(study->getAttribute("instance_uid"));
     CPPUNIT_ASSERT(study->getAttribute("date"));
@@ -80,7 +83,6 @@ void Study1Test::createTest()
     CPPUNIT_ASSERT(study->getAttribute("referring_physician_name"));
     CPPUNIT_ASSERT(study->getAttribute("description"));
     CPPUNIT_ASSERT(study->getAttribute("patient_age"));
-
 }
 
 //------------------------------------------------------------------------------
@@ -91,25 +93,28 @@ void Study1Test::copyTest()
     Study1 studyCreator;
 
     const std::string& classname = studyCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classname);
     const std::string& objectVersion = studyCreator.getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     Study1* studyCreator2 = new Study1(studyCreator);
 
     CPPUNIT_ASSERT(studyCreator2);
     const std::string& classnamestudyCreator2 = studyCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classnamestudyCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Study") == classnamestudyCreator2);
 
     const std::string& objectVersionstudyCreator2 = studyCreator2->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionstudyCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionstudyCreator2);
 
-    delete(studyCreator2);
+    delete (studyCreator2);
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace data
+
 } //namespace creator
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

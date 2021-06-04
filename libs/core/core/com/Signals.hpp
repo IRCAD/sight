@@ -41,8 +41,8 @@ class CORE_CLASS_API Signals
 public:
 
     typedef std::string SignalKeyType;
-    typedef std::map< SignalKeyType, SPTR( SignalBase ) > SignalMapType;
-    typedef std::vector < SignalKeyType > SignalKeyContainerType;
+    typedef std::map<SignalKeyType, SPTR(SignalBase)> SignalMapType;
+    typedef std::vector<SignalKeyType> SignalKeyContainerType;
 
     /// Constructor, does nothing
     CORE_API Signals();
@@ -51,10 +51,10 @@ public:
     CORE_API virtual ~Signals();
 
     /// Registers SignalBase in m_signals
-    CORE_API Signals& operator()( const SignalKeyType& key, const SPTR( SignalBase )& Signal );
+    CORE_API Signals& operator()(const SignalKeyType& key, const SPTR(SignalBase)& Signal);
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR( SignalBase ) operator[]( const SignalKeyType& key ) const;
+    CORE_API SPTR(SignalBase) operator[](const SignalKeyType& key) const;
 
     /// Returns all SignalKeyType registered in m_signals
     CORE_API SignalKeyContainerType getSignalKeys() const;
@@ -62,10 +62,10 @@ public:
 protected:
 
     /// Copy constructor forbidden
-    Signals( const Signals& );
+    Signals(const Signals&);
 
     /// Copy constructor forbidden
-    Signals& operator=( const Signals& );
+    Signals& operator=(const Signals&);
 
     /// Association < key , SPTR( SignalBase ) >
     SignalMapType m_signals;

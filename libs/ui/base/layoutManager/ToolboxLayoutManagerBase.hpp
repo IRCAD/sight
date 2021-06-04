@@ -42,7 +42,7 @@ class UI_BASE_CLASS_API ToolboxLayoutManagerBase : public IViewLayoutManager
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ToolboxLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
+    SIGHT_DECLARE_CLASS(ToolboxLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager);
 
     typedef std::string RegistryKeyType;
 

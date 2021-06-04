@@ -29,14 +29,17 @@
 #include <boost/lexical_cast.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::detail::reflection::ut::CameraTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::detail::reflection::ut::CameraTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -58,16 +61,16 @@ void CameraTest::tearDown()
 
 void CameraTest::propertiesTest()
 {
-    const double CX           = rand()%10000/100;
-    const double CY           = rand()%10000/100;
-    const double FX           = rand()%10000/100;
-    const double FY           = rand()%10000/100;
-    const double SKEW         = rand()%10000/100;
-    const double K1           = rand()%10000/100;
-    const double K2           = rand()%10000/100;
-    const double P1           = rand()%10000/100;
-    const double P2           = rand()%10000/100;
-    const double K3           = rand()%10000/100;
+    const double CX           = rand() % 10000 / 100;
+    const double CY           = rand() % 10000 / 100;
+    const double FX           = rand() % 10000 / 100;
+    const double FY           = rand() % 10000 / 100;
+    const double SKEW         = rand() % 10000 / 100;
+    const double K1           = rand() % 10000 / 100;
+    const double K2           = rand() % 10000 / 100;
+    const double P1           = rand() % 10000 / 100;
+    const double P2           = rand() % 10000 / 100;
+    const double K3           = rand() % 10000 / 100;
     const bool IS_CALIBRATED  = true;
     const std::string DESC    = "My camera";
     const std::string CAM_ID  = "CAM_461384568";
@@ -108,7 +111,8 @@ void CameraTest::propertiesTest()
                                                     "stream_url",
                                                     "camera_source",
                                                     "pixel_format",
-                                                    "scale"};
+                                                    "scale"
+    };
 
     dch::visitProperties(camera->getClassname(), dataProperties);
     dch::compareSimplePropertyValue(camera, "@description", DESC);
@@ -119,28 +123,59 @@ void CameraTest::propertiesTest()
     dch::compareSimplePropertyValue(camera, "@intrinsic.3", ::boost::lexical_cast<std::string>(CY));
     dch::compareSimplePropertyValue(camera, "@intrinsic.0", ::boost::lexical_cast<std::string>(FX));
     dch::compareSimplePropertyValue(camera, "@intrinsic.1", ::boost::lexical_cast<std::string>(FY));
-    dch::compareSimplePropertyValue(camera, "@distortion_coefficient.0",
-                                    ::boost::lexical_cast<std::string>(K1));
-    dch::compareSimplePropertyValue(camera, "@distortion_coefficient.1",
-                                    ::boost::lexical_cast<std::string>(K2));
-    dch::compareSimplePropertyValue(camera, "@distortion_coefficient.2",
-                                    ::boost::lexical_cast<std::string>(P1));
-    dch::compareSimplePropertyValue(camera, "@distortion_coefficient.3",
-                                    ::boost::lexical_cast<std::string>(P2));
-    dch::compareSimplePropertyValue(camera, "@distortion_coefficient.4",
-                                    ::boost::lexical_cast<std::string>(K3));
-    dch::compareSimplePropertyValue(camera, "@max_framerate",
-                                    ::boost::lexical_cast<std::string>(MAX_FRAMERATE));
-    dch::compareSimplePropertyValue(camera, "@width",
-                                    ::boost::lexical_cast<std::string>(WIDTH));
-    dch::compareSimplePropertyValue(camera, "@height",
-                                    ::boost::lexical_cast<std::string>(HEIGHT));
-    dch::compareSimplePropertyValue(camera, "@scale",
-                                    ::boost::lexical_cast<std::string>(SCALE));
+    dch::compareSimplePropertyValue(
+        camera,
+        "@distortion_coefficient.0",
+        ::boost::lexical_cast<std::string>(K1)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@distortion_coefficient.1",
+        ::boost::lexical_cast<std::string>(K2)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@distortion_coefficient.2",
+        ::boost::lexical_cast<std::string>(P1)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@distortion_coefficient.3",
+        ::boost::lexical_cast<std::string>(P2)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@distortion_coefficient.4",
+        ::boost::lexical_cast<std::string>(K3)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@max_framerate",
+        ::boost::lexical_cast<std::string>(MAX_FRAMERATE)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@width",
+        ::boost::lexical_cast<std::string>(WIDTH)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@height",
+        ::boost::lexical_cast<std::string>(HEIGHT)
+    );
+    dch::compareSimplePropertyValue(
+        camera,
+        "@scale",
+        ::boost::lexical_cast<std::string>(SCALE)
+    );
 }
 
 //------------------------------------------------------------------------------
+
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace ardata

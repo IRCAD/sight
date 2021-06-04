@@ -24,11 +24,11 @@
 
 #include "geometry/data/config.hpp"
 
-#include <core/data/PointList.hpp>
-
 #include <data/Array.hpp>
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
+
+#include <core/data/PointList.hpp>
 
 namespace sight::geometry::data
 {
@@ -52,16 +52,20 @@ public:
      * @param[in] _pointList2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
-    GEOMETRY_DATA_API static ::sight::data::Array::sptr
-    computeDistance(::sight::data::PointList::sptr _pointList1, ::sight::data::PointList::sptr _pointList2);
+    GEOMETRY_DATA_API static ::sight::data::Array::sptr computeDistance(
+        ::sight::data::PointList::sptr _pointList1,
+        ::sight::data::PointList::sptr _pointList2
+    );
 
     /**
      * @brief Transform a pointList with a transformation matrix
      * @param[in] _pointList pointlist to be transformed
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
-    GEOMETRY_DATA_API static void transform(::sight::data::PointList::sptr& _pointList,
-                                            const ::sight::data::Matrix4::csptr& _matrix);
+    GEOMETRY_DATA_API static void transform(
+        ::sight::data::PointList::sptr& _pointList,
+        const ::sight::data::Matrix4::csptr& _matrix
+    );
 
     /**
      * @brief Associate 2 pointLists:
@@ -70,8 +74,10 @@ public:
      * @param[in] _pointList1 first pointlist
      * @param[in] _pointList2 pointlist that will be re-ordered
      */
-    GEOMETRY_DATA_API static void associate(const ::sight::data::PointList::csptr& _pointList1,
-                                            ::sight::data::PointList::sptr _pointList2);
+    GEOMETRY_DATA_API static void associate(
+        const ::sight::data::PointList::csptr& _pointList1,
+        ::sight::data::PointList::sptr _pointList2
+    );
 
     /**
      * @brief removeClosestPoint: removes the closest point from a reference point
@@ -83,8 +89,8 @@ public:
     GEOMETRY_DATA_API static const ::sight::data::Point::sptr removeClosestPoint(
         const ::sight::data::PointList::sptr& _pointList,
         const ::sight::data::Point::csptr& _point,
-        float _delta);
-
+        float _delta
+    );
 };
 
 } // namespace sight::geometry::data

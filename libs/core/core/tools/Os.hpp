@@ -67,11 +67,11 @@ CORE_API std::string getEnv(const std::string& name, const std::string& defaultV
  * the path. Under unix, XDG conventions are repected.
  * For example, the UserDataDir under linux will be "~/.config/company/appName"
  */
-CORE_API std::string  getUserDataDir(
+CORE_API std::string getUserDataDir(
     std::string company  = "",
     std::string appName  = "",
     bool createDirectory = false
-    );
+);
 
 /**
  * @brief   Return the path to a shared library name

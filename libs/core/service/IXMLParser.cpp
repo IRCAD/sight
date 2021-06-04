@@ -25,7 +25,7 @@
 namespace sight::service
 {
 
-IXMLParser::IXMLParser( )
+IXMLParser::IXMLParser()
 {
 }
 
@@ -56,23 +56,23 @@ void IXMLParser::configuring()
 void IXMLParser::updating()
 {
     core::runtime::ConfigurationElement::Iterator configEltIter;
-    for(configEltIter = this->m_configuration->begin(); !(configEltIter == this->m_configuration->end());
+    for(configEltIter = this->m_configuration->begin() ; !(configEltIter == this->m_configuration->end()) ;
         ++configEltIter)
     {
-        SIGHT_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object" );
+        SIGHT_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::setObjectConfig( core::runtime::ConfigurationElement::csptr _cfgElem )
+void IXMLParser::setObjectConfig(core::runtime::ConfigurationElement::csptr _cfgElem)
 {
     m_cfg = _cfgElem;
 }
 
 //-----------------------------------------------------------------------------
 
-void IXMLParser::createConfig( core::tools::Object::sptr _obj )
+void IXMLParser::createConfig(core::tools::Object::sptr _obj)
 {
 }
 
@@ -102,4 +102,4 @@ void IXMLParser::destroyConfig()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::service

@@ -32,10 +32,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::TagValueSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::TagValueSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -82,7 +83,8 @@ bool TagValueSplitter::isConfigurationRequired() const
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger
+) const
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
@@ -92,8 +94,8 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
     DicomSeriesContainerType result;
 
-    typedef std::vector< core::memory::BufferObject::sptr > InstanceContainerType;
-    typedef std::map< std::string, InstanceContainerType > InstanceGroupContainer;
+    typedef std::vector<core::memory::BufferObject::sptr> InstanceContainerType;
+    typedef std::map<std::string, InstanceContainerType> InstanceGroupContainer;
 
     // Create a container to store the groups of instances
     InstanceGroupContainer groupContainer;
@@ -102,12 +104,12 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     DcmDataset* dataset;
     OFString data;
 
-    for(const auto& item :  series->getDicomContainer())
+    for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
         const size_t buffSize                            = bufferObj->getSize();
         core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast< char* >( lock.getBuffer() );
+        char* buffer = static_cast<char*>(lock.getBuffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -115,10 +117,12 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
         DcmFileFormat fileFormat;
         fileFormat.transferInit();
-        if (!fileFormat.read(is).good())
+        if(!fileFormat.read(is).good())
         {
-            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                        "(slice: '" << item.first << "')");
+            SIGHT_THROW(
+                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                << "(slice: '" << item.first << "')"
+            );
         }
 
         fileFormat.loadAllDataIntoMemory();
@@ -134,7 +138,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         groupContainer[value].push_back(bufferObj);
     }
 
-    for(const InstanceGroupContainer::value_type& group :  groupContainer)
+    for(const InstanceGroupContainer::value_type& group : groupContainer)
     {
         // Copy the series
         data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
@@ -157,15 +161,15 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     if(result.size() > 1)
     {
         std::stringstream ss;
-        ss << "Series has been split according to the tag value (" <<
-            std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << "," <<
-            std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
+        ss << "Series has been split according to the tag value ("
+        << std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << ","
+        << std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
         logger->warning(ss.str());
     }
 
     return result;
-
 }
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

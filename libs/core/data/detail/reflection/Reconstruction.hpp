@@ -30,6 +30,6 @@
 
 #include <core/reflection/macros.hpp>
 
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Reconstruction), (sight)(data)(Mesh));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Reconstruction), (sight)(data)(Image));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Reconstruction), (sight)(data)(Material));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Reconstruction), (sight) (data) (Mesh));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Reconstruction), (sight) (data) (Image));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Reconstruction), (sight) (data) (Material));

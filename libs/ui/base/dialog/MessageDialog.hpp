@@ -29,18 +29,19 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Defines the generic message box for IHM.
  * Use the Delegate design pattern.
  */
 class UI_BASE_CLASS_API MessageDialog : public ui::base::dialog::IMessageDialog
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, new MessageDialog)
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, new MessageDialog);
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -51,7 +52,10 @@ public:
      * @return Returns the button enum value corresponding to the pressed button
      */
     UI_BASE_API static IMessageDialog::Buttons show(
-        const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon = INFO);
+        const std::string& title,
+        const std::string& message,
+        ui::base::dialog::IMessageDialog::Icons icon = INFO
+    );
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -64,7 +68,10 @@ public:
      */
     [[deprecated("Sight 22.0, use show() instead.")]]
     UI_BASE_API static IMessageDialog::Buttons showMessageDialog(
-        const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon = INFO);
+        const std::string& title,
+        const std::string& message,
+        ui::base::dialog::IMessageDialog::Icons icon = INFO
+    );
 
     /// Constructor. Create the implementation of the specific message box
     UI_BASE_API MessageDialog();
@@ -78,7 +85,10 @@ public:
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
     UI_BASE_API MessageDialog(
-        const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon = INFO);
+        const std::string& title,
+        const std::string& message,
+        ui::base::dialog::IMessageDialog::Icons icon = INFO
+    );
 
     /// Destructor. Do nothing
     UI_BASE_API virtual ~MessageDialog();
@@ -90,13 +100,13 @@ public:
     UI_BASE_API void setMessage(const std::string& msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_BASE_API void setIcon( IMessageDialog::Icons icon) override;
+    UI_BASE_API void setIcon(IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_BASE_API void addButton(IMessageDialog::Buttons button ) override;
+    UI_BASE_API void addButton(IMessageDialog::Buttons button) override;
 
     /// Set the default button
-    UI_BASE_API void setDefaultButton(IMessageDialog::Buttons button ) override;
+    UI_BASE_API void setDefaultButton(IMessageDialog::Buttons button) override;
 
     /// Add a custom button to this dialog
     UI_BASE_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
@@ -111,4 +121,5 @@ protected:
 };
 
 } //namespace dialog
+
 } // namespace sight::ui::base

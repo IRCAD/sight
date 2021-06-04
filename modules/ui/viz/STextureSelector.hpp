@@ -52,12 +52,11 @@ namespace sight::module::ui::viz
 class MODULE_UI_VIZ_CLASS_API STextureSelector : public QObject,
                                                  public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::base::IEditor);
 
     MODULE_UI_VIZ_API STextureSelector() noexcept;
     MODULE_UI_VIZ_API virtual ~STextureSelector() noexcept;

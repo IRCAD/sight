@@ -40,9 +40,11 @@ namespace factory
 class VIZ_SCENE3D_CLASS_API R2VBRenderable : public ::Ogre::MovableObjectFactory
 {
 public:
+
     VIZ_SCENE3D_API R2VBRenderable()
     {
     }
+
     VIZ_SCENE3D_API ~R2VBRenderable()
     {
     }
@@ -51,12 +53,15 @@ public:
 
     VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override;
 #if OGRE_VERSION_PATCH < 9
-    VIZ_SCENE3D_API void destroyInstance( ::Ogre::MovableObject* obj) override;
+    VIZ_SCENE3D_API void destroyInstance(::Ogre::MovableObject* obj) override;
 #endif
 
 protected:
-    VIZ_SCENE3D_API ::Ogre::MovableObject* createInstanceImpl(const ::Ogre::String& name,
-                                                              const ::Ogre::NameValuePairList* params) override;
+
+    VIZ_SCENE3D_API ::Ogre::MovableObject* createInstanceImpl(
+        const ::Ogre::String& name,
+        const ::Ogre::NameValuePairList* params
+    ) override;
 };
 
 } // namespace factory

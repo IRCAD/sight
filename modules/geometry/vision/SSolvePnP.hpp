@@ -32,6 +32,7 @@
 
 namespace sight::module::geometry::vision
 {
+
 /**
  * @brief This service estimates the object pose given a set of object points, their corresponding image projections,
  *  as well as the camera matrix and the distortion coefficients.
@@ -65,7 +66,7 @@ class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::IRegisterer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::IRegisterer);
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept;
@@ -83,6 +84,7 @@ public:
     MODULE_GEOMETRY_VISION_API void computeRegistration(core::HiResClock::HiResClockType _timestamp) override;
 
 protected:
+
     /// configures the service
     MODULE_GEOMETRY_VISION_API void configuring() override;
     /// starts the service and call initialize()
@@ -113,7 +115,6 @@ private:
 
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
-
 };
 
 } // namespace sight::module::geometry::vision

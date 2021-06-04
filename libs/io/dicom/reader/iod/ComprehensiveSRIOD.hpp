@@ -26,8 +26,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
@@ -36,7 +38,6 @@ namespace iod
  */
 class IO_DICOM_CLASS_API ComprehensiveSRIOD : public io::dicom::reader::iod::InformationObjectDefinition
 {
-
 public:
 
     /**
@@ -47,11 +48,13 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API ComprehensiveSRIOD(const data::DicomSeries::csptr& dicomSeries,
-                                    const SPTR(io::dicom::container::DicomInstance)& instance,
-                                    const core::log::Logger::sptr& logger = nullptr,
-                                    ProgressCallback progress             = nullptr,
-                                    CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API ComprehensiveSRIOD(
+        const data::DicomSeries::csptr& dicomSeries,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API ~ComprehensiveSRIOD();
@@ -60,9 +63,10 @@ public:
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API void read(data::Series::sptr series);
-
 };
 
-}  // namespace iod
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace iod
+
+} // namespace reader
+
+} // namespace sight::io::dicom

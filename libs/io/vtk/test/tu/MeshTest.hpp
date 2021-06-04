@@ -29,6 +29,7 @@
 
 namespace sight::io::vtk
 {
+
 namespace ut
 {
 
@@ -37,18 +38,18 @@ namespace ut
  */
 class MeshTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MeshTest );
-CPPUNIT_TEST( testMeshToVtk );
-CPPUNIT_TEST( testMeshToGrid );
-CPPUNIT_TEST( testSyntheticMesh );
-CPPUNIT_TEST( testExportImportSyntheticMesh );
-CPPUNIT_TEST( testPointCloud );
-CPPUNIT_TEST( testMeshUpdatePoints );
-CPPUNIT_TEST( testMeshUpdateColors );
-CPPUNIT_TEST( testMeshUpdateNormals );
-CPPUNIT_TEST( testGridUpdatePoints );
-CPPUNIT_TEST( testGridUpdateColors );
-CPPUNIT_TEST( testGridUpdateNormals );
+CPPUNIT_TEST_SUITE(MeshTest);
+CPPUNIT_TEST(testMeshToVtk);
+CPPUNIT_TEST(testMeshToGrid);
+CPPUNIT_TEST(testSyntheticMesh);
+CPPUNIT_TEST(testExportImportSyntheticMesh);
+CPPUNIT_TEST(testPointCloud);
+CPPUNIT_TEST(testMeshUpdatePoints);
+CPPUNIT_TEST(testMeshUpdateColors);
+CPPUNIT_TEST(testMeshUpdateNormals);
+CPPUNIT_TEST(testGridUpdatePoints);
+CPPUNIT_TEST(testGridUpdateColors);
+CPPUNIT_TEST(testGridUpdateNormals);
 CPPUNIT_TEST(testReadVtkFile);
 CPPUNIT_TEST(testReadVtpFile);
 CPPUNIT_TEST(testReadObjFile);
@@ -62,6 +63,7 @@ CPPUNIT_TEST(testWritePlyFile);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -88,8 +90,8 @@ public:
     void testWriteObjFile();
     void testWritePlyFile();
     void testWriteStlFile();
-
 };
 
 } // namespace ut
+
 } // namespace sight::io::vtk

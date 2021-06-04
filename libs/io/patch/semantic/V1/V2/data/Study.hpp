@@ -28,10 +28,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V1
 {
+
 namespace V2
 {
+
 namespace data
 {
 
@@ -39,7 +42,8 @@ namespace data
 class IO_PATCH_CLASS_API Study : public io::atoms::patch::ISemanticPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(Study, io::atoms::patch::ISemanticPatch, new Study)
+
+    SIGHT_DECLARE_CLASS(Study, io::atoms::patch::ISemanticPatch, new Study);
 
     /// Constructor
     IO_PATCH_API Study();
@@ -48,7 +52,7 @@ public:
     IO_PATCH_API ~Study();
 
     /// Copy constructor
-    IO_PATCH_API Study( const Study& cpy );
+    IO_PATCH_API Study(const Study& cpy);
 
     /**
      * @brief Applies patch.
@@ -58,11 +62,14 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace data
+
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

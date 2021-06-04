@@ -85,9 +85,10 @@ class MODULE_UI_QT_CLASS_API SCameraConfigLauncher : public QObject,
                                                      public sight::ui::base::IEditor
 {
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SCameraConfigLauncher, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCameraConfigLauncher, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;
@@ -110,6 +111,7 @@ protected:
     void swapping() override;
 
 private Q_SLOTS:
+
     void onAddClicked();
     void onImportClicked();
     void onRemoveClicked();
@@ -138,7 +140,6 @@ private:
 
     data::CameraSeries::sptr m_cameraSeries;
     data::ActivitySeries::sptr m_activitySeries;
-
 };
 
 } // namespace sight::module::ui::qt::calibration

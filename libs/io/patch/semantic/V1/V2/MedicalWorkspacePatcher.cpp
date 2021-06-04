@@ -34,8 +34,10 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V1
 {
+
 namespace V2
 {
 
@@ -54,10 +56,12 @@ MedicalWorkspacePatcher::~MedicalWorkspacePatcher()
 
 // ----------------------------------------------------------------------------
 
-sight::atoms::Object::sptr MedicalWorkspacePatcher::transformObject(sight::atoms::Object::sptr object,
-                                                                    const std::string& context,
-                                                                    const std::string& currentVersion,
-                                                                    const std::string& targetVersion)
+sight::atoms::Object::sptr MedicalWorkspacePatcher::transformObject(
+    sight::atoms::Object::sptr object,
+    const std::string& context,
+    const std::string& currentVersion,
+    const std::string& targetVersion
+)
 {
     this->addCompositeTypes(object);
     return io::atoms::patch::patcher::DefaultPatcher::transformObject(object, context, currentVersion, targetVersion);
@@ -67,16 +71,16 @@ sight::atoms::Object::sptr MedicalWorkspacePatcher::transformObject(sight::atoms
 
 void MedicalWorkspacePatcher::addCompositeTypes(sight::atoms::Object::sptr object)
 {
-    if( io::atoms::patch::helper::getClassname( object ) == "sight::data::Composite")
+    if(io::atoms::patch::helper::getClassname(object) == "sight::data::Composite")
     {
-        sight::atoms::Map::sptr values = object->getAttribute< sight::atoms::Map >("values");
+        sight::atoms::Map::sptr values = object->getAttribute<sight::atoms::Map>("values");
         if((*values)["patientDB"] && (*values)["planningDB"] && (*values)["processingDB"])
         {
             object->setMetaInfo("compositeType", "MedicalWorkspace");
         }
     }
 
-    for( sight::atoms::Object::AttributesType::value_type elem :  object->getAttributes() )
+    for(sight::atoms::Object::AttributesType::value_type elem : object->getAttributes())
     {
         sight::atoms::Object::sptr att = sight::atoms::Object::dynamicCast(elem.second);
         if(att)
@@ -87,5 +91,7 @@ void MedicalWorkspacePatcher::addCompositeTypes(sight::atoms::Object::sptr objec
 }
 
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

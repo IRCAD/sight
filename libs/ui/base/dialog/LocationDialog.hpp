@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API LocationDialog : public ILocationDialog
 {
 public:
 
-    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, new LocationDialog)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, new LocationDialog);
 
     /// Will instantiate the concrete implementation
     UI_BASE_API LocationDialog();

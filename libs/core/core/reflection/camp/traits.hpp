@@ -27,20 +27,27 @@
 namespace camp
 {
 
-template <typename T>
+template<typename T>
 struct isMapping
 {
-    template <typename U> static camp::detail::TypeYes check(typename U::mapped_type*);
-    template <typename U> static camp::detail::TypeNo  check(...);
+    template<typename U>
+    static camp::detail::TypeYes check(typename U::mapped_type*);
+    template<typename U>
+    static camp::detail::TypeNo check(...);
 
     //fwData hack to avoid composite passing this test
-    template <typename U> static camp::detail::TypeNo  checkSptr(typename U::sptr*);
-    template <typename U> static camp::detail::TypeYes checkSptr(...);
+    template<typename U>
+    static camp::detail::TypeNo checkSptr(typename U::sptr*);
+    template<typename U>
+    static camp::detail::TypeYes checkSptr(...);
 
-    enum {value = (
-              sizeof(check< T >(0)) == sizeof(camp::detail::TypeYes)
-              && sizeof(checkSptr< T >(0)) == sizeof(camp::detail::TypeYes)
-              )  };
+    enum
+    {
+        value = (
+            sizeof(check<T>(0)) == sizeof(camp::detail::TypeYes)
+            && sizeof(checkSptr<T>(0)) == sizeof(camp::detail::TypeYes)
+        )
+    };
 };
 
-}// namespace camp
+} // namespace camp

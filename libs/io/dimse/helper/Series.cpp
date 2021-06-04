@@ -37,12 +37,13 @@
 
 namespace sight::io::dimse
 {
+
 namespace helper
 {
 
 //------------------------------------------------------------------------------
 
-void Series::releaseResponses(OFList< QRResponse* > _responses)
+void Series::releaseResponses(OFList<QRResponse*> _responses)
 {
     while(!_responses.empty())
     {
@@ -53,18 +54,18 @@ void Series::releaseResponses(OFList< QRResponse* > _responses)
 
 // ----------------------------------------------------------------------------
 
-Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > _responses)
+Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
 {
     DicomSeriesContainer seriesContainer;
 
-    OFIterator< QRResponse* > it;
+    OFIterator<QRResponse*> it;
     OFCondition result;
 
     // Every while loop run will get all image for a specific study
-    for (it = _responses.begin(); it != _responses.end(); ++it)
+    for(it = _responses.begin() ; it != _responses.end() ; ++it)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if ((*it)->m_dataset != NULL)
+        if((*it)->m_dataset != NULL)
         {
             OFString data;
 
@@ -193,7 +194,6 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > _response
             // Add series to container
             seriesContainer.push_back(series);
         }
-
     }
 
     return seriesContainer;
@@ -205,7 +205,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    for(const auto& s:_series )
+    for(const auto& s : _series)
     {
         result.push_back(s->getInstanceUID());
     }
@@ -215,23 +215,23 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
 // ----------------------------------------------------------------------------
 
-Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResponse* > _responses)
+Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRResponse*> _responses)
 {
     InstanceUIDContainer instanceUIDContainer;
 
-    OFIterator< QRResponse* > it;
+    OFIterator<QRResponse*> it;
     DcmDataset dataset;
     OFCondition result;
     // Every while loop run will get all image for a specific study
-    for (it = _responses.begin(); it != _responses.end(); ++it)
+    for(it = _responses.begin() ; it != _responses.end() ; ++it)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if ((*it)->m_dataset != NULL)
+        if((*it)->m_dataset != NULL)
         {
             OFString seriesInstanceUID;
             result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
             // Only try to get study if we actually have study instance uid, otherwise skip it
-            if (result.good())
+            if(result.good())
             {
                 instanceUIDContainer.push_back(seriesInstanceUID.c_str());
             }
@@ -248,4 +248,5 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
 }
 
 } //helper
+
 } //fwPacsIO

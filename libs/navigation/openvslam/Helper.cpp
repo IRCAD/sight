@@ -44,10 +44,23 @@ namespace sight::navigation::openvslam
 
     // Create a perspective camera (equirectangular and fisheye needs additional information).
     const ::openvslam::camera::perspective oVSlamCamera =
-        ::openvslam::camera::perspective(name, cameraType, colorType, cols, rows,
-                                         fps, _sightCam->getFx(), _sightCam->getFy(),
-                                         _sightCam->getCx(),
-                                         _sightCam->getCy(), dist[0], dist[1], dist[2], dist[3], dist[4]);
+        ::openvslam::camera::perspective(
+            name,
+            cameraType,
+            colorType,
+            cols,
+            rows,
+            fps,
+            _sightCam->getFx(),
+            _sightCam->getFy(),
+            _sightCam->getCx(),
+            _sightCam->getCy(),
+            dist[0],
+            dist[1],
+            dist[2],
+            dist[3],
+            dist[4]
+        );
 
     return oVSlamCamera;
 }
@@ -58,7 +71,7 @@ data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSla
 {
     data::Camera::sptr cam = data::Camera::New();
 
-    cam->setCameraID( _oVSlamCam.name_);
+    cam->setCameraID(_oVSlamCam.name_);
     cam->setWidth(_oVSlamCam.cols_);
     cam->setHeight(_oVSlamCam.rows_);
 
@@ -84,9 +97,11 @@ data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSla
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(const data::Camera::csptr _sightCam,
-                                                                   const OrbParams& _orbParams,
-                                                                   const InitParams& _initParams)
+std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
+    const data::Camera::csptr _sightCam,
+    const OrbParams& _orbParams,
+    const InitParams& _initParams
+)
 {
     //Create a YAML node for other parameters.
     ::YAML::Node node;
@@ -129,13 +144,13 @@ std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(const data::C
     node["Initializer.scaling_factor"]               = _initParams.scalingFactor;
 
     // Create the config with YAML node (constructor was added on our version of openvslam).
-    std::shared_ptr< ::openvslam::config > conf = std::make_shared< ::openvslam::config >(node);
+    std::shared_ptr< ::openvslam::config> conf = std::make_shared< ::openvslam::config>(node);
     return conf;
 }
 
 //-----------------------------------------------------------------------------
 
-void Helper::writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config > config, const std::string& _filepath)
+void Helper::writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config> config, const std::string& _filepath)
 {
     writeOpenvslamConfig(config->yaml_node_, _filepath);
 }
@@ -150,22 +165,20 @@ void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _f
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::openvslam::config > Helper::readOpenvslamConfig(const std::string& _filepath)
+std::shared_ptr< ::openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
 {
-    std::shared_ptr< ::openvslam::config > conf;
+    std::shared_ptr< ::openvslam::config> conf;
     try
     {
         conf = std::make_shared< ::openvslam::config>(_filepath);
-
     }
-    catch (std::exception& e)
+    catch(std::exception& e)
     {
         SIGHT_ERROR("Something went wrong when tying to load '" + _filepath + "'. Error: " + e.what());
         return nullptr;
     }
 
     return conf;
-
 }
 
 //-----------------------------------------------------------------------------

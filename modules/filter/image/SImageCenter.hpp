@@ -56,7 +56,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public service::IOperator
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SImageCenter, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SImageCenter, service::IOperator);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SImageCenter();
@@ -85,7 +85,6 @@ protected:
      * - Update service when the transform matrix is modified.
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
-
 };
 
 } // namespace sight::module::filter::image

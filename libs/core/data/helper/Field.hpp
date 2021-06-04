@@ -23,11 +23,11 @@
 #pragma once
 
 #include "data/config.hpp"
-
 #include <data/Object.hpp>
 
 namespace sight::data
 {
+
 namespace helper
 {
 
@@ -36,11 +36,10 @@ namespace helper
  */
 class DATA_CLASS_API Field
 {
-
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API Field( data::Object::sptr object );
+    DATA_API Field(data::Object::sptr object);
 
     /// Destructor. Call notify if changes has been made.
     DATA_API ~Field();
@@ -52,25 +51,25 @@ public:
      * @param[in] defaultValue default return value if field was not found
      * @return pointer to corresponding field.
      */
-    template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) setDefaultField( const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
+    template<typename DATA_TYPE>
+    SPTR(DATA_TYPE) setDefaultField(const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue);
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * * @deprecated use addOrSwap() instead
      */
-    DATA_API void setField( const data::Object::FieldNameType& name, data::Object::sptr obj );
+    DATA_API void setField(const data::Object::FieldNameType& name, data::Object::sptr obj);
 
     /**
      * @brief Replace the field map content.
      */
-    DATA_API void setFields( const data::Object::FieldMapType& newFields );
+    DATA_API void setFields(const data::Object::FieldMapType& newFields);
 
     /**
      * @brief Removes field with specified name.
      * @deprecated use remove() instead
      */
-    DATA_API void removeField( const data::Object::FieldNameType& name );
+    DATA_API void removeField(const data::Object::FieldNameType& name);
 
     /**
      * @brief Add a field in the object.
@@ -80,7 +79,7 @@ public:
      * @throw data::Exception if the field already exists
      * Prepare the message to announce the modification.
      */
-    DATA_API void add( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
+    DATA_API void add(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
 
     /**
      * @brief Replace a field in the object.
@@ -91,7 +90,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void swap( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
+    DATA_API void swap(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
 
     /**
      * @brief Add or replace a field in the object.
@@ -100,7 +99,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void addOrSwap( const data::Object::FieldNameType& _name, data::Object::sptr _obj );
+    DATA_API void addOrSwap(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
 
     /**
      * @brief Remove a field from the object.
@@ -110,7 +109,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void remove(  const data::Object::FieldNameType& _name );
+    DATA_API void remove(const data::Object::FieldNameType& _name);
 
     /**
      * @brief Clear all fields in the object.
@@ -123,10 +122,11 @@ public:
     DATA_API void notify();
 
 protected:
+
     DATA_API void buildMessage(
         const data::Object::FieldMapType& oldFields,
         const data::Object::FieldMapType& newFields
-        );
+    );
 
     /// Map of added objects, send on notify
     data::Object::FieldsContainerType m_addedFields;
@@ -147,12 +147,14 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const data::Object::FieldNameType&
     SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
     data::Object::sptr field  = object->getField(name);
-    if (!field)
+    if(!field)
     {
         m_addedFields[name] = defaultValue;
     }
+
     return object->setDefaultField(name, defaultValue);
 }
 
 } // namespace helper
+
 } // namespace sight::data

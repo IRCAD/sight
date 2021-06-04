@@ -30,23 +30,27 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Camera/V2ToV1.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Camera::V2ToV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Camera::V2ToV1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Camera
 {
+
 // force link for log
 
 //------------------------------------------------------------------------------
@@ -232,7 +236,11 @@ void V2ToV1Test::applyPatchTestDevice()
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Camera
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

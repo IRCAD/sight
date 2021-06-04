@@ -48,7 +48,6 @@ struct Plugin : public core::runtime::Plugin
      * This method is used by runtime in order to close the module.
      */
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::io::matrix

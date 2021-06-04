@@ -41,6 +41,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace series
 {
 
@@ -49,7 +50,6 @@ namespace series
  */
 class MODULE_UI_QT_CLASS_API Selector : public QTreeView
 {
-
 Q_OBJECT
 
 public:
@@ -104,6 +104,7 @@ public:
     void setRemoveSerieIcon(const std::filesystem::path& _path);
 
 Q_SIGNALS:
+
     /**
      * @brief Signal emitted when the selection change.
      * @param _selection contains the new selection of series.
@@ -111,16 +112,19 @@ Q_SIGNALS:
      * @note selection and deselection contain only the change of selection. The series always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectSeries(QVector< data::Series::sptr > _selection,
-                      QVector< data::Series::sptr > _deselection);
+    void selectSeries(
+        QVector<data::Series::sptr> _selection,
+        QVector<data::Series::sptr> _deselection
+    );
 
     /**
      * @brief Signal emitted when series are deleted.
      * @param _selection contains the deleted series.
      */
-    void removeSeries(QVector< data::Series::sptr > _selection);
+    void removeSeries(QVector<data::Series::sptr> _selection);
 
 protected Q_SLOTS:
+
     /**
      * @brief Slot called when the selection changed. Emits a signal containing the new selected/deselected series. If a
      * Study is selected, no series are added in signal.
@@ -147,7 +151,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef QVector< data::Series::sptr > SeriesVectorType;
+    typedef QVector<data::Series::sptr> SeriesVectorType;
 
     /**
      * @brief Returns all the Series associated to the selection.
@@ -171,11 +175,10 @@ private:
     void deleteSelection();
 
     /// Tree model
-    QPointer<SelectorModel> m_model { nullptr };
+    QPointer<SelectorModel> m_model {nullptr};
 
     /// Allows to remove items.
-    bool m_allowedRemove { true };
-
+    bool m_allowedRemove {true};
 };
 
 //-----------------------------------------------------------------------------
@@ -198,6 +201,7 @@ inline void Selector::setRemoveStudyIcon(const std::filesystem::path& _path)
 {
     m_model->setRemoveStudyIcon(_path);
 }
+
 //-----------------------------------------------------------------------------
 
 inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
@@ -208,4 +212,5 @@ inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
 //-----------------------------------------------------------------------------
 
 } // namespace series.
+
 } // namespace sight::module::ui::qt.

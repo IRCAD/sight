@@ -22,22 +22,22 @@
 
 #include "data/FrameTL.hpp"
 
-#include <core/base.hpp>
-
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
+#include <core/base.hpp>
+
 #include <boost/pool/pool.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::FrameTL );
+SIGHT_REGISTER_DATA(sight::data::FrameTL);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-FrameTL::FrameTL ( data::Object::Key key ) :
-    GenericTL< uint8_t >(key),
+FrameTL::FrameTL(data::Object::Key key) :
+    GenericTL<uint8_t>(key),
     m_width(0),
     m_height(0),
     m_numberOfComponents(3),
@@ -49,7 +49,7 @@ FrameTL::FrameTL ( data::Object::Key key ) :
 
 //------------------------------------------------------------------------------
 
-FrameTL::~FrameTL ()
+FrameTL::~FrameTL()
 {
 }
 
@@ -58,15 +58,19 @@ FrameTL::~FrameTL ()
 void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
 
     // FIXME: tmp to support old API (sight 22.0)
-    if (other->m_pixelFormat == data::FrameTL::PixelFormat::UNDEFINED)
+    if(other->m_pixelFormat == data::FrameTL::PixelFormat::UNDEFINED)
     {
         this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_numberOfComponents);
     }
@@ -74,10 +78,11 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
     {
         this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
     }
+
     core::mt::WriteLock writeLock(m_tlMutex);
     core::mt::WriteLock readLock(other->m_tlMutex);
 
-    for(TimelineType::value_type elt :  other->m_timeline)
+    for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(data::timeline::Buffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -87,8 +92,13 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type& type, size_t numberOfComponents,
-                           unsigned int maxElementNum)
+void FrameTL::initPoolSize(
+    size_t width,
+    size_t height,
+    const core::tools::Type& type,
+    size_t numberOfComponents,
+    unsigned int maxElementNum
+)
 {
     m_width              = width;
     m_height             = height;
@@ -96,17 +106,20 @@ void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type&
     m_type               = type;
 
     // We assume that image with 3 components are RGB and image with 4 components are RGBA
-    switch (numberOfComponents)
+    switch(numberOfComponents)
     {
         case 1:
             m_pixelFormat = data::FrameTL::PixelFormat::GRAY_SCALE;
             break;
+
         case 3:
             m_pixelFormat = data::FrameTL::PixelFormat::RGB;
             break;
+
         case 4:
             m_pixelFormat = data::FrameTL::PixelFormat::RGBA;
             break;
+
         default:
             m_pixelFormat = data::FrameTL::PixelFormat::UNDEFINED;
     }
@@ -121,26 +134,34 @@ void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type&
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type& type, const PixelFormat format,
-                           unsigned int maxElementNum)
+void FrameTL::initPoolSize(
+    size_t width,
+    size_t height,
+    const core::tools::Type& type,
+    const PixelFormat format,
+    unsigned int maxElementNum
+)
 {
     m_width       = width;
     m_height      = height;
     m_type        = type;
     m_pixelFormat = format;
-    switch (format)
+    switch(format)
     {
         case data::FrameTL::PixelFormat::GRAY_SCALE:
             m_numberOfComponents = 1;
             break;
+
         case data::FrameTL::PixelFormat::BGR:
         case data::FrameTL::PixelFormat::RGB:
             m_numberOfComponents = 3;
             break;
+
         case data::FrameTL::PixelFormat::BGRA:
         case data::FrameTL::PixelFormat::RGBA:
             m_numberOfComponents = 4;
             break;
+
         default:
             m_numberOfComponents = 1;
     }

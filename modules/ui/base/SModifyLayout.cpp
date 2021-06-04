@@ -62,7 +62,7 @@ void SModifyLayout::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::info(std::ostream& _sstream )
+void SModifyLayout::info(std::ostream& _sstream)
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -71,13 +71,12 @@ void SModifyLayout::info(std::ostream& _sstream )
 
 void SModifyLayout::updating()
 {
-
-    for(MoveSrvVectType::value_type elt :  m_moveSrv )
+    for(MoveSrvVectType::value_type elt : m_moveSrv)
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
-        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        service::IService::sptr service = service::get( uid );
+        SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
+        service::IService::sptr service = service::get(uid);
         SIGHT_ASSERT("service not found", service);
         ::sight::ui::base::IGuiContainer::sptr container = ::sight::ui::base::IGuiContainer::dynamicCast(service);
         SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", container);
@@ -86,21 +85,23 @@ void SModifyLayout::updating()
         service->update();
     }
 
-    for(EnableSrvVectType::value_type elt :  m_enableSrv )
+    for(EnableSrvVectType::value_type elt : m_enableSrv)
     {
         std::string uid = elt.first;
         bool isEnable   = elt.second;
-        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        service::IService::sptr service = service::get( uid );
+        SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
+        service::IService::sptr service = service::get(uid);
         SIGHT_ASSERT("service not found", service);
         if(service->isStarted())
         {
             ::sight::ui::base::IGuiContainer::sptr containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(
-                service);
+                service
+            );
             if(containerSrv)
             {
                 containerSrv->getContainer()->setEnabled(isEnable);
             }
+
             auto actionSrv = ::sight::ui::base::IAction::dynamicCast(service);
             if(actionSrv)
             {
@@ -109,9 +110,9 @@ void SModifyLayout::updating()
         }
     }
 
-    for(ShowSrvVectType::value_type elt :  m_showSrvWid)
+    for(ShowSrvVectType::value_type elt : m_showSrvWid)
     {
-        std::string wid = elt.first;
+        std::string wid                                           = elt.first;
         ::boost::logic::tribool isVisible                         = elt.second;
         ::sight::ui::base::container::fwContainer::sptr container =
             ::sight::ui::base::GuiRegistry::getWIDContainer(wid);
@@ -131,12 +132,12 @@ void SModifyLayout::updating()
         }
     }
 
-    for(ShowSrvVectType::value_type elt :  m_showSrvSid)
+    for(ShowSrvVectType::value_type elt : m_showSrvSid)
     {
-        std::string uid = elt.first;
+        std::string uid                   = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
-        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        service::IService::sptr service = service::get( uid );
+        SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
+        service::IService::sptr service = service::get(uid);
 
         auto containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(service);
         SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", containerSrv);
@@ -163,11 +164,11 @@ void SModifyLayout::updating()
 void SModifyLayout::configuring()
 {
     this->initialize();
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
-    if( !vectConfig.empty() )
+    std::vector<ConfigurationType> vectConfig = m_configuration->find("config");
+    if(!vectConfig.empty())
     {
         ConfigurationType config = vectConfig.at(0);
-        for(ConfigurationType actionCfg :  config->getElements() )
+        for(ConfigurationType actionCfg : config->getElements())
         {
             if(actionCfg->getName() == "move")
             {
@@ -176,18 +177,18 @@ void SModifyLayout::configuring()
                 SIGHT_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid"));
                 std::string wid = actionCfg->getExistingAttributeValue("wid");
 
-                m_moveSrv.push_back( std::make_pair(uuid, wid) );
+                m_moveSrv.push_back(std::make_pair(uuid, wid));
             }
             else if(actionCfg->getName() == "show"
                     || actionCfg->getName() == "hide"
                     || actionCfg->getName() == "show_or_hide")
             {
                 ::boost::logic::tribool isVisible;
-                if (actionCfg->getName() == "show")
+                if(actionCfg->getName() == "show")
                 {
                     isVisible = true;
                 }
-                else if (actionCfg->getName() == "hide")
+                else if(actionCfg->getName() == "hide")
                 {
                     isVisible = false;
                 }
@@ -199,12 +200,12 @@ void SModifyLayout::configuring()
                 if(actionCfg->hasAttribute("wid"))
                 {
                     std::string wid = actionCfg->getExistingAttributeValue("wid");
-                    m_showSrvWid.push_back( std::make_pair(wid, isVisible) );
+                    m_showSrvWid.push_back(std::make_pair(wid, isVisible));
                 }
                 else if(actionCfg->hasAttribute("sid"))
                 {
                     std::string sid = actionCfg->getExistingAttributeValue("sid");
-                    m_showSrvSid.push_back( std::make_pair(sid, isVisible) );
+                    m_showSrvSid.push_back(std::make_pair(sid, isVisible));
                 }
                 else
                 {
@@ -217,11 +218,11 @@ void SModifyLayout::configuring()
                 std::string uuid = actionCfg->getExistingAttributeValue("uid");
                 bool isEnable    = (actionCfg->getName() == "enable");
 
-                m_enableSrv.push_back( std::make_pair(uuid, isEnable) );
+                m_enableSrv.push_back(std::make_pair(uuid, isEnable));
             }
             else
             {
-                SIGHT_FATAL( "Invalid tag name "<<actionCfg->getName());
+                SIGHT_FATAL("Invalid tag name " << actionCfg->getName());
             }
         }
     }

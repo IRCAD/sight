@@ -23,7 +23,6 @@
 #include "core/com/exception/BadSlot.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -32,7 +31,7 @@ namespace sight::core::com
 namespace exception
 {
 
-BadSlot::BadSlot ( const std::string& err ) :
+BadSlot::BadSlot(const std::string& err) :
     core::Exception(err)
 {
 }

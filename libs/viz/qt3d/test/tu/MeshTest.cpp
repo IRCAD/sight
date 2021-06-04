@@ -46,7 +46,6 @@ namespace ut
 
 MeshTest::MeshTest()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ void MeshTest::setCubeMesh()
     qt3dMesh->setMesh(mesh);
 
     // Asserts.
-    auto geomRenderer    = qobject_cast< Qt3DRender::QGeometryRenderer* >(qt3dMesh->components()[0]);
+    auto geomRenderer    = qobject_cast<Qt3DRender::QGeometryRenderer*>(qt3dMesh->components()[0]);
     auto posAttribute    = geomRenderer->geometry()->attributes()[0];
     auto normalAttribute = geomRenderer->geometry()->attributes()[1];
     auto indexAttribute  = geomRenderer->geometry()->attributes()[2];
@@ -118,35 +117,35 @@ void MeshTest::setCubeMesh()
     CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geomRenderer->primitiveType());
 
     // Asserts number of vertices, normals, and indexes.
-    CPPUNIT_ASSERT_EQUAL(static_cast< unsigned int >(mesh->getNumberOfPoints()), posAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast< unsigned int >(mesh->getNumberOfPoints()), normalAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast< unsigned int >(mesh->getNumberOfCells() * 3), indexAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), posAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), normalAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfCells() * 3), indexAttribute->count());
 
     // Asserts each point is at the right position.
-    auto itrPt          = mesh->begin< data::iterator::ConstPointIterator >();
-    const auto endItrPt = mesh->end< data::iterator::ConstPointIterator >();
+    auto itrPt          = mesh->begin<data::iterator::ConstPointIterator>();
+    const auto endItrPt = mesh->end<data::iterator::ConstPointIterator>();
 
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();
-    const float* const posBufferData   = reinterpret_cast< const float* >(posBufferDataByte.data());
+    const float* const posBufferData   = reinterpret_cast<const float*>(posBufferDataByte.data());
     unsigned int count                 = 0;
-    for(; itrPt != endItrPt; ++itrPt)
+    for( ; itrPt != endItrPt ; ++itrPt)
     {
-        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->x) - posBufferData[count] < 0.01f);
-        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->y) - posBufferData[count+1] < 0.01f);
-        CPPUNIT_ASSERT(static_cast< float >(itrPt->point->z) - posBufferData[count+2] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->x) - posBufferData[count] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->y) - posBufferData[count + 1] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->z) - posBufferData[count + 2] < 0.01f);
         count += 3;
     }
 
     // Asserts indexes are in the right order.
-    auto itrCell      = mesh->begin< data::iterator::ConstCellIterator >();
-    const auto endItr = mesh->end< data::iterator::ConstCellIterator >();
+    auto itrCell      = mesh->begin<data::iterator::ConstCellIterator>();
+    const auto endItr = mesh->end<data::iterator::ConstCellIterator>();
 
     const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
     const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
     count = 0;
-    for(; itrCell != endItr; ++itrCell)
+    for( ; itrCell != endItr ; ++itrCell)
     {
-        for(unsigned int i = 0; i < itrCell->nbPoints; ++i)
+        for(unsigned int i = 0 ; i < itrCell->nbPoints ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(itrCell->pointIdx[i]), indexBufferData[count]);
             count++;
@@ -196,9 +195,12 @@ void MeshTest::centerCameraOnCube()
 
     // Sets expected camera after beeing centered on the cube.
     auto expectedCamera = new Qt3DRender::QCamera();
-    expectedCamera->lens()->setPerspectiveProjection(camera->lens()->fieldOfView(),
-                                                     camera->lens()->aspectRatio(),
-                                                     camera->lens()->nearPlane(), camera->lens()->farPlane());
+    expectedCamera->lens()->setPerspectiveProjection(
+        camera->lens()->fieldOfView(),
+        camera->lens()->aspectRatio(),
+        camera->lens()->nearPlane(),
+        camera->lens()->farPlane()
+    );
     expectedCamera->setUpVector(camera->upVector());
     expectedCamera->setPosition(camera->position());
     expectedCamera->setViewCenter(camera->viewCenter());

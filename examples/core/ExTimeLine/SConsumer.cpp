@@ -66,12 +66,11 @@ void SConsumer::configuring()
 
 void SConsumer::starting()
 {
-
     if(m_period)
     {
         m_timer = m_associatedWorker->createTimer();
-        m_timer->setFunction( std::bind(&SConsumer::updating, this) );
-        m_timer->setDuration( std::chrono::milliseconds( m_period ) );
+        m_timer->setFunction(std::bind(&SConsumer::updating, this));
+        m_timer->setDuration(std::chrono::milliseconds(m_period));
         m_timer->start();
     }
 }
@@ -87,7 +86,7 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL>("timeline");
 
     const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
     const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
@@ -96,8 +95,8 @@ void SConsumer::updating()
     {
         const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
-        std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+        std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
+        << " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
 }
 
@@ -105,7 +104,7 @@ void SConsumer::updating()
 
 void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
 {
-    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL>("timeline");
 
     const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
@@ -113,8 +112,8 @@ void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
     {
         const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
-        std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+        std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender
+        << " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
 }
 

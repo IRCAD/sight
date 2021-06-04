@@ -28,6 +28,7 @@
 
 namespace sight::module::ui::viz
 {
+
 /**
  * @brief   This class is started when the module is loaded.
  */
@@ -43,7 +44,6 @@ struct MODULE_UI_VIZ_CLASS_API Plugin : public core::runtime::Plugin
 
     // Overrides
     MODULE_UI_VIZ_API void stop() noexcept;
-
 };
 
 } // namespace sight::module::ui::viz

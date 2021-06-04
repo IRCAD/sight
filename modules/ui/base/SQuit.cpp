@@ -27,7 +27,6 @@
 #include <ui/base/Application.hpp>
 #include <ui/base/Cursor.hpp>
 
-
 namespace sight::module::ui::base
 {
 
@@ -66,7 +65,7 @@ void SQuit::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SQuit::info(std::ostream& _sstream )
+void SQuit::info(std::ostream& _sstream)
 {
     _sstream << "Quit Action" << std::endl;
 }

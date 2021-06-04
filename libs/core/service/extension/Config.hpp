@@ -41,7 +41,7 @@ class SERVICE_CLASS_API ServiceConfigInfo : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ServiceConfigInfo, core::BaseObject, new ServiceConfigInfo)
+    SIGHT_DECLARE_CLASS(ServiceConfigInfo, core::BaseObject, new ServiceConfigInfo);
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
@@ -79,10 +79,9 @@ public:
  */
 class SERVICE_CLASS_API Config : public core::BaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Config, core::BaseObject, new Config)
+    SIGHT_DECLARE_CLASS(Config, core::BaseObject, new Config);
 
     /// Return the default global instance of Config
     SERVICE_API static Config::sptr getDefault();
@@ -105,32 +104,38 @@ public:
      * @param config   the registered config
      * @note This method is thread safe
      */
-    SERVICE_API void addServiceConfigInfo( const std::string& configId,
-                                           const std::string& service,
-                                           const std::string& desc,
-                                           core::runtime::ConfigurationElement::csptr config );
+    SERVICE_API void addServiceConfigInfo(
+        const std::string& configId,
+        const std::string& service,
+        const std::string& desc,
+        core::runtime::ConfigurationElement::csptr config
+    );
 
     /**
      * @brief Returns the configuration with the given id for the service with the given implementation
      * @note This method is thread safe
      */
-    SERVICE_API core::runtime::ConfigurationElement::csptr getServiceConfig( const std::string& configId,
-                                                                             const std::string& serviceImpl =
-                                                                                 "" ) const;
+    SERVICE_API core::runtime::ConfigurationElement::csptr getServiceConfig(
+        const std::string& configId,
+        const std::string& serviceImpl =
+        ""
+    ) const;
 
     /**
      * @brief Returns the description of the given configuration name.
      * @note This method is thread safe
      */
-    SERVICE_API const std::string& getConfigDesc( const std::string& configId ) const;
+    SERVICE_API const std::string& getConfigDesc(const std::string& configId) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
      * implementation
      * @note This method is thread safe
      */
-    SERVICE_API std::vector< std::string > getAllConfigForService( std::string serviceImpl,
-                                                                   bool matchingOnly = false ) const;
+    SERVICE_API std::vector<std::string> getAllConfigForService(
+        std::string serviceImpl,
+        bool matchingOnly = false
+    ) const;
 
     /**
      * @brief Clear the registry.
@@ -140,7 +145,7 @@ public:
 
 protected:
 
-    typedef std::map< std::string, ServiceConfigInfo::sptr > Registry;
+    typedef std::map<std::string, ServiceConfigInfo::sptr> Registry;
 
     /// Container of service information <configId, service config information>
     Registry m_reg;

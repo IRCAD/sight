@@ -28,18 +28,19 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace data
 {
+
 namespace AttachmentSeries
 {
 
 /// Structural patch to convert a data::AttachmentSeries from version '1' to version '2'.
 class IO_PATCH_CLASS_API V1ToV2 : public io::atoms::patch::IStructuralPatch
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(V1ToV2, patch::structural::data::AttachmentSeries::V1ToV2, new V1ToV2)
+    SIGHT_DECLARE_CLASS(V1ToV2, patch::structural::data::AttachmentSeries::V1ToV2, new V1ToV2);
 
     /// Initialiaze members.
     IO_PATCH_API V1ToV2();
@@ -64,10 +65,12 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& _previous,
         const sight::atoms::Object::sptr& _current,
-        io::atoms::patch::IPatch::NewVersionsType& _newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& _newVersions
+    ) override;
 };
 
 } // namespace AttachmentSeries
+
 } // namespace data
+
 } // namespace sight::io::patch::structural

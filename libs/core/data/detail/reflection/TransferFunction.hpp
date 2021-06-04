@@ -27,4 +27,4 @@
 
 #include <core/reflection/macros.hpp>
 
-SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(TransferFunction)(InterpolationMode));
+SIGHT_DECLARE_ENUM_REFLECTION((sight) (data) (TransferFunction) (InterpolationMode));

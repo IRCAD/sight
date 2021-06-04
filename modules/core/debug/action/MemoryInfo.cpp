@@ -33,13 +33,13 @@
 
 namespace sight::module::debug
 {
+
 namespace action
 {
 
-
 //------------------------------------------------------------------------------
 
-MemoryInfo::MemoryInfo( ) noexcept
+MemoryInfo::MemoryInfo() noexcept
 {
 }
 
@@ -51,10 +51,10 @@ MemoryInfo::~MemoryInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-void MemoryInfo::updating( )
+void MemoryInfo::updating()
 {
     // Memory information
-    std::uint64_t mo                = 1024*1024;
+    std::uint64_t mo                = 1024 * 1024;
     std::uint64_t totalSystemMemory = core::memory::tools::MemoryMonitorTools::getTotalSystemMemory();
     std::uint64_t freeSystemMemory  = core::memory::tools::MemoryMonitorTools::getFreeSystemMemory();
     std::uint64_t usedProcessMemory = core::memory::tools::MemoryMonitorTools::getUsedProcessMemory();
@@ -63,25 +63,27 @@ void MemoryInfo::updating( )
     core::memory::BufferManager::SizeType managedBufferSize = 0;
     core::memory::BufferManager::SizeType dumpedBufferSize  = 0;
     core::memory::BufferManager::sptr manager               = core::memory::BufferManager::getDefault();
-    if( manager )
+    if(manager)
     {
         core::memory::BufferManager::BufferStats stats = manager->getBufferStats().get();
         managedBufferSize = stats.totalManaged;
         dumpedBufferSize  = stats.totalDumped;
     }
+
     std::stringstream stream;
-    stream << "Total system memory = "  << totalSystemMemory/mo << " Mo" << std::endl;
-    stream << "Free system memory  = "   << freeSystemMemory/mo  << " Mo" << std::endl;
-    stream << "Used process memory = "  << usedProcessMemory/mo << " Mo" << std::endl;
-    stream << "Estimed Free memory = "  << estimateFreeMem/mo << " Mo" << std::endl;
-    stream << "ManagedBuffer size  = "  << managedBufferSize/mo << " Mo" << std::endl;
-    stream << "DumpedBuffer size   = "  << dumpedBufferSize/mo << " Mo" << std::endl;
+    stream << "Total system memory = " << totalSystemMemory / mo << " Mo" << std::endl;
+    stream << "Free system memory  = " << freeSystemMemory / mo << " Mo" << std::endl;
+    stream << "Used process memory = " << usedProcessMemory / mo << " Mo" << std::endl;
+    stream << "Estimed Free memory = " << estimateFreeMem / mo << " Mo" << std::endl;
+    stream << "ManagedBuffer size  = " << managedBufferSize / mo << " Mo" << std::endl;
+    stream << "DumpedBuffer size   = " << dumpedBufferSize / mo << " Mo" << std::endl;
 
     // Information message box
     sight::ui::base::dialog::MessageDialog::show(
         "MemoryInfo",
         stream.str(),
-        sight::ui::base::dialog::IMessageDialog::INFO);
+        sight::ui::base::dialog::IMessageDialog::INFO
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -108,4 +110,5 @@ void MemoryInfo::stopping()
 //------------------------------------------------------------------------------
 
 } // namespace action
+
 } // namespace basicVisuCtrl

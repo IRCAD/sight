@@ -27,10 +27,11 @@
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::FloatTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::FloatTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -39,7 +40,6 @@ namespace ut
 void FloatTest::setUp()
 {
     // Set up context before running a test.
-
 }
 
 //------------------------------------------------------------------------------
@@ -53,42 +53,43 @@ void FloatTest::tearDown()
 
 void FloatTest::methode1()
 {
-    const float VALUES[]     = { -3.141592f, 0.f, 2.04f, 10, std::numeric_limits< float >::infinity() };
+    const float VALUES[]     = {-3.141592f, 0.f, 2.04f, 10, std::numeric_limits<float>::infinity()};
     const float NAN_VALUES[] = {
-        std::numeric_limits< float >::quiet_NaN(),
-        std::numeric_limits< float >::signaling_NaN()
+        std::numeric_limits<float>::quiet_NaN(),
+        std::numeric_limits<float>::signaling_NaN()
     };
 
-    for( float VALUE : VALUES )
+    for(float VALUE : VALUES)
     {
         data::Float::sptr f0 = data::Float::New();
         f0->value() = VALUE;
-        data::Float::sptr f1 = data::Float::New( VALUE );
+        data::Float::sptr f1 = data::Float::New(VALUE);
 
-        CPPUNIT_ASSERT_EQUAL( VALUE, f0->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE, f1->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE, data::Float::New( VALUE )->value() );
+        CPPUNIT_ASSERT_EQUAL(VALUE, f0->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, f1->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, data::Float::New(VALUE)->value());
     }
 
-    for( float VALUE : NAN_VALUES )
+    for(float VALUE : NAN_VALUES)
     {
         data::Float::sptr f0 = data::Float::New();
         f0->value() = VALUE;
-        data::Float::sptr f1 = data::Float::New( VALUE );
+        data::Float::sptr f1 = data::Float::New(VALUE);
 
-        CPPUNIT_ASSERT( !( VALUE == f0->value() ) );
-        CPPUNIT_ASSERT( !( VALUE < f0->value() ) );
-        CPPUNIT_ASSERT( !( VALUE > f0->value() ) );
+        CPPUNIT_ASSERT(!(VALUE == f0->value()));
+        CPPUNIT_ASSERT(!(VALUE < f0->value()));
+        CPPUNIT_ASSERT(!(VALUE > f0->value()));
 
-        CPPUNIT_ASSERT( !( VALUE == f1->value() ) );
-        CPPUNIT_ASSERT( !( VALUE < f1->value() ) );
-        CPPUNIT_ASSERT( !( VALUE > f1->value() ) );
+        CPPUNIT_ASSERT(!(VALUE == f1->value()));
+        CPPUNIT_ASSERT(!(VALUE < f1->value()));
+        CPPUNIT_ASSERT(!(VALUE > f1->value()));
 
-        CPPUNIT_ASSERT( !( VALUE == data::Float::New( VALUE )->value() ) );
-        CPPUNIT_ASSERT( !( VALUE < data::Float::New( VALUE )->value() ) );
-        CPPUNIT_ASSERT( !( VALUE > data::Float::New( VALUE )->value() ) );
+        CPPUNIT_ASSERT(!(VALUE == data::Float::New(VALUE)->value()));
+        CPPUNIT_ASSERT(!(VALUE < data::Float::New(VALUE)->value()));
+        CPPUNIT_ASSERT(!(VALUE > data::Float::New(VALUE)->value()));
     }
 }
 
 } //namespace ut
+
 } //namespace sight::data

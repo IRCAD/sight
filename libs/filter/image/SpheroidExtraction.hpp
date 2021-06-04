@@ -47,12 +47,14 @@ public:
      * @param[in] _elongationMax maximum elongation to recognize a sphere, perfect spheres have an elongation of one.
      * @return detected spheres' center
      */
-    FILTER_IMAGE_API static data::PointList::sptr extract(const data::Image::csptr& _image,
-                                                          const double _threshold,
-                                                          const double _radiusMin, const double _radiusMax,
-                                                          const double _elongationMin,
-                                                          const double _elongationMax);
-
+    FILTER_IMAGE_API static data::PointList::sptr extract(
+        const data::Image::csptr& _image,
+        const double _threshold,
+        const double _radiusMin,
+        const double _radiusMax,
+        const double _elongationMin,
+        const double _elongationMax
+    );
 };
 
 } // namespace sight::filter::image.

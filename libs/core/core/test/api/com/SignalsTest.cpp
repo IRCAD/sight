@@ -28,10 +28,11 @@
 #include <core/com/Signals.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SignalsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SignalsTest);
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
@@ -40,8 +41,8 @@ namespace ut
 void SignalsTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void SignalsTest::tearDown()
@@ -55,12 +56,12 @@ void SignalsTest::buildTest()
 {
     core::com::Signals signals;
 
-    core::com::Signal< void() >::sptr sig = core::com::Signal< void() >::New();
-    CPPUNIT_ASSERT( sig );
+    core::com::Signal<void()>::sptr sig = core::com::Signal<void()>::New();
+    CPPUNIT_ASSERT(sig);
 
-    typedef void Signature (int, float);
-    core::com::Signal< Signature >::sptr sig2 = core::com::Signal< Signature >::New();
-    CPPUNIT_ASSERT( sig2 );
+    typedef void Signature(int, float);
+    core::com::Signal<Signature>::sptr sig2 = core::com::Signal<Signature>::New();
+    CPPUNIT_ASSERT(sig2);
 
     signals("sig", sig)
         ("sig2", sig2);
@@ -69,14 +70,14 @@ void SignalsTest::buildTest()
     CPPUNIT_ASSERT(sig2 == signals["sig2"]);
     CPPUNIT_ASSERT(!signals["wrong_signal"]);
 
-    CPPUNIT_ASSERT_EQUAL((size_t)2, signals.getSignalKeys().size());
+    CPPUNIT_ASSERT_EQUAL((size_t) 2, signals.getSignalKeys().size());
 }
 
 //-----------------------------------------------------------------------------
 
 struct SignalsTestHasSignals : public HasSignals
 {
-    typedef core::com::Signal< void ()> SignalType;
+    typedef core::com::Signal<void ()> SignalType;
 
     SignalsTestHasSignals()
     {
@@ -87,18 +88,17 @@ struct SignalsTestHasSignals : public HasSignals
 
 struct SignalsTestHasSignals2 : public HasSignals
 {
-    typedef core::com::Signal< void ()> SignalType;
+    typedef core::com::Signal<void ()> SignalType;
 
     SignalsTestHasSignals2()
     {
-        SignalType::sptr sig = this->newSignal< SignalType >("sig");
+        SignalType::sptr sig = this->newSignal<SignalType>("sig");
         CPPUNIT_ASSERT(sig);
     }
 };
 
 struct SignalsTestA
 {
-
     SignalsTestA()
     {
         m_val = false;
@@ -120,26 +120,27 @@ void SignalsTest::hasSignalsTest()
     {
         SignalsTestHasSignals obj;
         SignalsTestA srv;
-        Slot< void()>::sptr slot = core::com::newSlot( &SignalsTestA::changeStatus, &srv );
-        obj.signal("sig")->connect( slot );
-        obj.signal< SignalsTestHasSignals::SignalType >("sig")->emit();
-        CPPUNIT_ASSERT( srv.m_val );
-        obj.signal("sig")->disconnect( slot );
+        Slot<void()>::sptr slot = core::com::newSlot(&SignalsTestA::changeStatus, &srv);
+        obj.signal("sig")->connect(slot);
+        obj.signal<SignalsTestHasSignals::SignalType>("sig")->emit();
+        CPPUNIT_ASSERT(srv.m_val);
+        obj.signal("sig")->disconnect(slot);
     }
     {
         SignalsTestHasSignals2 obj;
         SignalsTestA srv;
-        Slot< void()>::sptr slot = core::com::newSlot( &SignalsTestA::changeStatus, &srv );
+        Slot<void()>::sptr slot = core::com::newSlot(&SignalsTestA::changeStatus, &srv);
 
-        obj.signal("sig")->connect( slot );
-        obj.signal< SignalsTestHasSignals2::SignalType >("sig")->emit();
+        obj.signal("sig")->connect(slot);
+        obj.signal<SignalsTestHasSignals2::SignalType>("sig")->emit();
 
-        CPPUNIT_ASSERT( srv.m_val );
-        obj.signal("sig")->disconnect( slot );
+        CPPUNIT_ASSERT(srv.m_val);
+        obj.signal("sig")->disconnect(slot);
     }
 }
 
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::core::com

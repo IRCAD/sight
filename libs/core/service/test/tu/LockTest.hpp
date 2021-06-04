@@ -28,6 +28,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -36,13 +37,14 @@ namespace ut
  */
 class LockTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( LockTest );
-CPPUNIT_TEST( testScopedLock );
-CPPUNIT_TEST( testThreadedLock );
-CPPUNIT_TEST( testDumpLock );
+CPPUNIT_TEST_SUITE(LockTest);
+CPPUNIT_TEST(testScopedLock);
+CPPUNIT_TEST(testThreadedLock);
+CPPUNIT_TEST(testDumpLock);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -54,4 +56,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::service

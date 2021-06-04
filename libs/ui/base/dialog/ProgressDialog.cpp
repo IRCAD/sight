@@ -28,8 +28,10 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
+
 //-----------------------------------------------------------------------------
 
 ProgressDialog::ProgressDialog(const std::string& title, const std::string& message)
@@ -38,23 +40,24 @@ ProgressDialog::ProgressDialog(const std::string& title, const std::string& mess
         [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IProgressDialog::REGISTRY_KEY);
-                m_implementation = ui::base::dialog::IProgressDialog::dynamicCast(guiObj);
+                m_implementation                     = ui::base::dialog::IProgressDialog::dynamicCast(guiObj);
                 if(m_implementation)
                 {
                     m_implementation->setTitle(title);
                     m_implementation->setMessage(message);
                 }
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 ProgressDialog::~ProgressDialog()
 {
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        [&]
             {
                 m_implementation.reset();
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +71,7 @@ void ProgressDialog::setTitle(const std::string& title)
                 {
                     m_implementation->setTitle(title);
                 }
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +85,7 @@ void ProgressDialog::setMessage(const std::string& msg)
                 {
                     m_implementation->setMessage(msg);
                 }
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +99,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
                 {
                     (*m_implementation)(percent, msg);
                 }
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +113,7 @@ void ProgressDialog::setCancelCallback(CancelCallbackType callback)
                 {
                     m_implementation->setCancelCallback(callback);
                 }
-            } ).wait();
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -128,8 +131,9 @@ void ProgressDialog::hideCancelButton()
         [&]
             {
                 m_implementation->hideCancelButton();
-            } ).wait();
+            }).wait();
 }
 
 } //namespace dialog
+
 } //namespace sight::ui::base

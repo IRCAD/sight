@@ -41,11 +41,14 @@
 
 namespace sight::data
 {
+
 class String;
+
 }
 
 namespace sight::module::ui::qt
 {
+
 /**
  * @brief This action shows a dialog to configure preferences of an application.
  *
@@ -115,13 +118,12 @@ namespace sight::module::ui::qt
 class MODULE_UI_QT_CLASS_API SPreferencesConfiguration final : public QObject,
                                                                public ::sight::ui::base::IAction
 {
-
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, ::sight::ui::base::IAction);
 
     /// Initializes the signal.
     MODULE_UI_QT_API SPreferencesConfiguration() noexcept;
@@ -146,7 +148,7 @@ protected:
 private:
 
     /// Type of signal when parameters are updated.
-    typedef core::com::Signal< void () > ParametersModifiedSignalType;
+    typedef core::com::Signal<void ()> ParametersModifiedSignalType;
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
 
     enum class PreferenceType : std::int8_t
@@ -170,8 +172,8 @@ private:
         std::string m_preferenceKey;
         std::string m_name;
         std::string m_defaultValue;
-        std::pair< int, int > m_iMinMax { 0, 999999 };
-        std::pair< double, double > m_dMinMax { -1000000.0, 1000000.0 };
+        std::pair<int, int> m_iMinMax {0, 999999};
+        std::pair<double, double> m_dMinMax {-1000000.0, 1000000.0};
     };
 
     void onSelectDir(QPointer<QLineEdit> _lineEdit);
@@ -181,7 +183,6 @@ private:
     ParametersModifiedSignalType::sptr m_sigParametersModified;
 
     std::vector<PreferenceElt> m_preferences;
-
 };
 
 } // namespace sight::module::ui::qt

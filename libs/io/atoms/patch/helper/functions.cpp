@@ -28,110 +28,105 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace helper
 {
 
 //-----------------------------------------------------------------------------
 
-std::string getClassname( const sight::atoms::Object::sptr& obj )
+std::string getClassname(const sight::atoms::Object::sptr& obj)
 {
-    return obj->getMetaInfo( io::atoms::patch::s_OBJ_CLASSNAME );
+    return obj->getMetaInfo(io::atoms::patch::s_OBJ_CLASSNAME);
 }
 
 //-----------------------------------------------------------------------------
 
-void setClassname( const sight::atoms::Object::sptr& obj, const std::string& newClassname )
+void setClassname(const sight::atoms::Object::sptr& obj, const std::string& newClassname)
 {
-    obj->setMetaInfo( io::atoms::patch::s_OBJ_CLASSNAME, newClassname );
+    obj->setMetaInfo(io::atoms::patch::s_OBJ_CLASSNAME, newClassname);
 }
 
 //-----------------------------------------------------------------------------
 
-std::string getVersion( const sight::atoms::Object::sptr& obj )
+std::string getVersion(const sight::atoms::Object::sptr& obj)
 {
-    return obj->getMetaInfo( io::atoms::patch::s_OBJ_VERSION );
+    return obj->getMetaInfo(io::atoms::patch::s_OBJ_VERSION);
 }
 
 //-----------------------------------------------------------------------------
 
-void setVersion( const sight::atoms::Object::sptr& obj, const std::string& newVersion )
+void setVersion(const sight::atoms::Object::sptr& obj, const std::string& newVersion)
 {
-    obj->setMetaInfo( io::atoms::patch::s_OBJ_VERSION, newVersion );
+    obj->setMetaInfo(io::atoms::patch::s_OBJ_VERSION, newVersion);
 }
 
 //-----------------------------------------------------------------------------
 
-void generateID( const sight::atoms::Object::sptr& obj )
+void generateID(const sight::atoms::Object::sptr& obj)
 {
-    obj->setMetaInfo( io::atoms::patch::s_OBJ_ID, core::tools::UUID::generateUUID() );
+    obj->setMetaInfo(io::atoms::patch::s_OBJ_ID, core::tools::UUID::generateUUID());
 }
 
 //-----------------------------------------------------------------------------
 
-void cleanFields( const sight::atoms::Object::sptr& obj )
+void cleanFields(const sight::atoms::Object::sptr& obj)
 {
     obj->setAttribute("fields", sight::atoms::Map::New());
 }
 
 //-----------------------------------------------------------------------------
 
-void changeUID( const sight::atoms::Object::sptr& obj )
+void changeUID(const sight::atoms::Object::sptr& obj)
 {
-    for( const sight::atoms::Object::AttributesType::value_type& elem :  obj->getAttributes() )
+    for(const sight::atoms::Object::AttributesType::value_type& elem : obj->getAttributes())
     {
-        if ( elem.second )
+        if(elem.second)
         {
-            switch ( elem.second->type() )
+            switch(elem.second->type())
             {
                 case sight::atoms::Base::SEQUENCE:
-                {
-                    changeSeqUID( sight::atoms::Sequence::dynamicCast( elem.second ) );
+                    changeSeqUID(sight::atoms::Sequence::dynamicCast(elem.second));
                     break;
-                }
+
                 case sight::atoms::Base::MAP:
-                {
-                    changeMapUID( sight::atoms::Map::dynamicCast( elem.second ) );
+                    changeMapUID(sight::atoms::Map::dynamicCast(elem.second));
                     break;
-                }
+
                 case sight::atoms::Base::OBJECT:
-                {
-                    changeUID( sight::atoms::Object::dynamicCast( elem.second ) );
+                    changeUID(sight::atoms::Object::dynamicCast(elem.second));
                     break;
-                }
+
                 default:
                     break;
             }
         }
     }
 
-    io::atoms::patch::helper::generateID( obj );
+    io::atoms::patch::helper::generateID(obj);
 }
 
 //-----------------------------------------------------------------------------
 
-void changeMapUID( const sight::atoms::Map::sptr& map )
+void changeMapUID(const sight::atoms::Map::sptr& map)
 {
-    for( sight::atoms::Map::ValueType elem :  map->getValue() )
+    for(sight::atoms::Map::ValueType elem : map->getValue())
     {
-        if ( elem.second )
+        if(elem.second)
         {
-            switch ( elem.second->type() )
+            switch(elem.second->type())
             {
                 case sight::atoms::Base::SEQUENCE:
-                {
-                    changeSeqUID( sight::atoms::Sequence::dynamicCast( elem.second ) );
+                    changeSeqUID(sight::atoms::Sequence::dynamicCast(elem.second));
                     break;
-                }
+
                 case sight::atoms::Base::MAP:
-                {
-                    changeMapUID( sight::atoms::Map::dynamicCast( elem.second ) );
+                    changeMapUID(sight::atoms::Map::dynamicCast(elem.second));
                     break;
-                }
+
                 case sight::atoms::Base::OBJECT:
-                {
-                    changeUID( sight::atoms::Object::dynamicCast( elem.second ) );
+                    changeUID(sight::atoms::Object::dynamicCast(elem.second));
                     break;
-                }
+
                 default:
                     break;
             }
@@ -141,29 +136,26 @@ void changeMapUID( const sight::atoms::Map::sptr& map )
 
 //-----------------------------------------------------------------------------
 
-void changeSeqUID( const sight::atoms::Sequence::sptr& seq )
+void changeSeqUID(const sight::atoms::Sequence::sptr& seq)
 {
-    for( sight::atoms::Base::sptr elem :  seq->getValue() )
+    for(sight::atoms::Base::sptr elem : seq->getValue())
     {
-        if ( elem )
+        if(elem)
         {
-            switch ( elem->type() )
+            switch(elem->type())
             {
                 case sight::atoms::Base::SEQUENCE:
-                {
-                    changeSeqUID( sight::atoms::Sequence::dynamicCast( elem ) );
+                    changeSeqUID(sight::atoms::Sequence::dynamicCast(elem));
                     break;
-                }
+
                 case sight::atoms::Base::MAP:
-                {
-                    changeMapUID( sight::atoms::Map::dynamicCast( elem ) );
+                    changeMapUID(sight::atoms::Map::dynamicCast(elem));
                     break;
-                }
+
                 case sight::atoms::Base::OBJECT:
-                {
-                    changeUID( sight::atoms::Object::dynamicCast( elem ) );
+                    changeUID(sight::atoms::Object::dynamicCast(elem));
                     break;
-                }
+
                 default:
                     break;
             }
@@ -174,4 +166,5 @@ void changeSeqUID( const sight::atoms::Sequence::sptr& seq )
 //-----------------------------------------------------------------------------
 
 } //helper
+
 } //fwAtomHelper

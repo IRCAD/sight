@@ -32,7 +32,6 @@ namespace sight::module::viz::scene3dQt
 /// This class is started when the module is loaded.
 struct MODULE_VIZ_SCENE3DQT_CLASS_API Plugin final : public core::runtime::Plugin
 {
-
     /// Destroys the plugin.
     MODULE_VIZ_SCENE3DQT_API ~Plugin() noexcept override;
 
@@ -41,7 +40,6 @@ struct MODULE_VIZ_SCENE3DQT_CLASS_API Plugin final : public core::runtime::Plugi
 
     /// Stops the plugin, does nothing here.
     MODULE_VIZ_SCENE3DQT_API void stop() noexcept override;
-
 };
 
 } // namespace sight::module::viz::scene3dQt.

@@ -47,10 +47,10 @@ LockDumpSrv::~LockDumpSrv() noexcept
 
 void LockDumpSrv::starting()
 {
-    data::Object::sptr object = this->getInOut< data::Object >(s_TARGET_INOUT);
+    data::Object::sptr object = this->getInOut<data::Object>(s_TARGET_INOUT);
     SIGHT_ASSERT("The inout key '" + s_TARGET_INOUT + "' is not correctly set.", object);
 
-    m_objLock = data::ObjectLock( object );
+    m_objLock = data::ObjectLock(object);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void LockDumpSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::info( std::ostream& _sstream )
+void LockDumpSrv::info(std::ostream& _sstream)
 {
 }
 

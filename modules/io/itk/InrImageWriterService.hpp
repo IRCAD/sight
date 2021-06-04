@@ -30,7 +30,9 @@
 
 namespace sight::data
 {
+
 class Image;
+
 }
 
 namespace sight::module::io::itk
@@ -55,15 +57,15 @@ namespace sight::module::io::itk
  */
 class MODULE_IO_ITK_CLASS_API InrImageWriterService : public sight::io::base::service::IWriter
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(InrImageWriterService, sight::io::base::service::IWriter)
+
+    SIGHT_DECLARE_SERVICE(InrImageWriterService, sight::io::base::service::IWriter);
 
     MODULE_IO_ITK_API InrImageWriterService() noexcept;
 
     MODULE_IO_ITK_API virtual ~InrImageWriterService() noexcept;
 
-    MODULE_IO_ITK_API static void saveImage( const std::filesystem::path& inrFile, const CSPTR(data::Image)& image );
+    MODULE_IO_ITK_API static void saveImage(const std::filesystem::path& inrFile, const CSPTR(data::Image)& image);
 
 protected:
 
@@ -80,7 +82,7 @@ protected:
     MODULE_IO_ITK_API void updating() override;
 
     /// Override
-    MODULE_IO_ITK_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief Configure using GUI.
@@ -94,7 +96,6 @@ protected:
 
     /// Return managed file type, here FILE
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
-
 };
 
 } // namespace sight::module::io::itk

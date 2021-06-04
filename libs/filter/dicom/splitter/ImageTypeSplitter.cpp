@@ -28,10 +28,11 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::ImageTypeSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImageTypeSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -77,4 +78,5 @@ bool ImageTypeSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

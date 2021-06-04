@@ -69,12 +69,16 @@ void SFrustum::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
     m_near  = config.get<float>(s_NEAR_CONFIG, m_near);
     m_far   = config.get<float>(s_FAR_CONFIG, m_far);
-    m_color = config.get< std::string >(s_COLOR_CONFIG, m_color);
+    m_color = config.get<std::string>(s_COLOR_CONFIG, m_color);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,12 +92,13 @@ void SFrustum::starting()
     m_material->diffuse()->setRGBA(m_color);
 
     module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
-        this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-            "::sight::module::viz::scene3d::adaptor::SMaterial");
+        this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+            "::sight::module::viz::scene3d::adaptor::SMaterial"
+        );
     materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setRenderService(this->getRenderService());
     materialAdaptor->setLayerID(this->m_layerID);
     materialAdaptor->setShadingMode("ambient");
     materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
@@ -110,6 +115,7 @@ void SFrustum::starting()
     {
         m_ogreCamera->setNearClipDistance(m_near);
     }
+
     if(m_far != 0.f)
     {
         m_ogreCamera->setFarClipDistance(m_far);
@@ -135,8 +141,8 @@ void SFrustum::starting()
 service::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
+    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -167,13 +173,12 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const auto camera = this->getLockedInput< data::Camera >(s_CAMERA_INPUT);
+    const auto camera = this->getLockedInput<data::Camera>(s_CAMERA_INPUT);
 
     if(camera->getIsCalibrated())
     {
-
-        const float width  = static_cast< float >(camera->getWidth());
-        const float height = static_cast< float >(camera->getHeight());
+        const float width  = static_cast<float>(camera->getWidth());
+        const float height = static_cast<float>(camera->getHeight());
 
         ::Ogre::Matrix4 m =
             sight::viz::scene3d::helper::Camera::computeProjectionMatrix(*camera, width, height, m_near, m_far);

@@ -30,11 +30,14 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwGuiRegisterMacro( ::sight::ui::base::builder::ContainerBuilder,
-                    ::sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY);
+fwGuiRegisterMacro(
+    ::sight::ui::base::builder::ContainerBuilder,
+    ::sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY
+);
 
 namespace sight::ui::base
 {
+
 namespace builder
 {
 
@@ -52,7 +55,7 @@ ContainerBuilder::~ContainerBuilder()
 
 //-----------------------------------------------------------------------------
 
-void ContainerBuilder::createContainer( ui::base::container::fwContainer::sptr parent )
+void ContainerBuilder::createContainer(ui::base::container::fwContainer::sptr parent)
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
@@ -95,7 +98,7 @@ void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
     QWidget* qtParent = parentContainer->getQtContainer();
     SIGHT_ASSERT("The parent's QtContainer is not yet initialized", qtParent);
 
-    if(qtParent != m_parent->getQtContainer() )
+    if(qtParent != m_parent->getQtContainer())
     {
         if(!qtParent->layout())
         {
@@ -103,6 +106,7 @@ void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
             layout->setContentsMargins(0, 0, 0, 0);
             qtParent->setLayout(layout);
         }
+
         qtParent->layout()->addWidget(qtContainer);
         qtContainer->update();
 
@@ -113,4 +117,5 @@ void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
 //-----------------------------------------------------------------------------
 
 } // namespace builder
+
 } // namespace sight::ui::base

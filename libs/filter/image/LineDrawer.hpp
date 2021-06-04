@@ -26,8 +26,8 @@
 #include "filter/image/config.hpp"
 #include "filter/image/ImageDiff.hpp"
 
-#include <data/Image.hpp>
 #include <data/helper/MedicalImage.hpp>
+#include <data/Image.hpp>
 
 #include <array>
 
@@ -58,12 +58,14 @@ public:
      * @param[in] overwrite overwrite mode, don't overwrite existing pixels if not set.
      * @return The differences in the image before and after drawing.
      */
-    FILTER_IMAGE_API ImageDiff draw(const OrientationType orientation,
-                                    const CoordinatesType& startCoord,
-                                    const CoordinatesType& endCoord,
-                                    data::Image::BufferType* value,
-                                    const double thickness,
-                                    const bool overwrite = true);
+    FILTER_IMAGE_API ImageDiff draw(
+        const OrientationType orientation,
+        const CoordinatesType& startCoord,
+        const CoordinatesType& endCoord,
+        data::Image::BufferType* value,
+        const double thickness,
+        const bool overwrite = true
+    );
 
 private:
 
@@ -81,9 +83,15 @@ private:
      * @param[in,out] diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
-    bool drawEllipse( const LineDrawer::CoordinatesType& c, data::Image::BufferType* value,
-                      const double radius, const size_t firstDim, const size_t secondDim, const bool overwrite,
-                      ImageDiff& diff);
+    bool drawEllipse(
+        const LineDrawer::CoordinatesType& c,
+        data::Image::BufferType* value,
+        const double radius,
+        const size_t firstDim,
+        const size_t secondDim,
+        const bool overwrite,
+        ImageDiff& diff
+    );
 
     /**
      * @brief Draws a pixel in a 3D image if the right conditions are met.
@@ -99,8 +107,12 @@ private:
      * @param[in,out] diff vector storing the differences in the image before and after drawing.
      * @return true if at least one pixel has been drawn, false otherwise.
      */
-    bool drawPixel( const data::Image::IndexType index, data::Image::BufferType* value, const bool overwrite,
-                    ImageDiff& diff);
+    bool drawPixel(
+        const data::Image::IndexType index,
+        data::Image::BufferType* value,
+        const bool overwrite,
+        ImageDiff& diff
+    );
 
     /// Takes ROI into account.
     bool m_useROI;

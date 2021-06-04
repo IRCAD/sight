@@ -43,7 +43,7 @@ SemanticPatchDB::~SemanticPatchDB()
 
 // ----------------------------------------------------------------------------
 
-SemanticPatchDB::SemanticPatchDB( const SemanticPatchDB& cpy )
+SemanticPatchDB::SemanticPatchDB(const SemanticPatchDB& cpy)
 {
 }
 
@@ -63,7 +63,8 @@ io::atoms::patch::ISemanticPatch::sptr SemanticPatchDB::getPatch(
     const std::string& originVersion,
     const std::string& targetVersion,
     const std::string& objOriginClassname,
-    const std::string& objOriginVersion) const
+    const std::string& objOriginVersion
+) const
 {
     VersionIDType origin = std::make_pair(objOriginClassname, objOriginVersion);
 
@@ -72,7 +73,7 @@ io::atoms::patch::ISemanticPatch::sptr SemanticPatchDB::getPatch(
     if(it != m_patches.end())
     {
         PatchVectorType::const_iterator itVec;
-        for(itVec = it->second.begin(); itVec != it->second.end(); ++itVec)
+        for(itVec = it->second.begin() ; itVec != it->second.end() ; ++itVec)
         {
             if((*itVec)->isApplicable(context, originVersion, targetVersion))
             {

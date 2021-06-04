@@ -29,6 +29,7 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace mapper
 {
 
@@ -37,17 +38,22 @@ class Mapper;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME ) New();
+template<class CLASSNAME>
+SPTR(CLASSNAME) New();
 
 ATOMS_API SPTR(atoms::conversion::mapper::Base) New(
-    const atoms::conversion::mapper::registry::KeyType& classname );
+    const atoms::conversion::mapper::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME ) New()
+template<class CLASSNAME>
+SPTR(CLASSNAME) New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >();
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 
 } // namespace mapper
+
 } // namespace factory
+
 } // namespace sight::atoms::conversion

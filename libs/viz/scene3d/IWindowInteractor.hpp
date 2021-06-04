@@ -49,7 +49,6 @@ namespace sight::viz::scene3d
  */
 class VIZ_SCENE3D_CLASS_API IWindowInteractor : public core::BaseObject
 {
-
 public:
 
     /// Inner class used to send informations about mouse events.
@@ -92,10 +91,11 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry(std::string functorKey)
         {
             viz::scene3d::registry::get()->addFactory(functorKey, &viz::scene3d::factory::New<T>);
@@ -109,22 +109,23 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class OffscreenMgrRegistry
     {
     public:
+
         OffscreenMgrRegistry(std::string functorKey)
         {
-            auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr< T >
+            auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr<T>
                         {
                             // Capture the factory inside a lambda to distinguish it from overloaded methods.
-                            return viz::scene3d::offscreenInteractorMgrFactory::New<T>( _dims );
+                            return viz::scene3d::offscreenInteractorMgrFactory::New<T>(_dims);
                         };
             viz::scene3d::registry::getOffscreenMgr()->addFactory(functorKey, fact);
         }
     };
 
-    SIGHT_DECLARE_CLASS(IWindowInteractor, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IWindowInteractor, core::BaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -140,8 +141,10 @@ public:
      * @param _width  width of underlying render texture.
      * @param _height height of underlying render texture.
      */
-    VIZ_SCENE3D_API static IWindowInteractor::sptr createOffscreenManager(unsigned int _width,
-                                                                          unsigned int _height);
+    VIZ_SCENE3D_API static IWindowInteractor::sptr createOffscreenManager(
+        unsigned int _width,
+        unsigned int _height
+    );
 
     /// Constructor. Do nothing.
     VIZ_SCENE3D_API IWindowInteractor();
@@ -156,8 +159,11 @@ public:
     VIZ_SCENE3D_API virtual void requestRender() = 0;
 
     /// Creates an interactor and installs it in window.
-    VIZ_SCENE3D_API virtual void createContainer( ui::base::container::fwContainer::sptr _parent,
-                                                  bool renderOnDemand, bool fullscreen ) = 0;
+    VIZ_SCENE3D_API virtual void createContainer(
+        ui::base::container::fwContainer::sptr _parent,
+        bool renderOnDemand,
+        bool fullscreen
+    ) = 0;
 
     /// Connects widget and SRender signals and slots.
     VIZ_SCENE3D_API virtual void connectToContainer() = 0;
@@ -202,6 +208,7 @@ public:
     }
 
 protected:
+
     service::IService::wptr m_renderService;
 };
 

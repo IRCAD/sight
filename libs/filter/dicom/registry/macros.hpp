@@ -26,11 +26,13 @@
 
 namespace sight::filter::dicom
 {
+
 namespace registry
 {
 
-#define fwDicomIOFilterRegisterMacro( classname )                                  \
-    static sight::filter::dicom::IFilter::Registry< classname > s__factory__record__ ## __LINE__;
+#define fwDicomIOFilterRegisterMacro(classname) \
+    static sight::filter::dicom::IFilter::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // end namespace registry
+
 } // end namespace sight::filter::dicom

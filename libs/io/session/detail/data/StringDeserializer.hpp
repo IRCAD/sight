@@ -38,7 +38,7 @@ class StringDeserializer : public GenericDeserializer<sight::data::String>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(StringDeserializer, GenericDeserializer<sight::data::String>)
+    SIGHT_DECLARE_CLASS(StringDeserializer, GenericDeserializer<sight::data::String>);
 
     /// Delete default copy constructors and assignment operators
     StringDeserializer(const StringDeserializer&)            = delete;

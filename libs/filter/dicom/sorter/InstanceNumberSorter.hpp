@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -38,8 +39,12 @@ namespace sorter
 class FILTER_DICOM_CLASS_API InstanceNumberSorter : public filter::dicom::sorter::TagValueSorter
 {
 public:
-    SIGHT_DECLARE_CLASS(InstanceNumberSorter, filter::dicom::sorter::TagValueSorter,
-                        filter::dicom::factory::New< InstanceNumberSorter >);
+
+    SIGHT_DECLARE_CLASS(
+        InstanceNumberSorter,
+        filter::dicom::sorter::TagValueSorter,
+        filter::dicom::factory::New<InstanceNumberSorter>
+    );
 
     /// Constructor
     FILTER_DICOM_API InstanceNumberSorter(filter::dicom::IFilter::Key key);
@@ -57,13 +62,14 @@ public:
     FILTER_DICOM_API bool isConfigurationRequired() const override;
 
 protected:
+
     /// Filter name
     static const std::string s_FILTER_NAME;
 
     /// Filter description
     static const std::string s_FILTER_DESCRIPTION;
-
 };
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

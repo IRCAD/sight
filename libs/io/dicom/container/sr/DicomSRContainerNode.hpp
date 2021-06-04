@@ -30,8 +30,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
@@ -53,9 +55,10 @@ public:
      * @param[in] dataset Destination dataset
      */
     IO_DICOM_API virtual void write(::gdcm::DataSet& dataset) const;
-
 };
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

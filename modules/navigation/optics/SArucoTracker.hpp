@@ -113,7 +113,7 @@ class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::ITracke
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SArucoTracker, service::ITracker)
+    SIGHT_DECLARE_SERVICE(SArucoTracker, service::ITracker);
 
     typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> DetectionDoneSignalType;
     typedef core::com::Signal<void (bool)> MarkerDetectedSignalType;

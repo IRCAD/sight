@@ -43,51 +43,47 @@ static const service::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix"
 
 SMatrixRegressor::SMatrixRegressor()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 SMatrixRegressor::~SMatrixRegressor()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void SMatrixRegressor::configuring()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void SMatrixRegressor::starting()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 void SMatrixRegressor::updating()
 {
-    const auto matrixList = this->getLockedInput< data::Vector >(s_MATRIX_LIST_IN);
-    const auto pointList  = this->getLockedInput< data::PointList >(s_POINT_LIST_IN);
+    const auto matrixList = this->getLockedInput<data::Vector>(s_MATRIX_LIST_IN);
+    const auto pointList  = this->getLockedInput<data::PointList>(s_POINT_LIST_IN);
 
     SIGHT_ASSERT("'matrixList' does not exist", matrixList);
     SIGHT_ASSERT("'pointList' does not exist", pointList);
 
-    const auto optimalMatrix = this->getLockedInOut< data::Matrix4 >(s_OPTIMAL_MATRIX_INOUT);
+    const auto optimalMatrix = this->getLockedInOut<data::Matrix4>(s_OPTIMAL_MATRIX_INOUT);
 
     SIGHT_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
 
-    std::vector< sight::filter::image::MatrixRegressor::PointType > ptList;
+    std::vector<sight::filter::image::MatrixRegressor::PointType> ptList;
 
     // Convert the point list.
     for(const auto& pt : pointList->getPoints())
     {
         const auto& ptCoords = pt->getCoord();
-        ptList.push_back( sight::filter::image::MatrixRegressor::PointType(ptCoords[0], ptCoords[1], ptCoords[2], 1.));
+        ptList.push_back(sight::filter::image::MatrixRegressor::PointType(ptCoords[0], ptCoords[1], ptCoords[2], 1.));
     }
 
     if(!matrixList->empty() && !ptList.empty())
@@ -108,7 +104,6 @@ void SMatrixRegressor::updating()
 
 void SMatrixRegressor::stopping()
 {
-
 }
 
 //-----------------------------------------------------------------------------

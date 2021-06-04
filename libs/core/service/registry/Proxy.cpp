@@ -24,6 +24,7 @@
 
 namespace sight::service
 {
+
 namespace registry
 {
 
@@ -61,7 +62,7 @@ void Proxy::connect(ChannelKeyType channel, core::com::SignalBase::sptr signal)
         core::mt::ReadToWriteLock lock(m_channelMutex);
         ChannelMapType::iterator iter = m_channels.find(channel);
 
-        if (iter == m_channels.end())
+        if(iter == m_channels.end())
         {
             sigslots = SPTR(SigSlots)(new SigSlots);
 
@@ -80,9 +81,9 @@ void Proxy::connect(ChannelKeyType channel, core::com::SignalBase::sptr signal)
     if(ret.second)
     {
         // Only connect if the signal was not already in the proxy
-        for( core::com::SlotBase::sptr slot :  sigslots->m_slots )
+        for(core::com::SlotBase::sptr slot : sigslots->m_slots)
         {
-            signal->connect( slot );
+            signal->connect(slot);
         }
     }
 }
@@ -97,7 +98,7 @@ void Proxy::connect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
         core::mt::ReadToWriteLock lock(m_channelMutex);
         ChannelMapType::iterator iter = m_channels.find(channel);
 
-        if (iter == m_channels.end())
+        if(iter == m_channels.end())
         {
             sigslots = SPTR(SigSlots)(new SigSlots);
 
@@ -116,9 +117,9 @@ void Proxy::connect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
     if(ret.second)
     {
         // Only connect if the slot was not already in the proxy
-        for( core::com::SignalBase::sptr signal :  sigslots->m_signals )
+        for(core::com::SignalBase::sptr signal : sigslots->m_signals)
         {
-            signal->connect( slot );
+            signal->connect(slot);
         }
     }
 }
@@ -135,9 +136,9 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signa
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    for( core::com::SlotBase::sptr slot :  sigslots->m_slots )
+    for(core::com::SlotBase::sptr slot : sigslots->m_slots)
     {
-        signal->disconnect( slot );
+        signal->disconnect(slot);
     }
 
     SigSlots::SignalContainerType::iterator sigIter;
@@ -145,7 +146,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signa
     SIGHT_ASSERT("Signal is not found", sigIter != sigslots->m_signals.end());
     sigslots->m_signals.erase(sigIter);
 
-    if (sigslots->m_signals.empty() && sigslots->m_slots.empty())
+    if(sigslots->m_signals.empty() && sigslots->m_slots.empty())
     {
         core::mt::UpgradeToWriteLock writeLock(lock);
         m_channels.erase(channel);
@@ -164,9 +165,9 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    for( core::com::SignalBase::sptr signal :  sigslots->m_signals )
+    for(core::com::SignalBase::sptr signal : sigslots->m_signals)
     {
-        signal->disconnect( slot );
+        signal->disconnect(slot);
     }
 
     SigSlots::SlotContainerType::iterator slotIter;
@@ -174,7 +175,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
     SIGHT_ASSERT("Slot is not found", slotIter != sigslots->m_slots.end());
     sigslots->m_slots.erase(slotIter);
 
-    if (sigslots->m_signals.empty() && sigslots->m_slots.empty())
+    if(sigslots->m_signals.empty() && sigslots->m_slots.empty())
     {
         core::mt::UpgradeToWriteLock writeLock(lock);
         m_channels.erase(channel);
@@ -184,4 +185,5 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 //-----------------------------------------------------------------------------
 
 } // namespace registry
+
 } // namespace sight::service

@@ -39,6 +39,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Base : public core::BaseObject
 {
 public:
+
     typedef atoms::factory::Key Key;
 
     /// Defines fwAtoms version.
@@ -50,10 +51,11 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry()
         {
             atoms::registry::get()->addFactory(T::classname(), &atoms::factory::New<T>);
@@ -71,7 +73,7 @@ public:
         BLOB
     } AtomType;
 
-    SIGHT_DECLARE_CLASS(Base, core::BaseObject)
+    SIGHT_DECLARE_CLASS(Base, core::BaseObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     virtual ~Base()
@@ -98,7 +100,7 @@ public:
      */
     bool isBoolean() const
     {
-        return (type() == BOOLEAN);
+        return type() == BOOLEAN;
     }
 
     /**
@@ -107,7 +109,7 @@ public:
      */
     bool isNumeric() const
     {
-        return (type() == NUMERIC);
+        return type() == NUMERIC;
     }
 
     /**
@@ -116,7 +118,7 @@ public:
      */
     bool isString() const
     {
-        return (type() == STRING);
+        return type() == STRING;
     }
 
     /**
@@ -125,7 +127,7 @@ public:
      */
     bool isSequence() const
     {
-        return (type() == SEQUENCE);
+        return type() == SEQUENCE;
     }
 
     /**
@@ -134,7 +136,7 @@ public:
      */
     bool isMapping() const
     {
-        return (type() == MAP);
+        return type() == MAP;
     }
 
     /**
@@ -143,7 +145,7 @@ public:
      */
     bool isBlob() const
     {
-        return (type() == BLOB);
+        return type() == BLOB;
     }
 
     /**
@@ -152,7 +154,7 @@ public:
      */
     bool isObject() const
     {
-        return (type() == OBJECT);
+        return type() == OBJECT;
     }
 
     /**
@@ -167,13 +169,13 @@ public:
     virtual AtomType type() const = 0;
 
 protected:
+
     /**
      * @brief Constructor
      */
     Base()
     {
     }
-
 };
 
-}
+} // namespace sight::atoms

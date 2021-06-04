@@ -30,18 +30,19 @@
 #include <utility>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Line));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Line));
 
 namespace sight::data
 {
+
 /**
  * @brief This class defines a Line defined by two points.
  */
 class DATA_CLASS_API Line : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Line, data::Object, data::factory::New< Line >)
+
+    SIGHT_DECLARE_CLASS(Line, data::Object, data::factory::New<Line>);
 
     /**
      * @brief Constructor
@@ -52,15 +53,15 @@ public:
     /// Destructor
     DATA_API virtual ~Line();
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Line));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Line));
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
-    DATA_API void setValue(const data::Point::sptr& _position, const data::Point::sptr&  _direction);
+    DATA_API void setValue(const data::Point::sptr& _position, const data::Point::sptr& _direction);
 
     /** @{
      *  @brief get/set point position
@@ -75,7 +76,7 @@ public:
      */
     data::Point::sptr& getDirection();
     const data::Point::sptr& getDirection() const;
-    void setDirection (const data::Point::sptr& _direction);
+    void setDirection(const data::Point::sptr& _direction);
     /// @}
 
 protected:
@@ -83,7 +84,6 @@ protected:
     //! Points container
     data::Point::sptr m_position;
     data::Point::sptr m_direction;
-
 }; // class Line
 
 //-----------------------------------------------------------------------------
@@ -123,7 +123,7 @@ inline const data::Point::sptr& Line::getDirection() const
 
 //-----------------------------------------------------------------------------
 
-inline void Line::setDirection (const data::Point::sptr& _direction)
+inline void Line::setDirection(const data::Point::sptr& _direction)
 {
     this->m_direction = _direction;
 }

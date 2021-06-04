@@ -59,7 +59,8 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public service::IOperator
 {
 public:
-    SIGHT_DECLARE_SERVICE(STransformDepthTL2mm, service::IOperator)
+
+    SIGHT_DECLARE_SERVICE(STransformDepthTL2mm, service::IOperator);
 
     /**
      * @brief STransformDepthTL2mm constructor.
@@ -89,6 +90,7 @@ protected:
     MODULE_FILTER_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
+
     /// Apply the scale on the depth map
     void compute(core::HiResClock::HiResClockType timestamp);
 

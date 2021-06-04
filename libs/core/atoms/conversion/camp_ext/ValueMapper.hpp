@@ -32,8 +32,8 @@ namespace camp_ext
 {
 
 /// New value mapper to manage conversion in camp world between sight::atoms::Blob and a core::memory::BufferObject
-template <>
-struct ValueMapper< sight::atoms::Blob::sptr >
+template<>
+struct ValueMapper<sight::atoms::Blob::sptr>
 {
     typedef sight::atoms::Blob::sptr ReturnType;
 
@@ -85,9 +85,9 @@ struct ValueMapper< sight::atoms::Blob::sptr >
 
     static ReturnType from(const camp::UserObject& source)
     {
-        sight::core::memory::BufferObject::sptr tmp = source.get< sight::core::memory::BufferObject::sptr>()->getSptr();
+        sight::core::memory::BufferObject::sptr tmp = source.get<sight::core::memory::BufferObject::sptr>()->getSptr();
         return sight::atoms::Blob::New(tmp);
     }
 };
 
-}
+} // namespace camp_ext

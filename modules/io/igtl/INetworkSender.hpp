@@ -34,11 +34,10 @@ namespace sight::module::io::igtl
 /// Interface providing behavior of network senders, if you want create a new network sender you must be inherit.
 class MODULE_IO_IGTL_CLASS_API INetworkSender : public service::IController
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(INetworkSender, service::IController)
+    SIGHT_DECLARE_SERVICE(INetworkSender, service::IController);
 
     /// Initializes signals.
     MODULE_IO_IGTL_API INetworkSender();
@@ -75,13 +74,12 @@ protected:
     MODULE_IO_IGTL_API virtual void sendObject(const data::Object::csptr& obj, const size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
-    typedef core::com::Signal< void () > ConnectedSignalType;
+    typedef core::com::Signal<void ()> ConnectedSignalType;
     ConnectedSignalType::sptr m_sigConnected;
 
     /// Defines the signal emitted when service is disconnected.
-    typedef core::com::Signal< void () > DisconnectSignalType;
+    typedef core::com::Signal<void ()> DisconnectSignalType;
     DisconnectSignalType::sptr m_sigDisconnected;
-
 };
 
 } // namespace sight::module::io::igtl.

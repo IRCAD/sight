@@ -26,9 +26,9 @@
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -69,28 +69,28 @@ void SViewportInteractor::updating()
 
 //-----------------------------------------------------------------------------
 
-void SViewportInteractor::processInteraction( sight::viz::scene2d::data::Event& _event )
+void SViewportInteractor::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
-    if ( _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp
-         && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier )
+    if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp
+       && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
     {
         this->zoom(true);
     }
-    else if ( _event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
-              && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier )
+    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
+            && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
     {
         this->zoom(false);
     }
-    else if ( _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
-              && _event.getButton() == sight::viz::scene2d::data::Event::LeftButton
-              && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier )
+    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
+            && _event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+            && _event.getModifier() == sight::viz::scene2d::data::Event::ShiftModifier)
     {
         m_viewportIsTranslated = true;
         m_lastCoordEvent       = _event.getCoord();
     }
-    else if ( m_viewportIsTranslated )
+    else if(m_viewportIsTranslated)
     {
-        if ( _event.getType() == sight::viz::scene2d::data::Event::MouseMove )
+        if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
             sight::viz::scene2d::data::Coord coord                  = _event.getCoord();
             sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
@@ -99,16 +99,16 @@ void SViewportInteractor::processInteraction( sight::viz::scene2d::data::Event& 
             const float xTrans = dx * sceneViewport->getWidth() / (float) this->getScene2DRender()->getView()->width();
 
             const float dy     = coord.getY() - m_lastCoordEvent.getY();
-            const float yTrans = dy * sceneViewport->getHeight() /
-                                 (float) this->getScene2DRender()->getView()->height();
+            const float yTrans = dy * sceneViewport->getHeight()
+                                 / (float) this->getScene2DRender()->getView()->height();
 
-            sceneViewport->setX( sceneViewport->getX() - xTrans );
-            sceneViewport->setY( sceneViewport->getY() - yTrans );
+            sceneViewport->setX(sceneViewport->getX() - xTrans);
+            sceneViewport->setY(sceneViewport->getY() - yTrans);
             this->getScene2DRender()->getView()->updateFromViewport();
 
             m_lastCoordEvent = coord;
         }
-        else if ( _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease )
+        else if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
         {
             m_viewportIsTranslated = false;
         }
@@ -117,7 +117,7 @@ void SViewportInteractor::processInteraction( sight::viz::scene2d::data::Event& 
 
 //-----------------------------------------------------------------------------
 
-void SViewportInteractor::zoom( bool zoomIn )
+void SViewportInteractor::zoom(bool zoomIn)
 {
     sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
@@ -128,12 +128,12 @@ void SViewportInteractor::zoom( bool zoomIn )
     float height = sceneViewport->getHeight();
 
     const float zoomPercent = 10.f / 100.0f;
-    const float centerX     = x + width/2.0f;
-    const float centerY     = y + height/2.0f;
+    const float centerX     = x + width / 2.0f;
+    const float centerY     = y + height / 2.0f;
 
     float newWidth;
     float newHeight;
-    if ( zoomIn )
+    if(zoomIn)
     {
         newWidth  = width * zoomPercent;
         newHeight = height * zoomPercent;
@@ -154,14 +154,15 @@ void SViewportInteractor::zoom( bool zoomIn )
     height = newHeight;
 
     // Set viewport
-    sceneViewport->setX( x );
-    sceneViewport->setY( y );
-    sceneViewport->setWidth( width );
-    sceneViewport->setHeight( height );
+    sceneViewport->setX(x);
+    sceneViewport->setY(y);
+    sceneViewport->setWidth(width);
+    sceneViewport->setHeight(height);
     this->getScene2DRender()->getView()->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

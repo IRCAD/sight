@@ -28,6 +28,7 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace exception
 {
 
@@ -35,11 +36,12 @@ namespace exception
 /// reasons)
 struct IO_IGTL_CLASS_API Conversion : core::Exception
 {
-    IO_IGTL_API Conversion( const std::string& err ) :
+    IO_IGTL_API Conversion(const std::string& err) :
         core::Exception(err)
     {
     }
 };
 
 } // namespace exception
+
 } // namespace sight::io::igtl::detail

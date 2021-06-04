@@ -26,10 +26,11 @@
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::TemporalPositionSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::TemporalPositionSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -75,4 +76,5 @@ bool TemporalPositionSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

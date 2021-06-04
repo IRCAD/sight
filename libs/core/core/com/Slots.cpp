@@ -24,7 +24,6 @@
 
 #include "core/com/Slot.hpp"
 #include "core/com/Slot.hxx"
-
 #include <core/thread/Worker.hpp>
 
 namespace sight::core::com
@@ -39,18 +38,18 @@ Slots::Slots()
 Slots::~Slots()
 {
 #if 0
-    for( SlotMapType::value_type elem :  m_slots )
+    for(SlotMapType::value_type elem : m_slots)
     {
-        SIGHT_ASSERT( "Slot '"<< elem.first <<"' has connected signals", elem.second->getNumberOfConnections() == 0 );
+        SIGHT_ASSERT("Slot '" << elem.first << "' has connected signals", elem.second->getNumberOfConnections() == 0);
     }
 #endif
 }
 
 //-----------------------------------------------------------------------------
 
-void Slots::setWorker( const core::thread::Worker::sptr& worker )
+void Slots::setWorker(const core::thread::Worker::sptr& worker)
 {
-    for( SlotMapType::value_type elem :  m_slots )
+    for(SlotMapType::value_type elem : m_slots)
     {
         elem.second->setWorker(worker);
     }
@@ -58,15 +57,15 @@ void Slots::setWorker( const core::thread::Worker::sptr& worker )
 
 //-----------------------------------------------------------------------------
 
-Slots& Slots::operator()( const SlotKeyType& key, const SlotBase::sptr& slot )
+Slots& Slots::operator()(const SlotKeyType& key, const SlotBase::sptr& slot)
 {
-    m_slots.insert( SlotMapType::value_type(key, slot) );
+    m_slots.insert(SlotMapType::value_type(key, slot));
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-SlotBase::sptr Slots::operator[]( const SlotKeyType& key ) const
+SlotBase::sptr Slots::operator[](const SlotKeyType& key) const
 {
     SlotMapType::const_iterator it = m_slots.find(key);
 
@@ -83,22 +82,23 @@ SlotBase::sptr Slots::operator[]( const SlotKeyType& key ) const
 Slots::SlotKeyContainerType Slots::getSlotKeys() const
 {
     Slots::SlotKeyContainerType slotKeys;
-    for( SlotMapType::value_type elem :  m_slots )
+    for(SlotMapType::value_type elem : m_slots)
     {
         slotKeys.push_back(elem.first);
     }
+
     return slotKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-Slots::Slots( const Slots& )
+Slots::Slots(const Slots&)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-Slots& Slots::operator=( const Slots& )
+Slots& Slots::operator=(const Slots&)
 {
     return *this;
 }

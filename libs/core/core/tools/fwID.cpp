@@ -24,7 +24,6 @@
 
 #include "core/tools/Failed.hpp"
 #include "core/tools/Object.hpp"
-
 #include <core/Demangler.hpp>
 
 #include <boost/lexical_cast.hpp>
@@ -46,7 +45,7 @@ fwID::~fwID()
 
 //-----------------------------------------------------------------------------
 
-bool fwID::exist( IDType _id)
+bool fwID::exist(IDType _id)
 {
     core::mt::ReadLock lock(s_dictionaryMutex);
     return fwID::isIdFound(_id);
@@ -54,14 +53,14 @@ bool fwID::exist( IDType _id)
 
 //-----------------------------------------------------------------------------
 
-bool fwID::isIdFound( IDType _id)
+bool fwID::isIdFound(IDType _id)
 {
-    return m_dictionary.find( _id ) != m_dictionary.end();
+    return m_dictionary.find(_id) != m_dictionary.end();
 }
 
 //-----------------------------------------------------------------------------
 
-bool fwID::hasID( ) const
+bool fwID::hasID() const
 {
     core::mt::ReadLock lock(m_idMutex);
     return !m_id.empty();
@@ -69,7 +68,7 @@ bool fwID::hasID( ) const
 
 //-----------------------------------------------------------------------------
 
-void fwID::setID( IDType newID )
+void fwID::setID(IDType newID)
 {
     core::mt::WriteLock lock(m_idMutex);
     this->addIDInDictionary(newID);
@@ -77,7 +76,7 @@ void fwID::setID( IDType newID )
 
 //-----------------------------------------------------------------------------
 
-void fwID::addIDInDictionary( IDType newID )
+void fwID::addIDInDictionary(IDType newID)
 {
     SIGHT_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
 
@@ -85,31 +84,33 @@ void fwID::addIDInDictionary( IDType newID )
     fwID::removeIDfromDictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
-    m_dictionary[ newID ] = ((Object*)(this))->getSptr();
-    m_id                  = newID;
+    m_dictionary[newID] = ((Object*) (this))->getSptr();
+    m_id                = newID;
 }
 
 //-----------------------------------------------------------------------------
 
-fwID::IDType fwID::getID( Policy policy) const
+fwID::IDType fwID::getID(Policy policy) const
 {
     core::mt::ReadToWriteLock lock(m_idMutex);
-    if ( m_id.empty() ) // no id set
+    if(m_id.empty()) // no id set
     {
-        if ( policy == GENERATE )
+        if(policy == GENERATE)
         {
             IDType newID = generate();
             core::mt::UpgradeToWriteLock writeLock(lock);
             const_cast<fwID*>(this)->addIDInDictionary(newID);
         }
-        else if  ( policy == EMPTY )
-        { /* nothing to do*/
-        }
-        else if ( policy == MUST_EXIST )
+        else if(policy == EMPTY)
         {
-            throw core::tools::Failed( "fwID::getID() no id set" );
+            /* nothing to do*/
+        }
+        else if(policy == MUST_EXIST)
+        {
+            throw core::tools::Failed("fwID::getID() no id set");
         }
     }
+
     return m_id;
 }
 
@@ -122,21 +123,22 @@ fwID::IDType fwID::generate() const
     do
     {
         core::mt::ScopedLock lock(s_mutexCounter);
-        newID = prefix  + "-" + boost::lexical_cast<std::string>( m_CategorizedCounter[prefix]++ );
+        newID = prefix + "-" + boost::lexical_cast<std::string>(m_CategorizedCounter[prefix]++);
     }
-    while ( exist(newID ) );
+    while(exist(newID));
+
     return newID;
 }
 
 //-----------------------------------------------------------------------------
 
-core::tools::Object::sptr fwID::getObject( fwID::IDType requestID )
+core::tools::Object::sptr fwID::getObject(fwID::IDType requestID)
 {
     core::mt::ReadLock lock(s_dictionaryMutex);
     Dictionary::iterator it = m_dictionary.find(requestID);
-    if ( it != m_dictionary.end() )
+    if(it != m_dictionary.end())
     {
-        SIGHT_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID,  !it->second.expired() );
+        SIGHT_ASSERT("expired object in fwID::Dictionary for id=" + requestID, !it->second.expired());
         return it->second.lock();
     }
     else
@@ -157,9 +159,9 @@ void fwID::resetID()
 
 //-----------------------------------------------------------------------------
 
-void fwID::removeIDfromDictionary(IDType _id )
+void fwID::removeIDfromDictionary(IDType _id)
 {
-    if ( !_id.empty() )
+    if(!_id.empty())
     {
         m_dictionary.erase(_id);
     }
@@ -167,4 +169,4 @@ void fwID::removeIDfromDictionary(IDType _id )
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::core

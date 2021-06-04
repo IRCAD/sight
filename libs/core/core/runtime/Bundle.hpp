@@ -26,6 +26,8 @@
 
 namespace sight::core::runtime
 {
+
 // Deprecated, kept for compatibility
 typedef Module Bundle;
+
 }

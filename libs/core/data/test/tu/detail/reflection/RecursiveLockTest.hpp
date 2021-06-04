@@ -26,16 +26,19 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
-class RecursiveLockTest :  public CPPUNIT_NS::TestFixture
+class RecursiveLockTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( RecursiveLockTest );
-    CPPUNIT_TEST( lockTest );
+
+    CPPUNIT_TEST_SUITE(RecursiveLockTest);
+    CPPUNIT_TEST(lockTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,9 +48,10 @@ public:
     void tearDown();
 
     void lockTest();
-
 };
 
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace sight::data

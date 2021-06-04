@@ -73,11 +73,10 @@ namespace sight::module::geometry::base
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkVector final : public service::IService
 {
-
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPointToLandmarkVector, service::IService)
+    SIGHT_DECLARE_SERVICE(SPointToLandmarkVector, service::IService);
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SPointToLandmarkVector() noexcept;
@@ -109,26 +108,27 @@ protected:
 
 private:
 
-    typedef core::com::Signal< void (float) > LengthChangedSignalType;
-    typedef core::com::Signal< void (std::string) > LengthStrChangedSignalType;
-    typedef core::com::Signal< void (std::string) > SameSliceSignalType;
+    typedef core::com::Signal<void (float)> LengthChangedSignalType;
+    typedef core::com::Signal<void (std::string)> LengthStrChangedSignalType;
+    typedef core::com::Signal<void (std::string)> SameSliceSignalType;
 
     /// landmarks group's label for the origin of the vector.
-    std::string m_originLabel{""};
+    std::string m_originLabel {""};
 
     /// landmarks group's label for the end of the vector.
-    std::string m_endLabel{""};
+    std::string m_endLabel {""};
 
     /// Landmark containing the target point.
     data::Landmarks::sptr m_computedLandmark;
 
     /// Computed landmark group name.
-    std::string m_groupLabel{""};
+    std::string m_groupLabel {""};
 
     /// Tolerance in mm when checking if the two landmarks are on the same axial slice.
-    double m_tolerance{0.001};
+    double m_tolerance {0.001};
 
     /// Label to prefix the message sent in the sameSlice signal.
-    std::string m_sameSliceLabel{"Same axial slice"};
+    std::string m_sameSliceLabel {"Same axial slice"};
 };
+
 } // namespace sight::module::geometry::base

@@ -43,7 +43,7 @@ Object::~Object()
 
 //-----------------------------------------------------------------------------
 
-void Object::deepCopy( const Object& _source )
+void Object::deepCopy(const Object& _source)
 {
     m_timestamp = _source.m_timestamp;
 }

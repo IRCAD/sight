@@ -24,7 +24,6 @@
 
 #include "core/runtime/detail/dl/Library.hpp"
 #include "core/runtime/Module.hpp"
-
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -44,24 +43,25 @@ class ExtensionPoint;
  * @brief   Defines the module class.
  *
  */
-class Module :  public core::runtime::Module,
-                public std::enable_shared_from_this< Module >
+class Module : public core::runtime::Module,
+               public std::enable_shared_from_this<Module>
 {
 public:
+
     /**
      * @name    Type definitions
      */
     //@{
-    typedef std::set< SPTR( ExecutableFactory ) >      ExecutableFactoryContainer;     ///< Defines the executable
-                                                                                       // factory container type.
+    typedef std::set<SPTR(ExecutableFactory)> ExecutableFactoryContainer; ///< Defines the executable
+    // factory container type.
     typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable
-                                                                                       // factory container constant
-                                                                                       // iterator type.
+    // factory container constant
+    // iterator type.
 
-    typedef std::set< SPTR( ExtensionPoint ) >      ExtensionPointContainer;        ///< Defines the extension point
-                                                                                    // container type.
-    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point
-                                                                                    // container constant iterator type.
+    typedef std::set<SPTR(ExtensionPoint)> ExtensionPointContainer; ///< Defines the extension point
+    // container type.
+    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator; ///< Defines the extension point
+    // container constant iterator type.
 
     ///< Defines the extension container constant iterator type.
     typedef ExtensionContainer::const_iterator ExtensionConstIterator;
@@ -78,9 +78,11 @@ public:
      * @todo        test parameters validity
      *
      */
-    Module( const std::filesystem::path& location,
-            const std::string& id,
-            const std::string& pluginClass = "");
+    Module(
+        const std::filesystem::path& location,
+        const std::string& id,
+        const std::string& pluginClass = ""
+    );
 
     /**
      * @name    Public API implementation
@@ -134,19 +136,19 @@ public:
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    SPTR( IPlugin ) getPlugin() const final;
+    SPTR(IPlugin) getPlugin() const final;
 
     /** @copydoc core::runtime::Module */
-    const std::string getParameterValue( const std::string& identifier ) const final;
+    const std::string getParameterValue(const std::string& identifier) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    bool hasParameter( const std::string& name ) const final;
+    bool hasParameter(const std::string& name) const final;
 
     /// @copydoc core::runtime::Module::getExtensions
-    ExtensionContainer getExtensions( ) const final;
+    ExtensionContainer getExtensions() const final;
 
     /// @copydoc core::runtime::Module::isEnabled
     bool isEnabled() const final;
@@ -155,7 +157,7 @@ public:
     /**
      * @brief   Retrieves the pointer to the module that is currently loading its dynamic libraries
      */
-    static SPTR( Module ) getLoadingModule();
+    static SPTR(Module) getLoadingModule();
 
     /**
      * @name    Dynamic Libraries
@@ -166,7 +168,7 @@ public:
      *
      * @param[in]   library a shared pointer to the library to add
      */
-    void setLibrary( SPTR( dl::Library ) library );
+    void setLibrary(SPTR(dl::Library) library);
     //@}
 
     /**
@@ -178,7 +180,7 @@ public:
      *
      * @param[in]   factory a shared pointer to the executable factory instance to add
      */
-    void addExecutableFactory( SPTR( ExecutableFactory ) factory );
+    void addExecutableFactory(SPTR(ExecutableFactory) factory);
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -189,7 +191,7 @@ public:
      *
      * @todo    not implemented and not used !!!!!!!
      */
-    IExecutable* createExecutableInstance( const std::string& type );
+    IExecutable* createExecutableInstance(const std::string& type);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -214,7 +216,7 @@ public:
      *
      * @return      a shared pointer to the found executable factory instance or null if none
      */
-    SPTR( ExecutableFactory ) findExecutableFactory( const std::string& type ) const;
+    SPTR(ExecutableFactory) findExecutableFactory(const std::string& type) const;
     //@}
 
     /**
@@ -226,7 +228,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
-    void addExtension( SPTR( Extension ) extension );
+    void addExtension(SPTR(Extension) extension);
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -274,7 +276,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension point to add
      */
-    void addExtensionPoint( SPTR( ExtensionPoint ) extension );
+    void addExtensionPoint(SPTR(ExtensionPoint) extension);
 
     /**
      * @brief       Retrieves the extension point for the given identifier.
@@ -283,7 +285,7 @@ public:
      *
      * @return      a shared pointer to the found extensoin point, may be empty if none
      */
-    SPTR( ExtensionPoint ) findExtensionPoint( const std::string& identifier ) const;
+    SPTR(ExtensionPoint) findExtensionPoint(const std::string& identifier) const;
 
     /**
      * @brief       Tells if a specific extension point exists.
@@ -331,7 +333,7 @@ public:
      *
      * @param[in]   requirement a string containing a module identifier that is required
      */
-    void addRequirement( const std::string& requirement );
+    void addRequirement(const std::string& requirement);
     //@}
 
     /**
@@ -344,7 +346,7 @@ public:
      * @remark  It is possible to disable a started module but this
      *          will have no effect.
      */
-    void setEnable( const bool state );
+    void setEnable(const bool state);
     //@}
 
     /**
@@ -367,7 +369,7 @@ public:
      * @param[in]   identifier  a string containing the parameter identifier
      * @param[in]   value       a string containing the parameter value
      */
-    void addParameter( const std::string& identifier, const std::string& value );
+    void addParameter(const std::string& identifier, const std::string& value);
     //@}
 
     bool isStarted()
@@ -386,35 +388,35 @@ public:
 
 private:
 
-    typedef std::set< std::string >                 RequirementContainer;    ///< Defines the requirement container
-                                                                             // type.
-    typedef std::map< std::string, std::string >    ParameterContainer;     ///< defines the parameter container type
+    typedef std::set<std::string> RequirementContainer; ///< Defines the requirement container
+    // type.
+    typedef std::map<std::string, std::string> ParameterContainer; ///< defines the parameter container type
 
-    static SPTR( Module ) m_loadingModule;              ///< a pointer to the module that is currently loading its
-                                                        // dynamic libraries
+    static SPTR(Module) m_loadingModule; ///< a pointer to the module that is currently loading its
+    // dynamic libraries
 
-    std::filesystem::path m_libraryLocation;            ///< the path to the module libraries
-    const std::filesystem::path m_resourcesLocation;    ///< the path to the module resources
-    const std::string m_identifier;                     ///< a string containing the module identifier
-    const std::string m_class;                          ///< a string containing the module's plugin class name
-    ExtensionContainer m_extensions;                    ///< all extensions
-    ExtensionPointContainer m_extensionPoints;          ///< all extension points
-    ExecutableFactoryContainer m_executableFactories;   ///< all executable factories
-    RequirementContainer m_requirements;                ///< all requirements of the module
-    SPTR( IPlugin )  m_plugin;                          ///< a shared pointer to the plugin instance
-    SPTR( dl::Library ) m_library;                      ///< library that is part of the module
-    ParameterContainer m_parameters;                    ///< all parameters
+    std::filesystem::path m_libraryLocation;          ///< the path to the module libraries
+    const std::filesystem::path m_resourcesLocation;  ///< the path to the module resources
+    const std::string m_identifier;                   ///< a string containing the module identifier
+    const std::string m_class;                        ///< a string containing the module's plugin class name
+    ExtensionContainer m_extensions;                  ///< all extensions
+    ExtensionPointContainer m_extensionPoints;        ///< all extension points
+    ExecutableFactoryContainer m_executableFactories; ///< all executable factories
+    RequirementContainer m_requirements;              ///< all requirements of the module
+    SPTR(IPlugin)  m_plugin;                          ///< a shared pointer to the plugin instance
+    SPTR(dl::Library) m_library;                      ///< library that is part of the module
+    ParameterContainer m_parameters;                  ///< all parameters
 
-    bool m_enabled { true };                           ///< a boolean telling if the module is enabled or not
-    bool m_started { false };
-    bool m_initialized { false };
+    bool m_enabled {true}; ///< a boolean telling if the module is enabled or not
+    bool m_started {false};
+    bool m_initialized {false};
 
     /**
      * @brief   Assignement operator.
      *
      * @remark  Assignement is forbidden for this class.
      */
-    void operator= (const Module& );
+    void operator=(const Module&);
 
     /**
      * @brief   Load module's library in the current process.

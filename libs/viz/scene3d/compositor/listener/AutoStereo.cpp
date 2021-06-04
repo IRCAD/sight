@@ -37,8 +37,10 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace compositor
 {
+
 namespace listener
 {
 
@@ -70,7 +72,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
 
-        std::vector< unsigned short > removeTechniqueVector;
+        std::vector<unsigned short> removeTechniqueVector;
 
         unsigned short index = 0;
         for(const auto technique : techniques)
@@ -79,11 +81,12 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             {
                 removeTechniqueVector.push_back(index);
             }
+
             ++index;
         }
 
         // Remove in inverse order otherwise the index we stored becomes invalid ;-)
-        for(auto it = removeTechniqueVector.rbegin(); it != removeTechniqueVector.rend(); ++it )
+        for(auto it = removeTechniqueVector.rbegin() ; it != removeTechniqueVector.rend() ; ++it)
         {
             mtl->removeTechnique(*it);
         }
@@ -92,11 +95,13 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
-                                                                      const ::Ogre::String& _schemeName,
-                                                                      ::Ogre::Material* _originalMaterial,
-                                                                      unsigned short /*_lodIndex*/,
-                                                                      const ::Ogre::Renderable* /*_renderable*/)
+::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
+    unsigned short /*_schemeIndex*/,
+    const ::Ogre::String& _schemeName,
+    ::Ogre::Material* _originalMaterial,
+    unsigned short /*_lodIndex*/,
+    const ::Ogre::Renderable* /*_renderable*/
+)
 {
     ::Ogre::Technique* newTech = nullptr;
     if(_schemeName.find("AutoStereo") != std::string::npos)
@@ -105,7 +110,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         ::Ogre::Technique* matchingTech = nullptr;
 
-        if(::Ogre::StringUtil::startsWith( _schemeName, "VolumeEntries"))
+        if(::Ogre::StringUtil::startsWith(_schemeName, "VolumeEntries"))
         {
             // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
             const size_t techNamePos   = _schemeName.find("_") + 1;
@@ -132,14 +137,19 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
             parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
 
-            viz::scene3d::helper::Shading::createProgramFrom(vpNewName, vpSourceFileName, parameters,
-                                                             ::Ogre::GPT_VERTEX_PROGRAM, vpBaseName);
+            viz::scene3d::helper::Shading::createProgramFrom(
+                vpNewName,
+                vpSourceFileName,
+                parameters,
+                ::Ogre::GPT_VERTEX_PROGRAM,
+                vpBaseName
+            );
 
             pass->setVertexProgram(vpNewName);
             auto vpParams = pass->getVertexProgramParameters();
 
             // We use a shared parameters block to upload the custom projection matrices
-            const std::string projParamName = "ProjectionMatrixParam/"+passIdStr;
+            const std::string projParamName = "ProjectionMatrixParam/" + passIdStr;
 
             auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
             const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
@@ -157,7 +167,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
         }
 
         const auto fpBaseName = pass->getFragmentProgramName();
-        if( ::Ogre::StringUtil::startsWith( fpBaseName, "RTV_FP") )
+        if(::Ogre::StringUtil::startsWith(fpBaseName, "RTV_FP"))
         {
             const auto fpSourceFileName = pass->getFragmentProgram()->getSourceFile();
             const auto fpNewName        = fpBaseName + "+AutoStereo";
@@ -165,15 +175,20 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
             parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
 
-            viz::scene3d::helper::Shading::createProgramFrom(fpNewName, fpSourceFileName, parameters,
-                                                             ::Ogre::GPT_FRAGMENT_PROGRAM, fpBaseName);
+            viz::scene3d::helper::Shading::createProgramFrom(
+                fpNewName,
+                fpSourceFileName,
+                parameters,
+                ::Ogre::GPT_FRAGMENT_PROGRAM,
+                fpBaseName
+            );
 
             pass->setFragmentProgram(fpNewName);
             auto fpParams = pass->getFragmentProgramParameters();
 
             // We use a shared parameters block to upload the custom projection matrices
-            const std::string invProjParamName = "InverseProjectionMatrixParam/"+passIdStr;
-            const std::string projParamName    = "ProjectionMatrixParam/"+passIdStr;
+            const std::string invProjParamName = "InverseProjectionMatrixParam/" + passIdStr;
+            const std::string projParamName    = "ProjectionMatrixParam/" + passIdStr;
 
             auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
             const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
@@ -193,8 +208,10 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             fpParams->addSharedParameters(projParamName);
             fpParams->addSharedParameters(invProjParamName);
             fpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
-            fpParams->setNamedAutoConstant("u_invWorldView",
-                                           ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
+            fpParams->setNamedAutoConstant(
+                "u_invWorldView",
+                ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX
+            );
 
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
 

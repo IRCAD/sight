@@ -28,7 +28,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(TransferFunction))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (TransferFunction))
 {
     builder
     .tag("object_version", "1")
@@ -44,7 +44,7 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(TransferFunction))
     ;
 }
 
-SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(TransferFunction)(InterpolationMode))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (TransferFunction) (InterpolationMode))
 {
     builder
     .value("LINEAR", sight::data::TransferFunction::LINEAR)

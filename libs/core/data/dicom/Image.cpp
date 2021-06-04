@@ -34,7 +34,8 @@ Image::Image(
     unsigned short highBit,
     unsigned short pixelRepresentation,
     double rescaleSlope,
-    double rescaleIntercept) :
+    double rescaleIntercept
+) :
     m_samplesPerPixel(samplesPerPixel),
     m_bitsAllocated(bitsAllocated),
     m_bitsStored(bitsStored),
@@ -76,20 +77,20 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             const int64_t max =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
 
-            SIGHT_ASSERT("Min must be lower than max.", min <= max );
+            SIGHT_ASSERT("Min must be lower than max.", min <= max);
 
             // Unsigned values
             if(min >= 0)
             {
-                if( max <= std::numeric_limits<uint8_t>::max() )
+                if(max <= std::numeric_limits<uint8_t>::max())
                 {
                     result = core::tools::Type::s_UINT8;
                 }
-                else if( max <= std::numeric_limits<uint16_t>::max() )
+                else if(max <= std::numeric_limits<uint16_t>::max())
                 {
                     result = core::tools::Type::s_UINT16;
                 }
-                else if( max <= std::numeric_limits<uint32_t>::max() )
+                else if(max <= std::numeric_limits<uint32_t>::max())
                 {
                     result = core::tools::Type::s_UINT32;
                 }
@@ -101,27 +102,24 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             // Signed values
             else
             {
-
-                if( max <= std::numeric_limits<int8_t>::max() && min >= std::numeric_limits<int8_t>::min() )
+                if(max <= std::numeric_limits<int8_t>::max() && min >= std::numeric_limits<int8_t>::min())
                 {
                     result = core::tools::Type::s_INT8;
                 }
-                else if( max <= std::numeric_limits<int16_t>::max() && min >= std::numeric_limits<int16_t>::min() )
+                else if(max <= std::numeric_limits<int16_t>::max() && min >= std::numeric_limits<int16_t>::min())
                 {
                     result = core::tools::Type::s_INT16;
                 }
-                else if( max <= std::numeric_limits<int32_t>::max() && min >= std::numeric_limits<int32_t>::min() )
+                else if(max <= std::numeric_limits<int32_t>::max() && min >= std::numeric_limits<int32_t>::min())
                 {
                     result = core::tools::Type::s_INT32;
                 }
                 else
                 {
-                    SIGHT_ASSERT("Unable to determine the pixel format.", 0 );
+                    SIGHT_ASSERT("Unable to determine the pixel format.", 0);
                 }
             }
-
         }
-
     }
 
     return result;
@@ -136,7 +134,7 @@ int64_t Image::getPixelMin() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t)(~(((1ull << m_bitsStored) - 1) >> 1));
+        return (int64_t) (~(((1ull << m_bitsStored) - 1) >> 1));
     }
     else if(m_pixelRepresentation == 0)
     {
@@ -156,11 +154,11 @@ int64_t Image::getPixelMax() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t)(((1ull << m_bitsStored) - 1) >> 1);
+        return (int64_t) (((1ull << m_bitsStored) - 1) >> 1);
     }
     else if(m_pixelRepresentation == 0)
     {
-        return (int64_t)((1ull << m_bitsStored) - 1);
+        return (int64_t) ((1ull << m_bitsStored) - 1);
     }
 
     SIGHT_ASSERT("Unable to determine maximum value of pixel", 0);

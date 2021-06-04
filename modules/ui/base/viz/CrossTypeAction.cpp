@@ -44,15 +44,17 @@ namespace sight::module::ui::base::viz
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map< std::string, float > CrossTypeAction::m_scaleConversion = { { std::string("full"), 1.0 },
-                                                                      { std::string("half"), 0.5 },
-                                                                      { std::string("hide"), 0.0 } };
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0},
+    {std::string("half"), 0.5},
+    {std::string("hide"), 0.0
+    }
+};
 
 //------------------------------------------------------------------------------
 
 CrossTypeAction::CrossTypeAction() noexcept
 {
-    m_sigCrossTypeModified = newSignal< CrossTypeModifiedSignalType >(s_CROSS_TYPE_MODIFIED_SIG);
+    m_sigCrossTypeModified = newSignal<CrossTypeModifiedSignalType>(s_CROSS_TYPE_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -81,9 +83,9 @@ void CrossTypeAction::configuring()
 {
     sight::ui::base::IAction::initialize();
 
-    if( this->m_configuration->size() > 0 )
+    if(this->m_configuration->size() > 0)
     {
-        std::vector < ConfigurationType > vectConfig = this->m_configuration->find("crossType");
+        std::vector<ConfigurationType> vectConfig = this->m_configuration->find("crossType");
         SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
         m_crossType = vectConfig.at(0)->getValue();
         ::boost::algorithm::trim(m_crossType);
@@ -103,12 +105,11 @@ void CrossTypeAction::updating()
 
 void CrossTypeAction::swapping()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::info( std::ostream& _sstream )
+void CrossTypeAction::info(std::ostream& _sstream)
 {
 }
 

@@ -36,20 +36,18 @@ namespace utils
 /**
  * @brief   Defines a generic template executable factory registry class.
  */
-template< typename E >
+template<typename E>
 struct GenericExecutableFactoryRegistry : public ExecutableFactoryRegistry
 {
-
-    typedef GenericExecutableFactory< E >   FactoryType;
+    typedef GenericExecutableFactory<E> FactoryType;
 
     /**
      * @brief   Constructor
      */
     GenericExecutableFactoryRegistry(const std::string& type) :
-        ExecutableFactoryRegistry( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
+        ExecutableFactoryRegistry(std::shared_ptr<FactoryType>(new FactoryType(type)))
     {
     }
-
 };
 
 } // namespace utils

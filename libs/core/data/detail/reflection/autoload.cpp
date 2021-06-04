@@ -26,12 +26,17 @@
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 runner runner::r;
 
 } // namespace reflection
+
 } // namespace detail
+
 } // namespace sight::data

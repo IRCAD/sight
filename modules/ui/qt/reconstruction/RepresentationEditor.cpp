@@ -66,7 +66,8 @@ void RepresentationEditor::starting()
 {
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -76,23 +77,23 @@ void RepresentationEditor::starting()
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
-    QRadioButton* buttonSurface = new QRadioButton( tr("Surface"), groupBox );
+    QRadioButton* buttonSurface = new QRadioButton(tr("Surface"), groupBox);
     buttonSurface->setMinimumSize(buttonSurface->sizeHint());
     m_buttonGroup->addButton(buttonSurface, 0);
     layoutGroupBox->addWidget(buttonSurface);
     buttonSurface->setChecked(true);
 
-    QRadioButton* buttonPoint = new QRadioButton( tr("Point"), groupBox );
+    QRadioButton* buttonPoint = new QRadioButton(tr("Point"), groupBox);
     buttonPoint->setMinimumSize(buttonPoint->sizeHint());
     m_buttonGroup->addButton(buttonPoint, 1);
     layoutGroupBox->addWidget(buttonPoint);
 
-    QRadioButton* buttonWireframe = new QRadioButton( tr("Wireframe"), groupBox );
+    QRadioButton* buttonWireframe = new QRadioButton(tr("Wireframe"), groupBox);
     buttonWireframe->setMinimumSize(buttonWireframe->sizeHint());
     m_buttonGroup->addButton(buttonWireframe, 2);
     layoutGroupBox->addWidget(buttonWireframe);
 
-    QRadioButton* buttonEdge = new QRadioButton( tr("Edge"), groupBox );
+    QRadioButton* buttonEdge = new QRadioButton(tr("Edge"), groupBox);
     buttonEdge->setMinimumSize(buttonEdge->sizeHint());
     m_buttonGroup->addButton(buttonEdge, 3);
     layoutGroupBox->addWidget(buttonEdge);
@@ -103,30 +104,30 @@ void RepresentationEditor::starting()
     groupBoxShading->setLayout(layoutGroupBoxShading);
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
 
-    QRadioButton* buttonAmbient = new QRadioButton( tr("Ambient"), groupBoxShading );
+    QRadioButton* buttonAmbient = new QRadioButton(tr("Ambient"), groupBoxShading);
     buttonAmbient->setMinimumSize(buttonAmbient->sizeHint());
     m_buttonGroupShading->addButton(buttonAmbient, 0);
     layoutGroupBoxShading->addWidget(buttonAmbient);
     buttonAmbient->setChecked(true);
 
-    QRadioButton* buttonFlat = new QRadioButton( tr("Flat"), groupBoxShading );
+    QRadioButton* buttonFlat = new QRadioButton(tr("Flat"), groupBoxShading);
     buttonFlat->setMinimumSize(buttonFlat->sizeHint());
     m_buttonGroupShading->addButton(buttonFlat, 1);
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
-    QRadioButton* buttonGouraud = new QRadioButton( tr("Gouraud"), groupBoxShading );
+    QRadioButton* buttonGouraud = new QRadioButton(tr("Gouraud"), groupBoxShading);
     buttonGouraud->setMinimumSize(buttonGouraud->sizeHint());
     m_buttonGroupShading->addButton(buttonGouraud, 2);
     layoutGroupBoxShading->addWidget(buttonGouraud);
 
-    QRadioButton* buttonPhong = new QRadioButton( tr("Phong"), groupBoxShading );
+    QRadioButton* buttonPhong = new QRadioButton(tr("Phong"), groupBoxShading);
     buttonPhong->setMinimumSize(buttonPhong->sizeHint());
     m_buttonGroupShading->addButton(buttonPhong, 3);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
-    layout->addWidget( groupBox);
-    layout->addWidget( groupBoxShading);
+    layout->addWidget(groupBox);
+    layout->addWidget(groupBoxShading);
 
     QGroupBox* groupBoxNormals         = new QGroupBox(tr("Normals"));
     QVBoxLayout* layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
@@ -139,15 +140,15 @@ void RepresentationEditor::starting()
     m_normalsRadioBox->addButton(cellNormalsButton, 2);
     m_normalsRadioBox->addButton(hideNormalsButton, 0);
 
-    layoutGroupBoxNormals->addWidget( pointNormalsButton);
-    layoutGroupBoxNormals->addWidget( cellNormalsButton);
-    layoutGroupBoxNormals->addWidget( hideNormalsButton);
+    layoutGroupBoxNormals->addWidget(pointNormalsButton);
+    layoutGroupBoxNormals->addWidget(cellNormalsButton);
+    layoutGroupBoxNormals->addWidget(hideNormalsButton);
 
     layout->addWidget(groupBoxNormals);
 
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
     qtContainer->setEnabled(false);
 
     QObject::connect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
@@ -160,7 +161,6 @@ void RepresentationEditor::starting()
 
 void RepresentationEditor::stopping()
 {
-
     QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
     QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked(int)), this, SLOT(onChangeShading(int)));
 
@@ -180,11 +180,12 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -198,70 +199,59 @@ void RepresentationEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onChangeRepresentation( int id )
+void RepresentationEditor::onChangeRepresentation(int id)
 {
-
     data::Material::RepresentationType selectedMode = data::Material::SURFACE;
 
     switch(id)
     {
         case 0:
-        {
             selectedMode = data::Material::SURFACE;
             break;
-        }
+
         case 1:
-        {
             selectedMode = data::Material::POINT;
             break;
-        }
+
         case 2:
-        {
             selectedMode = data::Material::WIREFRAME;
             break;
-        }
+
         case 3:
-        {
             selectedMode = data::Material::EDGE;
             break;
-        }
     }
 
-    m_material->setRepresentationMode( selectedMode );
+    m_material->setRepresentationMode(selectedMode);
     this->notifyMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onChangeShading(  int id )
+void RepresentationEditor::onChangeShading(int id)
 {
     data::Material::ShadingType selectedMode = data::Material::PHONG;
 
     switch(id)
     {
         case 0:
-        {
             selectedMode = data::Material::AMBIENT;
             break;
-        }
+
         case 1:
-        {
             selectedMode = data::Material::FLAT;
             break;
-        }
+
         case 2:
-        {
             selectedMode = data::Material::GOURAUD;
             break;
-        }
+
         case 3:
-        {
             selectedMode = data::Material::PHONG;
             break;
-        }
     }
 
-    m_material->setShadingMode( selectedMode );
+    m_material->setShadingMode(selectedMode);
     this->notifyMaterial();
 }
 
@@ -275,29 +265,25 @@ void RepresentationEditor::refreshRepresentation()
     switch(representationMode)
     {
         case data::Material::SURFACE:
-        {
             button = m_buttonGroup->button(0);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::POINT:
-        {
             button = m_buttonGroup->button(1);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::WIREFRAME:
-        {
             button = m_buttonGroup->button(2);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::EDGE:
-        {
             button = m_buttonGroup->button(3);
             button->setChecked(true);
             break;
-        }
+
         default:
             button = m_buttonGroup->button(0);
             button->setChecked(true);
@@ -314,29 +300,25 @@ void RepresentationEditor::refreshShading()
     switch(shadingMode)
     {
         case data::Material::AMBIENT:
-        {
             button = m_buttonGroupShading->button(0);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::FLAT:
-        {
             button = m_buttonGroupShading->button(1);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::GOURAUD:
-        {
             button = m_buttonGroupShading->button(2);
             button->setChecked(true);
             break;
-        }
+
         case data::Material::PHONG:
-        {
             button = m_buttonGroupShading->button(3);
             button->setChecked(true);
             break;
-        }
+
         default:
             button = m_buttonGroupShading->button(2);
             button->setChecked(true);
@@ -355,29 +337,32 @@ void RepresentationEditor::refreshNormals()
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::onShowNormals(int state )
+void RepresentationEditor::onShowNormals(int state)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     switch(state)
     {
         case 0:
-            m_material->setOptionsMode( data::Material::STANDARD );
+            m_material->setOptionsMode(data::Material::STANDARD);
             break;
+
         case 1:
-            m_material->setOptionsMode( data::Material::NORMALS );
+            m_material->setOptionsMode(data::Material::NORMALS);
             break;
+
         case 2:
-            m_material->setOptionsMode( data::Material::CELLS_NORMALS );
+            m_material->setOptionsMode(data::Material::CELLS_NORMALS);
             break;
     }
 
     this->notifyMaterial();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal< data::Reconstruction::MeshChangedSignalType >(
-        data::Reconstruction::s_MESH_CHANGED_SIG);
+    auto sig = reconstruction->signal<data::Reconstruction::MeshChangedSignalType>(
+        data::Reconstruction::s_MESH_CHANGED_SIG
+    );
     sig->asyncEmit(reconstruction->getMesh());
 }
 
@@ -385,12 +370,13 @@ void RepresentationEditor::onShowNormals(int state )
 
 void RepresentationEditor::notifyMaterial()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
-        data::Object::s_MODIFIED_SIG);
+    sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
+        data::Object::s_MODIFIED_SIG
+    );
     sig->asyncEmit();
 }
 
@@ -405,4 +391,4 @@ service::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() 
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::module

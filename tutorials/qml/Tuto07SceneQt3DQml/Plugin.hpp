@@ -34,7 +34,6 @@ namespace Tuto07SceneQt3DQml
  */
 class TUTO07SCENEQT3DQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
-
 public:
 
     /// Constructor.
@@ -56,7 +55,6 @@ private:
 
     /// Does nothing.
     void uninitialize() noexcept override;
-
 };
 
 } // namespace Tuto07SceneQt3DQml.

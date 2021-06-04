@@ -23,11 +23,10 @@
 #pragma once
 
 #include "data/config.hpp"
+#include <data/Object.hpp>
 
 #include <core/HiResClock.hpp>
 #include <core/mt/types.hpp>
-
-#include <data/Object.hpp>
 
 namespace sight::data
 {
@@ -42,6 +41,7 @@ namespace timeline
 class DATA_CLASS_API Object
 {
 public:
+
     /// Constructor
     DATA_API Object(core::HiResClock::HiResClockType timestamp = 0);
 
@@ -49,7 +49,7 @@ public:
     DATA_API virtual ~Object();
 
     /// Define deep copy
-    DATA_API virtual void deepCopy( const Object& _source );
+    DATA_API virtual void deepCopy(const Object& _source);
 
     /// Return timestamp
     core::HiResClock::HiResClockType getTimestamp() const

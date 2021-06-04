@@ -37,8 +37,8 @@ namespace sight::io::itk
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
  * data::Image does not manage the image buffer.
  */
-template< class ITKIMAGE>
-data::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true );
+template<class ITKIMAGE>
+data::Image::sptr dataImageFactory(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
 
 /**
  * @brief Update a data Image from an itk one.
@@ -48,9 +48,12 @@ data::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bu
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
  * data::Image does not manage the image buffer.
  */
-template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer itkImage, data::Image::sptr _dataImage,
-                       bool bufferManagerIsDataImage = true );
+template<class ITKIMAGE>
+void dataImageFactory(
+    typename ITKIMAGE::Pointer itkImage,
+    data::Image::sptr _dataImage,
+    bool bufferManagerIsDataImage = true
+);
 
 /**
  * @brief Create an ITK image from an data::Image.
@@ -63,8 +66,8 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, data::Image::sptr _d
  * @pre an assertion check if ITKIMAGE::PixelType correspond to imageData->getPixelType
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
-template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( data::Image::csptr imageData, bool bufferManagerIsDataImage = true );
+template<class ITKIMAGE>
+typename ITKIMAGE::Pointer itkImageFactory(data::Image::csptr imageData, bool bufferManagerIsDataImage = true);
 
 }
 

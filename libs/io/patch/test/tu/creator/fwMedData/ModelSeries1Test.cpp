@@ -29,14 +29,17 @@
 #include "io/patch/structural/creator/data/ModelSeries1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::creator::data::ModelSeries1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::creator::data::ModelSeries1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace creator
 {
+
 namespace data
 {
 
@@ -63,17 +66,19 @@ void ModelSeries1Test::createTest()
 
     CPPUNIT_ASSERT(modelSeriesCreator);
     const std::string& classname = modelSeriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ModelSeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ModelSeries") == classname);
     const std::string& objectVersion = modelSeriesCreator->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     sight::atoms::Object::sptr modelSeries = modelSeriesCreator->create();
 
     const std::string& modelSeriesClassname = io::atoms::patch::helper::getClassname(modelSeries);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal",
-                           std::string("::sight::data::ModelSeries") == modelSeriesClassname );
+    CPPUNIT_ASSERT_MESSAGE(
+        "Classname must be equal",
+        std::string("::sight::data::ModelSeries") == modelSeriesClassname
+    );
     const std::string& modelSeriesObjectVersion = io::atoms::patch::helper::getVersion(modelSeries);
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == modelSeriesObjectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == modelSeriesObjectVersion);
 
     CPPUNIT_ASSERT(modelSeries->getAttribute("reconstruction_db"));
 }
@@ -86,26 +91,33 @@ void ModelSeries1Test::copyTest()
     ModelSeries1 modelSeriesCreator;
 
     const std::string& classname = modelSeriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ModelSeries") == classname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ModelSeries") == classname);
     const std::string& objectVersion = modelSeriesCreator.getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     ModelSeries1* modelSeriesCreator2 = new ModelSeries1(modelSeriesCreator);
 
     CPPUNIT_ASSERT(modelSeriesCreator2);
     const std::string& classnameModelSeriesCreator2 = modelSeriesCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string(
-                               "::sight::data::ModelSeries") == classnameModelSeriesCreator2 );
+    CPPUNIT_ASSERT_MESSAGE(
+        "Classname must be equal",
+        std::string(
+            "::sight::data::ModelSeries"
+        ) == classnameModelSeriesCreator2
+    );
 
     const std::string& objectVersionModelSeriesCreator2 = modelSeriesCreator2->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionModelSeriesCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionModelSeriesCreator2);
 
-    delete(modelSeriesCreator2);
+    delete (modelSeriesCreator2);
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace data
+
 } //namespace creator
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

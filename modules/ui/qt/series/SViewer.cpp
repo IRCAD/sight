@@ -53,7 +53,7 @@ SViewer::~SViewer() noexcept
 
 //------------------------------------------------------------------------------
 
-void SViewer::info(std::ostream& _sstream )
+void SViewer::info(std::ostream& _sstream)
 {
     // Update message
     _sstream << std::string("SViewer");
@@ -81,7 +81,7 @@ void SViewer::stopping()
 
 void SViewer::updating()
 {
-    data::Vector::csptr vector = this->getInput< data::Vector >(s_SERIES_INPUT);
+    data::Vector::csptr vector = this->getInput<data::Vector>(s_SERIES_INPUT);
     SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not defined.", vector);
 
     if(m_configTemplateManager)
@@ -101,30 +101,32 @@ void SViewer::updating()
             SeriesConfigInfo info = itr->second;
             std::string configId  = info.configId;
 
-            std::map< std::string, std::string > replaceMap;
+            std::map<std::string, std::string> replaceMap;
             // Generate generic UID
-            std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier( this->getID() );
+            std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(this->getID());
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
 
-            for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
+            for(const ReplaceValuesMapType::value_type& elt : info.extractValues)
             {
-                data::Object::sptr object = data::reflection::getObject( obj, elt.second );
-                SIGHT_ASSERT("Object from name "<< elt.second <<" not found", object);
+                data::Object::sptr object = data::reflection::getObject(obj, elt.second);
+                SIGHT_ASSERT("Object from name " << elt.second << " not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
-            for(const ReplaceValuesMapType::value_type& elt :  info.parameters)
+            for(const ReplaceValuesMapType::value_type& elt : info.parameters)
             {
-                SIGHT_ASSERT("Value '" << elt.first << "' already used in extracted values.",
-                             replaceMap.find(elt.first) == replaceMap.end());
+                SIGHT_ASSERT(
+                    "Value '" << elt.first << "' already used in extracted values.",
+                    replaceMap.find(elt.first) == replaceMap.end()
+                );
                 replaceMap[elt.first] = elt.second;
             }
 
             // Init manager
             m_configTemplateManager = service::IAppConfigManager::New();
-            m_configTemplateManager->setConfig( configId, replaceMap );
+            m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config
             m_configTemplateManager->launch();
@@ -136,29 +138,31 @@ void SViewer::updating()
 
 void SViewer::configuring()
 {
-    std::vector < core::runtime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
+    std::vector<core::runtime::ConfigurationElement::sptr> viewCfg = m_configuration->find("parentView");
     SIGHT_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
 
     m_parentView = viewCfg[0]->getAttributeValue("wid");
     SIGHT_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
 
-    std::vector < core::runtime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
+    std::vector<core::runtime::ConfigurationElement::sptr> configsCfg = m_configuration->find("configs");
     SIGHT_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
 
-    std::vector < core::runtime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
+    std::vector<core::runtime::ConfigurationElement::sptr> config = configsCfg[0]->find("config");
     SIGHT_ASSERT("Missing tag 'config'", !config.empty());
 
-    for(const core::runtime::ConfigurationElement::sptr& elt :  config)
+    for(const core::runtime::ConfigurationElement::sptr& elt : config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
         SIGHT_ASSERT("'id' attribute must not be empty", !info.configId.empty());
         std::string seriesType = elt->getAttributeValue("type");
         SIGHT_ASSERT("'type' attribute must not be empty", !seriesType.empty());
-        SIGHT_ASSERT("Type " << seriesType << " is already defined.",
-                     m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
+        SIGHT_ASSERT(
+            "Type " << seriesType << " is already defined.",
+            m_seriesConfigs.find(seriesType) == m_seriesConfigs.end()
+        );
 
-        for(const core::runtime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
+        for(const core::runtime::ConfigurationElement::sptr& extractElt : elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SIGHT_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -167,7 +171,7 @@ void SViewer::configuring()
             info.extractValues[pattern] = path;
         }
 
-        for(const core::runtime::ConfigurationElement::sptr& param :  elt->find("parameter"))
+        for(const core::runtime::ConfigurationElement::sptr& param : elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SIGHT_ASSERT("'replace' attribute must not be empty", !replace.empty());
@@ -176,13 +180,13 @@ void SViewer::configuring()
             {
                 by = param->getAttributeValue("uid");
             }
+
             SIGHT_ASSERT("'by' attribute must not be empty", !by.empty());
             info.parameters[replace] = by;
         }
 
         m_seriesConfigs[seriesType] = info;
     }
-
 }
 
 //------------------------------------------------------------------------------

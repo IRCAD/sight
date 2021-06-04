@@ -25,10 +25,11 @@
 #include <data/Composite.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ActivitySeriesTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -72,4 +73,5 @@ void ActivitySeriesTest::dataTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

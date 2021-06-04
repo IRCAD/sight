@@ -33,13 +33,17 @@
 
 namespace sight::core::jobs
 {
+
 class IJob;
+
 }
 
 namespace sight::data
 {
+
 class SeriesDB;
 class Patient;
+
 }
 
 namespace sight::module::io::dicom
@@ -70,12 +74,11 @@ namespace sight::module::io::dicom
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesDBReader : public sight::io::base::service::IReader
 {
-
 public:
 
-    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignal;
 
-    SIGHT_DECLARE_SERVICE(SDicomSeriesDBReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SDicomSeriesDBReader, sight::io::base::service::IReader);
 
     /**
      * @brief   constructor
@@ -93,9 +96,9 @@ protected:
     /// Enum for DicomDir support mode
     enum DicomDirSupport
     {
-        ALWAYS = 0,     /*! Always use the DicomDir if present */
-        NEVER,          /*! Never use the DicomDir */
-        USER_SELECTION  /*! Let the user decide whether using the DicomDir or not */
+        ALWAYS = 0,    /*! Always use the DicomDir if present */
+        NEVER,         /*! Never use the DicomDir */
+        USER_SELECTION /*! Let the user decide whether using the DicomDir or not */
     };
 
     /// Override
@@ -108,7 +111,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Override
-    MODULE_IO_DICOM_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Override
     MODULE_IO_DICOM_API std::string getSelectorDialogTitle() override;

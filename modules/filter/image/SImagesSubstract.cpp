@@ -67,12 +67,12 @@ void SImagesSubstract::updating()
 {
     core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
 
-    data::Image::csptr image1     = this->getInput< data::Image>("image1");
-    data::Image::csptr image2     = this->getInput< data::Image>("image2");
-    data::Image::sptr imageResult = this->getInOut< data::Image>("result");
+    data::Image::csptr image1     = this->getInput<data::Image>("image1");
+    data::Image::csptr image2     = this->getInput<data::Image>("image2");
+    data::Image::sptr imageResult = this->getInOut<data::Image>("result");
 
     // Test if the both images have the same type and it is signed short.
-    const bool isSameType = ( image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
+    const bool isSameType = (image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
 
     if(isSameType)
     {
@@ -80,44 +80,48 @@ void SImagesSubstract::updating()
         const bool isSameSize = (image1->getSize2() == image2->getSize2());
         if(isSameSize)
         {
-            typedef itk::Image< std::int16_t, 3 > ImageType;
+            typedef itk::Image<std::int16_t, 3> ImageType;
 
-            ImageType::Pointer itkImage1 = io::itk::itkImageFactory< ImageType >( image1 );
+            ImageType::Pointer itkImage1 = io::itk::itkImageFactory<ImageType>(image1);
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
-            ImageType::Pointer itkImage2 = io::itk::itkImageFactory< ImageType >( image2 );
+            ImageType::Pointer itkImage2 = io::itk::itkImageFactory<ImageType>(image2);
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
 
             //Create filter
-            typedef ::itk::SubtractImageFilter< ImageType, ImageType, ImageType > SubtractImageFilterType;
+            typedef ::itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
             SubtractImageFilterType::Pointer filter;
             filter = SubtractImageFilterType::New();
             assert(filter);
 
-            filter->SetInput1( itkImage1 );
-            filter->SetInput2( itkImage2 );
+            filter->SetInput1(itkImage1);
+            filter->SetInput2(itkImage2);
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            io::itk::dataImageFactory< ImageType >( output, imageResult, true );
+            io::itk::dataImageFactory<ImageType>(output, imageResult, true);
 
-            auto sig = imageResult->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+            auto sig = imageResult->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
         else
         {
-            sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                         "Both images must have the same size.",
-                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Warning",
+                "Both images must have the same size.",
+                sight::ui::base::dialog::IMessageDialog::WARNING
+            );
         }
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show("Warning",
-                                                     "Both Images must have signed short as type.",
-                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning",
+            "Both Images must have signed short as type.",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
     }
 }
 

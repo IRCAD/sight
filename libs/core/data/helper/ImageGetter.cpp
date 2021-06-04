@@ -22,27 +22,31 @@
 
 #include "data/helper/ImageGetter.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-
 #include <data/Composite.hpp>
 #include <data/PointList.hpp>
 #include <data/TransferFunction.hpp>
 
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
+
 namespace sight::data
 {
+
 namespace helper
 {
 
 //-----------------------------------------------------------------------------
 
-ImageGetter::ImageGetter( data::Image::csptr ImageGetter ) :
+ImageGetter::ImageGetter(data::Image::csptr ImageGetter) :
     m_image(ImageGetter)
 {
-    FW_DEPRECATED_MSG("::data::helper::ImageGetter is no longer supported, the methods have been moved to "
-                      "::sight::data::Image", "22.0")
-    if ( ImageGetter )
+    FW_DEPRECATED_MSG(
+        "::data::helper::ImageGetter is no longer supported, the methods have been moved to "
+        "::sight::data::Image",
+        "22.0"
+    )
+    if(ImageGetter)
     {
         m_lock = ImageGetter->getDataArray()->getBufferObject()->lock();
     }
@@ -63,28 +67,30 @@ void* ImageGetter::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-void* ImageGetter::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const
+void* ImageGetter::getPixelBuffer(SizeType::value_type x, SizeType::value_type y, SizeType::value_type z) const
 {
     SizeType size    = m_image->getSize();
-    IndexType offset = x + size[0]*y + z*size[0]*size[1];
+    IndexType offset = x + size[0] * y + z * size[0] * size[1];
     return this->getPixelBuffer(offset);
 }
 
 //------------------------------------------------------------------------------
 
-void* ImageGetter::getPixelBuffer( IndexType index ) const
+void* ImageGetter::getPixelBuffer(IndexType index) const
 {
-    std::uint8_t imageGetterPixelSize = m_image->getType().sizeOf() * (std::uint8_t)m_image->getNumberOfComponents();
-    BufferType* buf                   = static_cast < BufferType* > (this->getBuffer());
+    std::uint8_t imageGetterPixelSize = m_image->getType().sizeOf() * (std::uint8_t) m_image->getNumberOfComponents();
+    BufferType* buf                   = static_cast<BufferType*>(this->getBuffer());
     BufferIndexType bufIndex          = index * imageGetterPixelSize;
     return buf + bufIndex;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ImageGetter::getPixelAsString(SizeType::value_type x,
-                                                SizeType::value_type y,
-                                                SizeType::value_type z ) const
+const std::string ImageGetter::getPixelAsString(
+    SizeType::value_type x,
+    SizeType::value_type y,
+    SizeType::value_type z
+) const
 {
     return m_image->getType().toString(this->getPixelBuffer(x, y, z));
 }
@@ -92,4 +98,5 @@ const std::string ImageGetter::getPixelAsString(SizeType::value_type x,
 //------------------------------------------------------------------------------
 
 } // helper
+
 } // fwDataTools

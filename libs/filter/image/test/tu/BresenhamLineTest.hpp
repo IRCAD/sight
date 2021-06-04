@@ -26,17 +26,19 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class BresenhamLineTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( BresenhamLineTest );
-CPPUNIT_TEST( straightLineTest );
-CPPUNIT_TEST( obliqueLineTest );
+CPPUNIT_TEST_SUITE(BresenhamLineTest);
+CPPUNIT_TEST(straightLineTest);
+CPPUNIT_TEST(obliqueLineTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -46,4 +48,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image

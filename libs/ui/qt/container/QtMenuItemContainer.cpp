@@ -26,6 +26,7 @@
 
 namespace sight::ui::qt
 {
+
 namespace container
 {
 
@@ -73,4 +74,5 @@ QAction* QtMenuItemContainer::getQtMenuItem()
 //-----------------------------------------------------------------------------
 
 } // namespace container
+
 } // namespace sight::ui::qt

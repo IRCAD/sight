@@ -31,7 +31,9 @@
 
 namespace sight::data
 {
+
 class Camera;
+
 }
 
 namespace sight::module::io::video
@@ -96,12 +98,12 @@ namespace sight::module::io::video
  *  - \b gui
  *      - \b title (optional) : title of the grabber selector window.
  */
-class MODULE_IO_VIDEO_CLASS_API SGrabberProxy :  public service::IGrabber,
-                                                 public service::IHasServices
+class MODULE_IO_VIDEO_CLASS_API SGrabberProxy : public service::IGrabber,
+                                                public service::IHasServices
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrabberProxy, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SGrabberProxy, service::IGrabber);
 
     /// Constructor. Initialize slots and signals
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
@@ -116,7 +118,7 @@ public:
      */
     /// Slot: called to start the tracking.
     MODULE_IO_VIDEO_API static const core::com::Slots::SlotKeyType s_RECONFIGURE_SLOT;
-    /** @} */
+/** @} */
 
 protected:
 
@@ -160,11 +162,11 @@ protected:
 
     /// Set step used on readPrevious/readNext slots.
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
-    /** @} */
+/** @} */
 
 private:
 
-    typedef std::pair<std::string, core::runtime::ConfigurationElement::csptr > ServiceConfigPair;
+    typedef std::pair<std::string, core::runtime::ConfigurationElement::csptr> ServiceConfigPair;
 
     enum class CameraType : std::uint8_t
     {
@@ -197,7 +199,7 @@ private:
     /** @} */
 
     /// Camera type (RGB, RGBD,...)
-    CameraType m_type { CameraType::RGB };
+    CameraType m_type {CameraType::RGB};
 
     /// Grabber implementation chosen by the user.
     std::string m_grabberImpl;
@@ -206,25 +208,25 @@ private:
     std::string m_grabberConfig;
 
     /// Title of the GUI selector window
-    std::string m_guiTitle { "Please select a video grabber implementation" };
+    std::string m_guiTitle {"Please select a video grabber implementation"};
 
     /// Actual grabber service.
-    std::vector< service::IGrabber::sptr > m_services;
+    std::vector<service::IGrabber::sptr> m_services;
 
     /// Connections with service signals.
     core::com::helper::SigSlotConnection m_connections;
 
     /// List of services to be included or excluded.
-    std::set< std::string > m_selectedServices;
+    std::set<std::string> m_selectedServices;
 
     /// Map that specifies all configuration extensions for a service.
-    std::map< std::string, std::vector< std::string > > m_serviceToConfig;
+    std::map<std::string, std::vector<std::string> > m_serviceToConfig;
 
     /// State of the loop mode.
-    bool m_loopVideo { false };
+    bool m_loopVideo {false};
 
     /// Configure if selected services are excluded (true) or included (false).
-    bool m_exclude { true };
+    bool m_exclude {true};
 };
 
 } // namespace sight::module::io::video

@@ -37,7 +37,6 @@ namespace sight::core::runtime
  */
 struct CORE_CLASS_API IPlugin : public IExecutable
 {
-
     /**
      * @brief   Destructor : does nothing.
      */
@@ -62,7 +61,6 @@ struct CORE_CLASS_API IPlugin : public IExecutable
      * @brief   Notifies the plugin about its stop.
      */
     virtual void stop() noexcept = 0;
-
 };
 
 } // namespace sight::core::runtime

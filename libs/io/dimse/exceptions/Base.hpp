@@ -28,6 +28,7 @@
 
 namespace sight::io::dimse
 {
+
 namespace exceptions
 {
 
@@ -37,6 +38,7 @@ namespace exceptions
 class IO_DIMSE_CLASS_API Base : public core::Exception
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] message Exception message
@@ -45,8 +47,8 @@ public:
 
     /// Destructor
     IO_DIMSE_API virtual ~Base() noexcept;
-
 };
 
 } //exceptions
+
 } //fwPacsIO

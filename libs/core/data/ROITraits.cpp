@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::ROITraits );
+SIGHT_REGISTER_DATA(sight::data::ROITraits);
 
 namespace sight::data
 {
@@ -46,7 +46,7 @@ ROITraits::~ROITraits()
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setMaskOpNode(const data::Node::sptr& maskOpNode )
+void ROITraits::setMaskOpNode(const data::Node::sptr& maskOpNode)
 {
     m_maskOpNode = maskOpNode;
 }
@@ -56,16 +56,17 @@ void ROITraits::setMaskOpNode(const data::Node::sptr& maskOpNode )
 data::Node::sptr ROITraits::getMaskOpNode()
 {
     data::Node::sptr opNode;
-    if ( m_evaluatedExp != "W" ) // Thus mask op node must be assigned
+    if(m_evaluatedExp != "W") // Thus mask op node must be assigned
     {
         opNode = m_maskOpNode;
     }
+
     return opNode;
 }
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setStructureTraits(const data::StructureTraits::sptr& structureTraits )
+void ROITraits::setStructureTraits(const data::StructureTraits::sptr& structureTraits)
 {
     m_structureTraits = structureTraits;
 }
@@ -82,12 +83,16 @@ data::StructureTraits::sptr ROITraits::getStructureTraits()
 void ROITraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ROITraits::csptr other = ROITraits::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(source, cache);
 
-    SIGHT_FATAL("Not implemented." );
+    SIGHT_FATAL("Not implemented.");
 }
 
 } // namespace sight::data

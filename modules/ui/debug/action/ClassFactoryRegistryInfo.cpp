@@ -24,20 +24,20 @@
 
 #include <core/base.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/Factory.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 
 namespace sight::module::ui::debug
 {
+
 namespace action
 {
 
-
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) noexcept
+ClassFactoryRegistryInfo::ClassFactoryRegistryInfo() noexcept
 {
 }
 
@@ -49,7 +49,7 @@ ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::updating( )
+void ClassFactoryRegistryInfo::updating()
 {
     m_tree->clearSelection();
     m_tree->clear();
@@ -57,14 +57,15 @@ void ClassFactoryRegistryInfo::updating( )
     typedef service::extension::Factory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
-    for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
+    for(ServiceRegistry::KeyVectorType::value_type key : factoryKeys)
     {
         const auto objImpl       = ServiceRegistry::getDefault()->getServiceObjects(key);
         QTreeWidgetItem* srvItem = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
         srvItem->setText(1, QString::fromStdString(objImpl[0]));
-        m_tree->addTopLevelItem( srvItem );
+        m_tree->addTopLevelItem(srvItem);
     }
+
     m_dialog->show();
 }
 
@@ -87,17 +88,17 @@ void ClassFactoryRegistryInfo::starting()
     m_dialog->setMinimumSize(800, 600);
 
     QHBoxLayout* sizer = new QHBoxLayout();
-    m_tree = new QTreeWidget( m_dialog );
+    m_tree = new QTreeWidget(m_dialog);
     QStringList headerList = (QStringList() << "Service" << "Object");
     m_tree->setColumnCount(2);
     m_tree->setHeaderLabels(headerList);
     m_tree->setColumnWidth(0, 300);
     m_tree->setColumnWidth(1, 460);
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_tree->setAlternatingRowColors( true );
+    m_tree->setAlternatingRowColors(true);
 
-    sizer->addWidget( m_tree );
-    m_dialog->setLayout( sizer );
+    sizer->addWidget(m_tree);
+    m_dialog->setLayout(sizer);
 }
 
 //------------------------------------------------------------------------------

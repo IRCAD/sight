@@ -30,6 +30,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace conditions
 {
 
@@ -39,7 +40,8 @@ namespace conditions
 class IO_ATOMS_CLASS_API Abstract : public core::BaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(Abstract, core::BaseObject, new Abstract)
+
+    SIGHT_DECLARE_CLASS(Abstract, core::BaseObject, new Abstract);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Default value getter
@@ -52,14 +54,15 @@ public:
     IO_ATOMS_API virtual bool test(sight::atoms::Base::sptr old);
 
 protected:
+
     Abstract()
     {
     }
+
     Abstract(sight::atoms::Base::sptr defaultValue);
 
     sight::atoms::Base::sptr m_defaultValue;
     std::string m_message;
-
 };
 
 } // namespace conditions

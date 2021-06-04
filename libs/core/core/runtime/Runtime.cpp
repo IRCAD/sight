@@ -27,7 +27,6 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/operations.hpp"
-
 #include <core/spyLog.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
@@ -63,10 +62,10 @@ Runtime& Runtime::get()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
+std::shared_ptr<Extension> Runtime::findExtension(const std::string& identifier) const
 {
     std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
+    for(const ExtensionContainer::value_type& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier && extension->isEnabled())
         {
@@ -74,12 +73,13 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
             break;
         }
     }
+
     return resExtension;
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const std::filesystem::path& )
+void Runtime::setWorkingPath(const std::filesystem::path&)
 {
 }
 
@@ -87,7 +87,7 @@ void Runtime::setWorkingPath(const std::filesystem::path& )
 
 std::string filterID(const std::string& identifier)
 {
-    return boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
+    return boost::algorithm::trim_left_copy_if(identifier, [](auto x){return x == ':';});
 }
 
 //------------------------------------------------------------------------------

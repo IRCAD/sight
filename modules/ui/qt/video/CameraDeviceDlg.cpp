@@ -44,6 +44,7 @@ Q_DECLARE_METATYPE(QCameraInfo)
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -68,8 +69,8 @@ CameraDeviceDlg::CameraDeviceDlg() :
     // Detect available devices.
     const QList<QCameraInfo> devices = QCameraInfo::availableCameras();
 
-    std::map<std::string, QCameraInfo > nameToUID;
-    std::vector< std::string> nameList;
+    std::map<std::string, QCameraInfo> nameToUID;
+    std::vector<std::string> nameList;
 
     //We should keep the same order than given by Qt, and uniquely identify cameras with the same name.
 
@@ -84,10 +85,11 @@ CameraDeviceDlg::CameraDeviceDlg() :
         // check if the name already exists
         const auto multipleName = std::count(nameList.begin(), nameList.end(), camName);
         std::string uniqueName  = camName;
-        if(  multipleName > 0)
+        if(multipleName > 0)
         {
-            uniqueName = camName + " #" + std::to_string(multipleName+1);
+            uniqueName = camName + " #" + std::to_string(multipleName + 1);
         }
+
         nameList.push_back(camName);
         // prefix by index to keep the order in the map
         nameToUID[std::to_string(index) + ". " + uniqueName] = camInfo;
@@ -100,7 +102,7 @@ CameraDeviceDlg::CameraDeviceDlg() :
     {
         const auto& deviceName = p.first;
         auto& deviceInfo       = p.second;
-        m_devicesComboBox->addItem( QString(deviceName.c_str()), QVariant::fromValue(deviceInfo));
+        m_devicesComboBox->addItem(QString(deviceName.c_str()), QVariant::fromValue(deviceInfo));
     }
 
     buttonLayout->addWidget(validateButton);
@@ -176,6 +178,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
         camera->setDescription(m_devicesComboBox->currentText().toStdString());
         return true;
     }
+
     return false;
 }
 
@@ -191,11 +194,10 @@ void CameraDeviceDlg::onSelectDevice(int index)
         cam->load();
 
 #ifdef __linux__
-
         //NOTE : Work arround for the camera resolution settings on linux (maybe on OSX too)
-        QCameraImageCapture* imageCapture            = new QCameraImageCapture(cam);
-        QList<QSize> res                             = imageCapture->supportedResolutions();
-        QList< QVideoFrame::PixelFormat > pixFormats = imageCapture->supportedBufferFormats();
+        QCameraImageCapture* imageCapture          = new QCameraImageCapture(cam);
+        QList<QSize> res                           = imageCapture->supportedResolutions();
+        QList<QVideoFrame::PixelFormat> pixFormats = imageCapture->supportedBufferFormats();
 
         for(const QSize& supportedSize : res)
         {
@@ -231,13 +233,12 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 item->setData(Qt::UserRole, QVariant::fromValue(settings));
                 m_camSettings->addItem(item);
             }
-
         }
 
         delete imageCapture;
 #else
         QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
-        for(const QCameraViewfinderSettings& settings : settingsList )
+        for(const QCameraViewfinderSettings& settings : settingsList)
         {
             data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
 
@@ -260,9 +261,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
             item->setData(Qt::UserRole, QVariant::fromValue(settings));
             m_camSettings->addItem(item);
-
         }
-
 #endif //linux
 
         cam->unload();
@@ -274,4 +273,5 @@ void CameraDeviceDlg::onSelectDevice(int index)
 //-----------------------------------------------------------------------------
 
 } // video
+
 } // sight::module::ui::qt

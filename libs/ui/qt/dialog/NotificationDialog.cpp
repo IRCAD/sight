@@ -30,15 +30,18 @@
 #include <QBoxLayout>
 #include <QTimer>
 
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::NotificationDialog,
-                    ::sight::ui::base::dialog::INotificationDialog::REGISTRY_KEY)
+fwGuiRegisterMacro(
+    ::sight::ui::qt::dialog::NotificationDialog,
+    ::sight::ui::base::dialog::INotificationDialog::REGISTRY_KEY
+)
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
-NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key )
+NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key)
 {
 }
 
@@ -90,17 +93,20 @@ void NotificationDialog::show()
         if(m_notificationType == INotificationDialog::Type::SUCCESS)
         {
             m_msgBox->setStyleSheet(
-                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
+                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            );
         }
         else if(m_notificationType == INotificationDialog::Type::FAILURE)
         {
             m_msgBox->setStyleSheet(
-                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
+                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            );
         }
         else // INFO by default.
         {
             m_msgBox->setStyleSheet(
-                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px");
+                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            );
         }
     }
     else
@@ -122,28 +128,29 @@ void NotificationDialog::show()
     // Fade in effect.
     QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
     QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
-    a->setDuration(200);  // In milliseconds
+    a->setDuration(200); // In milliseconds
     a->setStartValue(0); // Full transparent.
     a->setEndValue(0.9); // 90% of opacity, to see through the popup.
     a->setEasingCurve(QEasingCurve::InBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 
     // Creates the getPosition function
-    std::function< QPoint(QWidget*) > position;
+    std::function<QPoint(QWidget*)> position;
     const int margin = 5;
 
-    if(m_position == Position::CENTERED )
+    if(m_position == Position::CENTERED)
     {
         position = [ = ](QWidget* _parent) -> QPoint
                    {
                        const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
 
-                       return QPoint(parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                                     parentPosCenter.y() - static_cast<int>(m_size[1] / 2));
+                       return QPoint(
+                           parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
+                           parentPosCenter.y() - static_cast<int>(m_size[1] / 2)
+                       );
                    };
-
     }
-    else if (m_position == Position::CENTERED_TOP)
+    else if(m_position == Position::CENTERED_TOP)
     {
         position = [ = ](QWidget* _parent) -> QPoint
                    {
@@ -151,12 +158,13 @@ void NotificationDialog::show()
                        const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
                        const int height  = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX - static_cast<int>(m_size[0] / 2),
-                                     parentY + margin + (height * m_index));
+                       return QPoint(
+                           parentX - static_cast<int>(m_size[0] / 2),
+                           parentY + margin + (height * m_index)
+                       );
                    };
-
     }
-    else if (m_position == Position::CENTERED_BOTTOM)
+    else if(m_position == Position::CENTERED_BOTTOM)
     {
         position = [ = ](QWidget* _parent) -> QPoint
                    {
@@ -164,8 +172,10 @@ void NotificationDialog::show()
                        const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
                        const int height  = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX - static_cast<int>(m_size[0] / 2),
-                                     parentY - margin - (height * (m_index+1)));
+                       return QPoint(
+                           parentX - static_cast<int>(m_size[0] / 2),
+                           parentY - margin - (height * (m_index + 1))
+                       );
                    };
     }
     else if(m_position == Position::TOP_LEFT)
@@ -177,8 +187,10 @@ void NotificationDialog::show()
                        const int parentY         = parrentTopLeft.y();
                        const int height          = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX + margin,
-                                     parentY + margin + (height * m_index));
+                       return QPoint(
+                           parentX + margin,
+                           parentY + margin + (height * m_index)
+                       );
                    };
     }
     else if(m_position == Position::TOP_RIGHT)
@@ -190,8 +202,10 @@ void NotificationDialog::show()
                        const int parentY          = parrentTopRight.y();
                        const int height           = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX - margin - static_cast<int>(m_size[0]),
-                                     parentY + margin + (height * m_index));
+                       return QPoint(
+                           parentX - margin - static_cast<int>(m_size[0]),
+                           parentY + margin + (height * m_index)
+                       );
                    };
     }
     else if(m_position == Position::BOTTOM_LEFT)
@@ -203,8 +217,10 @@ void NotificationDialog::show()
                        const int parentY            = parrentBottomLeft.y();
                        const int height             = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX + margin,
-                                     parentY - (height * (m_index+1)));
+                       return QPoint(
+                           parentX + margin,
+                           parentY - (height * (m_index + 1))
+                       );
                    };
     }
     else if(m_position == Position::BOTTOM_RIGHT)
@@ -216,15 +232,17 @@ void NotificationDialog::show()
                        const int parentY             = parrentBottomRight.y();
                        const int height              = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(parentX - margin - static_cast<int>(m_size[0]),
-                                     parentY - (height * (m_index+1)));
+                       return QPoint(
+                           parentX - margin - static_cast<int>(m_size[0]),
+                           parentY - (height * (m_index + 1))
+                       );
                    };
     }
 
     // Creates the main translucent auto-movable container.
     Container* const container = new Container(position, parent);
     container->setGraphicsEffect(effect);
-    container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint| Qt::NoDropShadowWindowHint);
+    container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
     container->setAttribute(Qt::WA_TranslucentBackground);
     container->setContentsMargins(0, 0, 0, 0);
     container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
@@ -276,4 +294,5 @@ void NotificationDialog::close() const
 //------------------------------------------------------------------------------
 
 } // namespace dialog.
+
 } // namespace sight::ui::qt.

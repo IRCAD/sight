@@ -37,41 +37,45 @@
 
 #include <random>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::SpheroidExtractionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::SpheroidExtractionTest);
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
-typedef ::itk::Image< std::int16_t, 3> ImageType;
+typedef ::itk::Image<std::int16_t, 3> ImageType;
 
 //------------------------------------------------------------------------------
 
-template< typename PIXELTYPE >
-static void makeNoise(const data::Image::sptr& _image,
-                      PIXELTYPE rangeMin = std::numeric_limits<PIXELTYPE>::min(),
-                      PIXELTYPE rangeMax = std::numeric_limits<PIXELTYPE>::max())
+template<typename PIXELTYPE>
+static void makeNoise(
+    const data::Image::sptr& _image,
+    PIXELTYPE rangeMin = std::numeric_limits<PIXELTYPE>::min(),
+    PIXELTYPE rangeMax = std::numeric_limits<PIXELTYPE>::max()
+)
 {
     const auto dumpLock = _image->lock();
-    auto iter           = _image->begin< PIXELTYPE >();
-    const auto end      = _image->end< PIXELTYPE >();
+    auto iter           = _image->begin<PIXELTYPE>();
+    const auto end      = _image->end<PIXELTYPE>();
 
     std::default_random_engine randGenerator;
     std::uniform_int_distribution<PIXELTYPE> distribution(rangeMin, rangeMax);
 
-    for (; iter != end; ++iter)
+    for( ; iter != end ; ++iter)
     {
         *iter = distribution(randGenerator);
     }
 }
+
 //------------------------------------------------------------------------------
 
 static void plantSphere(ImageType::Pointer _image, const double radius[3], const double center[3])
 {
-    typedef itk::EllipseSpatialObject< 3 >   EllipseType;
+    typedef itk::EllipseSpatialObject<3> EllipseType;
 
-    typedef itk::SpatialObjectToImageFilter< EllipseType, ImageType >   SpatialObjectToImageFilterType;
+    typedef itk::SpatialObjectToImageFilter<EllipseType, ImageType> SpatialObjectToImageFilterType;
 
     EllipseType::Pointer ellipse = EllipseType::New();
     ellipse->SetRadius(radius);
@@ -79,12 +83,12 @@ static void plantSphere(ImageType::Pointer _image, const double radius[3], const
     typedef EllipseType::TransformType TransformType;
     TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
-    transform->Translate( center, false );
+    transform->Translate(center, false);
 
-    ellipse->SetObjectToParentTransform( transform );
+    ellipse->SetObjectToParentTransform(transform);
 
     typedef itk::SpatialObjectToImageFilter<
-            EllipseType, ImageType >   SpatialObjectToImageFilterType;
+            EllipseType, ImageType> SpatialObjectToImageFilterType;
 
     SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
 
@@ -92,18 +96,18 @@ static void plantSphere(ImageType::Pointer _image, const double radius[3], const
 
     ellipse->SetDefaultInsideValue(255);
     ellipse->SetDefaultOutsideValue(0);
-    imageFilter->SetUseObjectValue( true );
-    imageFilter->SetOutsideValue( 0 );
-    imageFilter->SetSize( _image->GetLargestPossibleRegion().GetSize() );
-    imageFilter->SetSpacing( _image->GetSpacing() );
+    imageFilter->SetUseObjectValue(true);
+    imageFilter->SetOutsideValue(0);
+    imageFilter->SetSize(_image->GetLargestPossibleRegion().GetSize());
+    imageFilter->SetSpacing(_image->GetSpacing());
 
     imageFilter->Update();
 
     typedef typename ::itk::OrImageFilter<ImageType, ImageType> OrFilterType;
 
     typename OrFilterType::Pointer orFilter = OrFilterType::New();
-    orFilter->SetInput1( _image );
-    orFilter->SetInput2( imageFilter->GetOutput() );
+    orFilter->SetInput1(_image);
+    orFilter->SetInput2(imageFilter->GetOutput());
     orFilter->Update();
     _image->Graft(orFilter->GetOutput());
 }
@@ -126,27 +130,39 @@ void SpheroidExtractionTest::extractionTest()
 {
     data::Image::sptr image = data::Image::New();
 
-    const data::Image::Size SIZE = {{ 128, 128, 128 }};
+    const data::Image::Size SIZE = {{128, 128, 128}};
 
-    const data::Image::Spacing SPACING = {{ 1., 1., 1. }};
-    const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
+    const data::Image::Spacing SPACING = {{1., 1., 1.}};
+    const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
     const core::tools::Type TYPE       = core::tools::Type::s_INT16;
 
-    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                               data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateImage(
+        image,
+        SIZE,
+        SPACING,
+        ORIGIN,
+        TYPE,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
 
-    makeNoise< std::int16_t >(image, 0, 128);
+    makeNoise<std::int16_t>(image, 0, 128);
 
-    ImageType::Pointer itkImage = io::itk::itkImageFactory< ImageType >(image);
+    ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(image);
 
-    const std::vector< std::array<double, 3> > spheroidCenters = {{{ 16., 16., 16.}},
-                                                                  {{ 54., 67., 12.}},
-                                                                  {{113., 87., 98.}}};
+    const std::vector<std::array<double, 3> > spheroidCenters = {{{16., 16., 16.}},
+        {{54., 67., 12.}},
+        {{113., 87., 98.
+        }
+        }
+    };
     const double radius[3] = {5, 5, 5};
 
-    const std::vector< std::array<double, 3> > ellipsoidCenters = {{{ 16., 100., 64.}},
-                                                                   {{ 64., 64., 64. }},
-                                                                   {{ 10., 17., 108. }}};
+    const std::vector<std::array<double, 3> > ellipsoidCenters = {{{16., 100., 64.}},
+        {{64., 64., 64.}},
+        {{10., 17., 108.
+        }
+        }
+    };
 
     const double ellipseRadius[3] = {8, 3, 5};
 
@@ -190,6 +206,7 @@ void SpheroidExtractionTest::extractionTest()
 }
 
 } //namespace ut.
+
 } //namespace sight::filter::image.
 
-#endif
+#endif // ifndef WIN32

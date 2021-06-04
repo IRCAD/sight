@@ -66,8 +66,13 @@ public:
 protected:
 
     /// Constructor
-    DATA_API GenericObjectBase( unsigned int maxElementNum, core::HiResClock::HiResClockType timestamp = 0,
-                                BufferDataType buffer = 0, size_t size = 0, DeleterType d = 0);
+    DATA_API GenericObjectBase(
+        unsigned int maxElementNum,
+        core::HiResClock::HiResClockType timestamp = 0,
+        BufferDataType buffer                      = 0,
+        size_t size                                = 0,
+        DeleterType d                              = 0
+    );
 
     /// Number of elements that are actually set
     unsigned int m_numPresent;
@@ -82,7 +87,7 @@ protected:
  *          object is fixed, however some elements can be missing. A mask is provided to test the presence of a given
  *          element.
  */
-template< typename TYPE >
+template<typename TYPE>
 class GenericObject : public GenericObjectBase
 {
 public:
@@ -93,6 +98,7 @@ public:
     class iterator
     {
     public:
+
         /// Go to the next element
         void operator++();
 
@@ -106,6 +112,7 @@ public:
         const ElementType& operator*() const;
 
     private:
+
         /// Constructor
         iterator(const GenericObjectBase& object);
 
@@ -124,8 +131,13 @@ public:
     friend class iterator;
 
     /// Constructor
-    GenericObject( unsigned int m_maxElementNum, core::HiResClock::HiResClockType timestamp = 0,
-                   BufferDataType buffer = 0, size_t size = 0, DeleterType d = 0);
+    GenericObject(
+        unsigned int m_maxElementNum,
+        core::HiResClock::HiResClockType timestamp = 0,
+        BufferDataType buffer                      = 0,
+        size_t size                                = 0,
+        DeleterType d                              = 0
+    );
 
     /// Destructor
     virtual ~GenericObject();

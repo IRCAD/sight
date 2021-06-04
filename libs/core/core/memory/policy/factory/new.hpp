@@ -34,19 +34,24 @@ class GuiBaseObject;
 
 namespace policy
 {
+
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
-CORE_API SPTR( core::memory::IPolicy ) New( const core::memory::policy::registry::KeyType& classname );
+CORE_API SPTR(core::memory::IPolicy) New(const core::memory::policy::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) policy = std::make_shared< CLASSNAME >();
+    SPTR(CLASSNAME) policy = std::make_shared<CLASSNAME>();
     return policy;
 }
 
 } // namespace factory
+
 } // namespace policy
+
 } // namespace sight::core::memory

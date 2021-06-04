@@ -32,7 +32,9 @@
 
 namespace sight::core::jobs
 {
+
 class IJob;
+
 }
 
 namespace sight::module::io::dicom
@@ -62,9 +64,9 @@ class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDicomSeriesConverter, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(SDicomSeriesConverter, sight::ui::base::IAction);
 
-    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignal;
 
     /**
      * @brief Constructor
@@ -91,7 +93,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Override
-    MODULE_IO_DICOM_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
 
 protected:
 

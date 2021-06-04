@@ -28,32 +28,33 @@
 
 namespace sight::service
 {
+
 namespace parser
 {
 
 //------------------------------------------------------------------------------
 
-void Matrix4::updating( )
+void Matrix4::updating()
 {
     SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
 
-void Matrix4::createConfig( core::tools::Object::sptr _obj )
+void Matrix4::createConfig(core::tools::Object::sptr _obj)
 {
-    data::Matrix4::sptr matrix = data::Matrix4::dynamicCast( _obj );
+    data::Matrix4::sptr matrix = data::Matrix4::dynamicCast(_obj);
     SIGHT_ASSERT("matrix not instanced", matrix);
 
-    for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
+    for(core::runtime::ConfigurationElement::csptr elem : m_cfg->getElements())
     {
-        if ( elem->getName() == "matrix" )
+        if(elem->getName() == "matrix")
         {
             std::string input = elem->getValue();
-            std::istringstream inputString( input );
+            std::istringstream inputString(input);
 
             double coef;
-            for ( unsigned int k = 0; k < 16; k++)
+            for(unsigned int k = 0 ; k < 16 ; k++)
             {
                 inputString >> coef;
                 matrix->getCoefficients()[k] = coef;
@@ -65,4 +66,5 @@ void Matrix4::createConfig( core::tools::Object::sptr _obj )
 //------------------------------------------------------------------------------
 
 } //namespace parser
+
 } //namespace sight::service

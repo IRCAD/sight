@@ -30,7 +30,6 @@ namespace sight::module::debug
 /// Class called when the module is loaded and stopped.
 struct Plugin : public core::runtime::Plugin
 {
-
     /// Destructor
     ~Plugin() noexcept;
 
@@ -39,7 +38,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::debug

@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( sight::data::Resection );
+SIGHT_REGISTER_DATA(sight::data::Resection);
 
 namespace sight::data
 {
@@ -39,7 +39,7 @@ const core::com::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = 
 
 //------------------------------------------------------------------------------
 
-Resection::Resection (data::Object::Key) :
+Resection::Resection(data::Object::Key) :
     m_isSafePart(true),
     m_isValid(false),
     m_isVisible(true)
@@ -48,25 +48,29 @@ Resection::Resection (data::Object::Key) :
     m_sigReconstructionAdded = ReconstructionAddedSignalType::New();
     m_sigVisibilityModified  = VisibilityModifiedSignalType::New();
 
-    m_signals( s_RECONSTRUCTION_ADDED_SIG,  m_sigReconstructionAdded)
-        ( s_VISIBILITY_MODIFIED_SIG,  m_sigVisibilityModified);
+    m_signals(s_RECONSTRUCTION_ADDED_SIG, m_sigReconstructionAdded)
+        (s_VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
 }
 
 //------------------------------------------------------------------------------
 
-Resection::~Resection ()
+Resection::~Resection()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Resection::shallowCopy(const Object::csptr& _source )
+void Resection::shallowCopy(const Object::csptr& _source)
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
 
     m_name       = other->m_name;
     m_isSafePart = other->m_isSafePart;
@@ -82,10 +86,14 @@ void Resection::shallowCopy(const Object::csptr& _source )
 void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 
     m_name       = other->m_name;
     m_isSafePart = other->m_isSafePart;
@@ -96,13 +104,13 @@ void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& 
     this->m_vInputs.clear();
     for(const ResectionInputs::value_type& resec : other->m_vInputs)
     {
-        m_vInputs.push_back( data::Object::copy(resec, cache) );
+        m_vInputs.push_back(data::Object::copy(resec, cache));
     }
 
     this->m_vOutputs.clear();
     for(const ResectionOutputs::value_type& resec : other->m_vOutputs)
     {
-        m_vOutputs.push_back( data::Object::copy(resec, cache) );
+        m_vOutputs.push_back(data::Object::copy(resec, cache));
     }
 }
 

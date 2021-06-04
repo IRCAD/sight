@@ -29,7 +29,7 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Tag), DATA_API);
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Tag), DATA_API);
 
 namespace sight::data
 {
@@ -40,9 +40,9 @@ namespace sight::data
  */
 class DATA_CLASS_API Tag : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Tag, data::Object, data::factory::New< Tag >)
+
+    SIGHT_DECLARE_CLASS(Tag, data::Object, data::factory::New<Tag>);
 
     /**
      * @brief Constructor
@@ -53,7 +53,7 @@ public:
     /// Destructor
     DATA_API virtual ~Tag();
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Tag));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Tag));
 
     /**
      * @{
@@ -61,29 +61,29 @@ public:
      */
     data::PointList::sptr& getPointList();
     const data::PointList::sptr& getPointList() const;
-    void setPointList (const data::PointList::sptr& _pointList);
+    void setPointList(const data::PointList::sptr& _pointList);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the Type.
      */
-    std::string& getType ();
-    const std::string& getType () const;
-    void setType (const std::string& _sType);
+    std::string& getType();
+    const std::string& getType() const;
+    void setType(const std::string& _sType);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the Tag size.
      */
-    double& getSize ();
-    double getSize () const;
-    void setSize (const double _size);
+    double& getSize();
+    double getSize() const;
+    void setSize(const double _size);
     /// @}
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& source ) override;
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
@@ -98,7 +98,6 @@ protected:
 
     /// size of tag
     double m_size;
-
 }; // end class Tag
 
 //-----------------------------------------------------------------------------
@@ -117,49 +116,49 @@ inline const data::PointList::sptr& Tag::getPointList() const
 
 //-----------------------------------------------------------------------------
 
-inline void Tag::setPointList (const data::PointList::sptr& _pointList)
+inline void Tag::setPointList(const data::PointList::sptr& _pointList)
 {
     this->m_pointList = _pointList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Tag::getType ()
+inline std::string& Tag::getType()
 {
     return m_sType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Tag::getType () const
+inline const std::string& Tag::getType() const
 {
     return m_sType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Tag::setType (const std::string& _sType)
+inline void Tag::setType(const std::string& _sType)
 {
     this->m_sType = _sType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Tag::getSize () const
+inline double Tag::getSize() const
 {
     return m_size;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double& Tag::getSize ()
+inline double& Tag::getSize()
 {
     return m_size;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Tag::setSize (const double _size)
+inline void Tag::setSize(const double _size)
 {
     m_size = _size;
 }

@@ -26,15 +26,17 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
-class ObjectTest :  public CPPUNIT_NS::TestFixture
+class ObjectTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ObjectTest );
-CPPUNIT_TEST( callFunctionTest );
+CPPUNIT_TEST_SUITE(ObjectTest);
+CPPUNIT_TEST(callFunctionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,9 +46,10 @@ public:
     void tearDown();
 
     void callFunctionTest();
-
 };
 
 } // namespace ut
+
 } // namespace reflection
+
 } // namespace sight::data

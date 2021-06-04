@@ -45,17 +45,19 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
-                                                                                       const ::Ogre::String& _schemeName,
-                                                                                       ::Ogre::Material* _originalMaterial,
-                                                                                       unsigned short /*_lodIndex*/,
-                                                                                       const ::Ogre::Renderable*
-                                                                                       /*_renderable*/)
+::Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotFound(
+    unsigned short /*_schemeIndex*/,
+    const ::Ogre::String& _schemeName,
+    ::Ogre::Material* _originalMaterial,
+    unsigned short /*_lodIndex*/,
+    const ::Ogre::Renderable*
+    /*_renderable*/
+)
 {
     const auto mtlName = _originalMaterial->getName();
 
     // Volume rendering techniques don't handle OIT. Ignore them.
-    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") ||::Ogre::StringUtil::endsWith(mtlName, "RayEntryPoints"))
+    if(::Ogre::StringUtil::startsWith(mtlName, "RTV_Mat") || ::Ogre::StringUtil::endsWith(mtlName, "RayEntryPoints"))
     {
         return nullptr;
     }
@@ -83,8 +85,10 @@ MaterialMgrListener::~MaterialMgrListener()
     ::Ogre::Technique* depthTech   = _originalMaterial->getTechnique("depth");
     if(depthTech == nullptr)
     {
-        SIGHT_ERROR( "Missing 'depth' technique for material '" + _originalMaterial->getName() +
-                     "' Order Independent Transparency will probably not be supported.");
+        SIGHT_ERROR(
+            "Missing 'depth' technique for material '" + _originalMaterial->getName()
+            + "' Order Independent Transparency will probably not be supported."
+        );
         depthTech = defaultTech;
     }
 
@@ -93,14 +97,14 @@ MaterialMgrListener::~MaterialMgrListener()
     const ::Ogre::Technique::Passes& defaultTechPasses = defaultTech->getPasses();
     for(const auto pass : defaultTechPasses)
     {
-        if(  ::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/" ) )
+        if(::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/"))
         {
             return defaultTech;
         }
     }
 
-    if(_schemeName == "DepthPeeling/depthMap" ||
-       _schemeName == "HybridTransparency/backDepth")
+    if(_schemeName == "DepthPeeling/depthMap"
+       || _schemeName == "HybridTransparency/backDepth")
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
@@ -118,9 +122,9 @@ MaterialMgrListener::~MaterialMgrListener()
             }
         }
     }
-    else if( ::Ogre::StringUtil::startsWith(_schemeName, "DepthPeeling/peel", false) ||
-             ::Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false) ||
-             ::Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false) )
+    else if(::Ogre::StringUtil::startsWith(_schemeName, "DepthPeeling/peel", false)
+            || ::Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false)
+            || ::Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
@@ -132,8 +136,8 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
 
-            if(algoName == "CelShadingDepthPeeling" && pass->getName() != "NormalsPass" &&
-               pass->getName() != "EdgePass")
+            if(algoName == "CelShadingDepthPeeling" && pass->getName() != "NormalsPass"
+               && pass->getName() != "EdgePass")
             {
                 auto vpName  = pass->getVertexProgramName();
                 auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(vpName, algoName);
@@ -146,7 +150,7 @@ MaterialMgrListener::~MaterialMgrListener()
             this->ensureFPCreated(newName, algoName, algoPassName, fpName);
             pass->setFragmentProgram(newName);
 
-            auto numTexUnit = pass->getNumTextureUnitStates();
+            auto numTexUnit                    = pass->getNumTextureUnitStates();
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -176,8 +180,8 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
-    else if(_schemeName == "WeightedBlended/occlusionMap" ||
-            _schemeName == "HybridTransparency/occlusionMap")
+    else if(_schemeName == "WeightedBlended/occlusionMap"
+            || _schemeName == "HybridTransparency/occlusionMap")
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
@@ -187,7 +191,7 @@ MaterialMgrListener::~MaterialMgrListener()
             // replace fragment program and build it if needed
             auto fpName  = pass->getFragmentProgramName();
             auto newName =
-                viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName+ "/occlusionMap");
+                viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/occlusionMap");
             this->ensureFPCreated(newName, algoName, algoPassName, fpName);
             pass->setFragmentProgram(newName);
 
@@ -196,8 +200,8 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
         }
     }
-    else if(_schemeName == "WeightedBlended/weightBlend" ||
-            _schemeName == "HybridTransparency/weightBlend")
+    else if(_schemeName == "WeightedBlended/weightBlend"
+            || _schemeName == "HybridTransparency/weightBlend")
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
@@ -206,7 +210,7 @@ MaterialMgrListener::~MaterialMgrListener()
         {
             // replace fragment program and build it if needed
             auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName+ "/weightBlend");
+            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/weightBlend");
             this->ensureFPCreated(newName, algoName, algoPassName, fpName);
             pass->setFragmentProgram(newName);
 
@@ -228,6 +232,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
                 params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
+
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -240,8 +245,8 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedAutoConstant("u_far", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
         }
     }
-    else if(_schemeName == "WeightedBlended/transmittanceBlend"||
-            _schemeName == "HybridTransparency/transmittanceBlend")
+    else if(_schemeName == "WeightedBlended/transmittanceBlend"
+            || _schemeName == "HybridTransparency/transmittanceBlend")
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
@@ -250,8 +255,10 @@ MaterialMgrListener::~MaterialMgrListener()
         {
             // replace fragment program and build it if needed
             auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName,
-                                                                                    algoName+ "/transmittanceBlend");
+            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(
+                fpName,
+                algoName + "/transmittanceBlend"
+            );
             this->ensureFPCreated(newName, algoName, algoPassName, fpName);
             pass->setFragmentProgram(newName);
 
@@ -272,6 +279,7 @@ MaterialMgrListener::~MaterialMgrListener()
                 texState->setCompositorReference(algoName, "pingBuffer", 1);
                 params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
+
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -283,7 +291,7 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
-    else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false) )
+    else if(::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
@@ -298,9 +306,8 @@ MaterialMgrListener::~MaterialMgrListener()
 
             pass->setFragmentProgram("DualDepthPeeling/peelInit_FP");
         }
-
     }
-    else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false) )
+    else if(::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false))
     {
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
@@ -336,7 +343,7 @@ MaterialMgrListener::~MaterialMgrListener()
             auto numTexUnit = pass->getNumTextureUnitStates();
 
             // Modify texture input according to the requested pass
-            for(size_t i = 0; i < 4; ++i)
+            for(size_t i = 0 ; i < 4 ; ++i)
             {
                 ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
                 texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -356,7 +363,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        SIGHT_INFO("not found : " << _schemeName );
+        SIGHT_INFO("not found : " << _schemeName);
     }
 
     return newTech;
@@ -364,10 +371,12 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(const std::string& _name,
-                                                           const std::string& _algoName,
-                                                           const std::string& _algoPassName,
-                                                           const std::string& _baseName)
+::Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
+    const std::string& _name,
+    const std::string& _algoName,
+    const std::string& _algoPassName,
+    const std::string& _baseName
+)
 {
     // Determine shader source file and parameters
     std::string sourceFileName;
@@ -393,13 +402,13 @@ MaterialMgrListener::~MaterialMgrListener()
         }
         else
         {
-            if(_algoPassName == "transmittanceBlend" )
+            if(_algoPassName == "transmittanceBlend")
             {
                 sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
                 parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
                 parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
             }
-            else if (_algoPassName == "occlusionMap")
+            else if(_algoPassName == "occlusionMap")
             {
                 sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
             }
@@ -413,11 +422,11 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else if(_algoName == "WeightedBlended")
     {
-        if(_algoPassName == "transmittanceBlend" )
+        if(_algoPassName == "transmittanceBlend")
         {
             sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
         }
-        else if (_algoPassName == "occlusionMap")
+        else if(_algoPassName == "occlusionMap")
         {
             sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
         }
@@ -436,8 +445,13 @@ MaterialMgrListener::~MaterialMgrListener()
         SIGHT_FATAL("Unreachable code");
     }
 
-    return viz::scene3d::helper::Shading::createProgramFrom(_name, sourceFileName, parameters,
-                                                            ::Ogre::GPT_FRAGMENT_PROGRAM, _baseName);
+    return viz::scene3d::helper::Shading::createProgramFrom(
+        _name,
+        sourceFileName,
+        parameters,
+        ::Ogre::GPT_FRAGMENT_PROGRAM,
+        _baseName
+    );
 }
 
 // ----------------------------------------------------------------------------

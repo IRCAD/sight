@@ -69,7 +69,6 @@ struct configuration
     std::string deviceType;
     std::uint16_t port;
     sight::core::thread::Worker::sptr worker;
-
 };
 
 /**
@@ -77,23 +76,23 @@ struct configuration
  * @param path to configFile
  * @return  a map
  */
-std::map< std::string, configuration > initialize(std::string configFile)
+std::map<std::string, configuration> initialize(std::string configFile)
 {
     SIGHT_INFO("Reading parameters...");
 
-    std::vector< std::string > messageType;
-    std::vector< std::string > deviceInTab;
-    std::vector< std::string > deviceOutTab;
-    std::vector< std::uint16_t > portTab;
-    std::map< std::string, configuration > association;
+    std::vector<std::string> messageType;
+    std::vector<std::string> deviceInTab;
+    std::vector<std::string> deviceOutTab;
+    std::vector<std::uint16_t> portTab;
+    std::map<std::string, configuration> association;
 
     std::ifstream fileStream;
     fileStream.open(configFile.c_str(), std::ios::in);
-    if (fileStream.is_open())
+    if(fileStream.is_open())
     {
         std::istringstream lineStream;
         std::string line;
-        std::vector<std::string>    words;
+        std::vector<std::string> words;
 
         unsigned int i = 0;
 
@@ -101,24 +100,27 @@ std::map< std::string, configuration > initialize(std::string configFile)
         {
             lineStream.str(line);
             // iterate all word and push it in words vector
-            std::copy(std::istream_iterator<std::string> (lineStream),
-                      std::istream_iterator<std::string>(),
-                      std::back_inserter<std::vector<std::string> > (words));
+            std::copy(
+                std::istream_iterator<std::string>(lineStream),
+                std::istream_iterator<std::string>(),
+                std::back_inserter<std::vector<std::string> >(words)
+            );
 
             SIGHT_FATAL_IF("Configuration file empty ", words.size() == 0);
 
             if(words[0].find("#") == std::string::npos)
             {
-                SIGHT_FATAL_IF("Error in configuration file line: '"<<i<<"'.", words.size() != 4);
+                SIGHT_FATAL_IF("Error in configuration file line: '" << i << "'.", words.size() != 4);
 
                 SIGHT_INFO(
-                    "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
-                        words[3]);
+                    "Type : " << words[0] << ", device In : " << words[1] << ", device Out : " << words[2] << ", port : "
+                    << words[3]
+                );
 
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);
                 deviceOutTab.push_back(words[2]);
-                portTab.push_back(::boost::lexical_cast< std::uint16_t > (words[3]));
+                portTab.push_back(::boost::lexical_cast<std::uint16_t>(words[3]));
             }
 
             lineStream.clear();
@@ -127,21 +129,23 @@ std::map< std::string, configuration > initialize(std::string configFile)
         }
     }
 
-    for(unsigned int i = 0; i < messageType.size(); i++)
+    for(unsigned int i = 0 ; i < messageType.size() ; i++)
     {
         //check if port num for this config isn't used
-        std::map< std::string, configuration >::iterator it;
+        std::map<std::string, configuration>::iterator it;
         auto server               = std::make_shared<sight::io::igtl::Server>();
         auto worker               = sight::core::thread::Worker::New();
         bool serverAlreadyStarted = false;
 
-        for(it = association.begin(); it != association.end(); ++it)
+        for(it = association.begin() ; it != association.end() ; ++it)
         {
             //if port is already used we use the same server and worker
             if(it->second.port == portTab[i])
             {
-                SIGHT_INFO("Found that "<<it->second.deviceIn<<" and "<<deviceInTab[i]<<
-                           " have the same port ("<<it->second.port<<").");
+                SIGHT_INFO(
+                    "Found that " << it->second.deviceIn << " and " << deviceInTab[i]
+                    << " have the same port (" << it->second.port << ")."
+                );
                 server               = it->second.server;
                 worker               = it->second.worker;
                 serverAlreadyStarted = true;
@@ -160,67 +164,66 @@ std::map< std::string, configuration > initialize(std::string configFile)
         {
             config.server->start(config.port);
 
-            std::function<void() > task = std::bind(&sight::io::igtl::Server::runServer, config.server);
+            std::function<void()> task = std::bind(&sight::io::igtl::Server::runServer, config.server);
             config.worker->post(task);
         }
 
         association[deviceInTab[i]] = config;
-
     }
 
     return association;
 }
+
 /**
  * @brief main
  * @param argc number of arguments
  * @param argv NetworkProxy port configuration file
  */
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
     //------------------------------------------------------------
     // Parse Arguments
 
-    if (argc != 3) // check number of arguments
+    if(argc != 3) // check number of arguments
     {
         // If not correct, print usage
         std::cerr << "Usage: " << argv[0] << " <port> <configuration file>" << std::endl;
         exit(0);
     }
 
-    std::uint16_t port = ::boost::lexical_cast< std::uint16_t >(argv[1]);
+    std::uint16_t port = ::boost::lexical_cast<std::uint16_t>(argv[1]);
     std::string configFile(argv[2]);
 
     //Initialization of parameters
-    std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
+    std::map<std::string, configuration> associationDeviceServer = initialize(configFile);
 
     auto receiveServer = std::make_shared<sight::io::igtl::Server>();
     auto worker        = sight::core::thread::Worker::New();
     try
     {
         receiveServer->start(port);
-        std::function<void() > task = std::bind(&sight::io::igtl::Server::runServer, receiveServer);
+        std::function<void()> task = std::bind(&sight::io::igtl::Server::runServer, receiveServer);
         worker->post(task);
-
     }
-    catch (std::exception const& err)
+    catch(std::exception const& err)
     {
         SIGHT_INFO(err.what());
     }
 
-    SIGHT_INFO("server started on port: "<<port);
+    SIGHT_INFO("server started on port: " << port);
 
     //main loop
-    while (1)
+    while(1)
     {
         // Create a message buffer to receive header
         ::igtl::MessageHeader::Pointer headerMsg;
         ::igtl::MessageBase::Pointer msg;
 
-        std::vector< ::igtl::MessageBase::Pointer > headerMsgs;
+        std::vector< ::igtl::MessageBase::Pointer> headerMsgs;
         // Initialize receive buffer
         headerMsgs = receiveServer->receiveHeaders();
 
-        for(unsigned int i = 0; i < headerMsgs.size(); ++i)
+        for(unsigned int i = 0 ; i < headerMsgs.size() ; ++i)
         {
             headerMsg = headerMsgs[i];
 
@@ -236,7 +239,7 @@ int main (int argc, char** argv)
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {
                     configuration config = associationDeviceServer.find(deviceName)->second;
-                    SIGHT_INFO("Received a '"<<deviceType<<"' named '"<<deviceName);
+                    SIGHT_INFO("Received a '" << deviceType << "' named '" << deviceName);
 
                     sendingServer = config.server;
 
@@ -248,8 +251,10 @@ int main (int argc, char** argv)
 
                             if(msg.IsNotNull())
                             {
-                                SIGHT_DEBUG("Resending the message '"<<deviceName<<"' with name '"<<config.deviceOut
-                                                                     <<" to port : '"<<config.port<<"'.");
+                                SIGHT_DEBUG(
+                                    "Resending the message '" << deviceName << "' with name '" << config.deviceOut
+                                    << " to port : '" << config.port << "'."
+                                );
 
                                 //re-send the message with the correct server
                                 sendingServer->setMessageDeviceName(config.deviceOut);
@@ -264,7 +269,8 @@ int main (int argc, char** argv)
                     else
                     {
                         SIGHT_WARN(
-                            "No corresponding between type "<<deviceType<<" and name "<<deviceName<<" message skipped");
+                            "No corresponding between type " << deviceType << " and name " << deviceName << " message skipped"
+                        );
                     }
                 }
                 else
@@ -273,8 +279,8 @@ int main (int argc, char** argv)
                 }
             }
         }
-        headerMsgs.clear();
 
+        headerMsgs.clear();
     }
 
     receiveServer->stop();
@@ -287,5 +293,4 @@ int main (int argc, char** argv)
     }
 
     return 1;
-
 }

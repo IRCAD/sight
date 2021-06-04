@@ -44,8 +44,8 @@ public:
     typedef ::boost::property_tree::ptree ConfigurationType;
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
-    typedef std::map< std::string, std::string> ReplaceMapType;
-    typedef std::map< std::string, data::mt::weak_ptr< data::Object > > InOutMapType;
+    typedef std::map<std::string, std::string> ReplaceMapType;
+    typedef std::map<std::string, data::mt::weak_ptr<data::Object> > InOutMapType;
 
     /// Constructor. Do nothing.
     ACTIVITY_API IActivityLauncher();
@@ -56,8 +56,10 @@ public:
 protected:
 
     /// Parse the configuration
-    ACTIVITY_API virtual void parseConfiguration(const ConfigurationType& config,
-                                                 const InOutMapType& inouts = InOutMapType());
+    ACTIVITY_API virtual void parseConfiguration(
+        const ConfigurationType& config,
+        const InOutMapType& inouts = InOutMapType()
+    );
 
     /// Create the activity series given in 'mainActivity' configuration
     ACTIVITY_API virtual data::ActivitySeries::sptr createMainActivity() const;
@@ -67,7 +69,8 @@ protected:
      * @return Return true if the given activity is valid
      */
     ACTIVITY_API std::pair<bool, std::string> validateActivity(
-        const data::ActivitySeries::csptr& activitySeries) const;
+        const data::ActivitySeries::csptr& activitySeries
+    ) const;
 
     /**
      * @brief Translate parameters from source object.
@@ -78,9 +81,11 @@ protected:
      * @param[in] parameters list of parameters to translate
      * @param[out] replaceMap map containing the translated parameter
      */
-    ACTIVITY_API void translateParameters(const data::Object::csptr& sourceObj,
-                                          const ParametersType& parameters,
-                                          ReplaceMapType& replaceMap );
+    ACTIVITY_API void translateParameters(
+        const data::Object::csptr& sourceObj,
+        const ParametersType& parameters,
+        ReplaceMapType& replaceMap
+    );
 
     /**
      * @brief Create the replace map from the parameters.
@@ -88,7 +93,7 @@ protected:
      * @param[in] parameters list of parameters to translate
      * @param[out] replaceMap map containing the translated parameter
      */
-    ACTIVITY_API void translateParameters( const ParametersType& parameters, ReplaceMapType& replaceMap );
+    ACTIVITY_API void translateParameters(const ParametersType& parameters, ReplaceMapType& replaceMap);
 
     std::string m_mainActivityId; ///< configuration id of the main activity
 

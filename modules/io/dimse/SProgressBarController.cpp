@@ -43,6 +43,7 @@ SProgressBarController::SProgressBarController() noexcept
     newSlot(s_UPDATE_PROGRESS_SLOT, &SProgressBarController::updateProgress, this);
     newSlot(s_STOP_PROGRESS_SLOT, &SProgressBarController::stopProgress, this);
 }
+
 //------------------------------------------------------------------------------
 
 SProgressBarController::~SProgressBarController() noexcept

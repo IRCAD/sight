@@ -36,11 +36,11 @@ namespace Tuto05EditorQml
  */
 class TUTO05EDITORQML_CLASS_API SStringEditor : public sight::ui::qml::IQmlEditor
 {
-
 Q_OBJECT;
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SStringEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SStringEditor, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor.
     TUTO05EDITORQML_API SStringEditor() noexcept;
@@ -49,6 +49,7 @@ public:
     TUTO05EDITORQML_API ~SStringEditor() noexcept;
 
 Q_SIGNALS:
+
     void edited(const QString& str);
 
 protected:
@@ -79,6 +80,7 @@ protected Q_SLOTS:
     void updateString(const QString& str);
 
 private:
+
     QString m_value;
 };
 

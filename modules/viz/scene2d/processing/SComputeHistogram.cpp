@@ -38,9 +38,9 @@
 
 #include <boost/lexical_cast.hpp>
 
-
 namespace sight::module::viz::scene2d
 {
+
 namespace processing
 {
 
@@ -89,10 +89,12 @@ void SComputeHistogram::updating()
         param.binsWidth = m_binsWidth;
 
         core::tools::Type type = image->getType();
-        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ComputeHistogramFunctor >::invoke( type,
-                                                                                                           param );
+        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ComputeHistogramFunctor>::invoke(
+            type,
+            param
+        );
 
-        auto sig = histogram->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        auto sig = histogram->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
@@ -118,8 +120,8 @@ void SComputeHistogram::stopping()
 service::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -127,4 +129,5 @@ service::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() con
 //-----------------------------------------------------------------------------
 
 } // namespace processing
+
 } // namespace sight::module::viz::scene2d

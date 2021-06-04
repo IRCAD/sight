@@ -117,7 +117,6 @@ private:
 
     /// qml engine
     QPointer<QQmlApplicationEngine> m_engine;
-
 };
 
 } // fwQml

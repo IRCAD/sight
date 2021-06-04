@@ -41,8 +41,9 @@ class Module;
 class Runtime : public core::runtime::Runtime
 {
 public:
+
     /// Defines the module container type.
-    typedef std::set< std::shared_ptr<Module> >     ModuleContainer;
+    typedef std::set<std::shared_ptr<Module> > ModuleContainer;
 
     /**
      * @brief   Retrieves the default runtime instance.
@@ -69,7 +70,7 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    void addModules( const std::filesystem::path& repository ) override;
+    void addModules(const std::filesystem::path& repository) override;
 
     /**
      * @brief       Retrieves the module for the specified idenfier.
@@ -79,7 +80,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    SPTR( core::runtime::Module ) findModule( const std::string& identifier ) const final;
+    SPTR(core::runtime::Module) findModule(const std::string& identifier) const final;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -93,7 +94,7 @@ public:
      *
      * @return      a pointer to the created executable instance
      */
-    IExecutable* createExecutableInstance( const std::string& type );
+    IExecutable* createExecutableInstance(const std::string& type);
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -110,8 +111,8 @@ public:
      *
      * @return  a pointer to the created executable instance
      */
-    IExecutable* createExecutableInstance( const std::string& type,
-                                           SPTR(ConfigurationElement) configurationElement );
+    IExecutable* createExecutableInstance(const std::string& type,
+                                          SPTR(ConfigurationElement) configurationElement);
 
     /**
      * @brief   Retrieves the iterator on the end of the extension collection.
@@ -126,7 +127,7 @@ public:
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
+    std::shared_ptr<Extension> findExtension(const std::string& identifier) const final;
 
     /// @copydoc core::runtime::Runtime::getModules
     core::runtime::Runtime::ModuleContainer getModules() final;
@@ -150,14 +151,14 @@ public:
      * @remark      The given module state will be altered according to the current configuration rules.
      * @param[in]   module  a shared pointer to the module instance to add
      */
-    void addModule( std::shared_ptr< detail::Module > module );
+    void addModule(std::shared_ptr<detail::Module> module);
 
     /**
      * @brief       Unregister a module instance to the runtime system.
      *
      * @param[in]   module  a shared pointer to the module instance to unregister
      */
-    void unregisterModule( std::shared_ptr< detail::Module > module );
+    void unregisterModule(std::shared_ptr<detail::Module> module);
 
     /**
      * @brief       Retrieves the enabled module for the specified idenfier.
@@ -167,7 +168,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    std::shared_ptr< Module > findEnabledModule( const std::string& identifier ) const;
+    std::shared_ptr<Module> findEnabledModule(const std::string& identifier) const;
 
     //@}
 
@@ -182,14 +183,14 @@ public:
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    void addExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
+    void addExecutableFactory(std::shared_ptr<ExecutableFactory> factory);
 
     /**
      * @brief       Unregister a new executable factory instance to the runtime system.
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    void unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
+    void unregisterExecutableFactory(std::shared_ptr<ExecutableFactory> factory);
 
     /**
      * @brief       Retrieves the executable factory for the given identifier.
@@ -198,7 +199,7 @@ public:
      *
      * @return      a sgared pointer to the found executable factory or null of none
      */
-    std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string& type ) const;
+    std::shared_ptr<ExecutableFactory> findExecutableFactory(const std::string& type) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified module.
@@ -207,7 +208,7 @@ public:
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
-    std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Module > module ) const;
+    std::shared_ptr<IPlugin> getPlugin(const std::shared_ptr<Module> module) const;
 
     //@}
 
@@ -222,14 +223,14 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void addExtension( std::shared_ptr<Extension> extension);
+    void addExtension(std::shared_ptr<Extension> extension);
 
     /**
      * @brief       Unregister a new extension.
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    void unregisterExtension( std::shared_ptr<Extension> extension);
+    void unregisterExtension(std::shared_ptr<Extension> extension);
     //@}
 
     /**
@@ -241,14 +242,14 @@ public:
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    void addExtensionPoint( std::shared_ptr<ExtensionPoint> point);
+    void addExtensionPoint(std::shared_ptr<ExtensionPoint> point);
 
     /**
      * @brief       Unregister a new extension point.
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    void unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point);
+    void unregisterExtensionPoint(std::shared_ptr<ExtensionPoint> point);
 
     /**
      * @brief       Retrieves the extension point instance matching the specified identifier.
@@ -257,7 +258,7 @@ public:
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */
-    std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string& identifier ) const;
+    std::shared_ptr<ExtensionPoint> findExtensionPoint(const std::string& identifier) const;
 
     /**
      * @brief   Retrieves the extension collection.
@@ -275,24 +276,24 @@ public:
 private:
 
     ///< Defines the executable factory container type.
-    typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
+    typedef std::set<std::shared_ptr<ExecutableFactory> > ExecutableFactoryContainer;
 
     ///< Defines the extension point container type.
-    typedef std::set< std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;
+    typedef std::set<std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;
 
     ///< Defines the plugin container type.
-    typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
+    typedef std::vector<std::shared_ptr<IPlugin> > PluginContainer;
 
-    static std::shared_ptr<Runtime> m_instance;     ///< The runtime instance.
+    static std::shared_ptr<Runtime> m_instance; ///< The runtime instance.
 
-    ExecutableFactoryContainer m_executableFactories;     ///< Contains all executable factories.
-    ExtensionContainer m_extensions;                      ///< Contains all registered extensions.
-    ExtensionPointContainer m_extensionPoints;            ///< Contains all registered extension points.
-    ModuleContainer m_modules;                            ///< Contains all modules.
-    PluginContainer m_plugins;                            ///< Contains all plugins.
+    ExecutableFactoryContainer m_executableFactories; ///< Contains all executable factories.
+    ExtensionContainer m_extensions;                  ///< Contains all registered extensions.
+    ExtensionPointContainer m_extensionPoints;        ///< Contains all registered extension points.
+    ModuleContainer m_modules;                        ///< Contains all modules.
+    PluginContainer m_plugins;                        ///< Contains all plugins.
 
-    std::filesystem::path m_workingPath;                  ///< Main path where Modules and share folder are located.
-    std::vector<std::filesystem::path> m_repositories;    ///< All paths containing modules, added from the CLI
+    std::filesystem::path m_workingPath;               ///< Main path where Modules and share folder are located.
+    std::vector<std::filesystem::path> m_repositories; ///< All paths containing modules, added from the CLI
 };
 
 } // namespace detail

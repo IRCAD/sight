@@ -36,7 +36,7 @@ class CompositeDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(CompositeDeserializer, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(CompositeDeserializer, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     CompositeDeserializer(const CompositeDeserializer&)            = delete;

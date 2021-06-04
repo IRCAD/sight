@@ -36,7 +36,7 @@ class ActivitySeriesDeserializer : public IDataDeserializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ActivitySeriesDeserializer, IDataDeserializer)
+    SIGHT_DECLARE_CLASS(ActivitySeriesDeserializer, IDataDeserializer);
 
     /// Delete default copy constructors and assignment operators
     ActivitySeriesDeserializer(const ActivitySeriesDeserializer&)            = delete;

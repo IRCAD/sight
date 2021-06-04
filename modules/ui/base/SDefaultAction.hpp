@@ -36,10 +36,9 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SDefaultAction : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SDefaultAction, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SDefaultAction, ::sight::ui::base::IAction);
 
     /**
      * @brief Constructor. Do nothing.
@@ -65,10 +64,9 @@ protected:
 
     MODULE_UI_BASE_API void updating() override;
 
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     ///@}
-
 };
 
 } // namespace sight::module::ui::base

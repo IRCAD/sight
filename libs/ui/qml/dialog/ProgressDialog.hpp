@@ -34,8 +34,10 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
  */
@@ -48,11 +50,14 @@ Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
-    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>)
 
-    UI_QML_API ProgressDialog(ui::base::GuiBaseObject::Key key,
-                              const std::string& title   = "Progression",
-                              const std::string& message = std::string(86, ' '));
+    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>);
+
+    UI_QML_API ProgressDialog(
+        ui::base::GuiBaseObject::Key key,
+        const std::string& title   = "Progression",
+        const std::string& message = std::string(86, ' ')
+    );
 
     UI_QML_API virtual ~ProgressDialog();
 
@@ -68,13 +73,16 @@ public:
     UI_QML_API void hideCancelButton() override;
 
 Q_SIGNALS:
+
     void titleChanged();
     void hasCallbackChanged();
 
 protected Q_SLOTS:
+
     void cancelPressed() override;
 
 private:
+
     /// the progress dialog to delete it during the destruction of the class
     QObject* m_dialog {nullptr};
     /// the window of the progress dialog to delete it during the destruction of the class
@@ -86,5 +94,7 @@ private:
     /// boolean to enable Cancel button
     bool m_hasCallback {true};
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qml

@@ -25,16 +25,16 @@
 #include "viz/scene3d/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-
 #include <core/thread/ActiveWorkers.hpp>
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {
+
 namespace interactor
 {
 
@@ -57,6 +57,7 @@ TrackballInteractor::~TrackballInteractor()
         m_timer.reset();
     }
 }
+
 // ----------------------------------------------------------------------------
 
 void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier, int, int, int dx, int dy)
@@ -112,7 +113,7 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
             const float newZoom = m_zoom * std::pow(0.85f, static_cast<float>(delta) * mouseScale);
 
             // Moreover we cannot pass through the center of the trackball
-            const float z = (m_zoom - newZoom) * 200.f / (m_mouseScale );
+            const float z = (m_zoom - newZoom) * 200.f / (m_mouseScale);
 
             // Update the center of interest for future rotations
             m_lookAtZ -= z;
@@ -124,7 +125,7 @@ void TrackballInteractor::wheelEvent(Modifier, int delta, int x, int y)
             // Translate the camera.
             ::Ogre::Camera* const camera     = layer->getDefaultCamera();
             ::Ogre::SceneNode* const camNode = camera->getParentSceneNode();
-            camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
+            camNode->translate(::Ogre::Vector3(0, 0, -1) * z, ::Ogre::Node::TS_LOCAL);
 
             layer->resetCameraClippingRange();
         }
@@ -161,11 +162,12 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
                     const auto worker = core::thread::ActiveWorkers::getDefault()->getDefaultWorker();
                     m_timer = worker->createTimer();
 
-                    m_timer->setFunction([this, layer]()
+                    m_timer->setFunction(
+                        [this, layer]()
                             {
                                 this->cameraRotate(10, 0);
                                 layer->requestRender();
-                            } );
+                            });
                     m_timer->setDuration(std::chrono::milliseconds(33));
                     m_timer->start();
                 }
@@ -179,9 +181,10 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
 void TrackballInteractor::resizeEvent(int, int)
 {
     const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* const camera = sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    const float width  = static_cast< float >(camera->getViewport()->getActualWidth());
-    const float height = static_cast <float >(camera->getViewport()->getActualHeight());
+    ::Ogre::Camera* const camera                   =
+        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    const float width  = static_cast<float>(camera->getViewport()->getActualWidth());
+    const float height = static_cast<float>(camera->getViewport()->getActualHeight());
 
     const float aspectRatio = width / height;
     camera->setAspectRatio(aspectRatio);
@@ -229,7 +232,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateX);
-        camNode->rotate( rotate );
+        camNode->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
         camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
@@ -258,7 +261,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
 
         // 5 - Apply the rotation on the scene node
         ::Ogre::Quaternion rotate(::Ogre::Radian(angle), rotateY);
-        camNode->rotate( rotate );
+        camNode->rotate(rotate);
 
         // 6 - Go backward in the inverse direction
         camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
@@ -273,7 +276,8 @@ void TrackballInteractor::cameraTranslate(int xmove, int ymove)
     float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
 
     const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* camera     = sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    ::Ogre::Camera* camera                         =
+        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     ::Ogre::Vector3 vec(dx, dy, 0.f);
@@ -303,11 +307,13 @@ void TrackballInteractor::updateCameraFocalLength()
     const float focalLength = std::max(0.001f, std::abs(m_lookAtZ));
 
     const ::Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
-    ::Ogre::Camera* const camera = sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
+    ::Ogre::Camera* const camera                   =
+        sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
     camera->setFocalLength(focalLength);
 }
 
 // ----------------------------------------------------------------------------
 
 } // namespace interactor
+
 } // namespace sight::viz::scene3d

@@ -34,15 +34,15 @@
 
 namespace sight::module::ui::base
 {
+
 /**
  * @brief This action is used to modify the layout configuration.
  */
 class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SModifyLayout, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SModifyLayout, ::sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
@@ -71,7 +71,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
@@ -112,12 +112,12 @@ protected:
 private:
 
     /// < fwID, WIDContainer>
-    typedef std::vector< std::pair< std::string, std::string > > MoveSrvVectType;
+    typedef std::vector<std::pair<std::string, std::string> > MoveSrvVectType;
     /// map representing fwID's services and new associated wid parent container
     MoveSrvVectType m_moveSrv;
 
     /// < wid, showState>
-    typedef std::vector< std::pair< std::string, ::boost::logic::tribool > > ShowSrvVectType;
+    typedef std::vector<std::pair<std::string, ::boost::logic::tribool> > ShowSrvVectType;
     /// map representing wid container and show state
     ShowSrvVectType m_showSrvWid;
 
@@ -125,7 +125,7 @@ private:
     ShowSrvVectType m_showSrvSid;
 
     /// < fwID, enableState>
-    typedef std::vector< std::pair< std::string, bool > > EnableSrvVectType;
+    typedef std::vector<std::pair<std::string, bool> > EnableSrvVectType;
     /// map representing fwID's services and enable state
     EnableSrvVectType m_enableSrv;
 };

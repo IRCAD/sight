@@ -26,24 +26,26 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace ut
 {
 
 /// Test the StereoCamera validator
 class StereoCameraTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( StereoCameraTest );
-CPPUNIT_TEST( testValidator );
+CPPUNIT_TEST_SUITE(StereoCameraTest);
+CPPUNIT_TEST(testValidator);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void testValidator();
-
 };
 
 } //namespace ut
+
 } //namespace sight::module::activity::validator

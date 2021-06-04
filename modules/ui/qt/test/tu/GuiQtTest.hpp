@@ -26,6 +26,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace ut
 {
 
@@ -34,18 +35,19 @@ namespace ut
  */
 class GuiQtTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( GuiQtTest );
-CPPUNIT_TEST( testDefaultFrame );
+CPPUNIT_TEST_SUITE(GuiQtTest);
+CPPUNIT_TEST(testDefaultFrame);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
 
     void testDefaultFrame();
-
 };
 
 } //namespace ut
+
 } //namespace sight::module::ui::qt

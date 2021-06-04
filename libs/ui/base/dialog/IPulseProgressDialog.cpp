@@ -24,6 +24,7 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
@@ -57,4 +58,5 @@ void IPulseProgressDialog::setFrequence(MilliSecond frequence)
 //-----------------------------------------------------------------------------
 
 } //namespace dialog
+
 } // namespace sight::ui::base

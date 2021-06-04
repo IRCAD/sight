@@ -26,6 +26,7 @@
 
 namespace sight::data::tools
 {
+
 namespace ut
 {
 
@@ -34,11 +35,12 @@ namespace ut
  */
 class FieldHelperTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( FieldHelperTest );
-CPPUNIT_TEST( testHelper );
+CPPUNIT_TEST_SUITE(FieldHelperTest);
+CPPUNIT_TEST(testHelper);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -47,4 +49,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data::tools

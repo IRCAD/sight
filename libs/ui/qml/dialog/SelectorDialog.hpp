@@ -34,8 +34,10 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 /**
@@ -46,9 +48,10 @@ class UI_QML_CLASS_API SelectorDialog : public QObject,
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+
 public:
 
-    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New<SelectorDialog>);
 
     UI_QML_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 
@@ -57,7 +60,7 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_QML_API void setSelections(std::vector< std::string > _selections) override;
+    UI_QML_API void setSelections(std::vector<std::string> _selections) override;
 
     /**
      * @brief Sets the selector title.
@@ -76,15 +79,18 @@ public:
     UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void messageChanged();
 
 protected Q_SLOTS:
+
     /// slot getting the result of the dialog when a button is pressed
     void resultDialog(QVariant selection);
 
 private:
-    std::vector< std::string > m_selections;
+
+    std::vector<std::string> m_selections;
 
     /// Dialog box message
     QString m_message;
@@ -95,4 +101,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

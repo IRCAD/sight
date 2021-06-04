@@ -42,6 +42,7 @@ namespace sight::io::patch::semantic
 
 namespace V1
 {
+
 namespace V2
 {
 
@@ -53,11 +54,13 @@ namespace V2
  */
 class IO_PATCH_CLASS_API MedicalWorkspacePatcher : public io::atoms::patch::patcher::DefaultPatcher
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(MedicalWorkspacePatcher, io::atoms::patch::patcher::DefaultPatcher,
-                        io::atoms::patch::patcher::factory::New< MedicalWorkspacePatcher >)
+    SIGHT_DECLARE_CLASS(
+        MedicalWorkspacePatcher,
+        io::atoms::patch::patcher::DefaultPatcher,
+        io::atoms::patch::patcher::factory::New<MedicalWorkspacePatcher>
+    )
 
     /// Constructor
     IO_PATCH_API MedicalWorkspacePatcher(io::atoms::patch::patcher::IPatcher::Key key);
@@ -71,18 +74,21 @@ public:
      * Adds meta info 'compositeType' with value 'MedicalWorkspace' if current object has childs designated with keys
      * 'patientDB', 'planningDB' and 'processingDB', and applies patcher 'DefaultPatcher'.
      */
-    IO_PATCH_API virtual sight::atoms::Object::sptr transformObject(sight::atoms::Object::sptr object,
-                                                                    const std::string& context,
-                                                                    const std::string& currentVersion,
-                                                                    const std::string& targetVersion) override;
+    IO_PATCH_API virtual sight::atoms::Object::sptr transformObject(
+        sight::atoms::Object::sptr object,
+        const std::string& context,
+        const std::string& currentVersion,
+        const std::string& targetVersion
+    ) override;
 
 protected:
 
     /// Adds a meta info "compositeType" if the object is a composite with a special type.
     IO_PATCH_API void addCompositeTypes(sight::atoms::Object::sptr object);
-
 };
 
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

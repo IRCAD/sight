@@ -28,10 +28,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V10
 {
+
 namespace V09ALA
 {
+
 namespace data
 {
 
@@ -39,7 +42,8 @@ namespace data
 class IO_PATCH_CLASS_API Image : public io::atoms::patch::ISemanticPatch
 {
 public:
-    SIGHT_DECLARE_CLASS(Image, io::atoms::patch::ISemanticPatch, new Image)
+
+    SIGHT_DECLARE_CLASS(Image, io::atoms::patch::ISemanticPatch, new Image);
 
     /// Constructor
     IO_PATCH_API Image();
@@ -48,7 +52,7 @@ public:
     IO_PATCH_API ~Image();
 
     /// Copy constructor
-    IO_PATCH_API Image( const Image& cpy );
+    IO_PATCH_API Image(const Image& cpy);
 
     /**
      * @brief Applies patch.
@@ -58,11 +62,14 @@ public:
     IO_PATCH_API virtual void apply(
         const sight::atoms::Object::sptr& previous,
         const sight::atoms::Object::sptr& current,
-        io::atoms::patch::IPatch::NewVersionsType& newVersions) override;
-
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) override;
 };
 
 } // namespace data
+
 } // namespace V09ALA
+
 } // namespace V10
+
 } // namespace sight::io::patch::semantic

@@ -80,20 +80,22 @@ public:
      * @param _animatable defines if the animation is enable.
      * @param _animatableAlignment defines the animation direction.
      */
-    UI_QT_API SlideBar(QWidget* _parent,
-                       HAlignment _hAlign,
-                       VAlignment _vAlign,
-                       int _width,
-                       bool _percentWidth,
-                       int _height,
-                       bool _percentHeight,
-                       int _hOffset,
-                       bool _percentHOffset,
-                       int _vOffset,
-                       bool _percentVOffset,
-                       double _opacity,
-                       bool _animatable,
-                       AnimatableAlignment _animatableAlignment);
+    UI_QT_API SlideBar(
+        QWidget* _parent,
+        HAlignment _hAlign,
+        VAlignment _vAlign,
+        int _width,
+        bool _percentWidth,
+        int _height,
+        bool _percentHeight,
+        int _hOffset,
+        bool _percentHOffset,
+        int _vOffset,
+        bool _percentVOffset,
+        double _opacity,
+        bool _animatable,
+        AnimatableAlignment _animatableAlignment
+    );
 
     /// Destroyes the widget.
     UI_QT_API virtual ~SlideBar();
@@ -124,43 +126,43 @@ private:
     void slide(bool visible);
 
     /// Defines the horizontal alignment.
-    HAlignment m_hAlignment { LEFT };
+    HAlignment m_hAlignment {LEFT};
 
     /// Defines the vertical alignment.
-    VAlignment m_vAlignment { TOP };
+    VAlignment m_vAlignment {TOP};
 
     /// Defines the width of the widget.
-    int m_width { 100 };
+    int m_width {100};
 
     /// Defines if the width must be read a percent.
-    bool m_percentWidth { true };
+    bool m_percentWidth {true};
 
     /// Defines the height of the widget.
-    int m_height { 100 };
+    int m_height {100};
 
     /// Defines if the height must be read a percent.
-    bool m_percentHeight { true };
+    bool m_percentHeight {true};
 
     /// Defines the horizontal offset of the widget.
-    int m_hOffset { 0 };
+    int m_hOffset {0};
 
     /// Defines if the horizontal offset must be read a percent.
-    bool m_percentHOffset { false };
+    bool m_percentHOffset {false};
 
     /// Defines the vertical offset of the widget.
-    int m_vOffset { 0 };
+    int m_vOffset {0};
 
     /// Defines if the vertical offset must be read a percent.
-    bool m_percentVOffset { false };
+    bool m_percentVOffset {false};
 
     /// Defines the widget opacity.
-    double m_opacity { 1. };
+    double m_opacity {1.};
 
     /// Defines if the widget animation is enabled.
-    bool m_animatable { false };
+    bool m_animatable {false};
 
     /// Defines the animation direction.
-    AnimatableAlignment m_animatableAlignment { TOP_ANIMATION };
+    AnimatableAlignment m_animatableAlignment {TOP_ANIMATION};
 
     /// Defines the position of the widget when it's shown.
     QRect m_shownPosition;
@@ -169,8 +171,7 @@ private:
     QRect m_hiddenPosition;
 
     /// Defines the widget visibility.
-    bool m_isShown { false };
-
+    bool m_isShown {false};
 };
 
 //------------------------------------------------------------------------------
@@ -181,4 +182,5 @@ bool SlideBar::isShown() const
 }
 
 } // namespace widget.
+
 } // namespace sight::ui::qt.

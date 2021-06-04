@@ -28,21 +28,24 @@
 #include <atoms/Object.hxx>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Study/V1ToFwMedDataStudyV1.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Study::V1ToFwMedDataStudyV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Study::V1ToFwMedDataStudyV1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Study
 {
 
@@ -109,21 +112,25 @@ void V1ToFwMedDataStudyV1Test::applyPatchTest()
     CPPUNIT_ASSERT(targetObj->getAttribute("description"));
     CPPUNIT_ASSERT(targetObj->getAttribute("patient_age"));
 
-    sight::atoms::String::sptr uid = targetObj->getAttribute< sight::atoms::String >("instance_uid");
+    sight::atoms::String::sptr uid = targetObj->getAttribute<sight::atoms::String>("instance_uid");
     CPPUNIT_ASSERT_EQUAL(std::string("4564634"), uid->getString());
 
-    sight::atoms::String::sptr description = targetObj->getAttribute< sight::atoms::String >("description");
+    sight::atoms::String::sptr description = targetObj->getAttribute<sight::atoms::String>("description");
     CPPUNIT_ASSERT_EQUAL(std::string("description of study"), description->getString());
 
-    sight::atoms::String::sptr date = targetObj->getAttribute< sight::atoms::String >("date");
+    sight::atoms::String::sptr date = targetObj->getAttribute<sight::atoms::String>("date");
     CPPUNIT_ASSERT_EQUAL(std::string("20130613"), date->getString());
 
-    sight::atoms::String::sptr time = targetObj->getAttribute< sight::atoms::String >("time");
+    sight::atoms::String::sptr time = targetObj->getAttribute<sight::atoms::String>("time");
     CPPUNIT_ASSERT_EQUAL(std::string("102445"), time->getString());
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Study
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

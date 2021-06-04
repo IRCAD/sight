@@ -34,13 +34,14 @@ namespace ut
 
 class SeriesDBTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SeriesDBTest );
+CPPUNIT_TEST_SUITE(SeriesDBTest);
 
 CPPUNIT_TEST(containerTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -50,8 +51,8 @@ public:
 protected:
 
     SPTR(data::SeriesDB) m_series;
-
 };
 
 } //namespace ut
+
 } //namespace sight::data

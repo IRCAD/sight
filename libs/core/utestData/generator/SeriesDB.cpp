@@ -46,37 +46,41 @@
 
 namespace sight::utestData
 {
+
 namespace generator
 {
 
 //------------------------------------------------------------------------------
 
-data::SeriesDB::sptr SeriesDB::createSeriesDB(const unsigned char nbImgSeries,
-                                              const unsigned char nbModelSeries,
-                                              const unsigned char nbActivitySeries)
+data::SeriesDB::sptr SeriesDB::createSeriesDB(
+    const unsigned char nbImgSeries,
+    const unsigned char nbModelSeries,
+    const unsigned char nbActivitySeries
+)
 {
     Image::initRand();
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    for (unsigned char nb = 0; nb < nbImgSeries; ++nb)
+    for(unsigned char nb = 0 ; nb < nbImgSeries ; ++nb)
     {
         data::Series::sptr imgSeries;
         imgSeries = SeriesDB::createImageSeries();
         seriesDB->getContainer().push_back(imgSeries);
     }
 
-    for (unsigned char nb = 0; nb < nbModelSeries; ++nb)
+    for(unsigned char nb = 0 ; nb < nbModelSeries ; ++nb)
     {
         data::Series::sptr modelSeries;
-        modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(rand()%5+1));
+        modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(rand() % 5 + 1));
         seriesDB->getContainer().push_back(modelSeries);
     }
 
-    for (unsigned char nb = 0; nb < nbActivitySeries; ++nb)
+    for(unsigned char nb = 0 ; nb < nbActivitySeries ; ++nb)
     {
         data::Series::sptr activitySeries;
         activitySeries = SeriesDB::createActivitySeries();
         seriesDB->getContainer().push_back(activitySeries);
     }
+
     return seriesDB;
 }
 
@@ -91,10 +95,10 @@ data::Patient::sptr SeriesDB::createPatient()
     const std::string PATIENT_BIRTHDATE = "19710418";
     const std::string PATIENT_SEX       = "O ";
 
-    patient->setName( PATIENT_NAME + "^" + PATIENT_FIRSTNAME );
-    patient->setPatientId(   PATIENT_ID );
-    patient->setBirthdate( PATIENT_BIRTHDATE );
-    patient->setSex( PATIENT_SEX );
+    patient->setName(PATIENT_NAME + "^" + PATIENT_FIRSTNAME);
+    patient->setPatientId(PATIENT_ID);
+    patient->setBirthdate(PATIENT_BIRTHDATE);
+    patient->setSex(PATIENT_SEX);
 
     return patient;
 }
@@ -120,13 +124,13 @@ data::Study::sptr SeriesDB::createStudy()
     const std::string DESCRIPTION = "Say 33. ";
     const std::string PATIENT_AGE = "042Y";
 
-    study->setInstanceUID( UID );
-    study->setDate( DATE );
-    study->setTime( TIME );
-    study->setReferringPhysicianName( PHYSICIAN );
+    study->setInstanceUID(UID);
+    study->setDate(DATE);
+    study->setTime(TIME);
+    study->setReferringPhysicianName(PHYSICIAN);
     study->setConsultingPhysicianName(CONSULTANT);
-    study->setDescription( DESCRIPTION );
-    study->setPatientAge( PATIENT_AGE );
+    study->setDescription(DESCRIPTION);
+    study->setPatientAge(PATIENT_AGE);
 
     return study;
 }
@@ -200,7 +204,7 @@ data::ModelSeries::sptr SeriesDB::createModelSeries(unsigned char nbReconstructi
     SeriesDB::generateSeriesInformation(modelSeries);
 
     data::ModelSeries::ReconstructionVectorType recDB;
-    for (unsigned char nb = 0; nb < nbReconstruction; ++nb)
+    for(unsigned char nb = 0 ; nb < nbReconstruction ; ++nb)
     {
         data::Reconstruction::sptr rec = data::Reconstruction::New();
         // Generates reconstruction with a prefixed index in organName "0_Liver", "1_Liver", ...
@@ -208,6 +212,7 @@ data::ModelSeries::sptr SeriesDB::createModelSeries(unsigned char nbReconstructi
 
         recDB.push_back(rec);
     }
+
     modelSeries->setReconstructionDB(recDB);
 
     return modelSeries;
@@ -267,7 +272,7 @@ void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
     rec->setMaterial(material);
 
     data::Mesh::sptr mesh = data::Mesh::New();
-    Mesh::generateMesh( mesh );
+    Mesh::generateMesh(mesh);
 
     rec->setMesh(mesh);
 }
@@ -275,4 +280,5 @@ void SeriesDB::generateReconstruction(data::Reconstruction::sptr rec, int index)
 //------------------------------------------------------------------------------
 
 } // namespace generator
+
 } // namespace sight::utestData

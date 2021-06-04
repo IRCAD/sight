@@ -29,22 +29,26 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Document::Document(const data::DicomSeries::csptr& dicomSeries,
-                   const SPTR(::gdcm::Reader)& reader,
-                   const io::dicom::container::DicomInstance::sptr& instance,
-                   const data::Image::sptr& image,
-                   const core::log::Logger::sptr& logger,
-                   ProgressCallback progress,
-                   CancelRequestedCallback cancel) :
-    io::dicom::reader::ie::InformationEntity< data::Image >(dicomSeries, reader, instance, image,
-                                                            logger, progress, cancel)
+Document::Document(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(::gdcm::Reader)& reader,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const data::Image::sptr& image,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::reader::ie::InformationEntity<data::Image>(dicomSeries, reader, instance, image,
+                                                          logger, progress, cancel)
 {
 }
 
@@ -71,11 +75,12 @@ void Document::readSR()
         io::dicom::reader::tid::MeasurementReport report(m_dicomSeries, m_reader, m_instance, m_object, m_logger);
         report.readSR(rootContainerNode);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace reader
+
 } // namespace sight::io::dicom

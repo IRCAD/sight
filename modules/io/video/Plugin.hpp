@@ -28,6 +28,7 @@
 
 namespace sight::module::io::video
 {
+
 struct Plugin : public core::runtime::Plugin
 {
     /**

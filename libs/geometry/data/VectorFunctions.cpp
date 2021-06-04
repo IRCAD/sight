@@ -89,6 +89,7 @@ void negate(fwVec3d& vec)
     vec[1] = -vec[1];
     vec[2] = -vec[2];
 }
+
 } //namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
@@ -104,13 +105,13 @@ fwVec3d& operator*=(fwVec3d& vec1, double val)
 
 //------------------------------------------------------------------------------
 
-fwVec3d& operator/=(fwVec3d& vec, double val )
+fwVec3d& operator/=(fwVec3d& vec, double val)
 {
     SIGHT_THROW_IF("Division by 0 not possible.", val == 0.0);
 
     ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec.data());
-    vecGlm1             /= val;
-    vec                  = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+    vecGlm1 /= val;
+    vec      = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
 
     return vec;
 }
@@ -121,8 +122,8 @@ fwVec3d& operator+=(fwVec3d& vec1, const fwVec3d& vec2)
 {
     ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
     ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
-    vecGlm1             += vecGlm2;
-    vec1                 = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+    vecGlm1 += vecGlm2;
+    vec1     = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
 
     return vec1;
 }
@@ -133,8 +134,8 @@ fwVec3d& operator-=(fwVec3d& vec1, const fwVec3d& vec2)
 {
     ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
     ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
-    vecGlm1             -= vecGlm2;
-    vec1                 = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+    vecGlm1 -= vecGlm2;
+    vec1     = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
 
     return vec1;
 }
@@ -174,7 +175,7 @@ fwVec3d operator+(const fwVec3d& vec1, const fwVec3d& vec2)
 {
     const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
     const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
-    ::glm::dvec3 vecGlm = vecGlm1 + vecGlm2;
+    ::glm::dvec3 vecGlm        = vecGlm1 + vecGlm2;
 
     return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
@@ -185,7 +186,7 @@ fwVec3d operator-(const fwVec3d& vec1, const fwVec3d& vec2)
 {
     const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
     const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
-    ::glm::dvec3 vecGlm = vecGlm1 - vecGlm2;
+    ::glm::dvec3 vecGlm        = vecGlm1 - vecGlm2;
 
     return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
@@ -196,7 +197,7 @@ int operator==(const fwVec3d& vec1, const fwVec3d& vec2)
 {
     const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
     const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
-    ::glm::bvec3 res = ::glm::equal(vecGlm1, vecGlm2);
+    ::glm::bvec3 res           = ::glm::equal(vecGlm1, vecGlm2);
 
     return res[0] && res[1] && res[2];
 }

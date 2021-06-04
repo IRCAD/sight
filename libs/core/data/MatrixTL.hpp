@@ -33,17 +33,18 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline that stores groups of matrices.
  */
-class DATA_CLASS_API MatrixTL : public GenericTL< float[16] >
+class DATA_CLASS_API MatrixTL : public GenericTL<float [16]>
 {
 public:
-    SIGHT_DECLARE_CLASS(MatrixTL, data::TimeLine, data::factory::New< MatrixTL >)
+
+    SIGHT_DECLARE_CLASS(MatrixTL, data::TimeLine, data::factory::New<MatrixTL>);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    MatrixTL( data::Object::Key key ) :
-        GenericTL< float[16] >(key)
+    MatrixTL(data::Object::Key key) :
+        GenericTL<float [16]>(key)
     {
     }
 };

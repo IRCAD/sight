@@ -43,7 +43,7 @@ GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
 {
     // Defines the camera that will be used to render the scene.
     m_camera = new Qt3DRender::QCamera(this);
-    m_camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
+    m_camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
     m_camera->setPosition(QVector3D(0.f, 0.f, 0.f));
     m_camera->setViewCenter(QVector3D(0.f, 0.f, 0.f));
 

@@ -31,8 +31,8 @@
 namespace camp_ext
 {
 
-template <>
-struct ValueMapper< sight::data::NavigationSeries::CoordinateType >
+template<>
+struct ValueMapper<sight::data::NavigationSeries::CoordinateType>
 {
     typedef sight::data::NavigationSeries::CoordinateType ReturnType;
     static const int type = camp::stringType;
@@ -59,44 +59,49 @@ struct ValueMapper< sight::data::NavigationSeries::CoordinateType >
 
     //------------------------------------------------------------------------------
 
-    static ReturnType from(bool )
+    static ReturnType from(bool)
     {
         SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(long )
+    static ReturnType from(long)
     {
         SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(double )
+    static ReturnType from(double)
     {
         SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::EnumObject& )
+    static ReturnType from(const camp::EnumObject&)
     {
         SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
+
     //------------------------------------------------------------------------------
 
-    static ReturnType from(const camp::UserObject& )
+    static ReturnType from(const camp::UserObject&)
     {
         SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
+
     //------------------------------------------------------------------------------
 
     static ReturnType from(const std::string& source)
     {
-        std::vector< std::string> result;
+        std::vector<std::string> result;
         ReturnType coord {0., 0., 0.};
         ::boost::split(result, source, ::boost::is_any_of(";"));
 
@@ -110,6 +115,7 @@ struct ValueMapper< sight::data::NavigationSeries::CoordinateType >
         {
             SIGHT_WARN("Invalid number of components: " << result.size());
         }
+
         return coord;
     }
 };

@@ -41,30 +41,32 @@ namespace sight::io::atoms::patch
  */
 class IO_ATOMS_CLASS_API IPatch : public core::BaseObject
 {
-
 public:
-    SIGHT_DECLARE_CLASS(IPatch)
+
+    SIGHT_DECLARE_CLASS(IPatch);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @name Typedefs
      * @{ */
-    typedef std::map< sight::atoms::Object::sptr, sight::atoms::Object::sptr > NewVersionsType;
+    typedef std::map<sight::atoms::Object::sptr, sight::atoms::Object::sptr> NewVersionsType;
     /**  @} */
 
     /// Constructor. Does nothing.
     IO_ATOMS_API IPatch();
 
     /// Copy constructor
-    IO_ATOMS_API IPatch( const IPatch& cpy );
+    IO_ATOMS_API IPatch(const IPatch& cpy);
 
     /// Destructor. Does nothing.
     IO_ATOMS_API virtual ~IPatch();
 
     /// Applies the patch to the specified object
-    IO_ATOMS_API virtual void apply(const sight::atoms::Object::sptr& previous,
-                                    const sight::atoms::Object::sptr& current,
-                                    io::atoms::patch::IPatch::NewVersionsType& newVersions) = 0;
+    IO_ATOMS_API virtual void apply(
+        const sight::atoms::Object::sptr& previous,
+        const sight::atoms::Object::sptr& current,
+        io::atoms::patch::IPatch::NewVersionsType& newVersions
+    ) = 0;
 
     /// Returns the origin classname of the object
     IO_ATOMS_API virtual const std::string& getOriginClassname() const;
@@ -79,7 +81,6 @@ protected:
 
     /// Origin version of the object
     std::string m_originVersion;
-
 };
 
 } //fwAtomsPatch

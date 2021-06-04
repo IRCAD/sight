@@ -29,30 +29,31 @@
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(BufferTL));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (BufferTL));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a timeline of buffers. It implements basic features of the Timeline interface such as
  *          pushing or retrieving objects. Allocation must be done by inherited classes.
  */
 class DATA_CLASS_API BufferTL : public TimeLine
 {
-
 public:
-    SIGHT_DECLARE_CLASS(BufferTL, data::Object)
+
+    SIGHT_DECLARE_CLASS(BufferTL, data::Object);
 
     typedef core::HiResClock::HiResClockType TimestampType;
-    typedef std::map< TimestampType, SPTR(data::timeline::Buffer) > TimelineType;
-    typedef std::pair< TimestampType, SPTR(data::timeline::Buffer) > BufferPairType;
+    typedef std::map<TimestampType, SPTR(data::timeline::Buffer)> TimelineType;
+    typedef std::pair<TimestampType, SPTR(data::timeline::Buffer)> BufferPairType;
     typedef ::boost::pool<> PoolType;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API BufferTL( data::Object::Key key );
+    DATA_API BufferTL(data::Object::Key key);
 
     /// Destructor
     DATA_API virtual ~BufferTL();
@@ -66,7 +67,9 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     DATA_API virtual CSPTR(data::timeline::Object) getClosestObject(
-        core::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const override;
+        core::HiResClock::HiResClockType timestamp,
+        DirectionType direction = BOTH
+    ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
     DATA_API virtual CSPTR(data::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
@@ -124,7 +127,6 @@ protected:
 
     /// maximum size
     size_t m_maximumSize;
-
 }; // class BufferTL
 
 } // namespace sight::data

@@ -29,6 +29,7 @@
 
 namespace sight::ui::base
 {
+
 namespace view
 {
 
@@ -38,10 +39,9 @@ namespace view
  */
 class UI_BASE_CLASS_API IView : public ui::base::IGuiContainer
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IView, ui::base::IGuiContainer)
+    SIGHT_DECLARE_CLASS(IView, ui::base::IGuiContainer);
 
 protected:
 
@@ -58,8 +58,8 @@ protected:
     virtual ~IView() noexcept
     {
     }
-
 };
 
 } // namespace view
+
 } // namespace sight::ui::base

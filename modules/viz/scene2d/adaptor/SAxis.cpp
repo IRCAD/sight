@@ -73,22 +73,27 @@ void SAxis::stopping()
 
 void SAxis::configuring()
 {
-    this->configureParams();  // Looks for 'xAxis', 'yAxis' and 'zValue'
+    this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // 'color'
-    if (config.count("color"))
+    if(config.count("color"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
     // 'align' attribute configuration
     m_align = config.get<std::string>("align");
-    SIGHT_ASSERT("'align' attribute is missing. Please add an 'align' attribute "
-                 "with value 'left', 'right', 'top' or 'bottom'", !m_align.empty());
-    SIGHT_ASSERT("Unsupported value for 'align' attribute.",
-                 m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
+    SIGHT_ASSERT(
+        "'align' attribute is missing. Please add an 'align' attribute "
+        "with value 'left', 'right', 'top' or 'bottom'",
+        !m_align.empty()
+    );
+    SIGHT_ASSERT(
+        "Unsupported value for 'align' attribute.",
+        m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom"
+    );
 
     // SAxis bounds
     SIGHT_ASSERT("'min' attribute is missing.", config.count("min"));
@@ -111,45 +116,45 @@ void SAxis::buildAxis()
     const int nbValues = (m_max - m_min) / m_interval + 1;
     m_layer = new QGraphicsItemGroup();
 
-    for(int i = 0; i < nbValues; ++i)
+    for(int i = 0 ; i < nbValues ; ++i)
     {
         QGraphicsLineItem* tick = new QGraphicsLineItem(0, 0, 0, 0);
-        tick->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-        tick->setPen( m_color );
+        tick->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        tick->setPen(m_color);
 
-        m_ticks.push_back( tick );
-        m_layer->addToGroup( tick );
+        m_ticks.push_back(tick);
+        m_layer->addToGroup(tick);
     }
 
     m_line = new QGraphicsLineItem();
-    m_line->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
-    m_line->setPen( m_color );
+    m_line->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    m_line->setPen(m_color);
 
-    if( m_showLine )
+    if(m_showLine)
     {
-        m_layer->addToGroup( m_line );
+        m_layer->addToGroup(m_line);
     }
 
     // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos( m_xAxis->getOrigin(), m_yAxis->getOrigin() );
-    m_layer->setZValue( m_zValue );
+    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
+    m_layer->setZValue(m_zValue);
 
     // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-    this->getScene2DRender()->getScene()->addItem( m_layer );
+    this->getScene2DRender()->getScene()->addItem(m_layer);
 }
 
 //---------------------------------------------------------------------------------------
 
 double SAxis::getStartVal()
 {
-    return (int)( m_min / m_interval ) * m_interval;
+    return (int) (m_min / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
 double SAxis::getEndVal()
 {
-    return (int)( m_max / m_interval ) * m_interval;
+    return (int) (m_max / m_interval) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -193,13 +198,16 @@ void SAxis::updating()
 
         const double tickPosY = viewport->getY();
 
-        for(size_t i = 0; i < nbValues; ++i)
+        for(size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
-                tickPos.first, tickPos.second,
-                tickPos.first, tickPos.second - tickSize.second * scaleY);
+                tickPos.first,
+                tickPos.second,
+                tickPos.first,
+                tickPos.second - tickSize.second * scaleY
+            );
         }
 
         m_line->setLine(min, tickPos.second, max, tickPos.second);
@@ -210,14 +218,17 @@ void SAxis::updating()
 
         const double tickPosY = viewport->getHeight() * 0.9;
 
-        for(size_t i = 0; i < nbValues; ++i)
+        for(size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
-                tickPos.first, tickPos.second,
-                tickPos.first, tickPos.second - tickSize.second * scaleY);
+                tickPos.first,
+                tickPos.second,
+                tickPos.first,
+                tickPos.second - tickSize.second * scaleY
+            );
         }
 
         m_line->setLine(min, tickPos.second, max, tickPos.second);
@@ -228,16 +239,19 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX();
 
-        for(size_t i = 0; i < nbValues; ++i)
+        for(size_t i = 0 ; i < nbValues ; ++i)
         {
             pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
-                tickPos.first, tickPos.second,
-                tickPos.first + tickSize.first * scaleX, tickPos.second);
+                tickPos.first,
+                tickPos.second,
+                tickPos.first + tickSize.first * scaleX,
+                tickPos.second
+            );
         }
 
-        m_line->setLine( tickPos.first, min, tickPos.first, tickPos.second);
+        m_line->setLine(tickPos.first, min, tickPos.first, tickPos.second);
     }
     else if(m_align == "right")
     {
@@ -245,15 +259,18 @@ void SAxis::updating()
 
         const double tickPosX = viewport->getX() + viewport->getWidth();
 
-        for(size_t i = 0; i < nbValues; ++i)
+        for(size_t i = 0 ; i < nbValues ; ++i)
         {
             pos = min + i * m_interval;
 
             tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
-                tickPos.first - tickSize.first * scaleX, tickPos.second,
-                tickPos.first, tickPos.second);
+                tickPos.first - tickSize.first * scaleX,
+                tickPos.second,
+                tickPos.first,
+                tickPos.second
+            );
         }
 
         m_line->setLine(tickPos.first, min, tickPos.first, tickPos.second);
@@ -262,9 +279,9 @@ void SAxis::updating()
 
 //---------------------------------------------------------------------------------------
 
-void SAxis::processInteraction( sight::viz::scene2d::data::Event& _event)
+void SAxis::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
-    if( _event.getType() == sight::viz::scene2d::data::Event::Resize)
+    if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
     {
         this->updating();
     }
@@ -275,11 +292,12 @@ void SAxis::processInteraction( sight::viz::scene2d::data::Event& _event)
 service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

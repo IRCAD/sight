@@ -31,41 +31,43 @@
 namespace sight::core::com
 {
 
-template< typename F >
+template<typename F>
 class Slot;
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ... A >
-class CORE_CLASS_API Slot< R( A ... ) > : public SlotCall< R(A ...) >
+template<typename R, typename ... A>
+class CORE_CLASS_API Slot<R(A ...)>: public SlotCall<R(A ...)>
 {
 public:
-    typedef R SignatureType (A ...);
-    typedef Slot< SignatureType > SelfType;
-    typedef SPTR ( SelfType ) sptr;
-    typedef WPTR ( SelfType ) wptr;
+
+    typedef R SignatureType(A ...);
+    typedef Slot<SignatureType> SelfType;
+    typedef SPTR(SelfType) sptr;
+    typedef WPTR(SelfType) wptr;
 
     Slot();
 
-    template< typename F >
-    static SPTR( Slot< R(A ...) > ) New( F f );
+    template<typename F>
+    static SPTR(Slot<R(A ...)>) New(F f);
 
-    template< typename F, typename O >
-    static SPTR( Slot< R(A ...) > ) New( F f, O o );
+    template<typename F, typename O>
+    static SPTR(Slot<R(A ...)>) New(F f, O o);
 };
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ... A >
-class CORE_CLASS_API Slot< std::function< R( A ... ) > > : public Slot< R( A ... ) >
+template<typename R, typename ... A>
+class CORE_CLASS_API Slot<std::function<R(A ...)> >: public Slot<R(A ...)>
 {
 public:
-    typedef R SignatureType (A ...);
-    typedef std::function< SignatureType > FunctionType;
 
-    template< typename FUNCTOR >
-    Slot( FUNCTOR f ) :
-        Slot< R( A ... ) >(),
+    typedef R SignatureType(A ...);
+    typedef std::function<SignatureType> FunctionType;
+
+    template<typename FUNCTOR>
+    Slot(FUNCTOR f) :
+        Slot<R(A ...)>(),
         m_func(f)
     {
     }
@@ -83,38 +85,37 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual R   call(A ... a) const
+    virtual R call(A ... a) const
     {
         return m_func(a ...);
     }
 
 protected:
+
     FunctionType m_func;
 };
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ... A >
-class CORE_CLASS_API Slot< Slot< R( A ... ) > > : public Slot< std::function < R( A ... ) > >
+template<typename R, typename ... A>
+class CORE_CLASS_API Slot<Slot<R(A ...)> >: public Slot<std::function<R(A ...)> >
 {
 public:
 
-    typedef R SignatureType ( A ... );
-    typedef std::function< SignatureType > FunctionType;
+    typedef R SignatureType(A ...);
+    typedef std::function<SignatureType> FunctionType;
 
-    template< typename F >
-    Slot( SPTR( SlotRun< F > )slot );
+    template<typename F> Slot(SPTR(SlotRun<F>)slot);
 
-    template< typename F >
-    Slot( SPTR( Slot< F > )slot );
+    template<typename F> Slot(SPTR(Slot<F>)slot);
 
-    template< typename F >
-    static SPTR( Slot< R(A ...) > ) New( SPTR( SlotRun< F > ) slot );
+    template<typename F>
+    static SPTR(Slot<R(A ...)>) New(SPTR(SlotRun<F>) slot);
 };
 
 //-----------------------------------------------------------------------------
 
 template<typename F, typename ... Bindings>
-SPTR( Slot< typename core::com::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ... bindings);
+SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(F f, Bindings ... bindings);
 
 } // namespace sight::core::com

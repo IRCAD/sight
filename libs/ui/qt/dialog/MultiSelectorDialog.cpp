@@ -24,6 +24,8 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -31,13 +33,14 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <ui/base/registry/macros.hpp>
-
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::MultiSelectorDialog,
-                    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    ::sight::ui::qt::dialog::MultiSelectorDialog,
+    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
 
@@ -79,10 +82,10 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
     QListWidget* selectionList = new QListWidget(dialog);
-    for( Selections::value_type selection :  m_selections)
+    for(Selections::value_type selection : m_selections)
     {
         QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
-        item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
+        item->setCheckState((selection.second ? Qt::Checked : Qt::Unchecked));
         selectionList->addItem(item);
     }
 
@@ -100,8 +103,9 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     if(!m_message.empty())
     {
         QLabel* msgText = new QLabel(QString::fromStdString(m_message), dialog);
-        vLayout->addWidget( msgText);
+        vLayout->addWidget(msgText);
     }
+
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -114,12 +118,13 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     if(dialog->exec())
     {
         int indexItem = 0;
-        for( Selections::value_type selection :  m_selections)
+        for(Selections::value_type selection : m_selections)
         {
             selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
             indexItem++;
         }
     }
+
     return selections;
 }
 
@@ -133,4 +138,5 @@ void MultiSelectorDialog::setMessage(const std::string& msg)
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

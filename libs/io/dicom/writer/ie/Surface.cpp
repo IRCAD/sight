@@ -48,22 +48,26 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(const SPTR(::gdcm::Writer)& writer,
-                 const SPTR(io::dicom::container::DicomInstance)& instance,
-                 const SPTR(io::dicom::container::DicomInstance)& imageInstance,
-                 const data::ModelSeries::csptr& series,
-                 const core::log::Logger::sptr& logger,
-                 ProgressCallback progress,
-                 CancelRequestedCallback cancel) :
-    io::dicom::writer::ie::InformationEntity< data::ModelSeries >(writer, instance, series,
-                                                                  logger, progress, cancel),
+Surface::Surface(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+    const data::ModelSeries::csptr& series,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
+    io::dicom::writer::ie::InformationEntity<data::ModelSeries>(writer, instance, series,
+                                                                logger, progress, cancel),
     m_imageInstance(imageInstance)
 {
     SIGHT_ASSERT("Image instance should not be null.", imageInstance);
@@ -90,12 +94,12 @@ void Surface::writeSOPCommonModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Class UID
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0016>(m_instance->getSOPClassUID(), dataset);
 
     // SOP Instance UID
     ::gdcm::UIDGenerator uidGenerator;
     std::string sopInstanceUID = uidGenerator.Generate();
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0018>(sopInstanceUID, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +107,7 @@ void Surface::writeSOPCommonModule()
 void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
 {
     // Retrieve Surface Writer
-    SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
+    SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter>(m_writer);
 
     // Retrieve dataset
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
@@ -117,24 +121,23 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
         //======================================================
         {
             // Instance Number - Type 1 - Only one instance per series
-            io::dicom::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0013 >(1, dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(1, dataset);
 
             // Content Label - Type 1
-            io::dicom::helper::DicomDataWriter::setTagValue< 0x0070, 0x0080 >("SURFACE", dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0080>("SURFACE", dataset);
 
             // Content Description - Type 2
-            io::dicom::helper::DicomDataWriter::setTagValue< 0x0070, 0x0081 >("Surface Segmentation", dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0081>("Surface Segmentation", dataset);
 
             // Content Creator's Name - Type 2 - TODO: Set surface creator name ?
-            io::dicom::helper::DicomDataWriter::setEmptyTagValue< 0x0070, 0x0084 >(dataset);
+            io::dicom::helper::DicomDataWriter::setEmptyTagValue<0x0070, 0x0084>(dataset);
         }
 
         // Content Date - Type 1
-        io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x0023 >(m_object->getDate(), dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0023>(m_object->getDate(), dataset);
 
         // Content Time - Type 1
-        io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x0033 >(m_object->getTime(), dataset);
-
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0033>(m_object->getTime(), dataset);
     }
 
     //=============================================
@@ -143,15 +146,15 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     {
         // Number of Surfaces - Type 1
         auto nbSurfaces = static_cast<unsigned int>(m_object->getReconstructionDB().size());
-        io::dicom::helper::DicomDataWriter::setTagValue< unsigned int, 0x0066, 0x0001 >(nbSurfaces, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<unsigned int, 0x0066, 0x0001>(nbSurfaces, dataset);
     }
 
     // Segment Sequence (0x0062,0x0002) - Type 1
     // Segments will be added to this sequence thanks to the gdcm SegmentWriter
-    auto segmentSequence = io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0062, 0x0002 >(dataset);
+    auto segmentSequence = io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0062, 0x0002>(dataset);
 
     // Surface Sequence
-    auto surfaceSequence = io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x0002 >(dataset);
+    auto surfaceSequence = io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x0002>(dataset);
 
     //====================
     // Write segmentations
@@ -161,7 +164,7 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     for(const auto& reconstruction : reconstuctionDB)
     {
         // Add segmentation to GDCM Surface Writer
-        ::gdcm::SmartPointer< ::gdcm::Segment > segment = new ::gdcm::Segment();
+        ::gdcm::SmartPointer< ::gdcm::Segment> segment = new ::gdcm::Segment();
         surfaceWriter->AddSegment(segment);
 
         // Create Segment Sequence item
@@ -172,7 +175,7 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
         segmentSequence->AddItem(segmentItem);
 
         // Add a surface to the segmentation
-        ::gdcm::SmartPointer< ::gdcm::Surface > surface = new ::gdcm::Surface();
+        ::gdcm::SmartPointer< ::gdcm::Surface> surface = new ::gdcm::Surface();
         segment->AddSurface(surface);
 
         // Create Surface Sequence item
@@ -190,15 +193,16 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
             m_logger->information("Surface '" + reconstruction->getOrganName() + "' has been exported");
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void writeSegmentIdentification(const std::string& structureType,
-                                const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
-                                const io::dicom::helper::SegmentedPropertyRegistry& registry,
-                                core::log::Logger::sptr logger)
+void writeSegmentIdentification(
+    const std::string& structureType,
+    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    const io::dicom::helper::SegmentedPropertyRegistry& registry,
+    core::log::Logger::sptr logger
+)
 {
     // Check that the structure name has an entry in the registry
     if(!registry.hasEntry(structureType))
@@ -269,7 +273,6 @@ void writeSegmentIdentification(const std::string& structureType,
             // Only a single Item shall be included in this Sequence
             segment->SetPropertyType(codedAttributes[0]);
         }
-
     }
 
     // Segmented Property Type Modifier Code Sequence (0x0062,0x0011) - Type 3
@@ -286,13 +289,14 @@ void writeSegmentIdentification(const std::string& structureType,
             }
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void writePrivateTags(const data::Reconstruction::csptr& reconstruction,
-                      ::gdcm::DataSet& dataset)
+void writePrivateTags(
+    const data::Reconstruction::csptr& reconstruction,
+    ::gdcm::DataSet& dataset
+)
 {
     // Private group
     const auto reservedGroup    = 0x5649;
@@ -301,7 +305,7 @@ void writePrivateTags(const data::Reconstruction::csptr& reconstruction,
 
     // Reserve group
     {
-        ::gdcm::Attribute< reservedGroup, reservingElement, ::gdcm::VR::LO, ::gdcm::VM::VM1 > attribute;
+        ::gdcm::Attribute<reservedGroup, reservingElement, ::gdcm::VR::LO, ::gdcm::VM::VM1> attribute;
         attribute.SetValue(privateCreator);
         dataset.Insert(attribute.GetAsDataElement());
     }
@@ -309,7 +313,7 @@ void writePrivateTags(const data::Reconstruction::csptr& reconstruction,
     // Structure type
     {
         const auto structureType = reconstruction->getStructureType();
-        ::gdcm::Attribute< reservedGroup, 0x1000, ::gdcm::VR::LO, ::gdcm::VM::VM1 > attribute;
+        ::gdcm::Attribute<reservedGroup, 0x1000, ::gdcm::VR::LO, ::gdcm::VM::VM1> attribute;
         attribute.SetValue(structureType);
         dataset.Insert(attribute.GetAsDataElement());
     }
@@ -318,19 +322,20 @@ void writePrivateTags(const data::Reconstruction::csptr& reconstruction,
     const double volume = reconstruction->getComputedMaskVolume();
     if(volume > 0)
     {
-        ::gdcm::Attribute< reservedGroup, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1 > attribute;
+        ::gdcm::Attribute<reservedGroup, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1> attribute;
         attribute.SetValue(volume);
         dataset.Insert(attribute.GetAsDataElement());
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruction,
-                                   ::gdcm::Item& segmentItem,
-                                   const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
-                                   unsigned short segmentNumber)
+void Surface::writeSegmentSequence(
+    const data::Reconstruction::csptr& reconstruction,
+    ::gdcm::Item& segmentItem,
+    const ::gdcm::SmartPointer< ::gdcm::Segment>& segment,
+    unsigned short segmentNumber
+)
 {
     // Retrieve segment dataset
     ::gdcm::DataSet& segmentItemDataset = segmentItem.GetNestedDataSet();
@@ -363,7 +368,7 @@ void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruc
 
     // Referenced Surface Sequence - Type 1
     auto referencedSurfaceSequence =
-        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x002B >(segmentItemDataset);
+        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x002B>(segmentItemDataset);
 
     // Referenced Surface Sequence Item
     ::gdcm::Item refSurfaceSeqItem;
@@ -373,8 +378,10 @@ void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruc
     ::gdcm::DataSet& refSurfaceSeqItemDataset = refSurfaceSeqItem.GetNestedDataSet();
     {
         // Referenced Surface Number - Type 1
-        io::dicom::helper::DicomDataWriter::setTagValue< unsigned int, 0x0066, 0x002C >(segmentNumber,
-                                                                                        refSurfaceSeqItemDataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<unsigned int, 0x0066, 0x002C>(
+            segmentNumber,
+            refSurfaceSeqItemDataset
+        );
 
         //=======================================================
         // Table 10-19. Algorithm Identification Macro Attributes
@@ -383,14 +390,15 @@ void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruc
 
         // Segment Surface Source Instance Sequence - Type 2
         auto surfaceSourceInstanceSequence =
-            io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x002E >(
-                refSurfaceSeqItemDataset);
+            io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x002E>(
+                refSurfaceSeqItemDataset
+            );
 
         //==========================================================
         // Table 10-3. Image SOP Instance Reference Macro Attributes
         //==========================================================
         {
-            const std::vector< std::string >& referencedSOPInstanceUIDContainer =
+            const std::vector<std::string>& referencedSOPInstanceUIDContainer =
                 m_imageInstance->getSOPInstanceUIDContainer();
             const std::string& referencedSOPClassUID = m_imageInstance->getSOPClassUID();
 
@@ -405,12 +413,16 @@ void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruc
                 ::gdcm::DataSet& imageSOPDataset = imageSOPItem.GetNestedDataSet();
 
                 // Referenced SOP Class UID - Type 1
-                io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(referencedSOPClassUID,
-                                                                                  imageSOPDataset);
+                io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
+                    referencedSOPClassUID,
+                    imageSOPDataset
+                );
 
                 // Referenced SOP Instance UID - Type 1
-                io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(sopInstanceUID,
-                                                                                  imageSOPDataset);
+                io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
+                    sopInstanceUID,
+                    imageSOPDataset
+                );
 
                 surfaceSourceInstanceSequence->AddItem(imageSOPItem);
             }
@@ -425,15 +437,16 @@ void Surface::writeSegmentSequence(const data::Reconstruction::csptr& reconstruc
 
     // Private Tags
     writePrivateTags(reconstruction, segmentItemDataset);
-
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruction,
-                                   ::gdcm::Item& surfaceItem,
-                                   const ::gdcm::SmartPointer< ::gdcm::Surface >& surface,
-                                   unsigned short segmentNumber)
+void Surface::writeSurfaceSequence(
+    const data::Reconstruction::csptr& reconstruction,
+    ::gdcm::Item& surfaceItem,
+    const ::gdcm::SmartPointer< ::gdcm::Surface>& surface,
+    unsigned short segmentNumber
+)
 {
     // Retrieve surface dataset
     ::gdcm::DataSet& surfaceItemDataset = surfaceItem.GetNestedDataSet();
@@ -452,7 +465,7 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 
     // Get reconstruction's color
     const auto rgba = material->diffuse()->getRGBA();
-    std::vector< float > rgb { rgba[0], rgba[1], rgba[2] };
+    std::vector<float> rgb {rgba[0], rgba[1], rgba[2]};
 
     // Recommended Display Grayscale Value (0x0062,0x000C) - Type 1
     const auto grayscale = ::gdcm::SurfaceHelper::RGBToRecommendedDisplayGrayscale(rgb, 1.);
@@ -467,19 +480,21 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 
     // Recommended Presentation Type (0x0066,0x000D) - Type 1
     surface->SetRecommendedPresentationType(
-        io::dicom::helper::DicomDataTools::convertToPresentationType(material->getRepresentationMode()));
+        io::dicom::helper::DicomDataTools::convertToPresentationType(material->getRepresentationMode())
+    );
 
     // Finite Volume (0x0066,0x000E) - Type 1
     surface->SetFiniteVolume(
-        geometry::data::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES):
-        (::gdcm::Surface::NO));
+        geometry::data::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES)
+                                                                  : (::gdcm::Surface::NO)
+    );
 
     // Manifold (0x0066,0x0010) - Type 1
     surface->SetManifold(::gdcm::Surface::NO);
 
     // Surface Points Sequence (0x0066,0x0011) - Type 1
     auto pointsSequence =
-        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x0011 >(surfaceItemDataset);
+        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x0011>(surfaceItemDataset);
 
     // Create one item
     ::gdcm::Item pointsItem;
@@ -494,20 +509,22 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 
         // Point Coordinates Data (0x0066,0x0016) - Type 1
         ::gdcm::DataElement& pointCoordData = surface->GetPointCoordinatesData();
-        pointCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getPointBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getPointBufferSize()) *
-                                    static_cast<uint32_t>(sizeof(float)));
+        pointCoordData.SetByteValue(
+            reinterpret_cast<const char*>(surfaceContainer.getPointBuffer().data()),
+            static_cast<uint32_t>(surfaceContainer.getPointBufferSize())
+            * static_cast<uint32_t>(sizeof(float))
+        );
     }
     pointsSequence->AddItem(pointsItem);
 
     // Surface Points Normals Sequence (0x0066,0x0012) - Type 2
     auto normalsSequence =
-        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x0012 >(surfaceItemDataset);
+        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x0012>(surfaceItemDataset);
 
     //=======================================
     // Table C.27-3. Vectors Macro Attributes
     //=======================================
-    if (surfaceContainer.getNormalBufferSize() > 0)
+    if(surfaceContainer.getNormalBufferSize() > 0)
     {
         // Create one item
         ::gdcm::Item normalsItem;
@@ -521,31 +538,35 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 
         // Vector Coordinate Data (0x0066,0x0021) - Type 1
         ::gdcm::DataElement& normalCoordData = surface->GetVectorCoordinateData();
-        normalCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getNormalBuffer().data()),
-                                     static_cast<uint32_t>(surfaceContainer.getNormalBufferSize()) *
-                                     static_cast<uint32_t>(sizeof(float)));
+        normalCoordData.SetByteValue(
+            reinterpret_cast<const char*>(surfaceContainer.getNormalBuffer().data()),
+            static_cast<uint32_t>(surfaceContainer.getNormalBufferSize())
+            * static_cast<uint32_t>(sizeof(float))
+        );
 
         normalsSequence->AddItem(normalsItem);
     }
 
     // Surface Mesh Primitives Sequence (0x0066,0x0013) - Type 1
     auto primitivesSequence =
-        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x0013 >(surfaceItemDataset);
+        io::dicom::helper::DicomDataWriter::createAndSetSequenceTagValue<0x0066, 0x0013>(surfaceItemDataset);
 
     //=======================================================
     // Table C.27-4. Surface Mesh Primitives Macro Attributes
     //=======================================================
     {
         // Mesh primitive type used by surface writer (fixed to TRIANGLE by Sight)
-        ::gdcm::SmartPointer< ::gdcm::MeshPrimitive > primitive = surface->GetMeshPrimitive();
+        ::gdcm::SmartPointer< ::gdcm::MeshPrimitive> primitive = surface->GetMeshPrimitive();
         primitive->SetPrimitiveType(::gdcm::MeshPrimitive::TRIANGLE);
 
         // Long Triangle Point Index List (0x0066,0x0041) - Type 2
         ::gdcm::DataElement& pointIndexData = primitive->GetPrimitiveData();
         pointIndexData.SetVL(sizeof(uint32_t));
-        pointIndexData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getCellBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getCellBufferSize()) *
-                                    static_cast<uint32_t>(sizeof(uint32_t)));
+        pointIndexData.SetByteValue(
+            reinterpret_cast<const char*>(surfaceContainer.getCellBuffer().data()),
+            static_cast<uint32_t>(surfaceContainer.getCellBufferSize())
+            * static_cast<uint32_t>(sizeof(uint32_t))
+        );
     }
 
     //=======================================================
@@ -566,5 +587,7 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 //------------------------------------------------------------------------------
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

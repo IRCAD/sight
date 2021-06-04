@@ -41,7 +41,6 @@ namespace Tuto07SceneQt3DQml
 class TUTO07SCENEQT3DQML_CLASS_API AppManager : public QObject,
                                                 public sight::service::AppManager
 {
-
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
@@ -90,11 +89,10 @@ public Q_SLOTS:
 private:
 
     /// Contains the mesh associated to the app manager.
-    QPointer< sight::viz::qt3d::data::Mesh > m_mesh;
+    QPointer<sight::viz::qt3d::data::Mesh> m_mesh;
 
     /// Contains the scene associated to the app manager.
-    QPointer< sight::viz::qt3d::core::GenericScene > m_scene;
-
+    QPointer<sight::viz::qt3d::core::GenericScene> m_scene;
 };
 
 } // namespace Tuto07SceneQt3DQml.

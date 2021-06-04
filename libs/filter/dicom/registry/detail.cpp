@@ -34,7 +34,7 @@ struct FwDicomIOFilterRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator< Type, FwDicomIOFilterRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator<Type, FwDicomIOFilterRegistryInstantiatorTag> InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

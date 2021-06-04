@@ -41,7 +41,7 @@ class IO_DICOM_CLASS_API DicomCodedAttribute
 public:
 
     /// DicomCodedAttribute container type
-    typedef std::vector< io::dicom::container::DicomCodedAttribute > DicomCodedAttributeVectorType;
+    typedef std::vector<io::dicom::container::DicomCodedAttribute> DicomCodedAttributeVectorType;
 
     /**
      * @brief Convert an entry of the form '(AAA;BBB;CCC)' into a list of DicomCodedAttributes.
@@ -55,8 +55,9 @@ public:
      * Several DicomCodedAttributes can be detected in a single entry.
      * @param[in] entry Entry containing one or several coded attributes.
      */
-    IO_DICOM_API static ::gdcm::Segment::BasicCodedEntryVector
-    convertEntryToGDCMCodedAttribute(const std::string& entry);
+    IO_DICOM_API static ::gdcm::Segment::BasicCodedEntryVector convertEntryToGDCMCodedAttribute(
+        const std::string& entry
+    );
 
     /**
      * @brief Retrieve '(AAA;BBB;CCC)' patterns inside of the entry string.
@@ -66,8 +67,8 @@ public:
      * @param[in] multipleValue If set to 'false', check the uniqueness of the value
      */
     IO_DICOM_API static bool checkAndFormatEntry(std::string& entry, bool multipleValue = false);
-
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

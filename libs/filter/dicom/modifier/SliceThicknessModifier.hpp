@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace modifier
 {
 
@@ -39,7 +40,8 @@ namespace modifier
 class FILTER_DICOM_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
-    SIGHT_DECLARE_CLASS(SliceThicknessModifier, IModifier, filter::dicom::factory::New< SliceThicknessModifier >)
+
+    SIGHT_DECLARE_CLASS(SliceThicknessModifier, IModifier, filter::dicom::factory::New<SliceThicknessModifier>);
 
     /// Constructor
     FILTER_DICOM_API SliceThicknessModifier(filter::dicom::IFilter::Key key);
@@ -49,7 +51,9 @@ public:
 
     /// Override
     FILTER_DICOM_API virtual DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series,
+        const core::log::Logger::sptr& logger
+    ) const override;
 
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;
@@ -58,6 +62,7 @@ public:
     FILTER_DICOM_API std::string getDescription() const override;
 
 protected:
+
     /**
      * @brief Compute the Z coordinate of the slice according to the ImagePositionPatient and ImageOrientationPatient
      *  tags.
@@ -79,4 +84,5 @@ protected:
 };
 
 } // namespace modifier
+
 } // namespace sight::filter::dicom

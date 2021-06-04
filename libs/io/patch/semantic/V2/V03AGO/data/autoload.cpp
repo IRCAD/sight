@@ -26,10 +26,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V2
 {
+
 namespace V03AGO
 {
+
 namespace data
 {
 
@@ -48,6 +51,9 @@ struct runner
 runner runner::r;
 
 } // namespace data
+
 } // namespace V03AGO
+
 } // namespace V2
+
 } // namespace sight::io::patch::semantic

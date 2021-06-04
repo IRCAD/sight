@@ -35,6 +35,7 @@
 
 namespace sight::core::memory
 {
+
 namespace tools
 {
 
@@ -109,4 +110,5 @@ std::uint64_t MemoryMonitorTools::getUsedProcessMemory()
 //-----------------------------------------------------------------------------
 
 } // namespace tools
+
 } // namespace sight::core::memory

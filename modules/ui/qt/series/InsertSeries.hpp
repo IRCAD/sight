@@ -37,9 +37,9 @@ namespace sight::module::ui::qt::series
  */
 class MODULE_UI_QT_CLASS_API InsertSeries : public data::Series
 {
-
 public:
-    SIGHT_DECLARE_CLASS(InsertSeries, data::Object, data::factory::New< InsertSeries >)
+
+    SIGHT_DECLARE_CLASS(InsertSeries, data::Object, data::factory::New<InsertSeries>);
 
     /**
      * @brief Constructor
@@ -51,11 +51,10 @@ public:
     MODULE_UI_QT_API virtual ~InsertSeries();
 
     /// Defines shallow copy
-    MODULE_UI_QT_API void shallowCopy( const data::Object::csptr& _source ) override;
+    MODULE_UI_QT_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /// Defines deep copy
-    MODULE_UI_QT_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
-
+    MODULE_UI_QT_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache) override;
 };
 
-}   //end namespace sight::module::ui::qt::series
+} //end namespace sight::module::ui::qt::series

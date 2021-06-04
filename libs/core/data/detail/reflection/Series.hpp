@@ -30,6 +30,6 @@
 
 #include <core/reflection/macros.hpp>
 
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Series), (sight)(data)(Patient));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Series), (sight)(data)(Study));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Series), (sight)(data)(Equipment));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Series), (sight) (data) (Patient));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Series), (sight) (data) (Study));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (Series), (sight) (data) (Equipment));

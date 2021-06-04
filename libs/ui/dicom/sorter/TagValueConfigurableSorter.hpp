@@ -30,6 +30,7 @@
 
 namespace sight::ui::dicom
 {
+
 namespace sorter
 {
 
@@ -39,8 +40,12 @@ namespace sorter
 class UI_DICOM_CLASS_API TagValueConfigurableSorter : public filter::dicom::sorter::TagValueSorter
 {
 public:
-    SIGHT_DECLARE_CLASS(TagValueConfigurableSorter, filter::dicom::sorter::TagValueSorter,
-                        filter::dicom::factory::New< TagValueConfigurableSorter >);
+
+    SIGHT_DECLARE_CLASS(
+        TagValueConfigurableSorter,
+        filter::dicom::sorter::TagValueSorter,
+        filter::dicom::factory::New<TagValueConfigurableSorter>
+    );
 
     /// Constructor
     UI_DICOM_API TagValueConfigurableSorter(filter::dicom::IFilter::Key key);
@@ -64,13 +69,14 @@ public:
     UI_DICOM_API void configureWithGUI() override;
 
 protected:
+
     /// Filter name
     UI_DICOM_API static const std::string s_FILTER_NAME;
 
     /// Filter description
     UI_DICOM_API static const std::string s_FILTER_DESCRIPTION;
-
 };
 
 } // namespace sorter
+
 } // namespace sight::ui::dicom

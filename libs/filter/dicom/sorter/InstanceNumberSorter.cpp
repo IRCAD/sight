@@ -31,10 +31,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::sorter::InstanceNumberSorter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::sorter::InstanceNumberSorter);
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -78,4 +79,5 @@ bool InstanceNumberSorter::isConfigurationRequired() const
 }
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

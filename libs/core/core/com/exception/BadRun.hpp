@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -35,7 +34,7 @@ namespace exception
 /// Bad run exception.
 struct BadRun : core::Exception
 {
-    CORE_API BadRun ( const std::string& err );
+    CORE_API BadRun(const std::string& err);
 };
 
 } // namespace exception

@@ -24,21 +24,23 @@
 
 #include "core/config.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
-
 #include <core/macros.hpp>
 
 #include <filesystem>
 
 namespace sight::core::memory
 {
+
 namespace stream
 {
+
 namespace in
 {
 
 class CORE_CLASS_API RawZ : public IFactory
 {
 public:
+
     RawZ(const std::filesystem::path& path) :
         m_path(path)
     {
@@ -52,5 +54,7 @@ protected:
 };
 
 } // namespace in
+
 } // namespace stream
+
 } // namespace sight::core::memory

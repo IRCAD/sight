@@ -32,23 +32,24 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(PlaneList));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (PlaneList));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a list of planes.
  * @see     data::Point
  */
 class DATA_CLASS_API PlaneList : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(PlaneList, data::Object, data::factory::New< PlaneList >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(PlaneList));
+    SIGHT_DECLARE_CLASS(PlaneList, data::Object, data::factory::New<PlaneList>);
 
-    typedef std::vector< data::Plane::sptr > PlaneListContainer;
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PlaneList));
+
+    typedef std::vector<data::Plane::sptr> PlaneListContainer;
 
     /**
      * @brief Constructor
@@ -60,7 +61,7 @@ public:
     DATA_API virtual ~PlaneList();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -68,9 +69,9 @@ public:
     /** @{
      *  @brief get/set container of all planes
      */
-    PlaneListContainer& getPlanes ();
-    const PlaneListContainer& getPlanes () const;
-    void setPlanes (const PlaneListContainer& _vPlanes);
+    PlaneListContainer& getPlanes();
+    const PlaneListContainer& getPlanes() const;
+    void setPlanes(const PlaneListContainer& _vPlanes);
     /// @}
 
     /**
@@ -78,44 +79,43 @@ public:
      * @{
      */
     /// Signal emitted when a plane is added
-    typedef core::com::Signal< void (data::Plane::sptr) > PlaneAddedSignalType;
+    typedef core::com::Signal<void (data::Plane::sptr)> PlaneAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
-    typedef core::com::Signal< void (data::Plane::sptr) > PlaneRemovedSignalType;
+    typedef core::com::Signal<void (data::Plane::sptr)> PlaneRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
-    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
+    typedef core::com::Signal<void (bool)> VisibilityModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
     //! Planes container
     PlaneListContainer m_vPlanes;
-
 }; // end class PlaneList
 
 //-----------------------------------------------------------------------------
 
-inline PlaneList::PlaneListContainer& PlaneList::getPlanes ()
+inline PlaneList::PlaneListContainer& PlaneList::getPlanes()
 {
     return this->m_vPlanes;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const PlaneList::PlaneListContainer& PlaneList::getPlanes () const
+inline const PlaneList::PlaneListContainer& PlaneList::getPlanes() const
 {
     return this->m_vPlanes;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void PlaneList::setPlanes (const PlaneList::PlaneListContainer& _vPlanes)
+inline void PlaneList::setPlanes(const PlaneList::PlaneListContainer& _vPlanes)
 {
     this->m_vPlanes = _vPlanes;
 }

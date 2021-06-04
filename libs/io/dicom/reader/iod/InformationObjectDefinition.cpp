@@ -24,18 +24,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-InformationObjectDefinition::InformationObjectDefinition(const data::DicomSeries::csptr& dicomSeries,
-                                                         const SPTR(io::dicom::container::DicomInstance)& instance,
-                                                         const core::log::Logger::sptr& logger,
-                                                         ProgressCallback progress,
-                                                         CancelRequestedCallback cancel) :
+InformationObjectDefinition::InformationObjectDefinition(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     m_instance(instance),
     m_dicomSeries(dicomSeries),
     m_logger(logger),
@@ -56,5 +60,7 @@ InformationObjectDefinition::~InformationObjectDefinition()
 //------------------------------------------------------------------------------
 
 } // namespace iod
+
 } // namespace reader
+
 } // namespace sight::io::dicom

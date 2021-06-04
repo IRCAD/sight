@@ -26,24 +26,31 @@
 
 namespace sight::service
 {
+
 namespace registry
 {
+
 class ObjectService;
+
 }
 class IService;
+
 }
 
 namespace sight::activity
 {
+
 class IActivityLauncher;
+
 }
 
 namespace sight::data
 {
+
 namespace mt
 {
 
-template< class DATATYPE >
+template<class DATATYPE>
 class locked_ptr;
 
 /**
@@ -57,11 +64,11 @@ class locked_ptr;
  *
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
-template <class DATATYPE>
+template<class DATATYPE>
 class weak_ptr final
 {
-
 public:
+
     /// Constructor
     inline explicit weak_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
         m_data(data)
@@ -102,7 +109,7 @@ public:
     weak_ptr& operator=(weak_ptr&&)      = default;
     ~weak_ptr()                          = default;
 
-    [[nodiscard]] locked_ptr< DATATYPE > lock() const noexcept;
+    [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
 
     /// Returns true if the weak pointer have expired
     inline bool expired() const noexcept
@@ -111,10 +118,10 @@ public:
     }
 
     /// Convenience function that mimic std::dynamic_pointer_cast()
-    template< class CASTED_DATATYPE >
-    inline weak_ptr< CASTED_DATATYPE > dynamicPointerCast() const noexcept
+    template<class CASTED_DATATYPE>
+    inline weak_ptr<CASTED_DATATYPE> dynamicPointerCast() const noexcept
     {
-        return weak_ptr< CASTED_DATATYPE >(std::dynamic_pointer_cast< CASTED_DATATYPE >(m_data.lock()));
+        return weak_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data.lock()));
     }
 
 private:
@@ -126,31 +133,32 @@ private:
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::weak_ptr< DATATYPE > getWeak() const noexcept
+    inline std::weak_ptr<DATATYPE> getWeak() const noexcept
     {
         return m_data;
     }
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::shared_ptr< DATATYPE > getShared() const noexcept
+    inline std::shared_ptr<DATATYPE> getShared() const noexcept
     {
         return m_data.lock();
     }
 
     /// The data to guard
-    std::weak_ptr< DATATYPE > m_data;
+    std::weak_ptr<DATATYPE> m_data;
 };
 
 //-----------------------------------------------------------------------------
 
-template < class DATATYPE >
-inline locked_ptr< DATATYPE > weak_ptr<DATATYPE>::lock() const noexcept
+template<class DATATYPE>
+inline locked_ptr<DATATYPE> weak_ptr<DATATYPE>::lock() const noexcept
 {
-    return locked_ptr< DATATYPE >(m_data.lock());
+    return locked_ptr<DATATYPE>(m_data.lock());
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace mt
+
 } // namespace sight::data

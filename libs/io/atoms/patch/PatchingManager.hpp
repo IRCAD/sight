@@ -29,7 +29,9 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 
 namespace sight::io::atoms::patch

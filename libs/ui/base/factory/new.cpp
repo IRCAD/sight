@@ -32,7 +32,7 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-ui::base::GuiBaseObject::sptr New( const ui::base::registry::KeyType& classname )
+ui::base::GuiBaseObject::sptr New(const ui::base::registry::KeyType& classname)
 {
     return ui::base::registry::get()->create(classname);
 }

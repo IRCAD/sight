@@ -26,7 +26,7 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(String));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (String));
 
 namespace sight::data
 {
@@ -36,19 +36,20 @@ namespace sight::data
  *
  * String object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API String : public GenericField< std::string >
+class DATA_CLASS_API String : public GenericField<std::string>
 {
 public:
-    SIGHT_DECLARE_CLASS(String, data::Object)
+
+    SIGHT_DECLARE_CLASS(String, data::Object);
 
     //------------------------------------------------------------------------------
 
     static sptr New(const std::string val = "")
     {
-        return GenericFieldFactory< String >(val);
+        return GenericFieldFactory<String>(val);
     }
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(String));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (String));
 
     /**
      * @brief Constructor
@@ -62,11 +63,10 @@ public:
     DATA_API virtual ~String() noexcept;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
 };
 
 } // namespace sight::data

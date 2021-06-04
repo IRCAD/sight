@@ -26,13 +26,13 @@
 
 namespace sight::geometry::vision
 {
+
 namespace ut
 {
 
 class helperTest : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( helperTest );
+CPPUNIT_TEST_SUITE(helperTest);
 CPPUNIT_TEST(reprojectionIdentity);
 CPPUNIT_TEST(reprojectionRealDatasetTest1);
 CPPUNIT_TEST(reprojectionRealDatasetTest2);
@@ -44,6 +44,7 @@ CPPUNIT_TEST(chessboardDetectionScaleTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -59,4 +60,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::vision

@@ -42,6 +42,7 @@ namespace sight::core::tools
 class CORE_CLASS_API DynamicType
 {
 public:
+
     /// Default constructor
     [[deprecated("This class is no longer supported and will be removed in sight 22.0")]]
     CORE_API DynamicType();
@@ -63,20 +64,20 @@ public:
     /**
      * @brief  define an order (lexicographic) for dynamicType
      */
-    CORE_API bool operator<( const DynamicType& ) const;
+    CORE_API bool operator<(const DynamicType&) const;
 
     /**
      * @brief   Set DynamicType value according given template
      * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
      **/
-    template< class TYPE>
+    template<class TYPE>
     void setType();
 
     /**
      * @brief   Return true iff the DynamicType value represents the TYPE
      * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
      **/
-    template< class TYPE>
+    template<class TYPE>
     bool isType() const;
 
     /**
@@ -130,7 +131,7 @@ public:
             signed long,
             float,
             double
-            >::type SupportedTypes;
+    >::type SupportedTypes;
 
 protected:
 
@@ -138,7 +139,7 @@ protected:
     unsigned char m_sizeof;
 
     /// Container of types managed by DynamicType
-    CORE_API static std::list< std::string > m_managedTypes;
+    CORE_API static std::list<std::string> m_managedTypes;
 
     /// Value for not specified type
     CORE_API static const std::string m_unSpecifiedType;

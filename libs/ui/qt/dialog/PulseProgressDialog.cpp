@@ -24,21 +24,25 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QApplication>
 #include <QFutureWatcher>
 #include <QString>
 #include <QtConcurrent>
 #include <QtCore>
 
-#include <ui/base/registry/macros.hpp>
-
-fwGuiRegisterMacro( ::sight::ui::qt::dialog::PulseProgressDialog,
-                    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    ::sight::ui::qt::dialog::PulseProgressDialog,
+    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key key)
@@ -50,7 +54,7 @@ PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key key)
 
 PulseProgressDialog::~PulseProgressDialog()
 {
-    if (m_pdialog)
+    if(m_pdialog)
     {
         m_pdialog->hide();
         delete m_pdialog;
@@ -91,4 +95,5 @@ void PulseProgressDialog::show()
 //------------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::qt

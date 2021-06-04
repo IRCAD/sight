@@ -23,28 +23,28 @@
 #pragma once
 
 #include "service/config.hpp"
+#include <service/IXMLParser.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <service/IXMLParser.hpp>
-
 namespace sight::service
 {
+
 namespace parser
 {
+
 /**
  * @brief   Specific service for the construction of a GenericField and its associated services from an XML-based
  * description.
  * @see     service::IXMLParser
  */
-class SERVICE_CLASS_API GenericField  : public service::IXMLParser
+class SERVICE_CLASS_API GenericField : public service::IXMLParser
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(GenericField, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(GenericField, service::IXMLParser);
 
     /// Constructor : does nothing.
     GenericField()
@@ -56,7 +56,8 @@ public:
     {
     }
 
-    SERVICE_API void createConfig( core::tools::Object::sptr _obj ) override;
+    SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
+
 protected:
 
     /**
@@ -65,9 +66,9 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    SERVICE_API void updating( ) override;
-
+    SERVICE_API void updating() override;
 };
 
 } //namespace parser
+
 } //namespace sight::service

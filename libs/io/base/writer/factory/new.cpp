@@ -26,6 +26,7 @@
 
 namespace sight::io::base
 {
+
 namespace writer
 {
 
@@ -34,7 +35,7 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-io::base::writer::IObjectWriter::sptr New( const io::base::writer::registry::KeyType& classname )
+io::base::writer::IObjectWriter::sptr New(const io::base::writer::registry::KeyType& classname)
 {
     return io::base::writer::registry::get()->create(classname);
 }

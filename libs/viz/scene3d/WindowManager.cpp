@@ -37,6 +37,7 @@ void WindowManager::registerWindow(::Ogre::RenderWindow* _window)
     {
         m_firstWindow = _window;
     }
+
     m_windows.insert(_window);
 }
 
@@ -67,7 +68,7 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 
 viz::scene3d::WindowManager::sptr WindowManager::get()
 {
-    return core::LazyInstantiator< viz::scene3d::WindowManager >::getInstance();
+    return core::LazyInstantiator<viz::scene3d::WindowManager>::getInstance();
 }
 
 // ----------------------------------------------------------------------------

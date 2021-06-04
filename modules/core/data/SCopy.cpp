@@ -22,15 +22,15 @@
 
 #include "SCopy.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/reflection/exception/NullPointer.hpp>
 #include <data/reflection/exception/ObjectNotFound.hpp>
 #include <data/reflection/getObject.hpp>
+
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Signals.hpp>
 
 namespace sight::module::data
 {
@@ -44,7 +44,6 @@ const service::IService::KeyType s_TARGET_OUTPUT = "target";
 SCopy::SCopy() :
     m_mode(ModeType::UPDATE)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -63,13 +62,13 @@ void SCopy::configuring()
     const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
     SIGHT_ASSERT("One 'in' tag is required.", inCfg);
 
-    const std::vector< ConfigurationType > inoutCfg = m_configuration->find("inout");
-    const std::vector< ConfigurationType > outCfg   = m_configuration->find("out");
-    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
+    const std::vector<ConfigurationType> inoutCfg = m_configuration->find("inout");
+    const std::vector<ConfigurationType> outCfg   = m_configuration->find("out");
+    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() + outCfg.size() == 1);
 
-    const std::vector< ConfigurationType > extractCfg = inCfg->find("extract");
+    const std::vector<ConfigurationType> extractCfg = inCfg->find("extract");
     SIGHT_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
-    if (extractCfg.size() == 1)
+    if(extractCfg.size() == 1)
     {
         ConfigurationType cfg = extractCfg[0];
         SIGHT_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
@@ -78,7 +77,7 @@ void SCopy::configuring()
     }
 
     const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
-    if (modeConfig)
+    if(modeConfig)
     {
         auto mode = modeConfig->getValue();
         if(mode == "copyOnStart")
@@ -135,7 +134,7 @@ void SCopy::copy()
     // Check if we use inout or output.
     bool create = false;
     {
-        const auto target     = this->getWeakInOut< sight::data::Object >(s_TARGET_INOUT);
+        const auto target     = this->getWeakInOut<sight::data::Object>(s_TARGET_INOUT);
         const auto targetLock = target.lock();
         if(!targetLock)
         {
@@ -144,7 +143,7 @@ void SCopy::copy()
     }
 
     // Extract the object.
-    const auto sourceObject = this->getLockedInput< sight::data::Object >(s_SOURCE_INPUT);
+    const auto sourceObject = this->getLockedInput<sight::data::Object>(s_SOURCE_INPUT);
 
     sight::data::Object::csptr source;
     if(m_hasExtractTag)
@@ -152,7 +151,7 @@ void SCopy::copy()
         sight::data::Object::sptr object;
         try
         {
-            object = sight::data::reflection::getObject(sourceObject.get_shared(), m_path, true );
+            object = sight::data::reflection::getObject(sourceObject.get_shared(), m_path, true);
         }
         catch(const sight::data::reflection::exception::ObjectNotFound&)
         {
@@ -167,7 +166,7 @@ void SCopy::copy()
             SIGHT_FATAL("Unhandled exception: " << _e.what());
         }
 
-        SIGHT_WARN_IF("Object from '"+ m_path +"' not found", !object);
+        SIGHT_WARN_IF("Object from '" + m_path + "' not found", !object);
         if(object)
         {
             source = object;
@@ -192,11 +191,12 @@ void SCopy::copy()
                 else
                 {
                     // Copy the object to the inout.
-                    const auto target = this->getLockedInOut< sight::data::Object >(s_TARGET_INOUT);
+                    const auto target = this->getLockedInOut<sight::data::Object>(s_TARGET_INOUT);
                     target->deepCopy(source);
 
-                    auto sig = target->signal< sight::data::Object::ModifiedSignalType >(
-                        sight::data::Object::s_MODIFIED_SIG);
+                    auto sig = target->signal<sight::data::Object::ModifiedSignalType>(
+                        sight::data::Object::s_MODIFIED_SIG
+                    );
                     {
                         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                         sig->asyncEmit();

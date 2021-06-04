@@ -30,8 +30,10 @@
 
 namespace Qt3DRender
 {
+
 class QParameter;
 class QRasterMode;
+
 }
 
 namespace sight::viz::qt3d
@@ -45,7 +47,6 @@ namespace techniques
  */
 class VIZ_QT3D_CLASS_API Lighting : public Qt3DRender::QTechnique
 {
-
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
@@ -62,7 +63,7 @@ public:
         AMBIENT = 0,
         FLAT    = 1,
         GOURAUD = 2,
-        PHONG   = 4,
+        PHONG   = 4
     } LightingMode;
 
     /// Constructs a lighting rendering technique.
@@ -109,32 +110,31 @@ Q_SIGNALS:
 private:
 
     /// Contains light position parameter.
-    QPointer< Qt3DRender::QParameter > m_lightPosition;
+    QPointer<Qt3DRender::QParameter> m_lightPosition;
 
     /// Contains light intensity parameter.
-    QPointer< Qt3DRender::QParameter > m_lightIntensity;
+    QPointer<Qt3DRender::QParameter> m_lightIntensity;
 
     /// Contains light mode parameter.
-    QPointer< Qt3DRender::QParameter > m_lightingMode;
+    QPointer<Qt3DRender::QParameter> m_lightingMode;
 
     /// Contains default render pass.
-    QPointer< Qt3DRender::QRenderPass > m_renderPass;
+    QPointer<Qt3DRender::QRenderPass> m_renderPass;
 
     /// Contains a second render pass used for EDGE rendering.
-    QPointer< Qt3DRender::QRenderPass > m_edgeRenderPass;
+    QPointer<Qt3DRender::QRenderPass> m_edgeRenderPass;
 
     /// Contains a render pass used for point normals vizualisation.
-    QPointer< Qt3DRender::QRenderPass > m_normalPass;
+    QPointer<Qt3DRender::QRenderPass> m_normalPass;
 
     /// Contains a render pass used for cell normals vizualisation.
-    QPointer< Qt3DRender::QRenderPass > m_cellNormalPass;
+    QPointer<Qt3DRender::QRenderPass> m_cellNormalPass;
 
     /// Contains a render state used to control raster mode.
-    QPointer< Qt3DRender::QRasterMode > m_rasterModeRenderState;
+    QPointer<Qt3DRender::QRasterMode> m_rasterModeRenderState;
 
     /// Specifies if normal visualization is set to point or cell.
-    bool m_isCellsNormalsEnabled { false };
-
+    bool m_isCellsNormalsEnabled {false};
 };
 
 } // namespace techniques.

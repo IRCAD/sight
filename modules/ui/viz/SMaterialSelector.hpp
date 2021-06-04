@@ -66,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SMaterialSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SMaterialSelector, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SMaterialSelector() noexcept;
@@ -80,7 +80,7 @@ public:
      */
     MODULE_UI_VIZ_API static const core::com::Signals::SignalKeyType s_SELECTED_SIG;
     typedef core::com::Signal<void (std::string)> SelectedSignalType;
-    /** @} */
+/** @} */
 
 protected:
 

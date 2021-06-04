@@ -23,10 +23,9 @@
 #pragma once
 
 #include "service/config.hpp"
+#include <service/IService.hpp>
 
 #include <core/HiResClock.hpp>
-
-#include <service/IService.hpp>
 
 namespace sight::service
 {
@@ -53,10 +52,9 @@ namespace sight::service
  */
 class SERVICE_CLASS_API ITracker : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(ITracker, service::IService)
+    SIGHT_DECLARE_SERVICE(ITracker, service::IService);
 
     SERVICE_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
     SERVICE_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
@@ -124,6 +122,6 @@ protected:
 
     /// If false, the trackMethod does nothing
     bool m_isTracking;
-
 };
+
 } // arServices

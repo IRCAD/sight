@@ -44,10 +44,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::atoms::ut::IoAtomsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::atoms::ut::IoAtomsTest);
 
 namespace sight::module::io::atoms
 {
+
 namespace ut
 {
 
@@ -70,63 +71,68 @@ void IoAtomsTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 void compareLog(T& comparator)
 {
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
     {
-        SIGHT_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
+        SIGHT_ERROR("new object difference found : " << prop.first << " != " << prop.second);
     }
 }
 
 //------------------------------------------------------------------------------
 
-template <typename T>
+template<typename T>
 void write(const service::IService::ConfigType& srvCfg, const SPTR(T)& obj, const std::string& writer)
 {
-    service::IService::sptr writerSrv = service::add( writer );
+    service::IService::sptr writerSrv = service::add(writer);
     CPPUNIT_ASSERT(writerSrv);
 
-    service::OSR::registerService( obj, sight::io::base::service::s_DATA_KEY,
-                                   service::IService::AccessType::INPUT,
-                                   writerSrv );
+    service::OSR::registerService(
+        obj,
+        sight::io::base::service::s_DATA_KEY,
+        service::IService::AccessType::INPUT,
+        writerSrv
+    );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();
     writerSrv->update().wait();
     writerSrv->stop().wait();
-    service::OSR::unregisterService( writerSrv );
+    service::OSR::unregisterService(writerSrv);
 }
 
-template <typename T>
+template<typename T>
 SPTR(T) read(const service::IService::ConfigType& srvCfg, const std::string& reader)
 {
-
     typename T::sptr readObj          = T::New();
-    service::IService::sptr readerSrv = service::add( reader );
+    service::IService::sptr readerSrv = service::add(reader);
     CPPUNIT_ASSERT(readerSrv);
 
-    service::OSR::registerService( readObj, sight::io::base::service::s_DATA_KEY,
-                                   service::IService::AccessType::INOUT,
-                                   readerSrv );
+    service::OSR::registerService(
+        readObj,
+        sight::io::base::service::s_DATA_KEY,
+        service::IService::AccessType::INOUT,
+        readerSrv
+    );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start().wait();
     readerSrv->update().wait();
     readerSrv->stop().wait();
-    service::OSR::unregisterService( readerSrv );
+    service::OSR::unregisterService(readerSrv);
 
     return readObj;
 }
 
-template <typename T>
+template<typename T>
 SPTR(T) readOut(const service::IService::ConfigType& srvCfg, const std::string& reader)
 {
     service::IService::ConfigType config(srvCfg);
     config.add("out.<xmlattr>.key", sight::io::base::service::s_DATA_KEY);
 
-    service::IService::sptr readerSrv = service::add( reader );
+    service::IService::sptr readerSrv = service::add(reader);
     CPPUNIT_ASSERT(readerSrv);
 
     readerSrv->setConfiguration(config);
@@ -135,16 +141,20 @@ SPTR(T) readOut(const service::IService::ConfigType& srvCfg, const std::string& 
     readerSrv->update().wait();
     typename T::sptr readObj = readerSrv->getOutput<T>(sight::io::base::service::s_DATA_KEY);
     readerSrv->stop().wait();
-    service::OSR::unregisterService( readerSrv );
+    service::OSR::unregisterService(readerSrv);
 
     return readObj;
 }
 
 //------------------------------------------------------------------------------
 
-template <typename T>
-void writeReadFile(const service::IService::ConfigType& srvCfg, const SPTR(T)& obj,
-                   const std::string& writer, const std::string& reader)
+template<typename T>
+void writeReadFile(
+    const service::IService::ConfigType& srvCfg,
+    const SPTR(T)& obj,
+    const std::string& writer,
+    const std::string& reader
+)
 {
     write(srvCfg, obj, writer);
 
@@ -157,7 +167,7 @@ void writeReadFile(const service::IService::ConfigType& srvCfg, const SPTR(T)& o
     visitor.compare(readObj, obj);
     compareLog(visitor);
 
-    CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+    CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
 }
 
 //------------------------------------------------------------------------------
@@ -172,59 +182,67 @@ void atomTest(const std::filesystem::path& filePath)
     workspace->getContainer()["processingDB"] = data::Composite::New();
     workspace->getContainer()["planningDB"]   = data::Composite::New();
 
-    std::filesystem::create_directories( filePath.parent_path() );
-    writeReadFile< data::Composite>( srvCfg, workspace, "::sight::module::io::atoms::SWriter",
-                                     "::sight::module::io::atoms::SReader" );
-    writeReadFile< data::SeriesDB >( srvCfg, seriesDB, "::sight::module::io::atoms::SWriter",
-                                     "::sight::module::io::atoms::SReader" );
+    std::filesystem::create_directories(filePath.parent_path());
+    writeReadFile<data::Composite>(
+        srvCfg,
+        workspace,
+        "::sight::module::io::atoms::SWriter",
+        "::sight::module::io::atoms::SReader"
+    );
+    writeReadFile<data::SeriesDB>(
+        srvCfg,
+        seriesDB,
+        "::sight::module::io::atoms::SWriter",
+        "::sight::module::io::atoms::SReader"
+    );
 
     data::SeriesDB::sptr readSeriesDB;
 
     // Default policy
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 
     // 'Change' UUID policy
     srvCfg.add("uuidPolicy", "Change");
 
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 
     // Output with 'Change' UUID policy
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 
     // 'Strict' UUID policy
     srvCfg.put("uuidPolicy", "Strict");
 
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         // DuplicatedDataUUID exception should have been thrown and catch by reader before any data/atom conversion.
@@ -236,7 +254,7 @@ void atomTest(const std::filesystem::path& filePath)
     // Output with 'Reuse' UUID policy
     srvCfg.put("uuidPolicy", "Reuse");
 
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         CPPUNIT_ASSERT_MESSAGE("Failed to retrieve output SeriesDB", readSeriesDB);
@@ -246,7 +264,7 @@ void atomTest(const std::filesystem::path& filePath)
         data::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDB, readSeriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 }
 
@@ -267,16 +285,16 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
     auto iter           = array->begin<std::uint32_t>();
     const auto end      = array->end<std::uint32_t>();
 
-    for (; iter != end; ++iter)
+    for( ; iter != end ; ++iter)
     {
         *iter = count++;
     }
 
-    std::filesystem::create_directories( filePath.parent_path() );
+    std::filesystem::create_directories(filePath.parent_path());
 
-    write< data::Array >(srvCfg, array, "::sight::module::io::atoms::SWriter");
+    write<data::Array>(srvCfg, array, "::sight::module::io::atoms::SWriter");
 
-    data::Array::sptr readArray = read< data::Array >(srvCfg, "::sight::module::io::atoms::SReader");
+    data::Array::sptr readArray = read<data::Array>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -284,10 +302,10 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
         compareLog(visitor);
         for(const auto& it : *visitor.getDifferences())
         {
-            std::cout<<"first : "<<it.first<<" second "<<it.second<<std::endl;
+            std::cout << "first : " << it.first << " second " << it.second << std::endl;
         }
 
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 }
 
@@ -326,4 +344,5 @@ void IoAtomsTest::XMLZTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::module::io::atoms

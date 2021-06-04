@@ -34,6 +34,7 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -49,40 +50,42 @@ Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
 
 public:
 
-    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New<MessageDialog>);
 
     UI_QML_API MessageDialog(ui::base::GuiBaseObject::Key key);
 
     UI_QML_API ~MessageDialog() override;
 
     /// Set the title of the message box
-    UI_QML_API void setTitle( const std::string& title ) override;
+    UI_QML_API void setTitle(const std::string& title) override;
 
     /// Set the message
-    UI_QML_API void setMessage( const std::string& msg ) override;
+    UI_QML_API void setMessage(const std::string& msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QML_API void setIcon( IMessageDialog::Icons icon) override;
+    UI_QML_API void setIcon(IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QML_API void addButton( IMessageDialog::Buttons button ) override;
+    UI_QML_API void addButton(IMessageDialog::Buttons button) override;
 
     /// Add a custom button to this dialog
     UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
     /// Set the default buttons
-    UI_QML_API void setDefaultButton( IMessageDialog::Buttons button ) override;
+    UI_QML_API void setDefaultButton(IMessageDialog::Buttons button) override;
 
     /// Show the message box and return the clicked button.
     UI_QML_API Buttons show() override;
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void buttonsChanged();
     void messageChanged();
     void iconChanged();
 
 protected Q_SLOTS:
+
     /// slot getting the result of the dialog when a button is pressed
     void resultDialog(int button);
 
@@ -111,4 +114,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

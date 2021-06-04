@@ -39,10 +39,11 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::SpyLogTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::SpyLogTest);
 
 namespace sight::core
 {
+
 namespace ut
 {
 
@@ -69,7 +70,7 @@ void SpyLogTest::logMessageTest()
     m_ostream.clear();
     core::log::SpyLogger& log = core::log::SpyLogger::getSpyLogger();
 
-    std::vector< std::string > logs;
+    std::vector<std::string> logs;
 
     logs.push_back("trace message");
     log.trace(logs.back(), __FILE__, __LINE__);
@@ -80,11 +81,11 @@ void SpyLogTest::logMessageTest()
     this->checkLog(logs, this->logToVector(m_ostream));
 
     logs.push_back("info message");
-    log.info(logs.back(),   __FILE__, __LINE__);
+    log.info(logs.back(), __FILE__, __LINE__);
     this->checkLog(logs, this->logToVector(m_ostream));
 
     logs.push_back("warn message");
-    log.warn(logs.back(),   __FILE__, __LINE__);
+    log.warn(logs.back(), __FILE__, __LINE__);
     this->checkLog(logs, this->logToVector(m_ostream));
 
     logs.push_back("error message");
@@ -100,8 +101,8 @@ void SpyLogTest::logMessageTest()
 
 struct LogProducerThread
 {
-    typedef std::shared_ptr< LogProducerThread > sptr;
-    typedef std::vector< std::string > LogContainerType;
+    typedef std::shared_ptr<LogProducerThread> sptr;
+    typedef std::vector<std::string> LogContainerType;
 
     LogProducerThread()
     {
@@ -112,7 +113,7 @@ struct LogProducerThread
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {
         core::log::SpyLogger& log = core::log::SpyLogger::getSpyLogger();
-        for(size_t i = offset; i < nbLogs + offset; ++i)
+        for(size_t i = offset ; i < nbLogs + offset ; ++i)
         {
             std::stringstream ss;
             ss << "msg n ";
@@ -131,15 +132,15 @@ struct RegexLogCompare
 {
     //------------------------------------------------------------------------------
 
-    bool operator() (std::string a, std::string b)
+    bool operator()(std::string a, std::string b)
     {
         std::regex re(".*(msg n [\\d]+)$");
         std::smatch matchA;
         std::smatch matchB;
         bool doMatchA = std::regex_match(a, matchA, re);
         bool doMatchB = std::regex_match(b, matchB, re);
-        CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
-        CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
+        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + a, doMatchA);
+        CPPUNIT_ASSERT_MESSAGE(std::string("Regex do not match ") + b, doMatchB);
 
         std::string strA(matchA[1].first, matchA[1].second);
         std::string strB(matchB[1].first, matchB[1].second);
@@ -155,14 +156,15 @@ void SpyLogTest::threadSafetyTest()
     m_ostream.clear();
     const size_t NB_THREAD(20);
     const size_t NB_LOG(20);
-    LogProducerThread::LogContainerType logs(NB_THREAD* NB_LOG, "test");
-    std::vector< std::thread > tg;
-    for(size_t i = 0; i < NB_THREAD; ++i)
+    LogProducerThread::LogContainerType logs(NB_THREAD * NB_LOG, "test");
+    std::vector<std::thread> tg;
+    for(size_t i = 0 ; i < NB_THREAD ; ++i)
     {
         LogProducerThread::sptr ct = std::make_shared<LogProducerThread>();
         size_t offset              = i * NB_LOG;
-        tg.push_back(std::thread(std::bind(&LogProducerThread::run, ct, std::ref(logs), NB_LOG, offset) ));
+        tg.push_back(std::thread(std::bind(&LogProducerThread::run, ct, std::ref(logs), NB_LOG, offset)));
     }
+
     for(auto& t : tg)
     {
         t.join();
@@ -170,7 +172,7 @@ void SpyLogTest::threadSafetyTest()
 
     LogProducerThread::LogContainerType logMessages = this->logToVector(m_ostream);
 
-    std::sort( logMessages.begin(), logMessages.end(), regex_compare);
+    std::sort(logMessages.begin(), logMessages.end(), regex_compare);
     this->checkLog(logs, logMessages);
 }
 
@@ -186,6 +188,7 @@ std::vector<std::string> SpyLogTest::logToVector(const std::stringstream& logsSt
     {
         lines.push_back(line);
     }
+
     return lines;
 }
 
@@ -208,13 +211,13 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
         + levelPattern
         + filePattern
         + fileLinePattern
-        + messagePattern );
+        + messagePattern);
 
     std::smatch match;
     std::string regexMessage;
     size_t i = 0;
 
-    for(const std::string& log :  logMessages)
+    for(const std::string& log : logMessages)
     {
         const bool doMatch = std::regex_match(log, match, re);
         CPPUNIT_ASSERT_MESSAGE(log + " doesn't match regex.", doMatch);
@@ -228,4 +231,5 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
 //-----------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::core

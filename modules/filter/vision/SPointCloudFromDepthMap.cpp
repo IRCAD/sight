@@ -67,33 +67,31 @@ void SPointCloudFromDepthMap::starting()
 
 void SPointCloudFromDepthMap::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SPointCloudFromDepthMap::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SPointCloudFromDepthMap::updating()
 {
-    auto calibration = this->getInput< data::CameraSeries>("calibration");
-    auto depthMap    = this->getInput< data::Image>("depthMap");
-    auto pointCloud  = this->getInOut< data::Mesh >("pointCloud");
+    auto calibration = this->getInput<data::CameraSeries>("calibration");
+    auto depthMap    = this->getInput<data::Image>("depthMap");
+    auto pointCloud  = this->getInOut<data::Mesh>("pointCloud");
     SIGHT_ASSERT("Missing 'pointCloud' inout", pointCloud);
     SIGHT_ASSERT("Missing 'calibration' input", calibration);
     SIGHT_ASSERT("Missing 'depthMap' input", depthMap);
 
     auto depthCalibration = calibration->getCamera(0);
 
-    auto rgbMap = this->getInput< data::Image>("rgbMap");
+    auto rgbMap = this->getInput<data::Image>("rgbMap");
     data::Camera::csptr colorCalibration;
     data::Matrix4::csptr extrinsicMatrix;
-    if (rgbMap)
+    if(rgbMap)
     {
         colorCalibration = calibration->getCamera(1);
         extrinsicMatrix  = calibration->getExtrinsicMatrix(1);
@@ -101,7 +99,7 @@ void SPointCloudFromDepthMap::updating()
     }
 
     // Initialize mesh points memory one time in order to increase performances
-    if (pointCloud->getNumberOfPoints() == 0)
+    if(pointCloud->getNumberOfPoints() == 0)
     {
         const auto size       = depthMap->getSize2();
         const size_t width    = size[0];
@@ -111,47 +109,55 @@ void SPointCloudFromDepthMap::updating()
         data::mt::ObjectWriteLock meshLock(pointCloud);
         // allocate mesh
         data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
-        if (rgbMap)
+        if(rgbMap)
         {
             attribute = data::Mesh::Attributes::POINT_COLORS;
         }
+
         pointCloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, attribute);
 
         const auto dumpLock = pointCloud->lock();
 
-        auto itr = pointCloud->begin< data::iterator::CellIterator >();
+        auto itr = pointCloud->begin<data::iterator::CellIterator>();
 
         // to display the mesh, we need to create cells with one point.
-        for( size_t i = 0; i < nbPoints; ++i, ++itr )
+        for(size_t i = 0 ; i < nbPoints ; ++i, ++itr)
         {
-            *itr->type       = data::Mesh::CellType::POINT;
-            *itr->offset     = i;
-            *(itr+1)->offset = i+1; // to be able to iterate through point indices
-            itr->pointIdx[0] = i;
+            *itr->type         = data::Mesh::CellType::POINT;
+            *itr->offset       = i;
+            *(itr + 1)->offset = i + 1; // to be able to iterate through point indices
+            itr->pointIdx[0]   = i;
         }
 
-        auto sig = pointCloud->signal< data::Mesh::ModifiedSignalType >(data::Mesh::s_MODIFIED_SIG);
+        auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
-    if (rgbMap)
+    if(rgbMap)
     {
-        this->depthMapToPointCloudRGB(depthCalibration, colorCalibration, depthMap, rgbMap, extrinsicMatrix,
-                                      pointCloud);
+        this->depthMapToPointCloudRGB(
+            depthCalibration,
+            colorCalibration,
+            depthMap,
+            rgbMap,
+            extrinsicMatrix,
+            pointCloud
+        );
 
         auto sig =
-            pointCloud->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pointCloud->signal< data::Mesh::PointColorsModifiedSignalType >(
-            data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        auto sig2 = pointCloud->signal<data::Mesh::PointColorsModifiedSignalType>(
+            data::Mesh::s_POINT_COLORS_MODIFIED_SIG
+        );
         sig2->asyncEmit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap, pointCloud);
         auto sig =
-            pointCloud->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -166,19 +172,18 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
     {
         if(_val >= 0 && _val <= UINT16_MAX)
         {
-            m_minDepth = static_cast< std::uint16_t >(_val);
+            m_minDepth = static_cast<std::uint16_t>(_val);
         }
         else
         {
             SIGHT_ERROR("min Depth should be between [0; 65536]");
         }
-
     }
     else if(_key == "maxDepth")
     {
         if(_val >= 0 && _val <= UINT16_MAX)
         {
-            m_maxDepth = static_cast< std::uint16_t >(_val);
+            m_maxDepth = static_cast<std::uint16_t>(_val);
         }
         else
         {
@@ -187,7 +192,7 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
     }
     else
     {
-        SIGHT_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'" );
+        SIGHT_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'");
     }
 }
 
@@ -196,7 +201,8 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
 void SPointCloudFromDepthMap::depthMapToPointCloud(
     const data::Camera::csptr& depthCamera,
     const data::Image::csptr& depthMap,
-    const data::Mesh::sptr& pointCloud)
+    const data::Mesh::sptr& pointCloud
+)
 {
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
@@ -215,7 +221,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     const auto depthDumpLock = depthMap->lock();
 
-    auto depthItr = depthMap->begin< std::uint16_t >();
+    auto depthItr = depthMap->begin<std::uint16_t>();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -226,12 +232,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin< data::iterator::PointIterator >();
+    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
 
     size_t nbRealPoints = 0;
-    for(size_t y = 0; y != height; ++y)
+    for(size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0; x != width; ++x)
+        for(size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
@@ -244,9 +250,11 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                 ++pointsItr;
                 ++nbRealPoints;
             }
+
             ++depthItr;
         }
     }
+
     pointCloud->setNumberOfPoints(nbRealPoints);
     pointCloud->setNumberOfCells(nbRealPoints);
     pointCloud->setCellDataSize(nbRealPoints);
@@ -260,7 +268,8 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::Image::csptr& depthMap,
     const data::Image::csptr& colorMap,
     const data::Matrix4::csptr& extrinsic,
-    const data::Mesh::sptr& pointCloud)
+    const data::Mesh::sptr& pointCloud
+)
 {
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
@@ -282,6 +291,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         SIGHT_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;
     }
+
     if(4 != colorMap->getNumberOfComponents())
     {
         SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
@@ -301,12 +311,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     data::mt::ObjectReadLock depthMapLock(depthMap);
 
     const auto depthDumpLock = depthMap->lock();
-    auto depthItr            = depthMap->begin< std::uint16_t >();
+    auto depthItr            = depthMap->begin<std::uint16_t>();
 
     data::mt::ObjectReadLock rgbLock(colorMap);
 
     const auto rgbDumpLock = colorMap->lock();
-    const auto rgbBegin    = colorMap->begin< data::iterator::RGBA >();
+    const auto rgbBegin    = colorMap->begin<data::iterator::RGBA>();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -322,17 +332,17 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin< data::iterator::PointIterator >();
+    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
 
     const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
     size_t nbRealPoints     = 0;
     auto glmExtrinsicMatrix = geometry::data::getMatrixFromTF3D(extrinsic);
 
-    const auto imageSize = height*width;
-    for(size_t y = 0; y != height; ++y)
+    const auto imageSize = height * width;
+    for(size_t y = 0 ; y != height ; ++y)
     {
-        for(size_t x = 0; x != width; ++x)
+        for(size_t x = 0 ; x != width ; ++x)
         {
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
@@ -351,14 +361,23 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 // project point to the rgb image
                 size_t rgbPx, rgbPy;
                 const bool isProjected = sight::filter::vision::Projection::projectPoint(
-                    rgbPoint.x, rgbPoint.y, rgbPoint.z,
-                    rgbCx, rgbCy, rgbFx, rgbFy,
-                    rgbWidth, rgbHeight, rgbPx, rgbPy);
+                    rgbPoint.x,
+                    rgbPoint.y,
+                    rgbPoint.z,
+                    rgbCx,
+                    rgbCy,
+                    rgbFx,
+                    rgbFy,
+                    rgbWidth,
+                    rgbHeight,
+                    rgbPx,
+                    rgbPy
+                );
 
-                if (isProjected)
+                if(isProjected)
                 {
                     const size_t rgbIdx = rgbPy * rgbWidth + rgbPx;
-                    if (rgbIdx < imageSize)
+                    if(rgbIdx < imageSize)
                     {
                         const auto color = rgbBegin + rgbIdx;
                         *pointsItr->rgba = *color;
@@ -372,9 +391,11 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                 {
                     *pointsItr->rgba = defaultColor;
                 }
+
                 ++pointsItr;
                 ++nbRealPoints;
             }
+
             ++depthItr;
         }
     }

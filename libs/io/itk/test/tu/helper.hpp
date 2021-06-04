@@ -26,18 +26,24 @@
 
 namespace sight::data
 {
+
 class Image;
+
 }
 
 namespace sight::io::itk
 {
+
 namespace ut
 {
+
 namespace helper
 {
 
-void roundSpacing( SPTR(data::Image) image);
+void roundSpacing(SPTR(data::Image) image);
 
 } //namespace helper
+
 } //namespace ut
+
 } //namespace sight::io::itk

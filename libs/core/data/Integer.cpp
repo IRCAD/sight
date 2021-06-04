@@ -26,10 +26,11 @@
 #include "data/GenericField.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( sight::data::Integer );
+SIGHT_REGISTER_DATA(sight::data::Integer);
 
 namespace sight::data
 {
+
 //------------------------------------------------------------------------------
 
 Integer::Integer(data::Object::Key) noexcept
@@ -44,13 +45,17 @@ Integer::~Integer() noexcept
 
 //------------------------------------------------------------------------------
 
-void Integer::shallowCopy(const Object::csptr& _source )
+void Integer::shallowCopy(const Object::csptr& _source)
 {
     Integer::csptr other = Integer::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_value = other->m_value;
 }
 
@@ -59,10 +64,14 @@ void Integer::shallowCopy(const Object::csptr& _source )
 void Integer::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Integer::csptr other = Integer::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
     m_value = other->m_value;
 }
 

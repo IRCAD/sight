@@ -37,10 +37,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V09ALA
 {
+
 namespace V10
 {
+
 namespace data
 {
 
@@ -60,7 +63,7 @@ Image::~Image()
 
 // ----------------------------------------------------------------------------
 
-Image::Image( const Image& cpy ) :
+Image::Image(const Image& cpy) :
     io::atoms::patch::ISemanticPatch(cpy)
 {
 }
@@ -70,29 +73,33 @@ Image::Image( const Image& cpy ) :
 void Image::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     ISemanticPatch::apply(previous, current, newVersions);
-    io::atoms::patch::helper::cleanFields( current );
-    io::atoms::patch::helper::Object helper( current );
+    io::atoms::patch::helper::cleanFields(current);
+    io::atoms::patch::helper::Object helper(current);
 
     sight::atoms::Map::csptr previousFieldMap = sight::atoms::Map::dynamicCast(previous->getAttribute("fields"));
     SIGHT_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_imageLandmarksId");
-    if (iter != previousFieldMap->end())
+    if(iter != previousFieldMap->end())
     {
         // create new Landmarks structure
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
-        sight::atoms::Object::sptr currentLandmarks = creators->create( "::sight::data::Landmarks", "1");
-        io::atoms::patch::helper::Object helperLandmarks( currentLandmarks );
+        sight::atoms::Object::sptr currentLandmarks = creators->create("::sight::data::Landmarks", "1");
+        io::atoms::patch::helper::Object helperLandmarks(currentLandmarks);
 
         sight::atoms::Map::sptr currentFieldMap = sight::atoms::Map::dynamicCast(current->getAttribute("fields"));
         currentFieldMap->insert("m_landmarksId", currentLandmarks);
 
-        sight::atoms::Map::sptr landmarksMap = sight::atoms::Map::dynamicCast(currentLandmarks->getAttribute(
-                                                                                  "landmarks"));
+        sight::atoms::Map::sptr landmarksMap = sight::atoms::Map::dynamicCast(
+            currentLandmarks->getAttribute(
+                "landmarks"
+            )
+        );
 
         // Convert previous PointList
         sight::atoms::Object::sptr previousPL = sight::atoms::Object::dynamicCast(iter->second);
@@ -101,7 +108,7 @@ void Image::apply(
             sight::atoms::Sequence::dynamicCast(previousPL->getAttribute("points"));
 
         size_t count = 0;
-        for (const auto& obj : previousPLSeq->getValue())
+        for(const auto& obj : previousPLSeq->getValue())
         {
             // get point coordinates
             sight::atoms::Object::csptr point         = sight::atoms::Object::dynamicCast(obj);
@@ -110,22 +117,23 @@ void Image::apply(
             sight::atoms::Numeric::csptr coordX = sight::atoms::Numeric::dynamicCast(pointCoords->getValue()[0]);
             sight::atoms::Numeric::csptr coordY = sight::atoms::Numeric::dynamicCast(pointCoords->getValue()[1]);
             sight::atoms::Numeric::csptr coordZ = sight::atoms::Numeric::dynamicCast(pointCoords->getValue()[2]);
-            const std::string coords            = coordX->getString() + ";" + coordY->getString() + ";" +
-                                                  coordZ->getString();
+            const std::string coords            = coordX->getString() + ";" + coordY->getString() + ";"
+                                                  + coordZ->getString();
 
             // get point label
             sight::atoms::Map::csptr pointFieldMap = sight::atoms::Map::dynamicCast(point->getAttribute("fields"));
 
             std::string label;
             const auto& it = pointFieldMap->find("m_labelId");
-            if (it != pointFieldMap->end())
+            if(it != pointFieldMap->end())
             {
                 sight::atoms::Object::csptr labelObj = sight::atoms::Object::dynamicCast(it->second);
                 sight::atoms::String::csptr labelStr =
                     sight::atoms::String::dynamicCast(labelObj->getAttribute("value"));
                 label = labelStr->getValue();
             }
-            if (label.empty())
+
+            if(label.empty())
             {
                 label = "label_" + std::to_string(count++);
             }
@@ -151,6 +159,9 @@ void Image::apply(
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace V10
+
 } // namespace V09ALA
+
 } // namespace sight::io::patch::semantic

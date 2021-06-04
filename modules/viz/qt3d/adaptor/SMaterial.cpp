@@ -30,7 +30,6 @@
 
 #include <QQmlEngine>
 
-
 //-----------------------------------------------------------------------------
 
 namespace sight::module::viz::qt3d::adaptor
@@ -47,8 +46,8 @@ static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 SMaterial::SMaterial() noexcept
 {
     // Allows using Material as QML type when using SMaterial service in QML applications.
-    qmlRegisterType< sight::viz::qt3d::data::Material >("sight::viz::qt3d", 1, 0, "Material");
-    qRegisterMetaType< sight::viz::qt3d::data::Material* >("sight::viz::qt3d::Material*");
+    qmlRegisterType<sight::viz::qt3d::data::Material>("sight::viz::qt3d", 1, 0, "Material");
+    qRegisterMetaType<sight::viz::qt3d::data::Material*>("sight::viz::qt3d::Material*");
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +86,7 @@ void SMaterial::starting()
 service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push( s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -96,7 +95,7 @@ service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 void SMaterial::updating()
 {
     // Reads the material from the input as sight data.
-    data::Material::sptr material = this->getInOut< sight::data::Material >(s_MATERIAL_INOUT);
+    data::Material::sptr material = this->getInOut<sight::data::Material>(s_MATERIAL_INOUT);
 
     m_material->updatePolygonMode(material->getRepresentationMode());
     m_material->updateOptionsMode(material->getOptionsMode());

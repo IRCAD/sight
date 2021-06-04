@@ -31,24 +31,26 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace registry
 {
 
-#define fwRenderOgreRegisterMacro( OgreRenderInteractorMngClassname, FunctorKey )                               \
-    static sight::viz::scene3d::IWindowInteractor::Registry< OgreRenderInteractorMngClassname >    \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
+#define fwRenderOgreRegisterMacro(OgreRenderInteractorMngClassname, FunctorKey) \
+    static sight::viz::scene3d::IWindowInteractor::Registry<OgreRenderInteractorMngClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
-#define fwRenderOgreRegisterOffscreenMgrMacro(OgreRenderInteractorMngClassname, FunctorKey)                        \
+#define fwRenderOgreRegisterOffscreenMgrMacro(OgreRenderInteractorMngClassname, FunctorKey) \
     static sight::viz::scene3d::IWindowInteractor::OffscreenMgrRegistry<OgreRenderInteractorMngClassname> \
-    BOOST_PP_CAT(s__factory__record__, __LINE__)( FunctorKey );
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
-#define fwRenderOgreRegisterInteractorMacro( OgreInteractorClassname )                                          \
-    static sight::viz::scene3d::interactor::IInteractor::Registry< OgreInteractorClassname >                                \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(OgreInteractorClassname) );
+#define fwRenderOgreRegisterInteractorMacro(OgreInteractorClassname) \
+    static sight::viz::scene3d::interactor::IInteractor::Registry<OgreInteractorClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(OgreInteractorClassname));
 
-#define fwRenderOgreRegisterLightMacro( OgreLightClassname, FunctorKey )                               \
-    static sight::viz::scene3d::ILight::Registry< OgreLightClassname >    \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
+#define fwRenderOgreRegisterLightMacro(OgreLightClassname, FunctorKey) \
+    static sight::viz::scene3d::ILight::Registry<OgreLightClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // end namespace registry
+
 } // end namespace sight::viz::scene3d

@@ -53,6 +53,7 @@
 
 namespace sight::module::ui::qml
 {
+
 //-----------------------------------------------------------------------------
 
 SIGHT_REGISTER_PLUGIN("::sight::module::ui::qml::Plugin");
@@ -67,18 +68,18 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    qmlRegisterType< sight::ui::qml::IQmlAppManager >("sight::ui::qml", 1, 0, "IQmlAppManager");
+    qmlRegisterType<sight::ui::qml::IQmlAppManager>("sight::ui::qml", 1, 0, "IQmlAppManager");
 
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
     SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
-    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
-        = [](int& argc, char** argv)
-          {
-              return QSharedPointer< QGuiApplication > ( new sight::ui::qml::App(argc, argv) );
-          };
+    std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
+        [](int& argc, char** argv)
+        {
+            return QSharedPointer<QGuiApplication>(new sight::ui::qml::App(argc, argv));
+        };
 
     m_workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     QQuickStyle::setStyle("Material");
@@ -96,9 +97,9 @@ void Plugin::start()
     qmlRegisterType<image::SSliceIndexPositionEditor>("image", 1, 0, "SSliceIndexPositionEditor");
     qmlRegisterType<reconstruction::SOrganMaterialEditor>("reconstruction", 1, 0, "SOrganMaterialEditor");
     qmlRegisterType<reconstruction::SRepresentationEditor>("reconstruction", 1, 0, "SRepresentationEditor");
-    qmlRegisterType<activity::SView >("activitiesQml", 1, 0, "SView");
-    qmlRegisterType<activity::SSequencer >("activitiesQml", 1, 0, "SSequencer");
-    qmlRegisterType<activity::ActivityLauncherManager >("activitiesQml", 1, 0, "ActivityLauncherManager");
+    qmlRegisterType<activity::SView>("activitiesQml", 1, 0, "SView");
+    qmlRegisterType<activity::SSequencer>("activitiesQml", 1, 0, "SSequencer");
+    qmlRegisterType<activity::ActivityLauncherManager>("activitiesQml", 1, 0, "ActivityLauncherManager");
 
     QStringList iconPath = QIcon::themeSearchPaths();
     iconPath.append(QString::fromStdString(path.string()));
@@ -127,7 +128,7 @@ void setup()
 
 int Plugin::run() noexcept
 {
-    m_workerQt->post( std::bind( &setup ) );
+    m_workerQt->post(std::bind(&setup));
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
     core::runtime::getCurrentProfile()->cleanup();

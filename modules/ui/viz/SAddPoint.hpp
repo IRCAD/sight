@@ -53,7 +53,7 @@ class MODULE_UI_VIZ_CLASS_API SAddPoint : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SAddPoint, service::IController)
+    SIGHT_DECLARE_SERVICE(SAddPoint, service::IController);
 
     /**
      * @name Slots API
@@ -109,4 +109,5 @@ private:
      * @}
      */
 };
+
 } // uiVisuOgre

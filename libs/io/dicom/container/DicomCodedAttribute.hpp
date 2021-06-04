@@ -31,6 +31,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
 
@@ -43,6 +44,7 @@ namespace container
 class IO_DICOM_CLASS_API DicomCodedAttribute
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] codeValue Code Value (0008,0100)
@@ -50,10 +52,12 @@ public:
      * @param[in] codeMeaning Code Meaning (0008,0104)
      * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
      */
-    IO_DICOM_API DicomCodedAttribute(const std::string& codeValue              = "",
-                                     const std::string& codingSchemeDesignator = "",
-                                     const std::string& codeMeaning            = "",
-                                     const std::string& codingSchemeVersion    = "");
+    IO_DICOM_API DicomCodedAttribute(
+        const std::string& codeValue              = "",
+        const std::string& codingSchemeDesignator = "",
+        const std::string& codeMeaning            = "",
+        const std::string& codingSchemeVersion    = ""
+    );
 
     /// Returns true if the attribute is empty
     IO_DICOM_API bool isEmpty() const;
@@ -65,7 +69,7 @@ public:
     /**  @} */
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<< (std::ostream& os, const DicomCodedAttribute& attribute)
+    IO_DICOM_API friend std::ostream& operator<<(std::ostream& os, const DicomCodedAttribute& attribute)
     {
         os << "\\\"" << attribute.m_codeValue << "\\\" ";
         os << "\\\"" << attribute.m_codingSchemeDesignator << "\\\" ";
@@ -126,6 +130,7 @@ public:
     IO_DICOM_API ::gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
 
 private:
+
     /// Code Value (see : Tag(0008,0100) )
     std::string m_codeValue;
 
@@ -137,8 +142,8 @@ private:
 
     /// Coding Scheme Version (see : Tag(0008,0104) )
     std::string m_codingSchemeVersion;
-
 };
 
 } //namespace container
+
 } //namespace sight::io::dicom

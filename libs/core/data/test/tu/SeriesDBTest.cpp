@@ -25,10 +25,11 @@
 #include <data/ModelSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::SeriesDBTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::SeriesDBTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -56,20 +57,20 @@ void SeriesDBTest::containerTest()
     data::Series::sptr series2 = data::ModelSeries::New();
     data::Series::sptr series3 = data::ModelSeries::New();
 
-    CPPUNIT_ASSERT( m_series->empty() );
+    CPPUNIT_ASSERT(m_series->empty());
 
     m_series->getContainer().push_back(series1);
     m_series->getContainer().push_back(series2);
     m_series->getContainer().push_back(series3);
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (3), m_series->size() );
-    CPPUNIT_ASSERT_EQUAL( series1, (*m_series)[0] );
-    CPPUNIT_ASSERT_EQUAL( series2, (*m_series)[1] );
-    CPPUNIT_ASSERT_EQUAL( series3, (*m_series)[2] );
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(series1, (*m_series)[0]);
+    CPPUNIT_ASSERT_EQUAL(series2, (*m_series)[1]);
+    CPPUNIT_ASSERT_EQUAL(series3, (*m_series)[2]);
 
     m_series->getContainer().clear();
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (0), m_series->size() );
-    CPPUNIT_ASSERT( m_series->empty() );
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), m_series->size());
+    CPPUNIT_ASSERT(m_series->empty());
 
     data::SeriesDB::ContainerType series;
 
@@ -79,23 +80,23 @@ void SeriesDBTest::containerTest()
 
     m_series->setContainer(series);
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (3), m_series->size() );
-    CPPUNIT_ASSERT_EQUAL( series1, (*m_series)[0] );
-    CPPUNIT_ASSERT_EQUAL( series2, (*m_series)[1] );
-    CPPUNIT_ASSERT_EQUAL( series3, (*m_series)[2] );
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), m_series->size());
+    CPPUNIT_ASSERT_EQUAL(series1, (*m_series)[0]);
+    CPPUNIT_ASSERT_EQUAL(series2, (*m_series)[1]);
+    CPPUNIT_ASSERT_EQUAL(series3, (*m_series)[2]);
 
     m_series->getContainer().clear();
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (0), m_series->size() );
-    CPPUNIT_ASSERT( m_series->empty() );
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), m_series->size());
+    CPPUNIT_ASSERT(m_series->empty());
 
-    CPPUNIT_ASSERT_EQUAL( static_cast<size_t> (3), series.size() );
-    CPPUNIT_ASSERT_EQUAL( series1, series[0] );
-    CPPUNIT_ASSERT_EQUAL( series2, series[1] );
-    CPPUNIT_ASSERT_EQUAL( series3, series[2] );
-
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), series.size());
+    CPPUNIT_ASSERT_EQUAL(series1, series[0]);
+    CPPUNIT_ASSERT_EQUAL(series2, series[1]);
+    CPPUNIT_ASSERT_EQUAL(series3, series[2]);
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

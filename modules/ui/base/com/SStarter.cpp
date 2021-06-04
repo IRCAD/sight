@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -59,15 +60,15 @@ void SStarter::starting()
 
 void SStarter::stopping()
 {
-    std::vector< service::IService::SharedFutureType > futures;
+    std::vector<service::IService::SharedFutureType> futures;
 
-    for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
+    for(VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices))
     {
-        bool srv_exists = core::tools::fwID::exist(serviceUid.first );
-        if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
+        bool srv_exists = core::tools::fwID::exist(serviceUid.first);
+        if(srv_exists && (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()))
         {
-            service::IService::sptr service = service::get( serviceUid.first );
-            if (service->isStarted())
+            service::IService::sptr service = service::get(serviceUid.first);
+            if(service->isStarted())
             {
                 futures.push_back(service->stop());
             }
@@ -81,7 +82,7 @@ void SStarter::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SStarter::info(std::ostream& _sstream )
+void SStarter::info(std::ostream& _sstream)
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -90,16 +91,16 @@ void SStarter::info(std::ostream& _sstream )
 
 void SStarter::updating()
 {
-    for(size_t i = 0; i < m_uuidServices.size(); i++)
+    for(size_t i = 0 ; i < m_uuidServices.size() ; i++)
     {
         ActionType action = m_uuidServices.at(i).second;
         IDSrvType uid     = m_uuidServices.at(i).first;
         bool srv_exists   = core::tools::fwID::exist(uid);
 
         // Manage special action
-        if ( action == START_IF_EXISTS )
+        if(action == START_IF_EXISTS)
         {
-            if ( srv_exists )
+            if(srv_exists)
             {
                 action = START;
             }
@@ -108,9 +109,9 @@ void SStarter::updating()
                 action = DO_NOTHING;
             }
         }
-        else if( action == STOP_IF_EXISTS )
+        else if(action == STOP_IF_EXISTS)
         {
-            if ( srv_exists )
+            if(srv_exists)
             {
                 action = STOP;
             }
@@ -120,16 +121,15 @@ void SStarter::updating()
             }
         }
 
-        if( action != DO_NOTHING)
+        if(action != DO_NOTHING)
         {
             ::sight::ui::base::LockAction lock(this->getSptr());
 
-            service::IService::sptr service = service::get( uid );
+            service::IService::sptr service = service::get(uid);
             SIGHT_ASSERT("service not found", service);
-            switch ( action )
+            switch(action)
             {
                 case START_OR_STOP:
-                {
                     if(service->isStopped())
                     {
                         service->start();
@@ -141,10 +141,10 @@ void SStarter::updating()
                         service->stop();
                         m_idStartedSrvSet.erase(uid);
                     }
+
                     break;
-                }
+
                 case START_ONLY_OR_STOP:
-                {
                     if(service->isStopped())
                     {
                         service->start();
@@ -155,10 +155,10 @@ void SStarter::updating()
                         service->stop();
                         m_idStartedSrvSet.erase(uid);
                     }
+
                     break;
-                }
+
                 case START:
-                {
                     if(service->isStopped())
                     {
                         service->start();
@@ -168,11 +168,11 @@ void SStarter::updating()
                     {
                         SIGHT_WARN("Service " << service->getID() << " is not stopped");
                     }
+
                     service->update();
                     break;
-                }
+
                 case STOP:
-                {
                     if(service->isStarted())
                     {
                         service->stop();
@@ -181,10 +181,10 @@ void SStarter::updating()
                     {
                         SIGHT_WARN("Service " << service->getID() << " is not started");
                     }
+
                     break;
-                }
+
                 case START_ONLY:
-                {
                     if(service->isStopped())
                     {
                         service->start();
@@ -194,15 +194,16 @@ void SStarter::updating()
                     {
                         SIGHT_WARN("Service " << service->getID() << " is not stopped");
                     }
+
                     break;
-                }
+
                 default:
-                {
-                    SIGHT_FATAL("There is no action ("<< action
-                                                      <<") type corresponding to the action id requested for " << uid <<
-                                ".");
+                    SIGHT_FATAL(
+                        "There is no action (" << action
+                        << ") type corresponding to the action id requested for " << uid
+                        << "."
+                    );
                     break;
-                }
             }
         }
         else
@@ -210,7 +211,8 @@ void SStarter::updating()
             ::sight::ui::base::dialog::MessageDialog::show(
                 "Service unavailable",
                 "The service is unavailable.",
-                ::sight::ui::base::dialog::IMessageDialog::WARNING);
+                ::sight::ui::base::dialog::IMessageDialog::WARNING
+            );
 
             SIGHT_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
@@ -223,53 +225,55 @@ void SStarter::configuring()
 {
     this->initialize();
 
-    for(ConfigurationType actionCfg :  m_configuration->getElements() )
+    for(ConfigurationType actionCfg : m_configuration->getElements())
     {
-        SIGHT_INFO( "SStarter " << actionCfg->getName());
+        SIGHT_INFO("SStarter " << actionCfg->getName());
 
         std::string actionType = actionCfg->getName();
         ActionType action;
-        if ( actionType == "start" )
+        if(actionType == "start")
         {
             action = START;
         }
-        else if ( actionType == "stop" )
+        else if(actionType == "stop")
         {
             action = STOP;
         }
-        else if ( actionType == "start_or_stop" )
+        else if(actionType == "start_or_stop")
         {
             action = START_OR_STOP;
         }
-        else if ( actionType == "start_only_or_stop" )
+        else if(actionType == "start_only_or_stop")
         {
             action = START_ONLY_OR_STOP;
         }
-        else if ( actionType == "start_if_exists" )
+        else if(actionType == "start_if_exists")
         {
             action = START_IF_EXISTS;
         }
-        else if ( actionType == "stop_if_exists" )
+        else if(actionType == "stop_if_exists")
         {
             action = STOP_IF_EXISTS;
         }
-        else if ( actionType == "start_only" )
+        else if(actionType == "start_only")
         {
             action = START_ONLY;
         }
         else
         {
-            SIGHT_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
+            SIGHT_WARN("The \"actionType\":" << actionType << " is not managed by SStarter");
             continue;
         }
+
         SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
         IDSrvType uuid = actionCfg->getExistingAttributeValue("uid");
 
-        m_uuidServices.push_back( std::make_pair(uuid, action) );
+        m_uuidServices.push_back(std::make_pair(uuid, action));
     }
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace com
+
 } // namespace sight::module::ui::base

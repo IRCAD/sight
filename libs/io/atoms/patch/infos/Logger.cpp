@@ -42,17 +42,22 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace infos
 {
 
-BOOST_LOG_GLOBAL_LOGGER(lg_channel,
-                        ::boost::log::sources::channel_logger<std::string>);
+BOOST_LOG_GLOBAL_LOGGER(
+    lg_channel,
+    ::boost::log::sources::channel_logger<std::string>
+);
 
-BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS(lg_channel,
-                                  ::boost::log::sources::channel_logger_mt<std::string>,
-                                  (std::string("patch")));
+BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS(
+    lg_channel,
+    ::boost::log::sources::channel_logger_mt<std::string>,
+    (std::string("patch"))
+);
 
-Logger::StreamPtrType Logger::s_stream = ::boost::make_shared< Logger::StreamType >();
+Logger::StreamPtrType Logger::s_stream = ::boost::make_shared<Logger::StreamType>();
 
 Logger Logger::s_logger;
 
@@ -78,7 +83,7 @@ Logger::Logger()
 
     SIGHT_THROW_IF("Unable to define User's data directory", appPrefDir.empty());
 
-    if (!bfile::exists(appPrefDir))
+    if(!bfile::exists(appPrefDir))
     {
         bfile::create_directories(appPrefDir);
     }
@@ -93,19 +98,19 @@ Logger::Logger()
         // log record format
         keywords::format = (
             expr::stream
-                << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
-                << "][" << expr::format_date_time< ::boost::posix_time::ptime >("Uptime", "%H:%M:%S.%f")
-                << "][" << expr::attr< std::string >("Channel")
-                << "] " << expr::smessage
-            ),
+            << "[" << expr::format_date_time< ::boost::posix_time::ptime>("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
+            << "][" << expr::format_date_time< ::boost::posix_time::ptime>("Uptime", "%H:%M:%S.%f")
+            << "][" << expr::attr<std::string>("Channel")
+            << "] " << expr::smessage
+                           ),
         // auto-flush feature of the backend
         keywords::auto_flush = true,
-        keywords::filter     = (expr::attr< std::string >("Channel") == "patch")
-        );
+        keywords::filter     = (expr::attr<std::string>("Channel") == "patch")
+    );
 
     // Construct the sink
-    typedef ::boost::log::sinks::synchronous_sink< ::boost::log::sinks::text_ostream_backend > text_sink;
-    ::boost::shared_ptr< text_sink > pSink = ::boost::make_shared< text_sink >();
+    typedef ::boost::log::sinks::synchronous_sink< ::boost::log::sinks::text_ostream_backend> text_sink;
+    ::boost::shared_ptr<text_sink> pSink = ::boost::make_shared<text_sink>();
 
     // Add a stream to write log to
     pSink->locked_backend()->add_stream(s_stream);
@@ -179,4 +184,5 @@ void Logger::replaceAttribute(const std::string& message)
 // ----------------------------------------------------------------------------
 
 } //infos
+
 } //fwAtomHelper

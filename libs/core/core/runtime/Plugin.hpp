@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/runtime/IPlugin.hpp"
-
 #include <core/macros.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
@@ -40,14 +39,17 @@ namespace sight::core::runtime
 class CORE_CLASS_API Plugin : public IPlugin
 {
 public:
+
     CORE_API std::shared_ptr<Module> getModule() const noexcept override;
     CORE_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept
     override;
 
 protected:
-    CORE_API void setModule( std::shared_ptr<Module> module) noexcept override;
+
+    CORE_API void setModule(std::shared_ptr<Module> module) noexcept override;
 
 private:
+
     /**
      * @brief Pointer to the module the plugin is attached to.
      */

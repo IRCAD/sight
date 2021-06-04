@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( sight::data::PlaneList );
+SIGHT_REGISTER_DATA(sight::data::PlaneList);
 
 namespace sight::data
 {
@@ -42,9 +42,9 @@ const core::com::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "
 
 PlaneList::PlaneList(data::Object::Key)
 {
-    newSignal< PlaneAddedSignalType >(s_PLANE_ADDED_SIG);
-    newSignal< PlaneRemovedSignalType >(s_PLANE_REMOVED_SIG);
-    newSignal< VisibilityModifiedSignalType >(s_VISIBILITY_MODIFIED_SIG);
+    newSignal<PlaneAddedSignalType>(s_PLANE_ADDED_SIG);
+    newSignal<PlaneRemovedSignalType>(s_PLANE_REMOVED_SIG);
+    newSignal<VisibilityModifiedSignalType>(s_VISIBILITY_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -55,13 +55,17 @@ PlaneList::~PlaneList()
 
 //------------------------------------------------------------------------------
 
-void PlaneList::shallowCopy(const Object::csptr& _source )
+void PlaneList::shallowCopy(const Object::csptr& _source)
 {
     PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !other );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !other
+    );
+    this->fieldShallowCopy(_source);
 
     this->m_vPlanes = other->m_vPlanes;
 }
@@ -71,16 +75,20 @@ void PlaneList::shallowCopy(const Object::csptr& _source )
 void PlaneList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !other );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !other
+    );
+    this->fieldDeepCopy(_source, cache);
 
     this->m_vPlanes.clear();
     for(const data::Plane::sptr& plane : other->m_vPlanes)
     {
         Plane::sptr newPlane = data::Object::copy(plane, cache);
-        this->m_vPlanes.push_back( newPlane );
+        this->m_vPlanes.push_back(newPlane);
     }
 }
 

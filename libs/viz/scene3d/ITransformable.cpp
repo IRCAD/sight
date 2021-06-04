@@ -54,15 +54,18 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* ITransformable::getTransformNode(const std::string& _name,
-                                                    ::Ogre::SceneNode* const _parentNode)
+::Ogre::SceneNode* ITransformable::getTransformNode(
+    const std::string& _name,
+    ::Ogre::SceneNode* const _parentNode
+)
 {
     SIGHT_ASSERT("Transform name is not set.", !_name.empty());
     auto transformNode = viz::scene3d::helper::Scene::getNodeById(_name, _parentNode);
-    if (transformNode == nullptr)
+    if(transformNode == nullptr)
     {
         transformNode = _parentNode->createChildSceneNode(_name);
     }
+
     return transformNode;
 }
 

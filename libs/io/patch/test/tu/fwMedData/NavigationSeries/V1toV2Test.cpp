@@ -26,20 +26,23 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/NavigationSeries/V1ToV2.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::NavigationSeries::V1ToV2Test );
+#include <utest/Exception.hpp>
+
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::NavigationSeries::V1ToV2Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace NavigationSeries
 {
 
@@ -110,7 +113,11 @@ void V1ToV2Test::applyPatchTest()
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace NavigationSeries
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

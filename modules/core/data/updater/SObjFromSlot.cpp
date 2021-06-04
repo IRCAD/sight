@@ -40,7 +40,6 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 
 SObjFromSlot::SObjFromSlot() noexcept
@@ -81,7 +80,7 @@ void SObjFromSlot::updating()
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::info( std::ostream& )
+void SObjFromSlot::info(std::ostream&)
 {
 }
 
@@ -102,4 +101,5 @@ void SObjFromSlot::remove()
 //-----------------------------------------------------------------------------
 
 } // updater
+
 } // sight::module::data

@@ -33,7 +33,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::Reconstruction );
+SIGHT_REGISTER_DATA(sight::data::Reconstruction);
 namespace sight::data
 {
 
@@ -48,7 +48,7 @@ Reconstruction::Reconstruction(data::Object::Key) :
     m_bIsVisible(false),
     m_sOrganName(""),
     m_sStructureType(""),
-    m_material( data::factory::New< data::Material>() ),
+    m_material(data::factory::New<data::Material>()),
     m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
 {
     m_sigMeshChanged        = MeshChangedSignalType::New();
@@ -65,13 +65,17 @@ Reconstruction::~Reconstruction()
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::shallowCopy(const Object::csptr& _source )
+void Reconstruction::shallowCopy(const Object::csptr& _source)
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
 
     m_bIsVisible     = other->m_bIsVisible;
     m_sOrganName     = other->m_sOrganName;
@@ -89,10 +93,14 @@ void Reconstruction::shallowCopy(const Object::csptr& _source )
 void Reconstruction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 
     m_bIsVisible     = other->m_bIsVisible;
     m_sOrganName     = other->m_sOrganName;

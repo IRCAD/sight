@@ -52,7 +52,7 @@ public:
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     a string a module version
      */
-    Activater( const std::string& identifier, const std::string& version );
+    Activater(const std::string& identifier, const std::string& version);
 
     /**
      * @brief       Adds a new parameter to the activater.
@@ -60,21 +60,21 @@ public:
      * @param[in]   identifier  a string containing the parameter name
      * @param[in]   value       a string containing the parameter value
      */
-    void addParameter( const std::string& identifier, const std::string& value );
+    void addParameter(const std::string& identifier, const std::string& value);
 
     /**
      * @brief       Adds a new disable extension point  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    void addDisableExtensionPoint( const std::string& identifier );
+    void addDisableExtensionPoint(const std::string& identifier);
 
     /**
      * @brief       Adds a new disable extension  to the activater.
      *
      * @param[in]   identifier    a string containing the parameter name
      */
-    void addDisableExtension( const std::string& identifier );
+    void addDisableExtension(const std::string& identifier);
 
     /**
      * @brief   Applies the activater on the system.
@@ -85,16 +85,15 @@ public:
 
 private:
 
-    typedef std::map< std::string, std::string >    ParameterContainer;
-    typedef std::vector< std::string >              DisableExtensionPointContainer;
-    typedef std::vector< std::string >              DisableExtensionContainer;
+    typedef std::map<std::string, std::string> ParameterContainer;
+    typedef std::vector<std::string> DisableExtensionPointContainer;
+    typedef std::vector<std::string> DisableExtensionContainer;
 
-    const std::string m_identifier;                             ///< a module identifier
+    const std::string m_identifier; ///< a module identifier
 
-    ParameterContainer m_parameters;                            ///< all parameters
-    DisableExtensionPointContainer m_disableExtensionPoints;    ///< all disable extension points
-    DisableExtensionContainer m_disableExtensions;              ///< all disable extensions
-
+    ParameterContainer m_parameters;                         ///< all parameters
+    DisableExtensionPointContainer m_disableExtensionPoints; ///< all disable extension points
+    DisableExtensionContainer m_disableExtensions;           ///< all disable extensions
 };
 
 } // namespace profile

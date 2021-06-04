@@ -26,7 +26,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::ActivitySeries )
+SIGHT_REGISTER_DATA(sight::data::ActivitySeries)
 
 namespace sight::data
 {
@@ -48,9 +48,13 @@ ActivitySeries::~ActivitySeries()
 void ActivitySeries::shallowCopy(const data::Object::csptr& _source)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
     this->data::Series::shallowCopy(_source);
     m_activityConfigId = other->m_activityConfigId;
@@ -62,9 +66,13 @@ void ActivitySeries::shallowCopy(const data::Object::csptr& _source)
 void ActivitySeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
 
     this->data::Series::cachedDeepCopy(_source, cache);
 

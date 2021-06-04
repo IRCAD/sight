@@ -38,7 +38,8 @@ namespace sight::atoms
 class ATOMS_CLASS_API Boolean : public Base
 {
 public:
-    SIGHT_DECLARE_CLASS(Boolean, atoms::Base, atoms::factory::New< Boolean >)
+
+    SIGHT_DECLARE_CLASS(Boolean, atoms::Base, atoms::factory::New<Boolean>);
 
     /**
      * @brief Constructor

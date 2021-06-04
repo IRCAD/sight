@@ -73,11 +73,10 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVoxelPicker final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::interactor::IInteractor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVoxelPicker, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SVoxelPicker, ::sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SVoxelPicker() noexcept;
@@ -139,29 +138,30 @@ private:
      * @param _origin image origin.
      * @param _spacing image spacing.
      */
-    std::pair< bool, ::Ogre::Vector3 > computeRayImageIntersection(const ::Ogre::Ray& _ray,
-                                                                   const data::Image::csptr _image,
-                                                                   const ::Ogre::Vector3& _origin,
-                                                                   const ::Ogre::Vector3& _spacing);
+    std::pair<bool, ::Ogre::Vector3> computeRayImageIntersection(
+        const ::Ogre::Ray& _ray,
+        const data::Image::csptr _image,
+        const ::Ogre::Vector3& _origin,
+        const ::Ogre::Vector3& _spacing
+    );
 
     /// Defines the orientation of the image used to pick on the current slice.
     OrientationMode m_orientation;
 
     /// Defines the picker mode.
-    bool m_mode2D { true };
+    bool m_mode2D {true};
 
     /// Determines the execution order of the picking interactor.
-    int m_priority { 2 };
+    int m_priority {2};
 
     /// Defines if the interaction must take into account above layers.
-    bool m_layerOrderDependant { true };
+    bool m_layerOrderDependant {true};
 
     /// Defines if the image slices indexes will be updated with the picked position.
-    bool m_moveOnPick { false };
+    bool m_moveOnPick {false};
 
     /// Defines the signal sent on picking events.
-    core::com::Signal< void ( data::tools::PickingInfo ) >::sptr m_pickedSig;
-
+    core::com::Signal<void(data::tools::PickingInfo)>::sptr m_pickedSig;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

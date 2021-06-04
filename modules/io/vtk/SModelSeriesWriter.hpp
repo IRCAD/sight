@@ -35,12 +35,16 @@
 
 namespace sight::data
 {
+
 class Mesh;
+
 }
 
 namespace sight::core::jobs
 {
+
 class IJob;
+
 }
 
 namespace sight::module::io::vtk
@@ -76,7 +80,6 @@ namespace sight::module::io::vtk
  */
 class MODULE_IO_VTK_CLASS_API SModelSeriesWriter : public sight::io::base::service::IWriter
 {
-
 public:
 
     SModelSeriesWriter() noexcept;
@@ -85,9 +88,9 @@ public:
     {
     }
 
-    SIGHT_DECLARE_SERVICE(SModelSeriesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SModelSeriesWriter, sight::io::base::service::IWriter);
 
-    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
 
     /**
      * @brief Configure the mesh path.
@@ -144,7 +147,7 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    MODULE_IO_VTK_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -160,7 +163,6 @@ private:
 
     ///  Stores the selectedExtension from dialog.
     std::string m_selectedExtension;
-
 };
 
 } // namespace sight::module::io::vtk

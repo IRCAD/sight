@@ -24,11 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/types.hpp"
-
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Study))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Study))
 
 namespace sight::data
 {
@@ -38,12 +37,11 @@ namespace sight::data
  */
 class DATA_CLASS_API Study : public data::Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Study, data::Object, data::factory::New< Study >)
+    SIGHT_DECLARE_CLASS(Study, data::Object, data::factory::New<Study>);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Study))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Study))
 
     /**
      * @brief Creates the study.
@@ -58,14 +56,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object where find data.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object where find data.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the unique identifier of the study.
     const DicomValueType& getInstanceUID() const;
@@ -168,7 +166,6 @@ private:
 
     /// Defines the patient's body mass during this study.
     DicomValueType m_patientBodyMassIndex;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -296,6 +293,7 @@ inline void Study::setPatientSize(const DicomValueType& _val)
 {
     m_patientSize = _val;
 }
+
 //-----------------------------------------------------------------------------
 
 inline const DicomValueType& Study::getPatientWeight() const
@@ -309,6 +307,7 @@ inline void Study::setPatientWeight(const DicomValueType& _val)
 {
     m_patientWeight = _val;
 }
+
 //-----------------------------------------------------------------------------
 
 inline const DicomValueType& Study::getPatientBodyMassIndex() const
@@ -322,6 +321,7 @@ inline void Study::setPatientBodyMassIndex(const DicomValueType& _val)
 {
     m_patientBodyMassIndex = _val;
 }
+
 //-----------------------------------------------------------------------------
 
 } // Namespace fwMedData.

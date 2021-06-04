@@ -28,18 +28,19 @@
 
 namespace sight::io::patch::structural
 {
+
 namespace creator
 {
+
 namespace data
 {
 
 /// Structural creator for data::Patient version '1'.
 class IO_PATCH_CLASS_API Patient1 : public io::atoms::patch::IStructuralCreator
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Patient1, io::atoms::patch::IStructuralCreator, new Patient1)
+    SIGHT_DECLARE_CLASS(Patient1, io::atoms::patch::IStructuralCreator, new Patient1);
 
     /// Constructor
     IO_PATCH_API Patient1();
@@ -48,13 +49,14 @@ public:
     IO_PATCH_API ~Patient1();
 
     /// Copy constructor
-    IO_PATCH_API Patient1( const Patient1& cpy );
+    IO_PATCH_API Patient1(const Patient1& cpy);
 
     /// Creates the specified object (sets 'name', 'patient_id', 'birth_date' and 'sex' attributes).
     IO_PATCH_API sight::atoms::Object::sptr create() override;
-
 };
 
 } // namespace data
+
 } // namespace creator
+
 } // namespace sight::io::patch::structural

@@ -26,10 +26,11 @@
 #include <data/StructureTraits.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ROITraitsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ROITraitsTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -38,8 +39,8 @@ namespace ut
 void ROITraitsTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void ROITraitsTest::tearDown()
@@ -63,9 +64,10 @@ void ROITraitsTest::creation()
 
     CPPUNIT_ASSERT_EQUAL(ID, roiTraits->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(EXP, roiTraits->getEvaluatedExp());
-    CPPUNIT_ASSERT(structure == roiTraits->getStructureTraits() );
-    CPPUNIT_ASSERT(opNode == roiTraits->getMaskOpNode() );
+    CPPUNIT_ASSERT(structure == roiTraits->getStructureTraits());
+    CPPUNIT_ASSERT(opNode == roiTraits->getMaskOpNode());
 }
 
 } //namespace ut
+
 } //namespace sight::data

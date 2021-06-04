@@ -26,7 +26,6 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/ModuleElement.hpp"
 #include "core/runtime/Runtime.hpp"
-
 #include <core/base.hpp>
 
 #include <algorithm>
@@ -36,6 +35,7 @@
 
 namespace sight::core::runtime
 {
+
 class Module;
 
 namespace detail
@@ -43,8 +43,10 @@ namespace detail
 
 namespace io
 {
+
 class ModuleDescriptorReader;
 class Validator;
+
 }
 
 /**
@@ -53,6 +55,7 @@ class Validator;
 class ExtensionPoint : public ModuleElement
 {
 public:
+
     typedef Extension::Container ConfigurationElementContainer;
 
     /**
@@ -66,8 +69,9 @@ public:
      */
     ExtensionPoint(
         const std::shared_ptr<Module> module,
-        const std::string&            id,
-        const std::filesystem::path&  schema);
+        const std::string& id,
+        const std::filesystem::path& schema
+    );
 
     /**
      * @brief   Retrieves all configuration elements contributed by extensions
@@ -77,12 +81,12 @@ public:
      */
     const ConfigurationElementContainer getAllConfigurationElements() const
     {
-        typedef std::back_insert_iterator< ConfigurationElementContainer >  Inserter;
+        typedef std::back_insert_iterator<ConfigurationElementContainer> Inserter;
 
         ConfigurationElementContainer container;
         Inserter inserter(container);
 
-        getAllConfigurationElements<Inserter>( inserter );
+        getAllConfigurationElements<Inserter>(inserter);
 
         return container;
     }
@@ -95,23 +99,27 @@ public:
      *              pointer to the found configuration elements
      */
     template<typename OutputIterator>
-    void getAllConfigurationElements( OutputIterator& output ) const
+    void getAllConfigurationElements(OutputIterator& output) const
     {
-        typedef std::vector< std::shared_ptr< Extension > > ExtensionContainer;
+        typedef std::vector<std::shared_ptr<Extension> > ExtensionContainer;
 
         // Retrieves all connected extensions.
         auto extensions = getAllExtensions();
 
         // Walk through the collected extensions to extract configuration elements.
-        for( ExtensionContainer::const_iterator i = extensions.begin(); i != extensions.end(); ++i )
+        for(ExtensionContainer::const_iterator i = extensions.begin() ; i != extensions.end() ; ++i)
         {
-            std::shared_ptr< Extension >   extension( *i );
-            if ( extension->isEnabled() )
+            std::shared_ptr<Extension> extension(*i);
+            if(extension->isEnabled())
             {
-                std::copy( extension->begin(), extension->end(), output);
+                std::copy(extension->begin(), extension->end(), output);
             }
-            SIGHT_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
-                           " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
+
+            SIGHT_DEBUG_IF(
+                "getAllConfigurationElements for point=" << extension->getPoint()
+                << " extension" << extension->getIdentifier() << "extension disabled",
+                !extension->isEnabled()
+            );
         }
     }
 
@@ -120,20 +128,20 @@ public:
      *
      * @return  output  shared pointers to found extensions
      */
-    std::vector< std::shared_ptr< Extension > > getAllExtensions() const
+    std::vector<std::shared_ptr<Extension> > getAllExtensions() const
     {
-        std::vector< std::shared_ptr< Extension > > container;
+        std::vector<std::shared_ptr<Extension> > container;
         Runtime& rntm = Runtime::get();
 
-        for( auto extension : rntm.getExtensions() )
+        for(auto extension : rntm.getExtensions())
         {
-            if( extension->getPoint() == m_id && extension->isEnabled() == true
-                && extension->validate() == Extension::Valid
-                )
+            if(extension->getPoint() == m_id && extension->isEnabled() == true
+               && extension->validate() == Extension::Valid)
             {
                 container.push_back(extension);
             }
         }
+
         return container;
     }
 
@@ -149,15 +157,15 @@ public:
      *
      * @return  a shared pointer to the extension validator, or null when none
      */
-    std::shared_ptr< io::Validator > getExtensionValidator() const;
+    std::shared_ptr<io::Validator> getExtensionValidator() const;
 
 private:
 
-    const std::string m_id;                                         ///< a string containing the extension point
-                                                                    // identifier
-    const std::filesystem::path m_schema;                       ///< a path to the XML schema used to validate
+    const std::string m_id; ///< a string containing the extension point
+    // identifier
+    const std::filesystem::path m_schema; ///< a path to the XML schema used to validate
     // contributed extensions
-    mutable std::shared_ptr< io::Validator >    m_validator;    ///< a shared pointer to the extension validator
+    mutable std::shared_ptr<io::Validator> m_validator; ///< a shared pointer to the extension validator
 
     /**
      * @brief   Assignment operator.
@@ -165,7 +173,6 @@ private:
      * @remark  Assignment is forbidden for this class.
      */
     void operator=(const ExtensionPoint&) noexcept;
-
 };
 
 } // namespace detail

@@ -30,7 +30,7 @@ namespace sight::core::thread
 /**
  * @brief   This class encapsulates packaged task and provides a copy constructor.
  */
-template <typename R>
+template<typename R>
 struct TaskHandler
 {
     /// Constructor, moves task.
@@ -40,23 +40,24 @@ struct TaskHandler
     TaskHandler(const TaskHandler& that);
 
     /// Executes intern packaged task.
-    void operator ()() const;
+    void operator()() const;
 
     protected:
 
         /// Copy constructor forbidden.
-        TaskHandler& operator=( const TaskHandler& )
+        TaskHandler& operator=(const TaskHandler&)
         {
         }
 
     private:
+
         /// Encapsulated packaged task.
         mutable std::packaged_task<R> m_task;
 };
 
 /// Encapsulate a packaged_task into a boost function to be easily posted on a worker.
-template <typename R>
-inline std::function< void() > moveTaskIntoFunction(std::packaged_task<R>& task);
+template<typename R>
+inline std::function<void()> moveTaskIntoFunction(std::packaged_task<R>& task);
 
 } //namespace sight::core::thread
 

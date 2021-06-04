@@ -42,7 +42,7 @@ const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 SServerSender::SServerSender()
 {
-    m_server = std::make_shared< sight::io::igtl::Server>();
+    m_server = std::make_shared<sight::io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------
@@ -61,11 +61,13 @@ void SServerSender::configuring()
 
     const ConfigType configIn = config.get_child("in");
 
-    SIGHT_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
-                 configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+    SIGHT_ASSERT(
+        "configured group must be '" + s_OBJECTS_GROUP + "'",
+        configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP
+    );
 
     const auto keyCfg = configIn.equal_range("key");
-    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
+    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
         const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
         const std::string deviceName              = attr.get("deviceName", "Sight");
@@ -82,14 +84,17 @@ void SServerSender::starting()
         const std::uint16_t port = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server) );
+        m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
         m_sigConnected->asyncEmit();
     }
-    catch (core::Exception& e)
+    catch(core::Exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show("Error", "Cannot start the server: " +
-                                                     std::string(e.what()),
-                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Error",
+            "Cannot start the server: "
+            + std::string(e.what()),
+            sight::ui::base::dialog::IMessageDialog::CRITICAL
+        );
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SIGHT_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
@@ -106,14 +111,15 @@ void SServerSender::stopping()
         {
             m_server->stop();
         }
+
         m_serverFuture.wait();
         m_sigDisconnected->asyncEmit();
     }
-    catch (core::Exception& e)
+    catch(core::Exception& e)
     {
         sight::ui::base::dialog::MessageDialog::show("Error", e.what());
     }
-    catch (std::future_error&)
+    catch(std::future_error&)
     {
         // This happens when the server failed to start, so we just ignore it silently.
     }
@@ -123,10 +129,11 @@ void SServerSender::stopping()
 
 void SServerSender::sendObject(const data::Object::csptr& obj, const size_t index)
 {
-    if (!m_deviceNames[index].empty())
+    if(!m_deviceNames[index].empty())
     {
         m_server->setMessageDeviceName(m_deviceNames[index]);
     }
+
     m_server->broadcast(obj);
 }
 

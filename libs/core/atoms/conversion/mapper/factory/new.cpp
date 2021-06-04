@@ -26,16 +26,20 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace mapper
 {
+
 namespace factory
 {
 
-SPTR(atoms::conversion::mapper::Base) New( const atoms::conversion::mapper::registry::KeyType& classname )
+SPTR(atoms::conversion::mapper::Base) New(const atoms::conversion::mapper::registry::KeyType& classname)
 {
     return atoms::conversion::mapper::registry::get()->create(classname);
 }
 
 } // namespace factory
+
 } // namespace mapper
+
 } // namespace sight::atoms::conversion

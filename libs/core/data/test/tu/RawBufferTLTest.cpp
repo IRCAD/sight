@@ -28,10 +28,11 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::ut::RawBufferTLTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::RawBufferTLTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -40,8 +41,8 @@ namespace ut
 void RawBufferTLTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void RawBufferTLTest::tearDown()
@@ -54,7 +55,7 @@ void RawBufferTLTest::tearDown()
 void RawBufferTLTest::pushTest()
 {
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
-    timeline->initPoolSize(3* sizeof(float));
+    timeline->initPoolSize(3 * sizeof(float));
 
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 42;
@@ -77,7 +78,7 @@ void RawBufferTLTest::pushTest()
 
     CSPTR(data::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(data::timeline::RawBuffer) buff        =
-        std::dynamic_pointer_cast< const data::timeline::RawBuffer >(dataPushed1Bis);
+        std::dynamic_pointer_cast<const data::timeline::RawBuffer>(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     float* buffData = buff->getBuffer<float>();
@@ -101,7 +102,7 @@ void RawBufferTLTest::pushTest()
 void RawBufferTLTest::getObjectTest()
 {
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
-    timeline->initPoolSize(3* sizeof(float));
+    timeline->initPoolSize(3 * sizeof(float));
 
     float values[3] = {1.0f, 5.2f, 7.5f};
 
@@ -194,7 +195,6 @@ void RawBufferTLTest::getObjectTest()
     CPPUNIT_ASSERT(data4 == obj);
     obj = timeline->getClosestObject(4.1, data::TimeLine::FUTURE);
     CPPUNIT_ASSERT(NULL == obj);
-
 }
 
 //------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ void RawBufferTLTest::getObjectTest()
 void RawBufferTLTest::setObjectTest()
 {
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
-    timeline->initPoolSize(3* sizeof(float));
+    timeline->initPoolSize(3 * sizeof(float));
 
     float values[3] = {1.0f, 5.2f, 7.5f};
 
@@ -249,7 +249,7 @@ void RawBufferTLTest::setObjectTest()
 void RawBufferTLTest::modifyTimeTest()
 {
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
-    timeline->initPoolSize(3* sizeof(float));
+    timeline->initPoolSize(3 * sizeof(float));
 
     float values[3] = {2.0f, 1.2f, 6.5f};
 
@@ -304,7 +304,7 @@ void RawBufferTLTest::modifyTimeTest()
 void RawBufferTLTest::copyTest()
 {
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
-    timeline->initPoolSize(3* sizeof(float));
+    timeline->initPoolSize(3 * sizeof(float));
 
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 42;
@@ -326,7 +326,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(data::timeline::RawBuffer) buff1 =
-        std::dynamic_pointer_cast< const data::timeline::RawBuffer >(deepDataPushed1);
+        std::dynamic_pointer_cast<const data::timeline::RawBuffer>(deepDataPushed1);
     CPPUNIT_ASSERT(buff1);
     CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->getBuffer(time1));
     float* buffData1 = buff1->getBuffer<float>();
@@ -338,7 +338,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed2);
     CPPUNIT_ASSERT(data2 != deepDataPushed2);
     CSPTR(data::timeline::RawBuffer) buff2 =
-        std::dynamic_pointer_cast< const data::timeline::RawBuffer >(deepDataPushed2);
+        std::dynamic_pointer_cast<const data::timeline::RawBuffer>(deepDataPushed2);
     CPPUNIT_ASSERT(buff2);
     float* buffData2 = buff2->getBuffer<float>();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, buffData2[0], 0.00001);
@@ -347,4 +347,5 @@ void RawBufferTLTest::copyTest()
 }
 
 } //namespace ut
+
 } //namespace sight::data

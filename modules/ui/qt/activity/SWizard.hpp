@@ -46,6 +46,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace activity
 {
 
@@ -105,10 +106,9 @@ namespace activity
 class MODULE_UI_QT_CLASS_API SWizard : public QObject,
                                        public sight::ui::base::IEditor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SWizard, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SWizard, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SWizard() noexcept;
@@ -130,13 +130,13 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
-    typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
 
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
-    typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
+    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityUpdatedSignalType;
 
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
-    typedef core::com::Signal< void () > CanceledSignalType;
+    typedef core::com::Signal<void ()> CanceledSignalType;
     /// @}
 
 protected:
@@ -194,14 +194,14 @@ private:
 
     data::ActivitySeries::sptr m_actSeries; ///< Activity series builded
 
-    QPointer<DataView> m_DataView; ///< view used to select required data for activity
-    QPointer<QPushButton> m_okButton; ///<  Button 'Apply' or 'Next' to validate the activity creation
-    QPointer<QPushButton> m_resetButton; ///< Button to clear the activity parameters
+    QPointer<DataView> m_DataView;        ///< view used to select required data for activity
+    QPointer<QPushButton> m_okButton;     ///<  Button 'Apply' or 'Next' to validate the activity creation
+    QPointer<QPushButton> m_resetButton;  ///< Button to clear the activity parameters
     QPointer<QPushButton> m_cancelButton; ///< Button to cancel the activity creation
-    QPointer<QLabel> m_title; ///< Label to show activity title
-    QPointer<QLabel> m_description; ///< Label to show activity description
+    QPointer<QLabel> m_title;             ///< Label to show activity title
+    QPointer<QLabel> m_description;       ///< Label to show activity description
 
-    std::string m_ioSelectorConfig; ///< configuration used to import data
+    std::string m_ioSelectorConfig;    ///< configuration used to import data
     std::string m_sdbIoSelectorConfig; ///< configuration used to import data from e SeriesDB
 
     DataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
@@ -214,8 +214,8 @@ private:
     ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activitySeries is created
     ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activitySeries is updated
     CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
-
 };
 
 } // editor
+
 } // sight::module::ui::qt

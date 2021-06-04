@@ -75,13 +75,12 @@ class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public sight::ui::base::IEditor,
     public service::IHasServices
 {
-
 Q_OBJECT;
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor,  sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::base::IEditor);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;
@@ -135,36 +134,37 @@ private:
      * @param _dicomSeries the dicom series instance.
      * @param _selectedSliceIndex index of the slice to read.
      */
-    void readSlice(const data::mt::locked_ptr< data::DicomSeries >& _dicomSeries,
-                   std::size_t _selectedSliceIndex) const;
+    void readSlice(
+        const data::mt::locked_ptr<data::DicomSeries>& _dicomSeries,
+        std::size_t _selectedSliceIndex
+    ) const;
 
     /// Contains the worker of the series enquire thread.
     core::thread::Worker::sptr m_requestWorker;
 
     /// Contains the slider.
-    QPointer< QSlider > m_slider { nullptr };
+    QPointer<QSlider> m_slider {nullptr};
 
     /// Contains the slider informations.
-    QPointer< QLineEdit > m_lineEdit { nullptr };
+    QPointer<QLineEdit> m_lineEdit {nullptr};
 
     /// Contains the timer used to trigger the new slice retrieving.
-    core::thread::Timer::sptr m_sliceTriggerer { nullptr };
+    core::thread::Timer::sptr m_sliceTriggerer {nullptr};
 
     /// Defines the delay to wait to trigger a slice retrieving.
-    unsigned int m_delay { 500 };
+    unsigned int m_delay {500};
 
     /// Defines the DICOM reader implementation.
-    std::string m_dicomReaderImplementation { "" };
+    std::string m_dicomReaderImplementation {""};
 
     /// Contains the optional configuration to set to reader implementation.
-    std::string m_readerConfig { "" };
+    std::string m_readerConfig {""};
 
     /// Contains the DICOM reader.
     sight::io::base::service::IReader::sptr m_dicomReader;
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB;
-
 };
 
 } // namespace sight::module::io::dimse.

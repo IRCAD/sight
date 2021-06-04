@@ -48,8 +48,11 @@ class VIZ_SCENE3D_CLASS_API SummedAreaTable
 public:
 
     /// Constructor, creates an SAT with the given resolution.
-    VIZ_SCENE3D_API SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _sceneManager,
-                                    float _sizeRatio = 0.25f);
+    VIZ_SCENE3D_API SummedAreaTable(
+        std::string _parentId,
+        ::Ogre::SceneManager* _sceneManager,
+        float _sizeRatio = 0.25f
+    );
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API ~SummedAreaTable();
@@ -58,9 +61,11 @@ public:
     VIZ_SCENE3D_API void computeSequential(data::Image::sptr _image, data::TransferFunction::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
-    VIZ_SCENE3D_API void computeParallel(::Ogre::TexturePtr _imgTexture,
-                                         const viz::scene3d::TransferFunction::sptr& _gpuTf,
-                                         float _sampleDistance);
+    VIZ_SCENE3D_API void computeParallel(
+        ::Ogre::TexturePtr _imgTexture,
+        const viz::scene3d::TransferFunction::sptr& _gpuTf,
+        float _sampleDistance
+    );
 
     /// Returns the texture holding the SAT.
     VIZ_SCENE3D_API ::Ogre::TexturePtr getTexture() const;
@@ -134,7 +139,6 @@ private:
 
     // Resource name of the target buffer.
     const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
-
 };
 
 //-----------------------------------------------------------------------------

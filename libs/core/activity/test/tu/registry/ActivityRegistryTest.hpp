@@ -36,13 +36,14 @@ struct ActivityRegistryTestPimpl;
 
 class ActivityRegistryTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ActivityRegistryTest );
+CPPUNIT_TEST_SUITE(ActivityRegistryTest);
 
 CPPUNIT_TEST(registryTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -51,8 +52,9 @@ public:
 
 protected:
 
-    SPTR( ActivityRegistryTestPimpl ) m_pimpl;
+    SPTR(ActivityRegistryTestPimpl) m_pimpl;
 };
 
 } //namespace ut
+
 } //namespace sight::activity

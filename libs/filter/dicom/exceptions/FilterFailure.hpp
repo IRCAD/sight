@@ -28,6 +28,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace exceptions
 {
 
@@ -37,6 +38,7 @@ namespace exceptions
 class FILTER_DICOM_CLASS_API FilterFailure : public core::Exception
 {
 public:
+
     /**
      * @brief Constructor
      * @param[in] message Exception message
@@ -45,8 +47,8 @@ public:
 
     /// Destructor
     FILTER_DICOM_API virtual ~FilterFailure() noexcept;
-
 };
 
 } // namespace exceptions
+
 } // namespace sight::filter::dicom

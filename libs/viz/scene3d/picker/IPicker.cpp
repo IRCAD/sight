@@ -65,7 +65,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
     const ::Ogre::Ray vpRay  = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
 #ifdef SHOW_BOUNDS
-    if (m_selectedObject)
+    if(m_selectedObject)
     {
         m_selectedObject->getParentSceneNode()->showBoundingBox(false);
     }
@@ -77,9 +77,8 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
     bool entityFound(false);
     std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) = tool.raycast(vpRay, _queryMask);
 
-    if (entityFound)
+    if(entityFound)
     {
-
 #ifdef SHOW_BOUNDS
         m_selectedObject->getParentSceneNode()->showBoundingBox(true);
 #endif
@@ -89,7 +88,6 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
         SIGHT_DEBUG("Entity find and intersect at " << getIntersectionInViewSpace() << "(VS)");
 
         SIGHT_DEBUG("Entity find and intersect at " << getIntersectionInPixel() << "(Px)");
-
     }
     else
     {
@@ -125,8 +123,8 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
     ::Ogre::Vector3 point = projMatrix * (viewMatrix * m_rayIntersect);
 
     ::Ogre::Vector2 screenSpacePoint = ::Ogre::Vector2::ZERO;
-    screenSpacePoint.x               = (point.x / 2.f) + 0.5f;
-    screenSpacePoint.y               = (point.y / 2.f) + 0.5f;
+    screenSpacePoint.x = (point.x / 2.f) + 0.5f;
+    screenSpacePoint.y = (point.y / 2.f) + 0.5f;
 
     return screenSpacePoint;
 }
@@ -165,4 +163,5 @@ bool IPicker::hasSceneManager()
 // ----------------------------------------------------------------------------
 
 } // namespace interactor
+
 } // namespace sight::viz::scene3d

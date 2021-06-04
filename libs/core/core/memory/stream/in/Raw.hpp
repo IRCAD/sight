@@ -25,21 +25,23 @@
 #include "core/config.hpp"
 #include "core/memory/FileHolder.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
-
 #include <core/macros.hpp>
 
 #include <filesystem>
 
 namespace sight::core::memory
 {
+
 namespace stream
 {
+
 namespace in
 {
 
 class CORE_CLASS_API Raw : public IFactory
 {
 public:
+
     Raw(const std::filesystem::path& path) :
         m_path(path)
     {
@@ -58,5 +60,7 @@ protected:
 };
 
 } // namespace in
+
 } // namespace stream
+
 } // namespace sight::core::memory

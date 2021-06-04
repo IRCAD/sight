@@ -37,6 +37,7 @@
 
 namespace sight::module::ui::qt
 {
+
 namespace video
 {
 
@@ -92,12 +93,11 @@ namespace video
 class MODULE_UI_QT_CLASS_API SCamera final : public QObject,
                                              public sight::ui::base::IEditor
 {
-
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCamera, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCamera, sight::ui::base::IEditor);
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API SCamera();
@@ -140,7 +140,7 @@ private:
     void onChooseDevice();
 
     /// Retrieves camera objects according to the XML configuration.
-    std::vector< data::Camera::sptr > getCameras() const;
+    std::vector<data::Camera::sptr> getCameras() const;
 
     /// Combobox for camera selection.
     QPointer<QComboBox> m_devicesComboBox;
@@ -156,8 +156,8 @@ private:
 
     /// Label of the selector.
     std::string m_label {"Video source: "};
-
 };
 
 } // video
+
 } // sight::module::ui::qt

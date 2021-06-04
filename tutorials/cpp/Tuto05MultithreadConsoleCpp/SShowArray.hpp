@@ -45,11 +45,10 @@ namespace Tuto05MultithreadConsoleCpp
  */
 class TUTO05MULTITHREADCONSOLECPP_CLASS_API SShowArray final : public sight::service::IController
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShowArray, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SShowArray, sight::service::IController);
 
     /// Creates the service.
     TUTO05MULTITHREADCONSOLECPP_API SShowArray() noexcept;
@@ -70,7 +69,6 @@ protected:
 
     /// Does nothing.
     TUTO05MULTITHREADCONSOLECPP_API void stopping() override;
-
 };
 
 } // namespace Tuto05MultithreadConsoleCpp.

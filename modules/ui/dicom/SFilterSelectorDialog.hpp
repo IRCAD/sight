@@ -53,10 +53,9 @@ namespace sight::module::ui::dicom
  */
 class MODULE_UI_DICOM_CLASS_API SFilterSelectorDialog : public sight::ui::base::IDialogEditor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SFilterSelectorDialog,  sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SFilterSelectorDialog, sight::ui::base::IDialogEditor);
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -90,7 +89,7 @@ protected:
     MODULE_UI_DICOM_API void updating() override;
 
     /// Gives the name of the class. Do nothing.
-    MODULE_UI_DICOM_API void info( std::ostream& _sstream ) override;
+    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
 
 private:
 
@@ -102,7 +101,7 @@ private:
      *
      * @see SFilterSelectorDialog::m_filtersAreExcluded.
      */
-    std::vector< std::string > m_selectedFilters;
+    std::vector<std::string> m_selectedFilters;
 };
 
 } // namespace sight::module::ui::dicom

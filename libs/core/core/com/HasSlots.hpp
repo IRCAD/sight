@@ -39,43 +39,45 @@ struct SlotBase;
  */
 class CORE_CLASS_API HasSlots
 {
-
 public:
 
-    typedef std::shared_ptr< HasSlots > sptr;
-    typedef std::shared_ptr< const HasSlots > csptr;
+    typedef std::shared_ptr<HasSlots> sptr;
+    typedef std::shared_ptr<const HasSlots> csptr;
 
     HasSlots()
     {
     }
+
     virtual ~HasSlots()
     {
     }
 
-    SPTR( SlotBase ) slot( const Slots::SlotKeyType& key ) const
+    SPTR(SlotBase) slot(const Slots::SlotKeyType& key) const
     {
         return m_slots[key];
     }
 
-    template< typename SlotType >
-    SPTR( SlotType ) slot( const Slots::SlotKeyType& key ) const
+    template<typename SlotType>
+    SPTR(SlotType) slot(const Slots::SlotKeyType& key) const
     {
-        SPTR( SlotType ) slot = std::dynamic_pointer_cast< SlotType >( this->slot(key) );
+        SPTR(SlotType) slot = std::dynamic_pointer_cast<SlotType>(this->slot(key));
         return slot;
     }
 
     template<typename F, typename A>
-    SPTR(Slot< typename core::com::util::convert_function_type< F >::type >) newSlot( const Slots::SlotKeyType& key,
-                                                                                      F f,
-                                                                                      A a );
+    SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(
+        const Slots::SlotKeyType& key,
+        F f,
+        A a
+    );
 
 protected:
 
     /// Copy constructor forbidden
-    HasSlots( const HasSlots& );
+    HasSlots(const HasSlots&);
 
     /// Copy operator forbidden
-    HasSlots& operator=( const HasSlots& );
+    HasSlots& operator=(const HasSlots&);
 
     Slots m_slots;
 };

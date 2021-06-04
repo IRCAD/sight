@@ -26,16 +26,18 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class SpheroidExtractionTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SpheroidExtractionTest );
+CPPUNIT_TEST_SUITE(SpheroidExtractionTest);
 CPPUNIT_TEST(extractionTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -44,4 +46,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image.

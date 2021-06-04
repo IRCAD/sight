@@ -22,12 +22,13 @@
 
 #include "AppManagerTest.hpp"
 
+#include "core/thread/ActiveWorkers.hpp"
+
+#include "service/extension/AppConfig.hpp"
+#include "service/extension/Factory.hpp"
 #include "service/helper/ProxyConnections.hpp"
 #include "service/op/Add.hpp"
-#include "core/thread/ActiveWorkers.hpp"
-#include "service/extension/AppConfig.hpp"
 #include "service/registry/ObjectService.hpp"
-#include "service/extension/Factory.hpp"
 
 #include "TestService.hpp"
 
@@ -40,10 +41,11 @@
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::AppManagerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::AppManagerTest);
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -79,16 +81,23 @@ void AppManagerTest::tearDown()
 
 void AppManagerTest::managerCreationTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
 
     auto service  = m_appMgr->addService("::sight::service::ut::TestServiceImplementation", "srv1Uid", false, false);
-    auto service2 = m_appMgr->addService< service::ut::TestService >(
-        "::sight::service::ut::TestServiceImplementation", "srv2Uid", true, false);
-    auto service3 = m_appMgr->addService< service::ut::TestService >(
-        "::sight::service::ut::TestServiceImplementation", true, true);
+    auto service2 = m_appMgr->addService<service::ut::TestService>(
+        "::sight::service::ut::TestServiceImplementation",
+        "srv2Uid",
+        true,
+        false
+    );
+    auto service3 = m_appMgr->addService<service::ut::TestService>(
+        "::sight::service::ut::TestServiceImplementation",
+        true,
+        true
+    );
     auto service4 = m_appMgr->addService("::sight::service::ut::TestServiceImplementation");
 
     auto service5 =
@@ -130,7 +139,7 @@ void AppManagerTest::managerCreationTest()
 
 void AppManagerTest::managerWithObjectTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -139,12 +148,23 @@ void AppManagerTest::managerWithObjectTest()
     const std::string booleanId = "booleanTest";
 
     auto service  = m_appMgr->addService("::sight::service::ut::TestServiceImplementation", "srv1Uid", true, false);
-    auto service2 = m_appMgr->addService< service::ut::TestService >(
-        "::sight::service::ut::TestServiceImplementation", "srv2Uid", true, false);
-    auto service3 = m_appMgr->addService< service::ut::TestService >(
-        "::sight::service::ut::TestServiceImplementation", "srv3Uid", true, true);
-    auto service4 = m_appMgr->addService< service::ut::TestService >(
-        "::sight::service::ut::TestServiceImplementation", true, true);
+    auto service2 = m_appMgr->addService<service::ut::TestService>(
+        "::sight::service::ut::TestServiceImplementation",
+        "srv2Uid",
+        true,
+        false
+    );
+    auto service3 = m_appMgr->addService<service::ut::TestService>(
+        "::sight::service::ut::TestServiceImplementation",
+        "srv3Uid",
+        true,
+        true
+    );
+    auto service4 = m_appMgr->addService<service::ut::TestService>(
+        "::sight::service::ut::TestServiceImplementation",
+        true,
+        true
+    );
 
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
@@ -221,11 +241,12 @@ void AppManagerTest::managerWithObjectTest()
 
     m_appMgr->destroy();
 }
+
 //------------------------------------------------------------------------------
 
 void AppManagerTest::managerWithObjectConnectionTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -234,14 +255,30 @@ void AppManagerTest::managerWithObjectConnectionTest()
     const std::string booleanId    = "booleanTest";
     const std::string imageChannel = "imageChannel";
 
-    auto service1 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", "myService1", true, false);
-    auto service2 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", "myService2", true, false);
-    auto service3 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", "myService3",  true, false);
-    auto service4 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", "myService4", true, false);
+    auto service1 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        "myService1",
+        true,
+        false
+    );
+    auto service2 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        "myService2",
+        true,
+        false
+    );
+    auto service3 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        "myService3",
+        true,
+        false
+    );
+    auto service4 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        "myService4",
+        true,
+        false
+    );
 
     CPPUNIT_ASSERT(service1);
     CPPUNIT_ASSERT(service2);
@@ -274,7 +311,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(false, service4->isStarted());
 
-    auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
+    auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
     sig->emit();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->getIsUpdated());
@@ -286,7 +323,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
 
     m_appMgr->removeObject(image, imageId);
     service::helper::ProxyConnections connection(imageChannel);
-    connection.addSignalConnection(imageId,  data::Image::s_MODIFIED_SIG);
+    connection.addSignalConnection(imageId, data::Image::s_MODIFIED_SIG);
     connection.addSlotConnection(service1->getID(), service::ut::TestSrvAutoconnect::s_SLOT_1);
     m_appMgr->addProxyConnection(connection);
     m_appMgr->addObject(image, imageId);
@@ -298,7 +335,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
     service1->resetReceive();
 
     m_appMgr->addObject(boolean, booleanId);
-    auto sig2 = boolean->signal< data::Boolean::ModifiedSignalType >(data::Boolean::s_MODIFIED_SIG);
+    auto sig2 = boolean->signal<data::Boolean::ModifiedSignalType>(data::Boolean::s_MODIFIED_SIG);
     sig2->emit();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->getReceived());
@@ -325,21 +362,29 @@ void AppManagerTest::managerWithObjectConnectionTest()
 
 void AppManagerTest::managerWithServiceConnectionTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
 
     const std::string channel = "channel";
 
-    auto service1 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", true);
-    auto service2 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", true);
-    auto service3 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", true);
-    auto service4 = m_appMgr->addService< service::ut::TestSrvAutoconnect >(
-        "::sight::service::ut::TestSrvAutoconnect", true);
+    auto service1 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        true
+    );
+    auto service2 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        true
+    );
+    auto service3 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        true
+    );
+    auto service4 = m_appMgr->addService<service::ut::TestSrvAutoconnect>(
+        "::sight::service::ut::TestSrvAutoconnect",
+        true
+    );
 
     service::helper::ProxyConnections connection1;
     connection1.addSignalConnection(service1->getID(), service::ut::TestSrvAutoconnect::s_SIG_1);
@@ -361,8 +406,9 @@ void AppManagerTest::managerWithServiceConnectionTest()
     CPPUNIT_ASSERT_EQUAL(true, service3->isStarted());
     CPPUNIT_ASSERT_EQUAL(true, service4->isStarted());
 
-    auto sig = service1->signal< service::ut::TestSrvAutoconnect::MsgSentSignalType >(
-        service::ut::TestSrvAutoconnect::s_SIG_1);
+    auto sig = service1->signal<service::ut::TestSrvAutoconnect::MsgSentSignalType>(
+        service::ut::TestSrvAutoconnect::s_SIG_1
+    );
     sig->emit(3);
 
     CPPUNIT_ASSERT_EQUAL(false, service1->getReceived());
@@ -387,7 +433,7 @@ void AppManagerTest::managerWithServiceConnectionTest()
 
 void AppManagerTest::managerWithOutputCreationTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -398,14 +444,23 @@ void AppManagerTest::managerWithOutputCreationTest()
 
     data::Integer::sptr integer1 = data::Integer::New(15);
 
-    auto service1 = m_appMgr->addService< service::ut::TestServiceWithData >(
-        "::sight::service::ut::TestServiceWithData", true, true);
-    auto service2 = m_appMgr->addService< service::ut::TestServiceWithData >(
-        "::sight::service::ut::TestServiceWithData", true);
-    auto service3 = m_appMgr->addService< service::ut::TestServiceWithData >(
-        "::sight::service::ut::TestServiceWithData", true);
-    auto service4 = m_appMgr->addService< service::ut::TestServiceWithData >(
-        "::sight::service::ut::TestServiceWithData", true);
+    auto service1 = m_appMgr->addService<service::ut::TestServiceWithData>(
+        "::sight::service::ut::TestServiceWithData",
+        true,
+        true
+    );
+    auto service2 = m_appMgr->addService<service::ut::TestServiceWithData>(
+        "::sight::service::ut::TestServiceWithData",
+        true
+    );
+    auto service3 = m_appMgr->addService<service::ut::TestServiceWithData>(
+        "::sight::service::ut::TestServiceWithData",
+        true
+    );
+    auto service4 = m_appMgr->addService<service::ut::TestServiceWithData>(
+        "::sight::service::ut::TestServiceWithData",
+        true
+    );
 
     CPPUNIT_ASSERT(service1);
     CPPUNIT_ASSERT(service2);
@@ -433,15 +488,17 @@ void AppManagerTest::managerWithOutputCreationTest()
     fwTestWaitMacro(service2->isStarted()); // wait until service1 generate its output to start service2
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
 
-    auto integer2 = service1->getOutput< data::Integer >(service::ut::TestServiceWithData::s_OUTPUT);
+    auto integer2 = service1->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT);
     CPPUNIT_ASSERT(integer2);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer2->value());
-    CPPUNIT_ASSERT(nullptr ==
-                   service3->getOutput< data::Integer >(service::ut::TestServiceWithData::s_OUTPUT));
+    CPPUNIT_ASSERT(
+        nullptr
+        == service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT)
+    );
 
     service3->update().wait();
 
-    auto integer3 = service3->getOutput< data::Integer >(service::ut::TestServiceWithData::s_OUTPUT);
+    auto integer3 = service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT);
 
     CPPUNIT_ASSERT(integer3);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer3->getValue());
@@ -455,7 +512,7 @@ void AppManagerTest::managerWithOutputCreationTest()
 
 void AppManagerTest::managerWithGroupTest()
 {
-    m_appMgr = std::unique_ptr< service::AppManager >(new service::AppManager);
+    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -472,8 +529,10 @@ void AppManagerTest::managerWithGroupTest()
     data::Integer::sptr integer2 = data::Integer::New(25);
     data::Integer::sptr integer3 = data::Integer::New(28);
 
-    auto service1 = m_appMgr->addService< service::ut::TestServiceWithData >(
-        "::sight::service::ut::TestServiceWithData", true);
+    auto service1 = m_appMgr->addService<service::ut::TestServiceWithData>(
+        "::sight::service::ut::TestServiceWithData",
+        true
+    );
     service1->registerGroup();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
@@ -487,18 +546,42 @@ void AppManagerTest::managerWithGroupTest()
 
     m_appMgr->startServices();
 
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
-    CPPUNIT_ASSERT_EQUAL(integerId1, service1->getObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
-    CPPUNIT_ASSERT_EQUAL(integerId2, service1->getObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
-    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
-    CPPUNIT_ASSERT_EQUAL(integerId3, service1->getObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
+    CPPUNIT_ASSERT_EQUAL(
+        true,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)
+        )
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        integerId1,
+        service1->getObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)
+        )
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        true,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)
+        )
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        integerId2,
+        service1->getObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)
+        )
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        true,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)
+        )
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        integerId3,
+        service1->getObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)
+        )
+    );
 
     m_appMgr->addObject(integer1, integerId1);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
@@ -513,16 +596,28 @@ void AppManagerTest::managerWithGroupTest()
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
 
     service1->unregisterObject(integerId3);
-    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)));
+    CPPUNIT_ASSERT_EQUAL(
+        false,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)
+        )
+    );
 
     service1->unregisterObject(integerId2);
-    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)));
+    CPPUNIT_ASSERT_EQUAL(
+        false,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)
+        )
+    );
 
     service1->unregisterObject(integerId1);
-    CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId(
-                             KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)));
+    CPPUNIT_ASSERT_EQUAL(
+        false,
+        service1->hasObjectId(
+            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)
+        )
+    );
 
     m_appMgr->destroy();
 }
@@ -538,7 +633,7 @@ void AppManagerTest::managerWithInputsTest()
     const std::string INPUT_CHANNEL2     = "channel2";
     const std::string INPUT_STR          = "inputStr";
 
-    auto appMgr = std::unique_ptr< AppManagerForTest >(new AppManagerForTest);
+    auto appMgr = std::unique_ptr<AppManagerForTest>(new AppManagerForTest);
     CPPUNIT_ASSERT(appMgr);
 
     appMgr->create();
@@ -592,13 +687,13 @@ void AppManagerTest::managerWithInputsTest()
 
     // Check that getInputID return the same string on each iteration
     const std::string testSTR = appMgr->getInputID("myString");
-    for (size_t i = 0; i < 10; ++i)
+    for(size_t i = 0 ; i < 10 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(testSTR, appMgr->getInputID("myString"));
     }
 
     // Check that getInputID does not return the same string on another instance of the manager
-    auto appMgr2 = std::unique_ptr< AppManagerForTest >(new AppManagerForTest);
+    auto appMgr2 = std::unique_ptr<AppManagerForTest>(new AppManagerForTest);
     CPPUNIT_ASSERT(appMgr2);
     appMgr2->create();
 

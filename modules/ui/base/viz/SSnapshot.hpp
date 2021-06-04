@@ -46,7 +46,7 @@ class MODULE_UI_BASE_CLASS_API SSnapshot : public ::sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSnapshot, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SSnapshot, ::sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SSnapshot() noexcept;

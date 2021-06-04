@@ -41,10 +41,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::dicom::ut::ImagePositionPatientSorterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::ImagePositionPatientSorterTest);
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -70,7 +71,7 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
     const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
     reader.SetStream(*streamInfo.stream);
 
-    if (!reader.Read())
+    if(!reader.Read())
     {
         return 0;
     }
@@ -88,20 +89,22 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
     // Retrieve image position
     const ::gdcm::Image& gdcmImage = reader.GetImage();
     const double* gdcmOrigin       = gdcmImage.GetOrigin();
-    const fwVec3d imagePosition    = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
+    const fwVec3d imagePosition    = {{gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2]}};
 
     // Retrieve image orientation
     const double* directionCosines  = gdcmImage.GetDirectionCosines();
     const fwVec3d imageOrientationU = {{
-                                           std::round(directionCosines[0]),
-                                           std::round(directionCosines[1]),
-                                           std::round(directionCosines[2])
-                                       }};
+        std::round(directionCosines[0]),
+        std::round(directionCosines[1]),
+        std::round(directionCosines[2])
+    }
+    };
     const fwVec3d imageOrientationV = {{
-                                           std::round(directionCosines[3]),
-                                           std::round(directionCosines[4]),
-                                           std::round(directionCosines[5])
-                                       }};
+        std::round(directionCosines[3]),
+        std::round(directionCosines[4]),
+        std::round(directionCosines[5])
+    }
+    };
 
     //Compute Z direction (cross product)
     const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
@@ -121,8 +124,10 @@ void ImagePositionPatientSorterTest::simpleApplication()
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -134,12 +139,13 @@ void ImagePositionPatientSorterTest::simpleApplication()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::ImagePositionPatientSorter");
+        "sight::filter::dicom::sorter::ImagePositionPatientSorter"
+    );
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_NO_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
 
@@ -149,7 +155,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
     double oldPosition = -1.0;
 
     const data::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
-    for(size_t index = dicomSeries->getFirstInstanceNumber(); index < dicomSeries->getNumberOfInstances(); ++index)
+    for(size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->getNumberOfInstances() ; ++index)
     {
         const double position = getInstanceZPosition(dicomContainer.at(index));
 
@@ -168,8 +174,10 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -181,18 +189,22 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::ImagePositionPatientSorter");
+        "sight::filter::dicom::sorter::ImagePositionPatientSorter"
+    );
     CPPUNIT_ASSERT(filter);
-    CPPUNIT_ASSERT_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
-                         filter::dicom::exceptions::FilterFailure);
+    CPPUNIT_ASSERT_THROW(
+        filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
+        filter::dicom::exceptions::FilterFailure
+    );
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

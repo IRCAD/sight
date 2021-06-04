@@ -26,6 +26,7 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace ut
 {
 
@@ -43,6 +44,7 @@ CPPUNIT_TEST(compositeConverterTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
 
@@ -57,4 +59,5 @@ public:
 };
 
 }
+
 }

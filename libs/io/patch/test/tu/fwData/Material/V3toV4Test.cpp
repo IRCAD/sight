@@ -30,21 +30,24 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Material/V3ToV4.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Material::V3ToV4Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Material::V3ToV4Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Material
 {
 
@@ -129,23 +132,39 @@ void V3ToV4Test::applyPatchTest()
             sight::atoms::Sequence::dynamicCast(diffuseV4->getAttribute("rgba"));
         CPPUNIT_ASSERT(diffuseSeqV4);
 
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[0])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeqV4)[0])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[1])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeqV4)[1])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[2])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeqV4)[2])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeq)[3])->getValue<float>(),
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*diffuseSeqV4)[3])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[0])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeqV4)[0])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[1])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeqV4)[1])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[2])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeqV4)[2])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeq)[3])->getValue<float>(),
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*diffuseSeqV4)[3])->getValue<float>()
+        );
 
-        CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeqV4)[0])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeqV4)[1])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(0.05f,
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeqV4)[2])->getValue<float>());
-        CPPUNIT_ASSERT_EQUAL(1.f,
-                             std::dynamic_pointer_cast< sight::atoms::Numeric >((*ambientSeqV4)[3])->getValue<float>());
+        CPPUNIT_ASSERT_EQUAL(
+            0.05f,
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeqV4)[0])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            0.05f,
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeqV4)[1])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            0.05f,
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeqV4)[2])->getValue<float>()
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            1.f,
+            std::dynamic_pointer_cast<sight::atoms::Numeric>((*ambientSeqV4)[3])->getValue<float>()
+        );
     }
 
     // Check that if lighting is true, then shading_mode is not modifed
@@ -166,11 +185,14 @@ void V3ToV4Test::applyPatchTest()
         sight::atoms::String::sptr shading = sight::atoms::String::dynamicCast(matObjV4->getAttribute("shading_mode"));
         CPPUNIT_ASSERT(shading->getValue() == "PHONG");
     }
-
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Material
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

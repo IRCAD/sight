@@ -24,6 +24,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -45,4 +46,5 @@ IFilter::FilterType ISorter::getFilterType() const
 }
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

@@ -34,6 +34,7 @@
 
 namespace sight::module::ui::base
 {
+
 namespace com
 {
 
@@ -54,15 +55,14 @@ namespace com
 
 class MODULE_UI_BASE_CLASS_API SSlotCaller : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SSlotCaller, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SSlotCaller, ::sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
-    typedef std::pair< HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
-    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+    typedef std::pair<HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
+    typedef std::vector<SlotInfoType> SlotInfoContainerType;
 
     /// Constructor. Does nothing.
     MODULE_UI_BASE_API SSlotCaller() noexcept;
@@ -73,7 +73,7 @@ public:
 protected:
 
     /// This method gives information about the class.
-    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 
     /// This method run the specified slots.
     MODULE_UI_BASE_API void updating() override;
@@ -89,8 +89,9 @@ protected:
     SlotInfoContainerType m_slotInfos;
 
     /// Determines whether slots are called asynchronously or synchronously
-    bool m_synchronized{ false };
+    bool m_synchronized {false};
 };
 
 } // namespace com
+
 } // namespace sight::module::ui::base

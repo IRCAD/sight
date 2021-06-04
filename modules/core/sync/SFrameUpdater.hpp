@@ -61,7 +61,7 @@ class MODULE_SYNC_CLASS_API SFrameUpdater : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameUpdater, service::IController)
+    SIGHT_DECLARE_SERVICE(SFrameUpdater, service::IController);
 
     static const core::com::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 

@@ -28,30 +28,30 @@
 
 #include <array>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Point));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Point));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class define a 3D point.
  */
 class DATA_CLASS_API Point : public Object
 {
-
 public:
 
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    SIGHT_DECLARE_CLASS(Point, data::Object, data::factory::New< Point >)
+    SIGHT_DECLARE_CLASS(Point, data::Object, data::factory::New<Point>);
 
     /// Point factory
-    DATA_API static Point::sptr New(float x, float y = 0.f, float z = 0.f);
+    DATA_API static Point::sptr New(float x, float y   = 0.f, float z = 0.f);
     DATA_API static Point::sptr New(double x, double y = 0., double z = 0.);
     DATA_API static Point::sptr New(const PointCoordArrayType& coord);
     DATA_API static Point::sptr New(const Point::sptr& p);
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Point));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Point));
 
     /**
      * @brief Constructor
@@ -63,14 +63,14 @@ public:
     DATA_API virtual ~Point();
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get/set point coordinates
     /// @{
-    PointCoordArrayType& getCoord ();
+    PointCoordArrayType& getCoord();
     const PointCoordArrayType& getCoord() const;
     void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
@@ -79,12 +79,11 @@ protected:
 
     /// point coordinates
     PointCoordArrayType m_vCoord;
-
 }; // end class Point
 
 //-----------------------------------------------------------------------------
 
-inline Point::PointCoordArrayType& Point::getCoord ()
+inline Point::PointCoordArrayType& Point::getCoord()
 {
     return this->m_vCoord;
 }

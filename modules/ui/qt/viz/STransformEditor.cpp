@@ -70,7 +70,6 @@ STransformEditor::STransformEditor() noexcept :
 
 STransformEditor::~STransformEditor() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +82,7 @@ void STransformEditor::configuring()
 
     service::IService::ConfigType config = this->getConfigTree();
 
-    const std::string rotation = config.get< std::string >("rotation.<xmlattr>.enabled", "yes");
+    const std::string rotation = config.get<std::string>("rotation.<xmlattr>.enabled", "yes");
 
     if(rotation == "no")
     {
@@ -93,7 +92,7 @@ void STransformEditor::configuring()
     {
         m_rotation = "xyz";
     }
-    else if( std::regex_match(rotation, s_REGEX) )
+    else if(std::regex_match(rotation, s_REGEX))
     {
         m_rotation = rotation;
     }
@@ -102,10 +101,10 @@ void STransformEditor::configuring()
         SIGHT_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
-    m_rotationRange[0] = config.get< int >("rotation.<xmlattr>.min", m_rotationRange[0]);
-    m_rotationRange[1] = config.get< int >("rotation.<xmlattr>.max", m_rotationRange[1]);
+    m_rotationRange[0] = config.get<int>("rotation.<xmlattr>.min", m_rotationRange[0]);
+    m_rotationRange[1] = config.get<int>("rotation.<xmlattr>.max", m_rotationRange[1]);
 
-    const std::string translation = config.get< std::string >("translation.<xmlattr>.enabled", "yes");
+    const std::string translation = config.get<std::string>("translation.<xmlattr>.enabled", "yes");
 
     if(translation == "no")
     {
@@ -115,7 +114,7 @@ void STransformEditor::configuring()
     {
         m_translation = "xyz";
     }
-    else if( std::regex_match(translation, s_REGEX) )
+    else if(std::regex_match(translation, s_REGEX))
     {
         m_translation = translation;
     }
@@ -124,8 +123,8 @@ void STransformEditor::configuring()
         SIGHT_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
-    m_translationRange[0] = config.get< int >("translation.<xmlattr>.min", m_translationRange[0]);
-    m_translationRange[1] = config.get< int >("translation.<xmlattr>.max", m_translationRange[1]);
+    m_translationRange[0] = config.get<int>("translation.<xmlattr>.min", m_translationRange[0]);
+    m_translationRange[1] = config.get<int>("translation.<xmlattr>.max", m_translationRange[1]);
 }
 
 //------------------------------------------------------------------------------
@@ -133,16 +132,17 @@ void STransformEditor::configuring()
 void STransformEditor::starting()
 {
     const char* description[] = {"Translation X", "Translation Y", "Translation Z",
-                                 "Rotation X", "Rotation Y", "Rotation Z"};
+                                 "Rotation X", "Rotation Y", "Rotation Z"
+    };
 
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         QHBoxLayout* sliderLayout = new QHBoxLayout();
 
@@ -156,18 +156,18 @@ void STransformEditor::starting()
 
         m_sliders[i].m_labelDefinition->setText(description[i]);
 
-        sliderLayout->addWidget( m_sliders[i].m_labelDefinition, 0);
-        sliderLayout->addWidget( m_sliders[i].m_labelMin, 0);
-        sliderLayout->addWidget( m_sliders[i].m_slider, 3);
-        sliderLayout->addWidget( m_sliders[i].m_labelMax, 0);
-        sliderLayout->addWidget( m_sliders[i].m_sliderValue, 1);
+        sliderLayout->addWidget(m_sliders[i].m_labelDefinition, 0);
+        sliderLayout->addWidget(m_sliders[i].m_labelMin, 0);
+        sliderLayout->addWidget(m_sliders[i].m_slider, 3);
+        sliderLayout->addWidget(m_sliders[i].m_labelMax, 0);
+        sliderLayout->addWidget(m_sliders[i].m_sliderValue, 1);
 
         layout->addLayout(sliderLayout, 0);
         QObject::connect(m_sliders[i].m_slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
         QObject::connect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
     }
 
-    for (unsigned int i = POSITION_X; i <= POSITION_Z; i++)
+    for(unsigned int i = POSITION_X ; i <= POSITION_Z ; i++)
     {
         m_sliders[i].m_labelMin->setText(std::to_string(m_translationRange[0]).c_str());
         m_sliders[i].m_labelMax->setText(std::to_string(m_translationRange[1]).c_str());
@@ -176,31 +176,31 @@ void STransformEditor::starting()
 
     const char axes[] = {"xyzxyz"};
 
-    for (unsigned int i = POSITION_X; i <= POSITION_Z; i++)
+    for(unsigned int i = POSITION_X ; i <= POSITION_Z ; i++)
     {
         const bool visible = m_translation.find(axes[i]) != std::string::npos;
-        m_sliders[i].m_sliderValue->setVisible( visible );
-        m_sliders[i].m_labelMin->setVisible( visible );
-        m_sliders[i].m_labelMax->setVisible( visible );
-        m_sliders[i].m_labelDefinition->setVisible( visible );
-        m_sliders[i].m_slider->setVisible( visible );
+        m_sliders[i].m_sliderValue->setVisible(visible);
+        m_sliders[i].m_labelMin->setVisible(visible);
+        m_sliders[i].m_labelMax->setVisible(visible);
+        m_sliders[i].m_labelDefinition->setVisible(visible);
+        m_sliders[i].m_slider->setVisible(visible);
     }
 
-    for (unsigned int i = ROTATION_X; i <= ROTATION_Z; i++)
+    for(unsigned int i = ROTATION_X ; i <= ROTATION_Z ; i++)
     {
         m_sliders[i].m_labelMin->setText(std::to_string(m_rotationRange[0]).c_str());
         m_sliders[i].m_labelMax->setText(std::to_string(m_rotationRange[1]).c_str());
         m_sliders[i].m_slider->setRange(m_rotationRange[0], m_rotationRange[1]);
     }
 
-    for (unsigned int i = ROTATION_X; i <= ROTATION_Z; i++)
+    for(unsigned int i = ROTATION_X ; i <= ROTATION_Z ; i++)
     {
         const bool visible = m_rotation.find(axes[i]) != std::string::npos;
-        m_sliders[i].m_sliderValue->setVisible( visible );
-        m_sliders[i].m_labelMin->setVisible( visible );
-        m_sliders[i].m_labelMax->setVisible( visible );
-        m_sliders[i].m_labelDefinition->setVisible( visible );
-        m_sliders[i].m_slider->setVisible( visible );
+        m_sliders[i].m_sliderValue->setVisible(visible);
+        m_sliders[i].m_labelMin->setVisible(visible);
+        m_sliders[i].m_labelMax->setVisible(visible);
+        m_sliders[i].m_labelDefinition->setVisible(visible);
+        m_sliders[i].m_slider->setVisible(visible);
     }
 
     this->updateFromMatrix();
@@ -210,7 +210,7 @@ void STransformEditor::starting()
 
 void STransformEditor::stopping()
 {
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         QObject::disconnect(m_sliders[i].m_slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
         QObject::disconnect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
@@ -241,7 +241,7 @@ service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() cons
 
 void STransformEditor::onSliderChanged(int)
 {
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
@@ -259,12 +259,12 @@ void STransformEditor::onSliderChanged(int)
     data::mt::ObjectWriteLock lock(matrix);
     geometry::data::setTF3DFromMatrix(matrix, mat);
 
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         m_sliders[i].m_sliderValue->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
     }
 
-    auto sig = matrix->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -275,7 +275,7 @@ void STransformEditor::onSliderChanged(int)
 
 void STransformEditor::onTextChanged()
 {
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         QString string = m_sliders[i].m_sliderValue->text();
         m_sliders[i].m_slider->setValue(string.toInt());
@@ -286,7 +286,7 @@ void STransformEditor::onTextChanged()
 
 void STransformEditor::updateFromMatrix()
 {
-    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >("matrix");
+    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>("matrix");
 
     SIGHT_ASSERT("Unable to get matrix", matrix);
 
@@ -299,28 +299,28 @@ void STransformEditor::updateFromMatrix()
     const ::glm::dvec4 translation = mat[3];
 
     // Block
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         m_sliders[i].m_slider->blockSignals(true);
         m_sliders[i].m_sliderValue->blockSignals(true);
     }
 
-    for (::glm::length_t i = POSITION_X, j = 0; i <= POSITION_Z; i++, ++j)
+    for(::glm::length_t i = POSITION_X, j = 0 ; i <= POSITION_Z ; i++, ++j)
     {
         m_sliders[i].m_slider->setValue(static_cast<int>(translation[j]));
     }
 
-    for (::glm::length_t i = ROTATION_X, j = 0; i <= ROTATION_Z; i++, ++j)
+    for(::glm::length_t i = ROTATION_X, j = 0 ; i <= ROTATION_Z ; i++, ++j)
     {
         m_sliders[i].m_slider->setValue(static_cast<int>(::glm::degrees<double>(angles[j])));
     }
 
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         m_sliders[i].m_sliderValue->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
     }
 
-    for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
+    for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
         m_sliders[i].m_slider->blockSignals(false);
         m_sliders[i].m_sliderValue->blockSignals(false);

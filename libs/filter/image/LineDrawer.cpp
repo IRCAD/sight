@@ -37,20 +37,26 @@ LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& r
     m_image(img),
     m_roiImage(roi)
 {
-    m_useROI = data::fieldHelper::MedicalImageHelpers::checkImageValidity( m_roiImage );
+    m_useROI = data::fieldHelper::MedicalImageHelpers::checkImageValidity(m_roiImage);
 
     m_imageTypeSize = m_image->getType().sizeOf();
     m_roiTypeSize   = m_useROI ? m_roiImage->getType().sizeOf() : 0;
     const auto& size = m_image->getSize2();
     m_yPitch = size[0];
-    m_zPitch = size[1]*m_yPitch;
+    m_zPitch = size[1] * m_yPitch;
 }
 
 //-----------------------------------------------------------------------------
 
-bool LineDrawer::drawEllipse( const LineDrawer::CoordinatesType& c, data::Image::BufferType* value,
-                              const double radius, const size_t firstDim, const size_t secondDim, const bool overwrite,
-                              ImageDiff& diff)
+bool LineDrawer::drawEllipse(
+    const LineDrawer::CoordinatesType& c,
+    data::Image::BufferType* value,
+    const double radius,
+    const size_t firstDim,
+    const size_t secondDim,
+    const bool overwrite,
+    ImageDiff& diff
+)
 {
     bool modified = false;
 
@@ -71,18 +77,18 @@ bool LineDrawer::drawEllipse( const LineDrawer::CoordinatesType& c, data::Image:
     int wend = std::min(static_cast<int>(width), static_cast<int>(size[firstDim]) - 1 - origX);
     int hend = std::min(static_cast<int>(height), static_cast<int>(size[secondDim]) - 1 - origY);
 
-    for(int y = hbegin; y <= hend; y++)
+    for(int y = hbegin ; y <= hend ; y++)
     {
-        for(int x = wbegin; x <= wend; x++)
+        for(int x = wbegin ; x <= wend ; x++)
         {
             double dx = x / width;
             double dy = y / height;
-            if(dx*dx+dy*dy <= 1)
+            if(dx * dx + dy * dy <= 1)
             {
-                point[firstDim]  = static_cast< data::Image::IndexType >(origX+x);
-                point[secondDim] = static_cast< data::Image::IndexType >(origY+y);
+                point[firstDim]  = static_cast<data::Image::IndexType>(origX + x);
+                point[secondDim] = static_cast<data::Image::IndexType>(origY + y);
 
-                const data::Image::IndexType index = point[0] + point[1]*m_yPitch + point[2]*m_zPitch;
+                const data::Image::IndexType index = point[0] + point[1] * m_yPitch + point[2] * m_zPitch;
 
                 modified |= this->drawPixel(index, value, overwrite, diff);
             }
@@ -94,28 +100,32 @@ bool LineDrawer::drawEllipse( const LineDrawer::CoordinatesType& c, data::Image:
 
 //-----------------------------------------------------------------------------
 
-bool LineDrawer::drawPixel( const data::Image::IndexType index, data::Image::BufferType* value,
-                            const bool overwrite, ImageDiff& diff)
+bool LineDrawer::drawPixel(
+    const data::Image::IndexType index,
+    data::Image::BufferType* value,
+    const bool overwrite,
+    ImageDiff& diff
+)
 {
     const data::Image::BufferType* pixBuf =
-        reinterpret_cast< data::Image::BufferType* >(m_image->getPixelBuffer(index));
+        reinterpret_cast<data::Image::BufferType*>(m_image->getPixelBuffer(index));
 
-    if (m_useROI)
+    if(m_useROI)
     {
         data::Image::BufferType* roiVal =
-            reinterpret_cast< data::Image::BufferType* >(m_roiImage->getPixelBuffer(index));
-        if (data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
+            reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixelBuffer(index));
+        if(data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;
         }
     }
 
-    if (std::equal( pixBuf, pixBuf + m_imageTypeSize, value))
+    if(std::equal(pixBuf, pixBuf + m_imageTypeSize, value))
     {
         return false;
     }
 
-    if (!overwrite && !data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize) )
+    if(!overwrite && !data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize))
     {
         return false;
     }
@@ -128,33 +138,42 @@ bool LineDrawer::drawPixel( const data::Image::IndexType index, data::Image::Buf
 
 //-----------------------------------------------------------------------------
 
-ImageDiff LineDrawer::draw(const OrientationType orientation, const CoordinatesType& startCoord,
-                           const CoordinatesType& endCoord, data::Image::BufferType* value,
-                           const double thickness, const bool overwrite)
+ImageDiff LineDrawer::draw(
+    const OrientationType orientation,
+    const CoordinatesType& startCoord,
+    const CoordinatesType& endCoord,
+    data::Image::BufferType* value,
+    const double thickness,
+    const bool overwrite
+)
 {
     ImageDiff diff(m_imageTypeSize, 128);
 
     size_t dim0, dim1;
 
-    switch ( orientation )
+    switch(orientation)
     {
         case data::helper::MedicalImage::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;
+
         case data::helper::MedicalImage::Y_AXIS:
             dim0 = 2;
             dim1 = 0;
             break;
+
         case data::helper::MedicalImage::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;
+
         default:
             SIGHT_ASSERT("Unknown axis", false);
             dim0 = 0;
             dim1 = 1;
     }
+
     BresenhamLine::PathType path = BresenhamLine::draw(orientation, startCoord, endCoord);
 
     BresenhamLine::PathType::iterator pixel    = path.begin();
@@ -162,9 +181,9 @@ ImageDiff LineDrawer::draw(const OrientationType orientation, const CoordinatesT
 
     bool modified = false;
 
-    for (; pixel != endPixel; ++pixel)
+    for( ; pixel != endPixel ; ++pixel)
     {
-        modified = this->drawEllipse(*pixel, value, thickness/2.0, dim0, dim1, overwrite, diff) || modified;
+        modified = this->drawEllipse(*pixel, value, thickness / 2.0, dim0, dim1, overwrite, diff) || modified;
     }
 
     return diff;

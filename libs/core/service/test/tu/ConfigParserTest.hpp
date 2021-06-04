@@ -31,6 +31,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -41,8 +42,8 @@ namespace ut
  */
 class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ConfigParserTest );
-CPPUNIT_TEST( testObjectCreationWithConfig );
+CPPUNIT_TEST_SUITE(ConfigParserTest);
+CPPUNIT_TEST(testObjectCreationWithConfig);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,9 +55,11 @@ public:
     void testObjectCreationWithConfig();
 
 private:
+
     /// Create a configurationElement to build an object
     core::runtime::ConfigurationElement::sptr buildObjectConfig();
 };
 
 } //namespace ut
+
 } //namespace sight::service

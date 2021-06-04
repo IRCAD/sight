@@ -27,15 +27,17 @@ namespace sight::io::vtk
 
 namespace helper
 {
+
 //------------------------------------------------------------------------------
 
 void vtkLambdaCommand::Execute(vtkObject* caller, unsigned long event, void* callData)
 {
-    if (m_callback)
+    if(m_callback)
     {
         m_callback(caller, event, callData);
     }
 }
 
 } // namespace helper
+
 } // namespace sight::io::vtk

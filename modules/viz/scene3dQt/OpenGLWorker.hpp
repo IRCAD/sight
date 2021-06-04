@@ -44,7 +44,6 @@ struct OpenGLRunner;
  */
 class OpenGLWorker final : public ::sight::viz::scene3d::IGraphicsWorker
 {
-
 public:
 
     /// Builds a graphic worker able to handle resources for the given surface.
@@ -61,15 +60,14 @@ private:
     friend struct OpenGLRunner;
 
     /// Contains an OpenGL context used by the graphics worker.
-    std::unique_ptr< QOpenGLContext > m_glContext;
+    std::unique_ptr<QOpenGLContext> m_glContext;
 
     /// Contains a thread pool launching workers, this spares the expense of re-instancing a QThread with an
     /// OpenGL context for each new task.
-    std::unique_ptr< QThreadPool > m_threadPool;
+    std::unique_ptr<QThreadPool> m_threadPool;
 
     /// Contains the surface on which the thread's context is enabled.
     QSurface* m_surface;
-
 };
 
 } // namespace sight::module::viz::scene3dQt.

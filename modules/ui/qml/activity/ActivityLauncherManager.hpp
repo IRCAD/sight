@@ -32,13 +32,14 @@
 #include <service/AppManager.hpp>
 #include <service/IService.hpp>
 
+#include <ui/qml/IQmlAppManager.hpp>
+
 #include <QObject>
 #include <QVariant>
 
-#include <ui/qml/IQmlAppManager.hpp>
-
 namespace sight::module::ui::qml::activity
 {
+
 /**
  * @brief Manager to lauch activities with a sequencer
  *
@@ -61,7 +62,9 @@ namespace sight::module::ui::qml::activity
 class MODULE_UI_QML_CLASS_API ActivityLauncherManager : public sight::ui::qml::IQmlAppManager
 {
 Q_OBJECT
+
 public:
+
     /// Constructor.
     MODULE_UI_QML_API ActivityLauncherManager() noexcept;
 

@@ -27,10 +27,11 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::StructureTraits );
+SIGHT_REGISTER_DATA(sight::data::StructureTraits);
 
 namespace sight::data
 {
+
 //------------------------------------------------------------------------------
 
 StructureTraits::StructureTraits(data::Object::Key) :
@@ -43,7 +44,7 @@ StructureTraits::StructureTraits(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-StructureTraits::~StructureTraits ()
+StructureTraits::~StructureTraits()
 {
 }
 
@@ -52,12 +53,16 @@ StructureTraits::~StructureTraits ()
 void StructureTraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     StructureTraits::csptr other = StructureTraits::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(source, cache);
 
-    SIGHT_FATAL("Not implemented." );
+    SIGHT_FATAL("Not implemented.");
 }
 
 } // namespace sight::data

@@ -41,12 +41,15 @@
 
 namespace sight::core::jobs
 {
+
 class IJob;
 class Observer;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -58,7 +61,7 @@ class IO_DICOM_CLASS_API DicomAnonymizer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomAnonymizer)
+    SIGHT_DECLARE_CLASS(DicomAnonymizer);
 
     //------------------------------------------------------------------------------
 
@@ -74,10 +77,10 @@ public:
     IO_DICOM_API virtual ~DicomAnonymizer();
 
     /// Map used to maintain UID consistency
-    typedef std::map< std::string, std::string > UIDMap;
+    typedef std::map<std::string, std::string> UIDMap;
 
     /// Map used to store exception value
-    typedef std::map< ::gdcm::Tag, std::string > ExceptionTagMapType;
+    typedef std::map< ::gdcm::Tag, std::string> ExceptionTagMapType;
 
     /// Anonymize a folder containing Dicom files
     IO_DICOM_API void anonymize(const std::filesystem::path& dirPath);
@@ -92,8 +95,10 @@ public:
      * @param input Input file
      * @param output Output file
      */
-    IO_DICOM_API static void copyDirectory(const std::filesystem::path& input,
-                                           const std::filesystem::path& output);
+    IO_DICOM_API static void copyDirectory(
+        const std::filesystem::path& input,
+        const std::filesystem::path& output
+    );
 
     /// Get job observer
     IO_DICOM_API SPTR(core::jobs::IJob) getJob() const;
@@ -129,14 +134,14 @@ public:
     /**
      * @name Access tags according to their associated action code
      * @{ */
-    typedef std::set< ::gdcm::Tag > TagContainerType;
+    typedef std::set< ::gdcm::Tag> TagContainerType;
     IO_DICOM_API const TagContainerType& getActionCodeDTags();
     IO_DICOM_API const TagContainerType& getActionCodeZTags();
     IO_DICOM_API const TagContainerType& getActionCodeXTags();
     IO_DICOM_API const TagContainerType& getActionCodeKTags();
     IO_DICOM_API const TagContainerType& getActionCodeCTags();
     IO_DICOM_API const TagContainerType& getActionCodeUTags();
-    /**  @} */
+/**  @} */
 
 private:
 
@@ -242,4 +247,5 @@ private:
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

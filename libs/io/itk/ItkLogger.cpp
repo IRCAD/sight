@@ -30,6 +30,7 @@
 class ItkLogger : public ::itk::OutputWindow
 {
 public:
+
     typedef ItkLogger Self;
     typedef ::itk::SmartPointer<Self> Pointer;
 
@@ -43,6 +44,7 @@ public:
     void DisplayDebugText(const char* _txt) override;
 
 private:
+
     ItkLogger();
     virtual ~ItkLogger();
 };
@@ -58,14 +60,12 @@ ItkLogger::Pointer ItkLogger::New()
 
 ItkLogger::ItkLogger()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 ItkLogger::~ItkLogger()
 {
-
 }
 
 //------------------------------------------------------------------------------

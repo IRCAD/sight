@@ -30,10 +30,10 @@
 namespace camp_ext
 {
 
-template <typename T>
+template<typename T>
 struct ValueMapper<T, typename boost::enable_if_c<camp::isMapping<T>::value>::type>
 {
     static const int type = camp::mappingType;
 };
 
-}  // namespace camp_ext
+} // namespace camp_ext

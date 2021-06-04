@@ -23,18 +23,19 @@
 #pragma once
 
 #include "service/config.hpp"
+#include <service/IAppConfigManager.hpp>
+#include <service/IXMLParser.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <service/IAppConfigManager.hpp>
-#include <service/IXMLParser.hpp>
-
 namespace sight::service
 {
+
 namespace parser
 {
+
 /**
  * @brief   Specific service for the construction of a List and its associated services from an XML-based description.
  * @see     service::IXMLParser
@@ -43,12 +44,12 @@ class SERVICE_CLASS_API List : public service::IXMLParser
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(List, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(List, service::IXMLParser);
 
     /**
      * @brief   Constructor : does nothing.
      */
-    List( )
+    List()
     {
     }
 
@@ -59,7 +60,7 @@ public:
     {
     }
 
-    SERVICE_API void createConfig( core::tools::Object::sptr _obj ) override;
+    SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 
     SERVICE_API void startConfig() override;
 
@@ -76,15 +77,16 @@ protected:
      *
      * Parse the List configuration element to configure and add its objects.
      */
-    SERVICE_API void updating( ) override;
+    SERVICE_API void updating() override;
 
 private:
 
     /// To verify some conditions in xml file
-    bool refObjectValidator( core::runtime::ConfigurationElement::sptr _cfgElement );
+    bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
 
-    std::vector< service::IAppConfigManager::sptr > m_ctmContainer;
+    std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };
 
 } //namespace parser
+
 } //namespace sight::service

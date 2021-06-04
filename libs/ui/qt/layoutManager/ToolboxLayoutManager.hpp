@@ -37,11 +37,13 @@ namespace sight::ui::qt
  */
 class UI_QT_CLASS_API ToolboxLayoutManager : public ui::base::layoutManager::ToolboxLayoutManagerBase
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ToolboxLayoutManager, ui::base::layoutManager::ToolboxLayoutManagerBase,
-                        ui::base::factory::New< ToolboxLayoutManager >)
+    SIGHT_DECLARE_CLASS(
+        ToolboxLayoutManager,
+        ui::base::layoutManager::ToolboxLayoutManagerBase,
+        ui::base::factory::New<ToolboxLayoutManager>
+    )
 
     UI_QT_API ToolboxLayoutManager(ui::base::GuiBaseObject::Key key);
 
@@ -52,14 +54,13 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
     UI_QT_API void destroyLayout() override;
-
 };
 
 } // namespace sight::ui::qt

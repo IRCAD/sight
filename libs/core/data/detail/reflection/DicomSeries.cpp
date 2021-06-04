@@ -29,7 +29,7 @@
 
 //------------------------------------------------------------------------------
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(DicomSeries))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (DicomSeries))
 {
     builder
     .tag("object_version", "2")

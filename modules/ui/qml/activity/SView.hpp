@@ -103,11 +103,11 @@ namespace sight::module::ui::qml::activity
 class MODULE_UI_QML_CLASS_API SView : public sight::ui::qml::IQmlEditor,
                                       public sight::activity::IActivityLauncher
 {
-
 Q_OBJECT
+
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SView();
@@ -117,9 +117,10 @@ public:
     MODULE_UI_QML_API ~SView() override;
 
     /// Signal emited when the activity is launched
-    typedef core::com::Signal< void () > ActivityLaunchedSignalType;
+    typedef core::com::Signal<void ()> ActivityLaunchedSignalType;
 
 Q_SIGNALS:
+
     void launchRequested(QUrl path, QVariantMap replace);
 
 public Q_SLOTS:

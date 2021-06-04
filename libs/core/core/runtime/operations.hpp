@@ -28,7 +28,6 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/Runtime.hpp"
 #include "core/runtime/RuntimeException.hpp"
-
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -38,6 +37,7 @@
 
 namespace sight::core::runtime
 {
+
 class Module;
 class Profile;
 
@@ -47,9 +47,9 @@ class Profile;
  *
  * @param   directory   deprecated, path to the directory where Sight is installed. This is now automatically detected.
  */
-CORE_API void init( [[deprecated("To be removed in Sight 22.0,this is now automatically detected")]]
-                    const std::filesystem::path& directory = std::filesystem::path()
-                    );
+CORE_API void init([[deprecated("To be removed in Sight 22.0,this is now automatically detected")]]
+                   const std::filesystem::path& directory = std::filesystem::path()
+);
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -64,19 +64,20 @@ CORE_API void init( [[deprecated("To be removed in Sight 22.0,this is now automa
  */
 template<typename T>
 T* createExecutableInstance(
-    const std::shared_ptr<Extension>    extension,
+    const std::shared_ptr<Extension> extension,
     const std::string& element   = "executable",
-    const std::string& attribute = "class" )
+    const std::string& attribute = "class"
+)
 {
     // Retrieves the right configuration element.
-    std::shared_ptr<ConfigurationElement> elt( extension->findConfigurationElement(element) );
-    if( elt == 0 )
+    std::shared_ptr<ConfigurationElement> elt(extension->findConfigurationElement(element));
+    if(elt == 0)
     {
         throw RuntimeException(element + ": configuration element not found in extension.");
     }
 
     // Creates the executable instance from the found configuration element.
-    return createExecutableInstance<T>( elt, attribute );
+    return createExecutableInstance<T>(elt, attribute);
 }
 
 /**
@@ -84,7 +85,7 @@ T* createExecutableInstance(
  *          specified identifier.
  * @return  a vector containing shared pointers to all found configuration elements
  */
-std::vector< ConfigurationElement::sptr > getAllConfigurationElementsForPoint(const std::string& identifier);
+std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(const std::string& identifier);
 
 /**
  * @brief   Retrieve the configuation element with the given identifier for the
@@ -95,8 +96,10 @@ std::vector< ConfigurationElement::sptr > getAllConfigurationElementsForPoint(co
  *
  * @return  a shared pointer to the found configuration element or null if none
  */
-CORE_API std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string& identifier,
-                                                                           const std::string& pointIdentifier );
+CORE_API std::shared_ptr<ConfigurationElement> findConfigurationElement(
+    const std::string& identifier,
+    const std::string& pointIdentifier
+);
 
 /**
  * @brief   Retrieve the extension having the specified identifier.
@@ -105,7 +108,7 @@ CORE_API std::shared_ptr< ConfigurationElement > findConfigurationElement( const
  *
  * @return  a shared pointer to the found extension or null if none
  */
-CORE_API std::shared_ptr<Extension> findExtension( const std::string& identifier );
+CORE_API std::shared_ptr<Extension> findExtension(const std::string& identifier);
 
 /**
  * @brief   Retrieve the filesystem valid path of resources of a module.
@@ -124,8 +127,10 @@ CORE_API std::filesystem::path getModuleResourcePath(const std::string& moduleId
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentifier,
-                                                         const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path getModuleResourceFilePath(
+    const std::string& moduleIdentifier,
+    const std::filesystem::path& path
+) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
@@ -177,8 +182,10 @@ CORE_API std::filesystem::path getResourceFilePath(const std::filesystem::path& 
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
-                                                      const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path getModuleResourcePath(
+    std::shared_ptr<Module> module,
+    const std::filesystem::path& path
+) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
@@ -188,8 +195,10 @@ CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> mo
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<ConfigurationElement> element,
-                                                      const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path getModuleResourcePath(
+    std::shared_ptr<ConfigurationElement> element,
+    const std::filesystem::path& path
+) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
@@ -199,15 +208,17 @@ CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Configurat
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path getModuleResourcePath(const IExecutable* executable,
-                                                     const std::filesystem::path& path) noexcept;
+CORE_API std::filesystem::path getModuleResourcePath(
+    const IExecutable* executable,
+    const std::filesystem::path& path
+) noexcept;
 
 /**
  * @brief   Loads all modules that can be found in the specified directory.
  *
  * @param   directory   a path to the directory to explore for modules
  */
-CORE_API void addModules( const std::filesystem::path& directory );
+CORE_API void addModules(const std::filesystem::path& directory);
 
 /**
  * @brief   Load a module.
@@ -217,7 +228,7 @@ CORE_API void addModules( const std::filesystem::path& directory );
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
-CORE_API std::shared_ptr<Module> loadModule( const std::string& identifier );
+CORE_API std::shared_ptr<Module> loadModule(const std::string& identifier);
 
 /**
  * @brief   Load a library.
@@ -226,7 +237,7 @@ CORE_API std::shared_ptr<Module> loadModule( const std::string& identifier );
  *
  * @return  success
  */
-CORE_API bool loadLibrary( const std::string& identifier );
+CORE_API bool loadLibrary(const std::string& identifier);
 
 /**
  * @brief   Starts the given module set profile.
@@ -235,7 +246,7 @@ CORE_API bool loadLibrary( const std::string& identifier );
  *
  * @return  a shared pointer to the started profile
  */
-CORE_API std::shared_ptr< core::runtime::Profile > startProfile( const std::filesystem::path& path );
+CORE_API std::shared_ptr<core::runtime::Profile> startProfile(const std::filesystem::path& path);
 
 /**
  * @brief   Retrieves the module with the given identifier and version
@@ -245,7 +256,7 @@ CORE_API std::shared_ptr< core::runtime::Profile > startProfile( const std::file
  *
  * @return  a shared pointer to the found module, or empty when none
  */
-CORE_API std::shared_ptr<Module> findModule( const std::string& identifier );
+CORE_API std::shared_ptr<Module> findModule(const std::string& identifier);
 
 /**
  * @brief   Starts the module specified by the given identifier.

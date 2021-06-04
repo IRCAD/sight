@@ -26,13 +26,15 @@
 
 namespace sight::core::reflection
 {
+
 namespace factory
 {
 
-SPTR( ::camp::UserObject ) New( const core::reflection::registry::KeyType& classname, core::tools::Object* object )
+SPTR(::camp::UserObject) New(const core::reflection::registry::KeyType& classname, core::tools::Object* object)
 {
     return core::reflection::registry::get()->create(classname, object);
 }
 
 } // namespace factory
+
 } // namespace sight::core::reflection

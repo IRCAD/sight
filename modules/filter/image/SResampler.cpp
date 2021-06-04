@@ -45,48 +45,44 @@ static const service::IService::KeyType s_TRANSFORM_IN = "transform";
 
 SResampler::SResampler()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 SResampler::~SResampler()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SResampler::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SResampler::starting()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SResampler::updating()
 {
-    data::Image::csptr inImg = this->getInput< data::Image >(s_IMAGE_IN);
+    data::Image::csptr inImg = this->getInput<data::Image>(s_IMAGE_IN);
 
     data::mt::ObjectReadLock inImLock(inImg);
 
-    data::Image::sptr outImg = this->getInOut< data::Image >(s_IMAGE_INOUT);
+    data::Image::sptr outImg = this->getInOut<data::Image>(s_IMAGE_INOUT);
 
     data::mt::ObjectWriteLock outImLock(outImg);
 
-    data::Image::csptr target = this->getInput< data::Image >(s_TARGET_IN);
+    data::Image::csptr target = this->getInput<data::Image>(s_TARGET_IN);
 
     data::mt::ObjectReadLock targetLock(target);
 
     data::Matrix4::csptr transform =
-        this->getInput< data::Matrix4 >(s_TRANSFORM_IN);
+        this->getInput<data::Matrix4>(s_TRANSFORM_IN);
 
     SIGHT_ASSERT("No 'imageIn' found !", inImg);
     SIGHT_ASSERT("No 'imageOut' found !", outImg);
@@ -96,12 +92,12 @@ void SResampler::updating()
 
     m_sigComputed->asyncEmit();
 
-    auto imgBufModifSig = outImg->signal< data::Image::BufferModifiedSignalType >
+    auto imgBufModifSig = outImg->signal<data::Image::BufferModifiedSignalType>
                               (data::Image::s_BUFFER_MODIFIED_SIG);
 
     imgBufModifSig->asyncEmit();
 
-    auto imgModifSig = outImg->signal< data::Image::ModifiedSignalType >
+    auto imgModifSig = outImg->signal<data::Image::ModifiedSignalType>
                            (data::Image::s_MODIFIED_SIG);
 
     imgModifSig->asyncEmit();
@@ -111,7 +107,6 @@ void SResampler::updating()
 
 void SResampler::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------

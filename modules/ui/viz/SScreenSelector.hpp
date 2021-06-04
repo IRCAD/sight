@@ -56,7 +56,7 @@ class MODULE_UI_VIZ_CLASS_API SScreenSelector : public ::sight::ui::base::IActio
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScreenSelector, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SScreenSelector, ::sight::ui::base::IAction);
 
     /// Constructor.
     MODULE_UI_VIZ_API SScreenSelector();
@@ -90,8 +90,7 @@ private:
     ScreenSelectedSignalType::sptr m_screenSelectedSig;
 
     /// Selection mode can be 'select', 'current' or 'neighbor' (cf XML configuration).
-    std::string m_mode { "select" };
-
+    std::string m_mode {"select"};
 };
 
 } // namespace sight::module::ui::viz

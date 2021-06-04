@@ -30,13 +30,15 @@
 
 namespace sight::module::ui::qt
 {
+
 /**
  * @brief   This action show the help contents.
  */
 class MODULE_UI_QT_CLASS_API SShowHelp : public ::sight::ui::base::IAction
 {
 public:
-    SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction)
+
+    SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction);
     MODULE_UI_QT_API SShowHelp() noexcept;
 
     MODULE_UI_QT_API virtual ~SShowHelp() noexcept;
@@ -65,9 +67,10 @@ protected:
     /// Stops action
     void stopping() override;
 
-    MODULE_UI_QT_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_QT_API void info(std::ostream& _sstream) override;
 
 private:
+
     /**
      * @brief the m_bServiceIsConfigured value is \b true
      * if the help files path is known.

@@ -37,13 +37,14 @@ namespace ut
 
 class ActivitySeriesBuilderTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ActivitySeriesBuilderTest );
+CPPUNIT_TEST_SUITE(ActivitySeriesBuilderTest);
 
 CPPUNIT_TEST(buildDataTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -51,10 +52,11 @@ public:
     void buildDataTest();
 
 protected:
-    SPTR( core::runtime::Module ) m_module;
-    SPTR( activity::extension::Activity ) m_activity;
 
+    SPTR(core::runtime::Module) m_module;
+    SPTR(activity::extension::Activity) m_activity;
 };
 
 } //namespace ut
+
 } //namespace sight::activity

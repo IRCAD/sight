@@ -62,7 +62,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SComputeHistogram : public service::IControll
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SComputeHistogram, service::IController)
+    SIGHT_DECLARE_SERVICE(SComputeHistogram, service::IController);
 
     /// Constructor. Does nothing.
     MODULE_VIZ_SCENE2D_API SComputeHistogram() noexcept;

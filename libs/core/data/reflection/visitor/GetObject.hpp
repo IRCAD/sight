@@ -32,13 +32,17 @@
 
 namespace sight::data
 {
+
 class Object;
+
 }
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace visitor
 {
 
@@ -61,7 +65,7 @@ struct PathVisitor
      */
     PathVisitor(const std::string& path)
     {
-        ::boost::split( m_vectObj, path, ::boost::is_any_of("."));
+        ::boost::split(m_vectObj, path, ::boost::is_any_of("."));
     }
 
     /**
@@ -93,7 +97,6 @@ struct PathVisitor
 
         /// Introspected path elements.
         ObjectsNamesType m_vectObjFound;
-
 };
 
 /**
@@ -102,7 +105,6 @@ struct PathVisitor
  */
 class DATA_CLASS_API GetObject : public ::camp::ExtendedClassVisitor
 {
-
 public:
 
     /**
@@ -111,7 +113,7 @@ public:
      * @param object data object containing child object to retrieve
      * @param subObjPath normalized path targeting child object to retrieve
      */
-    DATA_API GetObject( CSPTR(data::Object)object, const std::string& subObjPath );
+    DATA_API GetObject(CSPTR(data::Object)object, const std::string& subObjPath);
 
     DATA_API virtual ~GetObject();
 
@@ -172,9 +174,10 @@ protected:
 
     /// Path visitor.
     PathVisitor::sptr m_pathVisitor;
-
 };
 
 } // namespace visitor
+
 } // namespace reflection
+
 } // namespace sight::data

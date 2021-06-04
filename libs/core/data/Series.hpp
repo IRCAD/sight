@@ -43,7 +43,7 @@ class DATA_CLASS_API Series : public data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Series, data::Object, data::factory::New<Series>)
+    SIGHT_DECLARE_CLASS(Series, data::Object, data::factory::New<Series>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Series))
 

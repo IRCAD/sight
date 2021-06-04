@@ -24,9 +24,8 @@
 
 #include "data/ActivitySeries.hpp"
 #include "data/config.hpp"
+#include <data/Composite.hpp>
 
 #include <core/reflection/macros.hpp>
 
-#include <data/Composite.hpp>
-
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ActivitySeries), (sight)(data)(Composite));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (ActivitySeries), (sight) (data) (Composite));

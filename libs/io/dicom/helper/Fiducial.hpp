@@ -30,11 +30,14 @@
 
 namespace sight::data
 {
+
 class SeriesDB;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -43,7 +46,6 @@ namespace helper
  */
 class IO_DICOM_CLASS_API Fiducial
 {
-
 public:
 
     /**
@@ -66,4 +68,5 @@ public:
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

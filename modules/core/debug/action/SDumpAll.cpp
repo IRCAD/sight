@@ -32,13 +32,13 @@
 
 namespace sight::module::debug
 {
+
 namespace action
 {
 
-
 //------------------------------------------------------------------------------
 
-SDumpAll::SDumpAll( ) noexcept
+SDumpAll::SDumpAll() noexcept
 {
 }
 
@@ -50,7 +50,7 @@ SDumpAll::~SDumpAll() noexcept
 
 //------------------------------------------------------------------------------
 
-void SDumpAll::updating( )
+void SDumpAll::updating()
 {
     size_t nbBuffDumped = 0;
     core::memory::BufferManager::BufferInfoMapType buffInfoMap;
@@ -59,7 +59,8 @@ void SDumpAll::updating( )
     {
         buffInfoMap = buffManager->getBufferInfos().get();
     }
-    for(core::memory::BufferManager::BufferInfoMapType::value_type elt :  buffInfoMap)
+
+    for(core::memory::BufferManager::BufferInfoMapType::value_type elt : buffInfoMap)
     {
         core::memory::BufferInfo dumpBuffInfo = elt.second;
         bool loaded                           = dumpBuffInfo.loaded;
@@ -73,12 +74,14 @@ void SDumpAll::updating( )
             }
         }
     }
+
     std::stringstream stream;
-    stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped <<"/"<<buffInfoMap.size()<<").";
+    stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped << "/" << buffInfoMap.size() << ").";
     sight::ui::base::dialog::MessageDialog::show(
         "Dump all",
         stream.str(),
-        sight::ui::base::dialog::IMessageDialog::INFO);
+        sight::ui::base::dialog::IMessageDialog::INFO
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -104,4 +107,5 @@ void SDumpAll::stopping()
 //------------------------------------------------------------------------------
 
 } // namespace action
+
 } // namespace sight::module::debug

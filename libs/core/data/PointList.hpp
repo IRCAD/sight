@@ -32,23 +32,24 @@
 
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(PointList));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (PointList));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines a list of points.
  * @see     data::Point
  */
 class DATA_CLASS_API PointList : public Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(PointList, data::Object, data::factory::New< PointList >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(PointList));
+    SIGHT_DECLARE_CLASS(PointList, data::Object, data::factory::New<PointList>);
 
-    typedef std::vector< data::Point::sptr > PointListContainer;
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PointList));
+
+    typedef std::vector<data::Point::sptr> PointListContainer;
 
     /**
      * @brief Constructor
@@ -62,7 +63,7 @@ public:
     /**
      * @brief Defines shallow copy
      */
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
     /**
      * @brief Defines deep copy
      */
@@ -71,17 +72,17 @@ public:
      * @brief Gets point vector
      * @return the vector of points
      */
-    PointListContainer& getPoints ();
+    PointListContainer& getPoints();
     /**
      * @brief Gets point vector
      * @return the vector of points
      */
-    const PointListContainer& getPoints () const;
+    const PointListContainer& getPoints() const;
     /**
      * @brief Sets point vector
      * @param[in] _vPoints The vector of points to set
      */
-    void setPoints (const PointListContainer& _vPoints);
+    void setPoints(const PointListContainer& _vPoints);
     /**
      * @brief Adds a data::Point in the pointlist
      * @param[in] _p The point to push
@@ -104,16 +105,16 @@ public:
     /**
      * @brief Signal emitted when a Point is added
      */
-    typedef core::com::Signal< void (data::Point::sptr) > PointAddedSignalType;
+    typedef core::com::Signal<void (data::Point::sptr)> PointAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_ADDED_SIG;
     /**
      * @brief Signal emitted when a Point is removed
      */
-    typedef core::com::Signal< void (data::Point::sptr) > PointRemovedSignalType;
+    typedef core::com::Signal<void (data::Point::sptr)> PointRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_REMOVED_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -121,26 +122,25 @@ protected:
      * @brief Points container
      */
     PointListContainer m_vPoints;
-
 }; // end class PointList
 
 //-----------------------------------------------------------------------------
 
-inline PointList::PointListContainer& PointList::getPoints ()
+inline PointList::PointListContainer& PointList::getPoints()
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const PointList::PointListContainer& PointList::getPoints () const
+inline const PointList::PointListContainer& PointList::getPoints() const
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void PointList::setPoints (const PointList::PointListContainer& _vPoints)
+inline void PointList::setPoints(const PointList::PointListContainer& _vPoints)
 {
     this->m_vPoints = _vPoints;
 }

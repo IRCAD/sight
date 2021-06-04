@@ -23,7 +23,6 @@
 #pragma once
 
 #include "service/config.hpp"
-
 #include <service/IService.hpp>
 
 namespace sight::service
@@ -35,10 +34,9 @@ namespace sight::service
  */
 class SERVICE_CLASS_API ISimulator : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(ISimulator, service::IService)
+    SIGHT_DECLARE_SERVICE(ISimulator, service::IService);
 
 protected:
 
@@ -47,7 +45,6 @@ protected:
 
     /// ISimulator destructor. Do nothing.
     SERVICE_API virtual ~ISimulator();
-
 };
 
 }

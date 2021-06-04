@@ -47,7 +47,7 @@ class IO_ATOMS_CLASS_API IStructuralPatch : public IPatch
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IStructuralPatch, IPatch)
+    SIGHT_DECLARE_CLASS(IStructuralPatch, IPatch);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     ///Constructor

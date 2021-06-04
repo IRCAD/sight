@@ -30,8 +30,10 @@
 
 namespace sight::geometry::eigen
 {
+
 namespace helper
 {
+
 /**
  * @brief RvecTvecType is a std::pair of ::Eigen::Vector3d that handles Rotation and Translation Vectors (Rvec, Tvec)
  * The first element is the rotation vector (Rvec)
@@ -44,28 +46,28 @@ typedef ::Eigen::Matrix<double, 4, 4, ::Eigen::RowMajor> EigenMatrix;
  * @param _mat : the eigen matrix
  * @return a pointer to a data::Matrix4
  */
-GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s( const ::Eigen::Matrix4f& _mat);
+GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const ::Eigen::Matrix4f& _mat);
 
 /**
  * @brief Convert from an Eigen double 4x4 Matrix to a data::Matrix4
  * @param _mat : the eigen matrix
  * @return a pointer to a data::Matrix4
  */
-GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s( const ::Eigen::Matrix4d& _mat);
+GEOMETRY_EIGEN_API data::Matrix4::sptr toF4s(const ::Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform a eigen 4x4 matrix to a rvec tvec representation
  * @param _mat : input matrix
  * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
  */
-GEOMETRY_EIGEN_API RvecTvecType eigenMatToRvecTvec( const ::Eigen::Matrix4d& _mat);
+GEOMETRY_EIGEN_API RvecTvecType eigenMatToRvecTvec(const ::Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
  * @param _mat : input data::Matrix4
  * @return std::pair of ::Eigen::Vector3d (see RvecTvecType)
  */
-GEOMETRY_EIGEN_API RvecTvecType f4sMatToRvecTvec( const data::Matrix4::csptr _mat);
+GEOMETRY_EIGEN_API RvecTvecType f4sMatToRvecTvec(const data::Matrix4::csptr _mat);
 /**
  * @brief toEigen
  * @param array of float (16 values)
@@ -92,13 +94,13 @@ GEOMETRY_EIGEN_API RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _
  * @param _tvec : input translation vector
  * @param _mat : output matrix
  */
-template< class T>
-::Eigen::Matrix<T, 4, 4, ::Eigen::RowMajor> toEigen( const data::Matrix4::csptr _trf)
+template<class T>
+::Eigen::Matrix<T, 4, 4, ::Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
 {
     ::Eigen::Matrix<T, 4, 4> mat;
-    for(unsigned int r = 0; r < 4; ++r)
+    for(unsigned int r = 0 ; r < 4 ; ++r)
     {
-        for(unsigned int c = 0; c < 4; ++c)
+        for(unsigned int c = 0 ; c < 4 ; ++c)
         {
             mat(r, c) = static_cast<T>(_trf->getCoefficient(r, c));
         }
@@ -108,4 +110,5 @@ template< class T>
 }
 
 } //namespace helper
+
 } //namespace sight::geometry::eigen

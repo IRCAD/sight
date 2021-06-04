@@ -23,7 +23,6 @@
 #include "core/jobs/exception/Waiting.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::jobs
@@ -32,7 +31,7 @@ namespace sight::core::jobs
 namespace exception
 {
 
-Waiting::Waiting ( const std::string& err ) :
+Waiting::Waiting(const std::string& err) :
     core::Exception(err)
 {
 }

@@ -30,8 +30,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace iod
 {
 
@@ -40,8 +42,8 @@ namespace iod
  */
 class IO_DICOM_CLASS_API SurfaceSegmentationIOD : public io::dicom::writer::iod::InformationObjectDefinition
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share information between modules
@@ -51,12 +53,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API SurfaceSegmentationIOD(const SPTR(io::dicom::container::DicomInstance)& instance,
-                                        const SPTR(io::dicom::container::DicomInstance)& imageInstance,
-                                        const std::filesystem::path& destinationPath,
-                                        const core::log::Logger::sptr& logger = core::log::Logger::New(),
-                                        ProgressCallback progress             = nullptr,
-                                        CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API SurfaceSegmentationIOD(
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+        const std::filesystem::path& destinationPath,
+        const core::log::Logger::sptr& logger = core::log::Logger::New(),
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~SurfaceSegmentationIOD();
@@ -65,11 +69,13 @@ public:
     IO_DICOM_API void write(const data::Series::csptr& series) override;
 
 protected:
+
     /// Image instance
     SPTR(io::dicom::container::DicomInstance) m_imageInstance;
-
 };
 
 } // namespace iod
+
 } // namespace writer
+
 } // namespace sight::io::dicom

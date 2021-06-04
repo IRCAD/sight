@@ -69,9 +69,9 @@ std::string IReader::getSelectorDialogTitle()
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > IReader::getSupportedExtensions()
+std::vector<std::string> IReader::getSupportedExtensions()
 {
-    return std::vector< std::string >();
+    return std::vector<std::string>();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ const std::filesystem::path& IReader::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFile( const std::filesystem::path& file)
+void IReader::setFile(const std::filesystem::path& file)
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
     m_locations.clear();
@@ -97,7 +97,7 @@ void IReader::setFile( const std::filesystem::path& file)
 const io::base::service::LocationsType& IReader::getFiles() const
 {
     SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
-    SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty());
     return m_locations;
 }
 
@@ -114,7 +114,7 @@ void IReader::setFiles(const io::base::service::LocationsType& files)
 const std::filesystem::path& IReader::getFolder() const
 {
     SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
-    SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
+    SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1);
     return m_locations.front();
 }
 
@@ -131,9 +131,11 @@ void IReader::setFolder(const std::filesystem::path& folder)
 
 void IReader::setFileFolder(std::filesystem::path folder)
 {
-    SIGHT_THROW_IF("This reader doesn't manage file or files",
-                   !(this->getIOPathType() & io::base::service::FILE) &&
-                   !(this->getIOPathType() & io::base::service::FILES));
+    SIGHT_THROW_IF(
+        "This reader doesn't manage file or files",
+        !(this->getIOPathType() & io::base::service::FILE)
+        && !(this->getIOPathType() & io::base::service::FILES)
+    );
 
     for(auto& file : m_locations)
     {
@@ -146,7 +148,7 @@ void IReader::setFileFolder(std::filesystem::path folder)
 
 const io::base::service::LocationsType& IReader::getLocations() const
 {
-    SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty());
     return m_locations;
 }
 
@@ -163,28 +165,34 @@ void IReader::configuring()
 {
     const ConfigType config = this->getConfigTree();
 
-    SIGHT_ASSERT("Generic configuring method is only available for io service that use paths.",
-                 !( this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED ) );
+    SIGHT_ASSERT(
+        "Generic configuring method is only available for io service that use paths.",
+        !(this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED)
+    );
 
-    SIGHT_ASSERT("This reader does not manage folders and a folder path is given in the configuration",
-                 ( this->getIOPathType() & io::base::service::FOLDER ) || (config.count("folder") == 0) );
+    SIGHT_ASSERT(
+        "This reader does not manage folders and a folder path is given in the configuration",
+        (this->getIOPathType() & io::base::service::FOLDER) || (config.count("folder") == 0)
+    );
 
-    SIGHT_ASSERT("This reader does not manage files and a file path is given in the configuration",
-                 ( this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES ) ||
-                 (config.count("file") == 0));
+    SIGHT_ASSERT(
+        "This reader does not manage files and a file path is given in the configuration",
+        (this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES)
+        || (config.count("file") == 0)
+    );
 
     m_windowTitle = config.get("windowTitle", "");
 
-    if ( this->getIOPathType() & io::base::service::FILE )
+    if(this->getIOPathType() & io::base::service::FILE)
     {
-        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES );
-        SIGHT_THROW_IF("At least one file must be defined in configuration", config.count("file") > 1 );
-        if (config.count("file") == 1)
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES);
+        SIGHT_THROW_IF("At least one file must be defined in configuration", config.count("file") > 1);
+        if(config.count("file") == 1)
         {
             const std::string file = config.get<std::string>("file");
             this->setFile(std::filesystem::path(file));
         }
-        else if (config.count("resource") == 1)
+        else if(config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
             const auto file            = core::runtime::getResourceFilePath(resource);
@@ -192,38 +200,39 @@ void IReader::configuring()
         }
     }
 
-    if ( this->getIOPathType() & io::base::service::FILES )
+    if(this->getIOPathType() & io::base::service::FILES)
     {
-        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILE );
+        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILE);
 
         io::base::service::LocationsType locations;
 
         const auto filesCfg = config.equal_range("file");
-        for (auto fileCfg = filesCfg.first; fileCfg != filesCfg.second; ++fileCfg)
+        for(auto fileCfg = filesCfg.first ; fileCfg != filesCfg.second ; ++fileCfg)
         {
             const std::string location = fileCfg->second.get_value<std::string>();
             locations.push_back(std::filesystem::path(location));
         }
 
         const auto resourcesCfg = config.equal_range("resource");
-        for (auto resourceCfg = resourcesCfg.first; resourceCfg != resourcesCfg.second; ++resourceCfg)
+        for(auto resourceCfg = resourcesCfg.first ; resourceCfg != resourcesCfg.second ; ++resourceCfg)
         {
             const std::string resource = resourceCfg->second.get_value<std::string>();
             const auto file            = core::runtime::getResourceFilePath(resource);
             locations.push_back(file);
         }
+
         this->setFiles(locations);
     }
 
-    if ( this->getIOPathType() & io::base::service::FOLDER )
+    if(this->getIOPathType() & io::base::service::FOLDER)
     {
-        SIGHT_THROW_IF("At least one folder must be defined in configuration", config.count("folder") > 1 );
-        if (config.count("folder") == 1)
+        SIGHT_THROW_IF("At least one folder must be defined in configuration", config.count("folder") > 1);
+        if(config.count("folder") == 1)
         {
             const std::string folder = config.get<std::string>("folder");
             this->setFolder(std::filesystem::path(folder));
         }
-        else if (config.count("resource") == 1)
+        else if(config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
             auto folder                = core::runtime::getModuleResourceFilePath(resource);
@@ -231,8 +240,10 @@ void IReader::configuring()
             {
                 // If not found in a module, look into libraries
                 folder = core::runtime::getLibraryResourceFilePath(resource);
-                SIGHT_ERROR_IF("Resource '" + resource + "' has not been found in any module or library",
-                               folder.empty());
+                SIGHT_ERROR_IF(
+                    "Resource '" + resource + "' has not been found in any module or library",
+                    folder.empty()
+                );
             }
 
             this->setFolder(folder);
@@ -244,8 +255,11 @@ void IReader::configuring()
 
 void IReader::deprecateConfigureWithIHM()
 {
-    FW_DEPRECATED_MSG("openLocationDialog should be implemented in subclass,"
-                      " this method will be a pure virtual in sight 22.0.", 22.0);
+    FW_DEPRECATED_MSG(
+        "openLocationDialog should be implemented in subclass,"
+        " this method will be a pure virtual in sight 22.0.",
+        22.0
+    );
     this->openLocationDialog();
 }
 
@@ -255,7 +269,8 @@ void IReader::openLocationDialog()
 {
     FW_DEPRECATED_MSG(
         "openLocationDialog should be implemented in subclass, this method will be a pure virtual in sight 22.0.",
-        22.0);
+        22.0
+    );
     this->configureWithIHM();
 }
 
@@ -306,4 +321,4 @@ void IReader::readFiles(io::base::service::LocationsType files)
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::io

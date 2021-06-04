@@ -27,6 +27,7 @@
 
 namespace Qt3DRender
 {
+
 class QBuffer;
 class QEffect;
 class QFilterKey;
@@ -34,13 +35,17 @@ class QParameter;
 class QRenderPass;
 class QShaderProgram;
 class QTechnique;
+
 }
 
 namespace sight::viz::qt3d
 {
+
 namespace core
 {
+
 class FrameGraph;
+
 }
 
 /**
@@ -48,7 +53,6 @@ class FrameGraph;
  */
 class VIZ_QT3D_CLASS_API ComputeMaterial : public Qt3DRender::QMaterial
 {
-
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
@@ -98,7 +102,6 @@ private:
 
     /// Contains the compute technique.
     Qt3DRender::QTechnique* m_computeTechnique;
-
 };
 
 //------------------------------------------------------------------------------

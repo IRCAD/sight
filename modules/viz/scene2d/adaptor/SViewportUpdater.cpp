@@ -27,9 +27,9 @@
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -71,27 +71,32 @@ void SViewportUpdater::updating()
 {
     sight::viz::scene2d::data::Viewport::sptr sceneViewport   = this->getScene2DRender()->getViewport();
     sight::viz::scene2d::data::Viewport::csptr viewportObject =
-        this->getInput< sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INPUT);
+        this->getInput<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INPUT);
 
     Point2DType pairCoord = this->mapAdaptorToScene(
-        Point2DType(viewportObject->getX(), viewportObject->getY() ), m_xAxis, m_yAxis );
+        Point2DType(viewportObject->getX(), viewportObject->getY()),
+        m_xAxis,
+        m_yAxis
+    );
 
     Point2DType pairSize = this->mapAdaptorToScene(
-        Point2DType(viewportObject->getWidth(), viewportObject->getHeight() ), m_xAxis, m_yAxis );
+        Point2DType(viewportObject->getWidth(), viewportObject->getHeight()),
+        m_xAxis,
+        m_yAxis
+    );
 
-    sceneViewport->setX( pairCoord.first );
-    sceneViewport->setY( pairCoord.second );
-    sceneViewport->setWidth( pairSize.first );
-    sceneViewport->setHeight( viewportObject->getHeight() );
+    sceneViewport->setX(pairCoord.first);
+    sceneViewport->setY(pairCoord.second);
+    sceneViewport->setWidth(pairSize.first);
+    sceneViewport->setHeight(viewportObject->getHeight());
 
     this->getScene2DRender()->getView()->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::processInteraction( sight::viz::scene2d::data::Event& )
+void SViewportUpdater::processInteraction(sight::viz::scene2d::data::Event&)
 {
-
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -99,9 +104,10 @@ void SViewportUpdater::processInteraction( sight::viz::scene2d::data::Event& )
 service::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

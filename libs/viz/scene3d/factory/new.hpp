@@ -36,7 +36,8 @@ class ILight;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -45,19 +46,21 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) viz::scene3d::factory::New();
+friend SPTR(CLASSNAME) viz::scene3d::factory::New();
 
 Key()
 {
 }
 };
 
-VIZ_SCENE3D_API SPTR( viz::scene3d::IWindowInteractor ) New(
-    const viz::scene3d::registry::KeyType& classname );
+VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
+    const viz::scene3d::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 
@@ -66,7 +69,8 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 namespace offscreenInteractorMgrFactory
 {
 
-template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims);
+template<class CLASSNAME>
+SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims);
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -74,7 +78,7 @@ template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned 
  */
 class Key
 {
-template <typename CLASSNAME>
+template<typename CLASSNAME>
 friend SPTR(CLASSNAME) viz::scene3d::offscreenInteractorMgrFactory::New(std::pair<unsigned int, unsigned int>);
 
 Key()
@@ -83,9 +87,12 @@ Key()
 };
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
-    const viz::scene3d::registry::KeyType& classname, std::pair<unsigned int, unsigned int> _dims);
+    const viz::scene3d::registry::KeyType& classname,
+    std::pair<unsigned int, unsigned int> _dims
+);
 
-template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims)
+template<class CLASSNAME>
+SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims)
 {
     return std::make_shared<CLASSNAME>(Key(), _dims.first, _dims.second);
 }
@@ -95,7 +102,8 @@ template <class CLASSNAME> SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned 
 namespace lightFactory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -104,19 +112,21 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) viz::scene3d::lightFactory::New();
+friend SPTR(CLASSNAME) viz::scene3d::lightFactory::New();
 
 Key()
 {
 }
 };
 
-VIZ_SCENE3D_API SPTR( viz::scene3d::ILight ) New(
-    const viz::scene3d::registry::KeyType& classname );
+VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) New(
+    const viz::scene3d::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 

@@ -42,7 +42,7 @@ class UI_BASE_CLASS_API IPulseProgressDialog : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IPulseProgressDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IPulseProgressDialog, ui::base::GuiBaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 

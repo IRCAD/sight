@@ -48,7 +48,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(PointEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(PointEditor, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API PointEditor() noexcept;
@@ -73,17 +73,16 @@ protected:
     void configuring() override;
 
     /// Overrides
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 
     /// Slot: get the interaction information
     void getInteraction(data::tools::PickingInfo info);
 
-    QPointer< QLineEdit >   m_textCtrl_x;
-    QPointer< QLineEdit >   m_textCtrl_y;
-    QPointer< QLineEdit >   m_textCtrl_z;
-
+    QPointer<QLineEdit> m_textCtrl_x;
+    QPointer<QLineEdit> m_textCtrl_y;
+    QPointer<QLineEdit> m_textCtrl_z;
 };
 
 } // uiData

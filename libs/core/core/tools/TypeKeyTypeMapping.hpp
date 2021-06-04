@@ -40,40 +40,51 @@ namespace sight::core::tools
  * Header declare function already specialized while src provide definition
  * @warning isMapping does not need to be exported since fwTools Library is builded as static
  */
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::uint8_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::uint16_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::uint32_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::uint64_t>(const Type& type);
 
 // FIXED PRECISION SIGNED
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::int8_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::int16_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::int32_t>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::int64_t>(const Type& type);
 
 // FLOATING PRECISION
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<float>(const Type& type);
 
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<double>(const Type& type);
 
 // MISC
-template<> CORE_API
+template<>
+CORE_API
 bool isMapping<std::string>(const Type& type);
 
 ///@}
@@ -89,6 +100,6 @@ typedef boost::mpl::vector<
         std::uint64_t,
         float,
         double
-        >::type SupportedDispatcherTypes;
+>::type SupportedDispatcherTypes;
 
 } //end namespace sight::core::tools

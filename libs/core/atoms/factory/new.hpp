@@ -35,7 +35,8 @@ class Base;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -44,18 +45,19 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) atoms::factory::New();
+friend SPTR(CLASSNAME) atoms::factory::New();
 
 Key()
 {
 }
 };
 
-ATOMS_API SPTR( atoms::Base ) New( const atoms::registry::KeyType& classname );
+ATOMS_API SPTR(atoms::Base) New(const atoms::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 

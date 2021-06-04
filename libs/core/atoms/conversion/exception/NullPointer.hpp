@@ -35,7 +35,7 @@ namespace exception
 /// Null pointer exception.
 struct NullPointer : core::Exception
 {
-    ATOMS_API NullPointer ( const std::string& err );
+    ATOMS_API NullPointer(const std::string& err);
 };
 
 } // namespace exception

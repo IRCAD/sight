@@ -32,7 +32,7 @@ namespace sight::atoms::conversion
 namespace exception
 {
 
-NullPointer::NullPointer ( const std::string& err ) :
+NullPointer::NullPointer(const std::string& err) :
     core::Exception(err)
 {
 }

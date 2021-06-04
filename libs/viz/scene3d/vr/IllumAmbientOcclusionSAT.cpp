@@ -53,8 +53,13 @@ class VolIllumCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius,
-                               float coneAngle, int samplesAlongCone) :
+    VolIllumCompositorListener(
+        int& currentSliceIndex,
+        int nbShells,
+        int shellRadius,
+        float coneAngle,
+        int samplesAlongCone
+    ) :
         m_currentSliceIndex(currentSliceIndex),
         m_nbShells(nbShells),
         m_shellRadius(shellRadius),
@@ -100,10 +105,17 @@ private:
 
 //-----------------------------------------------------------------------------
 
-IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                                   float satSizeRatio, bool ao, bool shadows, int nbShells,
-                                                   int shellRadius,
-                                                   float coneAngle, int samplesAlongCone) :
+IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(
+    std::string parentId,
+    ::Ogre::SceneManager* sceneManager,
+    float satSizeRatio,
+    bool ao,
+    bool shadows,
+    int nbShells,
+    int shellRadius,
+    float coneAngle,
+    int samplesAlongCone
+) :
     m_sat(parentId, sceneManager, satSizeRatio),
     m_ao(ao),
     m_shadows(shadows),
@@ -115,7 +127,6 @@ IllumAmbientOcclusionSAT::IllumAmbientOcclusionSAT(std::string parentId, ::Ogre:
     m_dummyCamera(nullptr),
     m_sceneManager(sceneManager)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -134,8 +145,11 @@ void IllumAmbientOcclusionSAT::updateSatFromRatio(float _satSizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void IllumAmbientOcclusionSAT::SATUpdate(::Ogre::TexturePtr _img, const viz::scene3d::TransferFunction::sptr& _tf,
-                                         float _sampleDistance)
+void IllumAmbientOcclusionSAT::SATUpdate(
+    ::Ogre::TexturePtr _img,
+    const viz::scene3d::TransferFunction::sptr& _tf,
+    float _sampleDistance
+)
 {
     m_sat.computeParallel(_img, _tf, _sampleDistance);
     this->updateVolIllum();
@@ -160,15 +174,17 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
     currentMaterialName += m_ao ? "_AO" : "";
     currentMaterialName += m_shadows ? "_Shadows" : "";
 
-    ::Ogre::MaterialPtr volIllumMtl = ::Ogre::MaterialManager::getSingleton().getByName(currentMaterialName,
-                                                                                        RESOURCE_GROUP);
+    ::Ogre::MaterialPtr volIllumMtl = ::Ogre::MaterialManager::getSingleton().getByName(
+        currentMaterialName,
+        RESOURCE_GROUP
+    );
     ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
 
     satImgState->setTexture(m_sat.getTexture());
 
     // Update illumination volume slice by slice.
-    for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++m_currentSliceIndex)
+    for(m_currentSliceIndex = 0 ; m_currentSliceIndex < depth ; ++m_currentSliceIndex)
     {
         ::Ogre::RenderTarget* rt =
             m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(m_currentSliceIndex));
@@ -179,9 +195,10 @@ void IllumAmbientOcclusionSAT::updateVolIllum()
         compositorManager.setCompositorEnabled(vp, "VolumeIllumination", true);
 
         ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
-            "VolumeIllumination");
+            "VolumeIllumination"
+        );
 
-        const auto& passes = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
+        const auto& passes                = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
         ::Ogre::CompositionPass* compPass = passes[0];
 
         if(compPass->getMaterial()->getName() != currentMaterialName)
@@ -221,7 +238,8 @@ void IllumAmbientOcclusionSAT::updateTexture()
         satTexture->getDepth(),
         0,
         ::Ogre::PF_A8R8G8B8,
-        ::Ogre::TU_RENDERTARGET );
+        ::Ogre::TU_RENDERTARGET
+    );
 
     if(!m_dummyCamera)
     {
@@ -229,7 +247,7 @@ void IllumAmbientOcclusionSAT::updateTexture()
     }
 
     const int depth = static_cast<int>(satTexture->getDepth());
-    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    for(int sliceIndex = 0 ; sliceIndex < depth ; ++sliceIndex)
     {
         // Init source buffer
         ::Ogre::RenderTarget* renderTarget =

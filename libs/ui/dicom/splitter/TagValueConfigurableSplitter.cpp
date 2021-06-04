@@ -24,9 +24,9 @@
 
 #include "ui/dicom/widget/QTagSelectorWidget.hpp"
 
-#include <dcmtk/dcmdata/dcdeftag.h>
-
 #include <filter/dicom/registry/macros.hpp>
+
+#include <dcmtk/dcmdata/dcdeftag.h>
 
 #include <QApplication>
 #include <QDialog>
@@ -35,10 +35,11 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwDicomIOFilterRegisterMacro( ::sight::ui::dicom::splitter::TagValueConfigurableSplitter );
+fwDicomIOFilterRegisterMacro(::sight::ui::dicom::splitter::TagValueConfigurableSplitter);
 
 namespace sight::ui::dicom
 {
+
 namespace splitter
 {
 
@@ -70,7 +71,6 @@ std::string TagValueConfigurableSplitter::getName() const
 
 std::string TagValueConfigurableSplitter::getDescription() const
 {
-
     return TagValueConfigurableSplitter::s_FILTER_DESCRIPTION;
 }
 
@@ -121,4 +121,5 @@ void TagValueConfigurableSplitter::configureWithGUI()
 }
 
 } // namespace splitter
+
 } // namespace sight::ui::dicom

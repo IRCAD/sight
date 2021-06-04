@@ -26,8 +26,10 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
@@ -52,11 +54,13 @@ void DicomSRContainerNode::write(::gdcm::DataSet& dataset) const
 
     // Continuity of content - Type 1 - See PS 3.3 C.18.8 (Only for type CONTAINER)
     // NOTE : Continuity is fixed to SEPARATE because it provides a better compatibility.
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0040, 0xa050 >("SEPARATE", dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0xa050>("SEPARATE", dataset);
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

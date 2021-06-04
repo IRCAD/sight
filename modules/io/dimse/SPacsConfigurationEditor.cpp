@@ -72,7 +72,7 @@ void SPacsConfigurationEditor::configuring()
 
     if(config)
     {
-        m_showDialog = config->get< bool >(s_SHOW_DIALOG_CONFIG, m_showDialog);
+        m_showDialog = config->get<bool>(s_SHOW_DIALOG_CONFIG, m_showDialog);
     }
 }
 
@@ -83,8 +83,9 @@ void SPacsConfigurationEditor::starting()
     // Create the worker.
     m_requestWorker = core::thread::Worker::New();
 
-    const auto pacsConfiguration = this->getLockedInOut< const sight::io::dimse::data::PacsConfiguration >(
-        s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<const sight::io::dimse::data::PacsConfiguration>(
+        s_CONFIG_INOUT
+    );
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -145,8 +146,9 @@ void SPacsConfigurationEditor::starting()
     m_retrieveMethodWidget->addItem("Move");
     m_retrieveMethodWidget->addItem("Get");
     m_retrieveMethodWidget->setCurrentIndex(
-        (pacsConfiguration->getRetrieveMethod() ==
-         sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1);
+        (pacsConfiguration->getRetrieveMethod()
+         == sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) ? 0 : 1
+    );
     QLabel* const RetrieveMethod = new QLabel("Retrieve method:");
     RetrieveMethod->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     gridLayout->addWidget(RetrieveMethod, 6, 0);
@@ -159,20 +161,45 @@ void SPacsConfigurationEditor::starting()
 
     // Connect signals.
     QObject::connect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPACS()));
-    QObject::connect(m_SCUAppEntityTitleEdit, SIGNAL(editingFinished()), this, SLOT(
-                         onSCUAppEntityTitleChanged()));
-    QObject::connect(m_SCPHostNameEdit, SIGNAL(editingFinished()), this, SLOT(onSCPHostNameChanged()));
-    QObject::connect(m_SCPAppEntityTitleEdit, SIGNAL(editingFinished()), this,
-                     SLOT(onSCPAppEntityTitleChanged()));
-    QObject::connect(m_SCPPortEdit, SIGNAL(valueChanged(int)), this,
-                     SLOT(onSCPPortChanged(int)));
-    QObject::connect(m_moveAppEntityTitleEdit, SIGNAL(editingFinished()), this,
-                     SLOT(onMoveAppEntityTitleChanged()));
-    QObject::connect(m_movePort, SIGNAL(valueChanged(int)), this,
-                     SLOT(onMovePortChanged(int)));
-    QObject::connect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
-                     SLOT(onRetrieveMethodChanged(int)));
-
+    QObject::connect(
+        m_SCUAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(
+            onSCUAppEntityTitleChanged()
+        )
+    );
+    QObject::connect(m_SCPHostNameEdit,SIGNAL(editingFinished()),this,SLOT(onSCPHostNameChanged()));
+    QObject::connect(
+        m_SCPAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onSCPAppEntityTitleChanged())
+    );
+    QObject::connect(
+        m_SCPPortEdit,
+        SIGNAL(valueChanged(int)),
+        this,
+        SLOT(onSCPPortChanged(int))
+    );
+    QObject::connect(
+        m_moveAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onMoveAppEntityTitleChanged())
+    );
+    QObject::connect(
+        m_movePort,
+        SIGNAL(valueChanged(int)),
+        this,
+        SLOT(onMovePortChanged(int))
+    );
+    QObject::connect(
+        m_retrieveMethodWidget,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(onRetrieveMethodChanged(int))
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -186,21 +213,49 @@ void SPacsConfigurationEditor::updating()
 void SPacsConfigurationEditor::stopping()
 {
     // Disconnect signals.
-    QObject::disconnect(m_pingPacsButtonWidget, SIGNAL(clicked()), this, SLOT(pingPACS()));
-    QObject::disconnect(m_SCUAppEntityTitleEdit, SIGNAL(editingFinished()), this,
-                        SLOT(onSCUAppEntityTitleChanged()));
-    QObject::disconnect(m_SCPHostNameEdit, SIGNAL(editingFinished()), this,
-                        SLOT(onSCPHostNameChanged()));
-    QObject::disconnect(m_SCPAppEntityTitleEdit, SIGNAL(editingFinished()), this,
-                        SLOT(onSCPAppEntityTitleChanged()));
-    QObject::disconnect(m_SCPPortEdit, SIGNAL(valueChanged(int)), this,
-                        SLOT(onSCPPortChanged(int)));
-    QObject::disconnect(m_moveAppEntityTitleEdit, SIGNAL(editingFinished()), this,
-                        SLOT(onMoveAppEntityTitleChanged()));
-    QObject::disconnect(m_movePort, SIGNAL(valueChanged(int)), this,
-                        SLOT(onMovePortChanged(int)));
-    QObject::disconnect(m_retrieveMethodWidget, SIGNAL(currentIndexChanged(int)), this,
-                        SLOT(onRetrieveMethodChanged(int)));
+    QObject::disconnect(m_pingPacsButtonWidget,SIGNAL(clicked()),this,SLOT(pingPACS()));
+    QObject::disconnect(
+        m_SCUAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onSCUAppEntityTitleChanged())
+    );
+    QObject::disconnect(
+        m_SCPHostNameEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onSCPHostNameChanged())
+    );
+    QObject::disconnect(
+        m_SCPAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onSCPAppEntityTitleChanged())
+    );
+    QObject::disconnect(
+        m_SCPPortEdit,
+        SIGNAL(valueChanged(int)),
+        this,
+        SLOT(onSCPPortChanged(int))
+    );
+    QObject::disconnect(
+        m_moveAppEntityTitleEdit,
+        SIGNAL(editingFinished()),
+        this,
+        SLOT(onMoveAppEntityTitleChanged())
+    );
+    QObject::disconnect(
+        m_movePort,
+        SIGNAL(valueChanged(int)),
+        this,
+        SLOT(onMovePortChanged(int))
+    );
+    QObject::disconnect(
+        m_retrieveMethodWidget,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(onRetrieveMethodChanged(int))
+    );
 
     // Stop the worker.
     m_requestWorker->stop();
@@ -213,10 +268,11 @@ void SPacsConfigurationEditor::stopping()
 
 void SPacsConfigurationEditor::pingPACS()
 {
-    m_requestWorker->post([&]
+    m_requestWorker->post(
+        [&]
         {
             const auto pacsConfiguration =
-                this->getLockedInOut< const sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+                this->getLockedInOut<const sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
             auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -227,11 +283,12 @@ void SPacsConfigurationEditor::pingPACS()
                     pacsConfiguration->getLocalApplicationTitle(),
                     pacsConfiguration->getPacsHostName(),
                     pacsConfiguration->getPacsApplicationPort(),
-                    pacsConfiguration->getPacsApplicationTitle());
+                    pacsConfiguration->getPacsApplicationTitle()
+                );
                 seriesEnquirer->connect();
                 success = seriesEnquirer->pingPacs();
             }
-            catch (sight::io::dimse::exceptions::Base& _e)
+            catch(sight::io::dimse::exceptions::Base& _e)
             {
                 SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
             }
@@ -246,25 +303,27 @@ void SPacsConfigurationEditor::pingPACS()
             {
                 if(success)
                 {
-                    m_slotShowDialog->asyncRun("Ping Pacs", "Ping succeeded!");
+                    m_slotShowDialog->asyncRun("Ping Pacs","Ping succeeded!");
                 }
                 else
                 {
-                    m_slotShowDialog->asyncRun("Ping Pacs", "Ping failed!");
+                    m_slotShowDialog->asyncRun("Ping Pacs","Ping failed!");
                 }
             }
 
             if(success)
             {
-                const auto notif = this->signal< service::IService::SuccessNotifiedSignalType >(
-                    service::IService::s_SUCCESS_NOTIFIED_SIG);
+                const auto notif = this->signal<service::IService::SuccessNotifiedSignalType>(
+                    service::IService::s_SUCCESS_NOTIFIED_SIG
+                );
                 notif->asyncEmit("Ping succeeded!");
                 SIGHT_INFO("Ping succeeded")
             }
             else
             {
-                const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-                    service::IService::s_FAILURE_NOTIFIED_SIG);
+                const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+                    service::IService::s_FAILURE_NOTIFIED_SIG
+                );
                 notif->asyncEmit("Ping failed!");
                 SIGHT_INFO("Ping failed")
             }
@@ -275,7 +334,7 @@ void SPacsConfigurationEditor::pingPACS()
 
 void SPacsConfigurationEditor::modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacsConfiguration)
 {
-    auto sig = _pacsConfiguration->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+    auto sig = _pacsConfiguration->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -286,7 +345,7 @@ void SPacsConfigurationEditor::modifiedNotify(sight::io::dimse::data::PacsConfig
 
 void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
@@ -297,7 +356,7 @@ void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPHostNameChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
@@ -308,7 +367,7 @@ void SPacsConfigurationEditor::onSCPHostNameChanged()
 
 void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
@@ -319,7 +378,7 @@ void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
@@ -330,7 +389,7 @@ void SPacsConfigurationEditor::onSCPPortChanged(int value)
 
 void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
@@ -341,7 +400,7 @@ void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
@@ -352,20 +411,21 @@ void SPacsConfigurationEditor::onMovePortChanged(int _value)
 
 void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 {
-    const auto pacsConfiguration = this->getLockedInOut< sight::io::dimse::data::PacsConfiguration >(s_CONFIG_INOUT);
+    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
 
     pacsConfiguration->setRetrieveMethod(
-        (_index ==
-         0) ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD): (sight::io::dimse::data::
-                                                                                  PacsConfiguration::
-                                                                                  GET_RETRIEVE_METHOD));
+        (_index
+         == 0) ? (sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD) : (sight::io::dimse::data::
+                                                                                      PacsConfiguration::
+                                                                                      GET_RETRIEVE_METHOD)
+    );
 
     this->modifiedNotify(pacsConfiguration.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::showDialog(const std::string _title, const std::string _message)
+void SPacsConfigurationEditor::showDialog(const std::string _title,const std::string _message)
 {
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle(_title);

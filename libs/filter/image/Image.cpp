@@ -45,28 +45,28 @@ struct RoiApplyer
     //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
-    void operator()( RoiApplyerParam& p )
+    void operator()(RoiApplyerParam& p)
     {
         typedef IMAGE_TYPE ImgType;
         typedef ROI_TYPE RoiType;
 
-        SIGHT_ASSERT( "Null image pointer", p.img && p.roi);
+        SIGHT_ASSERT("Null image pointer", p.img && p.roi);
 
         const auto imgDumpLock = p.img->lock();
         const auto roiDumpLock = p.roi->lock();
 
-        SIGHT_ASSERT( "Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
+        SIGHT_ASSERT("Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
 
         auto imIt         = p.img->begin<ImgType>();
         const auto imEnd  = p.img->end<ImgType>();
         auto roiIt        = p.roi->begin<RoiType>();
         const auto roiEnd = p.roi->end<RoiType>();
 
-        for (; imIt != imEnd && roiIt != roiEnd; ++imIt, ++roiIt)
+        for( ; imIt != imEnd && roiIt != roiEnd ; ++imIt, ++roiIt)
         {
-            if (*roiIt == 0)
+            if(*roiIt == 0)
             {
-                * imIt = 0;
+                *imIt = 0;
             }
         }
     }
@@ -79,19 +79,21 @@ struct RoiApplyerCaller
     //------------------------------------------------------------------------------
 
     template<typename IMAGE_TYPE>
-    void operator()( RoiApplyerParam& p )
+    void operator()(RoiApplyerParam& p)
     {
-        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiApplyer<IMAGE_TYPE> >::invoke(
-            p.roi->getType(), p );
+        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplyer<IMAGE_TYPE> >::invoke(
+            p.roi->getType(),
+            p
+        );
     }
 };
 
 //------------------------------------------------------------------------------
 
-void applyRoi( data::Image::sptr image, data::Image::sptr roi )
+void applyRoi(data::Image::sptr image, data::Image::sptr roi)
 {
-    SIGHT_ASSERT( "Null image pointers", image && roi);
-    SIGHT_ASSERT( "Images have different size", image->getSize2() == roi->getSize2());
+    SIGHT_ASSERT("Null image pointers", image && roi);
+    SIGHT_ASSERT("Images have different size", image->getSize2() == roi->getSize2());
 
     using namespace boost;
 
@@ -100,8 +102,10 @@ void applyRoi( data::Image::sptr image, data::Image::sptr roi )
     param.roi = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiApplyerCaller >::invoke( image->getType(),
-                                                                                                param );
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplyerCaller>::invoke(
+        image->getType(),
+        param
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -119,11 +123,10 @@ struct RoiTesterParam
 template<typename IMAGE_TYPE>
 struct RoiTester
 {
-
     //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
-    void operator()( RoiTesterParam& p )
+    void operator()(RoiTesterParam& p)
     {
         bool& result = p.result;
         result = true;
@@ -135,17 +138,19 @@ struct RoiTester
         const auto imgRoiAppliedDumpLock = p.imgRoiApplyed->lock();
         const auto roiDumpLock           = p.roi->lock();
 
-        SIGHT_ASSERT( "Null data buffers",
-                      p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplyed->getBuffer() );
+        SIGHT_ASSERT(
+            "Null data buffers",
+            p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplyed->getBuffer()
+        );
 
         auto imIt        = p.img->begin<ImgType>();
         const auto imEnd = p.img->end<ImgType>();
         auto roiIt       = p.roi->begin<RoiType>();
         auto imRoiIt     = p.imgRoiApplyed->begin<ImgType>();
 
-        for (; result && imIt != imEnd; ++imIt, ++roiIt, ++imRoiIt)
+        for( ; result && imIt != imEnd ; ++imIt, ++roiIt, ++imRoiIt)
         {
-            result = result && ( (*roiIt == 0) ? (*imRoiIt == 0) : (*imIt == *imRoiIt) );
+            result = result && ((*roiIt == 0) ? (*imRoiIt == 0) : (*imIt == *imRoiIt));
         }
     }
 };
@@ -157,21 +162,24 @@ struct RoiTesterCaller
     //------------------------------------------------------------------------------
 
     template<typename IMAGE_TYPE>
-    void operator()( RoiTesterParam& p )
+    void operator()(RoiTesterParam& p)
     {
-        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiTester<IMAGE_TYPE> >::invoke(
+        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiTester<IMAGE_TYPE> >::invoke(
             p.roi->getType(),
-            p );
+            p
+        );
     }
 };
 
 //------------------------------------------------------------------------------
 
-bool isRoiApplyed( data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplyed )
+bool isRoiApplyed(data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplyed)
 {
-    SIGHT_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
-    SIGHT_ASSERT( "Images have different size",
-                  image->getSize2() == imgRoiApplyed->getSize2() && image->getSize2() == roi->getSize2());
+    SIGHT_ASSERT("Null image pointers", image && imgRoiApplyed && roi);
+    SIGHT_ASSERT(
+        "Images have different size",
+        image->getSize2() == imgRoiApplyed->getSize2() && image->getSize2() == roi->getSize2()
+    );
 
     RoiTesterParam param;
     param.img           = image;
@@ -179,8 +187,10 @@ bool isRoiApplyed( data::Image::sptr image, data::Image::sptr roi, data::Image::
     param.roi           = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RoiTesterCaller >::invoke( image->getType(),
-                                                                                               param );
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiTesterCaller>::invoke(
+        image->getType(),
+        param
+    );
 
     return param.result;
 }

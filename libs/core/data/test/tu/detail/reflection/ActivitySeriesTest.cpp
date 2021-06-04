@@ -28,14 +28,17 @@
 #include <data/Composite.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::ActivitySeriesTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -78,32 +81,33 @@ void ActivitySeriesTest::propertiesTest()
 
     const data::ActivitySeries::ConfigIdType activity_config_id = "Visu2D";
 
-    const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
-                                                                  { "patient" },
-                                                                  { "study" },
-                                                                  { "equipment" },
-                                                                  { "modality" },
-                                                                  { "instance_uid" },
-                                                                  { "number" },
-                                                                  { "laterality" },
-                                                                  { "date" },
-                                                                  { "time" },
-                                                                  { "performing_physicians_name" },
-                                                                  { "protocolName" },
-                                                                  { "description" },
-                                                                  { "body_part_examined" },
-                                                                  { "patient_position" },
-                                                                  { "anatomical_orientation_type" },
-                                                                  { "performded_procedure_step_id" },
-                                                                  { "performed_procedure_step_start_date" },
-                                                                  { "performed_procedure_step_start_time" },
-                                                                  { "performed_procedure_step_end_date" },
-                                                                  { "performed_procedure_step_end_time" },
-                                                                  { "performed_procedure_step_description" },
-                                                                  { "performed_procedure_comments" },
+    const ::DataCampHelper::PropertiesNameType dataProperties = {{"fields"},
+        {"patient"},
+        {"study"},
+        {"equipment"},
+        {"modality"},
+        {"instance_uid"},
+        {"number"},
+        {"laterality"},
+        {"date"},
+        {"time"},
+        {"performing_physicians_name"},
+        {"protocolName"},
+        {"description"},
+        {"body_part_examined"},
+        {"patient_position"},
+        {"anatomical_orientation_type"},
+        {"performded_procedure_step_id"},
+        {"performed_procedure_step_start_date"},
+        {"performed_procedure_step_start_time"},
+        {"performed_procedure_step_end_date"},
+        {"performed_procedure_step_end_time"},
+        {"performed_procedure_step_description"},
+        {"performed_procedure_comments"},
 
-                                                                  { "activity_config_id" },
-                                                                  { "data" }, };
+        {"activity_config_id"},
+        {"data"},
+    };
 
     data::Composite::sptr data = data::Composite::New();
 
@@ -143,16 +147,31 @@ void ActivitySeriesTest::propertiesTest()
     ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_position", patientPosition);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@anatomical_orientation_type", anatomicalOrientationType);
     ::DataCampHelper::compareSimplePropertyValue(obj, "@performded_procedure_step_id", performdedProcedureStepId);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_step_start_date",
-                                                 performedProcedureStepStartDate);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_step_start_time",
-                                                 performedProcedureStepStartTime);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_step_end_date",
-                                                 performedProcedureStepEndDate);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_step_end_time",
-                                                 performedProcedureStepEndTime);
-    ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_step_description",
-                                                 performedProcedureStepDescription);
+    ::DataCampHelper::compareSimplePropertyValue(
+        obj,
+        "@performed_procedure_step_start_date",
+        performedProcedureStepStartDate
+    );
+    ::DataCampHelper::compareSimplePropertyValue(
+        obj,
+        "@performed_procedure_step_start_time",
+        performedProcedureStepStartTime
+    );
+    ::DataCampHelper::compareSimplePropertyValue(
+        obj,
+        "@performed_procedure_step_end_date",
+        performedProcedureStepEndDate
+    );
+    ::DataCampHelper::compareSimplePropertyValue(
+        obj,
+        "@performed_procedure_step_end_time",
+        performedProcedureStepEndTime
+    );
+    ::DataCampHelper::compareSimplePropertyValue(
+        obj,
+        "@performed_procedure_step_description",
+        performedProcedureStepDescription
+    );
     ::DataCampHelper::compareSimplePropertyValue(obj, "@performed_procedure_comments", performedProcedureComments);
 
     ::DataCampHelper::compareSimplePropertyValue(obj, "@activity_config_id", activity_config_id);
@@ -163,6 +182,9 @@ void ActivitySeriesTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } //namespace sight::data

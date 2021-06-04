@@ -28,6 +28,7 @@
 
 namespace sight::io::base
 {
+
 namespace ut
 {
 
@@ -36,15 +37,16 @@ namespace ut
  */
 class DictionaryReaderTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( DictionaryReaderTest );
-CPPUNIT_TEST( test_1 );
-CPPUNIT_TEST( test_2 );
-CPPUNIT_TEST( test_3 );
-CPPUNIT_TEST( test_4 );
-CPPUNIT_TEST( test_5 );
+CPPUNIT_TEST_SUITE(DictionaryReaderTest);
+CPPUNIT_TEST(test_1);
+CPPUNIT_TEST(test_2);
+CPPUNIT_TEST(test_3);
+CPPUNIT_TEST(test_4);
+CPPUNIT_TEST(test_5);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -65,4 +67,5 @@ protected:
 };
 
 } //namespace ut
+
 } //namespace sight::io::base

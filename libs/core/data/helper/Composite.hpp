@@ -27,6 +27,7 @@
 
 namespace sight::data
 {
+
 namespace helper
 {
 
@@ -36,11 +37,10 @@ namespace helper
  */
 class DATA_CLASS_API Composite
 {
-
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API Composite( data::Composite::wptr _composite );
+    DATA_API Composite(data::Composite::wptr _composite);
 
     /// Destrucotr. Do nothing.
     DATA_API ~Composite();
@@ -52,7 +52,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void add( std::string _compositeKey, data::Object::sptr _newObject );
+    DATA_API void add(std::string _compositeKey, data::Object::sptr _newObject);
 
     /**
      * @brief Remove an object in the composite.
@@ -60,7 +60,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void remove( std::string _compositeKey );
+    DATA_API void remove(std::string _compositeKey);
 
     /**
      * @brief Clear all objects in the composite.
@@ -76,7 +76,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void swap( std::string _compositeKey, data::Object::sptr _newObject );
+    DATA_API void swap(std::string _compositeKey, data::Object::sptr _newObject);
 
     /**
      * @brief Send the message of modification
@@ -100,4 +100,5 @@ private:
 };
 
 } // namespace helper
+
 } // namespace sight::data

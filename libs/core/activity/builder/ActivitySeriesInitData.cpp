@@ -29,11 +29,14 @@
 
 namespace sight::activity
 {
+
 namespace builder
 {
 
 fwActivitiesBuilderRegisterMacro(
-    activity::builder::ActivitySeriesInitData, "::sight::activity::builder::ActivitySeriesInitData");
+    activity::builder::ActivitySeriesInitData,
+    "::sight::activity::builder::ActivitySeriesInitData"
+);
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +55,8 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
 
 data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
     const activity::extension::ActivityInfo& activityInfo,
-    const data::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection
+) const
 {
     data::ActivitySeries::sptr actSeries = this->ActivitySeries::buildData(activityInfo, currentSelection);
     data::Composite::sptr data           = actSeries->getData();
@@ -60,7 +64,7 @@ data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
     namespace ActReg = activity::extension;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
-    for(const ActReg::ActivityRequirement& req :  reqVect)
+    for(const ActReg::ActivityRequirement& req : reqVect)
     {
         if(req.maxOccurs == 0 && req.minOccurs == 0)
         {
@@ -74,4 +78,5 @@ data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
 //-----------------------------------------------------------------------------
 
 } // namespace builder
+
 } // namespace sight::activity

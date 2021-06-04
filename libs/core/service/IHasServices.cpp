@@ -23,10 +23,9 @@
 #include "service/IHasServices.hpp"
 
 #include "service/IService.hpp"
+#include <service/registry/ObjectService.hpp>
 
 #include <core/runtime/Runtime.hpp>
-
-#include <service/registry/ObjectService.hpp>
 
 namespace sight::service
 {
@@ -41,9 +40,11 @@ IHasServices::IHasServices() noexcept
 
 IHasServices::~IHasServices() noexcept
 {
-    SIGHT_ASSERT("Some sub-services were not unregistered, something is probably wrong. "
-                 "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
-                 m_subServices.empty());
+    SIGHT_ASSERT(
+        "Some sub-services were not unregistered, something is probably wrong. "
+        "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
+        m_subServices.empty()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -60,6 +61,7 @@ service::IService::csptr IHasServices::getRegisteredService(const core::tools::f
             break;
         }
     }
+
     return srv;
 }
 
@@ -67,7 +69,7 @@ service::IService::csptr IHasServices::getRegisteredService(const core::tools::f
 
 void IHasServices::unregisterService(const core::tools::fwID::IDType& _id)
 {
-    for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
+    for(auto itSrv = m_subServices.begin() ; itSrv != m_subServices.end() ; )
     {
         const service::IService::sptr& service = itSrv->lock();
         if(service && (service->getID() == _id))
@@ -87,8 +89,10 @@ void IHasServices::unregisterService(const core::tools::fwID::IDType& _id)
 
 void IHasServices::unregisterService(const IService::sptr& _service)
 {
-    auto iter = std::find_if(m_subServices.begin(), m_subServices.end(),
-                             [ = ](const service::IService::wptr& adaptor)
+    auto iter = std::find_if(
+        m_subServices.begin(),
+        m_subServices.end(),
+        [ = ](const service::IService::wptr& adaptor)
         {
             return adaptor.lock() == _service;
         });
@@ -102,7 +106,7 @@ void IHasServices::unregisterService(const IService::sptr& _service)
 
 //------------------------------------------------------------------------------
 
-service::IService::sptr IHasServices::registerService(const std::string& _implType, const std::string& _id )
+service::IService::sptr IHasServices::registerService(const std::string& _implType, const std::string& _id)
 {
     auto srv = service::add(_implType, _id);
     m_subServices.push_back(srv);
@@ -115,10 +119,10 @@ service::IService::sptr IHasServices::registerService(const std::string& _implTy
 void IHasServices::unregisterServices(const std::string& _classname)
 {
     const std::string classname = core::runtime::filterID(_classname);
-    for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
+    for(auto itSrv = m_subServices.begin() ; itSrv != m_subServices.end() ; )
     {
         const service::IService::sptr& srv = itSrv->lock();
-        if(srv && (classname.empty() || ( !classname.empty() && srv->getClassname() == classname)))
+        if(srv && (classname.empty() || (!classname.empty() && srv->getClassname() == classname)))
         {
             srv->stop().wait();
             service::OSR::unregisterService(srv);

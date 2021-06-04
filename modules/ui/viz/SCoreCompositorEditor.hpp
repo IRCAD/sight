@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-
 #include <viz/scene3d/Layer.hpp>
+
+#include <ui/base/IEditor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -58,7 +58,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCoreCompositorEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCoreCompositorEditor, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SCoreCompositorEditor() noexcept;
@@ -91,7 +91,7 @@ protected:
     /// FILL ME.
     MODULE_UI_VIZ_API void refreshRenderers();
 
-    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
     sight::viz::scene3d::Layer::wptr m_currentLayer;
 
 protected Q_SLOTS:
@@ -101,6 +101,7 @@ protected Q_SLOTS:
     void onEditTransparency(int index);
 
 private:
+
     QPointer<QButtonGroup> m_transparencyButtonGroup;
     QPointer<QButtonGroup> m_transparencyButtonGroupShading;
     QPointer<QButtonGroup> m_normalsRadioBox;

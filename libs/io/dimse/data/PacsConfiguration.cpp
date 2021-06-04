@@ -25,10 +25,11 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( sight::io::dimse::data::PacsConfiguration );
+SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
 
 namespace sight::io::dimse
 {
+
 namespace data
 {
 
@@ -51,13 +52,17 @@ PacsConfiguration::~PacsConfiguration()
 
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::shallowCopy(const Object::csptr& _source )
+void PacsConfiguration::shallowCopy(const Object::csptr& _source)
 {
     PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        sight::data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
 
     m_localApplicationTitle = other->m_localApplicationTitle;
     m_pacsHostName          = other->m_pacsHostName;
@@ -73,10 +78,14 @@ void PacsConfiguration::shallowCopy(const Object::csptr& _source )
 void PacsConfiguration::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        sight::data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 
     m_localApplicationTitle = other->m_localApplicationTitle;
     m_pacsHostName          = other->m_pacsHostName;
@@ -90,4 +99,5 @@ void PacsConfiguration::cachedDeepCopy(const Object::csptr& _source, DeepCopyCac
 //------------------------------------------------------------------------------
 
 } //namespace data
+
 } //namespace sight::io::dimse

@@ -33,8 +33,8 @@
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/ogre.hpp>
 
-#include <OgreAxisAlignedBox.h>
 #include <Ogre.h>
+#include <OgreAxisAlignedBox.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -76,8 +76,12 @@ void SLine::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one
-    this->setTransformId(config.get<std::string>( sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-                                                  this->getID() + "_transform"));
+    this->setTransformId(
+        config.get<std::string>(
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            this->getID() + "_transform"
+        )
+    );
 
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
@@ -109,12 +113,13 @@ void SLine::starting()
     // Set the material
     m_material = data::Material::New();
 
-    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+        "::sight::module::viz::scene3d::adaptor::SMaterial"
+    );
     m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setRenderService(this->getRenderService());
     m_materialAdaptor->setLayerID(m_layerID);
     m_materialAdaptor->setShadingMode("ambient");
     m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
@@ -179,8 +184,10 @@ void SLine::drawLine(bool _existingLine)
     if(_existingLine == false)
     {
         m_line->begin(
-            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST,
-            sight::viz::scene3d::RESOURCE_GROUP);
+            m_materialAdaptor->getMaterialName(),
+            ::Ogre::RenderOperation::OT_LINE_LIST,
+            sight::viz::scene3d::RESOURCE_GROUP
+        );
     }
     else
     {
@@ -189,12 +196,12 @@ void SLine::drawLine(bool _existingLine)
 
     m_line->colour(m_color);
 
-    if (m_dashed == true)
+    if(m_dashed == true)
     {
-        for(float i = 0.f; i <= m_length; i += m_dashLength*2)
+        for(float i = 0.f ; i <= m_length ; i += m_dashLength * 2)
         {
             m_line->position(0, 0, i);
-            m_line->position(0, 0, i+m_dashLength);
+            m_line->position(0, 0, i + m_dashLength);
         }
     }
     else

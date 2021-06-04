@@ -48,7 +48,7 @@ class UI_QT_CLASS_API LocationDialog : public ui::base::dialog::ILocationDialog
 {
 public:
 
-    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New<LocationDialog>);
 
     UI_QT_API LocationDialog(ui::base::GuiBaseObject::Key key);
 

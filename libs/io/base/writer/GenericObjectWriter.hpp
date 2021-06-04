@@ -41,13 +41,12 @@ namespace writer
 template<class DATATYPE>
 class GenericObjectWriter : public io::base::writer::IObjectWriter
 {
-
 public:
 
     /// the object type related
     typedef DATATYPE DataType;
 
-    SIGHT_DECLARE_CLASS(GenericObjectWriter<DATATYPE>, io::base::writer::IObjectWriter)
+    SIGHT_DECLARE_CLASS(GenericObjectWriter<DATATYPE>, io::base::writer::IObjectWriter);
 
     /// Constructor. Do nothing.
     GenericObjectWriter()
@@ -65,11 +64,13 @@ public:
      *
      * This method overloads setObject to ensure that given object corresponds to DATATYPE
      */
-    void setObject( core::tools::Object::csptr obj) override
+    void setObject(core::tools::Object::csptr obj) override
     {
-        SIGHT_ASSERT("Object type: '" << std::string(typeid(obj).name())
-                                      << "' is not a '" << typeid(DataType()).name()<<"'",
-                     std::dynamic_pointer_cast< const DataType >(obj));
+        SIGHT_ASSERT(
+            "Object type: '" << std::string(typeid(obj).name())
+            << "' is not a '" << typeid(DataType()).name() << "'",
+            std::dynamic_pointer_cast<const DataType>(obj)
+        );
         IObjectWriter::setObject(obj);
     }
 
@@ -79,11 +80,10 @@ public:
      *
      * This method automatically casts object in correct DataType.
      */
-    virtual std::shared_ptr< const DataType > getConcreteObject() const
+    virtual std::shared_ptr<const DataType> getConcreteObject() const
     {
-        return std::dynamic_pointer_cast< const DataType >( getObject() );
+        return std::dynamic_pointer_cast<const DataType>(getObject());
     }
-
 };
 
 } // namespace writer

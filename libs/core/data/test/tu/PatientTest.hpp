@@ -28,19 +28,21 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class PatientTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PatientTest );
-CPPUNIT_TEST( nameTest );
-CPPUNIT_TEST( idTest );
-CPPUNIT_TEST( birthdateTest );
-CPPUNIT_TEST( sexTest );
+CPPUNIT_TEST_SUITE(PatientTest);
+CPPUNIT_TEST(nameTest);
+CPPUNIT_TEST(idTest);
+CPPUNIT_TEST(birthdateTest);
+CPPUNIT_TEST(sexTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -51,8 +53,10 @@ public:
     void sexTest();
 
 private:
+
     Patient::sptr m_patient;
 };
 
 } //namespace ut
+
 } //namespace sight::data

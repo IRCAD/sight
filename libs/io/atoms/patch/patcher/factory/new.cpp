@@ -33,7 +33,7 @@ namespace patcher
 namespace factory
 {
 
-SPTR(io::atoms::patch::patcher::IPatcher) New( const io::atoms::patch::patcher::registry::KeyType& classname )
+SPTR(io::atoms::patch::patcher::IPatcher) New(const io::atoms::patch::patcher::registry::KeyType& classname)
 {
     return io::atoms::patch::patcher::registry::get()->create(classname);
 }

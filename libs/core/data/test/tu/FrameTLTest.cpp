@@ -30,10 +30,11 @@
 #include <algorithm>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::ut::FrameTLTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::FrameTLTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -42,8 +43,8 @@ namespace ut
 void FrameTLTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 //------------------------------------------------------------------------------
 
 void FrameTLTest::tearDown()
@@ -232,10 +233,10 @@ void FrameTLTest::pushTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     core::tools::Type::UInt8Type* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1+(10*20*3), 1);
+    std::fill(bufferData1, bufferData1 + (10 * 20 * 3), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     core::tools::Type::UInt8Type* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2+(10*20*3), 2);
+    std::fill(bufferData2, bufferData2 + (10 * 20 * 3), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -248,7 +249,7 @@ void FrameTLTest::pushTest()
 
     CSPTR(data::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(data::FrameTL::BufferType) buff        =
-        std::dynamic_pointer_cast< const data::FrameTL::BufferType >(dataPushed1Bis);
+        std::dynamic_pointer_cast<const data::FrameTL::BufferType>(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     const core::tools::Type::UInt8Type* buffData = &buff->getElement(0);
@@ -285,10 +286,10 @@ void FrameTLTest::copyTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     core::tools::Type::UInt8Type* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1+(11*22*4), 1);
+    std::fill(bufferData1, bufferData1 + (11 * 22 * 4), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     core::tools::Type::UInt8Type* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2+(11*22*4), 2);
+    std::fill(bufferData2, bufferData2 + (11 * 22 * 4), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -304,14 +305,14 @@ void FrameTLTest::copyTest()
     CSPTR(data::timeline::Object) copiedData1 = copiedTimeline->getClosestObject(time1);
     CPPUNIT_ASSERT_EQUAL(time1, copiedData1->getTimestamp());
     CSPTR(data::FrameTL::BufferType) copiedBuff =
-        std::dynamic_pointer_cast< const data::FrameTL::BufferType >(copiedData1);
+        std::dynamic_pointer_cast<const data::FrameTL::BufferType>(copiedData1);
     CPPUNIT_ASSERT(copiedBuff);
     CSPTR(data::FrameTL::BufferType) buff =
-        std::dynamic_pointer_cast< const data::FrameTL::BufferType >(timeline->getClosestBuffer(time1));
+        std::dynamic_pointer_cast<const data::FrameTL::BufferType>(timeline->getClosestBuffer(time1));
     const core::tools::Type::UInt8Type* copiedBuffData = &copiedBuff->getElement(0);
     const core::tools::Type::UInt8Type* buffData       = &buff->getElement(0);
 
-    for (size_t i = 0; i < 10*20*4; ++i)
+    for(size_t i = 0 ; i < 10 * 20 * 4 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
     }
@@ -335,4 +336,5 @@ void FrameTLTest::copyTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

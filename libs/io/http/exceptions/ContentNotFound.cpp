@@ -31,7 +31,6 @@ namespace exceptions
 ContentNotFound::ContentNotFound(const std::string& message) :
     io::http::exceptions::Base(message)
 {
-
 }
 
 ContentNotFound::~ContentNotFound() noexcept
@@ -39,4 +38,5 @@ ContentNotFound::~ContentNotFound() noexcept
 }
 
 } /* namespace exceptions */
+
 } /* namespace sight::io::http */

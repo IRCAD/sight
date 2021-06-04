@@ -57,7 +57,7 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
     // Remove all commands following the current history point.
     if(!m_commandQueue.empty())
     {
-        for(std::int64_t i = m_commandQueue.size() - 1; i > m_commandIndex; --i)
+        for(std::int64_t i = m_commandQueue.size() - 1 ; i > m_commandIndex ; --i)
         {
             m_usedMemory -= m_commandQueue[i]->getSize();
             m_commandQueue.pop_back();

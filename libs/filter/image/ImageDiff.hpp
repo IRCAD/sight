@@ -56,17 +56,20 @@ public:
     FILTER_IMAGE_API ImageDiff(ImageDiff&& other);
 
     /// Copy assignement.
-    FILTER_IMAGE_API ImageDiff& operator= (const ImageDiff& other);
+    FILTER_IMAGE_API ImageDiff& operator=(const ImageDiff& other);
 
     /// Move assignement.
-    FILTER_IMAGE_API ImageDiff& operator= (ImageDiff&& other);
+    FILTER_IMAGE_API ImageDiff& operator=(ImageDiff&& other);
 
     /// Concatenate two diffs.
     FILTER_IMAGE_API void addDiff(const ImageDiff& diff);
 
     /// Append a new pixel diff.
-    FILTER_IMAGE_API void addDiff(const data::Image::IndexType index, const data::Image::BufferType* oldValue,
-                                  const data::Image::BufferType* newValue);
+    FILTER_IMAGE_API void addDiff(
+        const data::Image::IndexType index,
+        const data::Image::BufferType* oldValue,
+        const data::Image::BufferType* newValue
+    );
 
     /// Write the new values in the image.
     FILTER_IMAGE_API void applyDiff(const data::Image::sptr& img) const;
@@ -121,7 +124,7 @@ private:
 data::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
 {
     std::uint8_t* eltPtr = m_buffer + eltIndex * m_eltSize;
-    return *reinterpret_cast< data::Image::IndexType* >(eltPtr);
+    return *reinterpret_cast<data::Image::IndexType*>(eltPtr);
 }
 
 } // namespace sight::filter::image

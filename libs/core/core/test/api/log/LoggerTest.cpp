@@ -27,10 +27,11 @@
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::log::ut::LoggerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::log::ut::LoggerTest);
 
 namespace sight::log
 {
+
 namespace ut
 {
 
@@ -126,10 +127,10 @@ void LoggerTest::simpleLoggerTest()
     // Clear logs
     logger->clear();
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), logger->count());
-
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::log

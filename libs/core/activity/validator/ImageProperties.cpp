@@ -31,12 +31,13 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
 fwActivitiesValidatorRegisterMacro(::sight::activity::validator::ImageProperties);
 
-auto fCompare = [](double a, double b) { return std::abs(a - b) < 0.00001; };
+auto fCompare = [](double a, double b){return std::abs(a - b) < 0.00001;};
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +55,8 @@ ImageProperties::~ImageProperties()
 
 IValidator::ValidationType ImageProperties::validate(
     const activity::extension::ActivityInfo&,
-    const data::Vector::csptr& currentSelection ) const
+    const data::Vector::csptr& currentSelection
+) const
 {
     IValidator::ValidationType validation;
 
@@ -73,16 +75,16 @@ IValidator::ValidationType ImageProperties::validate(
         data::Image::Origin origin   = img0->getOrigin2();
 
         data::Vector::ContainerType::const_iterator it;
-        for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
+        for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(*it);
             SIGHT_ASSERT("Failed to retrieve an image series", imgSeries);
             data::Image::sptr img = imgSeries->getImage();
             SIGHT_ASSERT("Failed to retrieve an image data", img);
 
-            if (  size != img->getSize2() ||
-                  !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare) ||
-                  !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare) )
+            if(size != img->getSize2()
+               || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
+               || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
             {
                 std::string errorMsg = "Images in selection have not the same properties :\n";
                 errorMsg += (size != img->getSize2()) ? "- size\n" : "";
@@ -107,7 +109,7 @@ IValidator::ValidationType ImageProperties::validate(
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& currentData ) const
+IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -119,20 +121,20 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
 
     data::Image::csptr img0;
 
-    if (vector)
+    if(vector)
     {
-        for (data::Object::sptr obj : *vector)
+        for(data::Object::sptr obj : *vector)
         {
             data::ImageSeries::csptr imgSeries = data::ImageSeries::dynamicConstCast(obj);
             data::Image::csptr img             = data::Image::dynamicConstCast(obj);
-            if (imgSeries)
+            if(imgSeries)
             {
                 img = imgSeries->getImage();
             }
 
-            if (img)
+            if(img)
             {
-                if (!img0)
+                if(!img0)
                 {
                     img0 = img;
                 }
@@ -140,9 +142,9 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
                 {
                     data::Image::Spacing spacing = img0->getSpacing2();
                     data::Image::Origin origin   = img0->getOrigin2();
-                    if (  img0->getSize2() != img->getSize2() ||
-                          !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare) ||
-                          !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare) )
+                    if(img0->getSize2() != img->getSize2()
+                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
+                       || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
                         errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
@@ -163,20 +165,20 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
             }
         }
     }
-    else if (composite)
+    else if(composite)
     {
-        for (auto elt : *composite)
+        for(auto elt : *composite)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(elt.second);
             data::Image::sptr img             = data::Image::dynamicCast(elt.second);
-            if (imgSeries)
+            if(imgSeries)
             {
                 img = imgSeries->getImage();
             }
 
-            if (img)
+            if(img)
             {
-                if (!img0)
+                if(!img0)
                 {
                     img0 = img;
                 }
@@ -184,9 +186,9 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
                 {
                     data::Image::Spacing spacing = img0->getSpacing2();
                     data::Image::Origin origin   = img0->getOrigin2();
-                    if (  img0->getSize2() != img->getSize2() ||
-                          !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare) ||
-                          !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare) )
+                    if(img0->getSize2() != img->getSize2()
+                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
+                       || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
                         errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
@@ -212,10 +214,12 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
         validation.first  = false;
         validation.second = "Given data is not a Vector or Composite of images. The validation can not be performed.";
     }
+
     return validation;
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace validator
+
 } // namespace sight::activity

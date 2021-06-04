@@ -25,7 +25,6 @@
 #include "atoms/conversion/convert.hpp"
 #include "atoms/conversion/exception/ConversionNotManaged.hpp"
 #include "atoms/conversion/mapper/registry/macros.hpp"
-
 #include <atoms/Numeric.hpp>
 #include <atoms/Numeric.hxx>
 
@@ -35,20 +34,23 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace mapper
 {
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( atoms::conversion::mapper::Mesh, sight::data::Mesh);
+fwAtomConversionRegisterMacro(atoms::conversion::mapper::Mesh, sight::data::Mesh);
 
 //-----------------------------------------------------------------------------
 
-atoms::Object::sptr Mesh::convert( data::Object::sptr object,
-                                   DataVisitor::AtomCacheType& cache )
+atoms::Object::sptr Mesh::convert(
+    data::Object::sptr object,
+    DataVisitor::AtomCacheType& cache
+)
 {
-    const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
-    atoms::conversion::DataVisitor visitor( object, cache );
+    const camp::Class& metaclass = ::camp::classByName(object->getClassname());
+    atoms::conversion::DataVisitor visitor(object, cache);
     metaclass.visit(visitor);
     atoms::Object::sptr atom = visitor.getAtomObject();
 
@@ -58,26 +60,27 @@ atoms::Object::sptr Mesh::convert( data::Object::sptr object,
 
     atoms::Numeric::sptr attributes = atoms::Numeric::New(static_cast<int>(meshAttributes));
 
-    atom->setAttribute("attributes", attributes );
+    atom->setAttribute("attributes", attributes);
 
     return atom;
 }
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr Mesh::convert(  atoms::Object::sptr atom,
-                                   AtomVisitor::DataCacheType& cache,
-                                   const AtomVisitor::IReadPolicy& uuidPolicy
-                                   )
+data::Object::sptr Mesh::convert(
+    atoms::Object::sptr atom,
+    AtomVisitor::DataCacheType& cache,
+    const AtomVisitor::IReadPolicy& uuidPolicy
+)
 {
-    atoms::conversion::AtomVisitor visitor( atom, cache, uuidPolicy );
+    atoms::conversion::AtomVisitor visitor(atom, cache, uuidPolicy);
     visitor.visit();
     data::Object::sptr data = visitor.getDataObject();
     data::Mesh::sptr mesh   = data::Mesh::dynamicCast(data);
 
-    atoms::Numeric::sptr attributes = atoms::Numeric::dynamicCast( atom->getAttribute("attributes") );
+    atoms::Numeric::sptr attributes = atoms::Numeric::dynamicCast(atom->getAttribute("attributes"));
 
-    data::Mesh::Attributes meshAttributes = static_cast< data::Mesh::Attributes >(attributes->getValue<int>());
+    data::Mesh::Attributes meshAttributes = static_cast<data::Mesh::Attributes>(attributes->getValue<int>());
 
     mesh->setAttributes(meshAttributes);
 
@@ -87,4 +90,5 @@ data::Object::sptr Mesh::convert(  atoms::Object::sptr atom,
 //-----------------------------------------------------------------------------
 
 } //namespace mapper
+
 } //namespace sight::atoms::conversion

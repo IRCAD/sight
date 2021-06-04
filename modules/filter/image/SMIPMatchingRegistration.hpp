@@ -28,6 +28,7 @@
 
 namespace sight::module::filter::image
 {
+
 /**
  * @brief This service uses a fast registration algorithm to quickly register two images together if the transform
  * between both is pure translation.
@@ -61,7 +62,8 @@ namespace sight::module::filter::image
 class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public service::IRegisterer
 {
 public:
-    SIGHT_DECLARE_SERVICE(SMIPMatchingRegistration, service::IRegisterer)
+
+    SIGHT_DECLARE_SERVICE(SMIPMatchingRegistration, service::IRegisterer);
 
     /**
      * @brief Constructor
@@ -73,6 +75,7 @@ public:
     MODULE_FILTER_IMAGE_API virtual ~SMIPMatchingRegistration() noexcept;
 
 protected:
+
     /**
      * @brief Starts the service.
      *
@@ -104,7 +107,7 @@ protected:
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    MODULE_FILTER_IMAGE_API void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_IMAGE_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
 private:
 };

@@ -51,7 +51,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SnapshotEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SnapshotEditor, sight::ui::base::IEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SnapshotEditor() noexcept;

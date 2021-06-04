@@ -27,21 +27,23 @@
 
 namespace sight::ui::base
 {
+
 namespace container
 {
+
 /**
  * @brief   Defines the menu bar for IHM.
  */
 class UI_BASE_CLASS_API fwMenuBar : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(fwMenuBar, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(fwMenuBar, ui::base::GuiBaseObject);
 
     UI_BASE_API virtual void clean()            = 0;
     UI_BASE_API virtual void destroyContainer() = 0;
-
 };
+
 } // namespace container
+
 } // namespace sight::ui::base

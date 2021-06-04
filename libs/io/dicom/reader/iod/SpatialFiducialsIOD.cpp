@@ -32,18 +32,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(const data::DicomSeries::csptr& dicomSeries,
-                                         const io::dicom::container::DicomInstance::sptr& instance,
-                                         const core::log::Logger::sptr& logger,
-                                         ProgressCallback progress,
-                                         CancelRequestedCallback cancel) :
+SpatialFiducialsIOD::SpatialFiducialsIOD(
+    const data::DicomSeries::csptr& dicomSeries,
+    const io::dicom::container::DicomInstance::sptr& instance,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -65,15 +69,17 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("::sight::data::Image not instanced", image);
 
     // Create GDCM Reader
-    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
 
     // Read the first file
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     if(dicomContainer.size() > 1)
     {
-        m_logger->warning("More than one Spatial Fiducials item have been found in the series. "
-                          "Only the first one will be read.");
+        m_logger->warning(
+            "More than one Spatial Fiducials item have been found in the series. "
+            "Only the first one will be read."
+        );
     }
 
     const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
@@ -82,9 +88,14 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                          bufferObj->getStreamInfo().fsFile.string()+
-                                                          "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed(
+            "Unable to read the DICOM instance \""
+            + bufferObj->getStreamInfo().fsFile.string()
+            + "\" using the GDCM Reader."
+        ),
+        !success
+    );
 
     // Create Information Entity helpers
     io::dicom::reader::ie::SpatialFiducials spatialFiducialsIE(
@@ -96,23 +107,23 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
 
     // Retrieve Fiducial Set Sequence
     const ::gdcm::DataElement& fiducialSetSequenceDataElement =
-        datasetRoot.GetDataElement( ::gdcm::Tag(0x0070, 0x031C) );
-    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSetSequence =
+        datasetRoot.GetDataElement(::gdcm::Tag(0x0070, 0x031C));
+    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> fiducialSetSequence =
         fiducialSetSequenceDataElement.GetValueAsSQ();
 
-    for(unsigned int i = 1; i <= fiducialSetSequence->GetNumberOfItems(); ++i)
+    for(unsigned int i = 1 ; i <= fiducialSetSequence->GetNumberOfItems() ; ++i)
     {
-        ::gdcm::Item sequenceSetItem = fiducialSetSequence->GetItem(i);
+        ::gdcm::Item sequenceSetItem              = fiducialSetSequence->GetItem(i);
         const ::gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
 
         const ::gdcm::DataElement& fiducialSequenceDataElement =
-            sequenceSetDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x031E) );
-        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSequence =
+            sequenceSetDataset.GetDataElement(::gdcm::Tag(0x0070, 0x031E));
+        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> fiducialSequence =
             fiducialSequenceDataElement.GetValueAsSQ();
 
-        for(unsigned int j = 1; j <= fiducialSequence->GetNumberOfItems(); ++j)
+        for(unsigned int j = 1 ; j <= fiducialSequence->GetNumberOfItems() ; ++j)
         {
-            ::gdcm::Item fiducialItem = fiducialSequence->GetItem(j);
+            ::gdcm::Item fiducialItem              = fiducialSequence->GetItem(j);
             const ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
             const std::string shapeType            =
                 io::dicom::helper::DicomDataReader::getTagValue<0x0070, 0x0306>(fiducialDataset);
@@ -126,12 +137,13 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
                 m_logger->warning("Fiducial shape type not supported: \"" + shapeType + "\"");
             }
         }
-
     }
 }
 
 //------------------------------------------------------------------------------
 
-}  // namespace iod
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace iod
+
+} // namespace reader
+
+} // namespace sight::io::dicom

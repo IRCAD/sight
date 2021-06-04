@@ -30,6 +30,7 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
 
@@ -39,7 +40,8 @@ namespace validator
 class ACTIVITY_CLASS_API RelatedStudy : public activity::IValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(RelatedStudy, activity::IValidator, activity::validator::factory::New< RelatedStudy >)
+
+    SIGHT_DECLARE_CLASS(RelatedStudy, activity::IValidator, activity::validator::factory::New<RelatedStudy>);
 
     /// Constructor. Do nothing.
     ACTIVITY_API RelatedStudy(activity::IValidator::Key key);
@@ -52,8 +54,10 @@ public:
      */
     ACTIVITY_API virtual IValidator::ValidationType validate(
         const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection ) const override;
+        const CSPTR(data::Vector)& currentSelection
+    ) const override;
 };
 
 } // namespace validator
+
 } // namespace sight::activity

@@ -26,16 +26,18 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
 class VectorFunctionsTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( VectorFunctionsTest );
-    CPPUNIT_TEST( checkNormalize);
-    CPPUNIT_TEST( checkDot );
-    CPPUNIT_TEST( checkCross );
+
+    CPPUNIT_TEST_SUITE(VectorFunctionsTest);
+    CPPUNIT_TEST(checkNormalize);
+    CPPUNIT_TEST(checkDot);
+    CPPUNIT_TEST(checkCross);
     CPPUNIT_TEST(checkNegate);
     CPPUNIT_TEST(checkVecLength);
     CPPUNIT_TEST(checkOperators);
@@ -44,6 +46,7 @@ private:
 protected:
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -54,8 +57,8 @@ public:
     void checkNegate();
     void checkVecLength();
     void checkOperators();
-
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::data

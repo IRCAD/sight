@@ -45,7 +45,7 @@ GEOMETRY_DATA_API fwPlane getPlane(const fwVec3d& _point1, const fwVec3d& _point
  * @param [in] _normal the normal of the new plane.
  * @return the new plane.
  */
-GEOMETRY_DATA_API fwPlane getPlane(const fwVec3d&  _normal, const fwVec3d& _point);
+GEOMETRY_DATA_API fwPlane getPlane(const fwVec3d& _normal, const fwVec3d& _point);
 
 /**
  * @brief Initialize a plane _plane with three points (_point1, _point2, _point3).
@@ -55,8 +55,12 @@ GEOMETRY_DATA_API fwPlane getPlane(const fwVec3d&  _normal, const fwVec3d& _poin
  * @param [in] _point2 a point of the plan.
  * @param [in] _point3 a point of the plan.
  */
-GEOMETRY_DATA_API void setValues(fwPlane& _plane, const fwVec3d& _point1, const fwVec3d& _point2,
-                                 const fwVec3d& _point3);
+GEOMETRY_DATA_API void setValues(
+    fwPlane& _plane,
+    const fwVec3d& _point1,
+    const fwVec3d& _point2,
+    const fwVec3d& _point3
+);
 
 /**
  * @brief Return the normal of the given plane _plane.
@@ -69,7 +73,7 @@ GEOMETRY_DATA_API fwVec3d getNormal(const fwPlane& _plane);
  *  @param [in] _plane
  *  @param [in] _normal
  */
-GEOMETRY_DATA_API void  setNormal(fwPlane& _plane, const fwVec3d& _normal);
+GEOMETRY_DATA_API void setNormal(fwPlane& _plane, const fwVec3d& _normal);
 /**
  * @brief Get the distance from origin for the given plan (_plane).
  *  @param [in] _plane
@@ -82,7 +86,7 @@ GEOMETRY_DATA_API double getDistance(const fwPlane& _plane);
  *  @param [in] _plane
  *  @return [out] _plane
  */
-GEOMETRY_DATA_API void  setDistance(fwPlane& _plane, const double _distance);
+GEOMETRY_DATA_API void setDistance(fwPlane& _plane, const double _distance);
 /**
  *  @brief Give the intersection between a plane and a line. The result is returned in a point (_point)
  *  @param [in]  _fwPlane
@@ -90,7 +94,7 @@ GEOMETRY_DATA_API void  setDistance(fwPlane& _plane, const double _distance);
  *  @param [out] _point intersection point.
  *  @return true if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect( const fwPlane& _fwPlane, const fwLine& _line, fwVec3d& _point);
+GEOMETRY_DATA_API bool intersect(const fwPlane& _fwPlane, const fwLine& _line, fwVec3d& _point);
 
 /**
  *  @brief Compute if a point is in a half plane.

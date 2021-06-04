@@ -32,6 +32,7 @@
 
 namespace sight::core::memory
 {
+
 namespace tools
 {
 
@@ -57,8 +58,10 @@ std::uint64_t Win32MemoryMonitorTools::estimateFreeMem()
 #else
     std::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
     std::uint64_t freeMem                 = std::min(
-        getFreeSystemMemory(), windowsLimitForAProcess - getUsedProcessMemory());
-    freeMemory = std::max((std::uint64_t) 0, freeMem );
+        getFreeSystemMemory(),
+        windowsLimitForAProcess - getUsedProcessMemory()
+    );
+    freeMemory = std::max((std::uint64_t) 0, freeMem);
 #endif
     return freeMemory;
 }
@@ -70,43 +73,45 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     DWORD processID = GetCurrentProcessId();
     HANDLE hProcess;
 
-    hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |PROCESS_VM_READ,
-                            FALSE,
-                            processID );
+    hProcess = OpenProcess(
+        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+        FALSE,
+        processID
+    );
 
-    if ( NULL != hProcess )
+    if(NULL != hProcess)
     {
         // Get the process name.
         int nameSize = 100;
-        char* name   = new char[nameSize];
+        char* name   = new char [nameSize];
 
         HMODULE hMod;
         DWORD cbNeeded;
 
-        SIGHT_INFO( "-- Process memory information --" );
-        if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), &cbNeeded) )
+        SIGHT_INFO("-- Process memory information --");
+        if(EnumProcessModules(hProcess, &hMod, sizeof(hMod), &cbNeeded))
         {
-            GetModuleBaseNameW( hProcess, hMod, (LPWSTR)name, nameSize );
-            SIGHT_INFO( "    Name : " << name << "  ( PID : " << processID << " )");
+            GetModuleBaseNameW(hProcess, hMod, (LPWSTR) name, nameSize);
+            SIGHT_INFO("    Name : " << name << "  ( PID : " << processID << " )");
         }
         else
         {
-            SIGHT_INFO( "    Name : not found ( PID : " << processID << " )");
+            SIGHT_INFO("    Name : not found ( PID : " << processID << " )");
         }
 
         PROCESS_MEMORY_COUNTERS_EX pmc;
-        if ( GetProcessMemoryInfo( hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
+        if(GetProcessMemoryInfo(hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
         {
-            SIGHT_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
-            SIGHT_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
-            SIGHT_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
-            SIGHT_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
-            SIGHT_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
-            SIGHT_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
-            SIGHT_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
-            SIGHT_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
-            SIGHT_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
-            SIGHT_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
+            SIGHT_INFO("    PageFaultCount : " << (int) pmc.PageFaultCount);
+            SIGHT_INFO("    PeakWorkingSetSize : " << (int) pmc.PeakWorkingSetSize);
+            SIGHT_INFO("    WorkingSetSize : " << (int) pmc.WorkingSetSize);
+            SIGHT_INFO("    QuotaPeakPagedPoolUsage : " << (int) pmc.QuotaPeakPagedPoolUsage);
+            SIGHT_INFO("    QuotaPagedPoolUsage : " << (int) pmc.QuotaPagedPoolUsage);
+            SIGHT_INFO("    QuotaPeakNonPagedPoolUsage : " << (int) pmc.QuotaPeakNonPagedPoolUsage);
+            SIGHT_INFO("    QuotaNonPagedPoolUsage : " << (int) pmc.QuotaNonPagedPoolUsage);
+            SIGHT_INFO("    PagefileUsage : " << (int) pmc.PagefileUsage);
+            SIGHT_INFO("    PeakPagefileUsage : " << (int) pmc.PeakPagefileUsage);
+            SIGHT_INFO("    PrivateUsage : " << (int) pmc.PrivateUsage);
         }
         else
         {
@@ -114,7 +119,7 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
         }
 
         delete[] name;
-        CloseHandle( hProcess );
+        CloseHandle(hProcess);
     }
 }
 
@@ -126,17 +131,17 @@ void Win32MemoryMonitorTools::printSystemMemoryInformation()
 
     MEMORYSTATUSEX statex;
 
-    statex.dwLength = sizeof (statex);
+    statex.dwLength = sizeof(statex);
     GlobalMemoryStatusEx(&statex);
 
-    SIGHT_INFO( "-- System memory information --" );
-    SIGHT_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
-    SIGHT_INFO( "    There are " << statex.ullTotalPhys/oToKo        <<  " total Ko of physical memory." );
-    SIGHT_INFO( "    There are " << statex.ullAvailPhys/oToKo        <<  " free Ko of physical memory." );
-    SIGHT_INFO( "    There are " << statex.ullTotalPageFile/oToKo    <<  " total Ko of paging file." );
-    SIGHT_INFO( "    There are " << statex.ullAvailPageFile/oToKo    <<  " free Ko of paging file." );
-    SIGHT_INFO( "    There are " << statex.ullTotalVirtual/oToKo     <<  " total Ko of virtual memory." );
-    SIGHT_INFO( "    There are " << statex.ullAvailVirtual/oToKo     <<  " free Ko of virtual memory." );
+    SIGHT_INFO("-- System memory information --");
+    SIGHT_INFO("    There is " << statex.dwMemoryLoad << " percent of memory in use.");
+    SIGHT_INFO("    There are " << statex.ullTotalPhys / oToKo << " total Ko of physical memory.");
+    SIGHT_INFO("    There are " << statex.ullAvailPhys / oToKo << " free Ko of physical memory.");
+    SIGHT_INFO("    There are " << statex.ullTotalPageFile / oToKo << " total Ko of paging file.");
+    SIGHT_INFO("    There are " << statex.ullAvailPageFile / oToKo << " free Ko of paging file.");
+    SIGHT_INFO("    There are " << statex.ullTotalVirtual / oToKo << " total Ko of virtual memory.");
+    SIGHT_INFO("    There are " << statex.ullAvailVirtual / oToKo << " free Ko of virtual memory.");
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +158,7 @@ std::uint64_t Win32MemoryMonitorTools::getTotalSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
-    statex.dwLength = sizeof (statex);
+    statex.dwLength = sizeof(statex);
     GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys;
@@ -165,7 +170,7 @@ std::uint64_t Win32MemoryMonitorTools::getUsedSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
-    statex.dwLength = sizeof (statex);
+    statex.dwLength = sizeof(statex);
     GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys - statex.ullAvailPhys;
@@ -177,7 +182,7 @@ std::uint64_t Win32MemoryMonitorTools::getFreeSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
-    statex.dwLength = sizeof (statex);
+    statex.dwLength = sizeof(statex);
     GlobalMemoryStatusEx(&statex);
 
     return statex.ullAvailPhys;
@@ -191,11 +196,12 @@ std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
 
     BOOL result;
     PROCESS_MEMORY_COUNTERS_EX pmc;
-    if ( result =
-             GetProcessMemoryInfo( GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
+    if(result =
+           GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
     {
         memory = pmc.WorkingSetSize;
     }
+
     SIGHT_WARN_IF("GetProcessMemoryInfo failed !", !result);
 
     return memory;
@@ -204,6 +210,7 @@ std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
 //-----------------------------------------------------------------------------
 
 } // namespace tools
+
 } // namespace sight::core::memory
 
 #endif // _WIN32

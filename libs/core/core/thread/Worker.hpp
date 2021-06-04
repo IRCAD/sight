@@ -32,6 +32,7 @@
 
 namespace sight::core::thread
 {
+
 typedef std::thread::id ThreadIdType;
 
 /// Returns the current thread id
@@ -46,13 +47,14 @@ class Timer;
 class CORE_CLASS_API Worker : public core::BaseObject
 {
 public:
+
     typedef core::HiResClock::HiResClockType PeriodType;
-    typedef std::function< void () > TaskType;
+    typedef std::function<void ()> TaskType;
     typedef std::any ExitReturnType;
 
-    typedef std::shared_future< ExitReturnType > FutureType;
+    typedef std::shared_future<ExitReturnType> FutureType;
 
-    SIGHT_DECLARE_CLASS(Worker, core::BaseObject, defaultFactory)
+    SIGHT_DECLARE_CLASS(Worker, core::BaseObject, defaultFactory);
 
     Worker()
     {
@@ -75,8 +77,8 @@ public:
      *
      * @returns a std::shared_future associated with the result of the given callable
      */
-    template< typename R, typename CALLABLE >
-    std::shared_future< R > postTask(CALLABLE f);
+    template<typename R, typename CALLABLE>
+    std::shared_future<R> postTask(CALLABLE f);
 
     /// Returns the worker's thread id
     CORE_API virtual ThreadIdType getThreadId() const = 0;
@@ -120,10 +122,10 @@ protected:
     CORE_API static SPTR(Worker) defaultFactory();
 
     /// Copy constructor forbidden
-    Worker( const Worker& );
+    Worker(const Worker&);
 
     /// Copy operator forbidden
-    Worker& operator=( const Worker& );
+    Worker& operator=(const Worker&);
 
     /// Worker's loop future
     FutureType m_future;

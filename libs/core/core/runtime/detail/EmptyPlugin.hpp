@@ -43,6 +43,7 @@ namespace detail
 class EmptyPlugin : public Plugin
 {
 public:
+
     /**
      * @brief   Destructor : does nothing.
      */
@@ -55,7 +56,6 @@ public:
 
     // Overrides
     void stop() noexcept override;
-
 };
 
 } // namespace detail

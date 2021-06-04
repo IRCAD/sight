@@ -27,14 +27,17 @@
 #include <data/Study.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::StudyTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::StudyTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -67,18 +70,20 @@ void StudyTest::propertiesTest()
     const std::string patientWeight           = "70";
     const std::string patientBodyMassIndex    = "2";
 
-    const ::DataCampHelper::PropertiesNameType dataProperties = { { "fields" },
-                                                                  { "instance_uid" },
-                                                                  { "study_id" },
-                                                                  { "date" },
-                                                                  { "time" },
-                                                                  { "referring_physician_name" },
-                                                                  { "consulting_physician_name" },
-                                                                  { "description" },
-                                                                  { "patient_age" },
-                                                                  { "patient_size" },
-                                                                  { "patient_weight" },
-                                                                  { "patient_body_mass_index" }};
+    const ::DataCampHelper::PropertiesNameType dataProperties = {{"fields"},
+        {"instance_uid"},
+        {"study_id"},
+        {"date"},
+        {"time"},
+        {"referring_physician_name"},
+        {"consulting_physician_name"},
+        {"description"},
+        {"patient_age"},
+        {"patient_size"},
+        {"patient_weight"},
+        {"patient_body_mass_index"
+        }
+    };
 
     data::Study::sptr obj = data::Study::New();
     obj->setInstanceUID(instanceUID);
@@ -110,6 +115,9 @@ void StudyTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } //namespace sight::data

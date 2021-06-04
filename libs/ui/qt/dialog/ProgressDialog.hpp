@@ -44,8 +44,10 @@ QT_END_NAMESPACE
 
 namespace sight::ui::qt
 {
+
 namespace dialog
 {
+
 /**
  * @brief   Allows to select an acquisition in a patient database.
  *
@@ -59,11 +61,13 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New< ProgressDialog >)
+    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>);
 
-    UI_QT_API ProgressDialog( ui::base::GuiBaseObject::Key key,
-                              const std::string& title   = "Progression",
-                              const std::string& message = std::string(86, ' ') );
+    UI_QT_API ProgressDialog(
+        ui::base::GuiBaseObject::Key key,
+        const std::string& title   = "Progression",
+        const std::string& message = std::string(86, ' ')
+    );
 
     UI_QT_API virtual ~ProgressDialog();
 
@@ -78,17 +82,19 @@ public:
     UI_QT_API void hideCancelButton() override;
 
 protected Q_SLOTS:
+
     void cancelPressed() override;
 
 protected:
 
     QString m_title;
 
-    QPointer< QProgressDialog >  m_pdialog;
-    QPointer< QProgressBar >     m_pprogressbar;
-    QPointer< QPushButton >      m_pcancelButton;
-    QPointer< QMainWindow >      m_pmainWindow;
-
+    QPointer<QProgressDialog> m_pdialog;
+    QPointer<QProgressBar> m_pprogressbar;
+    QPointer<QPushButton> m_pcancelButton;
+    QPointer<QMainWindow> m_pmainWindow;
 };
+
 } // namespace dialog
+
 } // namespace sight::ui::qt

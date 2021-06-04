@@ -30,6 +30,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -68,7 +69,7 @@ void SLine::configuring()
     m_y2 = config.get<float>("y2");
 
     // If the corresponding attributes are present in the config, set the color of the line
-    if (config.count("color"))
+    if(config.count("color"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
     }
@@ -78,12 +79,16 @@ void SLine::configuring()
 
 void SLine::draw()
 {
-    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( m_x1, m_y1), m_xAxis, m_yAxis);
-    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( m_x2, m_y2), m_xAxis, m_yAxis);
+    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType(m_x1, m_y1), m_xAxis, m_yAxis);
+    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType(m_x2, m_y2), m_xAxis, m_yAxis);
 
     // Draw the line
-    QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
-                                                    pt2.first, pt2.second);
+    QGraphicsLineItem* line = new QGraphicsLineItem(
+        pt1.first,
+        pt1.second,
+        pt2.first,
+        pt2.second
+    );
     // Set the line the pen
     line->setPen(m_pen);
 
@@ -124,4 +129,5 @@ void SLine::stopping()
 }
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

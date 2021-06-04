@@ -60,7 +60,7 @@ class MODULE_IO_IGTL_CLASS_API SServerListener : public module::io::igtl::INetwo
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SServerListener, module::io::igtl::INetworkListener)
+    SIGHT_DECLARE_SERVICE(SServerListener, module::io::igtl::INetworkListener);
 
     /// Constructor
     MODULE_IO_IGTL_API SServerListener();

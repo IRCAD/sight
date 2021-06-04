@@ -32,21 +32,28 @@
 
 namespace sight::data
 {
+
 class DicomSeries;
+
 }
 
 namespace sight::core::jobs
 {
+
 class Observer;
+
 }
 
 namespace sight::core::log
 {
+
 class Logger;
+
 }
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -56,6 +63,7 @@ namespace helper
 class IO_DICOM_CLASS_API DicomDir
 {
 public:
+
     /**
      * @brief Find the DICOMDIR file in the parent arborescence
      * @return Path to the DICOMDIR or empty path if the DICOMDIR has not been found
@@ -68,13 +76,15 @@ public:
      * @param[out] seriesDB Dicom series created
      * @param[in] fileLookupObserver file lookup observer
      */
-    IO_DICOM_API static void retrieveDicomSeries(const std::filesystem::path& dicomdir,
-                                                 std::vector< SPTR(data::DicomSeries) >& seriesDB,
-                                                 const SPTR(core::log::Logger)& logger,
-                                                 std::function< void(std::uint64_t) > progress = nullptr,
-                                                 std::function< bool() > cancel                = nullptr);
-
+    IO_DICOM_API static void retrieveDicomSeries(
+        const std::filesystem::path& dicomdir,
+        std::vector<SPTR(data::DicomSeries)>& seriesDB,
+        const SPTR(core::log::Logger)& logger,
+        std::function<void(std::uint64_t)> progress = nullptr,
+        std::function<bool()> cancel                = nullptr
+    );
 };
 
 } //helper
+
 } //fwGdcmIO

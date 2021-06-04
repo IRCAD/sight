@@ -29,7 +29,6 @@ namespace sight::module::ui::debug
 
 struct Plugin : public core::runtime::Plugin
 {
-
     /**
      * @brief   destructor
      */
@@ -40,7 +39,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept;
-
 };
 
 } // namespace sight::module::ui::debug

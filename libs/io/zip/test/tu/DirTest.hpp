@@ -26,18 +26,20 @@
 
 namespace sight::io::zip
 {
+
 namespace ut
 {
 
 class DirTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( DirTest );
-CPPUNIT_TEST( writeReadFileTest );
-CPPUNIT_TEST( writeDirTest );
-CPPUNIT_TEST( putFileTest );
+CPPUNIT_TEST_SUITE(DirTest);
+CPPUNIT_TEST(writeReadFileTest);
+CPPUNIT_TEST(writeDirTest);
+CPPUNIT_TEST(putFileTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -48,4 +50,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::io::zip

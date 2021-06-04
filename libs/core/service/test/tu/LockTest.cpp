@@ -43,12 +43,13 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::LockTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::LockTest);
 
 //------------------------------------------------------------------------------
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -60,7 +61,7 @@ public:
     static const service::IService::KeyType s_INOUT;
     static const service::IService::KeyType s_OUTPUT;
 
-    SIGHT_DECLARE_SERVICE(LockedService, service::IService)
+    SIGHT_DECLARE_SERVICE(LockedService, service::IService);
 
     LockedService() noexcept
     {
@@ -78,7 +79,7 @@ public:
     virtual void starting() final
     {
         // Reading should not be blocked by other reader
-        auto weakInput   = this->getWeakInput< data::Integer >(s_INPUT);
+        auto weakInput   = this->getWeakInput<data::Integer>(s_INPUT);
         auto sharedInput = weakInput.lock();
 
         // Simulate working....
@@ -93,7 +94,7 @@ public:
     virtual void stopping() final
     {
         // Reading should not be blocked by other reader
-        auto weakOutput   = this->getWeakOutput< data::Integer >(s_OUTPUT);
+        auto weakOutput   = this->getWeakOutput<data::Integer>(s_OUTPUT);
         auto sharedOutput = weakOutput.lock();
 
         sharedOutput->setValue(-1);
@@ -109,21 +110,18 @@ public:
 
     virtual void configuring() final
     {
-
     }
 
     //------------------------------------------------------------------------------
 
     virtual void reconfiguring() final
     {
-
     }
 
     //------------------------------------------------------------------------------
 
     virtual void updating() final
     {
-
     }
 };
 
@@ -131,7 +129,7 @@ const service::IService::KeyType LockedService::s_INPUT  = "input";
 const service::IService::KeyType LockedService::s_INOUT  = "inout";
 const service::IService::KeyType LockedService::s_OUTPUT = "output";
 
-SIGHT_REGISTER_SERVICE( ::sight::service::IService, ::sight::service::ut::LockedService)
+SIGHT_REGISTER_SERVICE(::sight::service::IService, ::sight::service::ut::LockedService);
 
 //------------------------------------------------------------------------------
 
@@ -147,10 +145,10 @@ void LockTest::tearDown()
     // Clean up after the test run.
     // unregister the services that have not been unregistered because a test failed.
 
-    const auto& services = service::OSR::getServices< service::IService >();
-    for (auto service: services)
+    const auto& services = service::OSR::getServices<service::IService>();
+    for(auto service : services)
     {
-        if (service->isStarted())
+        if(service->isStarted())
         {
             service->stop();
         }
@@ -179,38 +177,38 @@ void LockTest::testScopedLock()
     CPPUNIT_ASSERT_EQUAL(true, lockedService->hasAllRequiredObjects());
 
     // Test basic scoped lock
-    data::mt::weak_ptr< const data::Integer > weakInput(input);
+    data::mt::weak_ptr<const data::Integer> weakInput(input);
     {
         auto sharedInput = weakInput.lock();
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
-    data::mt::weak_ptr< data::Integer > weakInOut(inout);
+    data::mt::weak_ptr<data::Integer> weakInOut(inout);
     {
         auto sharedInOut = weakInOut.lock();
         CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
-    data::mt::weak_ptr< data::Integer > weakOutput(output);
+    data::mt::weak_ptr<data::Integer> weakOutput(output);
     {
         auto sharedOutput = weakOutput.lock();
         CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
     }
 
     // Test basic scoped lock from service getters
-    weakInput = lockedService->getWeakInput< data::Integer >(service::ut::LockedService::s_INPUT);
+    weakInput = lockedService->getWeakInput<data::Integer>(service::ut::LockedService::s_INPUT);
     {
         auto sharedInput = weakInput.lock();
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
-    weakInOut = lockedService->getWeakInOut< data::Integer >(service::ut::LockedService::s_INOUT);
+    weakInOut = lockedService->getWeakInOut<data::Integer>(service::ut::LockedService::s_INOUT);
     {
         auto sharedInOut = weakInOut.lock();
         CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
-    weakOutput = lockedService->getWeakOutput< data::Integer >(service::ut::LockedService::s_OUTPUT);
+    weakOutput = lockedService->getWeakOutput<data::Integer>(service::ut::LockedService::s_OUTPUT);
     {
         auto sharedOutput = weakOutput.lock();
         CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
@@ -218,18 +216,19 @@ void LockTest::testScopedLock()
 
     // Test basic scoped lock from service direct locker
     {
-        auto sharedInput = lockedService->getLockedInput< data::Integer >(service::ut::LockedService::s_INPUT);
+        auto sharedInput = lockedService->getLockedInput<data::Integer>(service::ut::LockedService::s_INPUT);
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
     }
 
     {
-        auto sharedInOut = lockedService->getLockedInOut< data::Integer >(service::ut::LockedService::s_INOUT);
+        auto sharedInOut = lockedService->getLockedInOut<data::Integer>(service::ut::LockedService::s_INOUT);
         CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
     }
 
     {
-        auto sharedOutput = lockedService->getLockedOutput< data::Integer >(
-            service::ut::LockedService::s_OUTPUT);
+        auto sharedOutput = lockedService->getLockedOutput<data::Integer>(
+            service::ut::LockedService::s_OUTPUT
+        );
         CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
     }
 
@@ -252,7 +251,7 @@ void LockTest::testDumpLock()
     lockedService->registerInput(image, service::ut::LockedService::s_INPUT);
 
     {
-        auto sharedInput = lockedService->getLockedInput< data::Image >(service::ut::LockedService::s_INPUT);
+        auto sharedInput = lockedService->getLockedInput<data::Image>(service::ut::LockedService::s_INPUT);
         CPPUNIT_ASSERT(image == sharedInput.get_shared());
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->getBuffer());
@@ -260,7 +259,7 @@ void LockTest::testDumpLock()
 
     bool exceptionReceived = false;
 
-    for(int i = 3; --i > 0 && !exceptionReceived;)
+    for(int i = 3 ; --i > 0 && !exceptionReceived ; )
     {
         try
         {
@@ -284,13 +283,13 @@ void LockTest::testDumpLock()
     lockedService->registerInput(mesh, service::ut::LockedService::s_INPUT);
 
     {
-        auto sharedInput = lockedService->getLockedInput< data::Mesh >(service::ut::LockedService::s_INPUT);
+        auto sharedInput = lockedService->getLockedInput<data::Mesh>(service::ut::LockedService::s_INPUT);
 
         mesh->reserve(3, 1, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS);
 
-        data::Mesh::PointValueType A[3] = {0., 0., 0. };
-        data::Mesh::PointValueType B[3] = {1., 0., 0. };
-        data::Mesh::PointValueType C[3] = {1., 1., 0. };
+        data::Mesh::PointValueType A[3] = {0., 0., 0.};
+        data::Mesh::PointValueType B[3] = {1., 0., 0.};
+        data::Mesh::PointValueType C[3] = {1., 1., 0.};
 
         data::Mesh::PointId ids[3];
 
@@ -306,7 +305,7 @@ void LockTest::testDumpLock()
 
         CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(data::Mesh::CellType::TRIANGLE, ids, 3));
 
-        const std::array< data::Mesh::ColorValueType, 4>  color = {255, 0, 0, 255};
+        const std::array<data::Mesh::ColorValueType, 4> color = {255, 0, 0, 255};
 
         // This are not locked since they didn't exists when creating the mesh the first time.
         CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[0], color));
@@ -316,7 +315,7 @@ void LockTest::testDumpLock()
 
     exceptionReceived = false;
 
-    for(int i = 3; --i > 0 && !exceptionReceived;)
+    for(int i = 3 ; --i > 0 && !exceptionReceived ; )
     {
         try
         {
@@ -341,8 +340,11 @@ void LockTest::testDumpLock()
 void LockTest::testThreadedLock()
 {
     // Add the service
-    service::ut::LockedService::sptr lockedService = service::ut::LockedService::dynamicCast(service::add(
-                                                                                                 "::sight::service::ut::LockedService"));
+    service::ut::LockedService::sptr lockedService = service::ut::LockedService::dynamicCast(
+        service::add(
+            "::sight::service::ut::LockedService"
+        )
+    );
     CPPUNIT_ASSERT(lockedService);
 
     // Create the data
@@ -358,8 +360,9 @@ void LockTest::testThreadedLock()
 
     // Test that inputLock doesn't block other reader
     {
-        auto weakInput = lockedService->getWeakInput< const data::Integer >(
-            service::ut::LockedService::s_INPUT);
+        auto weakInput = lockedService->getWeakInput<const data::Integer>(
+            service::ut::LockedService::s_INPUT
+        );
         auto sharedInput = weakInput.lock();
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
 
@@ -388,8 +391,9 @@ void LockTest::testThreadedLock()
 
         {
             // We should be blocked here, as long as t2 is alive
-            auto weakOutput = lockedService->getWeakOutput< data::Integer >(
-                service::ut::LockedService::s_OUTPUT);
+            auto weakOutput = lockedService->getWeakOutput<data::Integer>(
+                service::ut::LockedService::s_OUTPUT
+            );
             auto sharedOutput = weakOutput.lock();
 
             // Once t2 have finished, we should be able to overwrite output
@@ -407,4 +411,5 @@ void LockTest::testThreadedLock()
 }
 
 } //namespace ut
+
 } //namespace sight::service

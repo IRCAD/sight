@@ -34,10 +34,11 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::modifier::SliceThicknessModifier );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::modifier::SliceThicknessModifier);
 
 namespace sight::filter::dicom
 {
+
 namespace modifier
 {
 
@@ -77,7 +78,8 @@ std::string SliceThicknessModifier::getDescription() const
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger
+) const
 {
     DicomSeriesContainerType result;
 
@@ -123,16 +125,16 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
 
     const size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
-    char* buffer = static_cast< char* >( lock.getBuffer() );
+    char* buffer = static_cast<char*>(lock.getBuffer());
 
     DcmInputBufferStream is;
     is.setBuffer(buffer, offile_off_t(buffSize));
     is.setEos();
 
     fileFormat.transferInit();
-    if (!fileFormat.read(is).good())
+    if(!fileFormat.read(is).good())
     {
-        SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+        SIGHT_THROW("Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "'");
     }
 
     fileFormat.loadAllDataIntoMemory();
@@ -147,17 +149,17 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     }
 
     fwVec3d imagePosition;
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
         dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
     }
 
     fwVec3d imageOrientationU;
     fwVec3d imageOrientationV;
-    for(unsigned int i = 0; i < 3; ++i)
+    for(unsigned int i = 0 ; i < 3 ; ++i)
     {
         dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i+3);
+        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + 3);
     }
 
     //Compute Z direction (cross product)
@@ -179,16 +181,16 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
 
     const size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
-    char* buffer = static_cast< char* >( lock.getBuffer() );
+    char* buffer = static_cast<char*>(lock.getBuffer());
 
     DcmInputBufferStream is;
     is.setBuffer(buffer, offile_off_t(buffSize));
     is.setEos();
 
     fileFormat.transferInit();
-    if (!fileFormat.read(is).good())
+    if(!fileFormat.read(is).good())
     {
-        SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+        SIGHT_THROW("Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "'");
     }
 
     fileFormat.loadAllDataIntoMemory();
@@ -203,4 +205,5 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
 }
 
 } // namespace modifier
+
 } // namespace sight::filter::dicom

@@ -28,7 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Type.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::TransferFunction )
+SIGHT_REGISTER_DATA(sight::data::TransferFunction)
 
 namespace sight::data
 {
@@ -50,8 +50,8 @@ data::TransferFunction::sptr TransferFunction::createDefaultTF()
     tf->addTFColor(0.0, TFColor());
     tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
     tf->setIsClamped(false);
-    tf->setWindow( 500. );
-    tf->setLevel( 50. );
+    tf->setWindow(500.);
+    tf->setLevel(50.);
     return tf;
 }
 
@@ -59,8 +59,8 @@ data::TransferFunction::sptr TransferFunction::createDefaultTF()
 
 TransferFunction::TransferFunction(data::Object::Key)
 {
-    newSignal< PointsModifiedSignalType >(s_POINTS_MODIFIED_SIG);
-    newSignal< WindowingModifiedSignalType >(s_WINDOWING_MODIFIED_SIG);
+    newSignal<PointsModifiedSignalType>(s_POINTS_MODIFIED_SIG);
+    newSignal<WindowingModifiedSignalType>(s_WINDOWING_MODIFIED_SIG);
 
     this->initTF();
 }
@@ -91,10 +91,14 @@ void TransferFunction::initTF()
 void TransferFunction::shallowCopy(const Object::csptr& _source)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     this->m_level             = other->m_level;
     this->m_window            = other->m_window;
     this->m_name              = other->m_name;
@@ -109,10 +113,14 @@ void TransferFunction::shallowCopy(const Object::csptr& _source)
 void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, _cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, _cache);
     this->m_level             = other->m_level;
     this->m_window            = other->m_window;
     this->m_name              = other->m_name;
@@ -128,9 +136,12 @@ TransferFunction::TFValueVectorType TransferFunction::getTFValues() const
 {
     TFValueVectorType values;
     values.reserve(m_tfData.size());
-    std::transform( m_tfData.begin(), m_tfData.end(),
-                    std::back_inserter(values),
-                    std::bind(&TFDataType::value_type::first, std::placeholders::_1) );
+    std::transform(
+        m_tfData.begin(),
+        m_tfData.end(),
+        std::back_inserter(values),
+        std::bind(&TFDataType::value_type::first, std::placeholders::_1)
+    );
     return values;
 }
 
@@ -170,7 +181,7 @@ TransferFunction::TFValuePairType TransferFunction::getMinMaxTFValues() const
 TransferFunction::TFValuePairType TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
-    const double halfWindow = m_window/2.;
+    const double halfWindow = m_window / 2.;
     minMax.first  = m_level - halfWindow;
     minMax.second = m_level + halfWindow;
     return minMax;
@@ -181,7 +192,7 @@ TransferFunction::TFValuePairType TransferFunction::getWLMinMax() const
 void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 {
     m_window = _minMax.second - _minMax.first;
-    const double halfWindow = m_window/2.;
+    const double halfWindow = m_window / 2.;
     m_level = halfWindow + _minMax.first;
 }
 
@@ -197,7 +208,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _val
     TFValueType val;
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(_value < data.first )
+        if(_value < data.first)
         {
             nextValue = data.first;
             break;
@@ -207,6 +218,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _val
             previousValue = data.first;
         }
     }
+
     if(previousValue == minMax.first)
     {
         val = nextValue;
@@ -226,6 +238,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _val
             val = nextValue;
         }
     }
+
     return val;
 }
 
@@ -234,9 +247,12 @@ TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _val
 TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 {
     TFColorVectorType colors;
-    std::transform( m_tfData.begin(), m_tfData.end(),
-                    std::back_inserter(colors),
-                    std::bind(&TFDataType::value_type::second, std::placeholders::_1) );
+    std::transform(
+        m_tfData.begin(),
+        m_tfData.end(),
+        std::back_inserter(colors),
+        std::bind(&TFDataType::value_type::second, std::placeholders::_1)
+    );
     return colors;
 }
 
@@ -259,7 +275,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) 
 
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(_value < data.first )
+        if(_value < data.first)
         {
             nextValue = data.first;
             nextColor = data.second;
@@ -271,6 +287,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) 
             previousColor = data.second;
         }
     }
+
     if(previousValue == min)
     {
         if(m_isClamped)
@@ -326,7 +343,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) c
 
     for(const TFDataType::value_type& data : m_tfData)
     {
-        if(_value < data.first )
+        if(_value < data.first)
         {
             nextValue = data.first;
             nextColor = data.second;
@@ -338,6 +355,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) c
             previousColor = data.second;
         }
     }
+
     if(previousValue == min)
     {
         if(m_isClamped)
@@ -369,11 +387,12 @@ TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) c
         const double coefPrevious            = 1.0 - (distanceToPreviousValue * distance);
         const double coefNext                = 1.0 - (distanceToNextValue * distance);
 
-        color.r = coefPrevious*previousColor.r + coefNext*nextColor.r;
-        color.g = coefPrevious*previousColor.g + coefNext*nextColor.g;
-        color.b = coefPrevious*previousColor.b + coefNext*nextColor.b;
-        color.a = coefPrevious*previousColor.a + coefNext*nextColor.a;
+        color.r = coefPrevious * previousColor.r + coefNext * nextColor.r;
+        color.g = coefPrevious * previousColor.g + coefNext * nextColor.g;
+        color.b = coefPrevious * previousColor.b + coefNext * nextColor.b;
+        color.a = coefPrevious * previousColor.a + coefNext * nextColor.a;
     }
+
     return color;
 }
 
@@ -391,6 +410,7 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType val
     {
         color = this->getNearestColor(value);
     }
+
     return color;
 }
 
@@ -399,7 +419,7 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType val
 const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value) const
 {
     TFDataType::const_iterator itr = m_tfData.find(_value);
-    SIGHT_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
+    SIGHT_ASSERT("The value " << _value << " is not defined in the transfer function.", itr != m_tfData.end());
     return itr->second;
 }
 

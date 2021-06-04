@@ -46,17 +46,17 @@ SDumpPolicy::~SDumpPolicy()
 void SDumpPolicy::configuring()
 {
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-    std::vector < ConfigurationType > config = m_configuration->find("config");
+    std::vector<ConfigurationType> config = m_configuration->find("config");
 
-    if (!config.empty())
+    if(!config.empty())
     {
-        std::vector < ConfigurationType > policy        = config.at(0)->find("policy");
-        std::vector < ConfigurationType > paramsElement = config.at(0)->find("params");
+        std::vector<ConfigurationType> policy        = config.at(0)->find("policy");
+        std::vector<ConfigurationType> paramsElement = config.at(0)->find("params");
 
         m_policyParams.clear();
         m_policy = "";
 
-        if (!policy.empty())
+        if(!policy.empty())
         {
             m_policy = policy.at(0)->getValue();
         }
@@ -67,9 +67,9 @@ void SDumpPolicy::configuring()
 
             core::runtime::ConfigurationElement::Container::const_iterator iter;
 
-            for (iter = params->begin(); iter != params->end(); ++iter)
+            for(iter = params->begin() ; iter != params->end() ; ++iter)
             {
-                m_policyParams.push_back( ParametersType::value_type((*iter)->getName(), (*iter)->getValue()));
+                m_policyParams.push_back(ParametersType::value_type((*iter)->getName(), (*iter)->getValue()));
             }
         }
     }
@@ -80,25 +80,29 @@ void SDumpPolicy::configuring()
 void SDumpPolicy::starting()
 {
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
-    if (manager)
+    if(manager)
     {
         core::memory::IPolicy::sptr policy = core::memory::policy::registry::get()->create(m_policy);
 
-        if (policy)
+        if(policy)
         {
             bool success;
-            for(const ParametersType::value_type& param :  m_policyParams)
+            for(const ParametersType::value_type& param : m_policyParams)
             {
                 success = policy->setParam(param.first, param.second);
-                SIGHT_ERROR_IF( "[" << m_policy << "] Unable to set '"
-                                    << param.first << "' parameter to " << param.second,
-                                !success);
+                SIGHT_ERROR_IF(
+                    "[" << m_policy << "] Unable to set '"
+                    << param.first << "' parameter to " << param.second,
+                    !success
+                );
                 SIGHT_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
             }
-            core::mt::WriteLock lock( manager->getMutex() );
+
+            core::mt::WriteLock lock(manager->getMutex());
             manager->setDumpPolicy(policy);
             SIGHT_INFO("Set dump policy to : " << m_policy);
         }
+
         SIGHT_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
     }
 }

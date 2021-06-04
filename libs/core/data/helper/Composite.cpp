@@ -22,19 +22,20 @@
 
 #include "data/helper/Composite.hpp"
 
-#include <core/com/Signal.hxx>
-
 #include <data/Composite.hpp>
+
+#include <core/com/Signal.hxx>
 
 namespace sight::data
 {
+
 namespace helper
 {
 
 //-----------------------------------------------------------------------------
 
-Composite::Composite( data::Composite::wptr _composite ) :
-    m_composite( _composite )
+Composite::Composite(data::Composite::wptr _composite) :
+    m_composite(_composite)
 {
 }
 
@@ -42,8 +43,8 @@ Composite::Composite( data::Composite::wptr _composite ) :
 
 Composite::~Composite()
 {
-    if(!m_addedObjects.empty() || !m_removedObjects.empty() || !m_newChangedObjects.empty() ||
-       !m_oldChangedObjects.empty())
+    if(!m_addedObjects.empty() || !m_removedObjects.empty() || !m_newChangedObjects.empty()
+       || !m_oldChangedObjects.empty())
     {
         notify();
     }
@@ -51,35 +52,37 @@ Composite::~Composite()
 
 //-----------------------------------------------------------------------------
 
-void Composite::add( std::string _compositeKey, data::Object::sptr _newObject )
+void Composite::add(std::string _compositeKey, data::Object::sptr _newObject)
 {
-    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                    "object to be added.",
-                    m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
+    SIGHT_FATAL_IF(
+        "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                                                 "object to be added.",
+        m_composite.lock()->find(_compositeKey) != m_composite.lock()->end()
+    );
 
     // Modify composite
-    m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
+    m_composite.lock()->getContainer()[_compositeKey] = _newObject;
 
     m_addedObjects[_compositeKey] = _newObject;
-
 }
 
 //-----------------------------------------------------------------------------
 
-void Composite::remove( std::string _compositeKey )
+void Composite::remove(std::string _compositeKey)
 {
-    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                    "object to be removed.",
-                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SIGHT_FATAL_IF(
+        "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                                                 "object to be removed.",
+        m_composite.lock()->find(_compositeKey) == m_composite.lock()->end()
+    );
 
     // Get old object
-    data::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
+    data::Object::sptr objBackup = m_composite.lock()->getContainer()[_compositeKey];
 
     // Modify composite
-    m_composite.lock()->getContainer().erase( _compositeKey );
+    m_composite.lock()->getContainer().erase(_compositeKey);
 
     m_removedObjects[_compositeKey] = objBackup;
-
 }
 
 //-----------------------------------------------------------------------------
@@ -88,11 +91,14 @@ void Composite::clear()
 {
     data::Composite::sptr composite = m_composite.lock();
     std::vector<std::string> vectKey;
-    std::transform( composite->begin(), composite->end(),
-                    std::back_inserter(vectKey),
-                    std::bind(&sight::data::Composite::value_type::first, std::placeholders::_1) );
+    std::transform(
+        composite->begin(),
+        composite->end(),
+        std::back_inserter(vectKey),
+        std::bind(&sight::data::Composite::value_type::first, std::placeholders::_1)
+    );
 
-    for(std::string key :  vectKey)
+    for(std::string key : vectKey)
     {
         this->remove(key);
     }
@@ -100,19 +106,21 @@ void Composite::clear()
 
 //-----------------------------------------------------------------------------
 
-void Composite::swap( std::string _compositeKey, data::Object::sptr _newObject )
+void Composite::swap(std::string _compositeKey, data::Object::sptr _newObject)
 {
-    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                    "object to be swapped.",
-                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SIGHT_FATAL_IF(
+        "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                                                 "object to be swapped.",
+        m_composite.lock()->find(_compositeKey) == m_composite.lock()->end()
+    );
 
     // Get old object
-    data::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
+    data::Object::sptr objBackup = m_composite.lock()->getContainer()[_compositeKey];
 
-    if( objBackup != _newObject )
+    if(objBackup != _newObject)
     {
         // Modify composite
-        m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
+        m_composite.lock()->getContainer()[_compositeKey] = _newObject;
 
         m_newChangedObjects[_compositeKey] = _newObject;
         m_oldChangedObjects[_compositeKey] = objBackup;
@@ -120,8 +128,9 @@ void Composite::swap( std::string _compositeKey, data::Object::sptr _newObject )
     else
     {
         SIGHT_INFO(
-            "Cannot swap this object ( "<< _compositeKey <<
-                " ) in composite because it is the same object. Do nothing (not notification)");
+            "Cannot swap this object ( " << _compositeKey
+            << " ) in composite because it is the same object. Do nothing (not notification)"
+        );
     }
 }
 
@@ -129,29 +138,37 @@ void Composite::swap( std::string _compositeKey, data::Object::sptr _newObject )
 
 void Composite::notify()
 {
-    if ( !m_removedObjects.empty() )
+    if(!m_removedObjects.empty())
     {
-        auto sig = m_composite.lock()->signal< data::Composite::RemovedObjectsSignalType >(
-            data::Composite::s_REMOVED_OBJECTS_SIG);
+        auto sig = m_composite.lock()->signal<data::Composite::RemovedObjectsSignalType>(
+            data::Composite::s_REMOVED_OBJECTS_SIG
+        );
 
         sig->asyncEmit(m_removedObjects);
     }
-    if ( !m_newChangedObjects.empty() && !m_oldChangedObjects.empty() )
+
+    if(!m_newChangedObjects.empty() && !m_oldChangedObjects.empty())
     {
-        auto sig = m_composite.lock()->signal< data::Composite::ChangedObjectsSignalType >(
-            data::Composite::s_CHANGED_OBJECTS_SIG);
+        auto sig = m_composite.lock()->signal<data::Composite::ChangedObjectsSignalType>(
+            data::Composite::s_CHANGED_OBJECTS_SIG
+        );
 
         sig->asyncEmit(m_newChangedObjects, m_oldChangedObjects);
     }
-    if ( !m_addedObjects.empty() )
+
+    if(!m_addedObjects.empty())
     {
-        auto sig = m_composite.lock()->signal< data::Composite::AddedObjectsSignalType >(
-            data::Composite::s_ADDED_OBJECTS_SIG);
+        auto sig = m_composite.lock()->signal<data::Composite::AddedObjectsSignalType>(
+            data::Composite::s_ADDED_OBJECTS_SIG
+        );
 
         sig->asyncEmit(m_addedObjects);
     }
-    SIGHT_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
-                  m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
+
+    SIGHT_INFO_IF(
+        "No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
+        m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty()
+    );
 
     m_removedObjects.clear();
     m_newChangedObjects.clear();
@@ -162,4 +179,5 @@ void Composite::notify()
 //-----------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::data

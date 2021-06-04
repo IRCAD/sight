@@ -31,7 +31,7 @@ namespace sight::service
 
 SConfigController::SConfigController() noexcept
 {
-    m_configLauncher = std::make_unique< service::helper::ConfigLauncher>();
+    m_configLauncher = std::make_unique<service::helper::ConfigLauncher>();
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ void SConfigController::updating()
 
 //------------------------------------------------------------------------------
 
-void SConfigController::info( std::ostream& )
+void SConfigController::info(std::ostream&)
 {
 }
 

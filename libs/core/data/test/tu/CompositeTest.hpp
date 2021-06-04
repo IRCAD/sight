@@ -26,18 +26,21 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class CompositeTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( CompositeTest );
-    CPPUNIT_TEST( methode1 );
-    CPPUNIT_TEST( setGetContainerTest );
+
+    CPPUNIT_TEST_SUITE(CompositeTest);
+    CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST(setGetContainerTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -45,5 +48,7 @@ public:
     void methode1();
     void setGetContainerTest();
 };
+
 } //namespace ut
+
 } //namespace sight::data

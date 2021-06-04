@@ -57,7 +57,7 @@ class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public ::sight::ui::base::
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STimestampSlotCaller, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(STimestampSlotCaller, ::sight::ui::base::IAction);
 
     /// Constructor
     MODULE_UI_BASE_API STimestampSlotCaller();

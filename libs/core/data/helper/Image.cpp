@@ -26,29 +26,32 @@
 #include "data/fieldHelper/MedicalImageHelpers.hpp"
 #include "data/helper/Composite.hpp"
 #include "data/helper/Field.hpp"
+#include <data/Composite.hpp>
+#include <data/PointList.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <data/Composite.hpp>
-#include <data/PointList.hpp>
-#include <data/TransferFunction.hpp>
-
 namespace sight::data
 {
+
 namespace helper
 {
 
 //-----------------------------------------------------------------------------
 
-Image::Image( data::Image::sptr image ) :
+Image::Image(data::Image::sptr image) :
     m_image(image),
     m_sliceModified(false)
 {
-    FW_DEPRECATED_MSG("::data::helper::Image is no longer supported, the methods have been moved to "
-                      "::sight::data::Image", "22.0")
-    if ( image )
+    FW_DEPRECATED_MSG(
+        "::data::helper::Image is no longer supported, the methods have been moved to "
+        "::sight::data::Image",
+        "22.0"
+    )
+    if(image)
     {
         m_lock = image->getDataArray()->getBufferObject()->lock();
     }
@@ -67,10 +70,10 @@ bool Image::createLandmarks()
     bool fieldIsCreated = false;
 
     // Manage image landmarks
-    if ( !m_image->getField( data::fieldHelper::Image::m_imageLandmarksId ) )
+    if(!m_image->getField(data::fieldHelper::Image::m_imageLandmarksId))
     {
         data::PointList::sptr pl = data::PointList::New();
-        m_image->setField( data::fieldHelper::Image::m_imageLandmarksId, pl );
+        m_image->setField(data::fieldHelper::Image::m_imageLandmarksId, pl);
         fieldIsCreated = true;
     }
 
@@ -85,9 +88,9 @@ bool Image::createTransferFunctionPool()
     const std::string poolFieldName = data::fieldHelper::Image::m_transferFunctionCompositeId;
     data::Composite::sptr tfPool;
 
-    tfPool = m_image->getField< data::Composite >(poolFieldName);
+    tfPool = m_image->getField<data::Composite>(poolFieldName);
     // Transfer functions
-    if ( !tfPool )
+    if(!tfPool)
     {
         tfPool = data::Composite::New();
 
@@ -104,10 +107,10 @@ bool Image::createTransferFunctionPool()
     if(tfPool->find(defaultTFName) == tfPool->end())
     {
         data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
-        if (m_image->getWindowWidth() != 0 )
+        if(m_image->getWindowWidth() != 0)
         {
-            tf->setWindow( m_image->getWindowWidth() );
-            tf->setLevel( m_image->getWindowCenter() );
+            tf->setWindow(m_image->getWindowWidth());
+            tf->setLevel(m_image->getWindowCenter());
         }
         else if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(m_image))
         {
@@ -116,6 +119,7 @@ bool Image::createTransferFunctionPool()
             data::TransferFunction::TFValuePairType wlMinMax(min, max);
             tf->setWLMinMax(wlMinMax);
         }
+
         // Set in TFPool
         data::helper::Composite compositeHelper(tfPool);
         compositeHelper.add(defaultTFName, tf);
@@ -133,25 +137,28 @@ bool Image::createImageSliceIndex()
 
     const data::Image::SizeType& imageSize = m_image->getSize();
 
-    data::Integer::sptr axialIdx = m_image->getField< data::Integer >(
-        data::fieldHelper::Image::m_axialSliceIndexId );
-    data::Integer::sptr frontalIdx = m_image->getField< data::Integer >(
-        data::fieldHelper::Image::m_frontalSliceIndexId);
-    data::Integer::sptr sagittalIdx = m_image->getField< data::Integer >(
-        data::fieldHelper::Image::m_sagittalSliceIndexId );
+    data::Integer::sptr axialIdx = m_image->getField<data::Integer>(
+        data::fieldHelper::Image::m_axialSliceIndexId
+    );
+    data::Integer::sptr frontalIdx = m_image->getField<data::Integer>(
+        data::fieldHelper::Image::m_frontalSliceIndexId
+    );
+    data::Integer::sptr sagittalIdx = m_image->getField<data::Integer>(
+        data::fieldHelper::Image::m_sagittalSliceIndexId
+    );
 
     // Manage image slice index
-    if ( !(axialIdx && frontalIdx && sagittalIdx) )
+    if(!(axialIdx && frontalIdx && sagittalIdx))
     {
         // Set value
         axialIdx = data::Integer::New(-1);
-        m_image->setField( data::fieldHelper::Image::m_axialSliceIndexId, axialIdx );
+        m_image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIdx);
 
         frontalIdx = data::Integer::New(-1);
-        m_image->setField( data::fieldHelper::Image::m_frontalSliceIndexId, frontalIdx );
+        m_image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIdx);
 
         sagittalIdx = data::Integer::New(-1);
-        m_image->setField( data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIdx );
+        m_image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIdx);
 
         fieldIsCreated = true;
     }
@@ -160,24 +167,24 @@ bool Image::createImageSliceIndex()
         "Information on image slice index is not correct, miss one of these fields : "
         "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx
-        );
+    );
 
     // Get value
-    if( axialIdx->value() < 0 || static_cast< int>(imageSize[2]) < axialIdx->value() )
+    if(axialIdx->value() < 0 || static_cast<int>(imageSize[2]) < axialIdx->value())
     {
-        axialIdx->value() = static_cast< data::Integer::ValueType >(imageSize[2] / 2);
+        axialIdx->value() = static_cast<data::Integer::ValueType>(imageSize[2] / 2);
         fieldIsCreated    = true;
     }
 
-    if( frontalIdx->value() < 0 || static_cast< int>(imageSize[1]) < frontalIdx->value() )
+    if(frontalIdx->value() < 0 || static_cast<int>(imageSize[1]) < frontalIdx->value())
     {
-        frontalIdx->value() = static_cast< data::Integer::ValueType >(imageSize[1] / 2);
+        frontalIdx->value() = static_cast<data::Integer::ValueType>(imageSize[1] / 2);
         fieldIsCreated      = true;
     }
 
-    if( sagittalIdx->value() < 0 || static_cast< int>(imageSize[0]) < sagittalIdx->value() )
+    if(sagittalIdx->value() < 0 || static_cast<int>(imageSize[0]) < sagittalIdx->value())
     {
-        sagittalIdx->value() = static_cast< data::Integer::ValueType >(imageSize[0] / 2);
+        sagittalIdx->value() = static_cast<data::Integer::ValueType>(imageSize[0] / 2);
         fieldIsCreated       = true;
     }
 
@@ -191,18 +198,22 @@ void Image::notify()
 {
     if(m_sliceModified)
     {
-        auto axialIdx = m_image->getField< data::Integer >(
-            data::fieldHelper::Image::m_axialSliceIndexId );
-        auto frontalIdx = m_image->getField< data::Integer >(
-            data::fieldHelper::Image::m_frontalSliceIndexId);
-        auto sagittalIdx = m_image->getField< data::Integer >(
-            data::fieldHelper::Image::m_sagittalSliceIndexId );
-        auto sig = m_image->signal< data::Image::SliceIndexModifiedSignalType >(
-            data::Image::s_SLICE_INDEX_MODIFIED_SIG);
-        sig->asyncEmit((int)axialIdx->getValue(), (int)frontalIdx->getValue(), (int)sagittalIdx->getValue());
+        auto axialIdx = m_image->getField<data::Integer>(
+            data::fieldHelper::Image::m_axialSliceIndexId
+        );
+        auto frontalIdx = m_image->getField<data::Integer>(
+            data::fieldHelper::Image::m_frontalSliceIndexId
+        );
+        auto sagittalIdx = m_image->getField<data::Integer>(
+            data::fieldHelper::Image::m_sagittalSliceIndexId
+        );
+        auto sig = m_image->signal<data::Image::SliceIndexModifiedSignalType>(
+            data::Image::s_SLICE_INDEX_MODIFIED_SIG
+        );
+        sig->asyncEmit((int) axialIdx->getValue(), (int) frontalIdx->getValue(), (int) sagittalIdx->getValue());
     }
 
-    auto sig = m_image->signal< data::Image::ModifiedSignalType >( data::Image::s_MODIFIED_SIG);
+    auto sig = m_image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -215,38 +226,40 @@ void* Image::getBuffer()
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z )
+void* Image::getPixelBuffer(SizeType::value_type x, SizeType::value_type y, SizeType::value_type z)
 {
     SizeType size    = m_image->getSize();
-    IndexType offset = x + size[0]*y + z*size[0]*size[1];
+    IndexType offset = x + size[0] * y + z * size[0] * size[1];
     return this->getPixelBuffer(offset);
 }
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer( IndexType index )
+void* Image::getPixelBuffer(IndexType index)
 {
-    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * (std::uint8_t)m_image->getNumberOfComponents();
-    BufferType* buf             = static_cast < BufferType* > (this->getBuffer());
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * (std::uint8_t) m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
     BufferIndexType bufIndex    = index * imagePixelSize;
     return buf + bufIndex;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
+void Image::setPixelBuffer(IndexType index, Image::BufferType* pixBuf)
 {
-    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * (std::uint8_t)m_image->getNumberOfComponents();
-    BufferType* buf             = static_cast < BufferType* > (this->getPixelBuffer(index));
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * (std::uint8_t) m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast<BufferType*>(this->getPixelBuffer(index));
 
-    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+    std::copy(pixBuf, pixBuf + imagePixelSize, buf);
 }
 
 //------------------------------------------------------------------------------
 
-const std::string Image::getPixelAsString(SizeType::value_type x,
-                                          SizeType::value_type y,
-                                          SizeType::value_type z )
+const std::string Image::getPixelAsString(
+    SizeType::value_type x,
+    SizeType::value_type y,
+    SizeType::value_type z
+)
 {
     return m_image->getType().toString(this->getPixelBuffer(x, y, z));
 }
@@ -261,4 +274,5 @@ core::memory::BufferObject::Lock Image::getLock() const
 //------------------------------------------------------------------------------
 
 } // helper
+
 } // fwDataTools

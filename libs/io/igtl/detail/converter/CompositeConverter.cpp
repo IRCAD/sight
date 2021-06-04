@@ -31,6 +31,7 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
 
@@ -68,17 +69,19 @@ CompositeConverter::~CompositeConverter()
             trackElement->SetType(::igtl::TrackingDataElement::TYPE_TRACKER);
 
             ::igtl::Matrix4x4 matrix;
-            for (size_t i = 0; i < 4; ++i)
+            for(size_t i = 0 ; i < 4 ; ++i)
             {
-                for (size_t j = 0; j < 4; ++j)
+                for(size_t j = 0 ; j < 4 ; ++j)
                 {
                     matrix[i][j] = transfoMatrix->getCoefficient(i, j);
                 }
             }
+
             trackElement->SetMatrix(matrix);
             trackingMsg->AddTrackingDataElement(trackElement);
         }
     }
+
     return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
 }
 
@@ -87,13 +90,13 @@ CompositeConverter::~CompositeConverter()
 data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
-    trackingMsg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage* >(src.GetPointer()));
+    trackingMsg = ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(src.GetPointer()));
     const int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
 
     SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nbTrckingElement < 0);
 
     data::Composite::sptr composite = data::Composite::New();
-    for(int i = 0; i < nbTrckingElement; ++i)
+    for(int i = 0 ; i < nbTrckingElement ; ++i)
     {
         ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
         trackingMsg->GetTrackingDataElement(i, trackElement);
@@ -104,14 +107,15 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
         ::igtl::Matrix4x4 matrix;
         trackElement->GetMatrix(matrix);
-        for (int i = 0; i < 4; ++i)
+        for(int i = 0 ; i < 4 ; ++i)
         {
-            for (int j = 0; j < 4; ++j)
+            for(int j = 0 ; j < 4 ; ++j)
             {
                 transfoMatrix->setCoefficient(i, j, matrix[i][j]);
             }
         }
     }
+
     return composite;
 }
 
@@ -119,7 +123,7 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
 IConverter::sptr CompositeConverter::New()
 {
-    return std::make_shared< CompositeConverter >();
+    return std::make_shared<CompositeConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -137,4 +141,5 @@ std::string const& CompositeConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

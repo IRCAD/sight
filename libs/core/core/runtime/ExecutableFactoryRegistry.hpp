@@ -43,15 +43,13 @@ class ExecutableFactory;
  */
 struct CORE_CLASS_API ExecutableFactoryRegistry
 {
-
     /**
      * @brief       Constructor
      *
      * @param[in]   factory a shared pointer to an executable factory instance to manage
      * @pre         Loading module exists.
      */
-    CORE_API ExecutableFactoryRegistry( std::shared_ptr< ExecutableFactory > factory );
-
+    CORE_API ExecutableFactoryRegistry(std::shared_ptr<ExecutableFactory> factory);
 };
 
 } // namespace sight::core::runtime

@@ -27,10 +27,11 @@
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::memory::ut::ByteSizeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::memory::ut::ByteSizeTest);
 
 namespace sight::core::memory
 {
+
 namespace ut
 {
 
@@ -185,4 +186,5 @@ void ByteSizeTest::byteSizeTest()
 }
 
 } // namespace ut
+
 } // namespace sight::core::memory

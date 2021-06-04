@@ -39,10 +39,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V10
 {
+
 namespace V09ALA
 {
+
 namespace data
 {
 
@@ -62,7 +65,7 @@ Image::~Image()
 
 // ----------------------------------------------------------------------------
 
-Image::Image( const Image& cpy ) :
+Image::Image(const Image& cpy) :
     io::atoms::patch::ISemanticPatch(cpy)
 {
 }
@@ -72,23 +75,24 @@ Image::Image( const Image& cpy ) :
 void Image::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     ISemanticPatch::apply(previous, current, newVersions);
-    io::atoms::patch::helper::cleanFields( current );
-    io::atoms::patch::helper::Object helper( current );
+    io::atoms::patch::helper::cleanFields(current);
+    io::atoms::patch::helper::Object helper(current);
 
     sight::atoms::Map::csptr previousFieldMap = sight::atoms::Map::dynamicCast(previous->getAttribute("fields"));
     SIGHT_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_landmarksId");
-    if (iter != previousFieldMap->end())
+    if(iter != previousFieldMap->end())
     {
         // create new Landmarks structure
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
-        sight::atoms::Object::sptr currentPL = creators->create( "::sight::data::PointList", "1");
-        io::atoms::patch::helper::Object helperPL( currentPL );
+        sight::atoms::Object::sptr currentPL = creators->create("::sight::data::PointList", "1");
+        io::atoms::patch::helper::Object helperPL(currentPL);
 
         sight::atoms::Map::sptr currentFieldMap = sight::atoms::Map::dynamicCast(current->getAttribute("fields"));
         currentFieldMap->insert("m_imageLandmarksId", currentPL);
@@ -101,14 +105,17 @@ void Image::apply(
         sight::atoms::Map::sptr previousLandmarksMap =
             sight::atoms::Map::dynamicCast(previousLandmarks->getAttribute("landmarks"));
 
-        for (const auto& elt : previousLandmarksMap->getValue())
+        for(const auto& elt : previousLandmarksMap->getValue())
         {
             sight::atoms::Object::csptr atomGroup = sight::atoms::Object::dynamicCast(elt.second);
-            sight::atoms::Sequence::csptr points  = sight::atoms::Sequence::dynamicCast(atomGroup->getAttribute(
-                                                                                            "points"));
+            sight::atoms::Sequence::csptr points  = sight::atoms::Sequence::dynamicCast(
+                atomGroup->getAttribute(
+                    "points"
+                )
+            );
 
             size_t count = 0;
-            for (const auto& ptObj : points->getValue())
+            for(const auto& ptObj : points->getValue())
             {
                 sight::atoms::String::csptr previousPt = sight::atoms::String::dynamicCast(ptObj);
                 std::vector<std::string> res;
@@ -122,7 +129,7 @@ void Image::apply(
 
                 plSeq->push_back(point);
 
-                io::atoms::patch::helper::Object helperPt( point );
+                io::atoms::patch::helper::Object helperPt(point);
                 sight::atoms::Sequence::sptr pointCoord = sight::atoms::Sequence::New();
                 helperPt.addAttribute("coord", pointCoord);
                 pointCoord->push_back(sight::atoms::Numeric::New(std::stod(res[0])));
@@ -145,6 +152,9 @@ void Image::apply(
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace V09ALA
+
 } // namespace V10
+
 } // namespace sight::io::patch::semantic

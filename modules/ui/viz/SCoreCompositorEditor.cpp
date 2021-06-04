@@ -22,12 +22,14 @@
 
 #include "SCoreCompositorEditor.hpp"
 
+#include <viz/scene3d/SRender.hpp>
+
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/scene3d/SRender.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -45,11 +47,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +70,8 @@ void SCoreCompositorEditor::starting()
     this->create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -102,7 +102,7 @@ void SCoreCompositorEditor::starting()
 
         m_transparencyButtonGroup = new QButtonGroup(groupBox);
 
-        m_buttonDefault = new QRadioButton( tr("Default"), groupBox );
+        m_buttonDefault = new QRadioButton(tr("Default"), groupBox);
         m_buttonDefault->setMinimumSize(m_buttonDefault->sizeHint());
         m_buttonDefault->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDefault, 0);
@@ -111,7 +111,7 @@ void SCoreCompositorEditor::starting()
         m_labelDefault->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDefault);
 
-        m_buttonDepthPeeling = new QRadioButton( tr("Depth Peeling"), groupBox );
+        m_buttonDepthPeeling = new QRadioButton(tr("Depth Peeling"), groupBox);
         m_buttonDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDepthPeeling, 1);
@@ -121,7 +121,7 @@ void SCoreCompositorEditor::starting()
         layoutGroupBox->addWidget(m_labelDepthPeeling);
 
         m_buttonDualDepthPeeling =
-            new QRadioButton( tr("Dual Depth Peeling"), groupBox );
+            new QRadioButton(tr("Dual Depth Peeling"), groupBox);
         m_buttonDualDepthPeeling->setMinimumSize(m_buttonDualDepthPeeling->sizeHint());
         m_buttonDualDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDualDepthPeeling, 2);
@@ -131,7 +131,7 @@ void SCoreCompositorEditor::starting()
         layoutGroupBox->addWidget(m_labelDualDepthPeeling);
 
         m_buttonWeightedBlendedOIT =
-            new QRadioButton( tr("Weighted Blended OIT"), groupBox );
+            new QRadioButton(tr("Weighted Blended OIT"), groupBox);
         m_buttonWeightedBlendedOIT->setMinimumSize(m_buttonWeightedBlendedOIT->sizeHint());
         m_buttonWeightedBlendedOIT->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonWeightedBlendedOIT, 3);
@@ -141,7 +141,7 @@ void SCoreCompositorEditor::starting()
         layoutGroupBox->addWidget(m_labelWeightedBlendedOIT);
 
         m_buttonHybridTransparency =
-            new QRadioButton( tr("Hybrid transparency"), groupBox );
+            new QRadioButton(tr("Hybrid transparency"), groupBox);
         m_buttonHybridTransparency->setMinimumSize(m_buttonHybridTransparency->sizeHint());
         m_buttonHybridTransparency->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonHybridTransparency, 4);
@@ -151,23 +151,26 @@ void SCoreCompositorEditor::starting()
         m_labelHybridTransparency->setEnabled(false);
         layoutGroupBox->addWidget(m_labelHybridTransparency);
 
-        m_buttonCelShadingDepthPeeling = new QRadioButton( tr("CelShading + Depth Peeling"), groupBox );
+        m_buttonCelShadingDepthPeeling = new QRadioButton(tr("CelShading + Depth Peeling"), groupBox);
         m_buttonCelShadingDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonCelShadingDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonCelShadingDepthPeeling, 5);
         layoutGroupBox->addWidget(m_buttonCelShadingDepthPeeling);
-        m_labelCelShadingDepthPeeling = new QLabel(tr(
-                                                       "<i>Depth peeling with an edge detection per layer.</i>"));
+        m_labelCelShadingDepthPeeling = new QLabel(
+            tr(
+                "<i>Depth peeling with an edge detection per layer.</i>"
+            )
+        );
         m_labelCelShadingDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelCelShadingDepthPeeling);
     }
 
-    qtContainer->setLayout( layout );
+    qtContainer->setLayout(layout);
 
     this->refreshRenderers();
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::connect( m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditTransparencyDepth(int)) );
+    QObject::connect(m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditTransparencyDepth(int)));
     QObject::connect(m_transparencyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onEditTransparency(int)));
 }
 
@@ -253,27 +256,33 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     auto layer = m_currentLayer.lock();
     if(layer)
     {
-        switch (layer->getTransparencyTechnique())
+        switch(layer->getTransparencyTechnique())
         {
             case DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
                 break;
+
             case DEPTHPEELING:
                 m_transparencyButtonGroup->button(1)->setChecked(true);
                 break;
+
             case DUALDEPTHPEELING:
                 m_transparencyButtonGroup->button(2)->setChecked(true);
                 break;
+
             case WEIGHTEDBLENDEDOIT:
                 m_transparencyButtonGroup->button(3)->setChecked(true);
                 break;
+
             case HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
+
             case CELSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
+
         m_transparencyDepthSlider->setValue(layer->getTransparencyDepth());
     }
 }
@@ -299,23 +308,28 @@ void SCoreCompositorEditor::onEditTransparency(int index)
     if(layer)
     {
         bool transparencyUpdated = false;
-        switch (index)
+        switch(index)
         {
             case 0:
                 transparencyUpdated = layer->setTransparencyTechnique(DEFAULT);
                 break;
+
             case 1:
                 transparencyUpdated = layer->setTransparencyTechnique(DEPTHPEELING);
                 break;
+
             case 2:
                 transparencyUpdated = layer->setTransparencyTechnique(DUALDEPTHPEELING);
                 break;
+
             case 3:
                 transparencyUpdated = layer->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
                 break;
+
             case 4:
                 transparencyUpdated = layer->setTransparencyTechnique(HYBRIDTRANSPARENCY);
                 break;
+
             case 5:
                 transparencyUpdated = layer->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
                 break;

@@ -29,7 +29,6 @@
 namespace sight::module::ui::base
 {
 
-
 SView::SView() noexcept
 {
 }
@@ -63,7 +62,7 @@ void SView::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SView::info(std::ostream& _sstream )
+void SView::info(std::ostream& _sstream)
 {
 }
 

@@ -32,21 +32,22 @@
 
 namespace sight::core::memory
 {
+
 namespace stream
 {
+
 namespace in
 {
 
 struct FilteringStream : ::boost::iostreams::filtering_istream
 {
-
     ~FilteringStream()
     {
         try
         {
             this->reset();
         }
-        catch (...)
+        catch(...)
         {
         }
     }
@@ -56,10 +57,10 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
 
 SPTR(std::istream) RawZ::get()
 {
-    SPTR(std::ifstream) fs
-        = std::make_shared< std::ifstream>(m_path, std::ios::in|std::ios::binary);
+    SPTR(std::ifstream) fs =
+        std::make_shared<std::ifstream>(m_path, std::ios::in | std::ios::binary);
 
-    SPTR(FilteringStream) filter = std::make_shared< FilteringStream >();
+    SPTR(FilteringStream) filter = std::make_shared<FilteringStream>();
 
     filter->heldStream = fs;
 
@@ -70,5 +71,7 @@ SPTR(std::istream) RawZ::get()
 }
 
 } // namespace in
+
 } // namespace stream
+
 } // namespace sight::core::memory

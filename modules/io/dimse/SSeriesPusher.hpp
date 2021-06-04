@@ -36,7 +36,9 @@
 
 namespace sight::data
 {
+
 class Series;
+
 }
 
 namespace sight::module::io::dimse
@@ -66,19 +68,19 @@ class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPusher,  service::IController )
+    SIGHT_DECLARE_SERVICE(SSeriesPusher, service::IController);
 
-    typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
+    typedef std::vector<CSPTR(data::Series)> DicomSeriesContainerType;
 
     MODULE_IO_DIMSE_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
     typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
 
     /// Signal to start the progress (bar id)
-    typedef core::com::Signal< void ( std::string ) > StartedProgressSignalType;
+    typedef core::com::Signal<void (std::string)> StartedProgressSignalType;
     /// Signal to update the progress (bar id, percentage, message)
-    typedef core::com::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
+    typedef core::com::Signal<void (std::string, float, std::string)> ProgressedSignalType;
     /// Signal to stop the progress (bar id)
-    typedef core::com::Signal< void ( std::string ) > StoppedProgressSignalType;
+    typedef core::com::Signal<void (std::string)> StoppedProgressSignalType;
 
     /// Key in m_signals map of signal m_sigProgressed
     static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG;
@@ -136,8 +138,11 @@ protected:
      * @param[in] instanceNumber Instance number
      * @param[in] filePath File path
      */
-    MODULE_IO_DIMSE_API void progressCallback(const std::string& seriesInstanceUID, unsigned int instanceNumber,
-                                              const std::string& filePath);
+    MODULE_IO_DIMSE_API void progressCallback(
+        const std::string& seriesInstanceUID,
+        unsigned int instanceNumber,
+        const std::string& filePath
+    );
 
     /// Slot to call displayMessage method;
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
@@ -171,7 +176,6 @@ protected:
 
     /// Total number of instances that must be uploaded
     long unsigned int m_instanceCount;
-
 };
 
 } // namespace sight::module::io::dimse

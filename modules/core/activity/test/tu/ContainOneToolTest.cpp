@@ -31,10 +31,11 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::activity::validator::ut::ContainOneToolTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::activity::validator::ut::ContainOneToolTest);
 
 namespace sight::module::activity::validator
 {
+
 namespace ut
 {
 
@@ -86,47 +87,68 @@ void ContainOneToolTest::testValidator()
         vecReconst.push_back(rec1);
         modelSeries->setReconstructionDB(vecReconst);
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with one non-Tool reconstruction should NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with one non-Tool reconstruction should NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec1->setStructureType("Tool");
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with one Tool reconstruction should be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with one Tool reconstruction should be valid",
+            true,
+            validation.first
+        );
     }
     {
         vecReconst.push_back(rec2);
         modelSeries->setReconstructionDB(vecReconst);
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with two reconstructions (only one Tool) should be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with two reconstructions (only one Tool) should be valid",
+            true,
+            validation.first
+        );
     }
     {
         vecReconst.push_back(rec3);
         modelSeries->setReconstructionDB(vecReconst);
         validation = objValidator->validate(modelSeries);
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with three reconstructions (only one Tool) should be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with three reconstructions (only one Tool) should be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec2->setStructureType("Tool");
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with three reconstructions (two Tool) should NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with three reconstructions (two Tool) should NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec1->setStructureType("Bones");
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with three reconstructions (only one Tool) should be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with three reconstructions (only one Tool) should be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec2->setStructureType("Tumor");
         validation = objValidator->validate(modelSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("ModelSeries with three reconstructions (no Tool) should NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "ModelSeries with three reconstructions (no Tool) should NOT be valid",
+            false,
+            validation.first
+        );
     }
 }
 
@@ -175,59 +197,88 @@ void ContainOneToolTest::testValidatorWithVector()
     {
         vector->getContainer().push_back(modelSeries1);
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with one ModelSeries (without Tool) shoud NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with one ModelSeries (without Tool) shoud NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec11->setStructureType("Tool");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with one ModelSeries (with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with one ModelSeries (with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec12->setStructureType("Tool");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with one ModelSeries (with two Tool) shoud be NOT valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with one ModelSeries (with two Tool) shoud be NOT valid",
+            false,
+            validation.first
+        );
     }
     {
         rec12->setStructureType("Bones");
         vector->getContainer().push_back(modelSeries2);
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with two ModelSeries (one without Tool) shoud be NOT valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with two ModelSeries (one without Tool) shoud be NOT valid",
+            false,
+            validation.first
+        );
     }
     {
         rec21->setStructureType("Tool");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with two ModelSeries (each with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with two ModelSeries (each with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec22->setStructureType("Tool");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with two ModelSeries (one with one Tool and one with two skin) shoud NOT "
-                                     "be valid", false,
-                                     validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with two ModelSeries (one with one Tool and one with two skin) shoud NOT "
+            "be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec22->setStructureType("Bone");
         vector->getContainer().push_back(modelSeries3);
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with three ModelSeries (two with one Tool and one without skin) shoud NOT "
-                                     "be valid", false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with three ModelSeries (two with one Tool and one without skin) shoud NOT "
+            "be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec32->setStructureType("Tool");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with three ModelSeries (each with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with three ModelSeries (each with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec21->setStructureType("Tumor");
         validation = objValidator->validate(vector);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with three ModelSeries (two with one Tool and one without skin) shoud NOT "
-                                     "be valid", false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with three ModelSeries (two with one Tool and one without skin) shoud NOT "
+            "be valid",
+            false,
+            validation.first
+        );
     }
 }
 
@@ -276,62 +327,93 @@ void ContainOneToolTest::testValidatorWithComposite()
     {
         (*composite)["model1"] = modelSeries1;
         validation             = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Vector with one ModelSeries (without Tool) shoud NOT be valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Vector with one ModelSeries (without Tool) shoud NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec11->setStructureType("Tool");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with one ModelSeries (with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with one ModelSeries (with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec12->setStructureType("Tool");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with one ModelSeries (with two Tool) shoud be NOT valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with one ModelSeries (with two Tool) shoud be NOT valid",
+            false,
+            validation.first
+        );
     }
     {
         rec12->setStructureType("Bones");
         (*composite)["model2"] = modelSeries2;
         validation             = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with two ModelSeries (one without Tool) shoud be NOT valid",
-                                     false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with two ModelSeries (one without Tool) shoud be NOT valid",
+            false,
+            validation.first
+        );
     }
     {
         rec21->setStructureType("Tool");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with two ModelSeries (each with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with two ModelSeries (each with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec22->setStructureType("Tool");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with two ModelSeries (one with one Tool and one with two skin) shoud "
-                                     " NOT be valid", false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with two ModelSeries (one with one Tool and one with two skin) shoud "
+            " NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec22->setStructureType("Bone");
         (*composite)["model3"] = modelSeries3;
         validation             = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with three ModelSeries (two with one Tool and one without skin) shoud "
-                                     "NOT be valid", false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with three ModelSeries (two with one Tool and one without skin) shoud "
+            "NOT be valid",
+            false,
+            validation.first
+        );
     }
     {
         rec32->setStructureType("Tool");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with three ModelSeries (each with one Tool) shoud be valid",
-                                     true, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with three ModelSeries (each with one Tool) shoud be valid",
+            true,
+            validation.first
+        );
     }
     {
         rec21->setStructureType("Tumor");
         validation = objValidator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Composite with three ModelSeries (two with one Tool and one without skin) shoud "
-                                     "NOT be valid", false, validation.first);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
+            "Composite with three ModelSeries (two with one Tool and one without skin) shoud "
+            "NOT be valid",
+            false,
+            validation.first
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-}     //namespace ut
+} //namespace ut
+
 } //namespace sight::module::activity::validator

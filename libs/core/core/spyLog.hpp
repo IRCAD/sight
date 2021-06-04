@@ -85,16 +85,16 @@
 // -----------------------------------------------------------------------------
 
 # ifndef __FWCORE_EXPR_BLOCK
-#  define __FWCORE_EXPR_BLOCK(expr) do { expr } while (0)
+#  define __FWCORE_EXPR_BLOCK(expr) do{expr}while(0)
 # endif
 
-# define __FWCORE_IF(cond, code) if ( cond ) { code }
+# define __FWCORE_IF(cond, code) if(cond){code}
 
-# define SL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK(   \
-        std::stringstream oslStr;                              \
-        oslStr << message;                                     \
-        log.loglevel(oslStr.str(), __FILE__, __LINE__);      \
-        )
+# define SL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK( \
+        std::stringstream oslStr; \
+        oslStr << message; \
+        log.loglevel(oslStr.str(), __FILE__, __LINE__); \
+)
 
 // -----------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@
 #define SL_ERROR(log, message) SL_LOG(log, error, message);
 #define SL_ERROR_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, error, message); )
 
-#define SL_FATAL(log, message) SL_LOG(log, fatal, message);   \
+#define SL_FATAL(log, message) SL_LOG(log, fatal, message); \
     SPYLOG_ABORT();
 #define SL_FATAL_IF(log, message, cond) __FWCORE_IF(cond, SL_FATAL(log, message); )
 
@@ -121,39 +121,45 @@
 
 # ifdef _DEBUG
 #  ifdef WIN32
-#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(                                          \
-        __FWCORE_IF(!(cond),                                                                            \
-                    std::stringstream oslStr1;                                                          \
-                    oslStr1 << "Assertion '" <<                                                         \
-                    #cond << "' failed.\n" << message;                                                  \
-                    log.fatal(oslStr1.str(), __FILE__, __LINE__);                                       \
-                    _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", oslStr1.str().c_str());  \
-                    __debugbreak();                                                                     \
-                    ))
+#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
+        __FWCORE_IF( \
+            !(cond), \
+            std::stringstream oslStr1; \
+            oslStr1 << "Assertion '" \
+            <<#cond << "' failed.\n" << message; \
+            log.fatal(oslStr1.str(), __FILE__, __LINE__); \
+            _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", oslStr1.str().c_str()); \
+            __debugbreak(); \
+        ) \
+)
 #  else
-#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(          \
-        __FWCORE_IF(!(cond),                                            \
-                    std::stringstream oslStr1;                          \
-                    oslStr1 << "Assertion '" <<                         \
-                    #cond << "' failed: " << message;                   \
-                    log.fatal(oslStr1.str(), __FILE__, __LINE__);       \
-                    SPYLOG_ABORT();                                     \
-                    ))
+#  define __SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
+        __FWCORE_IF( \
+            !(cond), \
+            std::stringstream oslStr1; \
+            oslStr1 << "Assertion '" \
+            <<#cond << "' failed: " << message; \
+            log.fatal(oslStr1.str(), __FILE__, __LINE__); \
+            SPYLOG_ABORT(); \
+        ) \
+)
 #  endif
 
-#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(   \
-        __FWCORE_IF(!(cond),                                   \
-                    std::stringstream oslStr;                  \
-                    oslStr << message;                         \
-                    __SL_ASSERT(log, oslStr.str(), cond);      \
-                    ))
+#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK( \
+        __FWCORE_IF( \
+            !(cond), \
+            std::stringstream oslStr; \
+            oslStr << message; \
+            __SL_ASSERT(log, oslStr.str(), cond); \
+        ) \
+)
 # else
 #  define SL_ASSERT(log, message, cond) // empty
 # endif
 
 // -----------------------------------------------------------------------------
 
-#  define _SPYLOG_SPYLOGGER_            \
+#  define _SPYLOG_SPYLOGGER_ \
     ::sight::core::log::SpyLogger::getSpyLogger()
 
 // Empty function to trigger deprecation warnings
@@ -240,16 +246,16 @@ void SIGHT_TRACE_DEPRECATED();
 
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
-# define SIGHT_ASSERT(message, cond)                      \
+# define SIGHT_ASSERT(message, cond) \
     SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
-# define OSIGHT_ASSERT(message, cond)                     \
+# define OSIGHT_ASSERT(message, cond) \
     SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
 
 // -----------------------------------------------------------------------------
 
-# ifdef __GNUC__                // with GCC
+# ifdef __GNUC__ // with GCC
 #  define SIGHT_PRETTY_FUNC() __PRETTY_FUNCTION__
-# elif defined(_MSC_VER)        // with MSC
+# elif defined(_MSC_VER) // with MSC
 #  define SIGHT_PRETTY_FUNC() __FUNCSIG__
 # else
 #  define SIGHT_PRETTY_FUNC() __func__
@@ -264,11 +270,14 @@ void SIGHT_TRACE_DEPRECATED();
 #  define SIGHT_TRACE_FUNC() SIGHT_TRACE(SIGHT_PRETTY_FUNC())
 # else
 
-# define SIGHT_TRACE_FUNC() __FWCORE_EXPR_BLOCK(                  \
-        core::log::ScopedMessage __spylog__scoped__msg__(        \
-            __FILE__, __LINE__, SIGHT_PRETTY_FUNC());             \
-        __spylog__scoped__msg__.use();                          \
-        )
+# define SIGHT_TRACE_FUNC() __FWCORE_EXPR_BLOCK( \
+        core::log::ScopedMessage __spylog__scoped__msg__( \
+            __FILE__, \
+            __LINE__, \
+            SIGHT_PRETTY_FUNC() \
+        ); \
+        __spylog__scoped__msg__.use(); \
+)
 
 # endif
 /**  @} */
@@ -277,31 +286,36 @@ void SIGHT_TRACE_DEPRECATED();
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED(oldFnName, newFnName, version) \
-    SIGHT_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                   << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
-                  );
+    SIGHT_ERROR( \
+        "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+        << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
+    );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_IF(oldFnName, newFnName, version, condition) \
-    SIGHT_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                    << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
-                   ondition);
+    SIGHT_ERROR_IF( \
+        "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+        << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
+        ondition \
+    );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
-    SIGHT_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+    SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << version << "'");
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.
  */
 #define FW_DEPRECATED_KEY(newKey, access, version) \
-    SIGHT_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
-                  "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
-                  "in '" << version << "'.");
+    SIGHT_ERROR( \
+        "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
+                                              "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
+                                                                                                   "in '" << version << "'." \
+    );
 
 //------------------------------------------------------------------------------
 

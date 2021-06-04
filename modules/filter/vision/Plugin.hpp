@@ -42,7 +42,6 @@ struct Plugin : public core::runtime::Plugin
 
     // Overrides
     void stop() noexcept;
-
 };
 
 } // namespace segmentation

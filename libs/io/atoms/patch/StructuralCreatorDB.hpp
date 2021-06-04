@@ -33,7 +33,9 @@
 
 namespace sight::atoms
 {
+
 class Object;
+
 }
 
 namespace sight::io::atoms::patch
@@ -47,13 +49,13 @@ class IStructuralCreator;
  */
 class IO_ATOMS_CLASS_API StructuralCreatorDB
 {
-
 public:
-    typedef SPTR (StructuralCreatorDB) sptr;
+
+    typedef SPTR(StructuralCreatorDB) sptr;
     ///Typedef used to store the pair classname/version of a data structure
-    typedef std::pair< std::string, std::string > VersionIDType;
+    typedef std::pair<std::string, std::string> VersionIDType;
     ///Typedef used to store all the structural creators
-    typedef std::map< VersionIDType, SPTR(io::atoms::patch::IStructuralCreator) > CreatorsType;
+    typedef std::map<VersionIDType, SPTR(io::atoms::patch::IStructuralCreator)> CreatorsType;
 
     /**
      * @brief Registers a new creator.
@@ -69,8 +71,10 @@ public:
      * @return creator used to generate the data structure.
      * @note This method is thread safe.
      */
-    IO_ATOMS_API SPTR(io::atoms::patch::IStructuralCreator) getCreator(const std::string& classname,
-                                                                       const std::string& version);
+    IO_ATOMS_API SPTR(io::atoms::patch::IStructuralCreator) getCreator(
+        const std::string& classname,
+        const std::string& version
+    );
 
     /**
      * @brief Creates a new object instance with given classname and version.
@@ -101,7 +105,7 @@ public:
 private:
 
     /// Copy constructor
-    StructuralCreatorDB( const StructuralCreatorDB& cpy )
+    StructuralCreatorDB(const StructuralCreatorDB& cpy)
     {
     }
 
@@ -112,7 +116,6 @@ private:
     CreatorsType m_creators;
 
     IO_ATOMS_API static StructuralCreatorDB::sptr s_default;
-
 };
 
 } // fwAtomsPatch

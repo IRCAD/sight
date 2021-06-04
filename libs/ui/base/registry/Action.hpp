@@ -27,6 +27,7 @@
 
 namespace sight::ui::base
 {
+
 namespace registry
 {
 
@@ -35,10 +36,9 @@ namespace registry
  */
 class UI_BASE_CLASS_API Action : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Action, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(Action, ui::base::GuiBaseObject);
 
     //------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ public:
     }
 
     /// Constructor.
-    UI_BASE_API Action( const std::string& sid);
+    UI_BASE_API Action(const std::string& sid);
 
     /// Destructor. Do nothing
     UI_BASE_API virtual ~Action();
@@ -75,4 +75,5 @@ protected:
 };
 
 } // namespace registry
+
 } // namespace sight::ui::base

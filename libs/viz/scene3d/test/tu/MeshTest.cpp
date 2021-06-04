@@ -27,12 +27,14 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::viz::scene3d::helper::ut::MeshTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::MeshTest);
 
 namespace sight::viz::scene3d
 {
+
 namespace helper
 {
+
 namespace ut
 {
 
@@ -57,23 +59,23 @@ void MeshTest::copyColors()
     {
         const size_t numComponents = 3;
         const size_t numPoints     = 1024;
-        ::Ogre::RGBA* pDestAlloc = new ::Ogre::RGBA[numPoints];
-        ::Ogre::RGBA* pDest      = pDestAlloc;
-        std::uint8_t* pSrcAlloc = new std::uint8_t[numPoints * numComponents];
-        std::uint8_t* pSrc      = pSrcAlloc;
+        ::Ogre::RGBA* pDestAlloc   = new ::Ogre::RGBA[numPoints];
+        ::Ogre::RGBA* pDest        = pDestAlloc;
+        std::uint8_t* pSrcAlloc    = new std::uint8_t[numPoints * numComponents];
+        std::uint8_t* pSrc         = pSrcAlloc;
 
-        for(size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast< std::uint8_t>(rand()%255);
-            pSrc[1] = static_cast< std::uint8_t>(rand()%255);
-            pSrc[2] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[0] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(rand() % 255);
             pSrc   += numComponents;
         }
 
         viz::scene3d::helper::Mesh::copyColors(pDest, pSrcAlloc, numPoints, numComponents);
 
         pSrc = pSrcAlloc;
-        for(size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast< ::Ogre::RGBA>(pSrc[0]), (*pDest & 0x000000FF));
             CPPUNIT_ASSERT_EQUAL(static_cast< ::Ogre::RGBA>(pSrc[1]), (*pDest & 0x0000FF00) >> 8);
@@ -83,8 +85,8 @@ void MeshTest::copyColors()
             pSrc += numComponents;
         }
 
-        delete [] pDestAlloc;
-        delete [] pSrcAlloc;
+        delete[] pDestAlloc;
+        delete[] pSrcAlloc;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -92,24 +94,24 @@ void MeshTest::copyColors()
     {
         const size_t numComponents = 4;
         const size_t numPoints     = 2047;
-        ::Ogre::RGBA* pDestAlloc = new ::Ogre::RGBA[numPoints];
-        ::Ogre::RGBA* pDest      = pDestAlloc;
-        std::uint8_t* pSrcAlloc = new std::uint8_t[numPoints * numComponents];
-        std::uint8_t* pSrc      = pSrcAlloc;
+        ::Ogre::RGBA* pDestAlloc   = new ::Ogre::RGBA[numPoints];
+        ::Ogre::RGBA* pDest        = pDestAlloc;
+        std::uint8_t* pSrcAlloc    = new std::uint8_t[numPoints * numComponents];
+        std::uint8_t* pSrc         = pSrcAlloc;
 
-        for(size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast< std::uint8_t>(rand()%255);
-            pSrc[1] = static_cast< std::uint8_t>(rand()%255);
-            pSrc[2] = static_cast< std::uint8_t>(rand()%255);
-            pSrc[3] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[0] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[3] = static_cast<std::uint8_t>(rand() % 255);
             pSrc   += numComponents;
         }
 
         viz::scene3d::helper::Mesh::copyColors(pDest, pSrcAlloc, numPoints, numComponents);
 
         pSrc = pSrcAlloc;
-        for(size_t i = 0; i < numPoints; ++i)
+        for(size_t i = 0 ; i < numPoints ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast< ::Ogre::RGBA>(pSrc[0]), (*pDest & 0x000000FF));
             CPPUNIT_ASSERT_EQUAL(static_cast< ::Ogre::RGBA>(pSrc[1]), (*pDest & 0x0000FF00) >> 8);
@@ -119,13 +121,15 @@ void MeshTest::copyColors()
             pSrc += numComponents;
         }
 
-        delete [] pDestAlloc;
-        delete [] pSrcAlloc;
+        delete[] pDestAlloc;
+        delete[] pSrcAlloc;
     }
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace helper
+
 } //namespace sight::viz::scene3d

@@ -23,18 +23,18 @@
 #pragma once
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
 {
+
 namespace exception
 {
 
 /// No worker exception.
 struct WorkerChanged : core::Exception
 {
-    CORE_API WorkerChanged ( const std::string& err );
+    CORE_API WorkerChanged(const std::string& err);
 };
 
 } // namespace exception

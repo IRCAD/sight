@@ -28,18 +28,23 @@ SIGHT_REGISTER_DATA(sight::viz::scene2d::data::Viewport);
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallowCopy(const sight::data::Object::csptr& _source )
+void Viewport::shallowCopy(const sight::data::Object::csptr& _source)
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        sight::data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
 
     m_x      = other->m_x;
     m_y      = other->m_y;
@@ -49,13 +54,17 @@ void Viewport::shallowCopy(const sight::data::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache )
+void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        sight::data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
 
     m_x      = other->m_x;
     m_y      = other->m_y;
@@ -64,4 +73,5 @@ void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCop
 }
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

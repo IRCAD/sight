@@ -26,15 +26,21 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
 //------------------------------------------------------------------------------
 
-DicomSRCodeNode::DicomSRCodeNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship
-                                 , const DicomCodedAttribute& codedEntry) :
+DicomSRCodeNode::DicomSRCodeNode(
+    const DicomCodedAttribute& codedAttribute,
+    const std::string& relationship
+    ,
+    const DicomCodedAttribute& codedEntry
+) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "CODE", relationship),
     m_codedEntry(codedEntry)
 {
@@ -53,9 +59,9 @@ void DicomSRCodeNode::write(::gdcm::DataSet& dataset) const
     io::dicom::container::sr::DicomSRNode::write(dataset);
 
     // Concept Code Sequence - Type 1
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> codeSequence =
         this->createConceptNameCodeSequence(m_codedEntry);
-    io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue< 0x0040, 0xa168 >(codeSequence, dataset);
+    io::dicom::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa168>(codeSequence, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -69,5 +75,7 @@ void DicomSRCodeNode::print(std::ostream& os) const
 //------------------------------------------------------------------------------
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

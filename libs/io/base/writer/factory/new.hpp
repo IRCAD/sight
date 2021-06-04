@@ -29,6 +29,7 @@
 
 namespace sight::io::base
 {
+
 namespace writer
 {
 
@@ -37,7 +38,8 @@ class IObjectWriter;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -46,18 +48,19 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) io::base::writer::factory::New();
+friend SPTR(CLASSNAME) io::base::writer::factory::New();
 
 Key()
 {
 }
 };
 
-IO_BASE_API SPTR( io::base::writer::IObjectWriter ) New( const io::base::writer::registry::KeyType& classname );
+IO_BASE_API SPTR(io::base::writer::IObjectWriter) New(const io::base::writer::registry::KeyType& classname);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
 
     return obj;
 }

@@ -22,9 +22,9 @@
 
 #include "ImagePropertiesTest.hpp"
 
+#include <activity/extension/Activity.hpp>
 #include <activity/IObjectValidator.hpp>
 #include <activity/IValidator.hpp>
-#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -40,10 +40,11 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::activity::ut::ImagePropertiesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::activity::ut::ImagePropertiesTest);
 
 namespace sight::activity
 {
+
 namespace ut
 {
 
@@ -101,9 +102,14 @@ void ImagePropertiesTest::propertiesTest()
 
         utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
 
-        utestData::generator::Image::generateImage(img2, img1->getSize2(), img1->getSpacing2(),
-                                                   img1->getOrigin2(), img1->getType(),
-                                                   data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(
+            img2,
+            img1->getSize2(),
+            img1->getSpacing2(),
+            img1->getOrigin2(),
+            img1->getType(),
+            data::Image::PixelFormat::GRAY_SCALE
+        );
 
         data::Vector::sptr vector = data::Vector::New();
         vector->getContainer().push_back(img1);
@@ -126,4 +132,5 @@ void ImagePropertiesTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::activity

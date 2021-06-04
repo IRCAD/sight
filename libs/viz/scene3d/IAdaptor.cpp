@@ -60,10 +60,10 @@ IAdaptor::~IAdaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream& _sstream )
+void IAdaptor::info(std::ostream& _sstream)
 {
     _sstream << "IAdaptor : ";
-    this->service::IService::info( _sstream );
+    this->service::IService::info(_sstream);
 }
 
 //------------------------------------------------------------------------------
@@ -87,8 +87,10 @@ void IAdaptor::initialize()
         auto renderServiceId = registry[this->getID()];
 
         auto result =
-            std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [renderServiceId](const service::IService::sptr& srv)
+            std::find_if(
+                servicesVector.begin(),
+                servicesVector.end(),
+                [renderServiceId](const service::IService::sptr& srv)
             {
                 return srv->getID() == renderServiceId;
             });
@@ -114,10 +116,10 @@ const std::string& IAdaptor::getLayerID() const
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setRenderService( SRender::sptr _service)
+void IAdaptor::setRenderService(SRender::sptr _service)
 {
     SIGHT_ASSERT("service not instanced", _service);
-    SIGHT_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
+    SIGHT_ASSERT("The adaptor ('" + this->getID() + "') is not stopped", this->isStopped());
 
     m_renderService = _service;
 }
@@ -148,9 +150,9 @@ Layer::sptr IAdaptor::getLayer() const
 void IAdaptor::requestRender()
 {
     auto renderService = this->getRenderService();
-    if ( (renderService->getStatus() == service::IService::STARTED ||
-          renderService->getStatus() == service::IService::SWAPPING) &&
-         renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO )
+    if((renderService->getStatus() == service::IService::STARTED
+        || renderService->getStatus() == service::IService::SWAPPING)
+       && renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO)
     {
         this->getRenderService()->requestRender();
     }
@@ -177,6 +179,7 @@ void IAdaptor::show()
 {
     this->updateVisibility(true);
 }
+
 //------------------------------------------------------------------------------
 
 void IAdaptor::hide()

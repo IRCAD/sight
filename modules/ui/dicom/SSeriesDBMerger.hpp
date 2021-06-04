@@ -54,7 +54,7 @@ class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IAct
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesDBMerger, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(SSeriesDBMerger, sight::ui::base::IAction);
 
     /// Constructor
     MODULE_UI_DICOM_API SSeriesDBMerger() noexcept;
@@ -77,7 +77,7 @@ protected:
     MODULE_UI_DICOM_API void updating() override;
 
     /// Override
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream ) override;
+    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
 };
 
 } // namespace sight::module::ui::dicom

@@ -46,16 +46,18 @@ namespace profile
 
 namespace
 {
-template< typename E >
+
+template<typename E>
 struct Apply
 {
     //------------------------------------------------------------------------------
 
-    void operator() ( E e )
+    void operator()(E e)
     {
         e->apply();
     }
 };
+
 }
 
 //------------------------------------------------------------------------------
@@ -74,35 +76,35 @@ Profile::~Profile()
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Activater )activater )
+void Profile::add(SPTR(Activater)activater)
 {
-    m_activaters.push_back( activater );
+    m_activaters.push_back(activater);
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Starter )starter )
+void Profile::add(SPTR(Starter)starter)
 {
-    m_starters.push_back( starter );
+    m_starters.push_back(starter);
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Stopper )stopper )
+void Profile::add(SPTR(Stopper)stopper)
 {
-    m_stoppers.push_back( stopper );
+    m_stoppers.push_back(stopper);
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Initializer )initializer )
+void Profile::add(SPTR(Initializer)initializer)
 {
     m_initializers.push_back(initializer);
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Uninitializer )uninitializer )
+void Profile::add(SPTR(Uninitializer)uninitializer)
 {
     m_uninitializers.push_back(uninitializer);
 }
@@ -111,21 +113,23 @@ void Profile::add( SPTR( Uninitializer )uninitializer )
 
 void Profile::start()
 {
-    std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
+    std::for_each(m_activaters.begin(), m_activaters.end(), Apply<ActivaterContainer::value_type>());
 
     // Check validity of extension
 
     detail::Runtime& runtime = detail::Runtime::get();
-    for( auto& extension : runtime.getExtensions() )
+    for(auto& extension : runtime.getExtensions())
     {
-        auto bundle = std::dynamic_pointer_cast< detail::Module >(extension->getModule());
+        auto bundle = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
 
-        SIGHT_FATAL_IF( "Validation not ok for bundle = '" << extension->getModule()->getIdentifier() <<
-                        "'  (extension id = '" << extension->getIdentifier() << "' )",
-                        bundle->isEnabled() && extension->validate() == Extension::Invalid );
+        SIGHT_FATAL_IF(
+            "Validation not ok for bundle = '" << extension->getModule()->getIdentifier()
+            << "'  (extension id = '" << extension->getIdentifier() << "' )",
+            bundle->isEnabled() && extension->validate() == Extension::Invalid
+        );
     }
 
-    std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
+    std::for_each(m_starters.begin(), m_starters.end(), Apply<StarterContainer::value_type>());
 }
 
 //------------------------------------------------------------------------------
@@ -158,7 +162,7 @@ void Profile::setRunCallback(RunCallbackType callback)
 
 void Profile::stop()
 {
-    std::for_each( m_stoppers.rbegin(), m_stoppers.rend(), Apply< StopperContainer::value_type >() );
+    std::for_each(m_stoppers.rbegin(), m_stoppers.rend(), Apply<StopperContainer::value_type>());
 }
 
 //------------------------------------------------------------------------------
@@ -168,14 +172,14 @@ void Profile::setup()
     InitializerContainer initializers;
     initializers = m_initializers;
     m_initializers.clear();
-    std::for_each( initializers.begin(), initializers.end(), Apply< InitializerContainer::value_type >() );
+    std::for_each(initializers.begin(), initializers.end(), Apply<InitializerContainer::value_type>());
 }
 
 //------------------------------------------------------------------------------
 
 void Profile::cleanup()
 {
-    std::for_each( m_uninitializers.rbegin(), m_uninitializers.rend(), Apply< UninitializerContainer::value_type >() );
+    std::for_each(m_uninitializers.rbegin(), m_uninitializers.rend(), Apply<UninitializerContainer::value_type>());
     m_uninitializers.clear();
 }
 

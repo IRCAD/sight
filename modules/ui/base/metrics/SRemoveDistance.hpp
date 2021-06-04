@@ -67,11 +67,10 @@ namespace sight::module::ui::base::metrics
  */
 class MODULE_UI_BASE_CLASS_API SRemoveDistance final : public ::sight::ui::base::IAction
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SRemoveDistance, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SRemoveDistance, sight::ui::base::IAction);
 
     /// Initialize slots.
     MODULE_UI_BASE_API SRemoveDistance() noexcept;

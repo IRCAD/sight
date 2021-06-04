@@ -24,6 +24,7 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
@@ -39,4 +40,5 @@ IMultiSelectorDialog::~IMultiSelectorDialog()
 }
 
 } // namespace dialog
+
 } // namespace sight::ui::base

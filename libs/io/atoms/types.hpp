@@ -29,7 +29,7 @@ typedef enum
 {
     JSON,
     XML,
-    UNSPECIFIED,
+    UNSPECIFIED
 } FormatType;
 
 } // namespace sight::io::atoms

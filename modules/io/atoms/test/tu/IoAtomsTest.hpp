@@ -26,6 +26,7 @@
 
 namespace sight::module::io::atoms
 {
+
 namespace ut
 {
 
@@ -34,11 +35,11 @@ namespace ut
  */
 class IoAtomsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( IoAtomsTest );
-CPPUNIT_TEST( JSONTest );
-CPPUNIT_TEST( JSONZTest );
-CPPUNIT_TEST( XMLTest );
-CPPUNIT_TEST( XMLZTest );
+CPPUNIT_TEST_SUITE(IoAtomsTest);
+CPPUNIT_TEST(JSONTest);
+CPPUNIT_TEST(JSONZTest);
+CPPUNIT_TEST(XMLTest);
+CPPUNIT_TEST(XMLZTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,4 +55,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::module::io::atoms

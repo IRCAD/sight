@@ -29,6 +29,7 @@
 
 namespace sight::io::atoms::patch
 {
+
 namespace conditions
 {
 
@@ -46,8 +47,10 @@ void NumericOverflow::setTreshold(sight::atoms::Numeric::sptr treshold)
 
 // ----------------------------------------------------------------------------
 
-bool NumericOverflow::test(sight::atoms::Base::sptr old,
-                           sight::atoms::Base::sptr newValue)
+bool NumericOverflow::test(
+    sight::atoms::Base::sptr old,
+    sight::atoms::Base::sptr newValue
+)
 {
     return this->test(newValue);
 }
@@ -77,4 +80,5 @@ NumericOverflow::sptr NumericOverflow::New(sight::atoms::Base::sptr defaultValue
 }
 
 } //conditions
+
 } //fwAtomsPatch

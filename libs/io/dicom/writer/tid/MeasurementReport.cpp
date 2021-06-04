@@ -34,10 +34,10 @@
 #include "io/dicom/writer/tid/Fiducial.hpp"
 #include "io/dicom/writer/tid/Measurement.hpp"
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
 
@@ -49,17 +49,21 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace tid
 {
 
 //------------------------------------------------------------------------------
 
-MeasurementReport::MeasurementReport(const SPTR(::gdcm::Writer)& writer,
-                                     const SPTR(io::dicom::container::DicomInstance)& instance,
-                                     const data::Image::csptr& image) :
-    io::dicom::writer::tid::TemplateID< data::Image >(writer, instance, image)
+MeasurementReport::MeasurementReport(
+    const SPTR(::gdcm::Writer)& writer,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const data::Image::csptr& image
+) :
+    io::dicom::writer::tid::TemplateID<data::Image>(writer, instance, image)
 {
 }
 
@@ -75,45 +79,52 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
 {
     // Create Root Node - Measurement Report Document Titles
     SPTR(io::dicom::container::sr::DicomSRContainerNode) rootNode =
-        std::make_shared< io::dicom::container::sr::DicomSRContainerNode >(
-            io::dicom::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report"));
+        std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(
+            io::dicom::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report")
+        );
 
     // Create Language of Content Item and Descendants Node (TID 1204)
     SPTR(io::dicom::container::sr::DicomSRCodeNode) languagesNode =
-        std::make_shared< io::dicom::container::sr::DicomSRCodeNode >(
+        std::make_shared<io::dicom::container::sr::DicomSRCodeNode>(
             io::dicom::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
             "HAS CONCEPT MOD",
-            io::dicom::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")); // FIXME Do we
-                                                                                                      // keep English
-                                                                                                      // US ?
+            io::dicom::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")
+        ); // FIXME Do we
+           // keep English
+           // US ?
     rootNode->addSubNode(languagesNode);
 
     // Create Observation Context Node (TID 1001) FIXME Do we need to add that template ?
 
     // Create Procedure Reported Node
     SPTR(io::dicom::container::sr::DicomSRCodeNode) procedureReportedNode =
-        std::make_shared< io::dicom::container::sr::DicomSRCodeNode >(
+        std::make_shared<io::dicom::container::sr::DicomSRCodeNode>(
             io::dicom::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
             "HAS CONCEPT MOD",
-            io::dicom::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")); // FIXME
-                                                                                                                  // Find
-                                                                                                                  // a good
-                                                                                                                  // value
+            io::dicom::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")
+        ); // FIXME
+           // Find
+           // a good
+           // value
     rootNode->addSubNode(procedureReportedNode);
 
     // Create ImageLibrary Node
     SPTR(io::dicom::container::sr::DicomSRContainerNode) imageLibraryNode =
-        std::make_shared< io::dicom::container::sr::DicomSRContainerNode >(
-            io::dicom::container::DicomCodedAttribute("111028", "DCM", "Image Library"), "CONTAINS");
+        std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(
+            io::dicom::container::DicomCodedAttribute("111028", "DCM", "Image Library"),
+            "CONTAINS"
+        );
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId))
+    if(m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId))
     {
         // Create Fiducial Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) fiducialNode =
-            std::make_shared< io::dicom::container::sr::DicomSRContainerNode >(
-                io::dicom::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"), "CONTAINS");
+            std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(
+                io::dicom::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"),
+                "CONTAINS"
+            );
         rootNode->addSubNode(fiducialNode);
 
         io::dicom::writer::tid::Fiducial fiducialTID(m_writer, m_instance, m_object);
@@ -121,38 +132,45 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
     }
 
     // Add distances
-    if(m_object->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId))
+    if(m_object->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId))
     {
         // Create Imaging Measurements Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) imagingMeasurementsNode =
-            std::make_shared< io::dicom::container::sr::DicomSRContainerNode >(
-                io::dicom::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"), "CONTAINS");
+            std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(
+                io::dicom::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"),
+                "CONTAINS"
+            );
         rootNode->addSubNode(imagingMeasurementsNode);
 
         // Create Measurement Group node
         SPTR(io::dicom::container::sr::DicomSRContainerNode) measurementGroupNode =
-            std::make_shared< io::dicom::container::sr::DicomSRContainerNode >(
-                io::dicom::container::DicomCodedAttribute("125007", "DCM", "Measurement Group"), "CONTAINS");
+            std::make_shared<io::dicom::container::sr::DicomSRContainerNode>(
+                io::dicom::container::DicomCodedAttribute("125007", "DCM", "Measurement Group"),
+                "CONTAINS"
+            );
         imagingMeasurementsNode->addSubNode(measurementGroupNode);
 
         // Create Tracking ID node
         SPTR(io::dicom::container::sr::DicomSRTextNode) idNode =
-            std::make_shared< io::dicom::container::sr::DicomSRTextNode >(
+            std::make_shared<io::dicom::container::sr::DicomSRTextNode>(
                 io::dicom::container::DicomCodedAttribute("112039", "DCM", "Tracking Identifier"),
-                "HAS OBS CONTEXT", "1");
+                "HAS OBS CONTEXT",
+                "1"
+            );
         imagingMeasurementsNode->addSubNode(idNode);
 
         // Create Tracking UID node
         ::gdcm::UIDGenerator generator;
         SPTR(io::dicom::container::sr::DicomSRUIDRefNode) uidNode =
-            std::make_shared< io::dicom::container::sr::DicomSRUIDRefNode >(
+            std::make_shared<io::dicom::container::sr::DicomSRUIDRefNode>(
                 io::dicom::container::DicomCodedAttribute("112040", "DCM", "Tracking Unique Identifier"),
-                "HAS OBS CONTEXT", generator.Generate());
+                "HAS OBS CONTEXT",
+                generator.Generate()
+            );
         imagingMeasurementsNode->addSubNode(uidNode);
 
         io::dicom::writer::tid::Measurement measurementTID(m_writer, m_instance, m_object);
         measurementTID.createNodes(imagingMeasurementsNode, useSCoord3D);
-
     }
 
     return rootNode;
@@ -161,5 +179,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
 //------------------------------------------------------------------------------
 
 } // namespace tid
+
 } // namespace writer
+
 } // namespace sight::io::dicom

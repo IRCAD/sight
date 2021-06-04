@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::base
 {
+
 /**
  * @brief   To add or remove an object in composite with specific key.
  *
@@ -48,10 +49,9 @@ namespace sight::module::ui::base
  */
 class MODULE_UI_BASE_CLASS_API SPushObject : public ::sight::ui::base::IAction
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SPushObject, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SPushObject, ::sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SPushObject() noexcept;
@@ -91,9 +91,9 @@ private:
     void updateObjects();
 
     // [src_map]->[(src_key1, src_key2, ...)]
-    typedef std::map< std::string, std::set< std::string > > SrcKeyMapType;
+    typedef std::map<std::string, std::set<std::string> > SrcKeyMapType;
     // [dest_key]->[<src_map, src_key>]
-    typedef std::map< std::string, std::pair< std::string, std::string > > DestKeyMapType;
+    typedef std::map<std::string, std::pair<std::string, std::string> > DestKeyMapType;
     /**
      * @brief keep the association between associated key and source object
      */

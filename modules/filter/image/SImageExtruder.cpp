@@ -51,14 +51,12 @@ SImageExtruder::SImageExtruder()
 
 SImageExtruder::~SImageExtruder()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SImageExtruder::configuring()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -86,22 +84,22 @@ service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 
 void SImageExtruder::updating()
 {
-    const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
         {
-            const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+            const auto imageOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
             SIGHT_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
 
-            const auto sig = imageOut->signal< data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
+            const auto sig = imageOut->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
 
-        const auto meshes = this->getLockedInput< data::ModelSeries >(s_MESHES_INPUT);
+        const auto meshes = this->getLockedInput<data::ModelSeries>(s_MESHES_INPUT);
 
         data::ModelSeries::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
 
@@ -119,7 +117,7 @@ void SImageExtruder::stopping()
 
 void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const
 {
-    const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    const auto imageOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
     {
@@ -145,7 +143,7 @@ void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Imag
 
     // Send signals.
     const auto sig =
-        _image->signal< data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+        _image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

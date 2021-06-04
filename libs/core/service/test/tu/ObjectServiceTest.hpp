@@ -33,6 +33,7 @@
 
 namespace sight::service
 {
+
 namespace ut
 {
 
@@ -41,13 +42,14 @@ namespace ut
  */
 class ObjectServiceTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ObjectServiceTest );
-CPPUNIT_TEST( registerKeyTest );
+CPPUNIT_TEST_SUITE(ObjectServiceTest);
+CPPUNIT_TEST(registerKeyTest);
 // Disable registerConnectionTest because it fails randomly on a busy computer (see #72)
 //CPPUNIT_TEST( registerConnectionTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,6 +57,7 @@ public:
     void registerConnectionTest();
 
 private:
+
     void registerService(data::Object::sptr obj, const std::string& id);
     void unregisterService(data::Object::sptr obj, const std::string& id);
 
@@ -67,4 +70,5 @@ private:
 };
 
 } //namespace ut
+
 } //namespace sight::service

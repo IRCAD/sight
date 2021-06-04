@@ -56,11 +56,12 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     // Registers custom AppManager class as QML type.
-    qmlRegisterType< AppManager >("tutosceneqt3d", 1, 0, "AppManager");
+    qmlRegisterType<AppManager>("tutosceneqt3d", 1, 0, "AppManager");
 
     // Declares an app manager used only to allow fwRenderQt3D features as QML types.
-    auto appManager = std::unique_ptr< service::AppManager >(
-        new service::AppManager );
+    auto appManager = std::unique_ptr<service::AppManager>(
+        new service::AppManager
+    );
     appManager->create();
 
     // Adds services to the app manager. Those services are only used to register QML types.
@@ -90,7 +91,6 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------

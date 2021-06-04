@@ -31,6 +31,7 @@
 
 namespace sight::ui::qml
 {
+
 namespace dialog
 {
 
@@ -81,6 +82,7 @@ public:
     UI_QML_API const ButtonList& getButton();
 
 Q_SIGNALS:
+
     /// notify the qml of property change
     void buttonChanged();
 
@@ -91,4 +93,5 @@ private:
 };
 
 } // namespace dialog
+
 } // namespace sight::ui::qml

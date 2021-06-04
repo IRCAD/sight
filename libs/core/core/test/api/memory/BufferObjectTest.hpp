@@ -26,18 +26,20 @@
 
 namespace sight::core::memory
 {
+
 namespace ut
 {
 
 class BufferObjectTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( BufferObjectTest );
-CPPUNIT_TEST( allocateTest );
-CPPUNIT_TEST( allocateZeroTest );
-CPPUNIT_TEST( lockThreadedStressTest );
+CPPUNIT_TEST_SUITE(BufferObjectTest);
+CPPUNIT_TEST(allocateTest);
+CPPUNIT_TEST(allocateZeroTest);
+CPPUNIT_TEST(lockThreadedStressTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -48,4 +50,5 @@ public:
 };
 
 } // namespace ut
+
 } // namespace sight::core::memory

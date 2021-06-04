@@ -29,6 +29,7 @@
 
 namespace sight::service
 {
+
 namespace registry
 {
 
@@ -39,4 +40,5 @@ namespace registry
 [[deprecated]] typedef core::thread::ActiveWorkers ActiveWorkers;
 
 } // namespace registry
+
 } // namespace sight::service

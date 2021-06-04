@@ -27,23 +27,27 @@
 #include <atoms/Object.hpp>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Reconstruction/V1ToV2.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Reconstruction::V1ToV2Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Reconstruction::V1ToV2Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Reconstruction
 {
+
 // force link for log
 utest::Exception e("");
 
@@ -80,7 +84,7 @@ void V1ToV2Test::applyPatchTest()
     helper.addAttribute("image", sight::atoms::String::New(""));
     helper.addAttribute("mesh", sight::atoms::String::New(""));
 
-    std::vector< std::string> v1Attributs;
+    std::vector<std::string> v1Attributs;
 
     v1Attributs.push_back("reconstruction_format");
     v1Attributs.push_back("is_closed");
@@ -96,7 +100,7 @@ void V1ToV2Test::applyPatchTest()
     v1Attributs.push_back("type_3D");
     v1Attributs.push_back("db_id");
 
-    for(std::string attribut :  v1Attributs)
+    for(std::string attribut : v1Attributs)
     {
         helper.addAttribute(attribut, sight::atoms::String::New(""));
     }
@@ -118,14 +122,18 @@ void V1ToV2Test::applyPatchTest()
     CPPUNIT_ASSERT(recObjV2->getAttribute("image"));
     CPPUNIT_ASSERT(recObjV2->getAttribute("mesh"));
 
-    for(std::string attribut :  v1Attributs)
+    for(std::string attribut : v1Attributs)
     {
         CPPUNIT_ASSERT_MESSAGE("'" + attribut + "' attribut must not exist", !recObjV2->getAttribute(attribut));
     }
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Reconstruction
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

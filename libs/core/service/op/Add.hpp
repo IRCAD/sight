@@ -37,14 +37,14 @@ namespace sight::service
  * @brief Create a service of type serviceType
  * @return a pointer to the new service
  */
-SERVICE_API service::IService::sptr add( const std::string& _implType, const std::string& _id = "" );
+SERVICE_API service::IService::sptr add(const std::string& _implType, const std::string& _id = "");
 
 /**
  * @brief Create a service of type serviceType
  * @return a pointer to the new service with the given template type
  */
 template<class SERVICE>
-SPTR(SERVICE) add( const std::string& _implType, const std::string& _id = "" );
+SPTR(SERVICE) add(const std::string& _implType, const std::string& _id = "");
 
 //@}
 

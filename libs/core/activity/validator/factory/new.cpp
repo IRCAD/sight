@@ -26,18 +26,22 @@
 
 namespace sight::activity
 {
+
 namespace validator
 {
+
 namespace factory
 {
 
 //------------------------------------------------------------------------------
 
-activity::IValidator::sptr New( const activity::validator::registry::KeyType& classname )
+activity::IValidator::sptr New(const activity::validator::registry::KeyType& classname)
 {
     return activity::validator::registry::get()->create(classname);
 }
 
 } // namespace factory
+
 } // namespace validator
+
 } // namespace sight::activity

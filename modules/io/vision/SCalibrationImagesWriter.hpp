@@ -54,7 +54,7 @@ class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::ba
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SCalibrationImagesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SCalibrationImagesWriter, sight::io::base::service::IWriter);
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationImagesWriter() noexcept;
@@ -93,7 +93,6 @@ private:
 
     /// Output file extension, can be any format handled by `cv::imwrite()`.
     std::string m_fileExtension;
-
 };
 
 } // namespace sight::module::io::vision

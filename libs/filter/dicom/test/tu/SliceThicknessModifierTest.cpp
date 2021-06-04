@@ -35,10 +35,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::dicom::ut::SliceThicknessModifierTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::SliceThicknessModifierTest);
 
 namespace sight::filter::dicom
 {
+
 namespace ut
 {
 
@@ -65,8 +66,10 @@ void SliceThicknessModifierTest::simpleApplication()
     const std::string filename       = "09-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -78,12 +81,13 @@ void SliceThicknessModifierTest::simpleApplication()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter"
+    );
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
@@ -99,7 +103,6 @@ void SliceThicknessModifierTest::simpleApplication()
     const double sliceThickness =
         ::boost::lexical_cast<double>(dicomSeries->getComputedTagValues().at("SliceThickness"));
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8, sliceThickness, delta);
-
 }
 
 //------------------------------------------------------------------------------
@@ -111,8 +114,10 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
-    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
-                           std::filesystem::exists(path));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The dicom directory '" + path.string() + "' does not exist",
+        std::filesystem::exists(path)
+    );
 
     // Read DicomSeries
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
@@ -124,12 +129,13 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     // Retrieve DicomSeries
     data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector< data::DicomSeries::sptr > dicomSeriesContainer;
+    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "sight::filter::dicom::modifier::SliceThicknessModifier");
+        "sight::filter::dicom::modifier::SliceThicknessModifier"
+    );
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT(!filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false));
 }
@@ -137,4 +143,5 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
 //------------------------------------------------------------------------------
 
 } // namespace ut
+
 } // namespace sight::filter::dicom

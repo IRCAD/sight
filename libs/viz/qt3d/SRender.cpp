@@ -56,10 +56,10 @@ static const std::string s_ADAPTOR_CONFIG          = "adaptor";
 SRender::SRender()
 {
     // Allow using GenericScene and FrameGraph as QML types when using SRender service in QML applications.
-    qmlRegisterType< sight::viz::qt3d::core::GenericScene >("sight::viz::qt3d::core", 1, 0, "GenericScene");
-    qmlRegisterType< sight::viz::qt3d::core::FrameGraph >("sight::viz::qt3d::core", 1, 0, "FrameGraph");
-    qRegisterMetaType< sight::viz::qt3d::core::GenericScene* >("sight::viz::qt3d::core::GenericScene*");
-    qRegisterMetaType< sight::viz::qt3d::core::FrameGraph* >("sight::viz::qt3d::FrameGraph*");
+    qmlRegisterType<sight::viz::qt3d::core::GenericScene>("sight::viz::qt3d::core", 1, 0, "GenericScene");
+    qmlRegisterType<sight::viz::qt3d::core::FrameGraph>("sight::viz::qt3d::core", 1, 0, "FrameGraph");
+    qRegisterMetaType<sight::viz::qt3d::core::GenericScene*>("sight::viz::qt3d::core::GenericScene*");
+    qRegisterMetaType<sight::viz::qt3d::core::FrameGraph*>("sight::viz::qt3d::FrameGraph*");
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void SRender::configuring()
 
     // Get adaptor tags.
     const auto adaptorConfigs = sceneCfg->equal_range(s_ADAPTOR_CONFIG);
-    for(auto it = adaptorConfigs.first; it != adaptorConfigs.second; ++it )
+    for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
     {
         const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
         auto& registry        = viz::qt3d::registry::getAdaptorRegistry();
@@ -115,8 +115,8 @@ void SRender::starting()
     m_scene = new sight::viz::qt3d::core::GenericScene(false);
 
     // Configures m_3dView camera and sets it as the scene's camera.
-    QPointer< Qt3DRender::QCamera > const camera = m_3dView->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
+    QPointer<Qt3DRender::QCamera> const camera = m_3dView->camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
     camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     camera->setPosition(QVector3D(0.0f, 10.0f, 40.0f));
     camera->setViewCenter(QVector3D(0, 0, 0));

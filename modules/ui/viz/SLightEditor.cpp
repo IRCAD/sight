@@ -24,6 +24,8 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
+#include <viz/scene3d/helper/Scene.hpp>
+
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
@@ -31,8 +33,6 @@
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
-
-#include <viz/scene3d/helper/Scene.hpp>
 
 #include <QColorDialog>
 #include <QHBoxLayout>
@@ -77,15 +77,18 @@ void SLightEditor::starting()
     this->create();
 
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
 
     m_lightNameLabel = new QLabel("No light selected");
     m_lightNameLabel->setAlignment(::Qt::AlignHCenter);
 
     m_lightTypeBox = new QComboBox();
-    m_lightTypeBox->addItems(QStringList() <<
-                             ILight::s_POINT_LIGHT.c_str() <<
-                             ILight::s_DIRECTIONAL_LIGHT.c_str());
+    m_lightTypeBox->addItems(
+        QStringList()
+        << ILight::s_POINT_LIGHT.c_str()
+        << ILight::s_DIRECTIONAL_LIGHT.c_str()
+    );
     m_lightTypeBox->setEnabled(false);
 
     m_visualFeedback = new QPushButton("Feedback");
@@ -242,8 +245,10 @@ void SLightEditor::stopping()
 
 void SLightEditor::onEditDiffuseColor(bool)
 {
-    ::Ogre::ColourValue newDiffuseColor = this->editColor(m_currentLight->getDiffuseColor(),
-                                                          "Light diffuse color");
+    ::Ogre::ColourValue newDiffuseColor = this->editColor(
+        m_currentLight->getDiffuseColor(),
+        "Light diffuse color"
+    );
 
     m_currentLight->setDiffuseColor(newDiffuseColor);
 }
@@ -252,8 +257,10 @@ void SLightEditor::onEditDiffuseColor(bool)
 
 void SLightEditor::onEditSpecularColor(bool)
 {
-    ::Ogre::ColourValue newSpecularColor = this->editColor(m_currentLight->getSpecularColor(),
-                                                           "Light specular color");
+    ::Ogre::ColourValue newSpecularColor = this->editColor(
+        m_currentLight->getSpecularColor(),
+        "Light specular color"
+    );
 
     m_currentLight->setSpecularColor(newSpecularColor);
 }
@@ -299,6 +306,7 @@ void SLightEditor::onEditType(const QString& _type)
             m_thetaSlider->setEnabled(true);
             m_phiSlider->setEnabled(true);
         }
+
         m_xTranslation->setEnabled(false);
         m_yTranslation->setEnabled(false);
         m_zTranslation->setEnabled(false);
@@ -310,6 +318,7 @@ void SLightEditor::onEditType(const QString& _type)
     {
         SIGHT_ASSERT("Unknow type for light", false);
     }
+
     m_currentLight->update();
 }
 
@@ -325,9 +334,9 @@ void SLightEditor::onToggleFeedback(bool _enable)
 
 void SLightEditor::onEditXTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(static_cast< ::Ogre::Real >(_value), currentPos[1], currentPos[2]));
+    lightNode->setPosition(::Ogre::Vector3(static_cast< ::Ogre::Real>(_value), currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_xLabel->setText(QString("X: %1").arg(_value));
@@ -337,9 +346,9 @@ void SLightEditor::onEditXTranslation(int _value)
 
 void SLightEditor::onEditYTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], static_cast< ::Ogre::Real >(_value), currentPos[2]));
+    lightNode->setPosition(::Ogre::Vector3(currentPos[0], static_cast< ::Ogre::Real>(_value), currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_yLabel->setText(QString("Y: %1").arg(_value));
@@ -349,9 +358,9 @@ void SLightEditor::onEditYTranslation(int _value)
 
 void SLightEditor::onEditZTranslation(int _value)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], static_cast< ::Ogre::Real >(_value)));
+    lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], static_cast< ::Ogre::Real>(_value)));
     m_currentLight->getRenderService()->requestRender();
 
     m_zLabel->setText(QString("Z: %1").arg(_value));
@@ -361,7 +370,7 @@ void SLightEditor::onEditZTranslation(int _value)
 
 void SLightEditor::onResetXTranslation(bool)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
     lightNode->setPosition(::Ogre::Vector3(0.f, currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
@@ -374,7 +383,7 @@ void SLightEditor::onResetXTranslation(bool)
 
 void SLightEditor::onResetYTranslation(bool)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], 0.f, currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
@@ -387,7 +396,7 @@ void SLightEditor::onResetYTranslation(bool)
 
 void SLightEditor::onResetZTranslation(bool)
 {
-    ::Ogre::Node* const lightNode = this->getLightNode();
+    ::Ogre::Node* const lightNode    = this->getLightNode();
     const ::Ogre::Vector3 currentPos = lightNode->getPosition();
     lightNode->setPosition(::Ogre::Vector3(currentPos[0], currentPos[1], 0.f));
     m_currentLight->getRenderService()->requestRender();
@@ -459,14 +468,20 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 
         m_visualFeedback->setChecked(m_currentLight->isVisualFeedbackOn());
 
-        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
-                                                 ILight::s_OFFSET_RANGE / 2));
-        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
-                                               ILight::s_OFFSET_RANGE / 2));
+        m_thetaSlider->setValue(
+            static_cast<int>(m_currentLight->getThetaOffset()
+                             + ILight::s_OFFSET_RANGE / 2)
+        );
+        m_phiSlider->setValue(
+            static_cast<int>(m_currentLight->getPhiOffset()
+                             + ILight::s_OFFSET_RANGE / 2)
+        );
 
-        ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
+        ::Ogre::SceneNode* const root       = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
         const ::Ogre::Node* const lightNode = sight::viz::scene3d::helper::Scene::getNodeById(
-            m_currentLight->getTransformId(), root);
+            m_currentLight->getTransformId(),
+            root
+        );
         const ::Ogre::Vector3 currentPos = lightNode->getPosition();
 
         m_xTranslation->setValue(static_cast<int>(currentPos[0]));
@@ -489,12 +504,15 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 ::Ogre::ColourValue SLightEditor::editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer());
+        this->getContainer()
+    );
     QWidget* const container = qtContainer->getQtContainer();
 
-    QColor qColor = QColorDialog::getColor(module::ui::viz::helper::Utils::converOgreColorToQColor(_currentColor),
-                                           container,
-                                           _title.c_str());
+    QColor qColor = QColorDialog::getColor(
+        module::ui::viz::helper::Utils::converOgreColorToQColor(_currentColor),
+        container,
+        _title.c_str()
+    );
 
     return module::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
 }

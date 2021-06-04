@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-
 #include <viz/scene3d/ILight.hpp>
+
+#include <ui/base/IEditor.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -59,7 +59,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SLightEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SLightEditor, sight::ui::base::IEditor);
 
     /// Creates the service.
     MODULE_UI_VIZ_API SLightEditor() noexcept;
@@ -219,7 +219,6 @@ private Q_SLOTS:
      * @see m_zReset.
      */
     void onResetZTranslation(bool);
-
 };
 
 } // namespace sight::module::ui::viz

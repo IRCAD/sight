@@ -28,8 +28,10 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace CameraSeries
 {
+
 /**
  * @brief Defines a validator which checks if the current CameraSeries contains two calibrated cameras and an extrinsic
  *        matrix.
@@ -37,8 +39,12 @@ namespace CameraSeries
 class MODULE_ACTIVITY_CLASS_API StereoCamera : public sight::activity::IObjectValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(StereoCamera, ::sight::activity::IObjectValidator,
-                        ::sight::activity::validator::factory::New< StereoCamera >)
+
+    SIGHT_DECLARE_CLASS(
+        StereoCamera,
+        ::sight::activity::IObjectValidator,
+        ::sight::activity::validator::factory::New<StereoCamera>
+    )
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API StereoCamera(::sight::activity::IValidator::Key key);
@@ -50,8 +56,9 @@ public:
      * @brief Checks if the current CameraSeries contains two calibrated Cameras and an extrinsic matrix.
      * @see module::activity::IValidator::validate
      */
-    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
+    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const override;
 };
 
 } // namespace CameraSeries
+
 } // namespace sight::module::activity::validator

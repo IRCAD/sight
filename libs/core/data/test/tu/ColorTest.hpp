@@ -26,19 +26,22 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class ColorTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( ColorTest );
-    CPPUNIT_TEST( methode1 );
-    CPPUNIT_TEST( methode2 );
-    CPPUNIT_TEST( methode3 );
+
+    CPPUNIT_TEST_SUITE(ColorTest);
+    CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST(methode2);
+    CPPUNIT_TEST(methode3);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -47,5 +50,7 @@ public:
     void methode2();
     void methode3();
 };
+
 } //namespace ut
+
 } //namespace sight::data

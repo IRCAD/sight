@@ -44,7 +44,8 @@ namespace sight::io::igtl
 class IO_IGTL_CLASS_API Client : public io::igtl::INetwork
 {
 public:
-    typedef SPTR (Client) sptr;
+
+    typedef SPTR(Client) sptr;
 
     /**
      * @brief default constructor
@@ -55,7 +56,7 @@ public:
      * @brief Constructor take a igtl::ClientSocket used only by server class.
      *        You should not use this constructor, use default constructor instead
      */
-    IO_IGTL_API Client (::igtl::ClientSocket::Pointer socket);
+    IO_IGTL_API Client(::igtl::ClientSocket::Pointer socket);
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
@@ -68,7 +69,7 @@ public:
      * @param[in] addr ip or hostname
      * @param[in] port port of server
      */
-    IO_IGTL_API void connect (const std::string& addr, std::uint16_t port);
+    IO_IGTL_API void connect(const std::string& addr, std::uint16_t port);
 
     /**
      * @brief method to disconnect client
@@ -89,8 +90,7 @@ private:
      * @param[in] msg exception message
      * @param[in] result throw the exception if result=true
      */
-    void throwExceptionIfFailed (const std::string& msg, bool result);
-
+    void throwExceptionIfFailed(const std::string& msg, bool result);
 };
 
 } // namespace sight::io::igtl

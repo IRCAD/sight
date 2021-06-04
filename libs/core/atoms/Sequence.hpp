@@ -30,6 +30,7 @@
 
 namespace sight::atoms
 {
+
 /**
  * @brief Class representing a list of meta objects.
  *
@@ -37,7 +38,8 @@ namespace sight::atoms
 class ATOMS_CLASS_API Sequence : public Base
 {
 public:
-    SIGHT_DECLARE_CLASS(Sequence, atoms::Base, atoms::factory::New< Sequence >)
+
+    SIGHT_DECLARE_CLASS(Sequence, atoms::Base, atoms::factory::New<Sequence>);
 
     typedef std::vector<Base::sptr> SequenceType;
 
@@ -86,13 +88,13 @@ public:
     }
 
     //! Begin of sequence iterator
-    IteratorType  begin()
+    IteratorType begin()
     {
         return m_value.begin();
     }
 
     //! End of sequence iterator
-    IteratorType  end()
+    IteratorType end()
     {
         return m_value.end();
     }
@@ -116,7 +118,7 @@ public:
     }
 
     //! clear the sequence
-    void  clear()
+    void clear()
     {
         m_value.clear();
     }
@@ -138,6 +140,7 @@ public:
     {
         return m_value[index];
     }
+
     //------------------------------------------------------------------------------
 
     const Base::sptr& operator[](unsigned int index) const
@@ -159,7 +162,8 @@ public:
     }
 
 protected:
+
     SequenceType m_value;
 };
 
-}
+} // namespace sight::atoms

@@ -26,19 +26,24 @@
 
 namespace sight::filter::dicom
 {
+
 namespace helper
 {
 
 //------------------------------------------------------------------------------
 
-bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, filter::dicom::IFilter::sptr filter,
-                         bool forcedApply, const core::log::Logger::sptr& logger)
+bool Filter::applyFilter(
+    DicomSeriesContainerType& dicomSeriesContainer,
+    filter::dicom::IFilter::sptr filter,
+    bool forcedApply,
+    const core::log::Logger::sptr& logger
+)
 {
     bool ignoredError = false;
     DicomSeriesContainerType result;
 
     // On every DicomSeries
-    for(const data::DicomSeries::sptr& dicomSeries :  dicomSeriesContainer)
+    for(const data::DicomSeries::sptr& dicomSeries : dicomSeriesContainer)
     {
         // Apply filter and copy result
         DicomSeriesContainerType tempo;
@@ -69,6 +74,7 @@ bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, filter:
                 filter::dicom::composite::IComposite::dynamicCast(filter);
             tempo = composite->forcedApply(dicomSeries, logger);
         }
+
         result.reserve(result.size() + tempo.size());
         std::copy(tempo.begin(), tempo.end(), std::back_inserter(result));
     }
@@ -80,4 +86,5 @@ bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, filter:
 }
 
 } // namespace helper
+
 } // namespace sight::filter::dicom

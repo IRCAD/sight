@@ -28,6 +28,7 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace helper
 {
 
@@ -36,11 +37,12 @@ namespace ut
 
 class SceneTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SceneTest );
-CPPUNIT_TEST( getNodeById );
+CPPUNIT_TEST_SUITE(SceneTest);
+CPPUNIT_TEST(getNodeById);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -49,5 +51,7 @@ public:
 };
 
 } //namespace ut
+
 } //namespace helper
+
 } //namespace sight::viz::scene3d

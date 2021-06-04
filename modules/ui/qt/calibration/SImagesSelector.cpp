@@ -53,9 +53,9 @@ const service::IService::KeyType s_SELECTION_INOUT = "selection";
 SImagesSelector::SImagesSelector() noexcept :
     m_captureIdx(0)
 {
-    newSlot( s_ADD_SLOT, &SImagesSelector::add, this );
-    newSlot( s_REMOVE_SLOT, &SImagesSelector::remove, this );
-    newSlot( s_RESET_SLOT, &SImagesSelector::reset, this );
+    newSlot(s_ADD_SLOT, &SImagesSelector::add, this);
+    newSlot(s_REMOVE_SLOT, &SImagesSelector::remove, this);
+    newSlot(s_RESET_SLOT, &SImagesSelector::reset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ void SImagesSelector::configuring()
 
 void SImagesSelector::starting()
 {
-    m_frameTL = this->getInput< data::FrameTL>("frameTL");
+    m_frameTL = this->getInput<data::FrameTL>("frameTL");
     SIGHT_ASSERT("Frame timeline is not found.", m_frameTL);
 
     sight::ui::base::IGuiContainer::create();
@@ -118,14 +118,14 @@ void SImagesSelector::stopping()
 
 void SImagesSelector::updating()
 {
-    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
     for(data::Object::sptr obj : vector->getContainer())
     {
         data::Image::sptr image = data::Image::dynamicCast(obj);
-        if (image)
+        if(image)
         {
             QString countString;
 
@@ -134,6 +134,7 @@ void SImagesSelector::updating()
             ++captureIdx;
         }
     }
+
     m_nbCapturesLabel->setText(QString("%1").arg(captureIdx));
 }
 
@@ -145,7 +146,7 @@ void SImagesSelector::remove()
 
     if(idx >= 0)
     {
-        data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
+        data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
         data::Object::sptr obj    = vector->getContainer()[idx];
 
         data::helper::Vector vectorHelper(vector);
@@ -160,7 +161,7 @@ void SImagesSelector::remove()
 
 void SImagesSelector::reset()
 {
-    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
 
     data::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
@@ -178,7 +179,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     if(!buffer)
     {
-        SIGHT_INFO("Buffer not found with timestamp "<< timestamp);
+        SIGHT_INFO("Buffer not found with timestamp " << timestamp);
         return;
     }
 
@@ -192,17 +193,20 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     data::Image::PixelFormat format;
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
-    switch ( m_frameTL->getNumberOfComponents())
+    switch(m_frameTL->getNumberOfComponents())
     {
         case 1:
             format = data::Image::GRAY_SCALE;
             break;
+
         case 3:
             format = data::Image::RGB;
             break;
+
         case 4:
             format = data::Image::RGBA;
             break;
+
         default:
             format = data::Image::UNDEFINED;
     }
@@ -218,10 +222,10 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     const auto dumpLock = image->lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
-    std::uint8_t* imgBuffer       = static_cast< std::uint8_t* >(image->getBuffer());
-    std::copy( frameBuff, frameBuff+buffer->getSize(), imgBuffer);
+    std::uint8_t* imgBuffer       = static_cast<std::uint8_t*>(image->getBuffer());
+    std::copy(frameBuff, frameBuff + buffer->getSize(), imgBuffer);
 
-    data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
+    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
 
     sight::data::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);

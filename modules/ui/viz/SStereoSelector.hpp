@@ -24,10 +24,10 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/Layer.hpp>
+
+#include <ui/base/IEditor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -48,7 +48,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SStereoSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SStereoSelector, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoSelector() noexcept;
@@ -95,7 +95,7 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QComboBox> m_modeBox;
 
-    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    std::vector<sight::viz::scene3d::Layer::wptr> m_layers;
     sight::viz::scene3d::Layer::wptr m_currentLayer;
 };
 

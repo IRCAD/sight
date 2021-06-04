@@ -33,7 +33,7 @@ namespace sight::io::zip
 
 //-----------------------------------------------------------------------------
 
-ReadDirArchive::ReadDirArchive( const std::filesystem::path& archive ) :
+ReadDirArchive::ReadDirArchive(const std::filesystem::path& archive) :
     m_archive(archive)
 {
 }
@@ -49,11 +49,14 @@ ReadDirArchive::~ReadDirArchive()
 SPTR(std::istream) ReadDirArchive::getFile(const std::filesystem::path& path)
 {
     SIGHT_THROW_EXCEPTION_IF(
-        io::zip::exception::Read("File '" +  path.string() + "' "
-                                 "in archive '" + m_archive.string() + "' doesn't exist."),
-        !std::filesystem::exists(m_archive / path));
+        io::zip::exception::Read(
+            "File '" + path.string() + "' "
+                                       "in archive '" + m_archive.string() + "' doesn't exist."
+        ),
+        !std::filesystem::exists(m_archive / path)
+    );
 
-    SPTR(std::ifstream) is = std::make_shared< std::ifstream >();
+    SPTR(std::ifstream) is = std::make_shared<std::ifstream>();
     is->open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
     return is;
 }

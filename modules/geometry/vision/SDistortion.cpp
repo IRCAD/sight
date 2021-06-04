@@ -77,8 +77,8 @@ service::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
     service::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -119,7 +119,7 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
-    data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
+    data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
     if(inputImage && m_calibrationMismatch)
     {
         const data::mt::ObjectReadLock inputLock(inputImage);
@@ -132,11 +132,11 @@ void SDistortion::updating()
         }
     }
 
-    if (m_isEnabled)
+    if(m_isEnabled)
     {
-        data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+        data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
         SIGHT_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
-        if (camera->getIsCalibrated())
+        if(camera->getIsCalibrated())
         {
             this->remap();
         }
@@ -148,10 +148,10 @@ void SDistortion::updating()
     else
     {
         // Simple copy of the input image
-        data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
-        data::Image::sptr outputImage = this->getInOut< data::Image >( s_IMAGE_INOUT);
+        data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
+        data::Image::sptr outputImage = this->getInOut<data::Image>(s_IMAGE_INOUT);
 
-        if(inputImage && outputImage )
+        if(inputImage && outputImage)
         {
             data::mt::ObjectReadLock inputLock(inputImage);
             data::mt::ObjectWriteLock outputLock(outputImage);
@@ -172,15 +172,16 @@ void SDistortion::updating()
             if(reallocated)
             {
                 auto sig =
-                    outputImage->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                    outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
 
-            auto sig = outputImage->signal< data::Image::BufferModifiedSignalType >(
-                data::Image::s_BUFFER_MODIFIED_SIG);
+            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(
+                data::Image::s_BUFFER_MODIFIED_SIG
+            );
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -193,16 +194,17 @@ void SDistortion::updating()
 
 void SDistortion::remap()
 {
-    data::Image::csptr inputImage = this->getInput< data::Image> ( s_IMAGE_INPUT);
-    data::Image::sptr outputImage = this->getInOut< data::Image >( s_IMAGE_INOUT);
+    data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
+    data::Image::sptr outputImage = this->getInOut<data::Image>(s_IMAGE_INOUT);
 
     if(!inputImage || !outputImage || m_calibrationMismatch)
     {
         return;
     }
+
     FW_PROFILE_AVG("distort", 5);
 
-    auto sig = inputImage->signal< data::Object::ModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
+    auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
@@ -210,23 +212,26 @@ void SDistortion::remap()
 
     const auto inputSize = inputImage->getSize2();
 
-    if (inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
+    if(inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
     {
         SIGHT_WARN("Can not remap this image, it is empty.");
         return;
     }
 
-    data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
+    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
     if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
     {
         std::stringstream msg;
-        msg << "Can not distort/undistort, the camera calibration resolution [" <<
-            camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size [" <<
-            inputSize[0] << "x" << inputSize[1] << "]";
+        msg << "Can not distort/undistort, the camera calibration resolution ["
+        << camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size ["
+        << inputSize[0] << "x" << inputSize[1] << "]";
 
-        sight::ui::base::dialog::MessageDialog::show("Error", msg.str(),
-                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Error",
+            msg.str(),
+            sight::ui::base::dialog::IMessageDialog::CRITICAL
+        );
 
         m_calibrationMismatch = true;
         m_prevImageSize       = inputSize;
@@ -260,17 +265,18 @@ void SDistortion::remap()
         outputImage->setSpacing2(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
-        if (inputImage->getNumberOfComponents() != outputImage->getNumberOfComponents())
+        if(inputImage->getNumberOfComponents() != outputImage->getNumberOfComponents())
         {
             FW_DEPRECATED_MSG("Number of components should be defined by pixel format", "sight 22.0");
             outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
             outputImage->resize();
         }
     }
+
     const auto newSize = outputImage->getSize2();
 
     // Get ::cv::Mat from data::Image
-    auto inImage = std::const_pointer_cast< data::Image>(inputImage);
+    auto inImage  = std::const_pointer_cast<data::Image>(inputImage);
     ::cv::Mat img = io::opencv::Image::moveToCv(inImage);
 
     ::cv::Mat undistortedImage;
@@ -294,7 +300,6 @@ void SDistortion::remap()
 
         data::mt::ObjectWriteLock outputLock(outputImage);
         io::opencv::Image::copyFromCv(outputImage, undistortedImage);
-
 #else
         FW_PROFILE_AVG("cv::remap", 5);
 
@@ -320,14 +325,14 @@ void SDistortion::remap()
 
     if(prevSize != newSize)
     {
-        auto sigModified = outputImage->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
+        auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         {
             core::com::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
             sigModified->asyncEmit();
         }
     }
 
-    auto sigOut = outputImage->signal< data::Object::ModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
+    auto sigOut = outputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     sigOut->asyncEmit();
 }
 
@@ -350,7 +355,7 @@ void SDistortion::calibrate()
     m_calibrationMismatch = false;
     m_prevImageSize       = {0, 0, 0};
 
-    auto camera = this->getInput< data::Camera> (s_CAMERA_INPUT);
+    auto camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
     SIGHT_FATAL_IF("Object 'camera' is not found.", !camera);
 
     ::cv::Mat intrinsics;
@@ -363,21 +368,25 @@ void SDistortion::calibrate()
 
     if(m_distort)
     {
-        ::cv::Mat pixel_locations_src      = ::cv::Mat( size, CV_32FC2);
-        ::cv::Mat fractional_locations_dst = ::cv::Mat( size, CV_32FC2);
+        ::cv::Mat pixel_locations_src      = ::cv::Mat(size, CV_32FC2);
+        ::cv::Mat fractional_locations_dst = ::cv::Mat(size, CV_32FC2);
 
-        for (int i = 0; i < size.height; i++)
+        for(int i = 0 ; i < size.height ; i++)
         {
-            for (int j = 0; j < size.width; j++)
+            for(int j = 0 ; j < size.width ; j++)
             {
                 pixel_locations_src.at< ::cv::Point2f>(i, j) = ::cv::Point2f(j, i);
             }
-            ::cv::undistortPoints(pixel_locations_src.row(i),
-                                  fractional_locations_dst.row(i),
-                                  intrinsics, distCoefs);
+
+            ::cv::undistortPoints(
+                pixel_locations_src.row(i),
+                fractional_locations_dst.row(i),
+                intrinsics,
+                distCoefs
+            );
         }
 
-        ::cv::Mat pixelLocations = ::cv::Mat( size, CV_32FC2);
+        ::cv::Mat pixelLocations = ::cv::Mat(size, CV_32FC2);
 
         // Output from undistortPoints is normalized point coordinates
         const float fx = static_cast<float>(intrinsics.at<double>(0, 0));
@@ -385,12 +394,12 @@ void SDistortion::calibrate()
         const float cx = static_cast<float>(intrinsics.at<double>(0, 2));
         const float cy = static_cast<float>(intrinsics.at<double>(1, 2));
 
-        for (int i = 0; i < size.height; i++)
+        for(int i = 0 ; i < size.height ; i++)
         {
-            for (int j = 0; j < size.width; j++)
+            for(int j = 0 ; j < size.width ; j++)
             {
-                const float x = fractional_locations_dst.at< ::cv::Point2f>(i, j).x*fx + cx;
-                const float y = fractional_locations_dst.at< ::cv::Point2f>(i, j).y*fy + cy;
+                const float x = fractional_locations_dst.at< ::cv::Point2f>(i, j).x * fx + cx;
+                const float y = fractional_locations_dst.at< ::cv::Point2f>(i, j).y * fy + cy;
                 pixelLocations.at< ::cv::Point2f>(i, j) = ::cv::Point2f(x, y);
             }
         }
@@ -399,11 +408,19 @@ void SDistortion::calibrate()
     }
     else
     {
-        ::cv::initUndistortRectifyMap(intrinsics, distCoefs, ::cv::Mat(), intrinsics, size, CV_32FC1,
-                                      xyMaps[0], xyMaps[1]);
+        ::cv::initUndistortRectifyMap(
+            intrinsics,
+            distCoefs,
+            ::cv::Mat(),
+            intrinsics,
+            size,
+            CV_32FC1,
+            xyMaps[0],
+            xyMaps[1]
+        );
     }
 
-    data::Image::sptr map = this->getInOut< data::Image >( s_MAP_INOUT);
+    data::Image::sptr map = this->getInOut<data::Image>(s_MAP_INOUT);
     if(map)
     {
         ::cv::Mat cvMap;
@@ -412,7 +429,7 @@ void SDistortion::calibrate()
         data::mt::ObjectWriteLock outputLock(map);
         io::opencv::Image::copyFromCv(map, cvMap);
 
-        auto sigModified = map->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
+        auto sigModified = map->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         sigModified->asyncEmit();
     }
     else

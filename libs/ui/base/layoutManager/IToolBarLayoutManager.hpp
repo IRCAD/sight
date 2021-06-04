@@ -52,7 +52,7 @@ class UI_BASE_CLASS_API IToolBarLayoutManager : public ui::base::GuiBaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IToolBarLayoutManager, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IToolBarLayoutManager, ui::base::GuiBaseObject);
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;

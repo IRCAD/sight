@@ -30,6 +30,7 @@
 
 namespace sight::io::opencv
 {
+
 /**
  * @brief Camera calibration conversion methods.
  */

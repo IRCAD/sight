@@ -26,8 +26,10 @@
 
 namespace sight::core::runtime
 {
+
 namespace detail
 {
+
 namespace ut
 {
 
@@ -36,18 +38,19 @@ namespace ut
  */
 class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( RuntimeTest );
+CPPUNIT_TEST_SUITE(RuntimeTest);
 
 #if defined(linux) || defined(__linux) || defined(__APPLE__)
-CPPUNIT_TEST( testPosix );
+CPPUNIT_TEST(testPosix);
 #elif defined(WIN32)
-CPPUNIT_TEST( testWin32 );
+CPPUNIT_TEST(testWin32);
 #endif
 
-CPPUNIT_TEST( testRuntime );
+CPPUNIT_TEST(testRuntime);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     RuntimeTest();
 
     // interface
@@ -64,5 +67,7 @@ public:
 };
 
 } // namespace ut
+
 } // namespace detail
+
 } // namespace fwRuntime

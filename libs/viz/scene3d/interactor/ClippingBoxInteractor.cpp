@@ -29,14 +29,16 @@ namespace sight::viz::scene3d::interactor
 
 //------------------------------------------------------------------------------
 
-ClippingBoxInteractor::ClippingBoxInteractor(Layer::sptr _layer,
-                                             bool _layerOrderDependant,
-                                             const std::string& _id,
-                                             ::Ogre::SceneNode* _parentSceneNode,
-                                             const ::Ogre::Matrix4& _clippingMatrix,
-                                             const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
-                                             const std::string& _boxMtlName,
-                                             const std::string& _handleMtlName) noexcept :
+ClippingBoxInteractor::ClippingBoxInteractor(
+    Layer::sptr _layer,
+    bool _layerOrderDependant,
+    const std::string& _id,
+    ::Ogre::SceneNode* _parentSceneNode,
+    const ::Ogre::Matrix4& _clippingMatrix,
+    const widget::ClippingBox::ClippingUpdateCallbackType& _clippingUpdateCb,
+    const std::string& _boxMtlName,
+    const std::string& _handleMtlName
+) noexcept :
     IInteractor(_layer, _layerOrderDependant),
     m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
              _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
@@ -50,7 +52,6 @@ ClippingBoxInteractor::ClippingBoxInteractor(Layer::sptr _layer,
 
 ClippingBoxInteractor::~ClippingBoxInteractor() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ Ogre::MovableObject* ClippingBoxInteractor::pickObject(int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
-        const bool pickSuccess = m_picker.executeRaySceneQuery( x, y, 0xFFFFFFFF );
+        const bool pickSuccess = m_picker.executeRaySceneQuery(x, y, 0xFFFFFFFF);
 
         return pickSuccess ? m_picker.getSelectedObject() : nullptr;
     }

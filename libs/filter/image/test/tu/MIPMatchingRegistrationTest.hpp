@@ -26,19 +26,20 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class MIPMatchingRegistrationTest : public CPPUNIT_NS::TestFixture
 {
-
-CPPUNIT_TEST_SUITE( MIPMatchingRegistrationTest );
-CPPUNIT_TEST( identityTest );
-CPPUNIT_TEST( translateTransformTest );
-CPPUNIT_TEST( translateTransformWithScalesTest );
+CPPUNIT_TEST_SUITE(MIPMatchingRegistrationTest);
+CPPUNIT_TEST(identityTest);
+CPPUNIT_TEST(translateTransformTest);
+CPPUNIT_TEST(translateTransformWithScalesTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     void setUp();
     void tearDown();
 
@@ -48,4 +49,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::filter::image

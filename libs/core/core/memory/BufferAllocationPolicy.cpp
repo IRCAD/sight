@@ -30,50 +30,60 @@ namespace sight::core::memory
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::allocate(BufferType& buffer,
-                                  BufferAllocationPolicy::SizeType size)
+void BufferMallocPolicy::allocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
-    if (size > 0)
+    if(size > 0)
     {
         try
         {
-            buffer = malloc( size );
+            buffer = malloc(size);
         }
         catch(...)
         {
             buffer = nullptr;
         }
 
-        if (buffer == nullptr)
+        if(buffer == nullptr)
         {
-            SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                                       "Cannot allocate memory ("
-                                       << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
+            SIGHT_THROW_EXCEPTION_MSG(
+                core::memory::exception::Memory,
+                "Cannot allocate memory ("
+                << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) << ")."
+            );
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::reallocate(BufferType& buffer,
-                                    BufferAllocationPolicy::SizeType size)
+void BufferMallocPolicy::reallocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
     BufferType newBuffer;
-    if (size > 0)
+    if(size > 0)
     {
-        newBuffer = realloc( buffer, size );
+        newBuffer = realloc(buffer, size);
     }
     else
     {
-        free( buffer );
+        free(buffer);
         newBuffer = NULL;
     }
-    if (newBuffer == NULL && size > 0)
+
+    if(newBuffer == NULL && size > 0)
     {
-        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                                   "Cannot allocate memory ("
-                                   << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
+        SIGHT_THROW_EXCEPTION_MSG(
+            core::memory::exception::Memory,
+            "Cannot allocate memory ("
+            << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) << ")."
+        );
     }
+
     buffer = newBuffer;
 }
 
@@ -81,7 +91,7 @@ void BufferMallocPolicy::reallocate(BufferType& buffer,
 
 void BufferMallocPolicy::destroy(BufferType& buffer)
 {
-    free( buffer );
+    free(buffer);
     buffer = 0;
 }
 
@@ -94,32 +104,40 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::allocate(BufferType& buffer,
-                               BufferAllocationPolicy::SizeType size)
+void BufferNewPolicy::allocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
     try
     {
-        if (size > 0)
+        if(size > 0)
         {
-            buffer = new char[size];
+            buffer = new char [size];
         }
     }
-    catch (std::bad_alloc& ba)
+    catch(std::bad_alloc& ba)
     {
-        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                                   "bad_alloc caught: " << ba.what());
+        SIGHT_THROW_EXCEPTION_MSG(
+            core::memory::exception::Memory,
+            "bad_alloc caught: " << ba.what()
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::reallocate(BufferType& buffer,
-                                 BufferAllocationPolicy::SizeType size)
+void BufferNewPolicy::reallocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
     SIGHT_NOT_USED(buffer);
     SIGHT_NOT_USED(size);
-    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                               "Reallocation not managed for buffer allocated with 'new' operator.");
+    SIGHT_THROW_EXCEPTION_MSG(
+        core::memory::exception::Memory,
+        "Reallocation not managed for buffer allocated with 'new' operator."
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -139,24 +157,32 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::allocate(BufferType& buffer,
-                                   BufferAllocationPolicy::SizeType size)
+void BufferNoAllocPolicy::allocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
     SIGHT_NOT_USED(buffer);
     SIGHT_NOT_USED(size);
-    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                               "No Allocation Policy should not be called.");
+    SIGHT_THROW_EXCEPTION_MSG(
+        core::memory::exception::Memory,
+        "No Allocation Policy should not be called."
+    );
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::reallocate(BufferType& buffer,
-                                     BufferAllocationPolicy::SizeType size)
+void BufferNoAllocPolicy::reallocate(
+    BufferType& buffer,
+    BufferAllocationPolicy::SizeType size
+)
 {
     SIGHT_NOT_USED(buffer);
     SIGHT_NOT_USED(size);
-    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
-                               "No Allocation Policy should not be called.");
+    SIGHT_THROW_EXCEPTION_MSG(
+        core::memory::exception::Memory,
+        "No Allocation Policy should not be called."
+    );
 }
 
 //------------------------------------------------------------------------------

@@ -23,10 +23,11 @@
 #include "SeriesTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::SeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::SeriesTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -35,8 +36,8 @@ namespace ut
 void SeriesTest::setUp()
 {
     // Set up context before running a test.
-    m_series.push_back( data::ImageSeries::New() );
-    m_series.push_back( data::ModelSeries::New() );
+    m_series.push_back(data::ImageSeries::New());
+    m_series.push_back(data::ModelSeries::New());
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ void SeriesTest::tearDown()
 
 void SeriesTest::attrPatientTest()
 {
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
         CPPUNIT_ASSERT(series->getPatient());
@@ -62,7 +63,7 @@ void SeriesTest::attrPatientTest()
 
 void SeriesTest::attrStudyTest()
 {
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
         CPPUNIT_ASSERT(series->getStudy());
@@ -73,7 +74,7 @@ void SeriesTest::attrStudyTest()
 
 void SeriesTest::attrEquipmentTest()
 {
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
         CPPUNIT_ASSERT(series->getEquipment());
@@ -86,12 +87,12 @@ void SeriesTest::attrInstanceUIDTest()
 {
     const std::string instanceUID = "1337.1664.42";
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setInstanceUID( instanceUID );
+        series->setInstanceUID(instanceUID);
 
-        CPPUNIT_ASSERT_EQUAL( instanceUID, series->getInstanceUID() );
+        CPPUNIT_ASSERT_EQUAL(instanceUID, series->getInstanceUID());
     }
 }
 
@@ -101,12 +102,12 @@ void SeriesTest::attrModalityTest()
 {
     const std::string modality = "MR";
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setModality( modality );
+        series->setModality(modality);
 
-        CPPUNIT_ASSERT_EQUAL( modality, series->getModality() );
+        CPPUNIT_ASSERT_EQUAL(modality, series->getModality());
     }
 }
 
@@ -116,12 +117,12 @@ void SeriesTest::attrDateTest()
 {
     const std::string date = "02-14-2015";
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setDate( date );
+        series->setDate(date);
 
-        CPPUNIT_ASSERT_EQUAL( date, series->getDate() );
+        CPPUNIT_ASSERT_EQUAL(date, series->getDate());
     }
 }
 
@@ -131,12 +132,12 @@ void SeriesTest::attrTimeTest()
 {
     const std::string time = "14:02";
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setTime( time );
+        series->setTime(time);
 
-        CPPUNIT_ASSERT_EQUAL( time, series->getTime() );
+        CPPUNIT_ASSERT_EQUAL(time, series->getTime());
     }
 }
 
@@ -150,12 +151,12 @@ void SeriesTest::attrPerformingPhysiciansNameTest()
     performingPhysiciansName.push_back("Dr House");
     performingPhysiciansName.push_back("Dr Einstein");
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setPerformingPhysiciansName( performingPhysiciansName );
+        series->setPerformingPhysiciansName(performingPhysiciansName);
 
-        CPPUNIT_ASSERT( performingPhysiciansName == series->getPerformingPhysiciansName() );
+        CPPUNIT_ASSERT(performingPhysiciansName == series->getPerformingPhysiciansName());
     }
 }
 
@@ -165,16 +166,17 @@ void SeriesTest::attrDescriptionTest()
 {
     const std::string description = "Series";
 
-    for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
+    for(SeriesVectorType::iterator iter = m_series.begin() ; iter != m_series.end() ; ++iter)
     {
         data::Series::sptr series = *iter;
-        series->setDescription( description );
+        series->setDescription(description);
 
-        CPPUNIT_ASSERT_EQUAL( description, series->getDescription() );
+        CPPUNIT_ASSERT_EQUAL(description, series->getDescription());
     }
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::data

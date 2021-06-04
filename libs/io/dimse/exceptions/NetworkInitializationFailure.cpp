@@ -24,6 +24,7 @@
 
 namespace sight::io::dimse
 {
+
 namespace exceptions
 {
 
@@ -39,4 +40,5 @@ NetworkInitializationFailure::~NetworkInitializationFailure() noexcept
 }
 
 } //exceptions
+
 } //fwPacsIO

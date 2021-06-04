@@ -131,7 +131,7 @@ class UI_BASE_CLASS_API IGuiContainer : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IGuiContainer, service::IService)
+    SIGHT_DECLARE_SERVICE(IGuiContainer, service::IService);
 
     UI_BASE_API SPTR(ui::base::container::fwContainer) getContainer();
 

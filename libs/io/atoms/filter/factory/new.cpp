@@ -30,7 +30,7 @@ namespace sight::io::atoms::filter
 namespace factory
 {
 
-SPTR(io::atoms::filter::IFilter) New( const io::atoms::filter::registry::KeyType& classname )
+SPTR(io::atoms::filter::IFilter) New(const io::atoms::filter::registry::KeyType& classname)
 {
     return io::atoms::filter::registry::get()->create(classname);
 }

@@ -40,6 +40,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -78,8 +79,8 @@ void STransferFunction::configuring()
     const std::string pointColor = config.get(s_POINT_COLOR_CONFIG, "lightGray");
     sight::viz::scene2d::data::InitQtPen::setPenColor(m_pointsPen, pointColor);
 
-    m_pointSize   = config.get< float >(s_POINT_SIZE_CONFIG, m_pointSize);
-    m_interactive = config.get< bool >(s_INTERACTIVE_CONFIG, m_interactive);
+    m_pointSize   = config.get<float>(s_POINT_SIZE_CONFIG, m_pointSize);
+    m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +118,7 @@ service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() con
 void STransferFunction::updating()
 {
     {
-        const auto tf = this->getLockedInOut< data::TransferFunction>(s_TF_INOUT);
+        const auto tf = this->getLockedInOut<data::TransferFunction>(s_TF_INOUT);
 
         if(m_unclampedTFData.first != tf->getID())
         {
@@ -168,11 +169,11 @@ void STransferFunction::createTFPoints()
     const double viewportHeight = viewport->getHeight();
 
     // Computes point size from screen space to viewport space.
-    const double pointWidth  = (viewportWidth * pointSize)/sceneWidth;
-    const double pointHeight = (viewportHeight * pointSize)/sceneHeight;
+    const double pointWidth  = (viewportWidth * pointSize) / sceneWidth;
+    const double pointHeight = (viewportHeight * pointSize) / sceneHeight;
 
     // Get the TF.
-    const data::TransferFunction::csptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::csptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectReadLock tfLock(tf);
 
@@ -201,10 +202,10 @@ void STransferFunction::createTFPoints()
             coord.second - pointHeight / 2,
             pointWidth,
             pointHeight
-            );
-        QColor color(static_cast< int >(tfColor.r*255),
-                     static_cast< int >(tfColor.g*255),
-                     static_cast< int >(tfColor.b*255));
+        );
+        QColor color(static_cast<int>(tfColor.r * 255),
+                     static_cast<int>(tfColor.g * 255),
+                     static_cast<int>(tfColor.b * 255));
         point->setBrush(QBrush(color));
         point->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
         point->setPen(m_pointsPen);
@@ -228,11 +229,12 @@ void STransferFunction::createTFPoints()
 void STransferFunction::destroyTFPoints()
 {
     // Removes TF point items from the scene and clear the TF point vector.
-    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : m_TFPoints)
+    for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : m_TFPoints)
     {
         this->getScene2DRender()->getScene()->removeItem(tfPoint.second);
         delete tfPoint.second;
     }
+
     m_TFPoints.clear();
 }
 
@@ -246,8 +248,8 @@ void STransferFunction::createTFPolygon()
     QVector<QPointF> position;
     QLinearGradient grad;
 
-    const std::pair< Point2DType, QGraphicsEllipseItem* >& firstTFPoint = m_TFPoints.front();
-    const std::pair< Point2DType, QGraphicsEllipseItem* >& lastTFPoint  = m_TFPoints.back();
+    const std::pair<Point2DType, QGraphicsEllipseItem*>& firstTFPoint = m_TFPoints.front();
+    const std::pair<Point2DType, QGraphicsEllipseItem*>& lastTFPoint  = m_TFPoints.back();
 
     const QGraphicsEllipseItem* const firtsPoint = firstTFPoint.second;
 
@@ -255,7 +257,7 @@ void STransferFunction::createTFPolygon()
     double xEnd   = lastTFPoint.first.first;
 
     // Get the TF.
-    const data::TransferFunction::csptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::csptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectReadLock tfLock(tf);
 
@@ -267,7 +269,7 @@ void STransferFunction::createTFPolygon()
     {
         if(xBegin > viewport->getX())
         {
-            xBegin = viewport->getX()-10;
+            xBegin = viewport->getX() - 10;
             position.append(QPointF(xBegin, 0));
             position.append(QPointF(xBegin, firstTFPoint.first.second));
         }
@@ -275,6 +277,7 @@ void STransferFunction::createTFPolygon()
         {
             position.append(QPointF(xBegin, 0));
         }
+
         if(xEnd < viewport->getX() + viewport->getWidth())
         {
             xEnd = viewport->getX() + viewport->getWidth() + 10;
@@ -283,8 +286,8 @@ void STransferFunction::createTFPolygon()
 
     grad.setColorAt(0, firtsPoint->brush().color());
 
-    grad.setStart( xBegin, 0);
-    grad.setFinalStop( xEnd, 0 );
+    grad.setStart(xBegin, 0);
+    grad.setFinalStop(xEnd, 0);
 
     double distanceMax = xEnd - xBegin;
 
@@ -304,8 +307,9 @@ void STransferFunction::createTFPolygon()
         {
             position.append(QPointF(xEnd, lastTFPoint.first.second));
         }
+
         const double lastPointX = lastTFPoint.first.first;
-        grad.setColorAt((lastPointX-xBegin)/distanceMax, lastTFPoint.second->brush().color());
+        grad.setColorAt((lastPointX - xBegin) / distanceMax, lastTFPoint.second->brush().color());
     }
 
     position.append(QPointF(xEnd, 0));
@@ -315,7 +319,7 @@ void STransferFunction::createTFPolygon()
     // Sets gradient, opacity and pen to the polygon
     poly->setOpacity(m_opacity);
     poly->setPen(m_polygonsPen);
-    poly->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    poly->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     poly->setZValue(0);
     poly->setBrush(QBrush(grad));
 
@@ -337,35 +341,39 @@ void STransferFunction::destroyTFPolygon()
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::buildLinearPolygons(QVector<QPointF>& _position,
-                                            QLinearGradient& _grad,
-                                            double _distanceMax)
+void STransferFunction::buildLinearPolygons(
+    QVector<QPointF>& _position,
+    QLinearGradient& _grad,
+    double _distanceMax
+)
 {
-    for(auto tfPointIt = m_TFPoints.cbegin(); tfPointIt != m_TFPoints.cend()-1; ++tfPointIt)
+    for(auto tfPointIt = m_TFPoints.cbegin() ; tfPointIt != m_TFPoints.cend() - 1 ; ++tfPointIt)
     {
         const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p2((tfPointIt+1)->first.first, (tfPointIt+1)->first.second);
+        const QPointF p2((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
 
         _position.append(p1);
         _position.append(p2);
 
         // Builds the gradient
-        _grad.setColorAt((p1.x() - _position[0].x())/_distanceMax, (tfPointIt->second)->brush().color());
+        _grad.setColorAt((p1.x() - _position[0].x()) / _distanceMax, (tfPointIt->second)->brush().color());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::buildNearestPolygons(QVector<QPointF>& _position,
-                                             QLinearGradient& _grad,
-                                             double _distanceMax)
+void STransferFunction::buildNearestPolygons(
+    QVector<QPointF>& _position,
+    QLinearGradient& _grad,
+    double _distanceMax
+)
 {
-    for(auto tfPointIt = m_TFPoints.cbegin(); tfPointIt != m_TFPoints.cend()-1; ++tfPointIt)
+    for(auto tfPointIt = m_TFPoints.cbegin() ; tfPointIt != m_TFPoints.cend() - 1 ; ++tfPointIt)
     {
         const QPointF p1(tfPointIt->first.first, tfPointIt->first.second);
-        const QPointF p4((tfPointIt+1)->first.first, (tfPointIt+1)->first.second);
+        const QPointF p4((tfPointIt + 1)->first.first, (tfPointIt + 1)->first.second);
 
-        const QPointF p2(p1.x() + (p4.x() - p1.x())/2., p1.y());
+        const QPointF p2(p1.x() + (p4.x() - p1.x()) / 2., p1.y());
         const QPointF p3(p2.x(), p4.y());
 
         _position.append(p1);
@@ -373,13 +381,13 @@ void STransferFunction::buildNearestPolygons(QVector<QPointF>& _position,
         _position.append(p3);
         _position.append(p4);
 
-        const double d1 = (p1.x() - _position[0].x())/_distanceMax;
-        const double d2 = (p2.x() - _position[0].x())/_distanceMax;
-        const double d3 = d2 + std::numeric_limits< double >::epsilon();
-        const double d4 = (p4.x() - _position[0].x())/_distanceMax;
+        const double d1 = (p1.x() - _position[0].x()) / _distanceMax;
+        const double d2 = (p2.x() - _position[0].x()) / _distanceMax;
+        const double d3 = d2 + std::numeric_limits<double>::epsilon();
+        const double d4 = (p4.x() - _position[0].x()) / _distanceMax;
 
         const QColor c1 = (tfPointIt->second)->brush().color();
-        const QColor c4 = ((tfPointIt+1)->second)->brush().color();
+        const QColor c4 = ((tfPointIt + 1)->second)->brush().color();
 
         _grad.setColorAt(d1, c1);
         _grad.setColorAt(d2, c1);
@@ -393,10 +401,11 @@ void STransferFunction::buildNearestPolygons(QVector<QPointF>& _position,
 void STransferFunction::buildLayer()
 {
     // Adds graphics items vectors to the layer.
-    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : m_TFPoints)
+    for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : m_TFPoints)
     {
         m_layer->addToGroup(tfPoint.second);
     }
+
     m_layer->addToGroup(m_TFPolygon);
 
     // Adjusts the layer's position and zValue depending on the associated axis.
@@ -424,8 +433,8 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
     // If a point as already been captured.
     if(m_capturedTFPoint)
     {
-        if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-           _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+           && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
         {
             // Releases capture point.
             this->leftButtonReleaseEvent();
@@ -444,8 +453,8 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
             _event.setAccepted(true);
             return;
         }
-        else if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton &&
-                _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
+        else if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
+                && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonRelease)
         {
             // Releases capture subTF.
             this->midButtonReleaseEvent();
@@ -454,12 +463,14 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
         }
     }
 
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a point is clicked.
-    for(std::pair< Point2DType, QGraphicsEllipseItem* >& tfPoint : m_TFPoints)
+    for(std::pair<Point2DType, QGraphicsEllipseItem*>& tfPoint : m_TFPoints)
     {
         // If a point as already been captured.
         if(m_capturedTFPoint == &tfPoint)
@@ -471,29 +482,29 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
                 _event.setAccepted(true);
                 return;
             }
-
         }
         else if(items.indexOf(tfPoint.second) >= 0)
         {
             // If there is a double click on a point, open a color dialog.
-            if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-               _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+            if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+               && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
             {
                 this->leftButtonDoubleClickOnPointEvent(tfPoint);
                 _event.setAccepted(true);
                 return;
             }
             // If left button is pressed on a point, set the TF as current.
-            else if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-                    _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+            else if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+                    && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
             {
                 this->leftButtonClickOnPointEvent(tfPoint);
                 _event.setAccepted(true);
                 return;
             }
+
             // If right button is pressed on a point, remove it.
-            if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton &&
-               _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+            if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
+               && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
             {
                 this->rightButtonClickOnPointEvent(tfPoint);
                 _event.setAccepted(true);
@@ -503,8 +514,8 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
     }
 
     // Adds a new TF point.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::LeftButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonDoubleClick)
     {
         this->leftButtonDoubleClickEvent(_event);
         _event.setAccepted(true);
@@ -512,16 +523,16 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
     }
 
     // If midlle button is pressed, select the current TF to adjust the window/level.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::MidButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
         this->midButtonClickEvent(_event);
         return;
     }
 
     // If right button is pressed, open a context menu to manage multiple actions.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton &&
-       _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
+    if(_event.getButton() == sight::viz::scene2d::data::Event::RightButton
+       && _event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress)
     {
         this->rightButtonCLickEvent(_event);
         _event.setAccepted(true);
@@ -529,9 +540,9 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
     }
 
     // If the middle button wheel moves, change the whole subTF opacity.
-    if(_event.getButton() == sight::viz::scene2d::data::Event::NoButton &&
-       (_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown ||
-        _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp))
+    if(_event.getButton() == sight::viz::scene2d::data::Event::NoButton
+       && (_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown
+           || _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp))
     {
         this->midButtonWheelMoveEvent(_event);
         return;
@@ -540,7 +551,7 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint)
+void STransferFunction::leftButtonClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint)
 {
     // Stores the captured TF point in case it's moved.
     m_capturedTFPoint = &_TFPoint;
@@ -589,6 +600,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     {
         newCoord.setY(0);
     }
+
     if(newCoord.getY() < -1)
     {
         newCoord.setY(-1);
@@ -623,8 +635,10 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     }
 
     // Moves the selected TF point by the difference between the old coordinates and the new ones.
-    m_capturedTFPoint->second->moveBy(newCoord.getX() - m_capturedTFPoint->first.first,
-                                      newCoord.getY() - m_capturedTFPoint->first.second);
+    m_capturedTFPoint->second->moveBy(
+        newCoord.getX() - m_capturedTFPoint->first.first,
+        newCoord.getY() - m_capturedTFPoint->first.second
+    );
 
     // Stores new coordinates to the captured one.
     m_capturedTFPoint->first.first  = newCoord.getX();
@@ -639,7 +653,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectWriteLock tfLock(tf);
 
@@ -648,10 +662,11 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     {
         pointIndex = m_TFPoints.size() - 1 - pointIndex;
     }
+
     // Retrieves the TF point.
     const data::TransferFunction::TFDataType tfData = tf->getTFData();
     auto tfDataIt                                   = tfData.begin();
-    for(unsigned i = 0; i < pointIndex; ++i)
+    for(unsigned i = 0 ; i < pointIndex ; ++i)
     {
         tfDataIt++;
     }
@@ -699,8 +714,9 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -718,16 +734,18 @@ void STransferFunction::leftButtonReleaseEvent()
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint)
+void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint)
 {
     // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
     QColor oldColor = _TFPoint.second->brush().color();
     oldColor.setAlphaF(-_TFPoint.first.second);
 
-    QColor newColor = QColorDialog::getColor(oldColor,
-                                             this->getScene2DRender()->getView(),
-                                             QString("Choose the point color"),
-                                             QColorDialog::ShowAlphaChannel);
+    QColor newColor = QColorDialog::getColor(
+        oldColor,
+        this->getScene2DRender()->getView(),
+        QString("Choose the point color"),
+        QColorDialog::ShowAlphaChannel
+    );
 
     if(newColor.isValid())
     {
@@ -738,7 +756,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
         size_t pointIndex = pointIt - m_TFPoints.begin();
 
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
         SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         {
@@ -752,7 +770,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
             // Retrieves the TF point.
             data::TransferFunction::TFDataType tfData = tf->getTFData();
             auto tfDataIt                             = tfData.begin();
-            for(unsigned i = 0; i < pointIndex; ++i)
+            for(unsigned i = 0 ; i < pointIndex ; ++i)
             {
                 tfDataIt++;
             }
@@ -764,24 +782,25 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
             tf->eraseTFValue(tfValue);
 
             // Adds the new one with the new color.
-            data::TransferFunction::TFColor tfColor(newColor.red()/255.,
-                                                    newColor.green()/255.,
-                                                    newColor.blue()/255.,
-                                                    newColor.alpha()/255.);
+            data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
+                                                    newColor.green() / 255.,
+                                                    newColor.blue() / 255.,
+                                                    newColor.alpha() / 255.);
             tf->addTFColor(tfValue, tfColor);
         }
 
         // Sends the modification signal.
-        const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-            data::TransferFunction::s_POINTS_MODIFIED_SIG);
+        const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+            data::TransferFunction::s_POINTS_MODIFIED_SIG
+        );
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
 
         // Updates the displayed TF point.
-        const double newYPos = -newColor.alpha()/255.;
-        _TFPoint.second->moveBy(0.,  oldColor.alphaF() + newYPos);
+        const double newYPos = -newColor.alpha() / 255.;
+        _TFPoint.second->moveBy(0., oldColor.alphaF() + newYPos);
         _TFPoint.first.second = newYPos;
         newColor.setAlpha(255);
         _TFPoint.second->setBrush(QBrush(newColor));
@@ -795,7 +814,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >& _TFPoint)
+void STransferFunction::rightButtonClickOnPointEvent(std::pair<Point2DType, QGraphicsEllipseItem*>& _TFPoint)
 {
     // Updates the TF.
     auto pointIt =
@@ -804,7 +823,7 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
     size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     {
@@ -819,7 +838,7 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
         // Retrieves the TF point.
         data::TransferFunction::TFDataType tfData = tf->getTFData();
         auto tfDataIt                             = tfData.begin();
-        for(unsigned i = 0; i < pointIndex; ++i)
+        for(unsigned i = 0 ; i < pointIndex ; ++i)
         {
             tfDataIt++;
         }
@@ -836,13 +855,13 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
         double max = m_TFPoints.rbegin()->first.first;
 
         // If the removed point is the last or the first, the min max is wrong and need to be updated.
-        if((pointIndex == 0 && window >= 0) || (pointIndex == m_TFPoints.size()-1 && window < 0))
+        if((pointIndex == 0 && window >= 0) || (pointIndex == m_TFPoints.size() - 1 && window < 0))
         {
-            min = (m_TFPoints.begin()+1)->first.first;
+            min = (m_TFPoints.begin() + 1)->first.first;
         }
-        else if((pointIndex == m_TFPoints.size()-1 && window >= 0) || (pointIndex == 0 && window < 0))
+        else if((pointIndex == m_TFPoints.size() - 1 && window >= 0) || (pointIndex == 0 && window < 0))
         {
-            max = (m_TFPoints.rbegin()+1)->first.first;
+            max = (m_TFPoints.rbegin() + 1)->first.first;
         }
 
         // Updates the window/level.
@@ -857,8 +876,9 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
     }
 
     // Sends the modification signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -885,13 +905,14 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
     {
         newCoord.setY(0);
     }
+
     if(newCoord.getY() < -1)
     {
         newCoord.setY(-1);
     }
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     {
         const data::mt::ObjectWriteLock tfLock(tf);
@@ -902,21 +923,23 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
         if(newCoord.getX() < m_TFPoints.front().first.first)
         {
             const QColor firstColor = m_TFPoints.front().second->brush().color();
-            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
-                                                       firstColor.green()/255.,
-                                                       firstColor.blue()/255.,
-                                                       -newCoord.getY());
-
+            newColor = data::TransferFunction::TFColor(
+                firstColor.red() / 255.,
+                firstColor.green() / 255.,
+                firstColor.blue() / 255.,
+                -newCoord.getY()
+            );
         }
         // The new coord becomes the new last TF point, get the current last color in the list.
         else if(newCoord.getX() > m_TFPoints.back().first.first)
         {
             const QColor firstColor = m_TFPoints.back().second->brush().color();
-            newColor = data::TransferFunction::TFColor(firstColor.red()/255.,
-                                                       firstColor.green()/255.,
-                                                       firstColor.blue()/255.,
-                                                       -newCoord.getY());
-
+            newColor = data::TransferFunction::TFColor(
+                firstColor.red() / 255.,
+                firstColor.green() / 255.,
+                firstColor.blue() / 255.,
+                -newCoord.getY()
+            );
         }
         // Gets an interpolate color since the new point is between two ohers.
         else
@@ -967,8 +990,9 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::PointsModifiedSignalType >(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -982,8 +1006,10 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
 
 void STransferFunction::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
 {
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a polygon is clicked.
@@ -993,7 +1019,7 @@ void STransferFunction::midButtonClickEvent(sight::viz::scene2d::data::Event& _e
         sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
         SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         // Stores the level in window/level space and the window in screen space.
@@ -1027,8 +1053,9 @@ void STransferFunction::mouseMoveOnTFEvent(const sight::viz::scene2d::data::Even
         tf->setLevel(tf->getLevel() + levelDelta);
 
         // Sends the signal.
-        const auto sig = tf->signal< data::TransferFunction::WindowingModifiedSignalType >(
-            data::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
+            data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+        );
         {
             const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit(tf->getWindow(), tf->getLevel());
@@ -1054,15 +1081,17 @@ void STransferFunction::midButtonReleaseEvent()
 
 void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& _event)
 {
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a polygon is clicked.
     if(items.indexOf(m_TFPolygon) >= 0)
     {
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
         SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         // Creates the menu.
@@ -1093,8 +1122,10 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
 
 void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _event)
 {
-    const QPoint scenePos = QPoint(static_cast< int >(_event.getCoord().getX()),
-                                   static_cast< int >(_event.getCoord().getY()));
+    const QPoint scenePos = QPoint(
+        static_cast<int>(_event.getCoord().getX()),
+        static_cast<int>(_event.getCoord().getY())
+    );
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
     // Checks if a polygon is clicked.
@@ -1110,8 +1141,8 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
         bool usefull = false;
         for(auto& data : tfData)
         {
-            if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp && data.second.a > 0. &&
-               data.second.a < 1.)
+            if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp && data.second.a > 0.
+               && data.second.a < 1.)
             {
                 usefull = true;
                 break;
@@ -1141,12 +1172,13 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
             }
 
             // Updates the TF.
-            const auto tf = this->getLockedInOut< data::TransferFunction>(s_TF_INOUT);
+            const auto tf = this->getLockedInOut<data::TransferFunction>(s_TF_INOUT);
             tf->setTFData(tfData);
 
             // Sends the signal.
-            const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-                data::TransferFunction::s_MODIFIED_SIG);
+            const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+                data::TransferFunction::s_MODIFIED_SIG
+            );
             {
                 const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -1165,7 +1197,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
 void STransferFunction::clampTF(bool _clamp)
 {
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     // Set the clamp status.
@@ -1175,8 +1207,9 @@ void STransferFunction::clampTF(bool _clamp)
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-        data::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+        data::TransferFunction::s_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1193,7 +1226,7 @@ void STransferFunction::clampTF(bool _clamp)
 void STransferFunction::toggleLinearTF(bool _linear)
 {
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
+    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
     SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     // Set the interpolation mode.
@@ -1203,8 +1236,9 @@ void STransferFunction::toggleLinearTF(bool _linear)
     }
 
     // Sends the signal.
-    const auto sig = tf->signal< data::TransferFunction::ModifiedSignalType >(
-        data::TransferFunction::s_MODIFIED_SIG);
+    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
+        data::TransferFunction::s_MODIFIED_SIG
+    );
     {
         const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -1217,4 +1251,5 @@ void STransferFunction::toggleLinearTF(bool _linear)
 }
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

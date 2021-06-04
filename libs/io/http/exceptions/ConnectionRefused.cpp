@@ -38,4 +38,5 @@ ConnectionRefused::~ConnectionRefused() noexcept
 }
 
 } /* namespace exceptions */
+
 } /* namespace sight::io::http */

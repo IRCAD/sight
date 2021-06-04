@@ -27,15 +27,18 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  *
  * @brief class to manage conversion between data::Composite and STP_TDATA in igtl::TrackingDataMessage
  */
-class IO_IGTL_CLASS_API TrackingStopConverter :  public IConverter
+class IO_IGTL_CLASS_API TrackingStopConverter : public IConverter
 {
 public:
+
     /// Constructor
     IO_IGTL_API TrackingStopConverter();
 
@@ -43,13 +46,13 @@ public:
     IO_IGTL_API ~TrackingStopConverter();
 
     /// convert a ::igtl::MessageBase to a data::Object
-    IO_IGTL_API data::Object::sptr fromIgtlMessage (::igtl::MessageBase::Pointer const src) const;
+    IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer const src) const;
 
     /**
      * @brief convert a data::Composite to a igtl::TrackingDataMessage
      * @return an igtl::TrackingDataMessage converted from an data::Composite
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
+    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
 
     /**
      * @brief create new TrackingStopConverter
@@ -77,5 +80,7 @@ private:
     /// fwData type supported for conversion
     static const std::string s_FWDATA_OBJECT_TYPE;
 };
+
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

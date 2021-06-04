@@ -62,13 +62,14 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(ImageTransparency, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(ImageTransparency, sight::ui::base::IEditor);
 
     MODULE_UI_QT_API ImageTransparency() noexcept;
 
     MODULE_UI_QT_API virtual ~ImageTransparency() noexcept;
 
 protected:
+
     /// Starts editor.
     void starting() override;
 
@@ -81,7 +82,7 @@ protected:
 
     void configuring() override;
 
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -116,11 +117,10 @@ private:
     /// Notify VISIBILITY event on image
     void notifyVisibility(bool isVisible);
 
-    QPointer< QSlider >   m_valueSlider;
-    QPointer< QCheckBox > m_valueCheckBox;
-    QPointer< QAction >   m_action;
+    QPointer<QSlider> m_valueSlider;
+    QPointer<QCheckBox> m_valueCheckBox;
+    QPointer<QAction> m_action;
     std::string m_shortcut;
-
 };
 
 } // uiImageQt

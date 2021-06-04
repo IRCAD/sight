@@ -43,8 +43,10 @@ class QTimer;
 
 namespace sight::core::com
 {
-template< typename F >
+
+template<typename F>
 struct Slot;
+
 }
 
 namespace sight::module::ui::debug
@@ -60,7 +62,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(DumpEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(DumpEditor, sight::ui::base::IEditor);
 
     /// Constructor. Does nothing.
     MODULE_UI_DEBUG_API DumpEditor() noexcept;
@@ -88,7 +90,7 @@ protected:
     void configuring() override;
 
     /// Overrides. Does nothing.
-    void info( std::ostream& _sstream ) override;
+    void info(std::ostream& _sstream) override;
 
     /// Start m_updateTimer, call on buffManager signal emit ( see m_refreshSignal )
     void onUpdate();
@@ -107,16 +109,16 @@ private:
 
     typedef core::com::Slot<void ()> UpdateSlotType;
 
-    QFutureWatcher< core::memory::BufferManager::BufferInfoMapType > m_watcher;
+    QFutureWatcher<core::memory::BufferManager::BufferInfoMapType> m_watcher;
 
     // Managed buffers
-    std::vector< const void* const* > m_objectsUID;
+    std::vector<const void* const*> m_objectsUID;
 
     /// Widget to print some information on managed buffer by system
     QTableWidget* m_list;
 
     /// Button to force refresh
-    QPushButton*  m_refresh;
+    QPushButton* m_refresh;
 
     /// Mapper use in list widget to map each dump button to an action
     QSignalMapper* m_mapper;

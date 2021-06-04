@@ -85,7 +85,7 @@ void SOrganMaterialEditor::configuring()
 void SOrganMaterialEditor::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_diffuseColourButton = new QPushButton(tr("Diffuse"));
     m_diffuseColourButton->setToolTip(tr("Selected organ's diffuse color"));
@@ -96,7 +96,7 @@ void SOrganMaterialEditor::starting()
     m_ambientColourButton->setMinimumSize(m_ambientColourButton->sizeHint());
 
     QLabel* const transparencyLabel = new QLabel(tr("Transparency : "));
-    m_opacitySlider = new QSlider( Qt::Horizontal);
+    m_opacitySlider = new QSlider(Qt::Horizontal);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
     m_opacitySlider->setRange(0, 100);
     m_opacitySlider->setTickInterval(20);
@@ -109,17 +109,17 @@ void SOrganMaterialEditor::starting()
     QVBoxLayout* const mainLayout = new QVBoxLayout();
 
     QHBoxLayout* const buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget( m_diffuseColourButton, 0 );
-    buttonLayout->addWidget( m_ambientColourButton, 0 );
-    mainLayout->addLayout( buttonLayout, 0);
+    buttonLayout->addWidget(m_diffuseColourButton, 0);
+    buttonLayout->addWidget(m_ambientColourButton, 0);
+    mainLayout->addLayout(buttonLayout, 0);
 
-    QHBoxLayout* const transparencyLayout = new QHBoxLayout( );
-    transparencyLayout->addWidget( transparencyLabel, 0);
-    transparencyLayout->addWidget( m_opacitySlider, 1 );
-    transparencyLayout->addWidget( m_transparencyValue, 0);
-    mainLayout->addLayout( transparencyLayout, 0);
+    QHBoxLayout* const transparencyLayout = new QHBoxLayout();
+    transparencyLayout->addWidget(transparencyLabel, 0);
+    transparencyLayout->addWidget(m_opacitySlider, 1);
+    transparencyLayout->addWidget(m_transparencyValue, 0);
+    mainLayout->addLayout(transparencyLayout, 0);
 
-    qtContainer->setLayout( mainLayout );
+    qtContainer->setLayout(mainLayout);
     qtContainer->setEnabled(false);
 
     QObject::connect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
@@ -151,18 +151,18 @@ void SOrganMaterialEditor::stopping()
 
 void SOrganMaterialEditor::onDiffuseColorButton()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
 
-    int red   = static_cast<int>(material->diffuse()->red()*255);
-    int green = static_cast<int>(material->diffuse()->green()*255);
-    int blue  = static_cast<int>(material->diffuse()->blue()*255);
+    int red   = static_cast<int>(material->diffuse()->red() * 255);
+    int green = static_cast<int>(material->diffuse()->green() * 255);
+    int blue  = static_cast<int>(material->diffuse()->blue() * 255);
 
     // Create Color choice dialog.
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -183,18 +183,18 @@ void SOrganMaterialEditor::onDiffuseColorButton()
 
 void SOrganMaterialEditor::onAmbientColorButton()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
 
-    const int red   = static_cast<int>(material->ambient()->red()*255.f);
-    const int green = static_cast<int>(material->ambient()->green()*255.f);
-    const int blue  = static_cast<int>(material->ambient()->blue()*255.f);
+    const int red   = static_cast<int>(material->ambient()->red() * 255.f);
+    const int green = static_cast<int>(material->ambient()->green() * 255.f);
+    const int blue  = static_cast<int>(material->ambient()->blue() * 255.f);
 
     // Create Color choice dialog.
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -215,13 +215,13 @@ void SOrganMaterialEditor::onAmbientColorButton()
 
 void SOrganMaterialEditor::onOpacitySlider(int _value)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
 
-    material->diffuse()->alpha() = static_cast<float>(_value)/100.f;
+    material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
     std::stringstream ss;
     ss << _value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -233,11 +233,12 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 
 void SOrganMaterialEditor::refreshMaterial()
 {
-    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+        this->getContainer()
+    );
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -248,11 +249,11 @@ void SOrganMaterialEditor::refreshMaterial()
 
     {
         const QColor materialDiffuseColor = QColor(
-            static_cast<int>(material->diffuse()->red()*255.f),
-            static_cast<int>(material->diffuse()->green()*255.f),
-            static_cast<int>(material->diffuse()->blue()*255.f),
-            static_cast<int>(material->diffuse()->alpha()*255.f)
-            );
+            static_cast<int>(material->diffuse()->red() * 255.f),
+            static_cast<int>(material->diffuse()->green() * 255.f),
+            static_cast<int>(material->diffuse()->blue() * 255.f),
+            static_cast<int>(material->diffuse()->alpha() * 255.f)
+        );
 
         const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
         QPixmap pix(iconSize, iconSize);
@@ -262,11 +263,11 @@ void SOrganMaterialEditor::refreshMaterial()
 
     {
         const QColor materialAmbientColor = QColor(
-            static_cast<int>(material->ambient()->red()*255.f),
-            static_cast<int>(material->ambient()->green()*255.f),
-            static_cast<int>(material->ambient()->blue()*255.f),
-            static_cast<int>(material->ambient()->alpha()*255.f)
-            );
+            static_cast<int>(material->ambient()->red() * 255.f),
+            static_cast<int>(material->ambient()->green() * 255.f),
+            static_cast<int>(material->ambient()->blue() * 255.f),
+            static_cast<int>(material->ambient()->alpha() * 255.f)
+        );
 
         const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
         QPixmap pix(iconSize, iconSize);
@@ -274,9 +275,9 @@ void SOrganMaterialEditor::refreshMaterial()
         m_ambientColourButton->setIcon(QIcon(pix));
     }
 
-    const int a = static_cast<int>(material->diffuse()->alpha()*100.f);
+    const int a = static_cast<int>(material->diffuse()->alpha() * 100.f);
     lock.unlock();
-    m_opacitySlider->setValue( a );
+    m_opacitySlider->setValue(a);
     std::stringstream ss;
     ss << a << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -286,15 +287,16 @@ void SOrganMaterialEditor::refreshMaterial()
 
 void SOrganMaterialEditor::materialNotification()
 {
-    data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
+    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
     SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
-    data::Object::ModifiedSignalType::sptr sig
-        = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(
-              data::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig =
+        reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
+            data::Object::s_MODIFIED_SIG
+        );
     sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::module

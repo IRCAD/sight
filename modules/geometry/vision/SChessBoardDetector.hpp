@@ -77,7 +77,8 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public service::IController
 {
 public:
-    SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::IController)
+
+    SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::IController);
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;
@@ -135,18 +136,18 @@ private:
     std::string m_scaleKey;
 
     /// Width of the chessboard we're looking for.
-    size_t m_width { 11 };
+    size_t m_width {11};
 
     /// Height of the chessboard we're looking for.
-    size_t m_height { 8 };
+    size_t m_height {8};
 
-    float m_scale { 1.f };
+    float m_scale {1.f};
 
     /// Last detected chessboard points in each image. Null if detection failed.
-    std::vector< data::PointList::sptr > m_pointLists;
+    std::vector<data::PointList::sptr> m_pointLists;
 
     /// Last images on which a chessboard was detected. Null if detection failed.
-    std::vector< data::Image::sptr > m_images;
+    std::vector<data::Image::sptr> m_images;
 };
 
 } //namespace sight::module::geometry::vision

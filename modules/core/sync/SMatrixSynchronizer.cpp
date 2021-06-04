@@ -54,7 +54,7 @@ SMatrixSynchronizer::SMatrixSynchronizer() noexcept :
     m_slotUpdateMatrix = core::com::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
     core::com::HasSlots::m_slots(s_UPDATE_MATRIX_SLOT, m_slotUpdateMatrix);
-    core::com::HasSlots::m_slots.setWorker( m_associatedWorker );
+    core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 
 // ----------------------------------------------------------------------------
@@ -79,12 +79,11 @@ void SMatrixSynchronizer::stopping()
 
 void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
-    data::Matrix4::sptr matrix3D   = this->getInOut< data::Matrix4 >("matrix");
-    data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >("TL");
+    data::Matrix4::sptr matrix3D   = this->getInOut<data::Matrix4>("matrix");
+    data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>("TL");
 
-    if (timestamp > m_lastTimestamp)
+    if(timestamp > m_lastTimestamp)
     {
-
         core::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
         CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
         SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
@@ -92,19 +91,19 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
 
         const float* values = buffer->getElement(0);
 
-        for(unsigned int i = 0; i < 4; ++i)
+        for(unsigned int i = 0 ; i < 4 ; ++i)
         {
-            for(unsigned int j = 0; j < 4; ++j)
+            for(unsigned int j = 0 ; j < 4 ; ++j)
             {
-                matrix3D->setCoefficient(i, j, values[i*4+j]);
+                matrix3D->setCoefficient(i, j, values[i * 4 + j]);
             }
         }
 
-        auto sig = matrix3D->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+        auto sig = matrix3D->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::module::sync
+} // namespace sight::module::sync

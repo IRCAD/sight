@@ -26,10 +26,11 @@
 #include "data/Node.hpp"
 #include "data/StructureTraits.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ROITraits));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ROITraits));
 
 namespace sight::data
 {
+
 /**
  * @brief   This class defines ROI traits.
  *
@@ -46,8 +47,9 @@ namespace sight::data
 class DATA_CLASS_API ROITraits : public data::Object
 {
 public:
-    SIGHT_DECLARE_CLASS(ROITraits, data::Object, data::factory::New< ROITraits >)
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ROITraits));
+
+    SIGHT_DECLARE_CLASS(ROITraits, data::Object, data::factory::New<ROITraits>);
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ROITraits));
 
     /**
      * @brief Constructor
@@ -73,20 +75,20 @@ public:
      * @{
      * @brief Get/Set value of the ROI evaluated expression.
      */
-    StructureTraits::ROIExpression& getEvaluatedExp ();
-    const StructureTraits::ROIExpression& getEvaluatedExp () const;
-    void setEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp);
+    StructureTraits::ROIExpression& getEvaluatedExp();
+    const StructureTraits::ROIExpression& getEvaluatedExp() const;
+    void setEvaluatedExp(const StructureTraits::ROIExpression& _evaluatedExp);
     /// @}
 
     /// Set the ROI mask node used for ROI
-    DATA_API void setMaskOpNode(const data::Node::sptr& maskOpNode );
+    DATA_API void setMaskOpNode(const data::Node::sptr& maskOpNode);
 
     /// Get the ROI mask node used for ROI, the only case where sptr can be null is when m_evaluatedExp correspond to
     // "W" ( W <=> World <=> no roi constraint ).
     DATA_API data::Node::sptr getMaskOpNode();
 
     /// Set the associated structure traits
-    DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits );
+    DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits);
 
     /// Get the associated structure traits
     DATA_API data::StructureTraits::sptr getStructureTraits();
@@ -132,21 +134,21 @@ inline void ROITraits::setIdentifier(const std::string& _identifier)
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::ROIExpression& ROITraits::getEvaluatedExp ()
+inline StructureTraits::ROIExpression& ROITraits::getEvaluatedExp()
 {
     return m_evaluatedExp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const StructureTraits::ROIExpression& ROITraits::getEvaluatedExp () const
+inline const StructureTraits::ROIExpression& ROITraits::getEvaluatedExp() const
 {
     return m_evaluatedExp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ROITraits::setEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp)
+inline void ROITraits::setEvaluatedExp(const StructureTraits::ROIExpression& _evaluatedExp)
 {
     m_evaluatedExp = _evaluatedExp;
 }

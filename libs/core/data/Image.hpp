@@ -38,7 +38,7 @@
 #include <filesystem>
 #include <vector>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Image));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Image));
 
 namespace sight::data
 {
@@ -179,9 +179,10 @@ class DATA_CLASS_API Image : public data::Object,
                              public core::memory::IBuffered
 {
 public:
-    SIGHT_DECLARE_CLASS(Image, data::Object, data::factory::New< Image >)
+
+    SIGHT_DECLARE_CLASS(Image, data::Object, data::factory::New<Image>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Image))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Image))
 
     /// Image size
     typedef std::array<size_t, 3> Size;
@@ -192,7 +193,7 @@ public:
 
     typedef Size::value_type IndexType;
     typedef std::uint8_t BufferType;
-    typedef ::boost::shared_array< BufferType > SharedArray;
+    typedef ::boost::shared_array<BufferType> SharedArray;
 
     /// Image format
     enum PixelFormat
@@ -217,13 +218,13 @@ public:
     DATA_API ~Image() noexcept override;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
-    DATA_API void copyInformation( Image::csptr _source );
+    DATA_API void copyInformation(Image::csptr _source);
 
     /**
      * @brief Get image spacing
@@ -265,16 +266,16 @@ public:
     /** @{
      *  @brief Get/set preferred window center
      */
-    double  getWindowCenter () const;
+    double getWindowCenter() const;
 
-    void setWindowCenter (double val);
+    void setWindowCenter(double val);
     /// @}
 
     /** @{
      *  @brief Get/set preferred window width
      */
-    double  getWindowWidth () const;
-    void setWindowWidth (double val);
+    double getWindowWidth() const;
+    void setWindowWidth(double val);
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
@@ -283,7 +284,7 @@ public:
     /** @{
      *  @brief Get/set preferred window center
      */
-    size_t  getNumberOfComponents() const;
+    size_t getNumberOfComponents() const;
 
     void setNumberOfComponents(size_t val);
     /// @}
@@ -310,7 +311,7 @@ public:
      */
     DATA_API size_t resize();
 
-    DATA_API size_t resize(IndexType x, IndexType y,  IndexType z, const core::tools::Type& type, PixelFormat format);
+    DATA_API size_t resize(IndexType x, IndexType y, IndexType z, const core::tools::Type& type, PixelFormat format);
     DATA_API size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
     /// @}
 
@@ -324,47 +325,47 @@ public:
      * @{
      */
     /// Type of signal when image's buffer is added
-    typedef core::com::Signal< void () > BufferModifiedSignalType;
+    typedef core::com::Signal<void ()> BufferModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
-    typedef core::com::Signal< void (SPTR(data::Point)) > LandmarkAddedSignalType;
+    typedef core::com::Signal<void (SPTR(data::Point))> LandmarkAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
-    typedef core::com::Signal< void (SPTR(data::Point)) > LandmarkRemovedSignalType;
+    typedef core::com::Signal<void (SPTR(data::Point))> LandmarkRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::Signal< void (bool) > LandmarkDisplayedSignalType;
+    typedef core::com::Signal<void (bool)> LandmarkDisplayedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::Signal< void (bool) > DistanceDisplayedSignalType;
+    typedef core::com::Signal<void (bool)> DistanceDisplayedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::Signal< void (SPTR(data::PointList)) > DistanceAddedSignalType;
+    typedef core::com::Signal<void (SPTR(data::PointList))> DistanceAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef core::com::Signal< void (CSPTR(data::PointList)) > DistanceRemovedSignalType;
+    typedef core::com::Signal<void (CSPTR(data::PointList))> DistanceRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
-    typedef core::com::Signal< void (int, int, int) > SliceIndexModifiedSignalType;
+    typedef core::com::Signal<void (int, int, int)> SliceIndexModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_SLICE_INDEX_MODIFIED_SIG;
 
     /// Type of signal when slice type is modified (from slice type, to slice type)
-    typedef core::com::Signal< void (int, int) > SliceTypeModifiedSignalType;
+    typedef core::com::Signal<void (int, int)> SliceTypeModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
 
     /// Type of signal when visibility is modified
-    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
+    typedef core::com::Signal<void (bool)> VisibilityModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
 
     /// Type of signal when visibility is modified
-    typedef core::com::Signal< void () > TransparencyModifiedSignalType;
+    typedef core::com::Signal<void ()> TransparencyModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
 
     /**
@@ -376,9 +377,9 @@ public:
      * @{
      */
     /// Image iterator
-    template <typename FORMAT>
+    template<typename FORMAT>
     using Iterator = iterator::ImageIteratorBase<FORMAT, false>;
-    template <typename FORMAT>
+    template<typename FORMAT>
     /// Image const iterator
     using ConstIterator = iterator::ImageIteratorBase<FORMAT, true>;
     /// @}
@@ -420,10 +421,14 @@ public:
      * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    template< typename FORMAT > Iterator<FORMAT> begin();
-    template< typename FORMAT > Iterator<FORMAT> end();
-    template< typename FORMAT > ConstIterator<FORMAT> begin() const;
-    template< typename FORMAT > ConstIterator<FORMAT> end() const;
+    template<typename FORMAT>
+    Iterator<FORMAT> begin();
+    template<typename FORMAT>
+    Iterator<FORMAT> end();
+    template<typename FORMAT>
+    ConstIterator<FORMAT> begin() const;
+    template<typename FORMAT>
+    ConstIterator<FORMAT> end() const;
     /// @}
     /**
      * @brief Returns the begin/end iterators to the array buffer, cast to char
@@ -463,12 +468,12 @@ public:
         const core::tools::Type& type,
         const data::Image::Size& size,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
-        );
+    );
 
     /** @{
      *  @brief Get/set pixel format
      */
-    PixelFormat  getPixelFormat() const;
+    PixelFormat getPixelFormat() const;
     void setPixelFormat(PixelFormat format);
     /// @}
 
@@ -484,8 +489,10 @@ public:
      * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw data::Exception Index out of bounds
      */
-    template< typename T > T& at(IndexType id);
-    template< typename T > T at(IndexType id) const;
+    template<typename T>
+    T& at(IndexType id);
+    template<typename T>
+    T at(IndexType id) const;
     /// @}
     /**
      * @{
@@ -502,8 +509,10 @@ public:
      * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
      * @throw data::Exception Index out of bounds
      */
-    template< typename T > T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
-    template< typename T > T at(IndexType x, IndexType y, IndexType z, IndexType c = 0) const;
+    template<typename T>
+    T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
+    template<typename T>
+    T at(IndexType x, IndexType y, IndexType z, IndexType c = 0) const;
     /// @}
     ///
 
@@ -512,14 +521,14 @@ public:
      * @param index offset of the pixel
      * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
-    DATA_API void* getPixelBuffer( IndexType index );
+    DATA_API void* getPixelBuffer(IndexType index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
      * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
-    DATA_API void* getPixelBuffer( IndexType index ) const;
+    DATA_API void* getPixelBuffer(IndexType index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
@@ -527,12 +536,14 @@ public:
      * @param pixBuf pixel value represented as a void* buffer
      * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
-    DATA_API void setPixelBuffer( IndexType index, BufferType* pixBuf);
+    DATA_API void setPixelBuffer(IndexType index, BufferType* pixBuf);
 
     /// Return the pixel value in a std::string
-    DATA_API const std::string getPixelAsString(IndexType x,
-                                                IndexType y,
-                                                IndexType z ) const;
+    DATA_API const std::string getPixelAsString(
+        IndexType x,
+        IndexType y,
+        IndexType z
+    ) const;
 
     /**
      * @brief Return a lock on the image to prevent from dumping the buffer on the disk
@@ -566,7 +577,8 @@ public:
         const size_t size,
         const std::filesystem::path& sourceFile                  = "",
         const core::memory::FileFormatType format                = core::memory::OTHER,
-        const core::memory::BufferAllocationPolicy::sptr& policy = core::memory::BufferMallocPolicy::New());
+        const core::memory::BufferAllocationPolicy::sptr& policy = core::memory::BufferMallocPolicy::New()
+    );
 
     // ---------------------------------------
     // Deprecated API
@@ -582,12 +594,12 @@ public:
     /**
      * @brief Image spacing type
      */
-    [[deprecated("it will be removed in sight 22.0, use Spacing")]] typedef std::vector< double > SpacingType;
+    [[deprecated("it will be removed in sight 22.0, use Spacing")]] typedef std::vector<double> SpacingType;
 
     /**
      * @brief Image origin type
      */
-    [[deprecated("it will be removed in sight 22.0, use Origin")]] typedef std::vector< double > OriginType;
+    [[deprecated("it will be removed in sight 22.0, use Origin")]] typedef std::vector<double> OriginType;
     /** @{
      * @brief get/set image spacing
      * @deprecated Use getSizeSpacing2()/setSpacing2(), it will be removed in sight 22.0
@@ -633,8 +645,13 @@ public:
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     DATA_API size_t allocate();
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
-    DATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                             const core::tools::Type& type, size_t numberOfComponents = 1);
+    DATA_API size_t allocate(
+        SizeType::value_type x,
+        SizeType::value_type y,
+        SizeType::value_type z,
+        const core::tools::Type& type,
+        size_t numberOfComponents = 1
+    );
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     DATA_API size_t allocate(const SizeType& size, const core::tools::Type& type, size_t numberOfComponents = 1);
     /// @}
@@ -663,7 +680,7 @@ public:
 protected:
 
     // To allow locked_ptr to access protected lockBuffer()
-    template< class DATATYPE >
+    template<class DATATYPE>
     friend class data::mt::locked_ptr;
 
     /**
@@ -672,7 +689,7 @@ protected:
      * This is needed for IBuffered interface implementation
      * The buffer cannot be accessed if the image is not locked
      */
-    DATA_API void lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const override;
+    DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
 private:
 
@@ -688,16 +705,16 @@ private:
         void* buf,
         bool takeOwnership                                = false,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
-        );
+    );
 
     //! Size of the image (in terms of points)
-    Size m_size{0, 0, 0};
+    Size m_size {0, 0, 0};
 
     //! An array on the voxel size of the image
-    Spacing m_spacing{0., 0., 0.};
+    Spacing m_spacing {0., 0., 0.};
 
     //! Origin of the image in 3D repair
-    Origin m_origin{0., 0., 0.};
+    Origin m_origin {0., 0., 0.};
 
     /// Deprecated: set as mutable to be able to change it according to m_size, m_spacing and m_origin when we call
     /// the getters.
@@ -707,15 +724,15 @@ private:
 
     //! Preferred window center/with
     ///@{
-    double m_windowCenter{0.};
-    double m_windowWidth{0.};
+    double m_windowCenter {0.};
+    double m_windowWidth {0.};
     ///@}
 
     //! Number of components
-    size_t m_numberOfComponents{1};
+    size_t m_numberOfComponents {1};
 
     //! type of image pixel
-    core::tools::Type m_type{core::tools::Type::s_UNSPECIFIED_TYPE};
+    core::tools::Type m_type {core::tools::Type::s_UNSPECIFIED_TYPE};
 
     //! image format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
@@ -726,28 +743,28 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowCenter () const
+inline double Image::getWindowCenter() const
 {
     return m_windowCenter;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowCenter (double val)
+inline void Image::setWindowCenter(double val)
 {
     m_windowCenter = val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowWidth () const
+inline double Image::getWindowWidth() const
 {
     return m_windowWidth;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowWidth (double val)
+inline void Image::setWindowWidth(double val)
 {
     m_windowWidth = val;
 }
@@ -786,6 +803,7 @@ inline const Image::Spacing& Image::getSpacing2() const
 {
     return m_spacing;
 }
+
 //------------------------------------------------------------------------------
 
 inline void Image::setSpacing2(const Spacing& spacing)
@@ -823,7 +841,7 @@ inline void Image::setSize2(const Size& size)
 
 //------------------------------------------------------------------------------
 
-template< typename FORMAT >
+template<typename FORMAT>
 inline Image::Iterator<FORMAT> Image::begin()
 {
     return Iterator<FORMAT>(this);
@@ -831,17 +849,17 @@ inline Image::Iterator<FORMAT> Image::begin()
 
 //------------------------------------------------------------------------------
 
-template< typename FORMAT >
+template<typename FORMAT>
 inline Image::Iterator<FORMAT> Image::end()
 {
     auto itr = Iterator<FORMAT>(this);
-    itr += static_cast< typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes()/sizeof(FORMAT));
+    itr += static_cast<typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes() / sizeof(FORMAT));
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template< typename FORMAT >
+template<typename FORMAT>
 inline Image::ConstIterator<FORMAT> Image::begin() const
 {
     return ConstIterator<FORMAT>(this);
@@ -849,17 +867,17 @@ inline Image::ConstIterator<FORMAT> Image::begin() const
 
 //------------------------------------------------------------------------------
 
-template< typename FORMAT >
+template<typename FORMAT>
 inline Image::ConstIterator<FORMAT> Image::end() const
 {
     auto itr = ConstIterator<FORMAT>(this);
-    itr += static_cast< typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes()/sizeof(FORMAT));
+    itr += static_cast<typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes() / sizeof(FORMAT));
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 inline T& Image::at(IndexType id)
 {
     return *reinterpret_cast<T*>(this->getPixelBuffer(id));
@@ -867,7 +885,7 @@ inline T& Image::at(IndexType id)
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 inline T Image::at(IndexType id) const
 {
     return *reinterpret_cast<T*>(this->getPixelBuffer(id));
@@ -875,20 +893,20 @@ inline T Image::at(IndexType id) const
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 inline T& Image::at(IndexType x, IndexType y, IndexType z, IndexType c)
 {
-    const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
+    const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset)) + c);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
+template<typename T>
 inline T Image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
 {
-    const IndexType offset = x + m_size[0]*y + z*m_size[0]*m_size[1];
-    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset))+c);
+    const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
+    return *(reinterpret_cast<T*>(this->getPixelBuffer(offset)) + c);
 }
 
 //-----------------------------------------------------------------------------

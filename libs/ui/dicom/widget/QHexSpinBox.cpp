@@ -24,6 +24,7 @@
 
 namespace sight::ui::dicom
 {
+
 namespace widget
 {
 
@@ -56,12 +57,14 @@ int QHexSpinBox::valueFromText(const QString& text) const
 QString QHexSpinBox::textFromValue(int value) const
 {
     QString res = QString::number(value, 16).toUpper();
-    for(unsigned int i = res.size(); i < 4; ++i)
+    for(unsigned int i = res.size() ; i < 4 ; ++i)
     {
         res = "0" + res;
     }
+
     return res;
 }
 
 } // namespace widget
+
 } // namespace sight::ui::dicom

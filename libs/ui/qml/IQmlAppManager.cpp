@@ -31,7 +31,6 @@ namespace sight::ui::qml
 
 IQmlAppManager::IQmlAppManager() noexcept
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -47,13 +46,15 @@ void IQmlAppManager::initialize()
     this->create();
 
     m_isInitialized = this->checkInputs();
-    if (!m_isInitialized)
+    if(!m_isInitialized)
     {
-        const std::string msg = "All the required inputs are not present, '" +this->getID() +
-                                "' activity will not be launched";
-        ui::base::dialog::MessageDialog::show("Manager Initialization",
-                                              msg,
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        const std::string msg = "All the required inputs are not present, '" + this->getID()
+                                + "' activity will not be launched";
+        ui::base::dialog::MessageDialog::show(
+            "Manager Initialization",
+            msg,
+            ui::base::dialog::IMessageDialog::CRITICAL
+        );
     }
 }
 
@@ -66,10 +67,13 @@ void IQmlAppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-void IQmlAppManager::onServiceCreated(const QVariant& )
+void IQmlAppManager::onServiceCreated(const QVariant&)
 {
-    SIGHT_ASSERT("The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
-                 "in Qml", false);
+    SIGHT_ASSERT(
+        "The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
+        "in Qml",
+        false
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +83,7 @@ void IQmlAppManager::replaceInputs(const QVariant& variant)
     QMap<QString, QVariant> map                   = variant.toMap();
     QMap<QString, QVariant>::iterator it          = map.begin();
     const QMap<QString, QVariant>::iterator itEnd = map.end();
-    for (; it != itEnd; ++it)
+    for( ; it != itEnd ; ++it)
     {
         const std::string replace = it.key().toStdString();
         const std::string by      = it.value().toString().toStdString();
@@ -89,4 +93,4 @@ void IQmlAppManager::replaceInputs(const QVariant& variant)
 
 //------------------------------------------------------------------------------
 
-}// namespace fwiQml
+} // namespace fwiQml

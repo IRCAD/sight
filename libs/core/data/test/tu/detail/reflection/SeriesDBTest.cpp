@@ -33,14 +33,17 @@
 #include <data/SeriesDB.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::detail::reflection::ut::SeriesDBTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::SeriesDBTest);
 
 namespace sight::data
 {
+
 namespace detail
 {
+
 namespace reflection
 {
+
 namespace ut
 {
 
@@ -61,7 +64,7 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::propertiesTest()
 {
-    const ::DataCampHelper::PropertiesNameType dataProperties = { "fields", "values" };
+    const ::DataCampHelper::PropertiesNameType dataProperties = {"fields", "values"};
 
     data::SeriesDB::sptr obj = data::SeriesDB::New();
     data::SeriesDB::ContainerType vectSeries;
@@ -78,20 +81,25 @@ void SeriesDBTest::propertiesTest()
     atoms::Object::sptr metaObject      = atoms::conversion::convert(obj);
     atoms::Object::AttributesType attrs = metaObject->getAttributes();
 
-    CPPUNIT_ASSERT_MESSAGE("Attributes values not found in SeriesDB atom",
-                           attrs.find("values") != attrs.end());
+    CPPUNIT_ASSERT_MESSAGE(
+        "Attributes values not found in SeriesDB atom",
+        attrs.find("values") != attrs.end()
+    );
 
     atoms::Base::sptr baseAtom = metaObject->getAttribute("values");
     CPPUNIT_ASSERT_MESSAGE("Bad Atom SeriesDB conversion", baseAtom->isSequence());
 
     atoms::Sequence::sptr seqAtom = atoms::Sequence::dynamicCast(baseAtom);
     CPPUNIT_ASSERT_MESSAGE("Sequence dynamicCast failed", seqAtom);
-    CPPUNIT_ASSERT_EQUAL( vectSeries.size(), seqAtom->getValue().size());
+    CPPUNIT_ASSERT_EQUAL(vectSeries.size(), seqAtom->getValue().size());
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace reflection
+
 } //namespace detail
+
 } //namespace sight::data

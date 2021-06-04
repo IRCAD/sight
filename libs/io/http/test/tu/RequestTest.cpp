@@ -28,10 +28,11 @@
 
 #include <QNetworkRequest>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::http::ut::RequestTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::RequestTest);
 
 namespace sight::io::http
 {
+
 namespace ut
 {
 

@@ -30,29 +30,29 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 const StructureTraitsHelper::CategoryTranslatorType StructureTraitsHelper::s_CATEGORYTRANSLATOR =
-    ::boost::assign::list_of< StructureTraitsHelper::CategoryTranslatorType::relation >
-        ( data::StructureTraits::BODY,               std::string("Body"))
-        ( data::StructureTraits::HEAD,               std::string("Head"))
-        ( data::StructureTraits::NECK,               std::string("Neck"))
-        ( data::StructureTraits::THORAX,             std::string("Thorax"))
-        ( data::StructureTraits::ABDOMEN,            std::string("Abdomen"))
-        ( data::StructureTraits::PELVIS,             std::string("Pelvis"))
-        ( data::StructureTraits::ARM,                std::string("Arm"))
-        ( data::StructureTraits::LEG,                std::string("Leg"))
-        ( data::StructureTraits::LIVER_SEGMENTS,     std::string("Liver_segments"))
-        ( data::StructureTraits::OTHER,              std::string("Other"));
+    ::boost::assign::list_of<StructureTraitsHelper::CategoryTranslatorType::relation>
+        (data::StructureTraits::BODY, std::string("Body"))
+        (data::StructureTraits::HEAD, std::string("Head"))
+        (data::StructureTraits::NECK, std::string("Neck"))
+        (data::StructureTraits::THORAX, std::string("Thorax"))
+        (data::StructureTraits::ABDOMEN, std::string("Abdomen"))
+        (data::StructureTraits::PELVIS, std::string("Pelvis"))
+        (data::StructureTraits::ARM, std::string("Arm"))
+        (data::StructureTraits::LEG, std::string("Leg"))
+        (data::StructureTraits::LIVER_SEGMENTS, std::string("Liver_segments"))
+        (data::StructureTraits::OTHER, std::string("Other"));
 
 //------------------------------------------------------------------------------
 
 const StructureTraitsHelper::ClassTranslatorType StructureTraitsHelper::s_CLASSTRANSLATOR =
-    ::boost::assign::list_of< StructureTraitsHelper::ClassTranslatorType::relation >
-        ( data::StructureTraits::TOOL,          std::string("Tool"))
-        ( data::StructureTraits::ENVIRONMENT,   std::string("Environment"))
-        ( data::StructureTraits::VESSEL,        std::string("Vessel"))
-        ( data::StructureTraits::LESION,        std::string("Lesion"))
-        ( data::StructureTraits::ORGAN,         std::string("Organ"))
-        ( data::StructureTraits::FUNCTIONAL,    std::string("Functional"))
-        ( data::StructureTraits::NO_CONSTRAINT, std::string("No_constraint"));
+    ::boost::assign::list_of<StructureTraitsHelper::ClassTranslatorType::relation>
+        (data::StructureTraits::TOOL, std::string("Tool"))
+        (data::StructureTraits::ENVIRONMENT, std::string("Environment"))
+        (data::StructureTraits::VESSEL, std::string("Vessel"))
+        (data::StructureTraits::LESION, std::string("Lesion"))
+        (data::StructureTraits::ORGAN, std::string("Organ"))
+        (data::StructureTraits::FUNCTIONAL, std::string("Functional"))
+        (data::StructureTraits::NO_CONSTRAINT, std::string("No_constraint"));
 
 //------------------------------------------------------------------------------
 

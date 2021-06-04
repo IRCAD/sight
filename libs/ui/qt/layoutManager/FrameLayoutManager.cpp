@@ -36,8 +36,10 @@
 #include <QLayout>
 #include <QMainWindow>
 
-fwGuiRegisterMacro( sight::ui::qt::FrameLayoutManager,
-                    sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro(
+    sight::ui::qt::FrameLayoutManager,
+    sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
+);
 
 namespace sight::ui::qt
 {
@@ -63,7 +65,7 @@ void FrameLayoutManager::createFrame()
     ui::qt::QtMainFrame* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
 
-    ui::qt::QtMainFrame::CloseCallback fct = std::bind( &ui::qt::FrameLayoutManager::onCloseFrame, this);
+    ui::qt::QtMainFrame::CloseCallback fct = std::bind(&ui::qt::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
@@ -75,11 +77,13 @@ void FrameLayoutManager::createFrame()
         SIGHT_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
+
     if(!qApp->activeWindow())
     {
         qApp->setActiveWindow(m_qtWindow);
     }
-    if (frameInfo.m_style == ui::base::layoutManager::IFrameLayoutManager::STAY_ON_TOP)
+
+    if(frameInfo.m_style == ui::base::layoutManager::IFrameLayoutManager::STAY_ON_TOP)
     {
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
@@ -100,6 +104,7 @@ void FrameLayoutManager::createFrame()
         frect.moveCenter(QDesktopWidget().screenGeometry().center());
         pos = frect.topLeft();
     }
+
     m_qtWindow->setGeometry(pos.x(), pos.y(), sizeX, sizeY);
 
     this->setState(frameInfo.m_state);
@@ -123,7 +128,6 @@ void FrameLayoutManager::createFrame()
 
 void FrameLayoutManager::destroyFrame()
 {
-
     this->getFrameInfo().m_state           = this->getState();
     this->getFrameInfo().m_size.first      = m_qtWindow->size().width();
     this->getFrameInfo().m_size.second     = m_qtWindow->size().height();
@@ -148,10 +152,10 @@ void FrameLayoutManager::onCloseFrame()
 
 //-----------------------------------------------------------------------------
 
-void FrameLayoutManager::setState( FrameState state )
+void FrameLayoutManager::setState(FrameState state)
 {
     // Updates the window state.
-    switch( state )
+    switch(state)
     {
         case ICONIZED:
             m_qtWindow->showMinimized();
@@ -164,6 +168,7 @@ void FrameLayoutManager::setState( FrameState state )
         case FULL_SCREEN:
             m_qtWindow->showFullScreen();
             break;
+
         default:
             m_qtWindow->showNormal();
     }
@@ -173,20 +178,21 @@ void FrameLayoutManager::setState( FrameState state )
 
 ui::base::layoutManager::IFrameLayoutManager::FrameState FrameLayoutManager::getState()
 {
-    FrameState state( UNKNOWN );
+    FrameState state(UNKNOWN);
 
-    if( m_qtWindow->isMinimized() )
+    if(m_qtWindow->isMinimized())
     {
         state = ICONIZED;
     }
-    else if( m_qtWindow->isMaximized() )
+    else if(m_qtWindow->isMaximized())
     {
         state = MAXIMIZED;
     }
-    else if( m_qtWindow->isFullScreen() )
+    else if(m_qtWindow->isFullScreen())
     {
         state = FULL_SCREEN;
     }
+
     return state;
 }
 
@@ -195,10 +201,11 @@ ui::base::layoutManager::IFrameLayoutManager::FrameState FrameLayoutManager::get
 bool FrameLayoutManager::isOnScreen(const QPoint& pos)
 {
     bool isVisible = false;
-    for(int i = 0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
+    for(int i = 0 ; i < QDesktopWidget().screenCount() && !isVisible ; ++i)
     {
         isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
     }
+
     return isVisible;
 }
 

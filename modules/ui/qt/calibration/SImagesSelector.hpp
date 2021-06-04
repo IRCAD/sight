@@ -68,7 +68,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SImagesSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SImagesSelector, sight::ui::base::IEditor);
 
     /// Constructor.
     MODULE_UI_QT_API SImagesSelector() noexcept;
@@ -124,11 +124,10 @@ private:
     int m_captureIdx;
 
     /// Label displaying the number of point acquisitions.
-    QPointer< QLabel > m_nbCapturesLabel;
+    QPointer<QLabel> m_nbCapturesLabel;
 
     /// Calibration point list.
-    QPointer< QListWidget > m_capturesListWidget;
-
+    QPointer<QListWidget> m_capturesListWidget;
 };
 
 } // uiCalibration

@@ -99,7 +99,7 @@ void SOpenCVExtrinsic::configuring()
     m_heightKey = cfgBoard->getAttributeValue("height");
     SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
-    if( cfgBoard->hasAttribute("squareSize"))
+    if(cfgBoard->hasAttribute("squareSize"))
     {
         m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
         SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
@@ -131,13 +131,15 @@ void SOpenCVExtrinsic::swapping()
 
 void SOpenCVExtrinsic::updating()
 {
-    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(s_CAMERASERIES_INOUT);
+    data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>(s_CAMERASERIES_INOUT);
 
-    SIGHT_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
-                 m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
+    SIGHT_ASSERT(
+        "camera index must be > 0 and < camSeries->getNumberOfCameras()",
+        m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
+    );
 
-    data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo>(s_CALIBINFO1_INPUT);
-    data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo>(s_CALIBINFO2_INPUT);
+    data::CalibrationInfo::csptr calInfo1 = this->getInput<data::CalibrationInfo>(s_CALIBINFO1_INPUT);
+    data::CalibrationInfo::csptr calInfo2 = this->getInput<data::CalibrationInfo>(s_CALIBINFO2_INPUT);
 
     SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
     SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
@@ -145,21 +147,25 @@ void SOpenCVExtrinsic::updating()
     SIGHT_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
     if(!calInfo1->getPointListContainer().empty())
     {
-        std::vector<std::vector< ::cv::Point3f > > objectPoints;
+        std::vector<std::vector< ::cv::Point3f> > objectPoints;
 
-        std::vector< ::cv::Point3f > points;
-        for (unsigned int y = 0; y < m_height - 1; ++y)
+        std::vector< ::cv::Point3f> points;
+        for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
         {
-            for (unsigned int x = 0; x < m_width - 1; ++x)
+            for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
-                points.push_back(::cv::Point3f(static_cast<float>(x)*m_squareSize,
-                                               static_cast<float>(y)*m_squareSize,
-                                               0));
+                points.push_back(
+                    ::cv::Point3f(
+                        static_cast<float>(x) * m_squareSize,
+                        static_cast<float>(y) * m_squareSize,
+                        0
+                    )
+                );
             }
         }
 
-        std::vector<std::vector< ::cv::Point2f > > imagePoints1;
-        std::vector<std::vector< ::cv::Point2f > > imagePoints2;
+        std::vector<std::vector< ::cv::Point2f> > imagePoints1;
+        std::vector<std::vector< ::cv::Point2f> > imagePoints2;
         {
             data::mt::ObjectReadLock calInfo1Lock(calInfo1);
             data::mt::ObjectReadLock calInfo2Lock(calInfo2);
@@ -174,27 +180,33 @@ void SOpenCVExtrinsic::updating()
             data::CalibrationInfo::PointListContainerType::iterator itrEnd1 = ptlists1.end();
             data::CalibrationInfo::PointListContainerType::iterator itrEnd2 = ptlists2.end();
 
-            for(; itr1 != itrEnd1 && itr2 != itrEnd2; ++itr1, ++itr2)
+            for( ; itr1 != itrEnd1 && itr2 != itrEnd2 ; ++itr1, ++itr2)
             {
                 data::PointList::sptr ptList1 = *itr1;
                 data::PointList::sptr ptList2 = *itr2;
-                std::vector< ::cv::Point2f > imgPoint1;
-                std::vector< ::cv::Point2f > imgPoint2;
+                std::vector< ::cv::Point2f> imgPoint1;
+                std::vector< ::cv::Point2f> imgPoint2;
 
                 for(data::Point::csptr point : ptList1->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint1.push_back(::cv::Point2f(
-                                            static_cast<float>(point->getCoord()[0]),
-                                            static_cast<float>(point->getCoord()[1])));
+                    imgPoint1.push_back(
+                        ::cv::Point2f(
+                            static_cast<float>(point->getCoord()[0]),
+                            static_cast<float>(point->getCoord()[1])
+                        )
+                    );
                 }
 
                 for(data::Point::csptr point : ptList2->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint2.push_back(::cv::Point2f(
-                                            static_cast<float>(point->getCoord()[0]),
-                                            static_cast<float>(point->getCoord()[1])));
+                    imgPoint2.push_back(
+                        ::cv::Point2f(
+                            static_cast<float>(point->getCoord()[0]),
+                            static_cast<float>(point->getCoord()[1])
+                        )
+                    );
                 }
 
                 imagePoints1.push_back(imgPoint1);
@@ -217,7 +229,6 @@ void SOpenCVExtrinsic::updating()
         data::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
-
             data::mt::ObjectReadLock camSeriesLock(camSeries);
             data::Camera::sptr cam1 = camSeries->getCamera(0);
             data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
@@ -234,25 +245,37 @@ void SOpenCVExtrinsic::updating()
             cameraMatrix2.at<double>(1, 1) = cam2->getFy();
             cameraMatrix2.at<double>(0, 2) = cam2->getCx();
             cameraMatrix2.at<double>(1, 2) = cam2->getCy();
-            for (size_t i = 0; i < 5; ++i)
+            for(size_t i = 0 ; i < 5 ; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
                 distortionCoefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);
             }
         }
-        double err = ::cv::stereoCalibrate(objectPoints, imagePoints1, imagePoints2,
-                                           cameraMatrix1, distortionCoefficients1,
-                                           cameraMatrix2, distortionCoefficients2,
-                                           imgsize, rotationMatrix, translationVector, essentialMatrix,
-                                           fundamentalMatrix,
-                                           ::cv::CALIB_FIX_INTRINSIC,
-                                           ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
-                                                              100, 1e-5));
+        double err = ::cv::stereoCalibrate(
+            objectPoints,
+            imagePoints1,
+            imagePoints2,
+            cameraMatrix1,
+            distortionCoefficients1,
+            cameraMatrix2,
+            distortionCoefficients2,
+            imgsize,
+            rotationMatrix,
+            translationVector,
+            essentialMatrix,
+            fundamentalMatrix,
+            ::cv::CALIB_FIX_INTRINSIC,
+            ::cv::TermCriteria(
+                ::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
+                100,
+                1e-5
+            )
+        );
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
         data::Matrix4::sptr matrix = data::Matrix4::New();
-        ::cv::Mat cv4x4 = ::cv::Mat::eye(4, 4, CV_64F);
+        ::cv::Mat cv4x4            = ::cv::Mat::eye(4, 4, CV_64F);
         rotationMatrix.copyTo(cv4x4(::cv::Rect(0, 0, 3, 3)));
         translationVector.copyTo(cv4x4(::cv::Rect(3, 0, 1, 3)));
 
@@ -264,14 +287,14 @@ void SOpenCVExtrinsic::updating()
         }
 
         data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
-        sig = camSeries->signal< data::CameraSeries::ExtrinsicCalibratedSignalType > (
-            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+        sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>(
+            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
+        );
 
         sig->asyncEmit();
 
         // Export matrix if needed.
         this->setOutput(s_MATRIX_OUTPUT, matrix);
-
     }
 }
 
@@ -284,11 +307,13 @@ void SOpenCVExtrinsic::updateChessboardSize()
     {
         m_width = std::stoi(widthStr);
     }
+
     const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoi(heightStr);
     }
+
     const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {

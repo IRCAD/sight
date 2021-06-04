@@ -35,6 +35,7 @@ namespace Tuto05EditorQml
 class TUTO05EDITORQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:
+
     /// Constructor.
     TUTO05EDITORQML_API Plugin() noexcept;
 

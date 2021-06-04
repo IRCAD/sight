@@ -41,8 +41,10 @@ void StructuralCreatorDB::registerCreator(io::atoms::patch::IStructuralCreator::
 
 // ----------------------------------------------------------------------------
 
-io::atoms::patch::IStructuralCreator::sptr StructuralCreatorDB::getCreator(const std::string& classname,
-                                                                           const std::string& version)
+io::atoms::patch::IStructuralCreator::sptr StructuralCreatorDB::getCreator(
+    const std::string& classname,
+    const std::string& version
+)
 {
     VersionIDType key = std::make_pair(classname, version);
 
@@ -62,8 +64,8 @@ io::atoms::patch::IStructuralCreator::sptr StructuralCreatorDB::getCreator(const
 
 sight::atoms::Object::sptr StructuralCreatorDB::create(const std::string& classname, const std::string& version)
 {
-    io::atoms::patch::IStructuralCreator::sptr creator = this->getCreator( classname, version );
-    SIGHT_ASSERT( "object creator of type '"<< classname <<"' and version '"<< version <<"' not found", creator );
+    io::atoms::patch::IStructuralCreator::sptr creator = this->getCreator(classname, version);
+    SIGHT_ASSERT("object creator of type '" << classname << "' and version '" << version << "' not found", creator);
     fwAtomsPatchInfoLogMacro("Create '" + classname + "|" + version + "'");
     sight::atoms::Object::sptr obj = creator->create();
     return obj;

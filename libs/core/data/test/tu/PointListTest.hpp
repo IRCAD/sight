@@ -26,8 +26,10 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
+
 /**
  * @brief The PointListTest class
  * This class is used to test data::PointList
@@ -35,16 +37,18 @@ namespace ut
 class PointListTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( PointListTest );
-    CPPUNIT_TEST( copyTest );
-    CPPUNIT_TEST( getterTest );
-    CPPUNIT_TEST( setterTest );
-    CPPUNIT_TEST( pushTest );
-    CPPUNIT_TEST( removeTest );
-    CPPUNIT_TEST( clearTest );
+
+    CPPUNIT_TEST_SUITE(PointListTest);
+    CPPUNIT_TEST(copyTest);
+    CPPUNIT_TEST(getterTest);
+    CPPUNIT_TEST(setterTest);
+    CPPUNIT_TEST(pushTest);
+    CPPUNIT_TEST(removeTest);
+    CPPUNIT_TEST(clearTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -55,8 +59,8 @@ public:
     void pushTest();
     void removeTest();
     void clearTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::data

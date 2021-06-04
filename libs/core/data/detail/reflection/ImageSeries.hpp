@@ -25,10 +25,9 @@
 #include "data/config.hpp"
 #include "data/DicomSeries.hpp"
 #include "data/ImageSeries.hpp"
+#include <data/Image.hpp>
 
 #include <core/reflection/macros.hpp>
 
-#include <data/Image.hpp>
-
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ImageSeries), (sight)(data)(Image));
-SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ImageSeries), (sight)(data)(DicomSeries));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (ImageSeries), (sight) (data) (Image));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight) (data) (ImageSeries), (sight) (data) (DicomSeries));

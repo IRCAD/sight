@@ -24,6 +24,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace exception
 {
 
@@ -43,4 +44,5 @@ InvalidTag::~InvalidTag() noexcept
 //----------------------------------------------------------------------------
 
 } // namespace exception
+
 } // namespace sight::io::dicom

@@ -23,15 +23,15 @@
 #pragma once
 
 #include "service/config.hpp"
+#include <service/op/Add.hpp>
 
 #include <core/macros.hpp>
-
-#include <service/op/Add.hpp>
 
 #include <vector>
 
 namespace sight::service
 {
+
 class IService;
 
 /**
@@ -41,7 +41,7 @@ class SERVICE_CLASS_API IHasServices
 {
 public:
 
-    typedef std::vector < WPTR(service::IService) > ServiceVector;
+    typedef std::vector<WPTR(service::IService)> ServiceVector;
 
     /**
      * @brief Get all subservices linked to this service
@@ -53,7 +53,7 @@ public:
      * @brief Return a specific registered service
      * @param[in] id Identifier of the service
      */
-    SERVICE_API CSPTR( service::IService) getRegisteredService(const core::tools::fwID::IDType& _id) const;
+    SERVICE_API CSPTR(service::IService) getRegisteredService(const core::tools::fwID::IDType& _id) const;
 
 protected:
 
@@ -68,16 +68,18 @@ protected:
      * @param[in] _implType Type of the service
      * @param[in] id Optional identifier of the service
      */
-    SERVICE_API SPTR(service::IService) registerService(const std::string& _implType,
-                                                        const std::string& _id = "" );
+    SERVICE_API SPTR(service::IService) registerService(
+        const std::string& _implType,
+        const std::string& _id = ""
+    );
 
     /**
      * @brief Register a new service linked to this service
      * @param[in] _implType Type of the service
      * @param[in] id Optional identifier of the service
      */
-    template <class T>
-    SPTR(T) registerService(const std::string& _implType, const std::string& _id = "" );
+    template<class T>
+    SPTR(T) registerService(const std::string& _implType, const std::string& _id = "");
 
     /**
      * @brief Unregister a specific service
@@ -112,7 +114,7 @@ inline const IHasServices::ServiceVector& IHasServices::getRegisteredServices() 
 
 //------------------------------------------------------------------------------
 
-template <class T>
+template<class T>
 SPTR(T) IHasServices::registerService(const std::string& _implType, const std::string& _id)
 {
     auto srv = service::add<T>(_implType, _id);

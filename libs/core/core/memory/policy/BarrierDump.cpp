@@ -39,31 +39,17 @@ fwMemoryPolicyRegisterMacro(core::memory::policy::BarrierDump);
 BarrierDump::BarrierDump() :
     m_totalAllocated(0),
     m_totalDumped(0),
-    m_barrier(1024*1024*500)
+    m_barrier(1024 * 1024 * 500)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                                     BufferInfo::SizeType size )
-{
-    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
-    m_totalAllocated -= info.size;
-    m_totalAllocated += size;
-    if(!info.loaded)
-    {
-        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
-        m_totalDumped -= info.size;
-    }
-    this->apply();
-}
-
-//------------------------------------------------------------------------------
-
-void BarrierDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                              BufferInfo::SizeType size )
+void BarrierDump::allocationRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType size
+)
 {
     SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
@@ -73,13 +59,37 @@ void BarrierDump::setRequest( BufferInfo& info, core::memory::BufferManager::Con
         SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
+
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
-                                     BufferInfo::SizeType newSize )
+void BarrierDump::setRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType size
+)
+{
+    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
+    m_totalAllocated -= info.size;
+    m_totalAllocated += size;
+    if(!info.loaded)
+    {
+        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+        m_totalDumped -= info.size;
+    }
+
+    this->apply();
+}
+
+//------------------------------------------------------------------------------
+
+void BarrierDump::reallocateRequest(
+    BufferInfo& info,
+    core::memory::BufferManager::ConstBufferPtrType buffer,
+    BufferInfo::SizeType newSize
+)
 {
     SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
@@ -89,45 +99,47 @@ void BarrierDump::reallocateRequest( BufferInfo& info, core::memory::BufferManag
         SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
+
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     if(!info.loaded)
     {
         SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
+
     SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::lockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
 {
     SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
@@ -163,25 +175,25 @@ size_t BarrierDump::dump(size_t nbOfBytes)
         typedef std::pair<
                 core::memory::BufferManager::BufferInfoMapType::key_type,
                 core::memory::BufferManager::BufferInfoMapType::mapped_type
-                > BufferInfosPairType;
-        typedef std::vector< BufferInfosPairType > BufferVectorType;
+        > BufferInfosPairType;
+        typedef std::vector<BufferInfosPairType> BufferVectorType;
 
         BufferVectorType buffers;
 
-        for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt :  bufferInfos)
+        for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt : bufferInfos)
         {
             const core::memory::BufferInfo& info = elt.second;
-            if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
+            if(!(info.size == 0 || info.lockCount() > 0 || !info.loaded))
             {
                 buffers.push_back(elt);
             }
         }
 
-        for(const BufferVectorType::value_type& pair :  bufferInfos)
+        for(const BufferVectorType::value_type& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
-                if( manager->dumpBuffer(pair.first).get() )
+                if(manager->dumpBuffer(pair.first).get())
                 {
                     dumped += pair.second.size;
                 }
@@ -229,13 +241,13 @@ bool BarrierDump::setParam(const std::string& name, const std::string& value)
             return true;
         }
     }
-    catch( core::memory::exception::BadCast const& )
+    catch(core::memory::exception::BadCast const&)
     {
         SIGHT_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
 
-    SIGHT_ERROR("Bad parameter name " << name );
+    SIGHT_ERROR("Bad parameter name " << name);
     return false;
 }
 
@@ -243,25 +255,27 @@ bool BarrierDump::setParam(const std::string& name, const std::string& value)
 
 const core::memory::IPolicy::ParamNamesType& BarrierDump::getParamNames() const
 {
-    static const core::memory::IPolicy::ParamNamesType params = {{ "barrier" }};
+    static const core::memory::IPolicy::ParamNamesType params = {{"barrier"}};
     return params;
 }
 
 //------------------------------------------------------------------------------
 
-std::string BarrierDump::getParam(const std::string& name, bool* ok ) const
+std::string BarrierDump::getParam(const std::string& name, bool* ok) const
 {
     bool isOk = false;
     std::string value;
     if(name == "barrier")
     {
-        value = std::string(core::memory::ByteSize( core::memory::ByteSize::SizeType(m_barrier) ));
+        value = std::string(core::memory::ByteSize(core::memory::ByteSize::SizeType(m_barrier)));
         isOk  = true;
     }
-    if (ok)
+
+    if(ok)
     {
         *ok = isOk;
     }
+
     return value;
 }
 

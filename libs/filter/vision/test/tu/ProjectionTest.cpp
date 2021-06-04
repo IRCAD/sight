@@ -27,10 +27,11 @@
 #include <cmath>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::vision::ut::ProjectionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::vision::ut::ProjectionTest);
 
 namespace sight::filter::vision
 {
+
 namespace ut
 {
 
@@ -71,8 +72,8 @@ void ProjectionTest::projectionTest()
         CPPUNIT_ASSERT_EQUAL(pX, pX2);
         CPPUNIT_ASSERT_EQUAL(pY, pY2);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth* (pX-cx) / fx, x, 0.0001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth* (pY-cy)/ fy, y, 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (pX - cx) / fx, x, 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(depth * (pY - cy) / fy, y, 0.0001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(double(depth), z, 0.0001);
     }
 
@@ -102,4 +103,5 @@ void ProjectionTest::projectionTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace registrationOp

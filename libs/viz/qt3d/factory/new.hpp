@@ -35,7 +35,8 @@ class IWindowInteractor;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New();
 
 /**
  * @brief Key class used to restrict access to Object construction.
@@ -44,19 +45,21 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
 class Key
 {
 template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) viz::qt3d::factory::New();
+friend SPTR(CLASSNAME) viz::qt3d::factory::New();
 
 Key()
 {
 }
 };
 
-VIZ_QT3D_API SPTR( viz::qt3d::IWindowInteractor ) New(
-    const viz::qt3d::registry::KeyType& classname );
+VIZ_QT3D_API SPTR(viz::qt3d::IWindowInteractor) New(
+    const viz::qt3d::registry::KeyType& classname
+);
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
     return obj;
 }
 

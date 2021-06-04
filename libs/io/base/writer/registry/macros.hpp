@@ -26,14 +26,18 @@
 
 namespace sight::io::base
 {
+
 namespace writer
 {
+
 namespace registry
 {
 
-#define SIGHT_REGISTER_IO_WRITER( classname )                                  \
-    static sight::io::base::writer::IObjectWriter::Registry< classname > s__factory__record__ ## __LINE__;
+#define SIGHT_REGISTER_IO_WRITER(classname) \
+    static sight::io::base::writer::IObjectWriter::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // end namespace registry
+
 } // end namespace writer
+
 } // end namespace sight::io::base

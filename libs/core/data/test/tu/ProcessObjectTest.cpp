@@ -26,10 +26,11 @@
 #include <data/Integer.hpp>
 #include <data/ProcessObject.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::ut::ProcessObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ProcessObjectTest);
 
 namespace sight::data
 {
+
 namespace ut
 {
 
@@ -54,11 +55,12 @@ void ProcessObjectTest::constructeur()
     po->setOutputValue(IMAGEID2, image2);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(image1, po->getInput< data::Image >(IMAGEID1));
-    CPPUNIT_ASSERT_EQUAL(field1, po->getInput< data::Integer >(FIELDID1));
-    CPPUNIT_ASSERT_EQUAL(field2, po->getInput< data::Integer >(FIELDID2));
-    CPPUNIT_ASSERT_EQUAL(image2, po->getOutput< data::Image >(IMAGEID2));
+    CPPUNIT_ASSERT_EQUAL(image1, po->getInput<data::Image>(IMAGEID1));
+    CPPUNIT_ASSERT_EQUAL(field1, po->getInput<data::Integer>(FIELDID1));
+    CPPUNIT_ASSERT_EQUAL(field2, po->getInput<data::Integer>(FIELDID2));
+    CPPUNIT_ASSERT_EQUAL(image2, po->getOutput<data::Image>(IMAGEID2));
 }
 
 } //namespace ut
+
 } //namespace sight::data

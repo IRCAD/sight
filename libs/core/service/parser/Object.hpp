@@ -23,14 +23,14 @@
 #pragma once
 
 #include "service/config.hpp"
-
-#include <core/tools/Object.hpp>
-
 #include <service/IAppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
+#include <core/tools/Object.hpp>
+
 namespace sight::service
 {
+
 namespace parser
 {
 
@@ -45,12 +45,13 @@ namespace parser
 class SERVICE_CLASS_API Object : public service::IXMLParser
 {
 public:
-    SIGHT_DECLARE_SERVICE(Object, service::IXMLParser)
 
-    SERVICE_API Object( );
+    SIGHT_DECLARE_SERVICE(Object, service::IXMLParser);
+
+    SERVICE_API Object();
     SERVICE_API virtual ~Object();
 
-    SERVICE_API void createConfig( core::tools::Object::sptr _obj ) override;
+    SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
     SERVICE_API void startConfig() override;
     SERVICE_API void updateConfig() override;
     SERVICE_API void stopConfig() override;
@@ -58,11 +59,12 @@ public:
 
 protected:
 
-    bool refObjectValidator( core::runtime::ConfigurationElement::csptr _cfgElement );
+    bool refObjectValidator(core::runtime::ConfigurationElement::csptr _cfgElement);
     void updating() override;
 
-    std::vector< service::IAppConfigManager::sptr > m_ctmContainer;
+    std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };
 
 } //namespace parser
+
 } //namespace sight::service

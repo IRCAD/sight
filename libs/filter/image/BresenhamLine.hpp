@@ -24,8 +24,8 @@
 
 #include "filter/image//config.hpp"
 
-#include <data/Image.hpp>
 #include <data/helper/MedicalImage.hpp>
+#include <data/Image.hpp>
 
 namespace sight::filter::image
 {
@@ -36,19 +36,20 @@ namespace sight::filter::image
  */
 class FILTER_IMAGE_CLASS_API BresenhamLine
 {
-
 public:
 
     /// Voxel coordinate type.
-    typedef std::array< data::Image::IndexType, 3 > CoordinatesType;
+    typedef std::array<data::Image::IndexType, 3> CoordinatesType;
 
     /// Series of coordinates making up a line.
-    typedef std::vector< CoordinatesType > PathType;
+    typedef std::vector<CoordinatesType> PathType;
 
     /// Computes a Bresenham line in a 3D image slice.
-    FILTER_IMAGE_API static PathType draw(const data::helper::MedicalImage::Orientation orientation,
-                                          const CoordinatesType& startCoord, const CoordinatesType& endCoord);
-
+    FILTER_IMAGE_API static PathType draw(
+        const data::helper::MedicalImage::Orientation orientation,
+        const CoordinatesType& startCoord,
+        const CoordinatesType& endCoord
+    );
 };
 
 }

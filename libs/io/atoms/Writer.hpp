@@ -32,11 +32,15 @@
 
 namespace sight::atoms
 {
+
 class Base;
+
 }
 namespace sight::io::zip
 {
+
 class IWriteArchive;
+
 }
 
 namespace sight::io::atoms
@@ -44,7 +48,6 @@ namespace sight::io::atoms
 
 class IO_ATOMS_CLASS_API Writer
 {
-
 public:
 
     /// Defines writer version.
@@ -68,14 +71,15 @@ public:
      * @param _format format of the saved archive (JSON/XML).
      * @return The folder name used to save data.
      */
-    IO_ATOMS_API std::filesystem::path write( const SPTR(io::zip::IWriteArchive)_archive,
-                                              const std::filesystem::path& _rootFilename = "root.json",
-                                              FormatType _format                         = JSON ) const;
+    IO_ATOMS_API std::filesystem::path write(
+        const SPTR(io::zip::IWriteArchive)_archive,
+        const std::filesystem::path& _rootFilename = "root.json",
+        FormatType _format                         = JSON
+    ) const;
 
 protected:
 
     SPTR(sight::atoms::Base) m_atom;
-
 };
 
 }

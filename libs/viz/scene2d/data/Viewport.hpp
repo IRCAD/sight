@@ -29,6 +29,7 @@
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
@@ -37,10 +38,9 @@ namespace data
  */
 class VIZ_SCENE2D_CLASS_API Viewport : public sight::data::Object
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New< Viewport >)
+    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New<Viewport>);
 
     /**
      * @brief Constructor
@@ -54,24 +54,24 @@ public:
     }
 
     /// Defines shallow copy
-    VIZ_SCENE2D_API void shallowCopy( const sight::data::Object::csptr& _source ) override;
+    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
 
     /// Defines deep copy
-    VIZ_SCENE2D_API void cachedDeepCopy( const sight::data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    VIZ_SCENE2D_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     float getX() const;
-    void setX (float _x);
+    void setX(float _x);
     float getY() const;
-    void setY (float _y);
+    void setY(float _y);
 
     float getWidth() const;
-    void setWidth (float _width);
+    void setWidth(float _width);
     float getHeight() const;
-    void setHeight (float _height);
+    void setHeight(float _height);
 
 private:
-    float m_x, m_y, m_width, m_height;
 
+    float m_x, m_y, m_width, m_height;
 };
 
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ inline float Viewport::getX() const
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setX (float _x)
+inline void Viewport::setX(float _x)
 {
     m_x = _x;
 }
@@ -97,7 +97,7 @@ inline float Viewport::getY() const
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setY (float _y)
+inline void Viewport::setY(float _y)
 {
     m_y = _y;
 }
@@ -111,7 +111,7 @@ inline float Viewport::getWidth() const
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setWidth (float _width)
+inline void Viewport::setWidth(float _width)
 {
     m_width = _width;
 }
@@ -125,7 +125,7 @@ inline float Viewport::getHeight() const
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setHeight (float _height)
+inline void Viewport::setHeight(float _height)
 {
     m_height = _height;
 }
@@ -133,4 +133,5 @@ inline void Viewport::setHeight (float _height)
 //-----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

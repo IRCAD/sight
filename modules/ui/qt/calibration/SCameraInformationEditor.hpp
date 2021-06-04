@@ -61,7 +61,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCameraInformationEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCameraInformationEditor, sight::ui::base::IEditor);
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

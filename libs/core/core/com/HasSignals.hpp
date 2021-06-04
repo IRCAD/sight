@@ -35,35 +35,35 @@ struct SignalBase;
  */
 class CORE_CLASS_API HasSignals
 {
-
 public:
 
-    typedef std::shared_ptr< HasSignals > sptr;
-    typedef std::shared_ptr< const HasSignals > csptr;
+    typedef std::shared_ptr<HasSignals> sptr;
+    typedef std::shared_ptr<const HasSignals> csptr;
 
     HasSignals()
     {
     }
+
     virtual ~HasSignals()
     {
     }
 
-    SPTR( SignalBase ) signal( const Signals::SignalKeyType& key ) const
+    SPTR(SignalBase) signal(const Signals::SignalKeyType& key) const
     {
         return m_signals[key];
     }
 
-    template< typename SignalType >
-    SPTR( SignalType ) signal( const Signals::SignalKeyType& key ) const
+    template<typename SignalType>
+    SPTR(SignalType) signal(const Signals::SignalKeyType& key) const
     {
-        SPTR( SignalType ) Signal = std::dynamic_pointer_cast< SignalType >( this->signal(key) );
+        SPTR(SignalType) Signal = std::dynamic_pointer_cast<SignalType>(this->signal(key));
         return Signal;
     }
 
     template<typename SignalType>
-    SPTR( SignalType ) newSignal(const Signals::SignalKeyType& key)
+    SPTR(SignalType) newSignal(const Signals::SignalKeyType& key)
     {
-        SPTR( SignalType ) sig = std::make_shared< SignalType > ();
+        SPTR(SignalType) sig = std::make_shared<SignalType>();
         m_signals(key, sig);
         return sig;
     }
@@ -71,10 +71,10 @@ public:
 protected:
 
     /// Copy constructor forbidden
-    HasSignals( const HasSignals& );
+    HasSignals(const HasSignals&);
 
     /// Copy operator forbidden
-    HasSignals& operator=( const HasSignals& );
+    HasSignals& operator=(const HasSignals&);
 
     Signals m_signals;
 };

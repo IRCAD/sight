@@ -32,10 +32,13 @@
 
 namespace sight::io::patch::semantic
 {
+
 namespace V1
 {
+
 namespace V2
 {
+
 namespace data
 {
 
@@ -55,7 +58,7 @@ Study::~Study()
 
 // ----------------------------------------------------------------------------
 
-Study::Study( const Study& cpy ) :
+Study::Study(const Study& cpy) :
     io::atoms::patch::ISemanticPatch(cpy)
 {
 }
@@ -65,14 +68,15 @@ Study::Study( const Study& cpy ) :
 void Study::apply(
     const sight::atoms::Object::sptr& previous,
     const sight::atoms::Object::sptr& current,
-    io::atoms::patch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions
+)
 {
     ISemanticPatch::apply(previous, current, newVersions);
-    io::atoms::patch::helper::cleanFields( current );
-    io::atoms::patch::helper::Object helper( current );
+    io::atoms::patch::helper::cleanFields(current);
+    io::atoms::patch::helper::Object helper(current);
 
-    sight::atoms::String::sptr uid = current->getAttribute< sight::atoms::String >("instance_uid");
-    if( uid->getValue().empty() )
+    sight::atoms::String::sptr uid = current->getAttribute<sight::atoms::String>("instance_uid");
+    if(uid->getValue().empty())
     {
         helper.replaceAttribute("instance_uid", sight::atoms::String::New(core::tools::UUID::generateUUID()));
     }
@@ -81,6 +85,9 @@ void Study::apply(
 // ----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace V2
+
 } // namespace V1
+
 } // namespace sight::io::patch::semantic

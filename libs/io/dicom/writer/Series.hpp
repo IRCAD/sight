@@ -60,7 +60,7 @@ public:
     {
         SPATIAL_FIDUCIALS   = 1, /*! Export Fiducials using SpatialFiducialsIOD */
         COMPREHENSIVE_SR    = 2, /*! Export Fiducials using ComprehensiveSRIOD */
-        COMPREHENSIVE_3D_SR = 3 /*! Export Fiducials using Comprehensive3DSRIOD */
+        COMPREHENSIVE_3D_SR = 3  /*! Export Fiducials using Comprehensive3DSRIOD */
     } FiducialsExportMode;
 
     typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> DicomInstanceMapType;

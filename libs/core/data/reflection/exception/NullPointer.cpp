@@ -28,16 +28,20 @@
 
 namespace sight::data
 {
+
 namespace reflection
 {
+
 namespace exception
 {
 
-NullPointer::NullPointer ( const std::string& err ) :
+NullPointer::NullPointer(const std::string& err) :
     core::Exception(err)
 {
 }
 
 } // namespace exception
+
 } // namespace reflection
+
 } // namespace sight::data

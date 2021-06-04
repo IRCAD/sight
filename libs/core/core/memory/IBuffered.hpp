@@ -27,11 +27,15 @@
 
 namespace sight::data
 {
+
 namespace mt
 {
-template< class DATATYPE >
+
+template<class DATATYPE>
 class locked_ptr;
+
 }
+
 }
 
 namespace sight::core::memory
@@ -44,7 +48,7 @@ class CORE_CLASS_API IBuffered
 {
 protected:
 
-    template< class DATATYPE >
+    template<class DATATYPE>
     friend class data::mt::locked_ptr;
 
     /**
@@ -52,7 +56,7 @@ protected:
      *
      * This allow locking of complex object with several BufferObject
      */
-    CORE_API virtual void lockBuffer(std::vector< core::memory::BufferObject::Lock >& locks) const = 0;
+    CORE_API virtual void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const = 0;
 };
 
 }

@@ -27,32 +27,36 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( sight::data::Line );
+SIGHT_REGISTER_DATA(sight::data::Line);
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-Line::Line (data::Object::Key)
+Line::Line(data::Object::Key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Line::~Line ()
+Line::~Line()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Line::shallowCopy(const Object::csptr& _source )
+void Line::shallowCopy(const Object::csptr& _source)
 {
     Line::csptr other = Line::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldShallowCopy( _source );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldShallowCopy(_source);
     m_position  = other->m_position;
     m_direction = other->m_direction;
 }
@@ -62,17 +66,21 @@ void Line::shallowCopy(const Object::csptr& _source )
 void Line::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Line::csptr other = Line::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF( data::Exception(
-                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                                  + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source, cache );
-    m_position  = data::Object::copy( other->m_position, cache );
-    m_direction = data::Object::copy( other->m_direction, cache );
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
+    m_position  = data::Object::copy(other->m_position, cache);
+    m_direction = data::Object::copy(other->m_direction, cache);
 }
 
 //------------------------------------------------------------------------------
 
-void Line::setValue(const data::Point::sptr& _position, const data::Point::sptr&  _direction)
+void Line::setValue(const data::Point::sptr& _position, const data::Point::sptr& _direction)
 {
     m_position  = _position;
     m_direction = _direction;

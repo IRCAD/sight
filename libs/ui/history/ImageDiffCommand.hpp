@@ -59,7 +59,6 @@ private:
     data::Image::BufferModifiedSignalType::sptr m_modifSig;
 
     filter::image::ImageDiff m_diff;
-
 };
 
 } // namespace sight::ui::history

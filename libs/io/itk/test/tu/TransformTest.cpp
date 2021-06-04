@@ -29,10 +29,11 @@
 #include <itkMatrix.h>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::itk::ut::TransformTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::itk::ut::TransformTest);
 
 namespace sight::io::itk
 {
+
 namespace ut
 {
 
@@ -57,19 +58,19 @@ void TransformTest::testConversion()
     ::itk::Matrix<double, 4, 4> mat;
     data::Matrix4::sptr sightMat = data::Matrix4::New();
 
-    for(std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 4; j++)
+        for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            mat(i, j) = i+ j*4.0;
+            mat(i, j) = i + j * 4.0;
         }
     }
 
     io::itk::helper::Transform::convertFromITK(mat, sightMat);
 
-    for(std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 4; j++)
+        for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), sightMat->getCoefficient(i, j), 0);
         }
@@ -79,17 +80,17 @@ void TransformTest::testConversion()
 
     ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sightMat2);
 
-    for(std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for(std::uint8_t j = 0; j < 4; j++)
+        for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), mat2(i, j), 0);
         }
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::io::itk

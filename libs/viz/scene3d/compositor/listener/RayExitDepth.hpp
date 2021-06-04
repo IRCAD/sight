@@ -28,10 +28,13 @@
 
 namespace sight::viz::scene3d
 {
+
 namespace compositor
 {
+
 namespace listener
 {
+
 //-----------------------------------------------------------------------------
 
 /**
@@ -49,10 +52,13 @@ public:
     ~RayExitDepthListener();
 
     /// Called when an entry point scheme isn't found, creates the missing technique.
-    virtual ::Ogre::Technique* handleSchemeNotFound(unsigned short _schemeIndex, const ::Ogre::String& _schemeName,
-                                                    ::Ogre::Material* _originalMaterial, unsigned short _lodIndex,
-                                                    const ::Ogre::Renderable* _renderable);
-
+    virtual ::Ogre::Technique* handleSchemeNotFound(
+        unsigned short _schemeIndex,
+        const ::Ogre::String& _schemeName,
+        ::Ogre::Material* _originalMaterial,
+        unsigned short _lodIndex,
+        const ::Ogre::Renderable* _renderable
+    );
 };
 
 } // namespace listener

@@ -36,6 +36,7 @@ namespace exceptions
 class Base : public core::Exception
 {
 public:
+
     Base(const std::string& message);
     virtual ~Base() noexcept
     {
@@ -43,4 +44,5 @@ public:
 };
 
 } // namespace exceptions
+
 } // namespace sight::io::atoms::patch

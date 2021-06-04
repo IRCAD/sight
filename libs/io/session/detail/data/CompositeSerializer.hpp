@@ -36,7 +36,7 @@ class CompositeSerializer : public IDataSerializer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(CompositeSerializer, IDataSerializer)
+    SIGHT_DECLARE_CLASS(CompositeSerializer, IDataSerializer);
 
     /// Delete default copy constructors and assignment operators
     CompositeSerializer(const CompositeSerializer&)            = delete;

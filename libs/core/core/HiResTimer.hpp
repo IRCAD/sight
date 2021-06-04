@@ -37,7 +37,8 @@ namespace sight::core
 class CORE_CLASS_API HiResTimer : public BaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(HiResTimer, BaseObject, new HiResTimer)
+
+    SIGHT_DECLARE_CLASS(HiResTimer, BaseObject, new HiResTimer);
 
     /**
      * @name Constructor/Destructor
@@ -51,13 +52,13 @@ public:
     /**
      * @brief Start the timer.
      */
-    CORE_API void   start();
+    CORE_API void start();
 
     /**
      * @brief Stop the timer.
      * stop() will not reset the timer.
      */
-    CORE_API void   stop();
+    CORE_API void stop();
 
     /**
      * @brief Reset the timer and leave it in the same state it was (started or stopped).
@@ -65,7 +66,7 @@ public:
      * @param initial_value Initial value in microseconds from which the timer
      * will start to count.
      */
-    CORE_API void   reset(HiResClock::HiResClockType initial_value = 0.);
+    CORE_API void reset(HiResClock::HiResClockType initial_value = 0.);
 
     /**
      * @name Elapsed time
@@ -89,10 +90,12 @@ public:
      */
     CORE_API core::HiResClock::HiResClockType getElapsedTimeInMicroSec();
 
-    /**  @} */
+/**  @} */
+
 protected:
 
 private:
+
     /**
      * @brief Last start time.
      */

@@ -33,10 +33,10 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QBoxLayout>
 #include <QGridLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -79,9 +79,9 @@ void SCameraSeriesEditor::starting()
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
@@ -94,7 +94,6 @@ void SCameraSeriesEditor::starting()
     qtContainer->setLayout(mainLayout);
 
     this->updateInformations();
-
 }
 
 // -------------------------------------------------------------------------
@@ -115,7 +114,7 @@ void SCameraSeriesEditor::swapping()
 
 void SCameraSeriesEditor::updateInformations()
 {
-    data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >("cameraSeries");
+    data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>("cameraSeries");
 
     //IS CALIBRATED
     data::Matrix4::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
@@ -130,11 +129,11 @@ void SCameraSeriesEditor::updateInformations()
         return;
     }
 
-    for (std::uint8_t i = 0; i < 4; ++i)
+    for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
-        for (std::uint8_t j = 0; j < 4; ++j)
+        for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i*4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
+            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
         }
     }
 }
@@ -143,11 +142,11 @@ void SCameraSeriesEditor::updateInformations()
 
 void SCameraSeriesEditor::clearLabels()
 {
-    for (unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0 ; i < 4 ; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i*4 + j]->setText(QString(""));
+            m_matrixLabels[i * 4 + j]->setText(QString(""));
         }
     }
 }
@@ -157,9 +156,9 @@ void SCameraSeriesEditor::clearLabels()
 service::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push( "cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
-    connections.push( "cameraSeries", data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT  );
-    connections.push( "cameraSeries", data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push("cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push("cameraSeries", data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push("cameraSeries", data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
     return connections;
 }
 

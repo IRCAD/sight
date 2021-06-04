@@ -33,6 +33,7 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
@@ -41,10 +42,9 @@ namespace dialog
  */
 class UI_BASE_CLASS_API ILoggerDialog : public ui::base::GuiBaseObject
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(ILoggerDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ILoggerDialog, ui::base::GuiBaseObject);
 
     typedef std::string FactoryRegistryKeyType;
 
@@ -84,4 +84,5 @@ public:
 };
 
 } //namespace dialog
+
 } //namespace sight::ui::base

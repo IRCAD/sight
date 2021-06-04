@@ -26,6 +26,7 @@
 
 namespace sight::viz::scene2d
 {
+
 namespace data
 {
 
@@ -34,16 +35,15 @@ namespace data
  */
 class Axis
 {
-
 public:
 
-    typedef std::shared_ptr < Axis > sptr;
+    typedef std::shared_ptr<Axis> sptr;
 
     typedef enum
     {
         LINEAR,
         LOG
-    }  ScaleType;
+    } ScaleType;
 
     /**
      * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
@@ -59,13 +59,13 @@ public:
     float getOrigin() const;
 
     /// Set m_origin attribute.
-    void setOrigin (float origin);
+    void setOrigin(float origin);
 
     /// Get m_scale attribute.
     float getScale() const;
 
     /// Set m_scale attribute.
-    void setScale (float scale);
+    void setScale(float scale);
 
     /// Get m_scaleType attribute.
     ScaleType getScaleType() const;
@@ -74,12 +74,12 @@ public:
     void setScaleType(ScaleType scaleType);
 
 private:
+
     /// The origin and scale.
     float m_origin, m_scale;
 
     /// The scaleType (LINEAR/LOG).
     ScaleType m_scaleType;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ inline float Axis::getOrigin() const
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setOrigin (float origin)
+inline void Axis::setOrigin(float origin)
 {
     m_origin = origin;
 }
@@ -105,7 +105,7 @@ inline float Axis::getScale() const
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setScale (float scale)
+inline void Axis::setScale(float scale)
 {
     m_scale = scale;
 }
@@ -127,4 +127,5 @@ inline void Axis::setScaleType(ScaleType scaleType)
 //-----------------------------------------------------------------------------
 
 } // namespace data
+
 } // namespace sight::viz::scene2d

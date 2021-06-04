@@ -30,13 +30,13 @@ namespace sight::core::runtime
 RuntimeException::RuntimeException(const RuntimeException& exception) noexcept :
     core::Exception(std::string(exception.what()))
 {
-    SIGHT_WARN( this->what() );
+    SIGHT_WARN(this->what());
 }
 
 RuntimeException::RuntimeException(const std::string& message) noexcept :
     core::Exception(message)
 {
-    SIGHT_WARN( this->what() );
+    SIGHT_WARN(this->what());
 }
 
 RuntimeException::~RuntimeException() noexcept

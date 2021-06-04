@@ -32,7 +32,7 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-filter::dicom::IFilter::sptr New( const filter::dicom::registry::KeyType& classname )
+filter::dicom::IFilter::sptr New(const filter::dicom::registry::KeyType& classname)
 {
     return filter::dicom::registry::get()->create(classname);
 }

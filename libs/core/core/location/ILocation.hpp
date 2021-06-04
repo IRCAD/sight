@@ -36,7 +36,7 @@ class CORE_CLASS_API ILocation
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ILocation)
+    SIGHT_DECLARE_CLASS(ILocation);
 
     /// String serialization function
     inline virtual std::string toString() const = 0;

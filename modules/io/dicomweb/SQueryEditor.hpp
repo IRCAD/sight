@@ -71,7 +71,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SQueryEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SQueryEditor, sight::ui::base::IEditor);
 
     /// Constructor
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;
@@ -94,6 +94,7 @@ protected:
     MODULE_IO_DICOMWEB_API void updating() override;
 
 private Q_SLOTS:
+
     /// Slot called when querying on patient name
     void queryPatientName();
 
@@ -101,6 +102,7 @@ private Q_SLOTS:
     void queryStudyDate();
 
 private:
+
     /**
      * @brief Display an error message
      * @param[in] message Error message to display
@@ -114,19 +116,19 @@ private:
     void updateSeriesDB(data::SeriesDB::ContainerType series);
 
     /// Patient Name Field
-    QPointer< QLineEdit > m_patientNameLineEdit;
+    QPointer<QLineEdit> m_patientNameLineEdit;
 
     /// Patient Name Query Button
-    QPointer< QPushButton > m_patientNameQueryButton;
+    QPointer<QPushButton> m_patientNameQueryButton;
 
     /// Begin study date widget
-    QPointer< QDateEdit > m_beginStudyDateEdit;
+    QPointer<QDateEdit> m_beginStudyDateEdit;
 
     /// End study date widget
-    QPointer< QDateEdit > m_endStudyDateEdit;
+    QPointer<QDateEdit> m_endStudyDateEdit;
 
     /// Study Date Query Button
-    QPointer< QPushButton > m_studyDateQueryButton;
+    QPointer<QPushButton> m_studyDateQueryButton;
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;
@@ -138,11 +140,10 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname{"localhost"};
+    std::string m_serverHostname {"localhost"};
 
     /// Server port
-    int m_serverPort{4242};
-
+    int m_serverPort {4242};
 };
 
 } // namespace sight::module::io::dicomweb

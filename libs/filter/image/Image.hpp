@@ -40,45 +40,51 @@ namespace sight::filter::image
  *
  * set input image voxel to zero where roi voxel value is zero
  */
-FILTER_IMAGE_API void applyRoi( data::Image::sptr image, data::Image::sptr roi );
+FILTER_IMAGE_API void applyRoi(data::Image::sptr image, data::Image::sptr roi);
 
 /**
  * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
  *
  */
-FILTER_IMAGE_API bool isRoiApplyed( data::Image::sptr image,
-                                    data::Image::sptr imgRoiApplyed,
-                                    data::Image::sptr roi );
+FILTER_IMAGE_API bool isRoiApplyed(
+    data::Image::sptr image,
+    data::Image::sptr imgRoiApplyed,
+    data::Image::sptr roi
+);
 
 /**
  * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0
  */
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
-void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask, IMG_DEST_TYPE val )
+void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask, IMG_DEST_TYPE val)
 {
     typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;
-    SIGHT_ASSERT( "Image dest has not correct type", imgDest->getType().isOfType< ImgDestType >());
-    SIGHT_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
+    SIGHT_ASSERT("Image dest has not correct type", imgDest->getType().isOfType<ImgDestType>());
+    SIGHT_ASSERT("Image mask has not correct type", mask->getType().isOfType<MaskType>());
 
-    SIGHT_ASSERT( "Images have not the same size", imgDest->getSize2() == mask->getSize2() );
-    SIGHT_ASSERT( "Images have not the same spacing",
-                  geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
-    SIGHT_ASSERT( "Images have not the same origin",
-                  geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
+    SIGHT_ASSERT("Images have not the same size", imgDest->getSize2() == mask->getSize2());
+    SIGHT_ASSERT(
+        "Images have not the same spacing",
+        geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2())
+    );
+    SIGHT_ASSERT(
+        "Images have not the same origin",
+        geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2())
+    );
 
     const auto imgDumpLock  = imgDest->lock();
     const auto maskDumpLock = mask->lock();
 
-    auto imgItr          = imgDest->begin< ImgDestType >();
-    const auto imgItrEnd = imgDest->end< ImgDestType >();
+    auto imgItr          = imgDest->begin<ImgDestType>();
+    const auto imgItrEnd = imgDest->end<ImgDestType>();
 
-    auto maskItr          = mask->begin< MaskType >();
-    const auto maskItrEnd = mask->end< MaskType >();
+    auto maskItr          = mask->begin<MaskType>();
+    const auto maskItrEnd = mask->end<MaskType>();
 
-    for (; imgItr != imgItrEnd && maskItr != maskItrEnd; ++imgItr, ++maskItr)
+    for( ; imgItr != imgItrEnd && maskItr != maskItrEnd ; ++imgItr, ++maskItr)
     {
-        if (*maskItr != 0)
+        if(*maskItr != 0)
         {
             *imgItr = val;
         }

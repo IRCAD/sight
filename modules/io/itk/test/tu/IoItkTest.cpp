@@ -23,6 +23,7 @@
 #include "IoItkTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/System.hpp>
@@ -30,23 +31,23 @@
 #include <data/ImageSeries.hpp>
 #include <data/SeriesDB.hpp>
 
+#include <io/base/service/ioTypes.hpp>
+
 #include <service/op/Add.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
 #include <utestData/helper/compare.hpp>
 
-#include <io/base/service/ioTypes.hpp>
-
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::itk::ut::IoItkTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::itk::ut::IoItkTest);
 
 namespace sight::module::io::itk
 {
+
 namespace ut
 {
 
@@ -75,18 +76,19 @@ void executeService(
     const SPTR(data::Object)& obj,
     const std::string& srvImpl,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
-    const service::IService::AccessType access = service::IService::AccessType::INOUT)
+    const service::IService::AccessType access = service::IService::AccessType::INOUT
+)
 {
     service::IService::sptr srv = service::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    service::OSR::registerService(obj, sight::io::base::service::s_DATA_KEY, access, srv );
+    service::OSR::registerService(obj, sight::io::base::service::s_DATA_KEY, access, srv);
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    service::OSR::unregisterService( srv );
+    service::OSR::unregisterService(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -111,10 +113,12 @@ void IoItkTest::testImageSeriesWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService(imageSeries,
-                   "::sight::module::io::itk::SJpgImageSeriesWriter",
-                   srvCfg,
-                   service::IService::AccessType::INPUT);
+    executeService(
+        imageSeries,
+        "::sight::module::io::itk::SJpgImageSeriesWriter",
+        srvCfg,
+        service::IService::AccessType::INPUT
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +131,7 @@ void IoItkTest::testImageWriterJPG()
 
     // Create path
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageJPG";
-    std::filesystem::create_directories( path );
+    std::filesystem::create_directories(path);
 
     // Create Config
     core::runtime::EConfigurationElement::sptr srvCfg    = core::runtime::EConfigurationElement::New("service");
@@ -140,7 +144,8 @@ void IoItkTest::testImageWriterJPG()
         image,
         "::sight::module::io::itk::JpgImageWriterService",
         srvCfg,
-        service::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +168,7 @@ void IoItkTest::testSaveLoadInr()
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
-    std::filesystem::create_directories( path.parent_path() );
+    std::filesystem::create_directories(path.parent_path());
 
     // Create Config
     core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
@@ -176,7 +181,8 @@ void IoItkTest::testSaveLoadInr()
         image,
         "::sight::module::io::itk::InrImageWriterService",
         srvCfg,
-        service::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT
+    );
 
     // load Image
     data::Image::sptr image2 = data::Image::New();
@@ -184,7 +190,8 @@ void IoItkTest::testSaveLoadInr()
         image2,
         "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
-        service::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT
+    );
 
     data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
@@ -214,7 +221,7 @@ void IoItkTest::ImageSeriesInrTest()
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
-    std::filesystem::create_directories( path.parent_path() );
+    std::filesystem::create_directories(path.parent_path());
 
     // Create Config
     core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
@@ -227,7 +234,8 @@ void IoItkTest::ImageSeriesInrTest()
         imageSeries,
         "::sight::module::io::itk::SImageSeriesWriter",
         srvCfg,
-        service::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT
+    );
 
     // load Image
     data::Image::sptr image2 = data::Image::New();
@@ -235,7 +243,8 @@ void IoItkTest::ImageSeriesInrTest()
         image2,
         "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
-        service::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT
+    );
 
     data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
@@ -260,11 +269,15 @@ void IoItkTest::SeriesDBInrTest()
     const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/inr/image.inr.gz";
     const std::filesystem::path skinFile  = utestData::Data::dir() / "sight/image/inr/skin.inr.gz";
 
-    CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
-                           std::filesystem::exists(imageFile));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The file '" + imageFile.string() + "' does not exist",
+        std::filesystem::exists(imageFile)
+    );
 
-    CPPUNIT_ASSERT_MESSAGE("The file '" + skinFile.string() + "' does not exist",
-                           std::filesystem::exists(skinFile));
+    CPPUNIT_ASSERT_MESSAGE(
+        "The file '" + skinFile.string() + "' does not exist",
+        std::filesystem::exists(skinFile)
+    );
 
     // Create Config
     core::runtime::EConfigurationElement::sptr srvCfg       = core::runtime::EConfigurationElement::New("service");
@@ -282,7 +295,8 @@ void IoItkTest::SeriesDBInrTest()
         sdb,
         "::sight::module::io::itk::SInrSeriesDBReader",
         srvCfg,
-        service::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT
+    );
 
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
     const data::Image::Size size       = {512, 512, 134};
@@ -317,4 +331,5 @@ void IoItkTest::SeriesDBInrTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::module::io::itk

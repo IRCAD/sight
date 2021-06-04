@@ -63,11 +63,10 @@ namespace sight::module::ui::qt
 class MODULE_UI_QT_CLASS_API STextStatus final : public QObject,
                                                  public sight::ui::base::IEditor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STextStatus, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STextStatus, sight::ui::base::IEditor);
 
     /// Initializes slots and member.
     MODULE_UI_QT_API STextStatus();
@@ -110,11 +109,10 @@ private:
     void setStringParameter(std::string _val);
 
     /// Stores the label.
-    QPointer< QLabel > m_labelValue;
+    QPointer<QLabel> m_labelValue;
 
     /// Stores the static text to be displayed.
-    QPointer< QLabel > m_labelStaticText;
-
+    QPointer<QLabel> m_labelStaticText;
 };
 
 } // namespace sight::module::ui::qt

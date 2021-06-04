@@ -25,10 +25,11 @@
 #include <core/tools/Object.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::ObjectTest);
 
 namespace sight::core::tools
 {
+
 namespace ut
 {
 
@@ -53,7 +54,7 @@ void ObjectTest::idTest()
     const std::string UUID = "uid";
 
     // process
-    core::tools::Object::sptr obj = std::make_shared< core::tools::Object >();
+    core::tools::Object::sptr obj = std::make_shared<core::tools::Object>();
 
     obj->setID(UUID);
 
@@ -63,4 +64,5 @@ void ObjectTest::idTest()
 }
 
 } // namespace ut
+
 } // namespace sight::core::tools

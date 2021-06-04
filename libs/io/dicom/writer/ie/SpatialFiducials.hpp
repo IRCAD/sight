@@ -29,18 +29,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace writer
 {
+
 namespace ie
 {
 
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::writer::ie::InformationEntity< data::Image >
+class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::writer::ie::InformationEntity<data::Image>
 {
-
 public:
+
     /**
      * @brief Constructor
      * @param[in] writer GDCM writer that must be enriched
@@ -50,12 +52,14 @@ public:
      * @param[in] progress Progress callback
      * @param[in] cancel Cancel requested callback
      */
-    IO_DICOM_API SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
-                                  const SPTR(io::dicom::container::DicomInstance)& instance,
-                                  const data::Image::csptr& series,
-                                  const core::log::Logger::sptr& logger = nullptr,
-                                  ProgressCallback progress             = nullptr,
-                                  CancelRequestedCallback cancel        = nullptr);
+    IO_DICOM_API SpatialFiducials(
+        const SPTR(::gdcm::Writer)& writer,
+        const SPTR(io::dicom::container::DicomInstance)& instance,
+        const data::Image::csptr& series,
+        const core::log::Logger::sptr& logger = nullptr,
+        ProgressCallback progress             = nullptr,
+        CancelRequestedCallback cancel        = nullptr
+    );
 
     /// Destructor
     IO_DICOM_API virtual ~SpatialFiducials();
@@ -84,12 +88,12 @@ protected:
      * @brief Write image landmarks into sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
+    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence);
 
     /**
      * @brief Write image distances into sequence
      */
-    void writeDistances(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
+    void writeDistances(::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence);
 
     /**
      * @brief Add a frame number to the referenced image sequence
@@ -97,10 +101,14 @@ protected:
      * @param[in] referencedImageSequence Destination sequence
      * @throw(io::dicom::exception::Failed)
      */
-    void addReferencedImage(int frameNumber,
-                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence);
+    void addReferencedImage(
+        int frameNumber,
+        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> referencedImageSequence
+    );
 };
 
 } // namespace ie
+
 } // namespace writer
+
 } // namespace sight::io::dicom

@@ -29,13 +29,13 @@
 namespace camp_ext
 {
 
-template <typename T, typename C = void>
+template<typename T, typename C = void>
 struct MapMapper
 {
 };
 
-template <typename MAP>
-struct MapMapper< MAP, typename boost::enable_if_c<camp::isMapping<MAP>::value>::type >
+template<typename MAP>
+struct MapMapper<MAP, typename boost::enable_if_c<camp::isMapping<MAP>::value>::type>
 {
     typedef MAP MapType;
     typedef typename MapType::value_type ValueType;
@@ -66,4 +66,4 @@ struct MapMapper< MAP, typename boost::enable_if_c<camp::isMapping<MAP>::value>:
     }
 };
 
-}  // namespace camp_ext
+} // namespace camp_ext

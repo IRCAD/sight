@@ -43,14 +43,14 @@ typedef std::array<double, 4> fwPlane;
 /**
  * @brief Definition of a type for a matrix 4*4
  */
-typedef std::array< std::array< double, 4 >, 4> fwMatrix4x4;
+typedef std::array<std::array<double, 4>, 4> fwMatrix4x4;
 
 /**
  * @brief Definition of a type for vertex positions
  */
-typedef std::vector < std::vector <float> > fwVertexPosition;
+typedef std::vector<std::vector<float> > fwVertexPosition;
 
 /**
  * @brief Definition of a type for vertex index
  */
-typedef std::vector < std::vector <int> > fwVertexIndex;
+typedef std::vector<std::vector<int> > fwVertexIndex;

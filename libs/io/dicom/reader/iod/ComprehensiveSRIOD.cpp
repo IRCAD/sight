@@ -30,18 +30,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace reader
 {
+
 namespace iod
 {
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::ComprehensiveSRIOD(const data::DicomSeries::csptr& dicomSeries,
-                                       const SPTR(io::dicom::container::DicomInstance)& instance,
-                                       const core::log::Logger::sptr& logger,
-                                       ProgressCallback progress,
-                                       CancelRequestedCallback cancel) :
+ComprehensiveSRIOD::ComprehensiveSRIOD(
+    const data::DicomSeries::csptr& dicomSeries,
+    const SPTR(io::dicom::container::DicomInstance)& instance,
+    const core::log::Logger::sptr& logger,
+    ProgressCallback progress,
+    CancelRequestedCallback cancel
+) :
     io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -61,7 +65,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader>(new ::gdcm::Reader);
 
     // Read the first file
     const auto& dicomContainer                               = m_dicomSeries->getDicomContainer();
@@ -71,9 +75,14 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
     const bool success = reader->Read();
 
-    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                          bufferObj->getStreamInfo().fsFile.string()+
-                                                          "\" using the GDCM Image Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(
+        io::dicom::exception::Failed(
+            "Unable to read the DICOM instance \""
+            + bufferObj->getStreamInfo().fsFile.string()
+            + "\" using the GDCM Image Reader."
+        ),
+        !success
+    );
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
@@ -85,6 +94,8 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-}  // namespace iod
-}  // namespace reader
-}  // namespace sight::io::dicom
+} // namespace iod
+
+} // namespace reader
+
+} // namespace sight::io::dicom

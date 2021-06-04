@@ -33,7 +33,9 @@
 
 namespace sight::data
 {
+
 class Vector;
+
 }
 
 namespace sight::activity
@@ -44,7 +46,6 @@ namespace sight::activity
  */
 class ACTIVITY_CLASS_API IBuilder : public core::BaseObject
 {
-
 public:
 
     typedef activity::builder::factory::Key Key;
@@ -56,18 +57,21 @@ public:
      *
      * @tparam T Factory product type
      */
-    template <typename T>
+    template<typename T>
     class Registry
     {
     public:
+
         Registry(std::string functorKey)
         {
-            activity::builder::registry::get()->addFactory( functorKey,
-                                                            &activity::builder::factory::New<T> );
+            activity::builder::registry::get()->addFactory(
+                functorKey,
+                &activity::builder::factory::New<T>
+            );
         }
     };
 
-    SIGHT_DECLARE_CLASS(IBuilder, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IBuilder, core::BaseObject);
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
@@ -77,12 +81,15 @@ public:
      */
     ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
         const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection ) const = 0;
+        const CSPTR(data::Vector)& currentSelection
+    ) const = 0;
 
 protected:
 
-    ACTIVITY_API virtual SPTR(data::Vector) getType( const CSPTR(data::Vector)& currentSelection,
-                                                     const std::string& type ) const;
+    ACTIVITY_API virtual SPTR(data::Vector) getType(
+        const CSPTR(data::Vector) & currentSelection,
+        const std::string& type
+    ) const;
 };
 
 } // namespace sight::activity

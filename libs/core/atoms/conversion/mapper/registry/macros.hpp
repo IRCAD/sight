@@ -30,15 +30,19 @@
 
 namespace sight::atoms::conversion
 {
+
 namespace mapper
 {
+
 namespace registry
 {
 
-#define fwAtomConversionRegisterMacro( classname, functorKey )         \
-    static atoms::conversion::mapper::Base::Registry< classname >  \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(functorKey) );
+#define fwAtomConversionRegisterMacro(classname, functorKey) \
+    static atoms::conversion::mapper::Base::Registry<classname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(functorKey));
 
 } // end namespace registry
+
 } // end namespace mapper
+
 } // end namespace sight::atoms::conversion

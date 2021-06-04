@@ -23,11 +23,11 @@
 #pragma once
 
 #include "data/config.hpp"
-
 #include <data/Image.hpp>
 
 namespace sight::data
 {
+
 namespace helper
 {
 
@@ -39,7 +39,6 @@ namespace helper
  */
 class DATA_DEPRECATED_CLASS_API Image
 {
-
 public:
 
     typedef data::Image::SizeType SizeType;
@@ -48,24 +47,24 @@ public:
     typedef data::Image::BufferIndexType BufferIndexType;
 
     /// Shared pointer type
-    typedef std::shared_ptr < data::helper::Image > sptr;
+    typedef std::shared_ptr<data::helper::Image> sptr;
     /// Const shared pointer type
-    typedef std::shared_ptr < const data::helper::Image > csptr;
+    typedef std::shared_ptr<const data::helper::Image> csptr;
     /// Unique pointer type
-    typedef std::unique_ptr < data::helper::Image > uptr;
+    typedef std::unique_ptr<data::helper::Image> uptr;
     /// Const unique pointer type
-    typedef std::unique_ptr < const data::helper::Image > cuptr;
+    typedef std::unique_ptr<const data::helper::Image> cuptr;
 
     //------------------------------------------------------------------------------
 
     static sptr New(data::Image::sptr image)
     {
-        return std::make_shared< data::helper::Image >(image);
+        return std::make_shared<data::helper::Image>(image);
     }
 
     /// Constructor. Initialize parameters.
     [[deprecated("will be removed in sight 22.0, please use data::Image")]]
-    DATA_API Image( data::Image::sptr image );
+    DATA_API Image(data::Image::sptr image);
 
     /// Destrucotr. Do nothing.
     DATA_API virtual ~Image();
@@ -117,15 +116,17 @@ public:
     /** @{
      * @brief Helpers for 3D images
      */
-    DATA_API void* getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z );
+    DATA_API void* getPixelBuffer(SizeType::value_type x, SizeType::value_type y, SizeType::value_type z);
 
-    DATA_API void* getPixelBuffer( IndexType index );
+    DATA_API void* getPixelBuffer(IndexType index);
 
-    DATA_API void setPixelBuffer( IndexType index, Image::BufferType* pixBuf);
+    DATA_API void setPixelBuffer(IndexType index, Image::BufferType* pixBuf);
 
-    DATA_API const std::string getPixelAsString(SizeType::value_type x,
-                                                SizeType::value_type y,
-                                                SizeType::value_type z );
+    DATA_API const std::string getPixelAsString(
+        SizeType::value_type x,
+        SizeType::value_type y,
+        SizeType::value_type z
+    );
     // @}
 
     /// Returns a copy of current lock on image
@@ -142,4 +143,5 @@ private:
 };
 
 } // helper
+
 } // fwDataTools

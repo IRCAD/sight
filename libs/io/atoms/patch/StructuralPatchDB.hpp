@@ -44,15 +44,15 @@ class IStructuralPatch;
  */
 class IO_ATOMS_CLASS_API StructuralPatchDB
 {
-
 public:
-    typedef SPTR (StructuralPatchDB) sptr;
+
+    typedef SPTR(StructuralPatchDB) sptr;
     ///Typedef used to store the pair classname/version of a data structure
-    typedef std::pair< std::string, std::string > VersionIDType;
+    typedef std::pair<std::string, std::string> VersionIDType;
     ///Typedef used to store link to data structure
-    typedef std::pair< VersionIDType, VersionIDType > PatchKeyType;
+    typedef std::pair<VersionIDType, VersionIDType> PatchKeyType;
     ///Typedef used to store all the structural patches
-    typedef std::map< PatchKeyType, SPTR(io::atoms::patch::IStructuralPatch) > PatchesType;
+    typedef std::map<PatchKeyType, SPTR(io::atoms::patch::IStructuralPatch)> PatchesType;
 
     /**
      * @brief Registers a new Path.
@@ -71,10 +71,12 @@ public:
      * @return patch that must be applied, or empty pointer if no such patch is found.
      * @note This method is thread safe.
      */
-    IO_ATOMS_API SPTR(io::atoms::patch::IStructuralPatch) getPatch(const std::string& originClassname,
-                                                                   const std::string& originVersion,
-                                                                   const std::string& targetClassname,
-                                                                   const std::string& targetVersion) const;
+    IO_ATOMS_API SPTR(io::atoms::patch::IStructuralPatch) getPatch(
+        const std::string& originClassname,
+        const std::string& originVersion,
+        const std::string& targetClassname,
+        const std::string& targetVersion
+    ) const;
 
     /// Retrieves number of patch.
     IO_ATOMS_API size_t size() const;
@@ -98,7 +100,7 @@ public:
 private:
 
     /// Copy constructor
-    StructuralPatchDB( const StructuralPatchDB& cpy )
+    StructuralPatchDB(const StructuralPatchDB& cpy)
     {
     }
 

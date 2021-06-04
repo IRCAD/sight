@@ -28,14 +28,15 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QString>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt
 {
+
 static const service::IService::KeyType s_STRING_INPUT = "string";
 
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
@@ -62,7 +63,6 @@ STextStatus::STextStatus()
 
 STextStatus::~STextStatus()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ void STextStatus::configuring()
 void STextStatus::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QHBoxLayout* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);
@@ -109,14 +109,13 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // Get input data.
-    const auto stringInput     = this->getWeakInput< const data::String >(s_STRING_INPUT);
+    const auto stringInput     = this->getWeakInput<const data::String>(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
     if(stringInputLock)
     {
         m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +133,7 @@ service::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 void STextStatus::updating()
 {
     // Get input data.
-    const auto stringInput     = this->getWeakInput< const data::String >(s_STRING_INPUT);
+    const auto stringInput     = this->getWeakInput<const data::String>(s_STRING_INPUT);
     const auto stringInputLock = stringInput.lock();
 
     if(stringInputLock)
@@ -172,7 +171,7 @@ void STextStatus::setDoubleParameter(double _val)
 
 void STextStatus::setBoolParameter(bool _val)
 {
-    QString str( _val ? "ON" : "OFF");
+    QString str(_val ? "ON" : "OFF");
     m_labelValue->setText(str);
 }
 

@@ -42,7 +42,6 @@ struct MODULE_GEOMETRY_BASE_CLASS_API Plugin final : public core::runtime::Plugi
 
     /// Stops the plugin, does nothing here.
     MODULE_GEOMETRY_BASE_API void stop() noexcept override;
-
 };
 
 } // namespace sight::module::geometry::base

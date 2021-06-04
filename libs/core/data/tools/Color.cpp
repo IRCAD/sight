@@ -33,14 +33,14 @@ namespace sight::data::tools
 
 //------------------------------------------------------------------------------
 
-void Color::hexaStringToRGBA( const std::string& _hexaColor, std::uint8_t _rgba[4] )
+void Color::hexaStringToRGBA(const std::string& _hexaColor, std::uint8_t _rgba[4])
 {
     SIGHT_THROW_IF(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " + _hexaColor,
         _hexaColor[0] != '#'
-        || ( _hexaColor.length() != 7 && _hexaColor.length() != 9)
-        );
+        || (_hexaColor.length() != 7 && _hexaColor.length() != 9)
+    );
 
     std::string redString = _hexaColor.substr(1, 2);
     std::string greenString = _hexaColor.substr(3, 2);
@@ -58,7 +58,7 @@ void Color::hexaStringToRGBA( const std::string& _hexaColor, std::uint8_t _rgba[
     iss >> std::hex >> b;
 
     _rgba[3] = 255;
-    if (_hexaColor.length() == 9)
+    if(_hexaColor.length() == 9)
     {
         std::string alphaString = _hexaColor.substr(7, 2);
         iss.clear();
@@ -66,10 +66,10 @@ void Color::hexaStringToRGBA( const std::string& _hexaColor, std::uint8_t _rgba[
         iss >> std::hex >> a;
     }
 
-    _rgba[0] = static_cast< std::uint8_t >(r);
-    _rgba[1] = static_cast< std::uint8_t >(g);
-    _rgba[2] = static_cast< std::uint8_t >(b);
-    _rgba[3] = static_cast< std::uint8_t >(a);
+    _rgba[0] = static_cast<std::uint8_t>(r);
+    _rgba[1] = static_cast<std::uint8_t>(g);
+    _rgba[2] = static_cast<std::uint8_t>(b);
+    _rgba[3] = static_cast<std::uint8_t>(a);
 }
 
 //------------------------------------------------------------------------------

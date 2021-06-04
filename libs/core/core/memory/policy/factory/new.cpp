@@ -27,18 +27,22 @@
 
 namespace sight::core::memory
 {
+
 namespace policy
 {
+
 namespace factory
 {
 
 //------------------------------------------------------------------------------
 
-core::memory::IPolicy::sptr New( const core::memory::policy::registry::KeyType& classname )
+core::memory::IPolicy::sptr New(const core::memory::policy::registry::KeyType& classname)
 {
     return core::memory::policy::registry::get()->create(classname);
 }
 
 } // namespace factory
+
 } // namespace policy
+
 } // namespace sight::core::memory

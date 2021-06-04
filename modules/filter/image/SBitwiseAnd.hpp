@@ -28,6 +28,7 @@
 
 namespace sight::module::filter::image
 {
+
 /**
  * @brief Implements the AND bitwise operator pixel-wise between two images.
  *
@@ -52,7 +53,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IOperator);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SBitwiseAnd();
@@ -73,7 +74,6 @@ protected:
 
     /// Computes centroids.
     MODULE_FILTER_IMAGE_API void updating() override;
-
 };
 
 } // namespace sight::module::filter::image.

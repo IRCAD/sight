@@ -38,10 +38,10 @@ namespace sight::ui::qt
  */
 class QtMainFrame : public QMainWindow
 {
-
 Q_OBJECT
 
 public:
+
     /**
      * @brief Constructor.
      */
@@ -54,9 +54,11 @@ public:
     UI_QT_API void setCloseCallback(CloseCallback fct);
 
 protected:
+
     void closeEvent(QCloseEvent* event);
 
 private:
+
     CloseCallback m_fctCloseCallback;
 };
 

@@ -30,10 +30,11 @@
 
 #include <limits>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::ut::NumericTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::atoms::ut::NumericTest);
 
 namespace sight::atoms
 {
+
 namespace ut
 {
 
@@ -68,14 +69,14 @@ void NumericTest::intTest()
     numeric = atoms::Numeric::New(42);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(42), numeric->getString());
 
-    numeric = atoms::Numeric::New(1ULL<<63);
-    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(1ULL<<63), numeric->getString());
-    CPPUNIT_ASSERT_THROW( numeric->getValue<int>(), boost::numeric::positive_overflow );
+    numeric = atoms::Numeric::New(1ULL << 63);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(1ULL << 63), numeric->getString());
+    CPPUNIT_ASSERT_THROW(numeric->getValue<int>(), boost::numeric::positive_overflow);
 
     numeric = atoms::Numeric::New(-22);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(-22), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(static_cast<int>(-22), numeric->getValue<int>());
-    CPPUNIT_ASSERT_THROW( numeric->getValue<unsigned int>(), boost::numeric::negative_overflow );
+    CPPUNIT_ASSERT_THROW(numeric->getValue<unsigned int>(), boost::numeric::negative_overflow);
 
     numeric = atoms::Numeric::New(true);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(true), numeric->getString());
@@ -101,8 +102,7 @@ void NumericTest::intTest()
 
     numeric = atoms::Numeric::New(std::string("422"));
     CPPUNIT_ASSERT_EQUAL(422, numeric->getValue<int>());
-    CPPUNIT_ASSERT_THROW( numeric->getValue<char>(), boost::numeric::positive_overflow );
-
+    CPPUNIT_ASSERT_THROW(numeric->getValue<char>(), boost::numeric::positive_overflow);
 }
 
 //-----------------------------------------------------------------------------
@@ -114,32 +114,32 @@ void NumericTest::floatingTest()
     typedef boost::variant<float, double> VariantType;
 
     double d1 = 0.234;
-    double d2 = std::numeric_limits< double >::max();
+    double d2 = std::numeric_limits<double>::max();
     double d3 = -42.4;
     float f1  = 4327.452359;
 
     numeric = atoms::Numeric::New(d1);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d1)), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(d1, numeric->getValue<double>());
-    CPPUNIT_ASSERT_EQUAL((float)d1, numeric->getValue<float>());
+    CPPUNIT_ASSERT_EQUAL((float) d1, numeric->getValue<float>());
 
     numeric = atoms::Numeric::New(d2);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d2)), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(d2, numeric->getValue<double>());
-    CPPUNIT_ASSERT_THROW( numeric->getValue< float >(), boost::numeric::positive_overflow );
-    CPPUNIT_ASSERT_THROW( numeric->getValue< std::uint64_t >(), boost::numeric::positive_overflow );
+    CPPUNIT_ASSERT_THROW(numeric->getValue<float>(), boost::numeric::positive_overflow);
+    CPPUNIT_ASSERT_THROW(numeric->getValue<std::uint64_t>(), boost::numeric::positive_overflow);
 
     numeric = atoms::Numeric::New(d3);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d3)), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(d3, numeric->getValue<double>());
     CPPUNIT_ASSERT_EQUAL(static_cast<int>(d3), numeric->getValue<int>());
-    CPPUNIT_ASSERT_THROW( numeric->getValue< unsigned int >(), boost::numeric::negative_overflow );
+    CPPUNIT_ASSERT_THROW(numeric->getValue<unsigned int>(), boost::numeric::negative_overflow);
 
     numeric = atoms::Numeric::New(f1);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(f1)), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(f1, numeric->getValue<float>());
-    CPPUNIT_ASSERT_EQUAL((double)f1, numeric->getValue<double>());
-    CPPUNIT_ASSERT_THROW( numeric->getValue< char >(), boost::numeric::positive_overflow );
+    CPPUNIT_ASSERT_EQUAL((double) f1, numeric->getValue<double>());
+    CPPUNIT_ASSERT_THROW(numeric->getValue<char>(), boost::numeric::positive_overflow);
 }
 
 //-----------------------------------------------------------------------------
@@ -150,21 +150,22 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void operator()( ::boost::blank& ) const
+    void operator()(::boost::blank&) const
     {
         CPPUNIT_ASSERT_MESSAGE("This shall not happen", 0);
     }
+
     //------------------------------------------------------------------------------
 
-    template <typename U>
-    void operator()( U& value ) const
+    template<typename U>
+    void operator()(U& value) const
     {
         atoms::Numeric::sptr numeric = atoms::Numeric::New(value);
         CPPUNIT_ASSERT_EQUAL(U(value), numeric->getValue<U>());
         CPPUNIT_ASSERT_EQUAL(
             ::boost::lexical_cast<std::string>(atoms::Numeric::ValueType(value)),
             numeric->getString()
-            );
+        );
 
         CPPUNIT_ASSERT_EQUAL(typeid(U).name(), numeric->getVariant().type().name());
     }
@@ -175,40 +176,39 @@ public:
 void NumericTest::mixedTest()
 {
     atoms::Numeric::ValueType values[] = {
-        std::numeric_limits<  std::int64_t >::min(),
+        std::numeric_limits<std::int64_t>::min(),
         std::int64_t(-1234),
         std::int64_t(0),
         std::int64_t(1234),
-        std::numeric_limits<  std::int64_t >::max(),
+        std::numeric_limits<std::int64_t>::max(),
 
-        std::numeric_limits<  std::uint64_t >::min(),
+        std::numeric_limits<std::uint64_t>::min(),
         std::uint64_t(-1234),
         std::uint64_t(0),
         std::uint64_t(1234),
-        std::numeric_limits<  std::uint64_t >::max(),
+        std::numeric_limits<std::uint64_t>::max(),
 
-        -std::numeric_limits<  float >::max(),
+        -std::numeric_limits<float>::max(),
         float(-1234),
         float(0),
-        std::numeric_limits<  float >::min(),
+        std::numeric_limits<float>::min(),
         float(1234),
-        std::numeric_limits<  float >::max(),
+        std::numeric_limits<float>::max(),
 
-        -std::numeric_limits<  double >::max(),
+        -std::numeric_limits<double>::max(),
         double(-1234),
         double(0),
-        std::numeric_limits<  double >::min(),
+        std::numeric_limits<double>::min(),
         double(1234),
-        std::numeric_limits<  double >::max()
-
+        std::numeric_limits<double>::max()
     };
 
-    for( atoms::Numeric::ValueType& v : values )
+    for(atoms::Numeric::ValueType& v : values)
     {
-        boost::apply_visitor( variant_visitor(), v );
+        boost::apply_visitor(variant_visitor(), v);
     }
-
 }
 
-}  // namespace ut
-}  // namespace sight::atoms
+} // namespace ut
+
+} // namespace sight::atoms

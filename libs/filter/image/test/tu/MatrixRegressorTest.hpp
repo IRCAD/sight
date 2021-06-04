@@ -26,18 +26,20 @@
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
 class MatrixRegressorTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MatrixRegressorTest );
+CPPUNIT_TEST_SUITE(MatrixRegressorTest);
 CPPUNIT_TEST(identityTest);
 CPPUNIT_TEST(avgTranslationTest);
 CPPUNIT_TEST(avgRotationTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -48,4 +50,5 @@ public:
 };
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

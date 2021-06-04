@@ -28,10 +28,11 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::splitter::ImageOrientationSplitter );
+fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImageOrientationSplitter);
 
 namespace sight::filter::dicom
 {
+
 namespace splitter
 {
 
@@ -77,4 +78,5 @@ bool ImageOrientationSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 } // namespace splitter
+
 } // namespace sight::filter::dicom

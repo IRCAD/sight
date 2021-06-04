@@ -35,17 +35,15 @@ namespace sight::module::data
 
 class MODULE_DATA_CLASS_API IWrapperSrv : public service::IService
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(IWrapperSrv, service::IService)
+    SIGHT_DECLARE_SERVICE(IWrapperSrv, service::IService);
 
     ///@brief IWrapperSrv constructor. Do nothing.
     MODULE_DATA_API IWrapperSrv();
 
     ///@brief IWrapperSrv destructor. Do nothing.
     MODULE_DATA_API virtual ~IWrapperSrv();
-
 };
 
 }

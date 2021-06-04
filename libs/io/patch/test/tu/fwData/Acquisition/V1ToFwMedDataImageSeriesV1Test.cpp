@@ -28,21 +28,24 @@
 #include <atoms/Object.hxx>
 #include <atoms/String.hpp>
 
-#include <utest/Exception.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/helper/Object.hpp>
 #include <io/patch/structural/data/Acquisition/V1ToFwMedDataImageSeriesV1.hpp>
 
+#include <utest/Exception.hpp>
+
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::patch::structural::ut::data::Acquisition::V1ToFwMedDataImageSeriesV1Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Acquisition::V1ToFwMedDataImageSeriesV1Test);
 
 namespace sight::io::patch::structural
 {
+
 namespace ut
 {
+
 namespace data
 {
+
 namespace Acquisition
 {
 
@@ -153,14 +156,18 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     CPPUNIT_ASSERT(isObj->getAttribute("date"));
     CPPUNIT_ASSERT(isObj->getAttribute("time"));
 
-    sight::atoms::String::sptr date = isObj->getAttribute< sight::atoms::String >("date");
+    sight::atoms::String::sptr date = isObj->getAttribute<sight::atoms::String>("date");
     CPPUNIT_ASSERT_EQUAL(std::string("20130612"), date->getString());
-    sight::atoms::String::sptr time = isObj->getAttribute< sight::atoms::String >("time");
+    sight::atoms::String::sptr time = isObj->getAttribute<sight::atoms::String>("time");
     CPPUNIT_ASSERT_EQUAL(std::string("144912"), time->getString());
 }
 
 //------------------------------------------------------------------------------
+
 } //namespace Acquisition
+
 } //namespace data
+
 } //namespace ut
+
 } //namespace sight::io::patch::structural

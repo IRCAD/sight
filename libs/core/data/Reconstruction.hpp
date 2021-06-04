@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Reconstruction));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Reconstruction));
 
 namespace sight::data
 {
@@ -46,7 +46,8 @@ class Mesh;
 class DATA_CLASS_API Reconstruction : public Object
 {
 public:
-    SIGHT_DECLARE_CLASS(Reconstruction, data::Object, data::factory::New< Reconstruction >)
+
+    SIGHT_DECLARE_CLASS(Reconstruction, data::Object, data::factory::New<Reconstruction>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
@@ -59,10 +60,10 @@ public:
     /// Destructor
     DATA_API virtual ~Reconstruction();
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Reconstruction));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Reconstruction));
 
     /// Defines shallow copy
-    DATA_API void shallowCopy( const Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
@@ -74,33 +75,33 @@ public:
      * @{
      * @brief Get/Set value of the bIsVisible.
      */
-    bool  getIsVisible () const;
-    void setIsVisible (const bool _bIsVisible);
+    bool getIsVisible() const;
+    void setIsVisible(const bool _bIsVisible);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the organName.
      */
-    std::string& getOrganName ();
-    const std::string& getOrganName () const;
-    void setOrganName (const std::string& _sOrganName);
+    std::string& getOrganName();
+    const std::string& getOrganName() const;
+    void setOrganName(const std::string& _sOrganName);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the structureType.
      */
-    std::string& getStructureType ();
-    const std::string& getStructureType () const;
-    void setStructureType (const std::string& _sStructureType);
+    std::string& getStructureType();
+    const std::string& getStructureType() const;
+    void setStructureType(const std::string& _sStructureType);
     /// @}
 
     /**
      * @brief Get/Set the image associated with the acquisition
      */
     SPTR(data::Image)  getImage() const;
-    void setImage (const SPTR(data::Image)& val);
+    void setImage(const SPTR(data::Image)& val);
 
     /**
      * @brief Get/Set the mesh associated with the acquisition
@@ -113,14 +114,14 @@ public:
      * @brief Get/Set the material associated with the acquisition
      */
     SPTR(data::Material) getMaterial() const;
-    void setMaterial (const SPTR(data::Material)& val);
+    void setMaterial(const SPTR(data::Material)& val);
     /// @}
 
     /**
      * @brief Get/Set the volume from mask
      */
-    double  getComputedMaskVolume () const;
-    void setComputedMaskVolume (double val);
+    double getComputedMaskVolume() const;
+    void setComputedMaskVolume(double val);
     /// @}
 
     /***
@@ -129,19 +130,19 @@ public:
      */
 
     /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
-    typedef core::com::Signal< void (SPTR( data::Mesh ) ) > MeshChangedSignalType;
+    typedef core::com::Signal<void (SPTR(data::Mesh))> MeshChangedSignalType;
 
     /// Key in m_signals map of signal m_sigMeshModified
     DATA_API static const core::com::Signals::SignalKeyType s_MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
-    typedef core::com::Signal< void (bool) > VisibilityModifiedSignalType;
+    typedef core::com::Signal<void (bool)> VisibilityModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
 
 protected:
 
@@ -181,61 +182,60 @@ protected:
     /**
      * @}
      */
-
 };
 
 //-----------------------------------------------------------------------------
 
-inline bool Reconstruction::getIsVisible () const
+inline bool Reconstruction::getIsVisible() const
 {
     return m_bIsVisible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setIsVisible (const bool _bIsVisible)
+inline void Reconstruction::setIsVisible(const bool _bIsVisible)
 {
     m_bIsVisible = _bIsVisible;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getOrganName ()
+inline std::string& Reconstruction::getOrganName()
 {
     return m_sOrganName;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Reconstruction::getOrganName () const
+inline const std::string& Reconstruction::getOrganName() const
 {
     return m_sOrganName;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setOrganName (const std::string& _sOrganName)
+inline void Reconstruction::setOrganName(const std::string& _sOrganName)
 {
     m_sOrganName = _sOrganName;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getStructureType ()
+inline std::string& Reconstruction::getStructureType()
 {
     return this->m_sStructureType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Reconstruction::getStructureType () const
+inline const std::string& Reconstruction::getStructureType() const
 {
     return this->m_sStructureType;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setStructureType (const std::string& _sStructureType)
+inline void Reconstruction::setStructureType(const std::string& _sStructureType)
 {
     this->m_sStructureType = _sStructureType;
 }
@@ -249,7 +249,7 @@ inline SPTR(data::Image)  Reconstruction::getImage() const
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setImage (const SPTR(data::Image)& val)
+inline void Reconstruction::setImage(const SPTR(data::Image)& val)
 {
     m_image = val;
 }
@@ -277,21 +277,21 @@ inline SPTR(data::Material) Reconstruction::getMaterial() const
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setMaterial (const SPTR(data::Material)& val)
+inline void Reconstruction::setMaterial(const SPTR(data::Material)& val)
 {
     m_material = val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Reconstruction::getComputedMaskVolume () const
+inline double Reconstruction::getComputedMaskVolume() const
 {
     return m_computedMaskVolume;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Reconstruction::setComputedMaskVolume (double val)
+inline void Reconstruction::setComputedMaskVolume(double val)
 {
     m_computedMaskVolume = val;
 }

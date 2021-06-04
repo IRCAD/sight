@@ -27,13 +27,13 @@
 #include <core/jobs/IJob.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/helper/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -42,7 +42,6 @@
 
 namespace sight::module::io::dicom
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -82,7 +81,7 @@ void SDicomSeriesAnonymizer::stopping()
 
 void SDicomSeriesAnonymizer::updating()
 {
-    data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
+    data::Vector::sptr vector = this->getInOut<data::Vector>("selectedSeries");
 
     sight::ui::base::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
@@ -90,13 +89,13 @@ void SDicomSeriesAnonymizer::updating()
     // If the selection is not empty
     if(!vector->empty())
     {
-        dialog.setMessage( "Are you sure you want to anonymize the selected series ?" );
+        dialog.setMessage("Are you sure you want to anonymize the selected series ?");
         dialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         dialog.addButton(ui::base::dialog::IMessageDialog::YES);
         dialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
         sight::ui::base::dialog::IMessageDialog::Buttons answer = dialog.show();
 
-        if ( answer == sight::ui::base::dialog::IMessageDialog::YES )
+        if(answer == sight::ui::base::dialog::IMessageDialog::YES)
         {
             sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
@@ -107,7 +106,7 @@ void SDicomSeriesAnonymizer::updating()
     // If the selection is empty
     else
     {
-        dialog.setMessage( "Please select which series you want to anonymize." );
+        dialog.setMessage("Please select which series you want to anonymize.");
         dialog.setIcon(ui::base::dialog::IMessageDialog::INFO);
         dialog.addButton(ui::base::dialog::IMessageDialog::OK);
         dialog.show();
@@ -116,7 +115,7 @@ void SDicomSeriesAnonymizer::updating()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
+void SDicomSeriesAnonymizer::info(std::ostream& _sstream)
 {
     _sstream << "SDicomSeriesAnonymizer::info";
 }
@@ -125,15 +124,15 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
 
 void SDicomSeriesAnonymizer::anonymize()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB>("seriesDB");
-    data::Vector::sptr vector     = this->getInOut< data::Vector >("selectedSeries");
+    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>("seriesDB");
+    data::Vector::sptr vector     = this->getInOut<data::Vector>("selectedSeries");
 
     data::helper::SeriesDB sDBhelper(seriesDB);
 
     auto anonymizer = sight::io::dicom::helper::DicomSeriesAnonymizer::New();
     m_sigJobCreated->emit(anonymizer->getJob());
 
-    std::vector< data::DicomSeries::sptr > anonymizedDicomSeriesVector;
+    std::vector<data::DicomSeries::sptr> anonymizedDicomSeriesVector;
 
     for(const auto& value : vector->getContainer())
     {

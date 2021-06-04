@@ -27,7 +27,6 @@
 #include "core/memory/FileFormat.hpp"
 #include "core/memory/FileHolder.hpp"
 #include "core/memory/stream/in/IFactory.hpp"
-
 #include <core/LogicStamp.hpp>
 #include <core/macros.hpp>
 
@@ -38,9 +37,8 @@ namespace sight::core::memory
 
 struct CORE_CLASS_API BufferInfo
 {
-
     typedef size_t SizeType;
-    typedef WPTR ( void ) CounterType;
+    typedef WPTR(void) CounterType;
 
     CORE_API BufferInfo();
 
@@ -65,8 +63,7 @@ struct CORE_CLASS_API BufferInfo
     core::LogicStamp lastAccess;
     core::memory::BufferAllocationPolicy::sptr bufferPolicy;
 
-    SPTR( core::memory::stream::in::IFactory ) istreamFactory;
-
+    SPTR(core::memory::stream::in::IFactory) istreamFactory;
 };
 
 } // namespace sight::core::memory

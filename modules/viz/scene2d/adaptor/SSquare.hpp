@@ -33,6 +33,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -63,10 +64,9 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SSquare : public sight::viz::scene2d::IAdaptor
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SSquare, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SSquare, ::sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SSquare() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SSquare() noexcept;
@@ -78,29 +78,31 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void processInteraction( sight::viz::scene2d::data::Event& _event ) override;
+    MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API void setColor(const std::string& _color );
-    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem( const sight::viz::scene2d::data::Coord& coord, QGraphicsItem* item );
+    MODULE_VIZ_SCENE2D_API void setColor(const std::string& _color);
+    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::data::Coord& coord, QGraphicsItem* item);
     MODULE_VIZ_SCENE2D_API sight::viz::scene2d::data::Coord coordViewToCoordItem(
         const sight::viz::scene2d::data::Coord& coord,
-        QGraphicsItem* item );
+        QGraphicsItem* item
+    );
 
 private:
 
     sight::viz::scene2d::data::Coord m_coord;
-    std::uint32_t m_size{0};
+    std::uint32_t m_size {0};
     QColor m_color;
-    QGraphicsItemGroup* m_layer{nullptr};
-    QGraphicsRectItem* m_rec{nullptr};
+    QGraphicsItemGroup* m_layer {nullptr};
+    QGraphicsRectItem* m_rec {nullptr};
     sight::viz::scene2d::data::Coord m_oldCoord;
 
-    bool m_pointIsCaptured{false};
-    bool m_autoRefresh{true};
-    bool m_interaction{true};
+    bool m_pointIsCaptured {false};
+    bool m_autoRefresh {true};
+    bool m_interaction {true};
     static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(const double val, std::string key);
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d

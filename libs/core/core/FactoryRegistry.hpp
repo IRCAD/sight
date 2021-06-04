@@ -36,16 +36,17 @@ namespace sight::core
  * @brief FactoryRegistryBase is a class used to store factories
  * @note This class is thread safe.
  */
-template < typename FACTORY_SIGNATURE, typename KEY_TYPE = std::string,
-           typename FACTORY_HOLDER = std::function< FACTORY_SIGNATURE > >
+template<typename FACTORY_SIGNATURE, typename KEY_TYPE = std::string,
+         typename FACTORY_HOLDER = std::function<FACTORY_SIGNATURE> >
 class FactoryRegistryBase
 {
 public:
+
     typedef FACTORY_SIGNATURE FactorySignatureType;
     typedef KEY_TYPE KeyType;
 
     typedef FACTORY_HOLDER FactoryType;
-    typedef std::map< KeyType, FactoryType > RegistryType;
+    typedef std::map<KeyType, FactoryType> RegistryType;
     typedef std::vector<KeyType> KeyVectorType;
 
     FactoryRegistryBase()
@@ -79,6 +80,7 @@ public:
         {
             factory = iter->second;
         }
+
         return factory;
     }
 
@@ -89,9 +91,12 @@ public:
     {
         core::mt::ReadLock lock(m_mutex);
         KeyVectorType vectKeys;
-        std::transform( m_registry.begin(), m_registry.end(),
-                        std::back_inserter(vectKeys),
-                        std::bind(&RegistryType::value_type::first, std::placeholders::_1) );
+        std::transform(
+            m_registry.begin(),
+            m_registry.end(),
+            std::back_inserter(vectKeys),
+            std::bind(&RegistryType::value_type::first, std::placeholders::_1)
+        );
         return vectKeys;
     }
 
@@ -104,12 +109,13 @@ protected:
 /**
  * @brief FactoryRegistry is a class used to store factories and create instance object with these factories.
  */
-template <typename F, typename KEY_TYPE = std::string, typename FACTORY_HOLDER = std::function< F > >
+template<typename F, typename KEY_TYPE = std::string, typename FACTORY_HOLDER = std::function<F> >
 class FactoryRegistry;
 
-template< typename RETURN_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER >
-class FactoryRegistry< RETURN_TYPE(), KEY_TYPE, FACTORY_HOLDER > :
-    public FactoryRegistryBase < RETURN_TYPE(), KEY_TYPE >
+template<typename RETURN_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER>
+class FactoryRegistry<RETURN_TYPE(), KEY_TYPE, FACTORY_HOLDER>:
+    public FactoryRegistryBase<RETURN_TYPE(),
+                               KEY_TYPE>
 {
 typedef RETURN_TYPE (FactorySignatureType)();
 typedef FACTORY_HOLDER FactoryType;
@@ -131,13 +137,15 @@ public:
             ReturnType obj;
             return obj;
         }
+
         return factory();
     }
 };
 
-template< typename RETURN_TYPE, typename ARG1_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER >
-class FactoryRegistry< RETURN_TYPE(ARG1_TYPE), KEY_TYPE, FACTORY_HOLDER > :
-    public FactoryRegistryBase < RETURN_TYPE(ARG1_TYPE), KEY_TYPE >
+template<typename RETURN_TYPE, typename ARG1_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER>
+class FactoryRegistry<RETURN_TYPE(ARG1_TYPE), KEY_TYPE, FACTORY_HOLDER>:
+    public FactoryRegistryBase<RETURN_TYPE(ARG1_TYPE),
+                               KEY_TYPE>
 {
 typedef RETURN_TYPE (FactorySignatureType)(ARG1_TYPE);
 typedef FACTORY_HOLDER FactoryType;
@@ -159,6 +167,7 @@ public:
         {
             obj = factory(arg1);
         }
+
         return obj;
     }
 };

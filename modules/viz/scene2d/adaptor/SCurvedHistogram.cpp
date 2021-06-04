@@ -36,7 +36,6 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-
 #define PI 3.14159265
 
 namespace sight::module::viz::scene2d
@@ -71,27 +70,33 @@ SCurvedHistogram::~SCurvedHistogram() noexcept
 
 void SCurvedHistogram::configuring()
 {
-    this->configureParams();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
+    this->configureParams(); // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_innerColor  = QPen( Qt::transparent );
-    m_borderColor = QPen( Qt::transparent );
-    m_brush       = QBrush( Qt::NoBrush );
+    m_innerColor  = QPen(Qt::transparent);
+    m_borderColor = QPen(Qt::transparent);
+    m_brush       = QBrush(Qt::NoBrush);
 
-    if (config.count("borderColor"))
+    if(config.count("borderColor"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(
-            m_borderColor, config.get<std::string>("borderColor"), m_opacity );
+            m_borderColor,
+            config.get<std::string>("borderColor"),
+            m_opacity
+        );
     }
 
-    if (config.count("innerColor"))
+    if(config.count("innerColor"))
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(
-            m_innerColor, config.get<std::string>("innerColor"), m_opacity );
+            m_innerColor,
+            config.get<std::string>("innerColor"),
+            m_opacity
+        );
     }
 
-    if (config.count("borderWidth"))
+    if(config.count("borderWidth"))
     {
         m_borderWidth = config.get<float>("borderWidth");
     }
@@ -102,13 +107,13 @@ void SCurvedHistogram::configuring()
 void SCurvedHistogram::starting()
 {
     // Init border style
-    m_borderColor.setCosmetic( true );
-    m_borderColor.setWidthF( static_cast<qreal>(m_borderWidth) );
-    m_borderColor.setStyle( Qt::SolidLine );
-    m_borderColor.setJoinStyle( Qt::RoundJoin );
-    m_borderColor.setCapStyle( Qt::RoundCap );
+    m_borderColor.setCosmetic(true);
+    m_borderColor.setWidthF(static_cast<qreal>(m_borderWidth));
+    m_borderColor.setStyle(Qt::SolidLine);
+    m_borderColor.setJoinStyle(Qt::RoundJoin);
+    m_borderColor.setCapStyle(Qt::RoundCap);
 
-    m_brush = QBrush( m_innerColor.color() );
+    m_brush = QBrush(m_innerColor.color());
 
     this->updating();
 }
@@ -127,12 +132,12 @@ SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const data::Histogra
 
     // WARNING: we shouldn't add all the points of the histogram into the vector of controlPoints
     // (testing...)
-    for(size_t i = 0; i < nbValues; ++i)
+    for(size_t i = 0 ; i < nbValues ; ++i)
     {
         p.first  = static_cast<double>(histogramMin + i * binsWidth);
         p.second = histogramValues[i];
 
-        controlPoints.push_back( p );
+        controlPoints.push_back(p);
     }
 
     return controlPoints;
@@ -140,33 +145,37 @@ SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const data::Histogra
 
 //----------------------------------------------------------------------------------------------------------
 
-SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints( const Points& _points ) const
+SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints(const Points& _points) const
 {
     Points bSplinePoints;
-    point_list list;        // see bspline.h
+    point_list list; // see bspline.h
 
     // Add again the first point with a higher value in order to prevent B-Spline algorithm from removing
     // the first value.
-    list.add_point(new point(static_cast<float>( _points[0].first), static_cast<float>( _points[0].second * 2) ));
+    list.add_point(new point(static_cast<float>(_points[0].first), static_cast<float>(_points[0].second * 2)));
 
     // Add all the points
-    for(const auto& pt : _points )
+    for(const auto& pt : _points)
     {
-        list.add_point(new point(static_cast<float>(pt.first), static_cast<float>(pt.second) ));
+        list.add_point(new point(static_cast<float>(pt.first), static_cast<float>(pt.second)));
     }
 
     // Add again the last point
-    list.add_point(new point(static_cast<float>( _points.back().first),
-                             static_cast<float>( _points.back().second / 2 ) ));
+    list.add_point(
+        new point(
+            static_cast<float>(_points.back().first),
+            static_cast<float>(_points.back().second / 2)
+        )
+    );
 
     // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
-    cat_curve curve( list );
+    cat_curve curve(list);
     curve.m_precision = static_cast<int>(_points.size() * 5);
     curve.compute();
 
-    for(int i = 0; i < curve.m_precision; ++i)
+    for(int i = 0 ; i < curve.m_precision ; ++i)
     {
-        bSplinePoints.push_back( Point( curve.m_curve_point[i].x, curve.m_curve_point[i].y ) );
+        bSplinePoints.push_back(Point(curve.m_curve_point[i].x, curve.m_curve_point[i].y));
     }
 
     return bSplinePoints;
@@ -174,7 +183,7 @@ SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints( const Points& _poin
 
 //----------------------------------------------------------------------------------------------------------
 
-SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Points& _bSplinePoints ) const
+SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Points& _bSplinePoints) const
 {
     Points points;
     Point point = _bSplinePoints.front();
@@ -183,57 +192,57 @@ SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Point
     const double maxLength = 2000;
     double segmentLength   = 0;
 
-    points.push_back( point );
+    points.push_back(point);
 
-    for(Points::const_iterator it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
+    for(Points::const_iterator it = _bSplinePoints.begin() + 1 ; it != _bSplinePoints.end() ; ++it)
     {
-        dx = abs((*it).first - point.first);    // theoretically positive
+        dx = abs((*it).first - point.first); // theoretically positive
         dy = abs((*it).second - point.second);
 
-        segmentLength += sqrt( dx * dx + dy * dy );
+        segmentLength += sqrt(dx * dx + dy * dy);
 
         if(segmentLength > maxLength)
         {
-            points.push_back( *it );
+            points.push_back(*it);
             segmentLength = 0;
         }
 
         point = *it;
     }
 
-    points.push_back( _bSplinePoints.back() );
+    points.push_back(_bSplinePoints.back());
 
     return points;
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints )
+void SCurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints)
 {
     Points::iterator it = _bSplinePoints.begin();
 
-    if( it != _bSplinePoints.end())
+    if(it != _bSplinePoints.end())
     {
         Point p;
 
-        p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
-        QPointF prevPt = QPointF(p.first,  p.second);
-        m_painterPath->lineTo( p.first, p.second );
+        p = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis);
+        QPointF prevPt = QPointF(p.first, p.second);
+        m_painterPath->lineTo(p.first, p.second);
         qreal len = m_painterPath->length();
         ++it;
 
-        for(; it != _bSplinePoints.end(); ++it)
+        for( ; it != _bSplinePoints.end() ; ++it)
         {
-            p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+            p = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis);
 
-            m_painterPath->lineTo( p.first, p.second );
+            m_painterPath->lineTo(p.first, p.second);
 
             // This is way too slow as the complexity is O(N.log(N) )
             //m_positionsToPathLength[ (int) p.first ] = m_painterPath->length();
 
-            QPointF pt(p.first,  p.second);
-            len                                                   += QLineF( prevPt, pt ).length();
-            m_positionsToPathLength[ static_cast<int>( p.first ) ] = len;
+            QPointF pt(p.first, p.second);
+            len                                               += QLineF(prevPt, pt).length();
+            m_positionsToPathLength[static_cast<int>(p.first)] = len;
 
             prevPt = pt;
         }
@@ -246,7 +255,7 @@ void SCurvedHistogram::updating()
 {
     this->stopping();
 
-    const data::Histogram::csptr histogram = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
 
     data::mt::ObjectReadLock lock(histogram);
 
@@ -254,106 +263,112 @@ void SCurvedHistogram::updating()
 
     m_painterPath = new QPainterPath();
 
-    if (!histogram->getValues().empty())
+    if(!histogram->getValues().empty())
     {
-        Points controlPoints = this->getControlPoints( histogram );
-        Points bSplinePoints = this->getBSplinePoints( controlPoints );
+        Points controlPoints = this->getControlPoints(histogram);
+        Points bSplinePoints = this->getBSplinePoints(controlPoints);
 
-        this->computePointToPathLengthMapFromBSplinePoints( bSplinePoints );
+        this->computePointToPathLengthMapFromBSplinePoints(bSplinePoints);
 
         // Try to remove unnecessary points of the B-Spline points
-        Points resampledBSplinePoints = this->getResampledBSplinePoints( bSplinePoints );
+        Points resampledBSplinePoints = this->getResampledBSplinePoints(bSplinePoints);
         bSplinePoints = resampledBSplinePoints;
 
-        this->buildBSplineFromPoints( bSplinePoints );
+        this->buildBSplineFromPoints(bSplinePoints);
 
         // Adjust the layer's position and zValue depending on the associated axis
-        m_layer->setPos(static_cast<qreal>( m_xAxis->getOrigin() ), static_cast<qreal>( m_yAxis->getOrigin() ));
-        m_layer->setZValue(static_cast<qreal>( m_zValue ));
+        m_layer->setPos(static_cast<qreal>(m_xAxis->getOrigin()), static_cast<qreal>(m_yAxis->getOrigin()));
+        m_layer->setZValue(static_cast<qreal>(m_zValue));
 
         // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-        this->getScene2DRender()->getScene()->addItem( m_layer );
+        this->getScene2DRender()->getScene()->addItem(m_layer);
     }
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
+void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints)
 {
-    const data::Histogram::csptr histogram = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
 
     const bool useBorderColor = (m_borderColor.color() != Qt::transparent);
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
 
-    Point currentPoint = this->mapAdaptorToScene( Point(histogram->getMinValue(), _bSplinePoints[0].second),
-                                                  m_xAxis, m_yAxis );
+    Point currentPoint = this->mapAdaptorToScene(
+        Point(histogram->getMinValue(), _bSplinePoints[0].second),
+        m_xAxis,
+        m_yAxis
+    );
     Point previousPoint = currentPoint;
     Points::iterator it;
 
-    const QPointF startPoint( currentPoint.first, currentPoint.second / 10 );   // divide by 10 to cut meaningless
-                                                                                // values
-    QPainterPath path( QPointF(startPoint.x(), 0.0) );
-    path.lineTo( startPoint );
+    const QPointF startPoint(currentPoint.first, currentPoint.second / 10); // divide by 10 to cut meaningless
+                                                                            // values
+    QPainterPath path(QPointF(startPoint.x(), 0.0));
+    path.lineTo(startPoint);
 
     previousPoint.first  = startPoint.x();
     previousPoint.second = startPoint.y();
 
     // Build the path with the B-Spline points
-    for(it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
+    for(it = _bSplinePoints.begin() + 1 ; it != _bSplinePoints.end() ; ++it)
     {
-        currentPoint = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis );
+        currentPoint = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis);
 
-        path.lineTo( currentPoint.first, currentPoint.second );
+        path.lineTo(currentPoint.first, currentPoint.second);
     }
 
     // Close the path:
-    m_painterPath->lineTo( static_cast<qreal>( histogram->getMaxValue() ), _bSplinePoints.back().second);
+    m_painterPath->lineTo(static_cast<qreal>(histogram->getMaxValue()), _bSplinePoints.back().second);
 
-    if( useBorderColor )
+    if(useBorderColor)
     {
-        path.lineTo( currentPoint.first, 0.0 );
-        this->addBorderItem( path );
+        path.lineTo(currentPoint.first, 0.0);
+        this->addBorderItem(path);
     }
 
-    if( useInnerColor )
+    if(useInnerColor)
     {
-        path.lineTo( previousPoint.first, 0.0 );
-        this->addInnerItem( path );
+        path.lineTo(previousPoint.first, 0.0);
+        this->addInnerItem(path);
     }
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::addInnerItem( const QPainterPath& _path )
+void SCurvedHistogram::addInnerItem(const QPainterPath& _path)
 {
-    QGraphicsPathItem* item = new QGraphicsPathItem( _path );
-    item->setPen( Qt::NoPen );
-    item->setBrush( m_brush );
-    item->setPath( _path );
-    item->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    QGraphicsPathItem* item = new QGraphicsPathItem(_path);
+    item->setPen(Qt::NoPen);
+    item->setBrush(m_brush);
+    item->setPath(_path);
+    item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     item->setZValue(1);
 
-    m_layer->addToGroup( item );
+    m_layer->addToGroup(item);
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::addBorderItem( const QPainterPath& _path )
+void SCurvedHistogram::addBorderItem(const QPainterPath& _path)
 {
-    QGraphicsPathItem* item = new QGraphicsPathItem( _path );
-    item->setPen( m_borderColor );
-    item->setBrush( Qt::NoBrush );
-    item->setPath( _path );
-    item->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    QGraphicsPathItem* item = new QGraphicsPathItem(_path);
+    item->setPen(m_borderColor);
+    item->setBrush(Qt::NoBrush);
+    item->setPath(_path);
+    item->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     item->setZValue(2);
 
-    m_layer->addToGroup( item );
+    m_layer->addToGroup(item);
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 SCurvedHistogram::Points SCurvedHistogram::quadraticInterpolation(
-    const Point _p0, const Point _p1, const Point _p2 )
+    const Point _p0,
+    const Point _p1,
+    const Point _p2
+)
 {
     Points points;
     Point p;
@@ -366,14 +381,14 @@ SCurvedHistogram::Points SCurvedHistogram::quadraticInterpolation(
     const double d1 = (_p2.second - _p1.second) / (_p2.first - _p1.first) - 0.5 * d2 * (_p2.first - _p1.first);
     const double d0 = _p1.second;
 
-    points.push_back( _p0 );
+    points.push_back(_p0);
 
-    for(double x = _p0.first; x < _p2.first; x += 0.5)
+    for(double x = _p0.first ; x < _p2.first ; x += 0.5)
     {
         p.first  = x;
         p.second = 0.5 * d2 * pow(x - _p1.first, 2) + d1 * (x - _p1.first) + d0;
 
-        points.push_back( p );
+        points.push_back(p);
     }
 
     return points;
@@ -388,14 +403,14 @@ SCurvedHistogram::Points SCurvedHistogram::cosinusInterpolation(const Point _p0,
     double mu2;
     const double deltaX = _p1.first - _p0.first;
 
-    for(double mu = 0.0; mu < 1.0; mu += 0.05)
+    for(double mu = 0.0 ; mu < 1.0 ; mu += 0.05)
     {
         mu2 = (1 - std::cos(mu * PI)) / 2;
 
         p.first  = _p0.first + mu * deltaX;
         p.second = _p0.second * (1 - mu2) + _p1.second * mu2;
 
-        points.push_back( p );
+        points.push_back(p);
     }
 
     return points;
@@ -404,13 +419,17 @@ SCurvedHistogram::Points SCurvedHistogram::cosinusInterpolation(const Point _p0,
 //----------------------------------------------------------------------------------------------------------
 
 SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
-    const Point _p0, const Point _p1, const Point _p2, const Point _p3 )
+    const Point _p0,
+    const Point _p1,
+    const Point _p2,
+    const Point _p3
+)
 {
     Points points;
     Point p;
     double a0, a1, a2, a3, mu2;
     const double deltaX = _p2.first - _p1.first;
-    for(double mu = 0.0; mu < 1.0; mu += 0.01)
+    for(double mu = 0.0 ; mu < 1.0 ; mu += 0.01)
     {
         mu2 = mu * mu;
 
@@ -422,15 +441,15 @@ SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
          */
 
         // Smoother curves (Catmull-Rom s_plines)
-        a0 = -0.5*_p0.second + 1.5*_p1.second - 1.5*_p2.second + 0.5*_p3.second;
-        a1 = _p0.second - 2.5*_p1.second + 2*_p2.second - 0.5*_p3.second;
-        a2 = -0.5*_p0.second + 0.5*_p2.second;
+        a0 = -0.5 * _p0.second + 1.5 * _p1.second - 1.5 * _p2.second + 0.5 * _p3.second;
+        a1 = _p0.second - 2.5 * _p1.second + 2 * _p2.second - 0.5 * _p3.second;
+        a2 = -0.5 * _p0.second + 0.5 * _p2.second;
         a3 = _p1.second;
 
         p.first  = _p1.first + mu * deltaX;
-        p.second = a0 * mu * mu2 +a1 * mu2 + a2 * mu + a3;
+        p.second = a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
 
-        points.push_back( p );
+        points.push_back(p);
     }
 
     return points;
@@ -438,27 +457,29 @@ SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::updateCurrentPoint(const sight::viz::scene2d::data::Event& _event,
-                                          const data::Point::sptr& point )
+void SCurvedHistogram::updateCurrentPoint(
+    const sight::viz::scene2d::data::Event& _event,
+    const data::Point::sptr& point
+)
 {
-    const data::Histogram::csptr histogram          = this->getInput< data::Histogram>(s_HISTOGRAM_INPUT);
+    const data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
     const data::Histogram::fwHistogramValues values = histogram->getValues();
 
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    const sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
+    const sight::viz::scene2d::data::Coord sceneCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
-    const int histIndex = static_cast<int>( sceneCoord.getX() );
+    const int histIndex = static_cast<int>(sceneCoord.getX());
     const int index     = static_cast<const int>(histIndex - histogramMinValue);
     const int nbValues  = static_cast<int>(values.size() * histogramBinsWidth);
 
-    if(index >= 0 && index < nbValues && m_positionsToPathLength.find( histIndex ) != m_positionsToPathLength.end())
+    if(index >= 0 && index < nbValues && m_positionsToPathLength.find(histIndex) != m_positionsToPathLength.end())
     {
-        const double key     = m_positionsToPathLength[ histIndex ];
-        const double percent = m_painterPath->percentAtLength( key );
-        const QPointF qPoint = m_painterPath->pointAtPercent( percent );
+        const double key     = m_positionsToPathLength[histIndex];
+        const double percent = m_painterPath->percentAtLength(key);
+        const QPointF qPoint = m_painterPath->pointAtPercent(percent);
 
         point->getCoord()[0] = sceneCoord.getX();
         point->getCoord()[1] = qPoint.y() * static_cast<double>(m_scale);
@@ -467,18 +488,18 @@ void SCurvedHistogram::updateCurrentPoint(const sight::viz::scene2d::data::Event
 
 //---------------------------------------------------------------------------------------------------------
 
-SCurvedHistogram::Points SCurvedHistogram::linearInterpolation( const Point _p1, const Point _p2 )
+SCurvedHistogram::Points SCurvedHistogram::linearInterpolation(const Point _p1, const Point _p2)
 {
     Points points;
     float t = 0.f;
     Point p;
-    for(int i = 0; i < 100; ++i)
+    for(int i = 0 ; i < 100 ; ++i)
     {
         t = i / 100;
 
-        p.first  = _p1.first + ( _p2.first - _p1.first ) * static_cast<double>(t);
-        p.second = _p1.second + ( _p2.second - _p1.second ) * static_cast<double>(t);
-        points.push_back( p );
+        p.first  = _p1.first + (_p2.first - _p1.first) * static_cast<double>(t);
+        p.second = _p1.second + (_p2.second - _p1.second) * static_cast<double>(t);
+        points.push_back(p);
     }
 
     return points;
@@ -488,14 +509,15 @@ SCurvedHistogram::Points SCurvedHistogram::linearInterpolation( const Point _p1,
 
 void SCurvedHistogram::stopping()
 {
-    if (m_layer)
+    if(m_layer)
     {
         this->getScene2DRender()->getScene()->removeItem(m_layer);
         delete m_layer;
         m_layer = nullptr;
     }
+
     m_positionsToPathLength.clear();
-    if (m_painterPath)
+    if(m_painterPath)
     {
         delete m_painterPath;
         m_painterPath = nullptr;
@@ -504,34 +526,34 @@ void SCurvedHistogram::stopping()
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::processInteraction( sight::viz::scene2d::data::Event& _event)
+void SCurvedHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
     bool updatePointedPos = false;
 
     // Vertical scaling
-    if( _event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp )
+    if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelUp)
     {
         m_scale *= SCALE;
-        m_layer->setTransform(QTransform::fromScale(1, static_cast<qreal>(SCALE) ), true);
+        m_layer->setTransform(QTransform::fromScale(1, static_cast<qreal>(SCALE)), true);
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown )
+    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown)
     {
         m_scale /= SCALE;
-        m_layer->setTransform(QTransform::fromScale(1, 1 / static_cast<qreal>(SCALE) ), true);
+        m_layer->setTransform(QTransform::fromScale(1, 1 / static_cast<qreal>(SCALE)), true);
 
         updatePointedPos = true;
     }
-    else if( _event.getType() == sight::viz::scene2d::data::Event::MouseMove )
+    else if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
     {
         updatePointedPos = true;
     }
 
-    data::Point::sptr point = this->getInOut< data::Point>( s_POINT_INOUT );
-    if( point && updatePointedPos )
+    data::Point::sptr point = this->getInOut<data::Point>(s_POINT_INOUT);
+    if(point && updatePointedPos)
     {
-        this->updateCurrentPoint( _event, point );
+        this->updateCurrentPoint(_event, point);
     }
 }
 
@@ -540,9 +562,10 @@ void SCurvedHistogram::processInteraction( sight::viz::scene2d::data::Event& _ev
 service::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( "histogram", data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push("histogram", data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
-}   // namespace adaptor
-}   // namespace sight::module::viz::scene2d
+} // namespace adaptor
+
+} // namespace sight::module::viz::scene2d

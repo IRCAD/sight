@@ -26,8 +26,8 @@
 
 #include <data/registry/detail.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/Factory.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -35,13 +35,13 @@
 
 namespace sight::module::debug
 {
+
 namespace action
 {
 
-
 //------------------------------------------------------------------------------
 
-fwMetrics::fwMetrics( ) noexcept
+fwMetrics::fwMetrics() noexcept
 {
 }
 
@@ -69,7 +69,7 @@ void fwMetrics::updating()
 
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");
-    messageBox.setMessage( stream.str() );
+    messageBox.setMessage(stream.str());
     messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
     messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
@@ -99,4 +99,5 @@ void fwMetrics::stopping()
 //------------------------------------------------------------------------------
 
 } // namespace action
+
 } // namespace sight::module::debug

@@ -23,7 +23,6 @@
 #include "core/com/exception/BadCall.hpp"
 
 #include "core/config.hpp"
-
 #include <core/Exception.hpp>
 
 namespace sight::core::com
@@ -32,7 +31,7 @@ namespace sight::core::com
 namespace exception
 {
 
-BadCall::BadCall ( const std::string& err ) :
+BadCall::BadCall(const std::string& err) :
     core::Exception(err)
 {
 }

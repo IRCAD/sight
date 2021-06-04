@@ -33,6 +33,7 @@
 
 namespace sight::module::ui::qt::calibration
 {
+
 /**
  * @brief The SUpdateIntrinsicDialog class displays a QDialog. The user can change the calibration resolution which
  * leads to an automatic computation of the new calibration parameters. By validating the user entry, the calibration
@@ -40,7 +41,6 @@ namespace sight::module::ui::qt::calibration
  */
 class MODULE_UI_QT_CLASS_API SUpdateIntrinsicDialog : public QDialog
 {
-
 Q_OBJECT;
 
 public:
@@ -55,11 +55,11 @@ public:
      * @brief setParameters
      * @param calibration parameters in a array< double , 12>
      */
-    void setParameters(std::array< double, 12>& parameters);
+    void setParameters(std::array<double, 12>& parameters);
 
 Q_SIGNALS:
 
-    void newCalibration(std::array< double, 12 >& newParameters);
+    void newCalibration(std::array<double, 12>& newParameters);
 
 private Q_SLOTS:
 
@@ -88,11 +88,11 @@ private:
     /**
      * @brief concatenation of resolution (0-1) , intrinsic parameters (2-5), distortions (6-10), and skew(11)
      */
-    std::array< double, 12 > m_calibration;
+    std::array<double, 12> m_calibration;
     /**
      * @brief store the original calibration (to reset)
      */
-    std::array< double, 12 > m_originCalibration;
+    std::array<double, 12> m_originCalibration;
 
     /**
      * @brief Width of the video.
@@ -156,7 +156,6 @@ private:
 
     /// ratio of the calibration resolution
     double m_ratio;
-
 };
 
 } //namespace sight::module::ui::qt::calibration

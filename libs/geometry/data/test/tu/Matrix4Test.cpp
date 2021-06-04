@@ -32,10 +32,11 @@
 #include <cmath>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::geometry::data::ut::Matrix4Test );
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::Matrix4Test);
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
@@ -81,21 +82,24 @@ void Matrix4Test::identityMatrixTest()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
     //Test with dummy precision
     shouldBeTrue = geometry::data::isIdentity(tm1, 20);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity with a precision of 20", true,
-                                 shouldBeTrue);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE(
+        "Matrix4 should be identity with a precision of 20",
+        true,
+        shouldBeTrue
+    );
     //Test with nice precision
     shouldBeFalse = geometry::data::isIdentity(tm1, 1e-14);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm1));
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm2));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm1));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm2));
 
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::multiply");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             geometry::data::multiply(tm1, tm2, tm3);
         }
@@ -103,12 +107,12 @@ void Matrix4Test::identityMatrixTest()
 #else
     geometry::data::multiply(tm1, tm2, tm3);
 #endif
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm3));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm3));
 
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::invert");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             geometry::data::invert(tm1, tm4);
         }
@@ -116,12 +120,12 @@ void Matrix4Test::identityMatrixTest()
 #else
     geometry::data::invert(tm1, tm4);
 #endif
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm4));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm4));
 
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::multiply");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             geometry::data::multiply(tm1, p1, p2);
         }
@@ -146,32 +150,34 @@ void Matrix4Test::matrixTest()
     geometry::data::identity(tm2);
 
     sight::data::Matrix4::TMCoefArray tm1Coefs;
-    for (int i = 0; i < 16; ++i)
+    for(int i = 0 ; i < 16 ; ++i)
     {
-        tm1Coefs[i] = i+1;
+        tm1Coefs[i] = i + 1;
     }
 
-    for (int i = 0; i < 4; ++i)
+    for(int i = 0 ; i < 4 ; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        for(int j = 0 ; j < 4 ; ++j)
         {
-            tm2->setCoefficient(i, j, fabs(static_cast<double>(i-j)) + 1);
+            tm2->setCoefficient(i, j, fabs(static_cast<double>(i - j)) + 1);
         }
     }
+
     tm1->setCoefficients(tm1Coefs);
     tm4->setCoefficients(tm1Coefs);
 
     // Test matrix-matrix multiplication
     geometry::data::multiply(tm1, tm2, tm3);
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
-        for (size_t j = 0; j < 4; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
             double val = 0;
-            for (size_t k = 0; k < 4; ++k)
+            for(size_t k = 0 ; k < 4 ; ++k)
             {
-                val += tm1->getCoefficient(i, k)*tm2->getCoefficient(k, j);
+                val += tm1->getCoefficient(i, k) * tm2->getCoefficient(k, j);
             }
+
             CPPUNIT_ASSERT_EQUAL(val, tm3->getCoefficient(i, j));
         }
     }
@@ -179,26 +185,27 @@ void Matrix4Test::matrixTest()
     // Test invert
     geometry::data::invert(tm2, tm4);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4->getCoefficient(0, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(0, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.,   tm4->getCoefficient(0, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1,  tm4->getCoefficient(0, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(1, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.,  tm4->getCoefficient(1, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(1, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.,   tm4->getCoefficient(1, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.,   tm4->getCoefficient(2, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(2, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.,  tm4->getCoefficient(2, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(2, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1,  tm4->getCoefficient(3, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.,   tm4->getCoefficient(3, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(3, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(0, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4->getCoefficient(0, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4->getCoefficient(0, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(1, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4->getCoefficient(1, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(1, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4->getCoefficient(1, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4->getCoefficient(2, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(2, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4->getCoefficient(2, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(2, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4->getCoefficient(3, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4->getCoefficient(3, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4->getCoefficient(3, 2), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4->getCoefficient(3, 3), 0.00001);
 
-    sight::data::Matrix4::TMCoefArray tm2Coefs = { 3.1, 1., -7.9689, 4.9,
-                                                   5., -21., -1.3646, 14.4,
-                                                   9., -7.2, -23.36, 79.04,
-                                                   0.1, -3., -1.234, -49.94 };
+    sight::data::Matrix4::TMCoefArray tm2Coefs = {3.1, 1., -7.9689, 4.9,
+                                                  5., -21., -1.3646, 14.4,
+                                                  9., -7.2, -23.36, 79.04,
+                                                  0.1, -3., -1.234, -49.94
+    };
     tm2->setCoefficients(tm2Coefs);
     geometry::data::invert(tm2, tm4);
 
@@ -227,24 +234,25 @@ void Matrix4Test::matrixTest()
     auto p2 = sight::data::Point::New();
 
     geometry::data::multiply(tm1, p1, p2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9,  p2->getCoord()[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5,  p2->getCoord()[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, p2->getCoord()[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5, p2->getCoord()[1], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(100.1, p2->getCoord()[2], 0.00001);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm1));
-    CPPUNIT_ASSERT( geometry::data::isIdentity(tm2));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm1));
+    CPPUNIT_ASSERT(geometry::data::isIdentity(tm2));
 }
 
 //------------------------------------------------------------------------------
 
 void Matrix4Test::glmGetterSetterTest()
 {
-    sight::data::Matrix4::TMCoefArray coefs = { 2, -2, .3, .12,
-                                                4, 8.9, 4.2, 1.2,
-                                                7.8, -12.1, 2.3, 1.2,
-                                                .3, 1.21, -3.1, 1.2};
+    sight::data::Matrix4::TMCoefArray coefs = {2, -2, .3, .12,
+                                               4, 8.9, 4.2, 1.2,
+                                               7.8, -12.1, 2.3, 1.2,
+                                               .3, 1.21, -3.1, 1.2
+    };
 
     auto mat = sight::data::Matrix4::New();
     mat->setCoefficients(coefs);
@@ -255,7 +263,7 @@ void Matrix4Test::glmGetterSetterTest()
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::getMatrixFromTF3D");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             glmMat = geometry::data::getMatrixFromTF3D(mat);
         }
@@ -266,25 +274,26 @@ void Matrix4Test::glmGetterSetterTest()
 
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
-        for (size_t j = 0; j < 4; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(glmMat[i][j], coefs[i + j * 4]);
         }
     }
 
     // Test setter
-    double coefs2[] = { 11, -2, -.3, -.74,
-                        .214, 82.9, 9.2, -5.2,
-                        17.8, -2.1, 2.3, 1.2,
-                        .13, 0.1, -0.1, 0.2};
+    double coefs2[] = {11, -2, -.3, -.74,
+                       .214, 82.9, 9.2, -5.2,
+                       17.8, -2.1, 2.3, 1.2,
+                       .13, 0.1, -0.1, 0.2
+    };
 
     glmMat = ::glm::make_mat4<double>(coefs2);
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::setTF3DFromMatrix");
-        for(int i = 0; i < 1000000; ++i)
+        for(int i = 0 ; i < 1000000 ; ++i)
         {
             geometry::data::setTF3DFromMatrix(mat, glmMat);
         }
@@ -293,9 +302,9 @@ void Matrix4Test::glmGetterSetterTest()
     geometry::data::setTF3DFromMatrix(mat, glmMat);
 #endif
 
-    for (size_t i = 0; i < 4; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
-        for (size_t j = 0; j < 4; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs2[i + j * 4]);
         }
@@ -305,4 +314,5 @@ void Matrix4Test::glmGetterSetterTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
+
 } //namespace sight::geometry::data

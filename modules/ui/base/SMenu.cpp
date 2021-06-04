@@ -24,7 +24,6 @@
 
 #include <service/macros.hpp>
 
-
 namespace sight::module::ui::base
 {
 

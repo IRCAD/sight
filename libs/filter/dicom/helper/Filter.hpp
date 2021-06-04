@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace helper
 {
 
@@ -38,7 +39,8 @@ namespace helper
 class FILTER_DICOM_CLASS_API Filter
 {
 public:
-    typedef std::vector< data::DicomSeries::sptr > DicomSeriesContainerType;
+
+    typedef std::vector<data::DicomSeries::sptr> DicomSeriesContainerType;
 
     /**
      * @brief Apply a filter to the DicomSeries
@@ -46,11 +48,14 @@ public:
      * @param[in] filter Filter that must be applied
      * @return Return true if errors have been ignored
      */
-    FILTER_DICOM_API static bool applyFilter(DicomSeriesContainerType& dicomSeriesContainer,
-                                             filter::dicom::IFilter::sptr filter, bool forcedApply = false,
-                                             const core::log::Logger::sptr& logger = core::log::Logger::New());
-
+    FILTER_DICOM_API static bool applyFilter(
+        DicomSeriesContainerType& dicomSeriesContainer,
+        filter::dicom::IFilter::sptr filter,
+        bool forcedApply                      = false,
+        const core::log::Logger::sptr& logger = core::log::Logger::New()
+    );
 };
 
 } // namespace helper
+
 } // namespace sight::filter::dicom

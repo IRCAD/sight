@@ -34,13 +34,13 @@
 
 namespace sight::module::ui::debug
 {
+
 namespace action
 {
 
-
 //------------------------------------------------------------------------------
 
-ComponentsTree::ComponentsTree( ) noexcept
+ComponentsTree::ComponentsTree() noexcept
 {
 }
 
@@ -52,14 +52,14 @@ ComponentsTree::~ComponentsTree() noexcept
 
 //------------------------------------------------------------------------------
 
-void ComponentsTree::updating( )
+void ComponentsTree::updating()
 {
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
     core::runtime::Runtime* defaultRuntime = core::runtime::Runtime::getDefault();
 
-    for (const auto& module : defaultRuntime->getModules())
+    for(const auto& module : defaultRuntime->getModules())
     {
         const std::string moduleName      = module->getIdentifier();
         const bool isModuleEnabled        = module->isEnabled();
@@ -68,15 +68,16 @@ void ComponentsTree::updating( )
         {
             moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
         }
+
         moduleItem->setText(0, QString::fromStdString(moduleName));
-        m_treeContainer->addTopLevelItem( moduleItem );
+        m_treeContainer->addTopLevelItem(moduleItem);
 
         //Extensions
         QTreeWidgetItem* extensionsItem = new QTreeWidgetItem();
         extensionsItem->setText(0, QObject::tr("Extensions"));
-        moduleItem->addChild( extensionsItem );
+        moduleItem->addChild(extensionsItem);
 
-        for (const auto& extension : module->getExtensions())
+        for(const auto& extension : module->getExtensions())
         {
             const std::string point       = extension->getPoint();
             const bool isExtensionEnabled = extension->isEnabled();
@@ -85,8 +86,9 @@ void ComponentsTree::updating( )
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
             }
+
             item->setText(0, QString::fromStdString(point));
-            extensionsItem->addChild( item );
+            extensionsItem->addChild(item);
         }
     }
 

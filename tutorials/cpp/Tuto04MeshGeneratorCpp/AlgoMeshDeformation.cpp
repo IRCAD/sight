@@ -48,7 +48,8 @@ AlgoMeshDeformation::~AlgoMeshDeformation() noexcept
 void AlgoMeshDeformation::setParam(
     data::Mesh::sptr _mesh,
     const unsigned int _nbStep,
-    const unsigned int _amplitude)
+    const unsigned int _amplitude
+)
 {
     m_mesh      = _mesh;
     m_nbStep    = _nbStep;
@@ -61,16 +62,18 @@ void AlgoMeshDeformation::setParam(
 
 //-----------------------------------------------------------------------------
 
-void AlgoMeshDeformation::computeDeformation( data::Mesh::sptr _mesh,
-                                              const unsigned int _nbStep,
-                                              const unsigned int _amplitude )
+void AlgoMeshDeformation::computeDeformation(
+    data::Mesh::sptr _mesh,
+    const unsigned int _nbStep,
+    const unsigned int _amplitude
+)
 {
-    if (    m_mesh.expired() ||
-            m_nbPoints != _mesh->getNumberOfPoints() ||
-            m_nbCells != _mesh->getNumberOfCells()  ||
-            !_mesh->hasPointColors())
+    if(m_mesh.expired()
+       || m_nbPoints != _mesh->getNumberOfPoints()
+       || m_nbCells != _mesh->getNumberOfCells()
+       || !_mesh->hasPointColors())
     {
-        this->setParam( _mesh, _nbStep, _amplitude );
+        this->setParam(_mesh, _nbStep, _amplitude);
         this->initSimu();
     }
     else
@@ -87,9 +90,9 @@ void AlgoMeshDeformation::initSimu()
     m_originMesh = data::Object::copy(mesh);
     m_step       = 0;
 
-    if ( !m_mesh.lock()->hasPointColors() )
+    if(!m_mesh.lock()->hasPointColors())
     {
-        geometry::data::Mesh::colorizeMeshPoints( mesh );
+        geometry::data::Mesh::colorizeMeshPoints(mesh);
     }
 
     const auto dumpLock = mesh->lock();
@@ -97,17 +100,18 @@ void AlgoMeshDeformation::initSimu()
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    auto pointsItr       = mesh->begin< data::iterator::ConstPointIterator >();
-    const auto pointsEnd = mesh->end< data::iterator::ConstPointIterator >();
+    auto pointsItr       = mesh->begin<data::iterator::ConstPointIterator>();
+    const auto pointsEnd = mesh->end<data::iterator::ConstPointIterator>();
     float coord;
-    for(; pointsItr != pointsEnd; ++pointsItr)
+    for( ; pointsItr != pointsEnd ; ++pointsItr)
     {
         coord = pointsItr->point->y;
-        if ( coord < min )
+        if(coord < min)
         {
             min = coord;
         }
-        if ( coord > max )
+
+        if(coord > max)
         {
             max = coord;
         }
@@ -121,11 +125,11 @@ void AlgoMeshDeformation::initSimu()
 void AlgoMeshDeformation::computeSimu()
 {
     m_step += m_direction;
-    if ( m_step == m_nbStep )
+    if(m_step == m_nbStep)
     {
         m_direction = -1;
     }
-    else if ( m_step == 0 )
+    else if(m_step == 0)
     {
         m_direction = 1;
     }
@@ -136,26 +140,27 @@ void AlgoMeshDeformation::computeSimu()
     const auto dumpLock     = mesh->lock();
     const auto origDumpLock = m_originMesh->lock();
 
-    auto pointsItr       = mesh->begin< data::iterator::PointIterator >();
-    const auto pointsEnd = mesh->end< data::iterator::PointIterator >();
-    auto origPointsItr   = m_originMesh->begin< data::iterator::ConstPointIterator >();
+    auto pointsItr       = mesh->begin<data::iterator::PointIterator>();
+    const auto pointsEnd = mesh->end<data::iterator::PointIterator>();
+    auto origPointsItr   = m_originMesh->begin<data::iterator::ConstPointIterator>();
 
-    for(; pointsItr != pointsEnd; ++pointsItr, ++origPointsItr)
+    for( ; pointsItr != pointsEnd ; ++pointsItr, ++origPointsItr)
     {
         pointsItr->point->x = origPointsItr->point->x;
         if(origPointsItr->point->y - m_yCenter > 0)
         {
             pointsItr->point->y = origPointsItr->point->y + (origPointsItr->point->y - m_yCenter) * scale;
-            pointsItr->rgba->r  = core::tools::numericRoundCast< data::Mesh::ColorValueType >(255 * scale);
+            pointsItr->rgba->r  = core::tools::numericRoundCast<data::Mesh::ColorValueType>(255 * scale);
         }
         else
         {
             pointsItr->rgba->r = 0;
         }
+
         pointsItr->point->z = origPointsItr->point->z;
     }
 
-    geometry::data::Mesh::generatePointNormals( mesh );
+    geometry::data::Mesh::generatePointNormals(mesh);
 }
 
 //-----------------------------------------------------------------------------

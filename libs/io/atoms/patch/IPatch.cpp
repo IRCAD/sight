@@ -37,7 +37,7 @@ IPatch::~IPatch()
 
 // ----------------------------------------------------------------------------
 
-IPatch::IPatch( const IPatch& cpy )
+IPatch::IPatch(const IPatch& cpy)
 {
     m_originClassname = cpy.getOriginClassname();
     m_originVersion   = cpy.getOriginVersion();

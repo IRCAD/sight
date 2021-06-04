@@ -27,8 +27,10 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
+
 /**
  *
  * @brief class to manage conversion between data::PointList and igtl::PointMessage
@@ -37,6 +39,7 @@ class IO_IGTL_CLASS_API PointListConverter :
     public IConverter
 {
 public:
+
     /// Constructor
     IO_IGTL_API PointListConverter();
 
@@ -55,7 +58,7 @@ public:
      *
      * @return an  ::igtl::ImageMessage converted from an data::Image
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject (data::Object::csptr src) const;
+    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -86,5 +89,7 @@ private:
     /// fwData type supported for conversion
     static std::string const s_FWDATA_OBJECT_TYPE;
 };
+
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

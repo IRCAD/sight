@@ -70,8 +70,10 @@ void SShaderParameter::starting()
     this->initialize();
 
     // Retrieves the associated material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName,
-                                                                                     sight::viz::scene3d::RESOURCE_GROUP);
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(
+        m_materialName,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
     this->setMaterial(material);
 }
 

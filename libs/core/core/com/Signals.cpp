@@ -39,24 +39,24 @@ Signals::Signals()
 Signals::~Signals()
 {
 #if 0
-    for( SignalMapType::value_type elem :  m_signals )
+    for(SignalMapType::value_type elem : m_signals)
     {
-        SIGHT_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );
+        SIGHT_ASSERT("Signal '" << elem.first << "' has connected slots", elem.second->getNumberOfConnections() == 0);
     }
 #endif
 }
 
 //-----------------------------------------------------------------------------
 
-Signals& Signals::operator()( const SignalKeyType& key, const SignalBase::sptr& Signal )
+Signals& Signals::operator()(const SignalKeyType& key, const SignalBase::sptr& Signal)
 {
-    m_signals.insert( SignalMapType::value_type(key, Signal) );
+    m_signals.insert(SignalMapType::value_type(key, Signal));
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-SignalBase::sptr Signals::operator[]( const SignalKeyType& key ) const
+SignalBase::sptr Signals::operator[](const SignalKeyType& key) const
 {
     SignalMapType::const_iterator it = m_signals.find(key);
 
@@ -73,22 +73,23 @@ SignalBase::sptr Signals::operator[]( const SignalKeyType& key ) const
 Signals::SignalKeyContainerType Signals::getSignalKeys() const
 {
     Signals::SignalKeyContainerType SignalKeys;
-    for( SignalMapType::value_type elem :  m_signals )
+    for(SignalMapType::value_type elem : m_signals)
     {
         SignalKeys.push_back(elem.first);
     }
+
     return SignalKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-Signals::Signals( const Signals& )
+Signals::Signals(const Signals&)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-Signals& Signals::operator=( const Signals& )
+Signals& Signals::operator=(const Signals&)
 {
     return *this;
 }

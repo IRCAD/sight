@@ -26,30 +26,33 @@
 
 namespace sight::data
 {
+
 namespace ut
 {
 
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( testGetterSetter );
-    CPPUNIT_TEST( testAllocation );
-    CPPUNIT_TEST( testReallocation );
-    CPPUNIT_TEST( testPixelType );
-    CPPUNIT_TEST( testSetGetPixel );
-    CPPUNIT_TEST( testSetGetPixelRGBA );
-    CPPUNIT_TEST( testIterator );
-    CPPUNIT_TEST( testRGBAIterator );
-    CPPUNIT_TEST( testRGBIterator );
-    CPPUNIT_TEST( testBGRAIterator );
-    CPPUNIT_TEST( testBGRIterator );
-    CPPUNIT_TEST( imageDeepCopy );
-    CPPUNIT_TEST( setISStreamTest );
-    CPPUNIT_TEST( emptyIteratorTest );
+
+    CPPUNIT_TEST_SUITE(ImageTest);
+    CPPUNIT_TEST(testGetterSetter);
+    CPPUNIT_TEST(testAllocation);
+    CPPUNIT_TEST(testReallocation);
+    CPPUNIT_TEST(testPixelType);
+    CPPUNIT_TEST(testSetGetPixel);
+    CPPUNIT_TEST(testSetGetPixelRGBA);
+    CPPUNIT_TEST(testIterator);
+    CPPUNIT_TEST(testRGBAIterator);
+    CPPUNIT_TEST(testRGBIterator);
+    CPPUNIT_TEST(testBGRAIterator);
+    CPPUNIT_TEST(testBGRIterator);
+    CPPUNIT_TEST(imageDeepCopy);
+    CPPUNIT_TEST(setISStreamTest);
+    CPPUNIT_TEST(emptyIteratorTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -71,4 +74,5 @@ public:
 };
 
 } //namespace ut
+
 } //namespace sight::data

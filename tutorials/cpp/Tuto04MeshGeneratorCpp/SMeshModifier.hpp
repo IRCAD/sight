@@ -56,11 +56,10 @@ namespace Tuto04MeshGeneratorCpp
  */
 class SMeshModifier final : public ::sight::ui::base::IAction
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMeshModifier, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SMeshModifier, sight::ui::base::IAction);
 
     /// Creates the action.
     SMeshModifier() noexcept;
@@ -89,7 +88,6 @@ private:
 
     /// Defines the algorithm used to animate a deformation on the mesh.
     ::Tuto04MeshGeneratorCpp::AlgoMeshDeformation m_animator;
-
 };
 
 } // namespace Tuto04MeshGeneratorCpp.

@@ -30,18 +30,20 @@
 
 namespace sight::io::dicom
 {
+
 namespace ut
 {
 
 class WriterReaderTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( WriterReaderTest );
-CPPUNIT_TEST( writeReadImageSeriesTest );
+CPPUNIT_TEST_SUITE(WriterReaderTest);
+CPPUNIT_TEST(writeReadImageSeriesTest);
 //FIXME: This test create wrong (random) Dicom Images that may cause the test to crash.
 //    CPPUNIT_TEST( writeReadSeriesDBTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -56,8 +58,8 @@ private:
      * and a ModelSeries with one reconstruction.
      */
     data::SeriesDB::sptr createSeriesDB();
-
 };
 
 } // namespace ut
+
 } // namespace sight::io::dicom

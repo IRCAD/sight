@@ -33,6 +33,7 @@
 
 namespace sight::io::dicom
 {
+
 namespace helper
 {
 
@@ -41,16 +42,19 @@ namespace helper
  */
 class IO_DICOM_CLASS_API FileWriter
 {
-
 public:
+
     /**
      * @brief Write a file from the dataset
      * @brief[in] filename Filename
      * @brief[in] writer GDCM writer
      */
-    IO_DICOM_API static void write(const std::filesystem::path& filename,
-                                   const SPTR(::gdcm::Writer)& writer);
+    IO_DICOM_API static void write(
+        const std::filesystem::path& filename,
+        const SPTR(::gdcm::Writer)& writer
+    );
 };
 
 } // namespace helper
+
 } // namespace sight::io::dicom

@@ -26,20 +26,20 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
+
+#include <geometry/data/Matrix4.hpp>
+#include <geometry/data/PointList.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
 #include <service/macros.hpp>
-
-#include <geometry/data/Matrix4.hpp>
-#include <geometry/data/PointList.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -60,8 +60,8 @@ static const std::string s_TOLERANCE_CONFIG = "tolerance";
 
 SManagePointList::SManagePointList() noexcept
 {
-    newSlot(s_PICK_SLOT, &SManagePointList::pick, this );
-    newSlot(s_CLEAR_POINTS_SLOT, &SManagePointList::clearPoints, this );
+    newSlot(s_PICK_SLOT, &SManagePointList::pick, this);
+    newSlot(s_CLEAR_POINTS_SLOT, &SManagePointList::clearPoints, this);
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
     {
         const data::Point::sptr point = data::Point::New();
 
-        const auto matrixW = this->getWeakInput< data::Matrix4 >(s_MATRIX_INPUT);
+        const auto matrixW = this->getWeakInput<data::Matrix4>(s_MATRIX_INPUT);
         const auto matrix  = matrixW.lock();
 
         if(matrix)
@@ -121,7 +121,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
             const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
             const ::glm::dmat4x4 mat        = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
 
-            const ::glm::dvec4 modifiedPickedPoint = mat*pickedPoint;
+            const ::glm::dvec4 modifiedPickedPoint = mat * pickedPoint;
             point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
         }
         else
@@ -144,26 +144,28 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
 
 void SManagePointList::addPoint(const data::Point::sptr _point) const
 {
-    const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
+    const auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
 
     if(m_label)
     {
         const auto counter             = pointList->getPoints().size();
         const data::String::sptr label = data::String::New(std::to_string(counter));
-        _point->setField(data::fieldHelper::Image::m_labelId, label );
+        _point->setField(data::fieldHelper::Image::m_labelId, label);
     }
 
     pointList->pushBack(_point);
-    const auto& sigAdded = pointList->signal< data::PointList::PointAddedSignalType >(
-        data::PointList::s_POINT_ADDED_SIG);
+    const auto& sigAdded = pointList->signal<data::PointList::PointAddedSignalType>(
+        data::PointList::s_POINT_ADDED_SIG
+    );
     sigAdded->asyncEmit(_point);
 
     if(m_max != 0 && pointList->getPoints().size() > m_max)
     {
         const data::Point::sptr removedPoint = pointList->getPoints().front();
         pointList->remove(0);
-        const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
-            data::PointList::s_POINT_REMOVED_SIG);
+        const auto& sigRemoved = pointList->signal<data::PointList::PointRemovedSignalType>(
+            data::PointList::s_POINT_REMOVED_SIG
+        );
         sigRemoved->asyncEmit(removedPoint);
     }
 }
@@ -174,14 +176,15 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList             = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
+        const auto pointList             = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
         const data::Point::sptr pointRes =
             sight::geometry::data::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
         if(pointRes != nullptr)
         {
-            const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
-                data::PointList::s_POINT_REMOVED_SIG);
+            const auto& sigRemoved = pointList->signal<data::PointList::PointRemovedSignalType>(
+                data::PointList::s_POINT_REMOVED_SIG
+            );
             sigRemoved->asyncEmit(pointRes);
         }
     }
@@ -191,18 +194,19 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
 
 void SManagePointList::clearPoints() const
 {
-    const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
+    const auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
 
     using PLContainer = data::PointList::PointListContainer;
     const PLContainer container = pointList->getPoints();
     pointList->clear();
 
-    for(PLContainer::size_type i = 0; i < container.size(); ++i)
+    for(PLContainer::size_type i = 0 ; i < container.size() ; ++i)
     {
         const data::Point::sptr point = container[i];
 
-        const auto& sigRemoved = pointList->signal< data::PointList::PointRemovedSignalType >(
-            data::PointList::s_POINT_REMOVED_SIG);
+        const auto& sigRemoved = pointList->signal<data::PointList::PointRemovedSignalType>(
+            data::PointList::s_POINT_REMOVED_SIG
+        );
         sigRemoved->asyncEmit(point);
     }
 }

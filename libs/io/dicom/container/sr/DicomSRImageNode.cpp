@@ -26,18 +26,22 @@
 
 namespace sight::io::dicom
 {
+
 namespace container
 {
+
 namespace sr
 {
 
 //------------------------------------------------------------------------------
 
-DicomSRImageNode::DicomSRImageNode(const DicomCodedAttribute& codedAttribute,
-                                   const std::string& relationship,
-                                   const std::string& sopClassUID,
-                                   const std::string& sopInstanceUID,
-                                   int frameNumber) :
+DicomSRImageNode::DicomSRImageNode(
+    const DicomCodedAttribute& codedAttribute,
+    const std::string& relationship,
+    const std::string& sopClassUID,
+    const std::string& sopInstanceUID,
+    int frameNumber
+) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship),
     m_sopClassUID(sopClassUID),
     m_sopInstanceUID(sopInstanceUID),
@@ -65,22 +69,22 @@ void DicomSRImageNode::write(::gdcm::DataSet& dataset) const
 
 void DicomSRImageNode::writeReferencedSOPSequence(::gdcm::DataSet& dataset) const
 {
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
+    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence = new ::gdcm::SequenceOfItems();
     ::gdcm::Item item;
     item.SetVLToUndefined();
     ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Referenced SOP Class UID - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_sopClassUID, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(m_sopClassUID, itemDataset);
 
     // Referenced SOP Instance UID  - Type 1
-    io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(m_sopInstanceUID, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(m_sopInstanceUID, itemDataset);
 
     // Referenced Frame Number - Type 1C
-    io::dicom::helper::DicomDataWriter::setTagValues< int, 0x0008, 0x1160 >(&m_frameNumber, 1, itemDataset);
+    io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(&m_frameNumber, 1, itemDataset);
 
     sequence->AddItem(item);
-    io::dicom::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x1199 >(sequence, dataset);
+    io::dicom::helper::DicomDataWriter::setSequenceTagValue<0x0008, 0x1199>(sequence, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -96,5 +100,7 @@ void DicomSRImageNode::print(std::ostream& os) const
 //------------------------------------------------------------------------------
 
 } //namespace sr
+
 } //namespace container
+
 } //namespace sight::io::dicom

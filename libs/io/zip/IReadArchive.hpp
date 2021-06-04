@@ -35,10 +35,9 @@ namespace sight::io::zip
  */
 class IReadArchive
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(IReadArchive)
+    SIGHT_DECLARE_CLASS(IReadArchive);
 
     virtual ~IReadArchive()
     {

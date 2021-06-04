@@ -53,7 +53,7 @@ IO_DICOM_API ::gdcm::Tag getGdcmTag(const std::string& group, const std::string&
  * and we may have uint16_t (for instance Philips tag 0x00E1,0x1022).
  * See part 05 of Dicom Standard, section 7.8.1.
  */
-typedef std::vector< ::gdcm::Tag > PrivateTagVecType;
+typedef std::vector< ::gdcm::Tag> PrivateTagVecType;
 
 /**
  * @brief Load a set of private tags from given CSV file.
@@ -71,4 +71,5 @@ typedef std::vector< ::gdcm::Tag > PrivateTagVecType;
 IO_DICOM_API PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath);
 
 } // namespace helper
+
 } // namespace sight::io::dicom

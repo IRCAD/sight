@@ -24,11 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/types.hpp"
-
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Patient))
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Patient))
 
 namespace sight::data
 {
@@ -38,11 +37,11 @@ namespace sight::data
  */
 class DATA_CLASS_API Patient : public data::Object
 {
-
 public:
-    SIGHT_DECLARE_CLASS(Patient, data::Object, data::factory::New< Patient >)
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Patient))
+    SIGHT_DECLARE_CLASS(Patient, data::Object, data::factory::New<Patient>);
+
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Patient))
 
     /**
      * @brief Creates the patient.
@@ -57,46 +56,46 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy( const data::Object::csptr& _source ) override;
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the patient's full name.
-    const DicomValueType& getName () const;
+    const DicomValueType& getName() const;
 
     /// Sets the patient's full name.
     void setName(const DicomValueType& _val);
 
     /// Gets the primary hospital identification number or code for the patient.
-    const DicomValueType& getPatientId () const;
+    const DicomValueType& getPatientId() const;
 
     /// Sets the primary hospital identification number or code for the patient.
-    void setPatientId (const DicomValueType& _val);
+    void setPatientId(const DicomValueType& _val);
 
     /// Gets the birthdate of the patient.
-    const DicomValueType& getBirthdate () const;
+    const DicomValueType& getBirthdate() const;
 
     /// Sets the birthdate of the patient.
-    void setBirthdate (const DicomValueType& _val);
+    void setBirthdate(const DicomValueType& _val);
 
     /**
      * @brief Gets the sex of the named patient.
      *
      * Enumerated _values: M = male, F = female, O = other
      */
-    const DicomValueType& getSex () const;
+    const DicomValueType& getSex() const;
 
     /**
      * @brief Sets the sex of the named patient.
      *
      * Enumerated _values: M = male, F = female, O = other
      */
-    void setSex (const DicomValueType& _val);
+    void setSex(const DicomValueType& _val);
 
 protected:
 
@@ -111,12 +110,11 @@ protected:
 
     /// Defines the patient's sex.
     DicomValueType m_sex;
-
 };
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Patient::getName () const
+inline const DicomValueType& Patient::getName() const
 {
     return m_name;
 }
@@ -130,42 +128,42 @@ inline void Patient::setName(const DicomValueType& _val)
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Patient::getPatientId () const
+inline const DicomValueType& Patient::getPatientId() const
 {
     return m_patientId;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setPatientId (const DicomValueType& _val)
+inline void Patient::setPatientId(const DicomValueType& _val)
 {
     m_patientId = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Patient::getBirthdate () const
+inline const DicomValueType& Patient::getBirthdate() const
 {
     return m_birthdate;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setBirthdate (const DicomValueType& _val)
+inline void Patient::setBirthdate(const DicomValueType& _val)
 {
     m_birthdate = _val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const DicomValueType& Patient::getSex () const
+inline const DicomValueType& Patient::getSex() const
 {
     return m_sex;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Patient::setSex (const DicomValueType& _val)
+inline void Patient::setSex(const DicomValueType& _val)
 {
     m_sex = _val;
 }

@@ -34,7 +34,9 @@
 
 namespace sight::data
 {
+
 class Camera;
+
 }
 
 namespace sight::module::io::pcl
@@ -76,10 +78,9 @@ namespace sight::module::io::pcl
  */
 class MODULE_IO_PCL_CLASS_API SFrameGrabber : public service::IGrabber
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameGrabber, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, service::IGrabber);
 
     /// Constructor. Do nothing.
     MODULE_IO_PCL_API SFrameGrabber() noexcept;
@@ -118,7 +119,7 @@ protected:
 
 private:
 
-    typedef std::vector< std::filesystem::path > ImageFilesType;
+    typedef std::vector<std::filesystem::path> ImageFilesType;
 
     /// Initializes the image reader, start the timer
     void readImages(const std::filesystem::path& folder, const std::string& extension);

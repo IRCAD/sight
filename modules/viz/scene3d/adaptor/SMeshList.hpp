@@ -72,11 +72,10 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SMeshList final : public sight::viz::scene3d::IAdaptor
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMeshList, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMeshList, ::sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMeshList() noexcept;
@@ -118,12 +117,12 @@ private:
     /// Stores all services and data needed to add a new mesh.
     struct MeshInstance
     {
-        data::Matrix4::sptr m_matrix { nullptr };
-        data::Image::sptr m_image { nullptr };
-        sight::viz::scene3d::IAdaptor::sptr m_transform { nullptr };
-        sight::viz::scene3d::IAdaptor::sptr m_mesh { nullptr };
-        sight::viz::scene3d::IAdaptor::sptr m_texture { nullptr };
-        bool m_isEnabled{ false }; ///< set to true when the instance has been added once
+        data::Matrix4::sptr m_matrix {nullptr};
+        data::Image::sptr m_image {nullptr};
+        sight::viz::scene3d::IAdaptor::sptr m_transform {nullptr};
+        sight::viz::scene3d::IAdaptor::sptr m_mesh {nullptr};
+        sight::viz::scene3d::IAdaptor::sptr m_texture {nullptr};
+        bool m_isEnabled {false}; ///< set to true when the instance has been added once
     };
 
     /// Adds a new mesh at the input matrix position.
@@ -133,23 +132,22 @@ private:
     void clear();
 
     /// Stores all registered meshes instances.
-    std::vector< MeshInstance > m_meshes;
+    std::vector<MeshInstance> m_meshes;
 
     /// Defines the current index mesh to update in the mesh vector.
-    unsigned int m_meshCount { 0 };
+    unsigned int m_meshCount {0};
 
     /// Defines the maximum capacity of the meshes list.
-    unsigned int m_capacity { 50 };
+    unsigned int m_capacity {50};
 
     /// Defines the number of matrices to drop before adding a new adaptor.
-    unsigned int m_dropData { 1 };
+    unsigned int m_dropData {1};
 
     /// Counts the number of received signal to add a data, then drop the signal if (m_dropCount%m_dropData != 0).
-    unsigned int m_dropCount { 0 };
+    unsigned int m_dropCount {0};
 
     /// Generates alpha value for the texture if the image contains only 1 or 3 channels. It may be slower.
-    bool m_generateAlpha{ false };
-
+    bool m_generateAlpha {false};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

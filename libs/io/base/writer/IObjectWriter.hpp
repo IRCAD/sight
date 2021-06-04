@@ -53,7 +53,7 @@ class IO_BASE_CLASS_API IObjectWriter : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IObjectWriter)
+    SIGHT_DECLARE_CLASS(IObjectWriter);
 
     typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
     typedef std::function<void ()> CancelCallback;

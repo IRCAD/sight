@@ -64,17 +64,20 @@ void SClientListener::configuring()
 
     const ConfigType configInOut = config.get_child("inout");
 
-    SIGHT_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
-                 configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+    SIGHT_ASSERT(
+        "configured group must be '" + s_OBJECTS_GROUP + "'",
+        configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP
+    );
 
     const auto keyCfg = configInOut.equal_range("key");
-    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
+    for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
         const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
         const std::string deviceName              = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
         m_client.addAuthorizedDevice(deviceName);
     }
+
     m_client.setFilteringByDeviceName(true);
 
     const std::string serverInfo = config.get("server", "");
@@ -105,7 +108,7 @@ void SClientListener::runClient()
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
     }
-    catch (core::Exception& ex)
+    catch(core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
@@ -120,17 +123,18 @@ void SClientListener::runClient()
             // Only report the error on console (this normally happens only if we have requested the disconnection)
             SIGHT_ERROR(ex.what());
         }
+
         return;
     }
 
     // 2. Receive messages
     try
     {
-        while (m_client.isConnected())
+        while(m_client.isConnected())
         {
             std::string deviceName;
             data::Object::sptr receiveObject = m_client.receiveObject(deviceName);
-            if (receiveObject)
+            if(receiveObject)
             {
                 const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
 
@@ -138,7 +142,7 @@ void SClientListener::runClient()
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
                     data::Object::sptr obj        =
-                        this->getInOut< data::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+                        this->getInOut<data::Object>(s_OBJECTS_GROUP, indexReceiveObject);
 
                     const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
@@ -150,14 +154,14 @@ void SClientListener::runClient()
                         obj->shallowCopy(receiveObject);
 
                         data::Object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
+                        sig = obj->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                         sig->asyncEmit();
                     }
                 }
             }
         }
     }
-    catch (core::Exception& ex)
+    catch(core::Exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
@@ -192,11 +196,12 @@ void SClientListener::stopping()
         {
             m_client.disconnect();
         }
+
         m_clientFuture.wait();
         m_tlInitialized = false;
         m_sigDisconnected->asyncEmit();
     }
-    catch (core::Exception& ex)
+    catch(core::Exception& ex)
     {
         sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
         SIGHT_ERROR(ex.what());
@@ -208,8 +213,8 @@ void SClientListener::stopping()
 void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
-    data::MatrixTL::sptr matTL                 = this->getInOut< data::MatrixTL>(s_OBJECTS_GROUP, index);
-    data::FrameTL::sptr frameTL                = this->getInOut< data::FrameTL>(s_OBJECTS_GROUP, index);
+    data::MatrixTL::sptr matTL                 = this->getInOut<data::MatrixTL>(s_OBJECTS_GROUP, index);
+    data::FrameTL::sptr frameTL                = this->getInOut<data::FrameTL>(s_OBJECTS_GROUP, index);
 
     //MatrixTL
     if(matTL)
@@ -228,16 +233,17 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
         values = t->getCoefficients();
         float matrixValues[16];
 
-        for(unsigned int i = 0; i < 16; ++i)
+        for(unsigned int i = 0 ; i < 16 ; ++i)
         {
-            matrixValues[i] = static_cast< float >(values[i]);
+            matrixValues[i] = static_cast<float>(values[i]);
         }
 
         matrixBuf->setElement(matrixValues, 0);
         matTL->pushObject(matrixBuf);
         data::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = matTL->signal< data::TimeLine::ObjectPushedSignalType >(
-            data::TimeLine::s_OBJECT_PUSHED_SIG );
+        sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(
+            data::TimeLine::s_OBJECT_PUSHED_SIG
+        );
         sig->asyncEmit(timestamp);
     }
     //FrameTL
@@ -253,7 +259,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
         SPTR(data::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
 
-        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
+        std::uint8_t* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
         const auto dumpLock = im->lock();
         auto itr            = im->begin<std::uint8_t>();
@@ -264,8 +270,8 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
         frameTL->pushObject(buffer);
 
         data::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = frameTL->signal< data::TimeLine::ObjectPushedSignalType >
-                  (data::TimeLine::s_OBJECT_PUSHED_SIG );
+        sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>
+                  (data::TimeLine::s_OBJECT_PUSHED_SIG);
         sig->asyncEmit(timestamp);
     }
 }

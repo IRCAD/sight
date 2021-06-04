@@ -50,9 +50,11 @@ static const std::string s_EXTRUDE_CONFIG    = "extrude";
 static const std::string s_LINE_COLOR_CONFIG = "lineColor";
 static const std::string s_EDGE_COLOR_CONFIG = "edgeColor";
 
-SShapeExtruder::Triangle2D::Triangle2D(const ::Ogre::Vector2& _a,
-                                       const ::Ogre::Vector2& _b,
-                                       const ::Ogre::Vector2& _c) :
+SShapeExtruder::Triangle2D::Triangle2D(
+    const ::Ogre::Vector2& _a,
+    const ::Ogre::Vector2& _b,
+    const ::Ogre::Vector2& _c
+) :
     a(_a),
     b(_b),
     c(_c)
@@ -60,7 +62,7 @@ SShapeExtruder::Triangle2D::Triangle2D(const ::Ogre::Vector2& _a,
     id = s_id++;
 
     // Matrix to rotate of 90 degree over the Z axis.
-    const ::Ogre::Matrix3 quarterRotation { 0, -1, 0, 1, 0, 0, 0, 0, 1 };
+    const ::Ogre::Matrix3 quarterRotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
 
     // Compute the circumscribed circle of the triangle.
     ::Ogre::Vector2 firstBisectorPos;
@@ -84,16 +86,16 @@ SShapeExtruder::Triangle2D::Triangle2D(const ::Ogre::Vector2& _a,
 
     if(a.y != c.y)
     {
-        secondBisectorPos             = (a + c) / 2.f;
+        secondBisectorPos = (a + c) / 2.f;
         ::Ogre::Vector2 secondEdgeDir = (a - c).normalisedCopy();
-        secondBisectorDir             =
+        secondBisectorDir =
             (quarterRotation * ::Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
     }
     else
     {
-        secondBisectorPos             = (b + c) / 2.f;
+        secondBisectorPos = (b + c) / 2.f;
         ::Ogre::Vector2 secondEdgeDir = (b - c).normalisedCopy();
-        secondBisectorDir             =
+        secondBisectorDir =
             (quarterRotation * ::Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
     }
 
@@ -103,14 +105,14 @@ SShapeExtruder::Triangle2D::Triangle2D(const ::Ogre::Vector2& _a,
     const float bPrim = firstBisectorPos.y - aPrim * firstBisectorPos.x;
     const float bSec  = secondBisectorPos.y - aSec * secondBisectorPos.x;
 
-    const float intersectX = (bSec - bPrim)/(aPrim - aSec);
+    const float intersectX = (bSec - bPrim) / (aPrim - aSec);
     const float intersectY = aPrim * intersectX + bPrim;
 
     center = ::Ogre::Vector2(intersectX, intersectY);
     radius = a.distance(center);
 
     const ::Ogre::Vector2 baryDir(((a + b) / 2.f) - c);
-    barycentre = c + 2.f/3.f * baryDir;
+    barycentre = c + 2.f / 3.f * baryDir;
 }
 
 //------------------------------------------------------------------------------
@@ -118,17 +120,17 @@ SShapeExtruder::Triangle2D::Triangle2D(const ::Ogre::Vector2& _a,
 bool SShapeExtruder::Edge::intersect(Edge _edge) const
 {
     const ::Ogre::Vector2 p = a;
-    const ::Ogre::Vector2 r = (b-a);
+    const ::Ogre::Vector2 r = (b - a);
 
     const ::Ogre::Vector2 q = _edge.a;
-    const ::Ogre::Vector2 s = (_edge.b-_edge.a);
+    const ::Ogre::Vector2 s = (_edge.b - _edge.a);
 
-    const ::Ogre::Vector2 qp = (q-p);
-    const float qpXs         = (qp.x*s.y - qp.y*s.x);
-    const float qpXr         = (qp.x*r.y - qp.y*r.x);
-    const float rXs          = (r.x*s.y - r.y*s.x);
-    const float t            = qpXs/rXs;
-    const float u            = qpXr/rXs;
+    const ::Ogre::Vector2 qp = (q - p);
+    const float qpXs         = (qp.x * s.y - qp.y * s.x);
+    const float qpXr         = (qp.x * r.y - qp.y * r.x);
+    const float rXs          = (r.x * s.y - r.y * s.x);
+    const float t            = qpXs / rXs;
+    const float u            = qpXr / rXs;
 
     if(rXs != 0 && t >= 0 && t < 1 && u >= 0 && u < 1)
     {
@@ -154,7 +156,7 @@ SShapeExtruder::SShapeExtruder() noexcept
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
-    m_toolDisabledSig = this->newSignal< core::com::Signal< void()> >(s_TOOL_DISABLED_SIG);
+    m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -172,18 +174,18 @@ void SShapeExtruder::configuring()
     const ConfigType srvConfig = this->getConfigTree();
     const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
-    m_priority = config.get< int >(s_PRIORITY_CONFIG, m_priority);
-    m_extrude  = config.get< bool >(s_EXTRUDE_CONFIG, m_extrude);
+    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_extrude  = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
 
     const auto divideBy255 = std::bind(std::divides<float>(), std::placeholders::_1, 255.f);
 
     const auto hexaLineColor = config.get<std::string>(s_LINE_COLOR_CONFIG, "#FFFFFF");
-    std::array< std::uint8_t, 4 > lineColor;
+    std::array<std::uint8_t, 4> lineColor;
     data::tools::Color::hexaStringToRGBA(hexaLineColor, lineColor.data());
     std::transform(lineColor.begin(), lineColor.end(), m_lineColor.ptr(), divideBy255);
 
     const auto hexaEdgeColor = config.get<std::string>(s_EDGE_COLOR_CONFIG, "#FFFFFF");
-    std::array< std::uint8_t, 4 > edgeColor;
+    std::array<std::uint8_t, 4> edgeColor;
     data::tools::Color::hexaStringToRGBA(hexaEdgeColor, edgeColor.data());
     std::transform(edgeColor.begin(), edgeColor.end(), m_edgeColor.ptr(), divideBy255);
 }
@@ -200,7 +202,7 @@ void SShapeExtruder::starting()
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
     const sight::viz::scene3d::interactor::IInteractor::sptr interactor =
-        std::dynamic_pointer_cast< sight::viz::scene3d::interactor::IInteractor >(this->getSptr());
+        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
     layer->addInteractor(interactor, m_priority);
 
     // Create entities.
@@ -217,8 +219,9 @@ void SShapeExtruder::starting()
     // Create the material.
     m_material = data::Material::New();
 
-    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
-        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+        "::sight::module::viz::scene3d::adaptor::SMaterial"
+    );
     m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
@@ -259,7 +262,7 @@ void SShapeExtruder::stopping()
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
     const sight::viz::scene3d::interactor::IInteractor::sptr interactor =
-        std::dynamic_pointer_cast< sight::viz::scene3d::interactor::IInteractor >(this->getSptr());
+        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
     layer->removeInteractor(interactor);
 }
 
@@ -291,37 +294,42 @@ void SShapeExtruder::enableTool(bool _enable)
 void SShapeExtruder::deleteLastMesh()
 {
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut< data::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = this->getLockedInOut<data::ModelSeries>(s_EXTRUDED_MESHES_INOUT);
 
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
-    if (reconstructions.size() > 0)
+    if(reconstructions.size() > 0)
     {
         reconstructions.pop_back();
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send notification
-        const auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
-            service::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
+            service::IService::s_INFO_NOTIFIED_SIG
+        );
         notif->asyncEmit("Last extrusion deleted.");
 
         // Send the signal.
-        auto sig = extrudedMeshes->signal< data::ModelSeries::ReconstructionsRemovedSignalType >(
-            data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
-        sig->asyncEmit(data::ModelSeries::ReconstructionVectorType{reconstructions});
+        auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
+            data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
+        );
+        sig->asyncEmit(data::ModelSeries::ReconstructionVectorType {reconstructions});
     }
     else
     {
-        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
-            service::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
+            service::IService::s_FAILURE_NOTIFIED_SIG
+        );
         notif->asyncEmit("No extrusion to delete.");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::getNearFarRayPositions(int _x,
-                                                                                                       int _y) const
+std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3> SShapeExtruder::getNearFarRayPositions(
+    int _x,
+    int _y
+) const
 {
     // Compute the ray.
     sight::viz::scene3d::Layer::sptr layer = this->getLayer();
@@ -330,36 +338,38 @@ std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::
     const ::Ogre::Viewport* const vp   = camera->getViewport();
 
     const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-    const float vpY = static_cast<float>(_y - vp->getActualTop())  / static_cast<float>(vp->getActualHeight());
+    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
     ::Ogre::Ray ray = camera->getCameraToViewportRay(vpX, vpY);
 
     // Compute the intersection between the ray and the far working plane.
-    std::pair< bool, ::Ogre::Real > farHit = ::Ogre::Math::intersects(ray, m_lassoFarPlane);
+    std::pair<bool, ::Ogre::Real> farHit = ::Ogre::Math::intersects(ray, m_lassoFarPlane);
     SIGHT_ASSERT("The ray must hit the plane", farHit.first);
     const ::Ogre::Vector3 farPosition = ray.getPoint(farHit.second);
 
     // Launch the ray on the near plane after since the ray must be in front or behind it due to the frustum curve.
-    std::pair< bool, ::Ogre::Real > nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
+    std::pair<bool, ::Ogre::Real> nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
     if(!nearHit.first)
     {
         ray.setDirection(-ray.getDirection());
         nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
     }
+
     SIGHT_ASSERT("The ray must hit the plane", nearHit.first);
     const ::Ogre::Vector3 nearPosition = ray.getPoint(nearHit.second);
 
     // Launch the ray on the tool plane.
-    std::pair< bool, ::Ogre::Real > toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
+    std::pair<bool, ::Ogre::Real> toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
     if(!toolHit.first)
     {
         ray.setDirection(-ray.getDirection());
         toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
     }
+
     SIGHT_ASSERT("The ray must hit the plane", toolHit.first);
     const ::Ogre::Vector3 toolPosition = ray.getPoint(toolHit.second);
 
-    return { toolPosition, nearPosition, farPosition };
+    return {toolPosition, nearPosition, farPosition};
 }
 
 //-----------------------------------------------------------------------------
@@ -400,6 +410,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
             m_lassoNearPlane = ::Ogre::Plane(direction, camPos + direction * camera->getNearClipDistance());
             m_lassoFarPlane  = ::Ogre::Plane(direction, camPos + direction * camera->getFarClipDistance());
         }
+
         m_leftButtonMoveState = false;
 
         // Cancel others interactions.
@@ -469,8 +480,10 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
         SIGHT_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
 
         m_lastLassoLine->begin(
-            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP,
-            sight::viz::scene3d::RESOURCE_GROUP);
+            m_materialAdaptor->getMaterialName(),
+            ::Ogre::RenderOperation::OT_LINE_STRIP,
+            sight::viz::scene3d::RESOURCE_GROUP
+        );
 
         m_lastLassoLine->colour(m_lineColor);
         m_lastLassoLine->position(m_lassoToolPositions.back());
@@ -603,38 +616,43 @@ void SShapeExtruder::drawLasso()
 
     // Draw the lasso line.
     m_lasso->begin(
-        m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP,
-        sight::viz::scene3d::RESOURCE_GROUP);
+        m_materialAdaptor->getMaterialName(),
+        ::Ogre::RenderOperation::OT_LINE_STRIP,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
     m_lasso->colour(m_lineColor);
     for(const ::Ogre::Vector3 pos : m_lassoToolPositions)
     {
         m_lasso->position(pos);
     }
+
     m_lasso->end();
 
     // Draw the spheres at the edge of each line.
     const unsigned int sample = 16;
-    const float deltaRing     = static_cast< float >(::Ogre::Math::PI / sample);
-    const float deltaSeg      = 2 * static_cast< float >(::Ogre::Math::PI / sample);
+    const float deltaRing     = static_cast<float>(::Ogre::Math::PI / sample);
+    const float deltaSeg      = 2 * static_cast<float>(::Ogre::Math::PI / sample);
 
     for(const ::Ogre::Vector3 pos : m_lassoEdgePositions)
     {
         // Begin a new section.
         m_lasso->begin(
-            m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_TRIANGLE_LIST,
-            sight::viz::scene3d::RESOURCE_GROUP);
+            m_materialAdaptor->getMaterialName(),
+            ::Ogre::RenderOperation::OT_TRIANGLE_LIST,
+            sight::viz::scene3d::RESOURCE_GROUP
+        );
         m_lasso->colour(m_edgeColor);
 
         ::Ogre::uint32 index = 0;
-        for(unsigned ring = 0; ring <= sample; ++ring)
+        for(unsigned ring = 0 ; ring <= sample ; ++ring)
         {
-            const float r0 = m_lassoEdgeSize * std::sin(static_cast< float >(ring) * deltaRing);
-            const float y0 = m_lassoEdgeSize * std::cos(static_cast< float >(ring) * deltaRing);
+            const float r0 = m_lassoEdgeSize * std::sin(static_cast<float>(ring) * deltaRing);
+            const float y0 = m_lassoEdgeSize * std::cos(static_cast<float>(ring) * deltaRing);
 
-            for(unsigned seg = 0; seg <= sample; ++seg)
+            for(unsigned seg = 0 ; seg <= sample ; ++seg)
             {
-                const float x0 = r0 * std::sin(static_cast< float >(seg) * deltaSeg);
-                const float z0 = r0 * std::cos(static_cast< float >(seg) * deltaSeg);
+                const float x0 = r0 * std::sin(static_cast<float>(seg) * deltaSeg);
+                const float z0 = r0 * std::cos(static_cast<float>(seg) * deltaSeg);
                 ::Ogre::Vector3 point(x0, y0, z0);
 
                 m_lasso->position(pos + point);
@@ -651,6 +669,7 @@ void SShapeExtruder::drawLasso()
                 }
             }
         }
+
         m_lasso->end();
     }
 }
@@ -659,11 +678,13 @@ void SShapeExtruder::drawLasso()
 
 void SShapeExtruder::triangulatePoints() const
 {
-    SIGHT_ASSERT("Lasso near and far positions must have the same size",
-                 m_lassoNearPositions.size() == m_lassoFarPositions.size());
+    SIGHT_ASSERT(
+        "Lasso near and far positions must have the same size",
+        m_lassoNearPositions.size() == m_lassoFarPositions.size()
+    );
 
     // Generate triangles from the point list with the constrained Browyer-Watson algorithm.
-    std::vector< Triangle3D > triangulation;
+    std::vector<Triangle3D> triangulation;
     if(m_lassoNearPositions.size() > 3)
     {
         this->generateDelaunayTriangulation(m_lassoNearPositions, triangulation);
@@ -685,9 +706,9 @@ void SShapeExtruder::triangulatePoints() const
     if(m_extrude)
     {
         const size_t size = m_lassoNearPositions.size();
-        for(size_t index = 0; index < size; ++index)
+        for(size_t index = 0 ; index < size ; ++index)
         {
-            const bool isLast = index == size-1;
+            const bool isLast = index == size - 1;
             const size_t i0   = index;
             const size_t i1   = isLast ? 0 : index + 1;
 
@@ -698,6 +719,7 @@ void SShapeExtruder::triangulatePoints() const
             triangulation.push_back(triB);
         }
     }
+
     this->generateExtrudedMesh(triangulation);
 }
 
@@ -711,13 +733,16 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
         const auto lock = mesh->lock();
 
         // 3 points per triangle and one cell per triangle.
-        mesh->resize(static_cast< data::Mesh::Size >( _triangulation.size() * 3 ),
-                     static_cast< data::Mesh::Size >( _triangulation.size() ), data::Mesh::CellType::TRIANGLE,
-                     data::Mesh::Attributes::POINT_NORMALS);
+        mesh->resize(
+            static_cast<data::Mesh::Size>(_triangulation.size() * 3),
+            static_cast<data::Mesh::Size>(_triangulation.size()),
+            data::Mesh::CellType::TRIANGLE,
+            data::Mesh::Attributes::POINT_NORMALS
+        );
 
         // Fill points.
         {
-            auto it = mesh->begin< data::iterator::PointIterator >();
+            auto it = mesh->begin<data::iterator::PointIterator>();
 
             for(const Triangle3D& triangle : _triangulation)
             {
@@ -738,23 +763,23 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
         // Fill cell coordinates.
         {
-            auto it              = mesh->begin< data::iterator::CellIterator >();
-            const auto itEnd     = mesh->end< data::iterator::CellIterator >();
-            const auto itPrevEnd = itEnd-1;
+            auto it              = mesh->begin<data::iterator::CellIterator>();
+            const auto itEnd     = mesh->end<data::iterator::CellIterator>();
+            const auto itPrevEnd = itEnd - 1;
 
-            for(data::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
+            for(data::Mesh::Size index = 0 ; index < _triangulation.size() * 3 ; index += 3)
             {
                 *it->type   = data::Mesh::CellType::TRIANGLE;
                 *it->offset = index;
 
                 if(it != itPrevEnd)
                 {
-                    (*(it+1)->offset) = index+3;
+                    (*(it + 1)->offset) = index + 3;
                 }
 
                 it->pointIdx[0] = index;
-                it->pointIdx[1] = index+1;
-                it->pointIdx[2] = index+2;
+                it->pointIdx[1] = index + 1;
+                it->pointIdx[2] = index + 2;
 
                 ++it;
             }
@@ -765,7 +790,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     }
 
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut< data::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = this->getLockedInOut<data::ModelSeries>(s_EXTRUDED_MESHES_INOUT);
 
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
@@ -779,15 +804,18 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     extrudedMeshes->setReconstructionDB(reconstructions);
 
     // Send the signal.
-    auto sig = extrudedMeshes->signal< data::ModelSeries::ReconstructionsAddedSignalType >(
-        data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG );
-    sig->asyncEmit(data::ModelSeries::ReconstructionVectorType{reconstruction});
+    auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsAddedSignalType>(
+        data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
+    );
+    sig->asyncEmit(data::ModelSeries::ReconstructionVectorType {reconstruction});
 }
 
 //------------------------------------------------------------------------------
 
-void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Vector3 >& _points,
-                                                   std::vector< Triangle3D >& _wordTriangulation) const
+void SShapeExtruder::generateDelaunayTriangulation(
+    const std::vector< ::Ogre::Vector3>& _points,
+    std::vector<Triangle3D>& _wordTriangulation
+) const
 {
     // Retrieve the camera.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
@@ -795,7 +823,7 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     const ::Ogre::Matrix4 viewMatrix             = camera->getViewMatrix();
 
     // Transform all point from world space to view space to get them in a 2D plane with a constant Z value.
-    std::vector< ::Ogre::Vector2 > points;
+    std::vector< ::Ogre::Vector2> points;
     for(const ::Ogre::Vector3 point : _points)
     {
         const ::Ogre::Vector2 viewPoint = (viewMatrix * ::Ogre::Vector4(point, 1.f)).xy();
@@ -806,8 +834,8 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     const float depth = (viewMatrix * ::Ogre::Vector4(_points[0], 1.f)).z;
 
     // Compute the bounding box of points.
-    const float min = std::numeric_limits< float >::lowest();
-    const float max = std::numeric_limits< float >::max();
+    const float min = std::numeric_limits<float>::lowest();
+    const float max = std::numeric_limits<float>::max();
     ::Ogre::Vector2 minBound(max, max);
     ::Ogre::Vector2 maxBound(min, min);
 
@@ -825,12 +853,12 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
 
     // Compute a triangle large enough to contains all points.
     const ::Ogre::Vector2 bottomLeft = minBound;
-    const ::Ogre::Vector2 bottomRight(minBound.x + (maxBound.x-minBound.x) * 2.f, minBound.y);
-    const ::Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y-minBound.y) * 2.f);
+    const ::Ogre::Vector2 bottomRight(minBound.x + (maxBound.x - minBound.x) * 2.f, minBound.y);
+    const ::Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y - minBound.y) * 2.f);
     const Triangle2D superTriangle(bottomLeft, bottomRight, topLeft);
 
     // Store triangles.
-    std::vector< Triangle2D > triangulation { superTriangle };
+    std::vector<Triangle2D> triangulation {superTriangle};
 
     // Triangulate points with the Bowyer-Watson algorithm.
     for(const ::Ogre::Vector2 sommet : points)
@@ -840,19 +868,19 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
 
     // Some input segment are missing from the triangulation, we insert them.
     // Add missing segments while new constraints are added to the previous iteration.
-    std::vector< ::Ogre::Vector2 > oldPoints = points;
-    std::vector< ::Ogre::Vector2 > newPoints = points;
-    const int maxIteration                   = 3;
-    int count                                = 0;
+    std::vector< ::Ogre::Vector2> oldPoints = points;
+    std::vector< ::Ogre::Vector2> newPoints = points;
+    const int maxIteration                  = 3;
+    int count                               = 0;
     do
     {
         oldPoints = newPoints;
         newPoints.clear();
-        for(std::int64_t index = 0; index < static_cast< std::int64_t >(oldPoints.size()); ++index)
+        for(std::int64_t index = 0 ; index < static_cast<std::int64_t>(oldPoints.size()) ; ++index)
         {
-            const size_t previousIndex = index-1 < 0 ? oldPoints.size()-1 : static_cast<size_t>(index-1);
+            const size_t previousIndex = index - 1 < 0 ? oldPoints.size() - 1 : static_cast<size_t>(index - 1);
             const Edge edge(oldPoints[previousIndex], oldPoints[static_cast<size_t>(index)]);
-            std::list< ::Ogre::Vector2 > constraintes = this->addConstraints(triangulation, edge);
+            std::list< ::Ogre::Vector2> constraintes = this->addConstraints(triangulation, edge);
 
             newPoints.push_back(oldPoints[previousIndex]);
             newPoints.insert(newPoints.end(), constraintes.begin(), constraintes.end());
@@ -861,8 +889,8 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     while(count++ < maxIteration && oldPoints.size() != newPoints.size());
 
     // If triangles contains a vertex from original super-triangle, remove them.
-    std::vector< Triangle2D >::const_iterator endTriangulation = triangulation.end();
-    for(std::vector< Triangle2D >::const_iterator it = triangulation.begin(); it != endTriangulation; )
+    std::vector<Triangle2D>::const_iterator endTriangulation = triangulation.end();
+    for(std::vector<Triangle2D>::const_iterator it = triangulation.begin() ; it != endTriangulation ; )
     {
         const bool edgeA = it->a == superTriangle.a || it->a == superTriangle.b || it->a == superTriangle.c;
         const bool edgeB = it->b == superTriangle.a || it->b == superTriangle.b || it->b == superTriangle.c;
@@ -880,14 +908,14 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     }
 
     // Remove each triangle that aren't in the shape.
-    for(std::vector< Triangle2D >::const_iterator it = triangulation.begin(); it != endTriangulation; )
+    for(std::vector<Triangle2D>::const_iterator it = triangulation.begin() ; it != endTriangulation ; )
     {
         const Edge ray(it->barycentre, superTriangle.a);
 
         bool inside = false;
-        for(std::int64_t i = 0; i < static_cast< std::int64_t >(points.size()); ++i)
+        for(std::int64_t i = 0 ; i < static_cast<std::int64_t>(points.size()) ; ++i)
         {
-            const size_t previousI = i-1 < 0 ? points.size()-1 : static_cast<size_t>(i-1);
+            const size_t previousI = i - 1 < 0 ? points.size() - 1 : static_cast<size_t>(i - 1);
             const Edge edge(points[previousI], points[static_cast<size_t>(i)]);
 
             if(ray.intersect(edge))
@@ -920,10 +948,10 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::addDelaunayPoint(std::vector< Triangle2D >& _triangulation, const ::Ogre::Vector2& _sommet) const
+void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const ::Ogre::Vector2& _sommet) const
 {
     // first find all the triangles that are no longer valid due to the insertion.
-    std::list< Triangle2D > badTriangles;
+    std::list<Triangle2D> badTriangles;
     for(const Triangle2D& triangle : _triangulation)
     {
         // If the current sommet is in the circumscribed circle of the current triangle.
@@ -934,7 +962,7 @@ void SShapeExtruder::addDelaunayPoint(std::vector< Triangle2D >& _triangulation,
     }
 
     // find the boundary of the polygonal hole.
-    std::list< Edge > polygon;
+    std::list<Edge> polygon;
     for(const Triangle2D& triangle : badTriangles)
     {
         const Edge edgeA(triangle.a, triangle.b);
@@ -957,10 +985,12 @@ void SShapeExtruder::addDelaunayPoint(std::vector< Triangle2D >& _triangulation,
                 {
                     allowA = false;
                 }
+
                 if(edgeB == sharedA || edgeB == sharedB || edgeB == sharedC)
                 {
                     allowB = false;
                 }
+
                 if(edgeC == sharedA || edgeC == sharedB || edgeC == sharedC)
                 {
                     allowC = false;
@@ -973,21 +1003,26 @@ void SShapeExtruder::addDelaunayPoint(std::vector< Triangle2D >& _triangulation,
         {
             polygon.push_back(edgeA);
         }
+
         if(allowB)
         {
             polygon.push_back(edgeB);
         }
+
         if(allowC)
         {
             polygon.push_back(edgeC);
         }
 
-        _triangulation.erase(std::find_if(_triangulation.begin(), _triangulation.end(),
-                                          [&](const Triangle2D& _tri) -> bool
+        _triangulation.erase(
+            std::find_if(
+                _triangulation.begin(),
+                _triangulation.end(),
+                [&](const Triangle2D& _tri) -> bool
             {
                 return _tri.id == triangle.id;
             })
-                             );
+        );
     }
 
     // Create news triangles by using the current sommet and the polygon.
@@ -1001,8 +1036,11 @@ void SShapeExtruder::addDelaunayPoint(std::vector< Triangle2D >& _triangulation,
 
 //------------------------------------------------------------------------------
 
-std::list< ::Ogre::Vector2 > SShapeExtruder::addConstraints(std::vector< Triangle2D >& _triangulation,
-                                                            const Edge& _edge, int _depth) const
+std::list< ::Ogre::Vector2> SShapeExtruder::addConstraints(
+    std::vector<Triangle2D>& _triangulation,
+    const Edge& _edge,
+    int _depth
+) const
 {
     if(_depth >= 5)
     {
@@ -1023,20 +1061,21 @@ std::list< ::Ogre::Vector2 > SShapeExtruder::addConstraints(std::vector< Triangl
         }
     }
 
-    std::list< ::Ogre::Vector2 > addedPoints;
+    std::list< ::Ogre::Vector2> addedPoints;
     if(!found)
     {
         const ::Ogre::Vector2 midPoint = (_edge.a + _edge.b) / 2.f;
         this->addDelaunayPoint(_triangulation, midPoint);
 
-        const int depth                         = _depth+1;
-        std::list< ::Ogre::Vector2 > frontAdded = this->addConstraints(_triangulation, Edge(_edge.a, midPoint), depth);
-        std::list< ::Ogre::Vector2 > backAdded  = this->addConstraints(_triangulation, Edge(midPoint, _edge.b), depth);
+        const int depth                        = _depth + 1;
+        std::list< ::Ogre::Vector2> frontAdded = this->addConstraints(_triangulation, Edge(_edge.a, midPoint), depth);
+        std::list< ::Ogre::Vector2> backAdded  = this->addConstraints(_triangulation, Edge(midPoint, _edge.b), depth);
 
         addedPoints = frontAdded;
         addedPoints.push_back(midPoint);
         addedPoints.insert(addedPoints.end(), backAdded.begin(), backAdded.end());
     }
+
     return addedPoints;
 }
 

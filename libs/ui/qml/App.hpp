@@ -37,12 +37,13 @@ class UI_QML_CLASS_API App : public QGuiApplication
 Q_OBJECT
 
 public:
+
     UI_QML_API App(int& argc, char** argv);
 
 public Q_SLOTS:
+
     void aboutToQuit();
     void onExit();
-
 };
 
 } // namespace sight::ui::qml

@@ -27,10 +27,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::PowellOptimizerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::PowellOptimizerTest);
 
 namespace sight::filter::image
 {
+
 namespace ut
 {
 
@@ -38,14 +39,12 @@ namespace ut
 
 void PowellOptimizerTest::setUp()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void PowellOptimizerTest::tearDown()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +89,6 @@ void PowellOptimizerTest::ackleyTest()
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[0], 1e-9);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0, finalParams[1], 1e-9);
-
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +104,7 @@ void PowellOptimizerTest::sphereFunctionTest()
             {
                 res += e * e;
             }
+
             return res;
         };
 
@@ -147,7 +146,7 @@ void PowellOptimizerTest::bealeFunctionTest()
             const double x = p[0];
             const double y = p[1];
 
-            return std::pow(1.5 - x + x*y, 2.) + std::pow(2.25 - x + x * std::pow(y, 2.), 2.)
+            return std::pow(1.5 - x + x * y, 2.) + std::pow(2.25 - x + x * std::pow(y, 2.), 2.)
                    + std::pow(2.625 - x + x * std::pow(y, 3.), 2.);
         };
 
@@ -164,4 +163,5 @@ void PowellOptimizerTest::bealeFunctionTest()
 }
 
 } //namespace ut.
+
 } //namespace sight::filter::image.

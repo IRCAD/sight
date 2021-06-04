@@ -30,6 +30,7 @@
 
 namespace sight::ui::dicom
 {
+
 namespace widget
 {
 
@@ -41,10 +42,12 @@ class QHexSpinBox : public QSpinBox
 Q_OBJECT;
 
 public:
+
     /// Constructor
     QHexSpinBox(QWidget* parent = 0);
 
 protected:
+
     /// Override
     QValidator::State validate(QString& text, int& pos) const;
 
@@ -55,8 +58,8 @@ protected:
     QString textFromValue(int value) const;
 
     QRegExpValidator* m_validator;
-
 };
 
 } // namespace widget
+
 } // namespace sight::ui::dicom

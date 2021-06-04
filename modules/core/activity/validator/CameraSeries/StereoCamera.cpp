@@ -30,6 +30,7 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace CameraSeries
 {
 
@@ -39,19 +40,17 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraS
 
 StereoCamera::StereoCamera(::sight::activity::IValidator::Key key)
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
 StereoCamera::~StereoCamera()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
+::sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 
@@ -60,30 +59,31 @@ StereoCamera::~StereoCamera()
 
     data::CameraSeries::csptr cameraSeries = data::CameraSeries::dynamicConstCast(currentData);
 
-    if (!cameraSeries)
+    if(!cameraSeries)
     {
         validation.first  = false;
         validation.second = "Current data should be a CameraSeries.";
     }
     else
     {
-        if (cameraSeries->getNumberOfCameras() == 2)
+        if(cameraSeries->getNumberOfCameras() == 2)
         {
             data::Camera::sptr camera0 = cameraSeries->getCamera(0);
-            if (!camera0->getIsCalibrated())
+            if(!camera0->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The first CameraSeries should be calibrated.";
             }
+
             data::Camera::sptr camera1 = cameraSeries->getCamera(1);
-            if (!camera1->getIsCalibrated())
+            if(!camera1->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The second CameraSeries should be calibrated.";
             }
 
             data::Matrix4::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
-            if (!matrix)
+            if(!matrix)
             {
                 validation.first  = false;
                 validation.second = "The CameraSeries should contain an extrinsic calibration.";
@@ -102,4 +102,5 @@ StereoCamera::~StereoCamera()
 //-----------------------------------------------------------------------------
 
 } // namespace CameraSeries
+
 } // namespace sight::module::activity::validator

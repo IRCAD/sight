@@ -30,6 +30,7 @@
 
 namespace sight::module::io::matrix
 {
+
 /**
  * @brief This service write a data::Matrix4 into a .trf file.
  *
@@ -47,10 +48,9 @@ namespace sight::module::io::matrix
  */
 class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::base::service::IWriter
 {
-
 public:
 
-    SIGHT_DECLARE_SERVICE(Matrix4WriterService, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(Matrix4WriterService, sight::io::base::service::IWriter);
 
     /// Super class of writer services
     typedef sight::io::base::service::IWriter SuperClass;
@@ -124,9 +124,8 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    MODULE_IO_MATRIX_API void info(std::ostream& _sstream ) override;
+    MODULE_IO_MATRIX_API void info(std::ostream& _sstream) override;
     /// @}
-
 };
 
 } // namespace sight::module::io::matrix

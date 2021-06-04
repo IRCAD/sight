@@ -29,14 +29,18 @@
 
 namespace sight::core::memory
 {
+
 namespace policy
 {
+
 namespace registry
 {
 
-#define fwMemoryPolicyRegisterMacro( classname )                                  \
-    static core::memory::IPolicy::Registry< classname > s__factory__record__ ## __LINE__;
+#define fwMemoryPolicyRegisterMacro(classname) \
+    static core::memory::IPolicy::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace registry
+
 } // namespace policy
+
 } // namespace sight::core::memory

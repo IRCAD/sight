@@ -26,12 +26,13 @@
 
 namespace sight::ui::history
 {
+
 namespace ut
 {
 
 class UndoRedoManagerTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( UndoRedoManagerTest );
+CPPUNIT_TEST_SUITE(UndoRedoManagerTest);
 CPPUNIT_TEST(managerEnqueueTest);
 CPPUNIT_TEST(managerMemorySizeTest);
 CPPUNIT_TEST(managerCommandCountTest);
@@ -39,6 +40,7 @@ CPPUNIT_TEST(managerClearQueueTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -50,8 +52,8 @@ public:
     void managerCommandCountTest();
 
     void managerClearQueueTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::ui::history

@@ -42,6 +42,7 @@ namespace sight::ui::base
 
 namespace layoutManager
 {
+
 //-----------------------------------------------------------------------------
 
 const IFrameLayoutManager::RegistryKeyType IFrameLayoutManager::REGISTRY_KEY = "sight::ui::base::FrameLayoutManager";
@@ -57,7 +58,7 @@ const std::string IFrameLayoutManager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_U
 
 IFrameLayoutManager::IFrameLayoutManager()
 {
-    CloseCallback fct = std::bind( &ui::base::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
+    CloseCallback fct = std::bind(&ui::base::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
     this->setCloseCallback(fct);
 }
 
@@ -69,18 +70,20 @@ IFrameLayoutManager::~IFrameLayoutManager()
 
 //-----------------------------------------------------------------------------
 
-void IFrameLayoutManager::initialize( ConfigurationType configuration)
+void IFrameLayoutManager::initialize(ConfigurationType configuration)
 {
-    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
-                 configuration->getName() == "frame");
+    SIGHT_ASSERT(
+        "Bad configuration name " << configuration->getName() << ", must be frame",
+        configuration->getName() == "frame"
+    );
 
-    std::vector < ConfigurationType > name       = configuration->find("name");
-    std::vector < ConfigurationType > icon       = configuration->find("icon");
-    std::vector < ConfigurationType > minSize    = configuration->find("minSize");
-    std::vector < ConfigurationType > styles     = configuration->find("style");
-    std::vector < ConfigurationType > visibility = configuration->find("visibility");
+    std::vector<ConfigurationType> name       = configuration->find("name");
+    std::vector<ConfigurationType> icon       = configuration->find("icon");
+    std::vector<ConfigurationType> minSize    = configuration->find("minSize");
+    std::vector<ConfigurationType> styles     = configuration->find("style");
+    std::vector<ConfigurationType> visibility = configuration->find("visibility");
 
-    if (!visibility.empty())
+    if(!visibility.empty())
     {
         m_frameInfo.m_visibility = (visibility.at(0)->getValue() == "true");
     }
@@ -93,8 +96,10 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     if(!icon.empty())
     {
         m_frameInfo.m_iconPath = core::runtime::getModuleResourceFilePath(icon.at(0)->getValue());
-        SIGHT_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
-                     std::filesystem::exists(m_frameInfo.m_iconPath));
+        SIGHT_ASSERT(
+            "The icon " << m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
+            std::filesystem::exists(m_frameInfo.m_iconPath)
+        );
     }
 
     if(!minSize.empty())
@@ -102,38 +107,43 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         if(minSize.at(0)->hasAttribute("width"))
         {
             m_frameInfo.m_minSize.first =
-                ::boost::lexical_cast<int >(minSize.at(0)->getExistingAttributeValue("width"));
+                ::boost::lexical_cast<int>(minSize.at(0)->getExistingAttributeValue("width"));
         }
+
         if(minSize.at(0)->hasAttribute("height"))
         {
-            m_frameInfo.m_minSize.second = ::boost::lexical_cast<int >(minSize.at(0)->getExistingAttributeValue(
-                                                                           "height"));
+            m_frameInfo.m_minSize.second = ::boost::lexical_cast<int>(
+                minSize.at(0)->getExistingAttributeValue(
+                    "height"
+                )
+            );
         }
     }
 
     if(!styles.empty())
     {
         core::runtime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
-        SIGHT_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode") );
+        SIGHT_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode"));
         const std::string style = stylesCfgElt->getExistingAttributeValue("mode");
 
-        if (style == "DEFAULT")
+        if(style == "DEFAULT")
         {
             m_frameInfo.m_style = DEFAULT;
         }
-        else if (style == "STAY_ON_TOP")
+        else if(style == "STAY_ON_TOP")
         {
             m_frameInfo.m_style = STAY_ON_TOP;
         }
-        else if (style == "MODAL")
+        else if(style == "MODAL")
         {
             m_frameInfo.m_style = MODAL;
         }
         else
         {
-            SIGHT_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
+            SIGHT_FATAL("The style " << style << " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
         }
     }
+
     this->readConfig();
 }
 
@@ -158,38 +168,42 @@ void IFrameLayoutManager::readConfig()
     data::Composite::sptr prefUI = this->getPreferenceUI();
     if(prefUI)
     {
-        if ( prefUI->find( IFrameLayoutManager::FRAME_STATE_UI ) != prefUI->end() )
+        if(prefUI->find(IFrameLayoutManager::FRAME_STATE_UI) != prefUI->end())
         {
             data::Integer::sptr state =
-                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] );
+                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_STATE_UI]);
             SIGHT_ASSERT("UI state not correct", state);
             m_frameInfo.m_state = (FrameState) state->value();
         }
-        if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_W_UI ) != prefUI->end() )
+
+        if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_W_UI) != prefUI->end())
         {
             data::Integer::sptr sizew =
-                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] );
+                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI]);
             SIGHT_ASSERT("UI sizeW not correct", sizew);
             m_frameInfo.m_size.first = *sizew;
         }
-        if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_H_UI ) != prefUI->end() )
+
+        if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_H_UI) != prefUI->end())
         {
             data::Integer::sptr sizeh =
-                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] );
+                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI]);
             SIGHT_ASSERT("UI sizeH not correct", sizeh);
             m_frameInfo.m_size.second = *sizeh;
         }
-        if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_X_UI ) != prefUI->end() )
+
+        if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_X_UI) != prefUI->end())
         {
             data::Integer::sptr posx =
-                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] );
+                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI]);
             SIGHT_ASSERT("UI posX not correct", posx);
             m_frameInfo.m_position.first = *posx;
         }
-        if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_Y_UI ) != prefUI->end() )
+
+        if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_Y_UI) != prefUI->end())
         {
             data::Integer::sptr posy =
-                data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] );
+                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI]);
             SIGHT_ASSERT("UI posY not correct", posy);
             m_frameInfo.m_position.second = *posy;
         }
@@ -206,20 +220,20 @@ void IFrameLayoutManager::writeConfig()
         if(m_frameInfo.m_state != ICONIZED)
         {
             data::Integer::sptr state = data::Integer::New(m_frameInfo.m_state);
-            (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] = state;
+            (*prefUI)[IFrameLayoutManager::FRAME_STATE_UI] = state;
         }
 
         data::Integer::sptr sizew = data::Integer::New(m_frameInfo.m_size.first);
-        (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] = sizew;
+        (*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI] = sizew;
 
         data::Integer::sptr sizeh = data::Integer::New(m_frameInfo.m_size.second);
-        (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] = sizeh;
+        (*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI] = sizeh;
 
         data::Integer::sptr posx = data::Integer::New(m_frameInfo.m_position.first);
-        (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] = posx;
+        (*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI] = posx;
 
         data::Integer::sptr posy = data::Integer::New(m_frameInfo.m_position.second);
-        (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] = posy;
+        (*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI] = posy;
     }
 }
 
@@ -235,30 +249,33 @@ data::Composite::sptr IFrameLayoutManager::getPreferenceUI()
     {
         data::Composite::sptr framesUI;
         // Retreives software UI pref
-        if ( prefs->find( IFrameLayoutManager::SOFTWARE_UI ) == prefs->end() )
+        if(prefs->find(IFrameLayoutManager::SOFTWARE_UI) == prefs->end())
         {
-            framesUI                                     = data::Composite::New();
-            (*prefs)[ IFrameLayoutManager::SOFTWARE_UI ] = framesUI;
+            framesUI                                   = data::Composite::New();
+            (*prefs)[IFrameLayoutManager::SOFTWARE_UI] = framesUI;
         }
         else
         {
-            framesUI = data::Composite::dynamicCast( (*prefs)[ IFrameLayoutManager::SOFTWARE_UI ]);
+            framesUI = data::Composite::dynamicCast((*prefs)[IFrameLayoutManager::SOFTWARE_UI]);
         }
+
         // Retreives frame UI pref
-        if ( framesUI->find( this->m_frameInfo.m_name ) != framesUI->end() )
+        if(framesUI->find(this->m_frameInfo.m_name) != framesUI->end())
         {
-            prefUI = data::Composite::dynamicCast( (*framesUI)[ this->m_frameInfo.m_name ] );
+            prefUI = data::Composite::dynamicCast((*framesUI)[this->m_frameInfo.m_name]);
         }
         else
         {
-            prefUI                                   = data::Composite::New();
-            (*framesUI)[ this->m_frameInfo.m_name  ] = prefUI;
+            prefUI                                = data::Composite::New();
+            (*framesUI)[this->m_frameInfo.m_name] = prefUI;
         }
     }
+
     return prefUI;
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
+
 } // namespace sight::ui::base

@@ -28,8 +28,10 @@
 
 namespace sight::module::activity::validator
 {
+
 namespace ModelSeries
 {
+
 /**
  * @brief Defines a validator which checks that the ModelSeries contains one and only one Skin.
  * @note If the given Obect is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
@@ -38,8 +40,12 @@ namespace ModelSeries
 class MODULE_ACTIVITY_CLASS_API ContainOneSkin : public sight::activity::IObjectValidator
 {
 public:
-    SIGHT_DECLARE_CLASS(ContainOneSkin, ::sight::activity::IObjectValidator,
-                        ::sight::activity::validator::factory::New< ContainOneSkin >)
+
+    SIGHT_DECLARE_CLASS(
+        ContainOneSkin,
+        ::sight::activity::IObjectValidator,
+        ::sight::activity::validator::factory::New<ContainOneSkin>
+    )
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API ContainOneSkin(::sight::activity::IValidator::Key key);
@@ -52,8 +58,9 @@ public:
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see module::activity::IValidator::validate
      */
-    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
+    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const override;
 };
 
 } // namespace ModelSeries
+
 } // namespace sight::module::activity::validator

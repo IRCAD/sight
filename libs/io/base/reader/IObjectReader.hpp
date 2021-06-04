@@ -53,7 +53,7 @@ class IO_BASE_CLASS_API IObjectReader : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IObjectReader)
+    SIGHT_DECLARE_CLASS(IObjectReader);
 
     typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
     typedef std::function<void ()> CancelCallback;

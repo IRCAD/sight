@@ -44,17 +44,18 @@ namespace sight::filter::image
 class FILTER_IMAGE_CLASS_API AutomaticRegistration
 {
 public:
+
     /// Numeric type used for internal computations.
     typedef double RealType;
 
-    typedef typename ::itk::Image< float, 3 > RegisteredImageType;
+    typedef typename ::itk::Image<float, 3> RegisteredImageType;
 
     typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
     /// Shrink factors per level and smoothing sigmas per level
-    typedef std::vector< std::pair< ::itk::SizeValueType, RealType > > MultiResolutionParametersType;
+    typedef std::vector<std::pair< ::itk::SizeValueType, RealType> > MultiResolutionParametersType;
 
-    typedef std::function< void () > IterationCallbackType;
+    typedef std::function<void ()> IterationCallbackType;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
@@ -67,15 +68,17 @@ public:
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
      */
-    FILTER_IMAGE_API void registerImage(const data::Image::csptr& _target,
-                                        const data::Image::csptr& _reference,
-                                        const data::Matrix4::sptr& _trf,
-                                        MetricType _metric,
-                                        const MultiResolutionParametersType& _multiResolutionParameters,
-                                        RealType _samplingPercentage    = 1.0,
-                                        double _minStep                 = 0.0001,
-                                        unsigned long _maxIterations    = 200,
-                                        IterationCallbackType _callback = nullptr);
+    FILTER_IMAGE_API void registerImage(
+        const data::Image::csptr& _target,
+        const data::Image::csptr& _reference,
+        const data::Matrix4::sptr& _trf,
+        MetricType _metric,
+        const MultiResolutionParametersType& _multiResolutionParameters,
+        RealType _samplingPercentage    = 1.0,
+        double _minStep                 = 0.0001,
+        unsigned long _maxIterations    = 200,
+        IterationCallbackType _callback = nullptr
+    );
 
     FILTER_IMAGE_API void stopRegistration();
 
@@ -104,16 +107,17 @@ public:
     FILTER_IMAGE_API void getCurrentMatrix(const data::Matrix4::sptr& _trf) const;
 
 private:
-    typedef typename ::itk::Euler3DTransform< RealType > TransformType;
 
-    typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
+    typedef typename ::itk::Euler3DTransform<RealType> TransformType;
+
+    typedef typename ::itk::ImageRegistrationMethodv4<RegisteredImageType, RegisteredImageType, TransformType>
         RegistrationMethodType;
 
-    OptimizerType::Pointer m_optimizer { nullptr };
+    OptimizerType::Pointer m_optimizer {nullptr};
 
-    RegistrationMethodType::Pointer m_registrator { nullptr };
+    RegistrationMethodType::Pointer m_registrator {nullptr};
 
-    bool m_invert { false };
+    bool m_invert {false};
 
     void convertToF4sMatrix(const TransformType* _itkMat, const data::Matrix4::sptr& _f4sMat) const;
 

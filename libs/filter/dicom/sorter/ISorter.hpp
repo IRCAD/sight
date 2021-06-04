@@ -29,6 +29,7 @@
 
 namespace sight::filter::dicom
 {
+
 namespace sorter
 {
 
@@ -38,7 +39,8 @@ namespace sorter
 class FILTER_DICOM_CLASS_API ISorter : public filter::dicom::IFilter
 {
 public:
-    SIGHT_DECLARE_CLASS(ISorter, filter::dicom::IFilter)
+
+    SIGHT_DECLARE_CLASS(ISorter, filter::dicom::IFilter);
 
     /// Destructor
     FILTER_DICOM_API virtual ~ISorter();
@@ -47,10 +49,11 @@ public:
     FILTER_DICOM_API FilterType getFilterType() const override;
 
 protected:
+
     /// Constructor
     FILTER_DICOM_API ISorter();
-
 };
 
 } // namespace sorter
+
 } // namespace sight::filter::dicom

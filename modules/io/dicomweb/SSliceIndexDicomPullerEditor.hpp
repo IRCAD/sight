@@ -35,26 +35,36 @@
 
 namespace sight
 {
+
 namespace core::thread
 {
+
 class Timer;
+
 }
 
 namespace io::base::service
 {
+
 class IReader;
+
 }
 
 namespace data
 {
+
 class Integer;
 class SeriesDB;
+
 }
 
 namespace core::runtime
 {
+
 struct ConfigurationElement;
+
 }
+
 }
 
 namespace sight::module::io::dicomweb
@@ -67,7 +77,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomPullerEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomPullerEditor, sight::ui::base::IEditor);
 
     /**
      * @brief Constructor
@@ -80,6 +90,7 @@ public:
     MODULE_IO_DICOMWEB_API virtual ~SSliceIndexDicomPullerEditor() noexcept;
 
 private Q_SLOTS:
+
     /**
      * @brief Slot called when the slider is moved
      * @param[in] value Slider value
@@ -101,6 +112,7 @@ protected:
     MODULE_IO_DICOMWEB_API void updating() override;
 
 private:
+
     /// Function called when a new slice must be displayed.
     void triggerNewSlice();
 
@@ -119,10 +131,10 @@ private:
     void displayErrorMessage(const std::string& message) const;
 
     /// Slice index slider
-    QPointer< QSlider > m_sliceIndexSlider;
+    QPointer<QSlider> m_sliceIndexSlider;
 
     /// Slice index line edit
-    QPointer< QLineEdit > m_sliceIndexLineEdit;
+    QPointer<QLineEdit> m_sliceIndexLineEdit;
 
     /// Number of instances
     size_t m_numberOfSlices;
@@ -165,11 +177,10 @@ private:
     std::string m_serverPortKey;
 
     /// Server hostname
-    std::string m_serverHostname{"localhost"};
+    std::string m_serverHostname {"localhost"};
 
     /// Server port
-    int m_serverPort{4242};
-
+    int m_serverPort {4242};
 };
 
 } // namespace sight::module::io::dicomweb

@@ -119,25 +119,26 @@ static inline int openNewFileInZip(
     const std::string& filePathString = filePath.string();
 
     return zipOpenNewFileInZip5(
-        zipFileHandle, // zipFile file
+        zipFileHandle,          // zipFile file
         filePathString.c_str(), // const char *filename : the filename in zip
-        &zipFileInfo, // Inst zip_fileinfo *zipfi: contain supplemental information
-        nullptr, // (UNUSED) const void *extrafield_local: buffer to store the local header extra field data
-        0, // (UNUSED) uint16_t size_extrafield_local: size of extrafield_local buffer
-        nullptr, // const void *extrafield_global: buffer to store the global header extra field data
-        0, // uint16_t size_extrafield_global: size of extrafield_local buffer
-        nullptr, // const char *comment: buffer for comment string
-        method, // int method: contain the compression method
-        level, // int level: contain the level of compression
-        0, // int raw: use 0 to disable
-        0, // (UNUSED) int windowBits: use default value
-        0, // (UNUSED) int memLevel: use default value
-        0, // (UNUSED) int strategy: use default value
-        key, // const char *password: NULL means no encryption
-        0, // (UNUSED) unsigned long crc_for_crypting,
-        0, // unsigned long version_madeby
-        0, // uint16_t flag_base: use default value
-        1 // int zip64: use 0 to disable
+        &zipFileInfo,           // Inst zip_fileinfo *zipfi: contain supplemental information
+        nullptr,                // (UNUSED) const void *extrafield_local: buffer to store the local header extra field
+                                // data
+        0,                      // (UNUSED) uint16_t size_extrafield_local: size of extrafield_local buffer
+        nullptr,                // const void *extrafield_global: buffer to store the global header extra field data
+        0,                      // uint16_t size_extrafield_global: size of extrafield_local buffer
+        nullptr,                // const char *comment: buffer for comment string
+        method,                 // int method: contain the compression method
+        level,                  // int level: contain the level of compression
+        0,                      // int raw: use 0 to disable
+        0,                      // (UNUSED) int windowBits: use default value
+        0,                      // (UNUSED) int memLevel: use default value
+        0,                      // (UNUSED) int strategy: use default value
+        key,                    // const char *password: NULL means no encryption
+        0,                      // (UNUSED) unsigned long crc_for_crypting,
+        0,                      // unsigned long version_madeby
+        0,                      // uint16_t flag_base: use default value
+        1                       // int zip64: use 0 to disable
     );
 }
 
@@ -148,7 +149,7 @@ class ArchiveWriterImpl final : public ArchiveWriter
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ArchiveWriterImpl, ArchiveWriter)
+    SIGHT_DECLARE_CLASS(ArchiveWriterImpl, ArchiveWriter);
 
     /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
     ArchiveWriterImpl()                                = delete;

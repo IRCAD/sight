@@ -26,16 +26,17 @@
 
 namespace sight::core::com
 {
+
 namespace ut
 {
 
 class SlotsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SlotsTest );
+CPPUNIT_TEST_SUITE(SlotsTest);
 
-CPPUNIT_TEST( buildTest );
-CPPUNIT_TEST( hasSlotsTest );
-CPPUNIT_TEST( slotsIDTest );
+CPPUNIT_TEST(buildTest);
+CPPUNIT_TEST(hasSlotsTest);
+CPPUNIT_TEST(slotsIDTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -47,8 +48,8 @@ public:
     void buildTest();
     void hasSlotsTest();
     void slotsIDTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::core::com

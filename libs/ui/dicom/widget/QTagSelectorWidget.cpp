@@ -31,6 +31,7 @@
 
 namespace sight::ui::dicom
 {
+
 namespace widget
 {
 
@@ -107,4 +108,5 @@ DcmTagKey QTagSelectorWidget::getTag()
 }
 
 } // namespace widget
+
 } // namespace sight::ui::dicom

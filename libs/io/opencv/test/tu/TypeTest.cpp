@@ -27,10 +27,11 @@
 #include <opencv2/core.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::opencv::ut::TypeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::TypeTest);
 
 namespace sight::io::opencv
 {
+
 namespace ut
 {
 
@@ -152,6 +153,6 @@ void TypeTest::fromCv()
     testFromCv<double, 4>(CV_64FC4);
 }
 
-}// namespace ut
+} // namespace ut
 
-}// namespace sight::io::opencv
+} // namespace sight::io::opencv

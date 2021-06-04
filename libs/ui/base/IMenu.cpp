@@ -53,8 +53,8 @@ void IMenu::initialize()
 {
     m_registry = ui::base::registry::Menu::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
-    SIGHT_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
+    std::vector<ConfigurationType> vectRegistry = m_configuration->find("registry");
+    SIGHT_ASSERT("[" + this->getID() + "'] <registry> section is mandatory.", !vectRegistry.empty());
 
     if(!vectRegistry.empty())
     {
@@ -63,23 +63,25 @@ void IMenu::initialize()
     }
 
     // find gui configuration
-    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    SIGHT_ASSERT("["+this->getID()+"'] <gui> section is mandatory.", !vectGui.empty() );
+    std::vector<ConfigurationType> vectGui = m_configuration->find("gui");
+    SIGHT_ASSERT("[" + this->getID() + "'] <gui> section is mandatory.", !vectGui.empty());
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
-        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        SIGHT_ASSERT("["+this->getID()+"'] <layout> section is mandatory.", !vectLayoutMng.empty() );
+        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("layout");
+        SIGHT_ASSERT("[" + this->getID() + "'] <layout> section is mandatory.", !vectLayoutMng.empty());
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);
             this->initializeLayoutManager(m_layoutConfig);
 
-            if (m_layoutConfig->hasAttribute("hideAction"))
+            if(m_layoutConfig->hasAttribute("hideAction"))
             {
                 std::string hideActions = m_layoutConfig->getAttributeValue("hideActions");
-                SIGHT_ASSERT("["+this->getID()+"'] 'hideActions' attribute value must be 'true' or 'false'",
-                             hideActions == "true" || hideActions == "false");
+                SIGHT_ASSERT(
+                    "[" + this->getID() + "'] 'hideActions' attribute value must be 'true' or 'false'",
+                    hideActions == "true" || hideActions == "false"
+                );
                 m_hideActions = (hideActions == "true");
             }
         }
@@ -90,16 +92,19 @@ void IMenu::initialize()
 
 void IMenu::create()
 {
-    ui::base::container::fwMenu::sptr menu                     = m_registry->getParent();
-    std::vector< ui::base::IMenuItemCallback::sptr > callbacks = m_registry->getCallbacks();
+    ui::base::container::fwMenu::sptr menu                   = m_registry->getParent();
+    std::vector<ui::base::IMenuItemCallback::sptr> callbacks = m_registry->getCallbacks();
 
     SIGHT_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_layoutManager->createLayout(menu);
-        })).wait();
+        })
+    ).wait();
 
     m_registry->manage(m_layoutManager->getMenuItems());
     m_registry->manage(m_layoutManager->getMenus());
@@ -110,32 +115,43 @@ void IMenu::create()
 void IMenu::destroy()
 {
     m_registry->unmanage();
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_layoutManager->destroyLayout();
-        })).wait();
+        })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenu::actionServiceStopping(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
-                                                                               m_layoutManager->getMenuItems());
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
+        actionSrvSID,
+        m_layoutManager->getMenuItems()
+    );
 
-    if (m_hideActions)
+    if(m_hideActions)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, false);
-            })).wait();
+            })
+        ).wait();
     }
     else
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, false);
-            })).wait();
+            })
+        ).wait();
     }
 }
 
@@ -143,29 +159,37 @@ void IMenu::actionServiceStopping(std::string actionSrvSID)
 
 void IMenu::actionServiceStarting(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
-                                                                               m_layoutManager->getMenuItems());
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
+        actionSrvSID,
+        m_layoutManager->getMenuItems()
+    );
 
-    if (m_hideActions)
+    if(m_hideActions)
     {
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, true);
-            })).wait();
+            })
+        ).wait();
     }
     else
     {
-        const service::IService::csptr service   = service::get( actionSrvSID );
+        const service::IService::csptr service   = service::get(actionSrvSID);
         const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
-        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+            std::function<void()>(
+                [&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
                 const bool isInverted = actionSrv->isInverted();
                 const bool isActive   = actionSrv->getIsActive();
                 m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
                 m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
-            })).wait();
+            })
+        ).wait();
     }
 }
 
@@ -173,61 +197,81 @@ void IMenu::actionServiceStarting(std::string actionSrvSID)
 
 void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
-                                                                               m_layoutManager->getMenuItems());
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
+        actionSrvSID,
+        m_layoutManager->getMenuItems()
+    );
 
-    const service::IService::csptr service   = service::get( actionSrvSID );
+    const service::IService::csptr service   = service::get(actionSrvSID);
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             const bool isInverted = actionSrv->isInverted();
             m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
-        })).wait();
+        })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenu::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
-                                                                               m_layoutManager->getMenuItems());
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
+        actionSrvSID,
+        m_layoutManager->getMenuItems()
+    );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
-        })).wait();
+        })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenu::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
-                                                                               m_layoutManager->getMenuItems());
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
+        actionSrvSID,
+        m_layoutManager->getMenuItems()
+    );
 
-    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
         {
             m_layoutManager->menuItemSetVisible(menuItem, isVisible);
-        })).wait();
+        })
+    ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenu::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    SIGHT_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-                 layoutConfig->getName() == "layout");
+    SIGHT_ASSERT(
+        "Bad configuration name " << layoutConfig->getName() << ", must be layout",
+        layoutConfig->getName() == "layout"
+    );
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
-        ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY);
+        ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY
+    );
     m_layoutManager = ui::base::layoutManager::IMenuLayoutManager::dynamicCast(guiObj);
-    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
-                 m_layoutManager);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class " << ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
+        m_layoutManager
+    );
 
     m_layoutManager->initialize(layoutConfig);
 }
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::ui

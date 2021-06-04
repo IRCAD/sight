@@ -38,10 +38,9 @@ namespace sight::module::viz::scene3dQt
 class MODULE_VIZ_SCENE3DQT_CLASS_API OffScreenWindowInteractor final :
     public sight::viz::scene3d::IWindowInteractor
 {
-
 public:
 
-    SIGHT_DECLARE_CLASS(OffScreenWindowInteractor, sight::viz::scene3d::IWindowInteractor)
+    SIGHT_DECLARE_CLASS(OffScreenWindowInteractor, sight::viz::scene3d::IWindowInteractor);
 
     /**
      * @brief Initialize members.
@@ -51,7 +50,8 @@ public:
     MODULE_VIZ_SCENE3DQT_API OffScreenWindowInteractor(
         sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey,
         unsigned int _width,
-        unsigned int _height);
+        unsigned int _height
+    );
 
     /// Destroys the render window.
     MODULE_VIZ_SCENE3DQT_API virtual ~OffScreenWindowInteractor() final;
@@ -110,16 +110,16 @@ private:
     int m_id;
 
     /// Defines the number of render frame.
-    int m_frameId { 0 };
+    int m_frameId {0};
 
     /// Contains the Ogre root.
-    ::Ogre::Root* m_ogreRoot { nullptr };
+    ::Ogre::Root* m_ogreRoot {nullptr};
 
     /// Contains the Ogre render window.
-    ::Ogre::RenderWindow* m_ogreRenderWindow { nullptr };
+    ::Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
 
     /// Contains the Ogre render target.
-    ::Ogre::RenderTarget* m_ogreRenderTarget { nullptr };
+    ::Ogre::RenderTarget* m_ogreRenderTarget {nullptr};
 
     /// Contains the Ogre render texture attached to the render target
     ::Ogre::TexturePtr m_ogreTexture;
@@ -128,14 +128,13 @@ private:
     std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Defines the window width.
-    unsigned int m_width { 0 };
+    unsigned int m_width {0};
 
     /// Defines the window height.
-    unsigned int m_height { 0 };
+    unsigned int m_height {0};
 
     /// Contains the offscreen surface, needed to enable the OpenGL context on the current thread.
     std::unique_ptr<QOffscreenSurface> m_offscreenSurface;
-
 };
 
 //-----------------------------------------------------------------------------

@@ -36,9 +36,10 @@ class IService;
 namespace factory
 {
 
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
+template<class CLASSNAME>
+SPTR(CLASSNAME)  New()
 {
-    SPTR(CLASSNAME) srv = std::make_shared< CLASSNAME >();
+    SPTR(CLASSNAME) srv = std::make_shared<CLASSNAME>();
 
     return srv;
 }

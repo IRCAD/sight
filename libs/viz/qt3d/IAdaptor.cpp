@@ -75,8 +75,10 @@ void IAdaptor::initialize()
         auto renderServiceId = registry[this->getID()];
 
         auto result =
-            std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [renderServiceId](const service::IService::sptr& srv)
+            std::find_if(
+                servicesVector.begin(),
+                servicesVector.end(),
+                [renderServiceId](const service::IService::sptr& srv)
             {
                 return srv->getID() == renderServiceId;
             });
@@ -108,6 +110,7 @@ void IAdaptor::show()
 {
     this->updateVisibility(true);
 }
+
 //------------------------------------------------------------------------------
 
 void IAdaptor::hide()

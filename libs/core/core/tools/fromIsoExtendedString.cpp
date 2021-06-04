@@ -29,7 +29,7 @@ namespace sight::core::tools
 
 //------------------------------------------------------------------------------
 
-std::string getDateInXsdFormat( const boost::posix_time::ptime& dateAndTime )
+std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndTime)
 {
     std::string dateAndTimeStr = boost::posix_time::to_iso_extended_string(dateAndTime);
     return dateAndTimeStr.substr(0, 10);
@@ -41,10 +41,11 @@ std::string getDateInXsdFormat( const boost::posix_time::ptime& dateAndTime )
 {
     std::string tmp(time_string);
     std::string::size_type i = 0;
-    while ((i = tmp.find('T', i)) != (std::string::size_type)(-1))
+    while((i = tmp.find('T', i)) != (std::string::size_type) (-1))
     {
         tmp.replace(i++, 1, " ");
     }
+
     ::boost::posix_time::ptime t = boost::posix_time::time_from_string(tmp);
     return t;
 }
@@ -67,4 +68,4 @@ std::string toIsoExtendedString(boost::posix_time::ptime ptime)
     return boost::posix_time::to_iso_extended_string(ptime);
 }
 
-}//end namespace
+} //end namespace

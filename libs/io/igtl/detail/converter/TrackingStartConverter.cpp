@@ -33,6 +33,7 @@
 
 namespace sight::io::igtl::detail
 {
+
 namespace converter
 {
 
@@ -70,7 +71,7 @@ TrackingStartConverter::~TrackingStartConverter()
 
 data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage* >(src.GetPointer());
+    ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
@@ -101,7 +102,7 @@ data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
 
 IConverter::sptr TrackingStartConverter::New()
 {
-    return std::make_shared< TrackingStartConverter >();
+    return std::make_shared<TrackingStartConverter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,4 +120,5 @@ std::string const& TrackingStartConverter::getFwDataObjectType() const
 }
 
 } // namespace converter
+
 } // namespace sight::io::igtl::detail

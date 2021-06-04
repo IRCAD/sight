@@ -24,6 +24,7 @@
 
 namespace sight::ui::base
 {
+
 namespace dialog
 {
 
@@ -44,4 +45,5 @@ ILoggerDialog::~ILoggerDialog()
 //-----------------------------------------------------------------------------
 
 } // namespace dialog
+
 } // namespace sight::ui::base

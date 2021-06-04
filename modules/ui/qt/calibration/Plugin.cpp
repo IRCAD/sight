@@ -44,4 +44,5 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
+
 } // namespace sight::module::ui::qt::calibration

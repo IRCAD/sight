@@ -34,7 +34,8 @@ namespace sight::ui::base
 class UI_BASE_CLASS_API ICursor : public ui::base::GuiBaseObject
 {
 public:
-    SIGHT_DECLARE_CLASS(ICursor, ui::base::GuiBaseObject)
+
+    SIGHT_DECLARE_CLASS(ICursor, ui::base::GuiBaseObject);
 
     /// Cursor type
     typedef enum
@@ -54,11 +55,10 @@ public:
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     /// Set the cursor
-    UI_BASE_API virtual void setCursor( CursorType cursor) = 0;
+    UI_BASE_API virtual void setCursor(CursorType cursor) = 0;
 
     /// Set the default cursor
     UI_BASE_API virtual void setDefaultCursor() = 0;
-
 };
 
 } // namespace sight::ui::base

@@ -53,23 +53,32 @@ namespace helper
         const unsigned long groupL   = std::stoul(group, nullptr, 16);
         const unsigned long elementL = std::stoul(element, nullptr, 16);
 
-        groupDest   = ::boost::numeric_cast< DestType >(groupL);
-        elementDest = ::boost::numeric_cast< DestType >(elementL);
+        groupDest   = ::boost::numeric_cast<DestType>(groupL);
+        elementDest = ::boost::numeric_cast<DestType>(elementL);
     }
     catch(std::out_of_range& e)
     {
-        SIGHT_THROW_EXCEPTION(io::dicom::exception::InvalidTag(
-                                  "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()));
+        SIGHT_THROW_EXCEPTION(
+            io::dicom::exception::InvalidTag(
+                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+            )
+        );
     }
     catch(std::invalid_argument& e)
     {
-        SIGHT_THROW_EXCEPTION(io::dicom::exception::InvalidTag(
-                                  "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()));
+        SIGHT_THROW_EXCEPTION(
+            io::dicom::exception::InvalidTag(
+                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+            )
+        );
     }
     catch(::boost::bad_numeric_cast& e)
     {
-        SIGHT_THROW_EXCEPTION(io::dicom::exception::InvalidTag(
-                                  "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()));
+        SIGHT_THROW_EXCEPTION(
+            io::dicom::exception::InvalidTag(
+                "Unable to read DICOM tag from '" + group + "," + element + "' : " + e.what()
+            )
+        );
     }
 
     return ::gdcm::Tag(groupDest, elementDest);
@@ -79,8 +88,10 @@ namespace helper
 
 PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 {
-    SIGHT_ASSERT("File '" + tagsPath.string() + "' must exists",
-                 std::filesystem::exists(tagsPath) && std::filesystem::is_regular_file(tagsPath));
+    SIGHT_ASSERT(
+        "File '" + tagsPath.string() + "' must exists",
+        std::filesystem::exists(tagsPath) && std::filesystem::is_regular_file(tagsPath)
+    );
 
     PrivateTagVecType privateTags;
     auto csvStream = std::ifstream(tagsPath.string());
@@ -89,8 +100,10 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 
     while(!tag.empty())
     {
-        SIGHT_WARN_IF("Unxpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
-                      tag.size() != 3);
+        SIGHT_WARN_IF(
+            "Unxpected token count : " << tag.size() << " (3 expected : group, element, manufacturer)",
+            tag.size() != 3
+        );
         SIGHT_THROW_IF("Unable to read private tag file", tag.size() < 2);
 
         privateTags.push_back(io::dicom::helper::getGdcmTag(tag[0], tag[1]));
@@ -103,4 +116,5 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
 //------------------------------------------------------------------------------
 
 } // namespace helper
+
 } // namespace sight::io::dicom

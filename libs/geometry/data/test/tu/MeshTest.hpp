@@ -28,6 +28,7 @@
 
 namespace sight::geometry::data
 {
+
 namespace ut
 {
 
@@ -36,16 +37,17 @@ namespace ut
  */
 class MeshTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MeshTest );
-CPPUNIT_TEST( colorizePointsTest );
-CPPUNIT_TEST( colorizeCellsTest );
-CPPUNIT_TEST( transformTest );
-CPPUNIT_TEST( isClosedTest );
-CPPUNIT_TEST( cellNormalTest );
-CPPUNIT_TEST( pointNormalTest );
+CPPUNIT_TEST_SUITE(MeshTest);
+CPPUNIT_TEST(colorizePointsTest);
+CPPUNIT_TEST(colorizeCellsTest);
+CPPUNIT_TEST(transformTest);
+CPPUNIT_TEST(isClosedTest);
+CPPUNIT_TEST(cellNormalTest);
+CPPUNIT_TEST(pointNormalTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
+
     // interface
     void setUp();
     void tearDown();
@@ -56,8 +58,8 @@ public:
     void isClosedTest();
     void cellNormalTest();
     void pointNormalTest();
-
 };
 
 } //namespace ut
+
 } //namespace sight::geometry::data

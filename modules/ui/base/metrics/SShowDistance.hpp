@@ -49,11 +49,10 @@ namespace sight::module::ui::base::metrics
  */
 class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::IAction
 {
-
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShowDistance, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SShowDistance, sight::ui::base::IAction);
 
     /// Initialize slots.
     MODULE_UI_BASE_API SShowDistance() noexcept;
@@ -85,7 +84,6 @@ private:
 
     /// SLOT: shows or hides distance from the image field.
     void showDistance(bool);
-
 };
 
 } // namespace sight::module::ui::base::metrics

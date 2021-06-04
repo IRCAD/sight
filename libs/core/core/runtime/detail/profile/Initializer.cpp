@@ -26,7 +26,6 @@
 #include "core/runtime/detail/profile/Profile.hpp"
 #include "core/runtime/detail/profile/Uninitializer.hpp"
 #include "core/runtime/detail/Runtime.hpp"
-
 #include <core/base.hpp>
 
 namespace sight::core::runtime
@@ -40,8 +39,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Initializer::Initializer( const std::string& identifier) :
-    m_identifier( identifier )
+Initializer::Initializer(const std::string& identifier) :
+    m_identifier(identifier)
 {
 }
 
@@ -50,17 +49,19 @@ Initializer::Initializer( const std::string& identifier) :
 void Initializer::apply()
 {
     auto module = detail::Runtime::get().findEnabledModule(m_identifier);
-    SIGHT_FATAL_IF("Unable to initialize module " + m_identifier + ". Not found.",
-                   module == nullptr);
+    SIGHT_FATAL_IF(
+        "Unable to initialize module " + m_identifier + ". Not found.",
+        module == nullptr
+    );
     try
     {
-        if (!module->isInitialized())
+        if(!module->isInitialized())
         {
             module->initialize();
-            getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier)));
+            getCurrentProfile()->add(SPTR(Uninitializer)(new Uninitializer(m_identifier)));
         }
     }
-    catch( const std::exception& e )
+    catch(const std::exception& e)
     {
         SIGHT_FATAL("Unable to initialize module " + m_identifier + ". " + e.what());
     }

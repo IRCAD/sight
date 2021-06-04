@@ -28,6 +28,7 @@
 
 namespace sight::module::viz::scene2d
 {
+
 namespace adaptor
 {
 
@@ -55,9 +56,9 @@ namespace adaptor
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SLine : public sight::viz::scene2d::IAdaptor
 {
-
 public:
-    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene2d::IAdaptor)
+
+    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene2d::IAdaptor);
 
     /// Basic constructor, do nothing.
     MODULE_VIZ_SCENE2D_API SLine() noexcept;
@@ -94,4 +95,5 @@ private:
 };
 
 } // namespace adaptor
+
 } // namespace sight::module::viz::scene2d
