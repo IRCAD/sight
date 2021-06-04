@@ -25,6 +25,7 @@
 #include "viz/scene3d/compositor/MaterialMgrListener.hpp"
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
 #include "viz/scene3d/factory/Text.hpp"
+#include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
 #include <core/runtime/operations.hpp>
@@ -32,6 +33,8 @@
 #include <core/tools/System.hpp>
 
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <OGRE/OgreMaterialManager.h>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -54,7 +57,7 @@
 namespace sight::viz::scene3d
 {
 
-static std::set<std::string> s_resourcesPath;
+static std::set<std::string> s_moduleWithResourcesNames;
 
 ::Ogre::OverlaySystem* Utils::s_overlaySystem                                 = nullptr;
 viz::scene3d::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
@@ -69,14 +72,16 @@ void Utils::loadResources()
     ::Ogre::ConfigFile cf;
     ::Ogre::String resourceGroupName, typeName, archName;
 
-    for(const auto& path : s_resourcesPath)
+    for(const auto& moduleName : s_moduleWithResourcesNames)
     {
         try
         {
             // Check file existence
+            const auto path = core::runtime::getResourceFilePath(std::filesystem::path(moduleName) / "resources.cfg");
+
             if(!std::filesystem::exists(path))
             {
-                SIGHT_FATAL("File '" + path + "' doesn't exist. Ogre needs it to load resources");
+                SIGHT_FATAL("File '" + path.string() + "' doesn't exist. Ogre needs it to load resources");
             }
 
             const auto tmpPath = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
@@ -90,8 +95,7 @@ void Utils::loadResources()
             // Copy the resource file and make paths absolute.
             std::ifstream resourceFile(path);
 
-            makePathsAbsolute("FileSystem", resourceFile, newResourceFile);
-
+            makePathsAbsolute("FileSystem", resourceFile, newResourceFile, path.parent_path());
             resourceFile.close();
             newResourceFile.close();
             cf.load(tmpPath.string());
@@ -118,21 +122,21 @@ void Utils::loadResources()
         }
         catch(::Ogre::FileNotFoundException&)
         {
-            SIGHT_ERROR("Unable to find Ogre resources path : " + path);
+            SIGHT_ERROR("Unable to find Ogre resources path : " + moduleName);
         }
         catch(...)
         {
-            SIGHT_ERROR("Unable to load resource from " + path);
+            SIGHT_ERROR("Unable to load resource from " + moduleName);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Utils::addResourcesPath(const std::filesystem::path& path)
+void Utils::addResourcesPath(const std::string& moduleName)
 {
-    SIGHT_ASSERT("Empty resource path", !path.empty());
-    s_resourcesPath.insert(path.string());
+    SIGHT_ASSERT("Empty resource path", !moduleName.empty());
+    s_moduleWithResourcesNames.insert(moduleName);
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +173,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
             SIGHT_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
+        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin, confPath.parent_path());
 
         pluginCfg.close();
         newPlugin.close();
@@ -197,6 +201,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
         Ogre::StringVector renderOrder;
 
         renderOrder.push_back("OpenGL");
+
         //renderOrder.push_back("OpenGL 3+");
         for(::Ogre::StringVector::iterator iter = renderOrder.begin() ; iter != renderOrder.end() ; ++iter)
         {
@@ -227,8 +232,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         root->initialise(false);
 
-        auto resourcePath = core::runtime::getLibraryResourceFilePath("viz_scene3d/resources.cfg");
-        viz::scene3d::Utils::addResourcesPath(resourcePath);
+        viz::scene3d::Utils::addResourcesPath("viz_scene3d");
 
         loadResources();
 
@@ -824,7 +828,12 @@ std::pair< ::Ogre::Vector3, ::Ogre::Vector3> Utils::convertSpacingAndOrigin(cons
 
 //------------------------------------------------------------------------------
 
-bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::ostream& output)
+bool Utils::makePathsAbsolute(
+    const std::string& key,
+    std::istream& input,
+    std::ostream& output,
+    const std::filesystem::path& modulePath
+)
 {
     bool keyFound = false;
 
@@ -846,8 +855,7 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
 
                 if(!currentPath.is_absolute())
                 {
-                    const auto absPath = core::runtime::Runtime::getDefault()->getWorkingPath() / currentPath;
-
+                    const auto absPath = modulePath / currentPath;
                     output << key << "=" << absPath.string() << std::endl;
                 }
                 else
