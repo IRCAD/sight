@@ -15,7 +15,7 @@ if(LIBS)
             string(REGEX REPLACE "(.*so.[0-9]+\\.[0-9])+\\..*" "\\1" LIB_NAME_MAJOR ${LIB_NAME})
 
             file(CREATE_LINK 
-                @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME}
+                ${LIB_NAME}
                 @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME_MAJOR}
                 SYMBOLIC
             )
@@ -23,7 +23,7 @@ if(LIBS)
             string(REGEX REPLACE "(.*so).[0-9]+\\.[0-9]+\\..*" "\\1" LIB_NAME_RAW ${LIB_NAME})
 
             file(CREATE_LINK 
-                @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME}
+                ${LIB_NAME}
                 @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME_RAW}
                 SYMBOLIC
             )
