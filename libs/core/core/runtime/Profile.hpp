@@ -69,6 +69,18 @@ public:
     /// Define the callback to be called when running the profile
     CORE_API virtual void setRunCallback(RunCallbackType callback) = 0;
 
+    /// Get profile m_filePath
+    std::filesystem::path getFilePath() const
+    {
+        return m_filePath;
+    }
+
+    /// Set profile m_filePath
+    void setFilePath(const std::filesystem::path& _filePath)
+    {
+        m_filePath = _filePath;
+    }
+
     /// Return profile name.
     std::string getName() const
     {
@@ -142,8 +154,9 @@ protected:
 
 private:
 
-    std::string m_sName;    ///< name profile
-    std::string m_sVersion; ///< profile app version
+    std::filesystem::path m_filePath; ///< xml parsed file used to generate profile
+    std::string m_sName;              ///< name profile
+    std::string m_sVersion;           ///< profile app version
 
     ParamsContainer m_params;
     int m_argc;

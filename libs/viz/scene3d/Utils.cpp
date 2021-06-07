@@ -28,7 +28,7 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/Profile.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/System.hpp>
 
@@ -173,7 +173,8 @@ void Utils::addResourcesPath(const std::string& moduleName)
             SIGHT_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
-        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin, confPath.parent_path());
+        const auto absPath    = core::runtime::getCurrentProfile()->getFilePath().remove_filename();
+        const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin, absPath);
 
         pluginCfg.close();
         newPlugin.close();
@@ -251,6 +252,9 @@ void Utils::addResourcesPath(const std::string& moduleName)
         // Add the material manager listener that allows us to generate OIT techniques
         s_oitMaterialListener = new viz::scene3d::compositor::MaterialMgrListener();
         ::Ogre::MaterialManager::getSingleton().addListener(s_oitMaterialListener);
+
+        SIGHT_WARN(" ");
+        SIGHT_WARN("###############################");
     }
 
     return root;
@@ -857,6 +861,8 @@ bool Utils::makePathsAbsolute(
                 {
                     const auto absPath = modulePath / currentPath;
                     output << key << "=" << absPath.string() << std::endl;
+
+                    SIGHT_WARN(" makePathsAbsolute " << key << " = " << absPath.string());
                 }
                 else
                 {
