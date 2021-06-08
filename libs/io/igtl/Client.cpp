@@ -29,8 +29,13 @@
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
 
+#include <mutex>
+
 namespace sight::io::igtl
 {
+
+/// To guaranty that connexion is thread-safe.
+static std::mutex s_connectLock;
 
 //------------------------------------------------------------------------------
 
@@ -80,9 +85,14 @@ void Client::throwExceptionIfFailed(const std::string& msg, bool result)
 
 void Client::connect(const std::string& addr, std::uint16_t port)
 {
-    ::igtl::ClientSocket* clietSocket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
-    const int result                  = clietSocket->ConnectToServer(addr.c_str(), port);
-    const std::string portStr         = ::boost::lexical_cast<std::string>(port);
+    int result                = -1;
+    const std::string portStr = ::boost::lexical_cast<std::string>(port);
+
+    {
+        std::lock_guard lock(s_connectLock);
+        ::igtl::ClientSocket* clientSocket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
+        result = clientSocket->ConnectToServer(addr.c_str(), port);
+    }
 
     this->throwExceptionIfFailed("Cannot connect to the server at " + addr + " : " + portStr, result == -1);
 }
@@ -91,6 +101,7 @@ void Client::connect(const std::string& addr, std::uint16_t port)
 
 void Client::disconnect()
 {
+    std::lock_guard lock(s_connectLock);
     m_socket->CloseSocket();
 }
 
