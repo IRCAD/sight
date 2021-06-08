@@ -93,28 +93,29 @@ public:
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="item1" start="yes" />
-                <menuItem sid="item2" start="no" />
-                <menuItem sid="item3" start="no" />
-                <menu sid="mymenu" start="yes" />
-                <menuItem sid="actionQuit" start="no" />
+                <menuItem sid="item1" start="true" />
+                <menuItem sid="item2" start="false" />
+                <menuItem sid="item3" start="false" />
+                <menu sid="mymenu" start="true" />
+                <menuItem sid="actionQuit" start="false" />
             </registry>
         </service>
        @endcode
      * This method analyzes the registry section of the configuration.
-     *  - \<menuItem sid="item1" start="no" /\> : define the service of the menuItem to add in the menu.
+     *  - \<menuItem sid="item1" start="false" /\> : define the service of the menuItem to add in the menu.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
+     *   - \b start = {true| false} (default value false): indicate if the service must be started by the menu service.
      */
     UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief manages action service associated with menuItem of menu.
      *
-     * Register the menuItem containers for the associated services. Start the services if start=yes.
+     * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribut start="no", the associated action won't be started and the menuItem will be disabled.
-     * If a menuItem has attribut start="yes", two possibilities: \n
+     * If a menuItem has attribut start="false", the associated action won't be started and the menuItem will be
+     * disabled.
+     * If a menuItem has attribut start="true", two possibilities: \n
      *  - the associated action has attribut executable="false" then the menuItem will be disabled.\n
      *  - the associated action has attribut executable="true" then the menuItem will be enabled.\n
      *
@@ -131,8 +132,8 @@ public:
     /**
      * @brief manages menu service associated with fwMenu of menu.
      *
-     * If a menuItem has attribut start="no", the associated menu won't be started.
-     * If a menuItem has attribut start="yes", the associated menu will be started
+     * If a menuItem has attribut start="false", the associated menu won't be started.
+     * If a menuItem has attribut start="true", the associated menu will be started
      *
      * @pre Menu must be initialized before.
      * @pre sub menu items must be instanced before.

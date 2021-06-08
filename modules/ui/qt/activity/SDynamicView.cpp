@@ -97,11 +97,10 @@ void SDynamicView::configuring()
     {
         const std::string closableStr = config_ui_activity->getAttributeValue("closable");
         SIGHT_ASSERT(
-            "main activity 'closable' attribute value must be 'yes', 'true', 'no' or 'false'",
-            closableStr == "yes" || closableStr == "true"
-            || closableStr == "no" || closableStr == "false"
+            "main activity 'closable' attribute value must be 'true' or 'false'",
+            closableStr == "true" || closableStr == "false"
         );
-        const bool closable = (closableStr == "yes" || closableStr == "true");
+        const bool closable = closableStr == "true";
         m_mainActivityClosable = closable;
     }
 

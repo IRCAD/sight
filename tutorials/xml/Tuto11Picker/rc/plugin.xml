@@ -27,8 +27,8 @@
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -39,7 +39,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -53,9 +53,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="openMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -68,8 +68,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="pointEditorSrv" start="yes" />
-                    <view sid="sceneView" start="yes" />
+                    <view sid="pointEditorSrv" start="true" />
+                    <view sid="sceneView" start="true" />
                 </registry>
             </service>
 
@@ -82,8 +82,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="yes" />
-                    <view sid="editorsView" start="yes" />
+                    <view sid="genericSceneSrv" start="true" />
+                    <view sid="editorsView" start="true" />
                 </registry>
             </service>
 
@@ -97,9 +97,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="showNegatoSrv" start="yes" />
-                    <view sid="sliderIndexEditorSrv" start="yes" />
-                    <view sid="snapshotSrv" start="yes" />
+                    <view sid="showNegatoSrv" start="true" />
+                    <view sid="sliderIndexEditorSrv" start="true" />
+                    <view sid="snapshotSrv" start="true" />
                 </registry>
             </service>
 

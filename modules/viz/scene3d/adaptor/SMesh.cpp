@@ -97,7 +97,7 @@ void SMesh::configuring()
 
     if(config.count(s_AUTORESET_CAMERA_CONFIG))
     {
-        m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG) == "yes";
+        m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
     }
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later

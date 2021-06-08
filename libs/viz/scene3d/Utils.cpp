@@ -217,8 +217,8 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         SIGHT_ASSERT("Abort render system configuration, no render system found", rs);
 
-        rs->setConfigOption("Full Screen", "No");
-        rs->setConfigOption("VSync", "No");
+        rs->setConfigOption("Full Screen", "false");
+        rs->setConfigOption("VSync", "false");
 #ifndef __APPLE__
         rs->setConfigOption("Display Frequency", "60");
 #endif

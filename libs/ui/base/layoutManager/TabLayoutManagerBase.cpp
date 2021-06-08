@@ -113,10 +113,10 @@ void TabLayoutManagerBase::initialize(ConfigurationType configuration)
         {
             const std::string isSelected = view->getExistingAttributeValue("selected");
             SIGHT_ASSERT(
-                "The value " << isSelected << " it's incorrect, it should either be yes or no.",
-                isSelected == "yes" || isSelected == "no"
+                "The value " << isSelected << " it's incorrect, it should either be true or false.",
+                isSelected == "true" || isSelected == "false"
             );
-            vi.m_isSelect = (isSelected == "yes");
+            vi.m_isSelect = (isSelected == "true");
         }
 
         if(view->hasAttribute("useScrollBar"))
@@ -124,9 +124,9 @@ void TabLayoutManagerBase::initialize(ConfigurationType configuration)
             const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
             SIGHT_ASSERT(
                 "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                (useScrollBar == "yes") || (useScrollBar == "no")
+                (useScrollBar == "true") || (useScrollBar == "false")
             );
-            vi.m_useScrollBar = (useScrollBar == "yes");
+            vi.m_useScrollBar = (useScrollBar == "true");
         }
 
         if(view->hasAttribute("backgroundColor"))

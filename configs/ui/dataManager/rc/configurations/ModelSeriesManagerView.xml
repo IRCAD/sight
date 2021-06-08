@@ -29,9 +29,9 @@ Example
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="listOrganEditor" start="yes" />
-                <view sid="organMaterialEditor" start="no" />
-                <view sid="representationEditor" start="no" />
+                <view sid="listOrganEditor" start="true" />
+                <view sid="organMaterialEditor" start="false" />
+                <view sid="representationEditor" start="false" />
             </registry>
         </service>
 

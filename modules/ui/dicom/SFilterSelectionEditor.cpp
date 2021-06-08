@@ -608,8 +608,8 @@ std::string SFilterSelectionEditor::getFilterDescription(filter::dicom::IFilter:
         "<b>Name :</b> " + filter->getName() + "<br />"
                                                "<b>Type :</b> " + types[filter->getFilterType()] + "<br />"
                                                                                                    "<b>Configurable :</b> "
-        + ((filter->isConfigurableWithGUI()) ? "Yes" : "No") + "<br />"
-                                                               "<b>Informations :</b><br />"
+        + ((filter->isConfigurableWithGUI()) ? "true" : "false") + "<br />"
+                                                                   "<b>Informations :</b><br />"
         + filter->getDescription();
     return description;
 }

@@ -12,13 +12,13 @@
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
-                    <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
+                    <view align="bottom" minWidth="200" minHeight="40" resizable="false" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="yes" />
-                <view sid="sliderIndexDicomPullerEditor" start="yes" />
+                <view sid="gs" start="true" />
+                <view sid="sliderIndexDicomPullerEditor" start="true" />
             </registry>
         </service>
 
@@ -60,8 +60,8 @@
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
                 <dicomReaderConfig>
                     <config>
-                        <showLogDialog>no</showLogDialog>
-                        <enableBufferRotation>no</enableBufferRotation>
+                        <showLogDialog>false</showLogDialog>
+                        <enableBufferRotation>false</enableBufferRotation>
                         <dicomdirSupport>never</dicomdirSupport>
                     </config>
                 </dicomReaderConfig>

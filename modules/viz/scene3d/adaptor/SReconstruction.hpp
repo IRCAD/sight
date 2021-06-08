@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SReconstruction">
         <in key="reconstruction" uid="..." />
-        <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
+        <config layer="..." transform="..." autoresetcamera="true" queryFlags="0x40000000" />
    </service>
    @endcode
  *
@@ -65,7 +65,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
- * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
+ * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
+ *"false".
  * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  */

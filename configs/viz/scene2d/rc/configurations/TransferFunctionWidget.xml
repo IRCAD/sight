@@ -41,8 +41,8 @@ Example:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="genericSceneViewportSelectorSrv" start="yes" />
-                <view sid="Scene2D" start="no" />
+                <view sid="genericSceneViewportSelectorSrv" start="true" />
+                <view sid="Scene2D" start="false" />
             </registry>
         </service>
 

@@ -90,9 +90,9 @@ public:
             </gui>
             <registry>
                 <parent wid="myView" />
-                <toolBar sid="toolbar" start="yes" />
-                <menuBar sid="menubar" start="yes" />
-                <view sid="subView3" start="yes" />
+                <toolBar sid="toolbar" start="true" />
+                <menuBar sid="menubar" start="true" />
+                <view sid="subView3" start="true" />
                 <view wid="subView4" />
                 <view wid="subView5" />
             </registry>
@@ -101,15 +101,17 @@ public:
      * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute
      * is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
-     * - \<toolBar sid="toolbar1" start="yes" /\> : This section isn't mandatory.
+     * - \<toolBar sid="toolbar1" start="true" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the tool bar identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the tool bar service must be started by the service.
-     * - \<menuBar sid="menubar1" start="yes" /\> : This section isn't mandatory.
+     *   - \b start = {true| false} (default value false): indicate if the tool bar service must be started by the
+     * service.
+     * - \<menuBar sid="menubar1" start="true" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the menu bar identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the menu bar service must be started by the service.
-     * - \<view sid="subView3" start="yes" /\> : define the service of the view to add in the container.
+     *   - \b start = {true| false} (default value false): indicate if the menu bar service must be started by the
+     * service.
+     * - \<view sid="subView3" start="true" /\> : define the service of the view to add in the container.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the view service must be started by the service.
+     *   - \b start = {true| false} (default value false): indicate if the view service must be started by the service.
      * - \<view wid="subView4" /\> : reserve a sub container for the view in the parent container with the name
      *"subView4". The service which want to use this sub container
      *   will have define a parent with \<parent wid="subView4" /\>.
@@ -121,13 +123,15 @@ public:
      *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It
      * could also be a wid).
      *
+     * @throw core::Exception if the configuration element does not start with <registry>
+     *
      */
     UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
 
     /**
      * @brief Starting view manager.
      * All services managed in local subViews
-     * and with start="yes" in configuration will be started.
+     * and with start="true" in configuration will be started.
      * @pre View must be initialized before.
      * @pre sub containers must be instanced before.
      */
@@ -135,13 +139,13 @@ public:
 
     /**
      * @brief Register menu bar.
-     * If start="yes" in configuration the menu bar services will be started.
+     * If start="true" in configuration the menu bar services will be started.
      */
     UI_BASE_API virtual void manageMenuBar(SPTR(ui::base::container::fwMenuBar) menuBar);
 
     /**
      * @brief Register tool bar.
-     * If start="yes" in configuration the tool bar services will be started.
+     * If start="true" in configuration the tool bar services will be started.
      */
     UI_BASE_API virtual void manageToolBar(SPTR(ui::base::container::fwToolBar) toolBar);
 

@@ -54,7 +54,7 @@ protected:
      *
      * @code{.xml}
          <service uid="myIncMemConsum"  type="ui::base::IAction"
-            implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="no" >
+            implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="false" >
             <config mode="increase" value="256" />
         </service>
        @endcode

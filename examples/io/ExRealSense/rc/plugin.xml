@@ -49,9 +49,9 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -63,8 +63,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuOptionsView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuOptionsView" start="true" />
                 </registry>
             </service>
 
@@ -76,8 +76,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="configureRecordingPathAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="configureRecordingPathAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -90,9 +90,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showfilterSettingsAct" start="yes" />
-                    <menuItem sid="showPCDepthAct" start="yes" />
-                    <menuItem sid="showPCColorAct" start="yes" />
+                    <menuItem sid="showfilterSettingsAct" start="true" />
+                    <menuItem sid="showPCDepthAct" start="true" />
+                    <menuItem sid="showPCColorAct" start="true" />
                 </registry>
             </service>
 
@@ -119,18 +119,18 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="yes" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="recordAct" start="yes" />
-                    <editor sid="presetsSrv" start="yes" />
-                    <editor sid="alignmentSrv" start="yes" />
-                    <editor sid="infraredEmitterSrv" start="yes" />
-                    <editor sid="switchInfraToColorSrv" start="yes" />
-                    <editor sid="distanceSrv" start="yes" />
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="recordAct" start="true" />
+                    <editor sid="presetsSrv" start="true" />
+                    <editor sid="alignmentSrv" start="true" />
+                    <editor sid="infraredEmitterSrv" start="true" />
+                    <editor sid="switchInfraToColorSrv" start="true" />
+                    <editor sid="distanceSrv" start="true" />
                     <menuItem sid="configureRecordingPathAct" />
                     <menuItem sid="showfilterSettingsAct" />
                 </registry>
@@ -145,8 +145,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="scanningView" start="yes" />
-                    <view sid="filterSettingsView" start="yes" />
+                    <view sid="scanningView" start="true" />
+                    <view sid="filterSettingsView" start="true" />
                 </registry>
             </service>
 
@@ -159,8 +159,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="RGBDView" start="yes" />
-                    <view sid="pointcloudView" start="yes" />
+                    <view sid="RGBDView" start="true" />
+                    <view sid="pointcloudView" start="true" />
                 </registry>
             </service>
 
@@ -173,8 +173,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="distanceMapRenderSrv" start="yes" />
-                    <view sid="videoRenderSrv" start="yes" />
+                    <view sid="distanceMapRenderSrv" start="true" />
+                    <view sid="videoRenderSrv" start="true" />
                 </registry>
             </service>
 
@@ -187,8 +187,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="reconstructionRenderSrv" start="yes" />
-                    <view sid="rangeEditorSrv" start="yes" />
+                    <view sid="reconstructionRenderSrv" start="true" />
+                    <view sid="rangeEditorSrv" start="true" />
                 </registry>
             </service>
 
@@ -206,12 +206,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="enableSpacialFilterParamsSrv" start="yes" />
-                    <view sid="spacialFilterParamsSrv" start="yes" />
-                    <view sid="enableTemporalFilterParamsSrv" start="yes" />
-                    <view sid="temporalFilterParamsSrv" start="yes" />
-                    <view sid="enableHoleFillingFilterParamsSrv" start="yes" />
-                    <view sid="holeFillingFilterParamsSrv" start="yes" />
+                    <view sid="enableSpacialFilterParamsSrv" start="true" />
+                    <view sid="spacialFilterParamsSrv" start="true" />
+                    <view sid="enableTemporalFilterParamsSrv" start="true" />
+                    <view sid="temporalFilterParamsSrv" start="true" />
+                    <view sid="enableHoleFillingFilterParamsSrv" start="true" />
+                    <view sid="holeFillingFilterParamsSrv" start="true" />
                 </registry>
             </service>
 
@@ -326,7 +326,7 @@
 
             <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
+                <config layer="AR" autoresetcamera="false" radius="1" visible="false" />
             </service>
 
             <service uid="DMCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
@@ -357,7 +357,7 @@
 
             <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
+                <config layer="AR" autoresetcamera="false" radius="1" visible="false" />
             </service>
 
             <service uid="VCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
@@ -380,7 +380,7 @@
 
             <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
                 <in key="mesh" uid="pointcloud" />
-                <config layer="default" autoresetcamera="no" radius="1" />
+                <config layer="default" autoresetcamera="false" radius="1" />
             </service>
 
             <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
@@ -477,7 +477,7 @@
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <createCameraNumber>2</createCameraNumber>
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->

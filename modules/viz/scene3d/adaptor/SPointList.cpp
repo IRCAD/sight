@@ -119,7 +119,7 @@ void SPointList::configuring()
     SIGHT_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
     if(config.count(s_MATERIAL_TEMPLATE_CONFIG))
     {

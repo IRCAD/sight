@@ -32,8 +32,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="leftPanelView" start="yes" />
-                <view sid="cameraView" start="yes" />
+                <view sid="leftPanelView" start="true" />
+                <view sid="cameraView" start="true" />
             </registry>
         </service>
 
@@ -46,8 +46,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="toolboxView" start="yes" />
-                <view sid="errorLabelSrv" start="yes" />
+                <view sid="toolboxView" start="true" />
+                <view sid="errorLabelSrv" start="true" />
             </registry>
         </service>
 
@@ -61,9 +61,9 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="videoToolbarView" start="yes" />
-                <view sid="calibrationDataView" start="yes" />
-                <view sid="cameraInfoSrv" start="yes" />
+                <toolBar sid="videoToolbarView" start="true" />
+                <view sid="calibrationDataView" start="true" />
+                <view sid="cameraInfoSrv" start="true" />
             </registry>
         </service>
 
@@ -82,13 +82,13 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="videoSelectorSrv" start="yes" />
-                <menuItem sid="startVideoAct" start="yes" />
-                <menuItem sid="pauseVideoAct" start="yes" />
-                <menuItem sid="resumeVideoAct" start="yes" />
-                <menuItem sid="stopVideoAct" start="yes" />
-                <menuItem sid="loopVideoAct" start="yes" />
-                <menuItem sid="distortionAct" start="yes" />
+                <editor sid="videoSelectorSrv" start="true" />
+                <menuItem sid="startVideoAct" start="true" />
+                <menuItem sid="pauseVideoAct" start="true" />
+                <menuItem sid="resumeVideoAct" start="true" />
+                <menuItem sid="stopVideoAct" start="true" />
+                <menuItem sid="loopVideoAct" start="true" />
+                <menuItem sid="distortionAct" start="true" />
             </registry>
         </service>
 
@@ -103,8 +103,8 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="intrinsicCameraView" start="yes" />
-                <view sid="calibrationInfoEditorSrv" start="yes" />
+                <toolBar sid="intrinsicCameraView" start="true" />
+                <view sid="calibrationInfoEditorSrv" start="true" />
             </registry>
         </service>
 
@@ -123,15 +123,15 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="detectionStatusSrv" start="yes" />
-                <menuItem sid="addAct" start="yes" />
-                <menuItem sid="removeAct" start="yes" />
-                <menuItem sid="goOpenCVAct" start="yes" />
-                <menuItem sid="displayImageAct" start="yes" />
-                <menuItem sid="editionAct" start="yes" />
-                <menuItem sid="resetAct" start="yes" />
-                <menuItem sid="saveInputsAct" start="yes" />
-                <menuItem sid="loadInputsAct" start="yes" />
+                <editor sid="detectionStatusSrv" start="true" />
+                <menuItem sid="addAct" start="true" />
+                <menuItem sid="removeAct" start="true" />
+                <menuItem sid="goOpenCVAct" start="true" />
+                <menuItem sid="displayImageAct" start="true" />
+                <menuItem sid="editionAct" start="true" />
+                <menuItem sid="resetAct" start="true" />
+                <menuItem sid="saveInputsAct" start="true" />
+                <menuItem sid="loadInputsAct" start="true" />
             </registry>
         </service>
 
@@ -152,8 +152,8 @@
                 </slideView>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="yes" />
-                <slideView sid="videoSliderView" start="yes" />
+                <view sid="genericSceneSrv" start="true" />
+                <slideView sid="videoSliderView" start="true" />
             </registry>
         </service>
 
@@ -166,7 +166,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="videoSliderSrv" start="yes" />
+                <view sid="videoSliderSrv" start="true" />
             </registry>
         </service>
 
@@ -340,7 +340,7 @@
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
             <inout key="camera" uid="${camera}" />
-            <videoSupport>yes</videoSupport>
+            <videoSupport>true</videoSupport>
             <label></label>
         </service>
 

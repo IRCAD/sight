@@ -27,8 +27,8 @@
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -40,8 +40,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuMesherView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuMesherView" start="true" />
                 </registry>
             </service>
 
@@ -58,11 +58,11 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="saveImageAct" start="yes" />
-                    <menuItem sid="openMeshAct" start="yes" />
-                    <menuItem sid="saveMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="saveImageAct" start="true" />
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="saveMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -73,7 +73,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="createMeshAct" start="yes" />
+                    <menuItem sid="createMeshAct" start="true" />
                 </registry>
             </service>
 
@@ -93,8 +93,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="imageSrv" start="yes" />
-                    <view sid="meshSrv" start="yes" />
+                    <view sid="imageSrv" start="true" />
+                    <view sid="meshSrv" start="true" />
                 </registry>
             </service>
 

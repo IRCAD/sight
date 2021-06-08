@@ -24,8 +24,8 @@
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="containerView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
                 </registry>
             </service>
 
@@ -36,7 +36,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -49,8 +49,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -72,9 +72,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="rendering1Srv" start="yes" />
-                    <view sid="rendering2Srv" start="yes" />
-                    <view sid="rendering3Srv" start="yes" />
+                    <view sid="rendering1Srv" start="true" />
+                    <view sid="rendering2Srv" start="true" />
+                    <view sid="rendering3Srv" start="true" />
                 </registry>
             </service>
 

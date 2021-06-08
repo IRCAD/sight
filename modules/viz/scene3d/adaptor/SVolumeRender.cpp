@@ -130,10 +130,10 @@ void SVolumeRender::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    m_autoResetCamera        = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
-    m_preIntegratedRendering = config.get<std::string>(s_PREINTEGRATION_CONFIG, "no") == "yes";
+    m_autoResetCamera        = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
+    m_preIntegratedRendering = config.get<bool>(s_PREINTEGRATION_CONFIG, false);
     m_dynamic                = config.get<bool>(s_DYNAMIC_CONFIG, m_dynamic);
-    m_widgetVisibilty        = config.get<std::string>(s_WIDGETS_CONFIG, "yes") == "yes";
+    m_widgetVisibilty        = config.get<bool>(s_WIDGETS_CONFIG, true);
     m_priority               = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_layerOrderDependant    = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
     m_nbSamples              = config.get<std::uint16_t>(s_SAMPLES_CONFIG, m_nbSamples);

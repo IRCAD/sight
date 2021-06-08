@@ -154,9 +154,8 @@ void LineLayoutManagerBase::initialize(ConfigurationType configuration)
                 SIGHT_ASSERT(
                     "Incorrect value for \"visible\" attribute " << visible,
                     (visible == "true") || (visible == "false")
-                    || (visible == "yes") || (visible == "no")
                 );
-                vi.m_visible = ((visible == "true") || (visible == "yes"));
+                vi.m_visible = ((visible == "true"));
             }
 
             if(view->hasAttribute("useScrollBar"))
@@ -164,9 +163,9 @@ void LineLayoutManagerBase::initialize(ConfigurationType configuration)
                 const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
                 SIGHT_ASSERT(
                     "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                    (useScrollBar == "yes") || (useScrollBar == "no")
+                    (useScrollBar == "true") || (useScrollBar == "false")
                 );
-                vi.m_useScrollBar = (useScrollBar == "yes");
+                vi.m_useScrollBar = (useScrollBar == "true");
             }
 
             if(view->hasAttribute("toolTip"))

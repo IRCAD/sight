@@ -36,8 +36,8 @@
                     </frame>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -58,13 +58,13 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadMeshAct" start="yes" />
-                    <menuItem sid="startServerAct" start="yes" />
-                    <menuItem sid="stopServerAct" start="yes" />
-                    <menuItem sid="configureServerAct" start="yes" />
-                    <menuItem sid="startClientAct" start="yes" />
-                    <menuItem sid="stopClientAct" start="yes" />
-                    <menuItem sid="configureClientAct" start="yes" />
+                    <menuItem sid="loadMeshAct" start="true" />
+                    <menuItem sid="startServerAct" start="true" />
+                    <menuItem sid="stopServerAct" start="true" />
+                    <menuItem sid="configureServerAct" start="true" />
+                    <menuItem sid="startClientAct" start="true" />
+                    <menuItem sid="stopClientAct" start="true" />
+                    <menuItem sid="configureClientAct" start="true" />
                 </registry>
             </service>
 
@@ -148,7 +148,7 @@
 
             <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="objectMeshUid" />
-                <config layer="default" transform="meshMatrixTransform" autoresetcamera="no" />
+                <config layer="default" transform="meshMatrixTransform" autoresetcamera="false" />
             </service>
 
             <!-- ************************************* Services ************************************ -->

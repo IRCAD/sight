@@ -30,10 +30,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="yes" />
-                <view sid="camerasView" start="yes" />
-                <view sid="videoSliderSrv" start="yes" />
-                <view sid="cameraInfoView" start="yes" />
+                <toolBar sid="toolBarView" start="true" />
+                <view sid="camerasView" start="true" />
+                <view sid="videoSliderSrv" start="true" />
+                <view sid="cameraInfoView" start="true" />
             </registry>
         </service>
 
@@ -51,12 +51,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="exportAct" start="no" />
-                <menuItem sid="writeCalibrationAct" start="yes" />
-                <menuItem sid="startVideoAct" start="yes" />
-                <menuItem sid="stopVideoAct" start="yes" />
-                <menuItem sid="pauseVideoAct" start="yes" />
-                <menuItem sid="loopVideoAct" start="yes" />
+                <menuItem sid="exportAct" start="false" />
+                <menuItem sid="writeCalibrationAct" start="true" />
+                <menuItem sid="startVideoAct" start="true" />
+                <menuItem sid="stopVideoAct" start="true" />
+                <menuItem sid="pauseVideoAct" start="true" />
+                <menuItem sid="loopVideoAct" start="true" />
             </registry>
         </service>
 
@@ -84,9 +84,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraInfo1Srv" start="no" />
-                <view sid="cameraInfo2Srv" start="no" />
-                <view sid="cameraSeriesInfoSrv" start="no" />
+                <view sid="cameraInfo1Srv" start="false" />
+                <view sid="cameraInfo2Srv" start="false" />
+                <view sid="cameraSeriesInfoSrv" start="false" />
             </registry>
         </service>
 

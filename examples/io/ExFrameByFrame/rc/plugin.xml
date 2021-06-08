@@ -29,8 +29,8 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -47,12 +47,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="yes" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="previousImageAct" start="yes" />
-                    <menuItem sid="nextImageAct" start="yes" />
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="previousImageAct" start="true" />
+                    <menuItem sid="nextImageAct" start="true" />
                 </registry>
             </service>
 
@@ -108,7 +108,7 @@
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber" >

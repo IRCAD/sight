@@ -28,7 +28,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="imageRendereSrv" start="no" />
+                <view sid="imageRendereSrv" start="false" />
             </registry>
         </service>
 

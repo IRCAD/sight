@@ -25,7 +25,7 @@ This example shows the possibilities of SParameters:
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainview" start="yes" />
+                    <view sid="mainview" start="true" />
                 </registry>
             </service>
 
@@ -38,8 +38,8 @@ This example shows the possibilities of SParameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="parametersView" start="yes" />
-                    <view sid="minmaxParametersSrvView" start="yes" />
+                    <view sid="parametersView" start="true" />
+                    <view sid="minmaxParametersSrvView" start="true" />
                 </registry>
             </service>
 
@@ -52,8 +52,8 @@ This example shows the possibilities of SParameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="parameters1Srv" start="yes" />
-                    <view sid="parameters2Srv" start="yes" />
+                    <view sid="parameters1Srv" start="true" />
+                    <view sid="parameters2Srv" start="true" />
                 </registry>
             </service>
 
@@ -66,8 +66,8 @@ This example shows the possibilities of SParameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="minParametersSrv" start="yes" />
-                    <view sid="maxParametersSrv" start="yes" />
+                    <view sid="minParametersSrv" start="true" />
+                    <view sid="maxParametersSrv" start="true" />
                 </registry>
             </service>
 

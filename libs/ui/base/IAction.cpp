@@ -337,11 +337,11 @@ bool IAction::confirmAction()
 
         dialog.setMessage(ss.str());
 
-        if(m_defaultButton == "yes")
+        if(m_defaultButton == "true")
         {
             dialog.setDefaultButton(ui::base::dialog::IMessageDialog::YES);
         }
-        else if(m_defaultButton == "no")
+        else if(m_defaultButton == "false")
         {
             dialog.setDefaultButton(ui::base::dialog::IMessageDialog::NO);
         }

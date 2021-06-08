@@ -37,9 +37,9 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="cameraView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="cameraView" start="true" />
                 </registry>
             </service>
 
@@ -51,8 +51,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuPreferencesView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuPreferencesView" start="true" />
                 </registry>
             </service>
 
@@ -63,7 +63,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -74,7 +74,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="yes" />
+                    <menuItem sid="videoDirAct" start="true" />
                 </registry>
             </service>
 
@@ -93,14 +93,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="yes" />
+                    <menuItem sid="loadCalibAct" start="true" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
-                    <menuItem sid="registerAct" start="yes" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="registerAct" start="true" />
                 </registry>
             </service>
 
@@ -113,7 +113,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sceneView" start="yes" />
+                    <view sid="sceneView" start="true" />
                 </registry>
             </service>
 
@@ -126,8 +126,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="ARSceneSrv" start="yes" />
-                    <view sid="VRSceneSrv" start="yes" />
+                    <view sid="ARSceneSrv" start="true" />
+                    <view sid="VRSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -248,7 +248,7 @@
 
             <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cube" />
-                <config layer="default" autoresetcamera="no" />
+                <config layer="default" autoresetcamera="false" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -313,7 +313,7 @@
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->

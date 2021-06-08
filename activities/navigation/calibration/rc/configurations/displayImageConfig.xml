@@ -24,7 +24,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="yes" />
+                <view sid="genericSceneSrv" start="true" />
             </registry>
         </service>
 

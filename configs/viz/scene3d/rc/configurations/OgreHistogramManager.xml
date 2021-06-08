@@ -29,10 +29,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="TransferFunctionEditor" start="yes" />
+                <view sid="TransferFunctionEditor" start="true" />
                 <view wid="TFScene" />
-                <view sid="WindowLevel" start="no" />
-                <view sid="TransparencyEditor" start="yes" />
+                <view sid="WindowLevel" start="false" />
+                <view sid="TransparencyEditor" start="true" />
             </registry>
         </service>
         <!-- *********************************** End layouts declaration *********************************** -->

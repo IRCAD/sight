@@ -76,8 +76,11 @@ void SDicomSeriesDBReader::configuring()
     if(logDialog)
     {
         std::string logDialogStr = logDialog->getValue();
-        SIGHT_ASSERT("<showLogDialog> value must be 'yes' or 'no'", logDialogStr == "yes" || logDialogStr == "no");
-        m_showLogDialog = (logDialogStr == "yes");
+        SIGHT_ASSERT(
+            "<showLogDialog> value must be 'true' or 'false'",
+            logDialogStr == "true" || logDialogStr == "false"
+        );
+        m_showLogDialog = (logDialogStr == "true");
     }
 
     // Enable dicomdir

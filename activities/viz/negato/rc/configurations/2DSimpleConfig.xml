@@ -11,13 +11,13 @@
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
-                    <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
+                    <view align="bottom" minWidth="200" minHeight="30" resizable="false" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="yes" />
-                <view sid="sliderIndexEditor" start="yes" />
+                <view sid="gs" start="true" />
+                <view sid="sliderIndexEditor" start="true" />
             </registry>
         </service>
 
@@ -42,7 +42,7 @@
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <inout key="image" uid="${imageID}" />
-            <config layer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
+            <config layer="default" picker="picker" autoresetcamera="true" mode="2D" slices="1" sliceIndex="${orientation}" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->

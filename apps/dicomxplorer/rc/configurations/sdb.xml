@@ -23,8 +23,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="selector" start="yes" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="selector" start="true" />
                 <view wid="preview" />
             </registry>
         </service>
@@ -45,14 +45,14 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_import" start="yes" />
-                <menuItem sid="action_exportSeries" start="yes" />
-                <menuItem sid="action_2DVisualization" start="yes" />
-                <menuItem sid="action_dicomPacsReader" start="yes" />
-                <menuItem sid="action_dicomPacsWriter" start="yes" />
-                <menuItem sid="action_dicomFiltering" start="yes" />
-                <menuItem sid="action_dicomWebReader" start="yes" />
-                <menuItem sid="action_dicomWebWriter" start="yes" />
+                <menuItem sid="action_import" start="true" />
+                <menuItem sid="action_exportSeries" start="true" />
+                <menuItem sid="action_2DVisualization" start="true" />
+                <menuItem sid="action_dicomPacsReader" start="true" />
+                <menuItem sid="action_dicomPacsWriter" start="true" />
+                <menuItem sid="action_dicomFiltering" start="true" />
+                <menuItem sid="action_dicomWebReader" start="true" />
+                <menuItem sid="action_dicomWebWriter" start="true" />
             </registry>
         </service>
 

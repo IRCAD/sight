@@ -80,7 +80,8 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
- * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera when this mesh is modified, "yes" or "no".
+ * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
+ *"false".
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the STransform adaptor.
  *      Either of the following (whether a material is configured in the XML scene or not) :

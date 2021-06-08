@@ -73,7 +73,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="dynamicViewSrv" start="yes" />
+                    <view sid="dynamicViewSrv" start="true" />
                 </registry>
             </service>
 

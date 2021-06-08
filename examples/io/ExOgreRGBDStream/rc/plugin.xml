@@ -43,8 +43,8 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="scanningView" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="scanningView" start="true" />
                 </registry>
             </service>
 
@@ -60,12 +60,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="yes" />
-                    <menuItem sid="startVideoAct" start="yes" />
-                    <menuItem sid="pauseVideoAct" start="yes" />
-                    <menuItem sid="resumeVideoAct" start="yes" />
-                    <menuItem sid="stopVideoAct" start="yes" />
-                    <menuItem sid="loopVideoAct" start="yes" />
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
                 </registry>
             </service>
 
@@ -79,8 +79,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="TFView" start="yes" />
-                    <view sid="RGBDView" start="yes" />
+                    <view sid="TFView" start="true" />
+                    <view sid="RGBDView" start="true" />
                 </registry>
             </service>
 
@@ -93,8 +93,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneTFSrv" start="yes" />
-                    <view sid="genericSceneViewportSelectorSrv" start="yes" />
+                    <view sid="genericSceneTFSrv" start="true" />
+                    <view sid="genericSceneViewportSelectorSrv" start="true" />
                 </registry>
             </service>
 
@@ -107,8 +107,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="distanceMapRenderSrv" start="yes" />
-                    <view sid="videoRenderSrv" start="yes" />
+                    <view sid="distanceMapRenderSrv" start="true" />
+                    <view sid="videoRenderSrv" start="true" />
                 </registry>
             </service>
 
@@ -300,7 +300,7 @@
             <!-- The videoSelectorSrv creates 2 empty ::sight::data::Camera so we can use it without any prior calibration -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
-                <videoSupport>yes</videoSupport>
+                <videoSupport>true</videoSupport>
                 <createCameraNumber>2</createCameraNumber>
             </service>
 

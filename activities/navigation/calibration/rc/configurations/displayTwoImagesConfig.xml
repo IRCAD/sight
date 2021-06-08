@@ -28,7 +28,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="mainView" start="yes" />
+                <view sid="mainView" start="true" />
             </registry>
         </service>
 
@@ -41,8 +41,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericScene1Srv" start="yes" />
-                <view sid="genericScene2Srv" start="yes" />
+                <view sid="genericScene1Srv" start="true" />
+                <view sid="genericScene2Srv" start="true" />
             </registry>
         </service>
 

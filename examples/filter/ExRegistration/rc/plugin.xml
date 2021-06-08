@@ -90,7 +90,7 @@ Detail of the ToolBar
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="yes" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -102,8 +102,8 @@ Detail of the ToolBar
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="yes" />
-                    <view sid="multiView" start="yes" />
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="multiView" start="true" />
                 </registry>
             </service>
 
@@ -120,10 +120,10 @@ Detail of the ToolBar
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="yes" />
-                    <menuItem sid="openMesh1Act" start="yes" />
-                    <menuItem sid="openMesh2Act" start="yes" />
-                    <menuItem sid="registerAct" start="yes" />
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="openMesh1Act" start="true" />
+                    <menuItem sid="openMesh2Act" start="true" />
+                    <menuItem sid="registerAct" start="true" />
                 </registry>
             </service>
 
@@ -131,15 +131,15 @@ Detail of the ToolBar
             <service uid="multiView" type="sight::module::ui::base::SView" >
                 <gui>
                     <layout type="sight::ui::base::TabLayoutManager" >
-                        <view caption="Point List 1" selected="yes" border="5" backgroundColor="#2E3034" />
+                        <view caption="Point List 1" selected="true" border="5" backgroundColor="#2E3034" />
                         <view caption="Point List 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Registration" border="5" backgroundColor="#2E3034" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1View" start="yes" />
-                    <view sid="negato2SceneSrv" start="yes" />
-                    <view sid="negato3SceneSrv" start="yes" />
+                    <view sid="image1View" start="true" />
+                    <view sid="negato2SceneSrv" start="true" />
+                    <view sid="negato3SceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -153,8 +153,8 @@ Detail of the ToolBar
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato1SceneSrv" start="yes" />
-                    <view sid="sliderNegatoSrv" start="yes" />
+                    <view sid="negato1SceneSrv" start="true" />
+                    <view sid="sliderNegatoSrv" start="true" />
                 </registry>
             </service>
 

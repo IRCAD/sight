@@ -41,9 +41,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <slideView sid="negato_top_slider_view" start="yes" />
-                <view sid="negato" start="yes" />
-                <slideView sid="negato_bottom_slider_view" start="yes" />
+                <slideView sid="negato_top_slider_view" start="true" />
+                <view sid="negato" start="true" />
+                <slideView sid="negato_bottom_slider_view" start="true" />
             </registry>
         </service>
         
@@ -55,7 +55,7 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="topToolbarView" start="yes" />
+                <toolBar sid="topToolbarView" start="true" />
             </registry>
         </service>
 
@@ -67,7 +67,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="snapshotAct" start="yes" />
+                <menuItem sid="snapshotAct" start="true" />
             </registry>
         </service>
         
@@ -80,7 +80,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="multiView_negato_bottom" start="yes" />
+                <view sid="multiView_negato_bottom" start="true" />
             </registry>
         </service>
 
@@ -92,7 +92,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="slider_negato" start="yes" />
+                <view sid="slider_negato" start="true" />
             </registry>
         </service>
 

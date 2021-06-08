@@ -31,8 +31,8 @@
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -46,8 +46,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="modifierFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="modifierFileView" start="true" />
                 </registry>
             </service>
 
@@ -61,9 +61,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="yes" />
-                    <menuItem sid="saveMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="saveMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -85,14 +85,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="shakeMeshPointAct" start="yes" />
-                    <menuItem sid="colorizeMeshPointAct" start="yes" />
-                    <menuItem sid="colorizeMeshCellsAct" start="yes" />
-                    <menuItem sid="colorizeComputePointsNormalsAct" start="yes" />
-                    <menuItem sid="colorizeComputeCellsNormalsAct" start="yes" />
-                    <menuItem sid="shakePointsNormalsAct" start="yes" />
-                    <menuItem sid="shakeCellsNormalsAct" start="yes" />
-                    <menuItem sid="meshDeformationAct" start="yes" />
+                    <menuItem sid="shakeMeshPointAct" start="true" />
+                    <menuItem sid="colorizeMeshPointAct" start="true" />
+                    <menuItem sid="colorizeMeshCellsAct" start="true" />
+                    <menuItem sid="colorizeComputePointsNormalsAct" start="true" />
+                    <menuItem sid="colorizeComputeCellsNormalsAct" start="true" />
+                    <menuItem sid="shakePointsNormalsAct" start="true" />
+                    <menuItem sid="shakeCellsNormalsAct" start="true" />
+                    <menuItem sid="meshDeformationAct" start="true" />
                 </registry>
             </service>
 

@@ -28,10 +28,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="topView" start="yes" />
-                <view sid="centerView" start="yes" />
-                <view sid="bottomView" start="yes" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="topView" start="true" />
+                <view sid="centerView" start="true" />
+                <view sid="bottomView" start="true" />
             </registry>
         </service>
 
@@ -43,8 +43,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_pullSeries" start="yes" />
-                <menuItem sid="action_pushSeries" start="yes" />
+                <menuItem sid="action_pullSeries" start="true" />
+                <menuItem sid="action_pushSeries" start="true" />
             </registry>
         </service>
 
@@ -56,7 +56,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="queryEditor" start="yes" />
+                <view sid="queryEditor" start="true" />
             </registry>
         </service>
 
@@ -69,8 +69,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="previewSelector" start="yes" />
-                <view wid="pacsPreview" start="yes" />
+                <view sid="previewSelector" start="true" />
+                <view wid="pacsPreview" start="true" />
             </registry>
         </service>
 
@@ -83,8 +83,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="localSelector" start="yes" />
-                <view wid="localPreview" start="yes" />
+                <view sid="localSelector" start="true" />
+                <view wid="localPreview" start="true" />
             </registry>
         </service>
 

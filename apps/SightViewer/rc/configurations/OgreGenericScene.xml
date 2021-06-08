@@ -82,10 +82,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <slideView sid="topToolbarSliderView" start="yes" />
-                <slideView sid="topNegatoSlicerSliderView" start="yes" />
-                <view sid="genericSceneSrv" start="yes" />
-                <slideView sid="bottomNegatoSlicerSliderView" start="yes" />
+                <slideView sid="topToolbarSliderView" start="true" />
+                <slideView sid="topNegatoSlicerSliderView" start="true" />
+                <view sid="genericSceneSrv" start="true" />
+                <slideView sid="bottomNegatoSlicerSliderView" start="true" />
             </registry>
         </service>
 
@@ -97,7 +97,7 @@
                 </layout>
             </gui>
             <registry>
-                <toolBar sid="topToolbarView" start="yes" />
+                <toolBar sid="topToolbarView" start="true" />
             </registry>
         </service>
 
@@ -111,9 +111,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="fullscreenAct" start="yes" />
-                <menuItem sid="windowedAct" start="yes" />
-                <menuItem sid="snapshotAct" start="yes" />
+                <menuItem sid="fullscreenAct" start="true" />
+                <menuItem sid="windowedAct" start="true" />
+                <menuItem sid="snapshotAct" start="true" />
             </registry>
         </service>
 
@@ -125,7 +125,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="axialNegatoSlicerSrv" start="yes" />
+                <view sid="axialNegatoSlicerSrv" start="true" />
             </registry>
         </service>
 
@@ -138,7 +138,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="bottomNegatoSlicerView" start="yes" />
+                <view sid="bottomNegatoSlicerView" start="true" />
             </registry>
         </service>
 
@@ -151,8 +151,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sagittalNegatoSlicerSrv" start="yes" />
-                <view sid="frontalNegatoSlicerSrv" start="yes" />
+                <view sid="sagittalNegatoSlicerSrv" start="true" />
+                <view sid="frontalNegatoSlicerSrv" start="true" />
             </registry>
         </service>
 
@@ -260,19 +260,19 @@
 
         <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="${modelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
+            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="false" />
         </service>
 
         <service uid="extrudedMeshesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
             <in key="model" uid="${extrudedModelSeries}" />
-            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
+            <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="false" />
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
             <inout key="image" uid="extrudedImage" autoConnect="true" />
             <inout key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="true" />
-            <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="no" samples="1024" />
+            <config layer="defaultLayer" widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >

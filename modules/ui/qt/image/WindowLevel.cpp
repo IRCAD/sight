@@ -95,19 +95,19 @@ void WindowLevel::configuring()
     {
         const ConfigType config = srvConfig.get_child("config.<xmlattr>");
 
-        const std::string autoWindowing = config.get(s_AUTO_WINDOWING_CONFIG, "no");
+        const std::string autoWindowing = config.get(s_AUTO_WINDOWING_CONFIG, "false");
         SIGHT_ASSERT(
-            "Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
-            autoWindowing == "yes" || autoWindowing == "no"
+            "Bad value for 'autoWindowing' attribute. It must be 'true' or 'false'!",
+            autoWindowing == "true" || autoWindowing == "false"
         );
-        m_autoWindowing = (autoWindowing == "yes");
+        m_autoWindowing = (autoWindowing == "true");
 
-        const std::string enableSquareTF = config.get(s_ENABLE_SQUARE_TF_CONFIG, "yes");
+        const std::string enableSquareTF = config.get(s_ENABLE_SQUARE_TF_CONFIG, "true");
         SIGHT_ASSERT(
-            "Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
-            enableSquareTF == "yes" || enableSquareTF == "no"
+            "Bad value for 'enableSquareTF' attribute. It must be 'true' or 'false'!",
+            enableSquareTF == "true" || enableSquareTF == "false"
         );
-        m_enableSquareTF = (enableSquareTF == "yes");
+        m_enableSquareTF = (enableSquareTF == "true");
     }
 }
 

@@ -29,9 +29,9 @@
                     <toolBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <toolBar sid="toolBarView" start="yes" />
-                    <view sid="mainview" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="mainview" start="true" />
                 </registry>
             </service>
 
@@ -43,8 +43,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
-                    <menu sid="menuMonitorView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuMonitorView" start="true" />
                 </registry>
             </service>
 
@@ -57,9 +57,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openAct" start="yes" />
-                    <menuItem sid="saveAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openAct" start="true" />
+                    <menuItem sid="saveAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -78,13 +78,13 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="classFactoryRegistryInfoAct" start="yes" />
-                    <menuItem sid="metricsAct" start="yes" />
-                    <menuItem sid="componentsTreeAct" start="yes" />
-                    <menuItem sid="memInfoAct" start="yes" />
-                    <menuItem sid="dumpAllAct" start="yes" />
-                    <menuItem sid="incMemConsumAct" start="yes" />
-                    <menuItem sid="decMemConsumAct" start="yes" />
+                    <menuItem sid="classFactoryRegistryInfoAct" start="true" />
+                    <menuItem sid="metricsAct" start="true" />
+                    <menuItem sid="componentsTreeAct" start="true" />
+                    <menuItem sid="memInfoAct" start="true" />
+                    <menuItem sid="dumpAllAct" start="true" />
+                    <menuItem sid="incMemConsumAct" start="true" />
+                    <menuItem sid="decMemConsumAct" start="true" />
                 </registry>
             </service>
 
@@ -98,9 +98,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openAct" start="no" />
-                    <menuItem sid="saveAct" start="no" />
-                    <menuItem sid="dumpAllAct" start="no" />
+                    <menuItem sid="openAct" start="false" />
+                    <menuItem sid="saveAct" start="false" />
+                    <menuItem sid="dumpAllAct" start="false" />
                 </registry>
             </service>
 
@@ -113,8 +113,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="subView" start="yes" />
-                    <view sid="dumpEditorSrv" start="yes" />
+                    <view sid="subView" start="true" />
+                    <view sid="dumpEditorSrv" start="true" />
                 </registry>
             </service>
 
@@ -127,7 +127,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="selectorSrv" start="yes" />
+                    <view sid="selectorSrv" start="true" />
                     <view wid="previewView" />
                 </registry>
             </service>

@@ -37,8 +37,8 @@ are already displayed and where they are displayed on screen.
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolbarView" start="yes" />
-                    <view sid="mainview" start="yes" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="mainview" start="true" />
                 </registry>
             </service>
 
@@ -56,11 +56,11 @@ are already displayed and where they are displayed on screen.
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="useNotifierAct" start="yes" />
-                    <editor sid="typeAct" start="yes" />
-                    <editor sid="positionAct" start="yes" />
-                    <menuItem sid="notifyAct" start="yes" />
-                    <menuItem sid="changeThemeAct" start ="yes" />
+                    <editor sid="useNotifierAct" start="true" />
+                    <editor sid="typeAct" start="true" />
+                    <editor sid="positionAct" start="true" />
+                    <menuItem sid="notifyAct" start="true" />
+                    <menuItem sid="changeThemeAct" start ="true" />
                 </registry>
             </service>
 

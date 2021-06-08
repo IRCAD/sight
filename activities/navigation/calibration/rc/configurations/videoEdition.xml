@@ -30,8 +30,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="yes" />
-                <view sid="genericSceneSrv" start="yes" />
+                <toolBar sid="toolBarView" start="true" />
+                <view sid="genericSceneSrv" start="true" />
             </registry>
         </service>
 
@@ -43,8 +43,8 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="videoSelectorSrv" start="yes" />
-                <menuItem sid="editionAct" start="yes" />
+                <editor sid="videoSelectorSrv" start="true" />
+                <menuItem sid="editionAct" start="true" />
             </registry>
         </service>
 
@@ -89,7 +89,7 @@
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
             <inout key="camera" uid="${camera}" />
-            <videoSupport>yes</videoSupport>
+            <videoSupport>true</videoSupport>
             <label></label>
         </service>
 

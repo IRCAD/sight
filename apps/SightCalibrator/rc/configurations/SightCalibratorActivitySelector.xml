@@ -29,8 +29,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="activityWizardSrv" start="yes" />
-                <view sid="activityCreatorSrv" start="yes" />
+                <view sid="activityWizardSrv" start="true" />
+                <view sid="activityCreatorSrv" start="true" />
             </registry>
         </service>
 

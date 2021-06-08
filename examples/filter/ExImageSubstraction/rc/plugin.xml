@@ -83,7 +83,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="yes" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -95,8 +95,8 @@
                     <toolBar/>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="yes" />
-                    <view sid="multiView" start="yes" />
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="multiView" start="true" />
                 </registry>
             </service>
 
@@ -113,10 +113,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImage1Act" start="yes" />
-                    <menuItem sid="openImage2Act" start="yes" />
-                    <menuItem sid="saveImageAct" start="yes" />
-                    <menuItem sid="computeImageAct" start="yes" />
+                    <menuItem sid="openImage1Act" start="true" />
+                    <menuItem sid="openImage2Act" start="true" />
+                    <menuItem sid="saveImageAct" start="true" />
+                    <menuItem sid="computeImageAct" start="true" />
                 </registry>
             </service>
 
@@ -124,15 +124,15 @@
             <service uid="multiView" type="sight::module::ui::base::SView" >
                 <gui>
                     <layout type="sight::ui::base::TabLayoutManager" >
-                        <view caption="Image 1" selected="yes" border="5" backgroundColor="#2E3034" />
+                        <view caption="Image 1" selected="true" border="5" backgroundColor="#2E3034" />
                         <view caption="Image 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Substraction" border="5" backgroundColor="#2E3034" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1View" start="yes" />
-                    <view sid="image2View" start="yes" />
-                    <view sid="substractionView" start="yes" />
+                    <view sid="image1View" start="true" />
+                    <view sid="image2View" start="true" />
+                    <view sid="substractionView" start="true" />
                 </registry>
             </service>
 
@@ -146,8 +146,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato1SceneSrv" start="yes" />
-                    <view sid="image1BottomView" start="yes" />
+                    <view sid="negato1SceneSrv" start="true" />
+                    <view sid="image1BottomView" start="true" />
                 </registry>
             </service>
 
@@ -160,8 +160,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato1EditorSrv" start="yes" />
-                    <view sid="sliderNegato1Srv" start="no" />
+                    <view sid="snapshotNegato1EditorSrv" start="true" />
+                    <view sid="sliderNegato1Srv" start="false" />
                 </registry>
             </service>
 
@@ -175,8 +175,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato2SceneSrv" start="yes" />
-                    <view sid="image2BottomView" start="yes" />
+                    <view sid="negato2SceneSrv" start="true" />
+                    <view sid="image2BottomView" start="true" />
                 </registry>
             </service>
 
@@ -189,8 +189,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato2EditorSrv" start="yes" />
-                    <view sid="sliderNegato2Srv" start="no" />
+                    <view sid="snapshotNegato2EditorSrv" start="true" />
+                    <view sid="sliderNegato2Srv" start="false" />
                 </registry>
             </service>
 
@@ -204,8 +204,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato3SceneSrv" start="yes" />
-                    <view sid="substractionBottomView" start="yes" />
+                    <view sid="negato3SceneSrv" start="true" />
+                    <view sid="substractionBottomView" start="true" />
                 </registry>
             </service>
 
@@ -218,7 +218,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato3EditorSrv" start="yes" />
+                    <view sid="snapshotNegato3EditorSrv" start="true" />
                     <view sid="sliderNegato3Srv" />
                 </registry>
             </service>

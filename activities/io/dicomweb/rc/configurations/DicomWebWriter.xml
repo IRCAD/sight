@@ -22,8 +22,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="yes" />
-                <view sid="selector" start="yes" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="selector" start="true" />
                 <view wid="preview" />
             </registry>
         </service>
@@ -37,9 +37,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_import" start="yes" />
-                <menuItem sid="action_anonymize" start="yes" />
-                <menuItem sid="action_pushSeriesToPacs" start="yes" />
+                <menuItem sid="action_import" start="true" />
+                <menuItem sid="action_anonymize" start="true" />
+                <menuItem sid="action_pushSeriesToPacs" start="true" />
             </registry>
         </service>
 

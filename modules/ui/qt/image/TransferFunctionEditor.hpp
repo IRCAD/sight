@@ -54,7 +54,7 @@ namespace sight::module::ui::qt::image
        <in key="currentTF" uid="..." optional="true" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
-       <config useDefaultPath="yes">
+       <config useDefaultPath="true">
            <path>....</path>
            <path>....</path>
            <path>....</path>
@@ -74,7 +74,7 @@ namespace sight::module::ui::qt::image
  * @subsection Output Output
  * - \b tf [sight::data::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
- * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF module.
+ * - \b useDefaultPath (optional)(default = true): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
  */
 class MODULE_UI_QT_CLASS_API TransferFunctionEditor : public QObject,

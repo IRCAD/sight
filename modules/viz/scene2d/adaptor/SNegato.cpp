@@ -115,11 +115,11 @@ void SNegato::configuring()
     {
         const std::string changeValue = config.get<std::string>("changeSliceType");
 
-        if(changeValue == "true" || changeValue == "yes")
+        if(changeValue == "true")
         {
             m_changeSliceTypeAllowed = true;
         }
-        else if(changeValue == "no" || changeValue == "false")
+        else if(changeValue == "false")
         {
             m_changeSliceTypeAllowed = false;
         }

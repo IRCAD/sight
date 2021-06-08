@@ -95,8 +95,8 @@ void SUltrasoundImage::configuring()
 
     m_thresholdMin = config.get<int>(s_THRESHOLD_MIN_CONFIG, m_thresholdMin);
     m_usDepth      = config.get<double>(s_US_DEPTH_CONFIG, m_usDepth);
-    m_debug        = config.get<std::string>(s_DEBUG_CONFIG, "no") == "yes";
-    m_convexShape  = config.get<std::string>(s_CONVEX_SHAPE, "yes") == "yes";
+    m_debug        = config.get<bool>(s_DEBUG_CONFIG, false);
+    m_convexShape  = config.get<bool>(s_CONVEX_SHAPE, true);
 }
 
 // -----------------------------------------------------------------------------

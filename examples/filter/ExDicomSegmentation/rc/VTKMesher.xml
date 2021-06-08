@@ -31,9 +31,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="yes" />
-                <view sid="containerView" start="yes" />
-                <view sid="materialView" start="yes" />
+                <toolBar sid="toolBarView" start="true" />
+                <view sid="containerView" start="true" />
+                <view sid="materialView" start="true" />
             </registry>
         </service>
 
@@ -45,8 +45,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="mesherAct" start="yes" />
-                <menuItem sid="exportAct" start="no" />
+                <menuItem sid="mesherAct" start="true" />
+                <menuItem sid="exportAct" start="false" />
             </registry>
         </service>
 
@@ -59,8 +59,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="yes" />
-                <view sid="parametersView" start="yes" />
+                <view sid="genericSceneSrv" start="true" />
+                <view sid="parametersView" start="true" />
             </registry>
         </service>
 
@@ -74,9 +74,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="showHideNegatoSrv" start="yes" />
-                <view sid="sliceIndexEditorSrv" start="yes" />
-                <view sid="snapshotSrv" start="yes" />
+                <view sid="showHideNegatoSrv" start="true" />
+                <view sid="sliceIndexEditorSrv" start="true" />
+                <view sid="snapshotSrv" start="true" />
             </registry>
         </service>
 
@@ -90,9 +90,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="modelSeriesListSrv" start="no" />
-                <view sid="materialEditorSrv" start="no" />
-                <view sid="representationSrv" start="no" />
+                <view sid="modelSeriesListSrv" start="false" />
+                <view sid="materialEditorSrv" start="false" />
+                <view sid="representationSrv" start="false" />
             </registry>
         </service>
 

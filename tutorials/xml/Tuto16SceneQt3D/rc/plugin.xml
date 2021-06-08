@@ -43,8 +43,8 @@
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="genericSceneSrv" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
                 </registry>
             </service>
 
@@ -55,7 +55,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -68,8 +68,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="meshReaderAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="meshReaderAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 

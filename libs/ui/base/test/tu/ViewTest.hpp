@@ -22,9 +22,6 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
-#include <core/runtime/profile/Profile.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::ui::base
@@ -36,13 +33,10 @@ namespace ut
 /**
  * @brief Preferences unit test.
  */
-class PreferencesTest : public CPPUNIT_NS::TestFixture
+class ViewTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(PreferencesTest);
-CPPUNIT_TEST(runtimeTest);
-CPPUNIT_TEST(helperTest);
-CPPUNIT_TEST(passwordTest);
-CPPUNIT_TEST(cleanup);
+CPPUNIT_TEST_SUITE(ViewTest);
+CPPUNIT_TEST(configuringTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,15 +45,8 @@ public:
     void setUp();
     void tearDown();
 
-    void runtimeTest();
-    void helperTest();
-    void passwordTest();
+    void configuringTest();
     void cleanup();
-
-private:
-
-    core::runtime::Profile::sptr m_profile;
-    std::filesystem::path m_preferencesPath;
 };
 
 } //namespace ut

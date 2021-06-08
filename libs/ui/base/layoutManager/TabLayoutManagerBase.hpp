@@ -89,14 +89,14 @@ public:
            <gui>
                <layout type="ui::base::TabLayoutManager" >
                    <view caption="TabView1" />
-                   <view caption="TabView2" selected="yes" border="10" />
+                   <view caption="TabView2" selected="true" border="10" />
                    <view caption="TabView3"  />
                </layout>
            </gui>
            <registry>
-               <view sid="view1" start="yes" />
-               <view sid="view2" start="yes" />
-               <view sid="view3" start="yes" />
+               <view sid="view1" start="true" />
+               <view sid="view2" start="true" />
+               <view sid="view3" start="true" />
            </registry>
        </service>
        @endcode
@@ -110,7 +110,7 @@ public:
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
      *   - \b minHeight : minimal height of the view.
-     *   - \b selected  {yes | no}: define if the tab is the current one.
+     *   - \b selected  {true | false}: define if the tab is the current one.
      */
     UI_BASE_API void initialize(ConfigurationType configuration) override;
 

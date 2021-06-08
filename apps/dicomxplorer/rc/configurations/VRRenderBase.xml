@@ -33,8 +33,8 @@
                 <menuBar />
             </gui>
             <registry>
-                <menuBar sid="menuBar" start="yes" />
-                <view sid="dynamicView" start="yes" />
+                <menuBar sid="menuBar" start="true" />
+                <view sid="dynamicView" start="true" />
             </registry>
         </service>
 
@@ -47,9 +47,9 @@
                 </layout>
             </gui>
             <registry>
-                <menu sid="menu_file" start="yes" />
-                <menu sid="menu_preferences" start="yes" />
-                <menu sid="menu_help" start="yes" />
+                <menu sid="menu_file" start="true" />
+                <menu sid="menu_preferences" start="true" />
+                <menu sid="menu_help" start="true" />
             </registry>
         </service>
 
@@ -62,9 +62,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_open" start="yes" />
-                <menuItem sid="action_save" start="yes" />
-                <menuItem sid="action_quit" start="yes" />
+                <menuItem sid="action_open" start="true" />
+                <menuItem sid="action_save" start="true" />
+                <menuItem sid="action_quit" start="true" />
             </registry>
         </service>
 
@@ -75,7 +75,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_configuration" start="yes" />
+                <menuItem sid="action_configuration" start="true" />
             </registry>
         </service>
 
@@ -86,7 +86,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_about" start="yes" />
+                <menuItem sid="action_about" start="true" />
             </registry>
         </service>
 

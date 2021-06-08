@@ -101,9 +101,9 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
             const std::string resizable = view->getExistingAttributeValue("resizable");
             SIGHT_ASSERT(
                 "Incorrect value for \"resizable\" attribute " << resizable,
-                (resizable == "yes") || (resizable == "no")
+                (resizable == "true") || (resizable == "false")
             );
-            vi.m_isResizable = (resizable == "yes");
+            vi.m_isResizable = (resizable == "true");
         }
 
         if(view->hasAttribute("position"))
@@ -130,9 +130,8 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
             SIGHT_ASSERT(
                 "Incorrect value for \"visible\" attribute " << visible,
                 (visible == "true") || (visible == "false")
-                || (visible == "yes") || (visible == "no")
             );
-            vi.m_visible = ((visible == "true") || (visible == "yes"));
+            vi.m_visible = ((visible == "true"));
         }
 
         if(view->hasAttribute("caption"))
@@ -146,9 +145,9 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
             const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
             SIGHT_ASSERT(
                 "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                (useScrollBar == "yes") || (useScrollBar == "no")
+                (useScrollBar == "true") || (useScrollBar == "false")
             );
-            vi.m_useScrollBar = (useScrollBar == "yes");
+            vi.m_useScrollBar = (useScrollBar == "true");
         }
 
         if(view->hasAttribute("toolTip"))

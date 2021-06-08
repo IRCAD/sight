@@ -18,7 +18,7 @@ Example in a toolbar:
         </layout>
     </gui>
     <registry>
-        <menuItem sid="showParamAction" start="yes" />
+        <menuItem sid="showParamAction" start="true" />
     </registry>
 </service>
 ```

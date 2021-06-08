@@ -82,7 +82,7 @@ void SModelSeries::configuring()
         )
     );
 
-    m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
+    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
     m_materialTemplateName = config.get<std::string>(s_MATERIAL_CONFIG, m_materialTemplateName);
     m_isDynamic            = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);

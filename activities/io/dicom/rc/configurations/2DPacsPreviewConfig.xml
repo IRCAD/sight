@@ -13,13 +13,13 @@
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
-                    <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
+                    <view align="bottom" minWidth="200" minHeight="40" resizable="false" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="yes" />
-                <view sid="sliderIndexDicomPullerEditor" start="yes" />
+                <view sid="gs" start="true" />
+                <view sid="sliderIndexDicomPullerEditor" start="true" />
             </registry>
         </service>
 

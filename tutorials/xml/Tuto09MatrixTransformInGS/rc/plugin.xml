@@ -82,8 +82,8 @@
                     <menuBar/>
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="yes" />
-                    <view sid="mainView" start="yes" />
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="mainView" start="true" />
                 </registry>
             </service>
 
@@ -94,7 +94,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuFileView" start="true" />
                 </registry>
             </service>
 
@@ -107,8 +107,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="yes" />
-                    <menuItem sid="quitAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
                 </registry>
             </service>
 
@@ -117,12 +117,12 @@
                     <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
+                        <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="yes" />
-                    <view sid="matrixEditorSrv" start="yes" />
+                    <view sid="genericSceneSrv" start="true" />
+                    <view sid="matrixEditorSrv" start="true" />
                 </registry>
             </service>
 
@@ -199,7 +199,7 @@
 
             <service uid="matrixEditorSrv" type="sight::module::ui::qt::viz::STransformEditor" >
                 <inout key="matrix" uid="matrixE" />
-                <translation enabled="no" />
+                <translation enabled="false" />
                 <rotation enabled="y" min="0" max="360" />
             </service>
 

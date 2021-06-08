@@ -38,7 +38,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="containerView" start="yes" />
+                <view sid="containerView" start="true" />
             </registry>
         </service>
 
@@ -51,8 +51,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="queryView" start="yes" />
-                <view sid="selectorsView" start="yes" />
+                <view sid="queryView" start="true" />
+                <view sid="selectorsView" start="true" />
             </registry>
         </service>
 
@@ -69,11 +69,11 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="queryEditorSrv" start="yes" />
-                <view sid="showAdvancedQueryEditorSrv" start="yes" />
-                <view sid="hideAdvancedQueryEditorSrv" start="yes" />
-                <view sid="showPACSConfigurationSrv" start="yes" />
-                <view sid="hidePACSConfigurationSrv" start="yes" />
+                <view sid="queryEditorSrv" start="true" />
+                <view sid="showAdvancedQueryEditorSrv" start="true" />
+                <view sid="hideAdvancedQueryEditorSrv" start="true" />
+                <view sid="showPACSConfigurationSrv" start="true" />
+                <view sid="hidePACSConfigurationSrv" start="true" />
             </registry>
         </service>
 
@@ -88,10 +88,10 @@
                 </layout>
             </gui>
             <registry>
-                <slideView sid="advancedQueryEditorSliderView" start="yes" />
-                <slideView sid="configurePACSSliderView" start="yes" />
-                <view sid="previewView" start="yes" />
-                <view sid="localView" start="yes" />
+                <slideView sid="advancedQueryEditorSliderView" start="true" />
+                <slideView sid="configurePACSSliderView" start="true" />
+                <view sid="previewView" start="true" />
+                <view sid="localView" start="true" />
             </registry>
         </service>
 
@@ -104,7 +104,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="advancedQueryEditorSrv" start="yes" />
+                <view sid="advancedQueryEditorSrv" start="true" />
             </registry>
         </service>
 
@@ -117,7 +117,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="configurePACSEditorSrv" start="yes" />
+                <view sid="configurePACSEditorSrv" start="true" />
             </registry>
         </service>
 
@@ -130,8 +130,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="previewSelectorSrv" start="yes" />
-                <view sid="previewSceneView" start="yes" />
+                <view sid="previewSelectorSrv" start="true" />
+                <view sid="previewSceneView" start="true" />
             </registry>
         </service>
 
@@ -144,8 +144,8 @@
                 <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
             </gui>
             <registry>
-                <view sid="genericScenePreviewSrv" start="yes" />
-                <slideView sid="previewSceneSliderView" start="yes" />
+                <view sid="genericScenePreviewSrv" start="true" />
+                <slideView sid="previewSceneSliderView" start="true" />
             </registry>
         </service>
 
@@ -158,7 +158,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="previewDICOMSliderView" start="yes" />
+                <view sid="previewDICOMSliderView" start="true" />
             </registry>
         </service>
 
@@ -172,9 +172,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sliderIndexDicomPullerEditorSrv" start="yes" />
-                <view sid="seriesPullerAct" start="yes" />
-                <view sid="waitAct" start="yes" />
+                <view sid="sliderIndexDicomPullerEditorSrv" start="true" />
+                <view sid="seriesPullerAct" start="true" />
+                <view sid="waitAct" start="true" />
             </registry>
         </service>
 
@@ -187,8 +187,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="localSelectorSrv" start="yes" />
-                <view sid="localSceneView" start="yes" />
+                <view sid="localSelectorSrv" start="true" />
+                <view sid="localSceneView" start="true" />
             </registry>
         </service>
 
@@ -201,8 +201,8 @@
                 <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
             </gui>
             <registry>
-                <view sid="genericSceneLocalSrv" start="yes" />
-                <slideView sid="localSceneSliderView" start="yes" />
+                <view sid="genericSceneLocalSrv" start="true" />
+                <slideView sid="localSceneSliderView" start="true" />
             </registry>
         </service>
 
@@ -215,7 +215,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="localSliderView" start="yes" />
+                <view sid="localSliderView" start="true" />
             </registry>
         </service>
 
@@ -228,7 +228,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="exportImageAct" start="yes" />
+                <view sid="exportImageAct" start="true" />
             </registry>
         </service>
 

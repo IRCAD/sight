@@ -85,15 +85,16 @@ public:
               </layout>
           </gui>
           <registry>
-              <menu sid="myMenu" start="yes" />
-              <menu sid="myMenu2" start="yes" />
+              <menu sid="myMenu" start="true" />
+              <menu sid="myMenu2" start="true" />
           </registry>
        </service>
        @endcode
      * This method analyzes the registry section of the configuration.
-     *  - \<menu sid="myMenu" start="yes" /\> : define the service of the menu to add in the menu bar.
+     *  - \<menu sid="myMenu" start="true" /\> : define the service of the menu to add in the menu bar.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu bar service.
+     *   - \b start = {true| false} (default value false): indicate if the service must be started by the menu bar
+     * service.
      */
 
     UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
@@ -101,7 +102,7 @@ public:
     /**
      * @brief Starting menu bar registry.
      * All services managed in local menus
-     * and with start="yes" in configuration will be started.
+     * and with start="true" in configuration will be started.
      * @pre MenuBar must be initialized before.
      * @pre sub menus must be instanced before.
      */

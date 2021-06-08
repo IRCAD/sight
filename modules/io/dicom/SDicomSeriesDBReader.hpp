@@ -61,6 +61,7 @@ namespace sight::module::io::dicom
         <service type="sight::module::io::dicom::SDicomSeriesDBReader">
             <inout key="data" uid="..." />
             <dicomdirSupport>user_selection</dicomdirSupport>
+            <showLogDialog>true or false</showLogDialog>
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -71,6 +72,7 @@ namespace sight::module::io::dicom
  *    - always (always use the DicomDir if present)
  *    - never (never use the DicomDir)
  *    - user_selection (let the user decide whether using the DicomDir or not)
+ *  - \b showLogDialog (optional) : Show log dialog. should be true or false
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesDBReader : public sight::io::base::service::IReader
 {
