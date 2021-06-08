@@ -51,7 +51,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-ToolBarLayoutManager::ToolBarLayoutManager(ui::base::GuiBaseObject::Key key)
+ToolBarLayoutManager::ToolBarLayoutManager(ui::base::GuiBaseObject::Key)
 {
 }
 
@@ -93,7 +93,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
 
     QActionGroup* actionGroup  = 0;
     unsigned int menuItemIndex = 0;
-    for(ui::base::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo : m_actionInfo)
+    for(ui::base::layoutManager::IToolBarLayoutManager::ActionInfo& actionInfo : m_actionInfo)
     {
         if(actionInfo.m_isSeparator)
         {
@@ -136,6 +136,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             toolButton->setMenu(qtMenu);
             toolButton->setPopupMode(QToolButton::InstantPopup);
             toolButton->setText(QString::fromStdString(actionInfo.m_name));
+
             if(!actionInfo.m_icon.empty())
             {
                 QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
@@ -227,6 +228,26 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             QObject::connect(action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
             QObject::connect(action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
             menuItemIndex++;
+        }
+    }
+
+    // Parse all QToolButton and resize to the greater one.
+    if(m_unifyButtonSize)
+    {
+        int max         = -1;
+        const auto list = toolBar->findChildren<QToolButton*>();
+        for(const auto tb : list)
+        {
+            // Check width if horizontal toolbar, height for vertical.
+            const auto size =
+                (toolBar->orientation() == Qt::Horizontal) ? tb->sizeHint().width() : tb->sizeHint().height();
+            max = std::max(max, size);
+        }
+
+        for(const auto tb : list)
+        {
+            // Set minimum width on horizontal toolbar, set minimum height for vertical.
+            (toolBar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
         }
     }
 }

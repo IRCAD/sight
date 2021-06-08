@@ -21,8 +21,50 @@
  ***********************************************************************/
 
 /**
- * @file ui/base/layoutManager/IToolBarLayoutManager.hpp
- * @brief This file defines the interface of the base class for managing a toolbar.
+ * @brief Defines the interface of the base class for managing a toolbar.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service uid="toolbar2" type="ui::base::IToolBar" autoConnect="false">
+       <gui>
+           <layout style="ToolButtonIconOnly" uniformSize="true">
+               <menuItem name="My item 2" style="check" icon="TutoGui/system.png" icon2="TutoGui/monkey.png" />
+               <menuItem name="My item 3" style="check" icon="TutoGui/system.png"/>
+               <separator />
+               <menuItem name="My item A" style="radio" icon="TutoGui/monkey.png"/>
+               <menuItem name="My item B" style="radio" icon="TutoGui/monkey.png"/>
+               <separator />
+               <menu name="My menu" />
+               <separator />
+               <editor />
+           </layout>
+       </gui>
+       <registry>
+           <menuItem sid="item2" />
+           <menuItem sid="item3" />
+           <menuItem sid="item4" />
+           <menuItem sid="item5" />
+           <menu sid="menu" />
+           <editor sid="editor" />
+       </registry>
+   </service>
+   @endcode
+ * @subsection Configuration Configuration
+ *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
+ *   - \b style : (optional, default=ToolButtonIconOnly) describe the style of the tool button
+ * (possible values: ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon
+ * /ToolButtonFollowStyle )
+ *   - \b uniformSize : (optional) set to true to uniform size of buttons to the wider one (default false).
+ *  - \<menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/\> :
+ *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
+ *   - \b style {check|radio} : give the style of the menu item.
+ *   - \b icon : give the path of the icon file
+ *   - \b icon2 : give the path of the icon file used when the item is checked
+ *  - \<menu name="My menu" /\> :
+ *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
+ *   - \b icon : give the path of the icon file
+ *  - \<editor\> : to add an editor in the toolbar
+ *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
  */
 
 #pragma once
@@ -114,53 +156,7 @@ public:
     UI_BASE_API virtual std::vector<ui::base::container::fwContainer::sptr> getContainers();
 
     /**
-     * @brief Initialize layout managers.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="toolbar2" type="ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
-     * autoConnect="false"
-     *>
-           <gui>
-               <layout style="ToolButtonIconOnly">
-                   <menuItem name="My item 2" style="check" icon="TutoGui/system.png"
-     * icon2="TutoGui/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="TutoGui/system.png"/>
-                   <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui/monkey.png"/>
-                   <separator />
-                   <menu name="My menu" />
-                   <separator />
-                   <editor />
-               </layout>
-           </gui>
-           <registry>
-               <menuItem sid="item2" />
-               <menuItem sid="item3" />
-               <menuItem sid="item4" />
-               <menuItem sid="item5" />
-               <menu sid="menu" />
-               <editor sid="editor" />
-           </registry>
-       </service>
-       @endcode
-     * This method analyzes the gui section of the configuration.
-     *
-     *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *   - \b style : (optional, default=ToolButtonIconOnly) describe the style of the tool button
-     * (possible values: ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon
-     * /ToolButtonFollowStyle )
-     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/\> :
-     *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
-     *   - \b style {check|radio} : give the style of the menu item.
-     *   - \b icon : give the path of the icon file
-     *   - \b icon2 : give the path of the icon file used when the item is checked
-     *  - \<menu name="My menu" /\> :
-     *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
-     *   - \b icon : give the path of the icon file
-     *  - \<editor\> : to add an editor in the toolbar
-     *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
+     * @brief Initialize layout managers & parse configuration.
      */
     UI_BASE_API virtual void initialize(ConfigurationType configuration);
 
@@ -222,6 +218,9 @@ protected:
 
     /// String to describe the tool button style
     std::string m_style {"ToolButtonIconOnly"};
+
+    ///If set to true (uniformSize="true"), button will be expended to match the wider one.
+    bool m_unifyButtonSize {false};
 };
 
 } // namespace layoutManager

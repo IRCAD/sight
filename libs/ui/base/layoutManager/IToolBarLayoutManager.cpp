@@ -67,8 +67,28 @@ void IToolBarLayoutManager::initialize(ConfigurationType configuration)
         else
         {
             SIGHT_ERROR(
-                "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`"
+                "`Style` attribute value must be `ToolButtonIconOnly` "
+                "or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` "
+                "or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`"
             );
+        }
+    }
+
+    if(configuration->hasAttribute("uniformSize"))
+    {
+        const auto value = configuration->getAttributeValue("uniformSize");
+
+        if(value == "true")
+        {
+            m_unifyButtonSize = true;
+        }
+        else if(value == "false")
+        {
+            m_unifyButtonSize = false;
+        }
+        else
+        {
+            SIGHT_ERROR("'uniformSize' attribute value should be 'true' of 'false'.");
         }
     }
 
