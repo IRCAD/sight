@@ -1101,3 +1101,45 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
     include(CPack)
 
 endfunction()
+
+# Order sight component list, according to build dependency tree
+function(order_sight_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
+    set(unordered_components ${SIGHT_UNORDERED_COMPONENTS})
+    set(ordered_components)
+
+    while(unordered_components)
+        foreach(component ${unordered_components})
+            set(resolved TRUE)
+
+            # Find all component dependencies
+            findTargetDependencies(${component} "${SIGHT_UNORDERED_COMPONENTS}" dependencies)
+
+            # Try to guess if we have an "_obj" target, in which case we must also add the "_obj" dependencies
+            set(component_obj "${component}_obj")
+            if(TARGET ${component_obj})
+                findTargetDependencies(${component_obj} "${SIGHT_UNORDERED_COMPONENTS}" component_dependencies)
+                list(APPEND dependencies ${component_dependencies})
+            endif()
+
+            # If we have dependencies, we check if all of them are not already in the ordered list
+            if(dependencies)
+                foreach(dependency ${dependencies})
+                    if(NOT ${dependency} IN_LIST ordered_components)
+                        set(resolved FALSE)
+                        break()
+                    endif()
+                endforeach()
+            endif()
+
+            # If all dependencies are already resolved, the component is also resolved
+            # Append it to the final list
+            if(resolved)
+                list(APPEND ordered_components ${component})
+                list(REMOVE_ITEM unordered_components ${component})
+            endif()
+        endforeach()
+    endwhile()
+
+    set(SIGHT_ORDERED_COMPONENTS ${ordered_components} PARENT_SCOPE)
+endfunction()
+
