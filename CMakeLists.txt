@@ -138,9 +138,8 @@ if(UNIX)
     endif()
 endif()
 
-if(SIGHT_BUILD_TESTS)
-    find_package(CppUnit QUIET REQUIRED)
-endif(SIGHT_BUILD_TESTS)
+# We always need CppUnit, no need to put that in subdirectories
+find_package(CppUnit QUIET REQUIRED)
 
 ########################################################################################################################
 # Default paths settings for libraries, modules and resources
