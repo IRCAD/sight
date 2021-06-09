@@ -751,8 +751,6 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             TARGETS ${FWPROJECT_NAME}
             EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
             RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         )
 
         # Add all targets to the build-tree export set
