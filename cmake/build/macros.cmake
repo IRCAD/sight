@@ -527,73 +527,74 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     get_header_file_install_destination()
     configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
-    set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
+    # export and install target
+    if(NOT ${FWPROJECT_NAME} MATCHES "^pch.*")
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+                FILES_MATCHING PATTERN "*.h"
+                                PATTERN "*.hpp"
+                                PATTERN "*.hxx"
+                                PATTERN "test/*" EXCLUDE)
+        set(TARGETS_TO_EXPORT ${FWPROJECT_NAME})
 
-    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            FILES_MATCHING PATTERN "*.h"
-                            PATTERN "*.hpp"
-                            PATTERN "*.hxx"
-                            PATTERN "test/*" EXCLUDE)
-    set(TARGETS_TO_EXPORT ${FWPROJECT_NAME})
-
-    if(${OBJECT_LIBRARY})
-        set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${TARGET_OBJECT_LIB})
-    endif()
-    install(
-        TARGETS ${TARGETS_TO_EXPORT} 
-        EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}
-    )
-
-    if(WIN32)
+        if(${OBJECT_LIBRARY})
+            set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${TARGET_OBJECT_LIB})
+        endif()
         install(
-            FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL
+            TARGETS ${TARGETS_TO_EXPORT} 
+            EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}
         )
+
+        if(WIN32)
+            install(
+                FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL
+            )
+        endif()
+
+        # Add all targets to the build-tree export set
+        export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
+                NAMESPACE ${SIGHT_REPOSITORY}::)
+
+        # Install sight_Project_Targets.cmake
+        install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+                FILE
+                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                NAMESPACE
+                    ${SIGHT_REPOSITORY}::
+                DESTINATION
+                    ${FWCONFIG_PACKAGE_LOCATION}
+        )
+        get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
+        set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )
+
+        # Add Sight targets dependencies
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
+            configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
+                            "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                            COPYONLY IMMEDIATE)
+        else()
+            # Create empty file
+            file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
+        endif()
+
+        # Install the sight_project_Dependencies.cmake
+        install(FILES
+                    "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                RENAME
+                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Dependencies.cmake
+                DESTINATION
+                    ${FWCONFIG_PACKAGE_LOCATION}
+        )
+
+        # Adds project into folder lib
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_MODULE_RC_DIR")
     endif()
-
-    # Add all targets to the build-tree export set
-    export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-            FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
-            NAMESPACE ${SIGHT_REPOSITORY}::)
-
-    # Install sight_Project_Targets.cmake
-    install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-            FILE
-                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
-            NAMESPACE
-                ${SIGHT_REPOSITORY}::
-            DESTINATION
-                ${FWCONFIG_PACKAGE_LOCATION}
-    )
-    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
-    set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )
-
-    # Add Sight targets dependencies
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
-        configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
-                        "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-                        COPYONLY IMMEDIATE)
-    else()
-        # Create empty file
-        file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
-    endif()
-
-    # Install the sight_project_Dependencies.cmake
-    install(FILES
-                "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-            RENAME
-                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Dependencies.cmake
-            DESTINATION
-                ${FWCONFIG_PACKAGE_LOCATION}
-    )
-
-    # Adds project into folder lib
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_MODULE_RC_DIR")
 
     if(SIGHT_ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
@@ -750,10 +751,10 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             TARGETS ${FWPROJECT_NAME}
             EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
             RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            ARCHIVE DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            
-            )
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        )
+
         # Add all targets to the build-tree export set
         export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
                 FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
