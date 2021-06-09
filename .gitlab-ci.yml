@@ -290,6 +290,7 @@ prebuild:windows:
     - |
       if ("${SIGHT_BUILD_PACKAGE}" -eq "ON") {
         ninja SightViewer_package
+        rd /S /Q "$env:CI_PROJECT_DIR/install"
         ninja install
         ninja package
       }
