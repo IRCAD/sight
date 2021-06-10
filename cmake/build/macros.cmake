@@ -4,6 +4,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
+if(WIN32)
+    set(VCPKG_APPLOCAL_DEPS OFF)
+endif()
+
 # Define global definitions for some external libraries
 
 # Boost
@@ -33,17 +37,23 @@ endif()
 
 # Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 macro(setExternalLibrariesDir)
-    if(VCPKG_TARGET_TRIPLET)
-        if(FW_BUILD_EXTERNAL)
-            if(WIN32)
-                set(FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${Sight_BINARY_DIR}")
-            else()
-                set(FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${Sight_LIBRARY_DIR}/..")
-            endif()
+    if(FW_BUILD_EXTERNAL)
+        if(WIN32)
+            set(FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${Sight_BINARY_DIR}")
+        else()
+            set(FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${Sight_LIBRARY_DIR}/..")
+        endif()
+    endif()
+
+    if(WIN32)
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            set(SIGHT_VCPKG_RUNTIME_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/bin")
+        else()
+            set(SIGHT_VCPKG_RUNTIME_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
         endif()
     endif()
 endmacro()
-
+    
 include(${FWCMAKE_INSTALL_FILES_DIR}/helper.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
@@ -1142,3 +1152,28 @@ function(order_sight_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONE
     set(SIGHT_ORDERED_COMPONENTS ${ordered_components} PARENT_SCOPE)
 endfunction()
 
+# Copy Ogre plugins in the build folder.
+# It is necessary for applications to run from the build directory.
+# For packaged applications, we use install_plugins.cmake
+macro(copy_ogre_plugins)
+    # Fixup VCPKG paths
+    if(WIN32)
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
+                get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
+            endif()
+        endif()
+
+        file(GLOB OGRE_PLUGINS
+            "${OGRE_PLUGIN_DIR}/*RenderSystem*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+            "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+            "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+        )
+
+        set(FW_OGRE_PLUGINS_DIR "${CMAKE_BINARY_DIR}/ogreplugins/")
+
+        # This copies the plugins into the build directory
+        file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
+        message("-- Copying Ogre Plugins [${OGRE_PLUGINS}] to: ${FW_OGRE_PLUGINS_DIR}")
+    endif()
+endmacro()

@@ -164,6 +164,15 @@ endforeach()
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 set_property(GLOBAL PROPERTY SIGHT_COMPONENTS "")
 
+# Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+setExternalLibrariesDir()
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
+else()
+set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+set(EXCLUDE_PATTERN ".*/debug/.*")
+endif()
+
 add_subdirectory(libs)
 add_subdirectory(modules)
 add_subdirectory(configs)
@@ -173,8 +182,6 @@ add_subdirectory(apps)
 add_subdirectory(tutorials)
 add_subdirectory(examples)
 
-# Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
-setExternalLibrariesDir()
 
 ########################################################################################################################
 # Export and install targets
