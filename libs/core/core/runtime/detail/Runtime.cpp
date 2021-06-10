@@ -111,6 +111,15 @@ void Runtime::unregisterModule(std::shared_ptr<Module> module)
 
 void Runtime::addModules(const std::filesystem::path& repository)
 {
+    for(const auto repo : m_repositories)
+    {
+        if(repo.second == repository)
+        {
+            // Avoid adding modules several times, but we don't consider this as an error for the sake of simplicity...
+            return;
+        }
+    }
+
     try
     {
         const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules(repository);

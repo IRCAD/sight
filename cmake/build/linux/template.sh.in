@@ -14,7 +14,7 @@ libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
 extdir="@FW_EXTERNAL_LIBRARIES_DIRS@"
 moduledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
-moduleopt="-B $moduledir"
+moduleopt="@SIGHT_EXTRA_MODULES@"
 
 # compute LD_LIBRARY_PATH
 if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
