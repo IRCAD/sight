@@ -333,14 +333,12 @@ service::IService::Config Config::parseService(
     // Worker key
     srvConfig.m_worker = srvElem.get<std::string>("<xmlattr>.worker", "");
 
-    boost::property_tree::ptree cfgElem = srvElem;
-
     // Get service configuration
     if(!config.empty())
     {
         const auto srvCfgFactory = service::extension::Config::getDefault();
         srvConfig.m_config = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
-        cfgElem            = core::runtime::Convert::toPropertyTree(srvConfig.m_config);
+        boost::property_tree::ptree cfgElem = core::runtime::Convert::toPropertyTree(srvConfig.m_config);
     }
     else
     {
@@ -350,12 +348,12 @@ service::IService::Config Config::parseService(
     }
 
     // Check if user did not bind a service to another service
-    auto serviceCfg = cfgElem.equal_range("service");
+    auto serviceCfg = srvElem.equal_range("service");
     SIGHT_ASSERT(
         errMsgHead + "Cannot bind a service to another service" + errMsgTail,
         serviceCfg.first == serviceCfg.second
     );
-    serviceCfg = cfgElem.equal_range("serviceList");
+    serviceCfg = srvElem.equal_range("serviceList");
     SIGHT_ASSERT(
         errMsgHead + "Cannot bind a service to another service" + errMsgTail,
         serviceCfg.first == serviceCfg.second
@@ -368,7 +366,7 @@ service::IService::Config Config::parseService(
     std::vector<std::pair<std::string, boost::property_tree::ptree> > objectCfgs;
     for(const auto& dataKeyword : s_DATA_KEYWORDS)
     {
-        auto objCfgs = cfgElem.equal_range(dataKeyword);
+        auto objCfgs = srvElem.equal_range(dataKeyword);
         for(auto objCfg = objCfgs.first ; objCfg != objCfgs.second ; ++objCfg)
         {
             objectCfgs.push_back(std::make_pair(objCfg->first, objCfg->second));
