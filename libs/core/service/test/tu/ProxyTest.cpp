@@ -30,6 +30,8 @@
 
 #include <service/registry/Proxy.hpp>
 
+#include <utest/wait.hpp>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ProxyTest);
 
@@ -128,7 +130,7 @@ void ProxyTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), slot3->getNumberOfConnections());
     sig->asyncEmit(3, 5);
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    fwTestWaitMacro(testObject.m_methodSum == 1 && testObject.m_methodSquare == 1 && testObject.m_methodDoNothing == 1);
 
     CPPUNIT_ASSERT_EQUAL(1, testObject.m_methodSum);
     CPPUNIT_ASSERT_EQUAL(1, testObject.m_methodSquare);
@@ -136,7 +138,7 @@ void ProxyTest::basicTest()
 
     sig2->asyncEmit(8, 2, 'x');
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    fwTestWaitMacro(testObject.m_methodSum == 2 && testObject.m_methodSquare == 2 && testObject.m_methodDoNothing == 2);
 
     CPPUNIT_ASSERT_EQUAL(2, testObject.m_methodSum);
     CPPUNIT_ASSERT_EQUAL(2, testObject.m_methodSquare);
