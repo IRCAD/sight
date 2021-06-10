@@ -1218,9 +1218,9 @@ void AppConfigTest::keyGroupTest()
 
         fwTestWaitMacro(
             !srv2->getWeakInput<data::Object>(
-                "dataGroup1#0"
+                "dataGroup0#1"
             ).expired() && data3 == srv2->getLockedInput<data::Object>(
-                "dataGroup1#0"
+                "dataGroup0#1"
             ).get_shared()
         );
 
