@@ -5,6 +5,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 if(WIN32)
+    # Do not automatically copy VCPKG dependencies into the output directory
     set(VCPKG_APPLOCAL_DEPS OFF)
 endif()
 
@@ -1054,7 +1055,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 ${CMAKE_COMMAND} -DDEPENDS="${DEPENDS}"
                                  -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
                                  -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins" 
-                                 -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/qt5"
+                                 -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/.."
                                  -DOGRE_PLUGIN_DIR="${OGRE_PLUGIN_DIR}"
                                  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
                                  -P "${FWCMAKE_RESOURCE_PATH}/install/windows/install_plugins.cmake"
@@ -1174,6 +1175,6 @@ macro(copy_ogre_plugins)
 
         # This copies the plugins into the build directory
         file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-        message("-- Copying Ogre Plugins [${OGRE_PLUGINS}] to: ${FW_OGRE_PLUGINS_DIR}")
+        message(STATUS "Copying Ogre Plugins ['${OGRE_PLUGINS}'] to: '${FW_OGRE_PLUGINS_DIR}'")
     endif()
 endmacro()
