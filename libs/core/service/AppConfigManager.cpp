@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -149,7 +149,10 @@ void AppConfigManager::create()
     this->createObjects(m_cfgElem);
     this->createConnections();
     const auto configTree = core::runtime::Convert::toPropertyTree(m_cfgElem);
-    this->createServices(configTree.get_child("config"));
+    if(configTree.count("config"))
+    {
+        this->createServices(configTree.get_child("config"));
+    }
 
     m_state = STATE_CREATED;
 }

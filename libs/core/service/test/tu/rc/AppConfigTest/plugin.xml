@@ -369,4 +369,35 @@
     </extension>
 
 
+    <extension implements="::sight::service::extension::AppConfig">
+        <id>objectConfigTest</id>
+        <desc>Test configuration for start and stop</desc>
+        <config>
+
+            <object uid="compo1Id" type="sight::data::Composite">
+                <item key="dataInComposite">
+                    <object uid="data2Id" type="sight::data::String">
+                        <value>Hello</value>
+                    </object>
+                </item>
+            </object>
+
+            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation" config="serviceConfigTest">
+                <in key="data1" uid="compo1Id" />
+            </service>
+
+            <start uid="TestService1Uid" />
+
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config">
+        <id>serviceConfigTest</id>
+        <service>sight::service::ut::TestServiceImplementation</service>
+        <desc>service configuration for unit test</desc>
+        <config>
+            <param1>value1</param1>
+            <param2>value2</param2>
+        </config>
+    </extension>
 </plugin>

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -338,7 +338,6 @@ service::IService::Config Config::parseService(
     {
         const auto srvCfgFactory = service::extension::Config::getDefault();
         srvConfig.m_config = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
-        boost::property_tree::ptree cfgElem = core::runtime::Convert::toPropertyTree(srvConfig.m_config);
     }
     else
     {
