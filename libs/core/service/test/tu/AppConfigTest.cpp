@@ -1390,6 +1390,7 @@ void AppConfigTest::parameterReplaceTest()
     CPPUNIT_ASSERT(srvInSubConfig->getIsUpdated());
 }
 
+//------------------------------------------------------------------------------
 
 void AppConfigTest::objectConfigTest()
 {
@@ -1421,8 +1422,6 @@ void AppConfigTest::objectConfigTest()
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
     CPPUNIT_ASSERT_EQUAL(std::string("value2"), config.get<std::string>("param2"));
 }
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
