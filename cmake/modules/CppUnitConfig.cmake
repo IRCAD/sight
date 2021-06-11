@@ -1,4 +1,8 @@
 
+if(CppUnit_FOUND OR CPPUNIT_FOUND)
+  return()
+endif()
+
 include(SelectLibraryConfigurations)
 
 find_path(CppUnit_INCLUDE_DIR TestCase.h PATH_SUFFIXES cppunit)

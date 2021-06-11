@@ -1,8 +1,8 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR} )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
 
 if(WIN32)
     # Do not automatically copy VCPKG dependencies into the output directory
@@ -298,22 +298,6 @@ macro(fwExec FWPROJECT_NAME)
         unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIRS)
         file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
             FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-
-        if(MSVC_IDE)
-            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
-            set(PROFILE "")
-            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
-            if(CMAKE_CL_64)
-                set(PLATFORM "x64")
-            else()
-                set(PLATFORM "Win32")
-            endif()
-            configure_file(
-                "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
-                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
-                IMMEDIATE @ONLY)
-        endif()
-
     endif()
 
     install(
@@ -446,22 +430,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
         endif()
     endif()
 
-    if(MSVC_IDE)
-        # create the launch config for the current test
-        set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
-        set(PROFILE "")
-        set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
-        include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
-        if(CMAKE_CL_64)
-            set(PLATFORM "x64")
-        else()
-            set(PLATFORM "Win32")
-        endif()
-        configure_file(
-            "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
-            "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
-            IMMEDIATE @ONLY)
-    endif()
 endmacro()
 
 macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
@@ -693,22 +661,6 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
 
-        if(MSVC_IDE)
-            # create the launch config for the current app
-            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/sightrun.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}/profile.xml")
-            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
-            include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
-            if(CMAKE_CL_64)
-                set(PLATFORM "x64")
-            else()
-                set(PLATFORM "Win32")
-            endif()
-            configure_file(
-                "${CMAKE_SOURCE_DIR}/cmake/build/project.vcxproj.user.in"
-                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
-                IMMEDIATE @ONLY)
-        endif()
         if(UNIX)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
