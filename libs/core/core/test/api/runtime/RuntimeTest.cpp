@@ -132,11 +132,17 @@ void RuntimeTest::testOperations()
     path = core::runtime::getModuleResourceFilePath("wrong::module::format/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
-    path = core::runtime::getLibraryResourceFilePath("fwLibrary/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary/plugin.xml", path);
+    path = core::runtime::getLibraryResourceFilePath("core/plugin.xsd");
+    CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
 
-    path = core::runtime::getResourceFilePath("fwLibrary/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary/plugin.xml", path);
+    path = core::runtime::getLibraryResourceFilePath("sight::core/plugin.xsd");
+    CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
+
+    path = core::runtime::getLibraryResourceFilePath("::sight::core/plugin.xsd");
+    CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
+
+    path = core::runtime::getResourceFilePath("core/plugin.xsd");
+    CPPUNIT_ASSERT_EQUAL(location / "core/plugin.xsd", path);
 
     path = core::runtime::getResourceFilePath("module_utest/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);

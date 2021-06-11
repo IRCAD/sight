@@ -207,24 +207,26 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init(int& argc, char** argv)
 {
+#ifdef WIN32
     // To get Qt initialized properly, we need to find its plugins
-    // This is difficult to do this, especially because the location of the deps is different whether
+    // This is difficult to do, especially because the location of the deps is different whether
     // you are executing the application in the build tree or in the install tree
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
-    // This work in all cases when we use our binpkgs. If we use the system libraries, the Qt.conf file
-    // of the system should do the job and the following might be useless.
-    std::filesystem::path qt5LibDir           = core::tools::os::getSharedLibraryPath("Qt5Core");
-    const std::filesystem::path qt5PluginsDir = qt5LibDir.remove_filename() / "qt5" / "plugins";
+    // This work in all cases when we use VCPkg.
+    std::filesystem::path qt5LibDir           = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    const std::filesystem::path qt5PluginsDir = (qt5LibDir.parent_path().parent_path()) / "plugins";
 
     QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));
     if(pluginDir.exists())
     {
+        SIGHT_INFO("Load Qt5 plugins path from: " + qt5PluginsDir.string());
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
     }
     else
     {
         SIGHT_ERROR("Could not determine qt5 plugins path, tried with: " + qt5PluginsDir.string());
     }
+#endif
 
     m_argc = argc;
     m_argv = argv;

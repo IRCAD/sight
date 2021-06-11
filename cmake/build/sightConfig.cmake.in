@@ -25,8 +25,6 @@ if(UNIX)
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
 endif()
 
-setExternalLibrariesDir()
-
 set(FW_INSTALL_PATH_SUFFIX "${SIGHT_REPOSITORY}")
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/${SIGHT_REPOSITORY})
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
@@ -40,6 +38,8 @@ file(TO_CMAKE_PATH "${sight_DIR}/../../../bin" Sight_BINARY_DIR)
 file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_LIB_PREFIX@" Sight_LIBRARY_DIR)
 file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULES_DIR)
 file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
+
+setExternalLibrariesDir()
 
 foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
     if(NOT ${sight_comp} MATCHES "_obj")

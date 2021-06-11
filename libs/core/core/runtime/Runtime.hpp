@@ -93,7 +93,8 @@ public:
      * @brief       Get the path where Modules and share folder are located.
      * @return      a vector of std path.
      */
-    CORE_API virtual std::vector<std::filesystem::path> getRepositoriesPath() const = 0;
+    CORE_API virtual std::vector<std::pair<std::filesystem::path,
+                                           std::filesystem::path> > getRepositoriesPath() const = 0;
 
     /**
      * @name    Modules

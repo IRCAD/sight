@@ -32,6 +32,7 @@
 #include <core/spyLog.hpp>
 
 #include <algorithm>
+#include <regex>
 #include <vector>
 
 namespace sight::core::runtime
@@ -202,10 +203,40 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
 std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& path) noexcept
 {
-    // Currently the library resources are at the same location than modules
-    // This might change in the future
-    Runtime* rntm = Runtime::getDefault();
-    return std::filesystem::weakly_canonical(rntm->getWorkingPath() / MODULE_RC_PREFIX / path);
+    // The path argument can be a filesystem path or a module identifier followed by a system paths, i.e.
+    // - viz_scene3d/media
+    // - sight::viz::scene3d/media
+    // The module identifier is the more robust choice since it can not be ambiguous
+    const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
+
+    // Extract the namespace
+    std::smatch match;
+    std::string pathStr = path.string();
+    std::string libNamespace;
+
+    // If we have sight::viz::scene3d/media
+    if(std::regex_match(pathStr, match, std::regex("(?:^:*)(\\w*)::(.*)")))
+    {
+        libNamespace = match[1].str(); // equals sight
+        pathStr      = match[2].str(); // equals viz::scene3d/media
+    }
+
+    pathStr = std::regex_replace(pathStr, std::regex("::"), "_"); // equals viz_scene3d/media
+
+    // The library resources are at the same location than modules
+    // Find a repo that matches the library namespace
+    const auto repositories = rntm.getRepositoriesPath();
+    for(auto repo : repositories)
+    {
+        std::filesystem::path lastPath = *(--repo.second.end());
+        if(lastPath.string() == libNamespace)
+        {
+            return repo.second / pathStr;
+        }
+    }
+
+    // Fallback, if we did not find anything. Especially useful at start for the default module path.
+    return std::filesystem::weakly_canonical(rntm.getWorkingPath() / MODULE_RC_PREFIX / pathStr);
 }
 
 //------------------------------------------------------------------------------
@@ -300,7 +331,7 @@ bool loadLibrary(const std::string& identifier)
     const auto repositories = rntm.getRepositoriesPath();
     for(auto repo : repositories)
     {
-        library->setSearchPath(repo);
+        library->setSearchPath(repo.first);
         try
         {
             library->load();

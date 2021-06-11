@@ -14,26 +14,7 @@ target_link_libraries(viz_scene3d PRIVATE ${OPENGL_LIBRARIES})
 # This is a hack to copy plugins inside the build directory
 # Most developers executes apps inside the build directory so this is done as a convenience
 
-# Fixup VCPKG paths
-if(WIN32)
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
-            get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
-        endif()
-    endif()
-
-    file(GLOB OGRE_PLUGINS
-        "${OGRE_PLUGIN_DIR}/*RenderSystem*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-    )
-
-    set(FW_OGRE_PLUGINS_DIR "${CMAKE_BINARY_DIR}/ogreplugins/")
-
-    # This copies the plugins into the build directory
-    file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-endif()
-
+copy_ogre_plugins()
 
 set(FWPROJECT_FULLNAME viz_scene3d)
 

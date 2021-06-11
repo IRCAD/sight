@@ -118,18 +118,6 @@ public:
 
     int defaultRun();
 
-    /// Get profile m_filePath
-    std::filesystem::path getFilePath() const
-    {
-        return m_filePath;
-    }
-
-    /// Set profile m_filePath
-    void setFilePath(const std::filesystem::path& _filePath)
-    {
-        m_filePath = _filePath;
-    }
-
     /**
      * @brief   Return profile CheckSingleInstance.
      */
@@ -161,8 +149,6 @@ private:
     StopperContainer m_stoppers;             ///< all managed stoppers
     InitializerContainer m_initializers;     ///< all managed initializers
     UninitializerContainer m_uninitializers; ///< all managed uninitializers
-
-    std::filesystem::path m_filePath; ///< xml parsed file used to generate profile
 
     RunCallbackType m_run;
 

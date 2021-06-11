@@ -111,13 +111,27 @@ void Runtime::unregisterModule(std::shared_ptr<Module> module)
 
 void Runtime::addModules(const std::filesystem::path& repository)
 {
+    for(const auto repo : m_repositories)
+    {
+        if(repo.second == repository)
+        {
+            // Avoid adding modules several times, but we don't consider this as an error for the sake of simplicity...
+            return;
+        }
+    }
+
     try
     {
         const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules(repository);
         std::for_each(modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1));
         static const std::regex expr("share[\\\\/]\\w*");
         const auto libRepoStr = std::regex_replace(repository.string(), expr, MODULE_LIB_PREFIX);
-        m_repositories.push_back(std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)));
+        m_repositories.push_back(
+            std::make_pair(
+                std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)),
+                repository
+            )
+        );
     }
     catch(const std::exception& exception)
     {
@@ -344,7 +358,7 @@ std::filesystem::path Runtime::getWorkingPath() const
 
 //------------------------------------------------------------------------------
 
-std::vector<std::filesystem::path> Runtime::getRepositoriesPath() const
+std::vector<std::pair<std::filesystem::path, std::filesystem::path> > Runtime::getRepositoriesPath() const
 {
     return m_repositories;
 }
