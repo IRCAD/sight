@@ -77,7 +77,7 @@ void Utils::loadResources()
         try
         {
             // Check file existence
-            const auto path = core::runtime::getResourceFilePath(std::filesystem::path(moduleName) / "resources.cfg");
+            const auto path = core::runtime::getResourceFilePath(moduleName + "/resources.cfg");
 
             if(!std::filesystem::exists(path))
             {
@@ -233,7 +233,7 @@ void Utils::addResourcesPath(const std::string& moduleName)
 
         root->initialise(false);
 
-        viz::scene3d::Utils::addResourcesPath("viz_scene3d");
+        viz::scene3d::Utils::addResourcesPath("sight::viz::scene3d");
 
         loadResources();
 
@@ -252,9 +252,6 @@ void Utils::addResourcesPath(const std::string& moduleName)
         // Add the material manager listener that allows us to generate OIT techniques
         s_oitMaterialListener = new viz::scene3d::compositor::MaterialMgrListener();
         ::Ogre::MaterialManager::getSingleton().addListener(s_oitMaterialListener);
-
-        SIGHT_WARN(" ");
-        SIGHT_WARN("###############################");
     }
 
     return root;
@@ -861,8 +858,6 @@ bool Utils::makePathsAbsolute(
                 {
                     const auto absPath = modulePath / currentPath;
                     output << key << "=" << absPath.string() << std::endl;
-
-                    SIGHT_WARN(" makePathsAbsolute " << key << " = " << absPath.string());
                 }
                 else
                 {

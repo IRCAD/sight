@@ -136,7 +136,7 @@ public:
     std::filesystem::path getWorkingPath() const final;
 
     /// @copydoc core::runtime::Runtime::getRepositoriesPath
-    std::vector<std::filesystem::path> getRepositoriesPath() const final;
+    std::vector<std::pair<std::filesystem::path, std::filesystem::path> > getRepositoriesPath() const final;
     //@}
 
     /**
@@ -292,8 +292,10 @@ private:
     ModuleContainer m_modules;                        ///< Contains all modules.
     PluginContainer m_plugins;                        ///< Contains all plugins.
 
-    std::filesystem::path m_workingPath;               ///< Main path where Modules and share folder are located.
-    std::vector<std::filesystem::path> m_repositories; ///< All paths containing modules, added from the CLI
+    std::filesystem::path m_workingPath; ///< Main path where Modules and share folder are located.
+
+    /// All paths as a pair of <binary path/resource path> containing modules, added from the CLI
+    std::vector<std::pair<std::filesystem::path, std::filesystem::path> > m_repositories;
 };
 
 } // namespace detail
