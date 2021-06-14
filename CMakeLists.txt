@@ -180,7 +180,7 @@ add_subdirectory(examples)
 ########################################################################################################################
 
 # the SIGHT_COMPONENTS global property contains all components, but unsorted. We can't use them as is.
-get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
+get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
 
 # Use the ordered list of components
 order_sight_components("${SIGHT_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
