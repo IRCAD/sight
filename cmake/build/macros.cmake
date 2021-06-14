@@ -947,13 +947,27 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Might be needed later to get ${OGRE_PLUGIN_DIR}
         find_package(OGRE REQUIRED)
     endif()
+
     get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
     foreach(APP ${SIGHT_APPS})
         get_target_property(APP_BINARY_DIR ${APP} BINARY_DIR)
+
+        # Add an install target for every app
+        add_custom_target(${APP}_install
+                          ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${APP_BINARY_DIR}/cmake_install.cmake
+        )
+        add_dependencies(${APP}_install ${APP})
+
+        # Compute all dependencies to find the imported components we need to copy
         set(IMPORTED_RC_DIRS "")
         set(IMPORTED_LIBS "")
         
-        findTargetDependencies(${APP} "${SIGHT_IMPORTED_COMPONENTS}" IMPORTED_DEPENDS)
+        findTargetDependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" ALL_DEPENDS)
+        foreach(DEP ${ALL_DEPENDS})
+            if(NOT ${DEP} IN_LIST SIGHT_COMPONENTS)
+                list(APPEND IMPORTED_DEPENDS ${DEP})
+            endif()
+        endforeach()
         foreach(DEP ${IMPORTED_DEPENDS})
             get_target_property(CONFIG ${DEP} IMPORTED_CONFIGURATIONS)
             get_target_property(LIB ${DEP} IMPORTED_LOCATION_${CONFIG})
@@ -969,12 +983,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
         list(REMOVE_DUPLICATES IMPORTED_RC_DIRS)
         list(REMOVE_DUPLICATES IMPORTED_LIBS)
-
-        # Add an install target for every app
-        add_custom_target(${APP}_install
-                          ${CMAKE_COMMAND} -DBUILD_TYPE=${CMAKE_BUILD_TYPE} -P ${APP_BINARY_DIR}/cmake_install.cmake
-        )
-        add_dependencies(${APP}_install ${APP})
         
         if(IMPORTED_RC_DIRS OR IMPORTED_LIBS)
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/install_imported.cmake.in ${APP_BINARY_DIR}/install_imported.cmake @ONLY)
@@ -987,6 +995,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             add_dependencies(${APP}_install ${APP}_install_imported)
         endif()
 
+        # Add a dependency on each install target of dependencies found in this project
         findTargetDependencies(${APP} "${SIGHT_COMPONENTS}" DEPENDS)
         foreach(DEP ${DEPENDS})
             if(NOT ${DEP} MATCHES "_obj")
