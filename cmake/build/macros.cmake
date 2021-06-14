@@ -881,10 +881,10 @@ function(findTargetDependencies TARGET TARGETS_FILTER RESULT_VAR)
     set(DEPENDENCY_LIST)
     set(RESULT "")
     list(APPEND DEPENDENCY_LIST ${TARGET})
+
     while(DEPENDENCY_LIST)
 
-        list(GET DEPENDENCY_LIST 0 DEPENDENCY)
-        list(REMOVE_AT DEPENDENCY_LIST 0 )
+        list(POP_BACK DEPENDENCY_LIST DEPENDENCY)
 
         if(NOT PROCESSED_${DEPENDENCY})
             get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
@@ -892,7 +892,7 @@ function(findTargetDependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(APPEND DEPENDS ${INTERFACE_DEPENDS})
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER)
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" MATCHES "_obj")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1069,17 +1069,10 @@ function(order_sight_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONE
             # Find all component dependencies
             findTargetDependencies(${component} "${SIGHT_UNORDERED_COMPONENTS}" dependencies)
 
-            # Try to guess if we have an "_obj" target, in which case we must also add the "_obj" dependencies
-            set(component_obj "${component}_obj")
-            if(TARGET ${component_obj})
-                findTargetDependencies(${component_obj} "${SIGHT_UNORDERED_COMPONENTS}" component_dependencies)
-                list(APPEND dependencies ${component_dependencies})
-            endif()
-
             # If we have dependencies, we check if all of them are not already in the ordered list
             if(dependencies)
                 foreach(dependency ${dependencies})
-                    if(NOT ${dependency} IN_LIST ordered_components)
+                    if(NOT ${dependency} IN_LIST ordered_components AND NOT "${dependency}" MATCHES "_obj")
                         set(resolved FALSE)
                         break()
                     endif()
