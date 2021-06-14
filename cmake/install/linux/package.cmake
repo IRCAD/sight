@@ -4,7 +4,7 @@ macro(linux_package PRJ_NAME)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
-    get_target_property(TARGET_TYPE ${FWPROJECT_NAME} SIGHT_TARGET_TYPE)
+    get_target_property(TARGET_TYPE ${SIGHT_TARGET} SIGHT_TARGET_TYPE)
 
     if("${TARGET_TYPE}" STREQUAL  "APP")
 
