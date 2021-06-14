@@ -8,8 +8,8 @@ macro(linux_package PRJ_NAME)
 
     if("${TARGET_TYPE}" STREQUAL  "APP")
 
-        set(LAUNCHER_PATH "bin/sightrun.bin-${SIGHT_VERSION}")
-        set(LAUNCHER "sightrun.bin-${SIGHT_VERSION}")
+        set(LAUNCHER_PATH "bin/sightrun.bin")
+        set(LAUNCHER "sightrun.bin")
         set(PROFILE_PATH "${PRJ_NAME}/profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
@@ -18,8 +18,8 @@ macro(linux_package PRJ_NAME)
         endif()
     elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
 
-        set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin-${SIGHT_VERSION}")
-        set(LAUNCHER "${PRJ_NAME}.bin-${SIGHT_VERSION}")
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin")
+        set(LAUNCHER "${PRJ_NAME}.bin")
         set(PROFILE_PATH "")
 
     elseif()
@@ -28,7 +28,7 @@ macro(linux_package PRJ_NAME)
 
     if(${PRJ_NAME} STREQUAL "sight")
         # Needed for fixup_bundle first argument
-        set(LAUNCHER_PATH "bin/sightrun.bin-${SIGHT_VERSION}")
+        set(LAUNCHER_PATH "bin/sightrun.bin")
     endif()
 
     # TODO: Re-enable the fixup for sight-deps only
@@ -57,7 +57,6 @@ macro(linux_package PRJ_NAME)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
-    set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.")
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")

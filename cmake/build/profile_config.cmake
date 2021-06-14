@@ -50,7 +50,7 @@ macro(profile_setup PROJECT)
             
             string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
             if(${CURRENT_REQUIREMENT} IN_LIST SIGHT_COMPONENTS)
-                set(REQ "${SIGHT_REPOSITORY}::${REQ}")
+                set(REQ "${PROJECT_NAME}::${REQ}")
             endif()
 
             # check if a moduleParam macro had been used in the CMakeLists.txt
@@ -76,7 +76,7 @@ macro(profile_setup PROJECT)
     foreach(CURRENT_MODULE ${START_MODULES})
         string(REPLACE "_" "::" MODULE ${CURRENT_MODULE})
         if(${CURRENT_MODULE} IN_LIST SIGHT_COMPONENTS)
-            set(MODULE "${SIGHT_REPOSITORY}::${MODULE}")
+            set(MODULE "${PROJECT_NAME}::${MODULE}")
         endif()
 
         set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")

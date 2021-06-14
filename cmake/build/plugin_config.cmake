@@ -20,7 +20,7 @@ function(plugin_setup PROJECT)
                                     -DPROJECT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
                                     -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
                                     -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_CURRENT_BINARY_DIR}"
-                                    -DSIGHT_REPOSITORY="${SIGHT_REPOSITORY}"
+                                    -DPROJECT_NAME="${PROJECT_NAME}"
                                     -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
         )
         list(APPEND PLUGIN_CONFIG_COMMAND_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/plugin_config.cmake"

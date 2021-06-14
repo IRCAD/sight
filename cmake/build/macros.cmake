@@ -123,8 +123,6 @@ macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
 endmacro()
 
 macro(initProject PRJ_NAME PRJ_TYPE)
-    project( ${PRJ_NAME} )
-
     set(FWPROJECT_NAME ${PRJ_NAME})
     set(PRJ_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -174,8 +172,6 @@ macro(configureProject FWPROJECT_NAME )
     else()
         set(BUILD_TARGET_NAME ${FWPROJECT_NAME})
     endif()
-
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${SIGHT_VERSION} SOVERSION ${SIGHT_API_VERSION})
 
     target_compile_definitions(${BUILD_TARGET_NAME} PRIVATE "${PROJECT_NAME_UPCASE}_EXPORTS")
 
@@ -487,11 +483,10 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
 
     configureProject( ${FWPROJECT_NAME} )
 
-    # Set interface properties
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${SIGHT_API_VERSION})
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
+    # Set version properties
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
 
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_${FWPROJECT_NAME})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
@@ -521,7 +516,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         endif()
         install(
             TARGETS ${TARGETS_TO_EXPORT} 
-            EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+            EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -535,16 +530,16 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         endif()
 
         # Add all targets to the build-tree export set
-        export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-                FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
-                NAMESPACE ${SIGHT_REPOSITORY}::)
+        export( EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}_${FWPROJECT_NAME}_Targets.cmake"
+                NAMESPACE ${PROJECT_NAME}::)
 
         # Install sight_Project_Targets.cmake
-        install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+        install(EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
                 FILE
-                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                    ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets.cmake
                 NAMESPACE
-                    ${SIGHT_REPOSITORY}::
+                    ${PROJECT_NAME}::
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -565,7 +560,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         install(FILES
                     "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
                 RENAME
-                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Dependencies.cmake
+                    ${PROJECT_NAME}_${FWPROJECT_NAME}_Dependencies.cmake
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -624,8 +619,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
 
         configureProject( ${FWPROJECT_NAME} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${SIGHT_API_VERSION})
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
     
         # create the config.hpp for the current module
         get_header_file_install_destination()
@@ -708,25 +702,25 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "module")                 
 
         # Only prefix with the repository name for modules
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_${FWPROJECT_NAME})
 
         install(
             TARGETS ${FWPROJECT_NAME}
-            EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+            EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
             RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
         )
 
         # Add all targets to the build-tree export set
-        export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
-                FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
-                NAMESPACE ${SIGHT_REPOSITORY}::)
+        export( EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}_${FWPROJECT_NAME}_Targets.cmake"
+                NAMESPACE ${PROJECT_NAME}::)
 
         # Install sight_Project_Targets.cmake
-        install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+        install(EXPORT ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets
                 FILE
-                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                    ${PROJECT_NAME}_${FWPROJECT_NAME}_Targets.cmake
                 NAMESPACE
-                    ${SIGHT_REPOSITORY}::
+                    ${PROJECT_NAME}::
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -945,7 +939,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         endif()
         get_target_property(DEPENDENCIES ${COMPONENT} MANUALLY_ADDED_DEPENDENCIES)
         list(FILTER DEPENDENCIES EXCLUDE REGEX "_rc")
-        list(TRANSFORM DEPENDENCIES PREPEND ${SIGHT_REPOSITORY}::)
+        list(TRANSFORM DEPENDENCIES PREPEND ${PROJECT_NAME}::)
         set_target_properties(${COMPONENT} PROPERTIES SIGHT_MODULE_DEPENDENCIES "${DEPENDENCIES}")
     endforeach()
 
@@ -1057,7 +1051,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
     set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
     set(CPACK_PACKAGE_NAME "Sight")
-    set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
     set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
     include(CPack)
