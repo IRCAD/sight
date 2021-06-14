@@ -1058,7 +1058,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 endfunction()
 
 # Order sight component list, according to build dependency tree
-function(order_sight_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
+function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
     set(unordered_components ${SIGHT_UNORDERED_COMPONENTS})
     set(ordered_components)
 
@@ -1116,3 +1116,17 @@ macro(copy_ogre_plugins)
         message(STATUS "Copying Ogre Plugins ['${OGRE_PLUGINS}'] to: '${FW_OGRE_PLUGINS_DIR}'")
     endif()
 endmacro()
+
+# Generates ordered component list of current project by order of dependency (no dependency first)
+# Print as STATUS ordered list of components.
+# Export in PARENT_SCOPE SIGHT_COMPONENTS variable.
+function(sight_generate_component_list SIGHT_COMPONENTS)
+
+    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
+
+    # Use the ordered list of components
+    order_components("${SIGHT_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
+    set(SIGHT_COMPONENTS "${SIGHT_ORDERED_COMPONENTS}" PARENT_SCOPE)
+    message(STATUS "${PROJECT_NAME} component list: ${SIGHT_COMPONENTS}")
+
+endfunction()

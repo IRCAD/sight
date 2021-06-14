@@ -154,7 +154,7 @@ else()
 endif()
 
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
-set_property(GLOBAL PROPERTY SIGHT_COMPONENTS "")
+set_property(GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS "")
 
 # Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
@@ -179,13 +179,8 @@ add_subdirectory(examples)
 # Export and install targets
 ########################################################################################################################
 
-# the SIGHT_COMPONENTS global property contains all components, but unsorted. We can't use them as is.
-get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
-
-# Use the ordered list of components
-order_sight_components("${SIGHT_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
-message("-- Sight Components: ${SIGHT_ORDERED_COMPONENTS}")
-set(SIGHT_COMPONENTS "${SIGHT_ORDERED_COMPONENTS}")
+# Will export SIGHT_COMPONENTS: list of all available components ordered by dependency (no dependency first).
+sight_generate_component_list(SIGHT_COMPONENTS)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in
                ${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake @ONLY)
