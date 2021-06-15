@@ -9,12 +9,12 @@ endif()
 function(generic_install)
 
     get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
-    set_property(GLOBAL PROPERTY SIGHT_APPS ${SIGHT_APPS};${FWPROJECT_NAME} )
+    set_property(GLOBAL PROPERTY SIGHT_APPS ${SIGHT_APPS};${SIGHT_TARGET} )
 
     if(WIN32)
-        win_package(${FWPROJECT_NAME})
+        win_package(${SIGHT_TARGET})
     elseif(UNIX)
-        linux_package(${FWPROJECT_NAME})
+        linux_package(${SIGHT_TARGET})
     endif()
 
 endfunction()

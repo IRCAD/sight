@@ -12,7 +12,7 @@ macro(win_package PRJ_NAME)
     if("${TYPE}" STREQUAL "APP")
         set(LAUNCHER "sightrun.exe")
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${FWPROJECT_NAME}\\\\profile.xml")
+        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${SIGHT_TARGET}\\\\profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher

@@ -23,11 +23,11 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_BUILD_TYPE STREQUAL "Rele
     message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release, RelWithDebInfo)")
 endif()
 
-project(sight)
-
-set(SIGHT_REPOSITORY "sight")
-set(SIGHT_VERSION "21.0.0")
-set(SIGHT_API_VERSION "21.0")
+project(sight 
+        VERSION 21.0.0
+        DESCRIPTION   "Surgical Image Guidance and Healthcare Toolkit"
+        HOMEPAGE_URL  "https://git.ircad.fr/sight/sight"
+)
 
 if(APPLE)
     message(FATAL_ERROR "macOS is not supported.")
@@ -145,7 +145,7 @@ find_package(CppUnit QUIET REQUIRED)
 # Default paths settings for libraries, modules and resources
 ########################################################################################################################
 
-set(FW_INSTALL_PATH_SUFFIX "${SIGHT_REPOSITORY}")
+set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 if(WIN32)
     set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
@@ -154,7 +154,7 @@ else()
 endif()
 
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
-set_property(GLOBAL PROPERTY SIGHT_COMPONENTS "")
+set_property(GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS "")
 
 # Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
@@ -179,25 +179,16 @@ add_subdirectory(examples)
 # Export and install targets
 ########################################################################################################################
 
-# the SIGHT_COMPONENTS global property contains all components, but unsorted. We can't use them as is.
-get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
-
-# Use the ordered list of components
-order_sight_components("${SIGHT_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
-message("-- Sight Components: ${SIGHT_ORDERED_COMPONENTS}")
-set(SIGHT_COMPONENTS "${SIGHT_ORDERED_COMPONENTS}")
+# Will export SIGHT_COMPONENTS: list of all available components ordered by dependency (no dependency first).
+sight_generate_component_list(SIGHT_COMPONENTS)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in
                ${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake @ONLY)
 
 # Create the sightConfigVersion file
-if(NOT "${GIT_TAG}" STREQUAL "" )
-  set(SIGHT_VERSION ${GIT_TAG})
-endif()
-
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
-  VERSION ${SIGHT_VERSION}
+  VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
