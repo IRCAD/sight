@@ -1128,14 +1128,14 @@ endmacro()
 
 # Generates ordered component list of current project by order of dependency (no dependency first)
 # Print as STATUS ordered list of components.
-# Export in PARENT_SCOPE SIGHT_COMPONENTS variable.
-function(sight_generate_component_list SIGHT_COMPONENTS)
+# Export in PARENT_SCOPE COMPONENTS variable.
+function(sight_generate_component_list COMPONENTS)
 
-    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
+    get_property(UNORDERED_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
 
     # Use the ordered list of components
-    order_components("${SIGHT_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
-    set(SIGHT_COMPONENTS "${SIGHT_ORDERED_COMPONENTS}" PARENT_SCOPE)
-    message(STATUS "${PROJECT_NAME} component list: ${SIGHT_COMPONENTS}")
+    order_components("${UNORDERED_COMPONENTS}" SIGHT_ORDERED_COMPONENTS)
+    message(STATUS "${PROJECT_NAME} component list: ${SIGHT_ORDERED_COMPONENTS}")
+    set(COMPONENTS "${SIGHT_ORDERED_COMPONENTS}" PARENT_SCOPE)
 
 endfunction()

@@ -179,8 +179,8 @@ add_subdirectory(examples)
 # Export and install targets
 ########################################################################################################################
 
-# Will export SIGHT_COMPONENTS: list of all available components ordered by dependency (no dependency first).
-sight_generate_component_list(SIGHT_COMPONENTS)
+# Will export COMPONENTS: list of all available components ordered by dependency (no dependency first).
+sight_generate_component_list(COMPONENTS)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in
                ${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake @ONLY)
@@ -359,4 +359,4 @@ else()
 endif()
 
 
-sight_create_package_targets("${SIGHT_COMPONENTS}" "")
+sight_create_package_targets("${COMPONENTS}" "")
