@@ -313,18 +313,12 @@ void SPacsConfigurationEditor::pingPACS()
 
             if(success)
             {
-                const auto notif = this->signal<service::IService::SuccessNotifiedSignalType>(
-                    service::IService::s_SUCCESS_NOTIFIED_SIG
-                );
-                notif->asyncEmit("Ping succeeded!");
+                this->notify(NotificationType::INFO,"Ping succeeded!");
                 SIGHT_INFO("Ping succeeded")
             }
             else
             {
-                const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-                    service::IService::s_FAILURE_NOTIFIED_SIG
-                );
-                notif->asyncEmit("Ping failed!");
+                this->notify(NotificationType::FAILURE,"Ping failed!");
                 SIGHT_INFO("Ping failed")
             }
         });

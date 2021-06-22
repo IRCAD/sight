@@ -132,10 +132,7 @@ void SSeriesPuller::updating()
 
     if(selectedSeries->empty())
     {
-        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
-            service::IService::s_INFO_NOTIFIED_SIG
-        );
-        notif->asyncEmit("No series selected");
+        this->notify(NotificationType::INFO, "No series selected");
     }
     else
     {
@@ -198,10 +195,7 @@ void SSeriesPuller::pullSeries()
     // Pull series.
     if(!pullSeriesVector.empty())
     {
-        const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
-            service::IService::s_INFO_NOTIFIED_SIG
-        );
-        infoNotif->asyncEmit("Downloading series...");
+        this->notify(NotificationType::INFO, "Downloading series...");
 
         // Notify Progress Dialog.
         m_sigProgressStarted->asyncEmit(m_progressbarId);
@@ -226,10 +220,7 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal<service::IService::FailureNotifiedSignalType>(
-                service::IService::s_FAILURE_NOTIFIED_SIG
-            );
-            failureNotif->asyncEmit("Unable to connect to the PACS");
+            this->notify(NotificationType::FAILURE, "Unable to connect to the PACS");
             return;
         }
 
@@ -280,11 +271,7 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal<service::IService::FailureNotifiedSignalType>(
-                service::IService::s_FAILURE_NOTIFIED_SIG
-            );
-            failureNotif->asyncEmit("Unable to execute query");
-
+            this->notify(NotificationType::FAILURE, "Unable to execute query");
             success = false;
         }
 
@@ -300,30 +287,19 @@ void SSeriesPuller::pullSeries()
     }
     else
     {
-        const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
-            service::IService::s_INFO_NOTIFIED_SIG
-        );
-        infoNotif->asyncEmit("Series already downloaded");
-
+        this->notify(NotificationType::INFO, "Series already downloaded");
         return;
     }
 
     // Read series if there is no error.
     if(success)
     {
-        const auto sucessNotif = this->signal<service::IService::SuccessNotifiedSignalType>(
-            service::IService::s_SUCCESS_NOTIFIED_SIG
-        );
-        sucessNotif->asyncEmit("Series downloaded");
-
+        this->notify(NotificationType::SUCCESS, "Series downloaded");
         this->readLocalSeries(selectedSeriesVector);
     }
     else
     {
-        const auto failNotif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        failNotif->asyncEmit("Series download failed");
+        this->notify(NotificationType::FAILURE, "Series download failed");
     }
 
     // Notify Progress Dialog.
@@ -343,22 +319,12 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
     // Create temporary series helper.
     data::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
-    const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
-        service::IService::s_INFO_NOTIFIED_SIG
-    );
-    const auto failNotif = this->signal<service::IService::FailureNotifiedSignalType>(
-        service::IService::s_FAILURE_NOTIFIED_SIG
-    );
-    const auto sucessNotif = this->signal<service::IService::SuccessNotifiedSignalType>(
-        service::IService::s_SUCCESS_NOTIFIED_SIG
-    );
-
     for(const data::Series::sptr& series : _selectedSeries)
     {
         const std::string modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
         {
-            infoNotif->asyncEmit("Unable to read the modality '" + modality + "'");
+            this->notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
             return;
         }
 
@@ -371,7 +337,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                selectedSeriesUID
            ) == alreadyLoadedSeries.end())
         {
-            infoNotif->asyncEmit("Reading serie...");
+            this->notify(NotificationType::INFO, "Reading series...");
 
             // Clear temporary series.
             readerSeriesHelper.clear();
@@ -383,7 +349,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             // Merge series.
             if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
             {
-                sucessNotif->asyncEmit("Serie read");
+                this->notify(NotificationType::SUCCESS, "Series read");
 
                 // Add the series to the local series vector.
                 if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
@@ -397,7 +363,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             }
             else
             {
-                failNotif->asyncEmit("Serie read failed");
+                this->notify(NotificationType::FAILURE, "Failed to read series");
             }
         }
     }
@@ -417,10 +383,7 @@ void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
             {
                 m_localSeries.erase(it);
 
-                const auto infoNotif = this->signal<service::IService::InfoNotifiedSignalType>(
-                    service::IService::s_INFO_NOTIFIED_SIG
-                );
-                infoNotif->asyncEmit("Local series deleted");
+                this->notify(NotificationType::INFO, "Local series deleted");
             }
         }
     }

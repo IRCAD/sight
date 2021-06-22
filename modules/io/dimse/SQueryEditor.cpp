@@ -269,10 +269,7 @@ void SQueryEditor::executeQueryAsync()
     }
     else
     {
-        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
-            service::IService::s_INFO_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Already querying");
+        this->notify(NotificationType::INFO, "Already querying");
         return;
     }
 }
@@ -303,10 +300,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Can't connect to the PACS");
+        this->notify(NotificationType::FAILURE, "Can't connect to the PACS");
         m_isQuerying = false;
         return;
     }
@@ -535,10 +529,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Can't execture query");
+        this->notify(NotificationType::FAILURE, "Can't execute query");
     }
 
     if(seriesEnquirer->isConnectedToPacs())

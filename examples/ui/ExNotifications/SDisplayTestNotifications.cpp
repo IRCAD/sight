@@ -157,29 +157,18 @@ void SDisplayTestNotifications::updating()
         // Notification will always be displayed at the same place,
         // and will be queued if several notifications are displayed at the same time.
 
+        const std::string message = "Notification Test !";
         if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
         {
-            auto notif = this->signal<service::IService::SuccessNotifiedSignalType>(
-                service::IService::s_SUCCESS_NOTIFIED_SIG
-            );
-
-            notif->asyncEmit("Notification Test !");
+            this->notify(NotificationType::SUCCESS, message);
         }
         else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
         {
-            auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-                service::IService::s_FAILURE_NOTIFIED_SIG
-            );
-
-            notif->asyncEmit("Notification Test !");
+            this->notify(NotificationType::FAILURE, message);
         }
         else
         {
-            auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
-                service::IService::s_INFO_NOTIFIED_SIG
-            );
-
-            notif->asyncEmit("Notification Test !");
+            this->notify(NotificationType::INFO, message);
         }
     }
     else

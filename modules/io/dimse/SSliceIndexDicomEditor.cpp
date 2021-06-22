@@ -269,10 +269,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Unable to connect to PACS");
+        this->notify(NotificationType::FAILURE, "Unable to connect to PACS");
     }
 
     const auto dicomSeries = this->getLockedInOut<data::DicomSeries>(s_DICOMSERIES_INOUT);
@@ -313,19 +310,13 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-                service::IService::s_FAILURE_NOTIFIED_SIG
-            );
-            notif->asyncEmit("No instance found");
+            this->notify(NotificationType::FAILURE, "No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Unable to execute query");
+        this->notify(NotificationType::FAILURE, "Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& _e)
     {
@@ -355,10 +346,7 @@ void SSliceIndexDicomEditor::readSlice(
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        const auto notif = this->signal<service::IService::InfoNotifiedSignalType>(
-            service::IService::s_INFO_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Unable to read the modality '" + modality + "'");
+        this->notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
         return;
     }
 
@@ -416,10 +404,7 @@ void SSliceIndexDicomEditor::readSlice(
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        const auto notif = this->signal<service::IService::FailureNotifiedSignalType>(
-            service::IService::s_FAILURE_NOTIFIED_SIG
-        );
-        notif->asyncEmit("Unable to read the image");
+        this->notify(NotificationType::FAILURE, "Unable to read the image");
     }
 }
 
