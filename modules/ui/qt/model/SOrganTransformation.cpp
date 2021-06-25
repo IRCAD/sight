@@ -270,7 +270,7 @@ void SOrganTransformation::onResetClick()
             pTmpTrMesh->getField<data::Matrix4>(s_MATRIX_FIELD_NAME);
         if(pTmpMat)
         {
-            geometry::data::identity(pTmpMat);
+            geometry::data::identity(*pTmpMat);
             this->notitfyTransformationMatrix(pTmpMat);
         }
     }

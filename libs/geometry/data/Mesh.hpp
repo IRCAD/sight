@@ -47,21 +47,21 @@ public:
     /**
      * @brief Initialize 'rand' seed
      */
-    DATA_API static void initRand();
+    GEOMETRY_DATA_API static void initRand();
 
     /**
      * @brief Generate cell normals for the mesh.
      *
      * @param[out]  mesh data::Mesh structure to fill with cell normals.
      */
-    DATA_API static void generateCellNormals(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void generateCellNormals(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Generate point normals for the mesh.
      *
      * @param[out]  mesh data::Mesh structure to fill with cell normals.
      */
-    DATA_API static void generatePointNormals(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void generatePointNormals(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Shake Array of Normals.
@@ -72,7 +72,7 @@ public:
      * @param[out]  array mesh's array containing normals.
      * @deprecated This method will be removed because mesh arrays can no longer be accessed.
      */
-    [[deprecated("will be removed in sight 22.0")]] DATA_API static void shakeNormals(
+    [[deprecated("will be removed in sight 22.0")]] GEOMETRY_DATA_API static void shakeNormals(
         sight::data::Array::sptr array
     );
 
@@ -81,35 +81,35 @@ public:
      *
      * @param[out]  mesh data::Mesh structure to shake normals.
      */
-    DATA_API static void shakePointNormals(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void shakePointNormals(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Shake cell Normals.
      *
      * @param[out]  mesh data::Mesh structure to shake normals.
      */
-    DATA_API static void shakeCellNormals(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void shakeCellNormals(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Shake points of the mesh.
      *
      * @param[out]  mesh data::Mesh structure to shake.
      */
-    DATA_API static void shakePoint(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void shakePoint(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Colorize mesh (vertex point color).
      *
      * @param[in]  mesh data::Mesh mesh structure to colorize.
      */
-    DATA_API static void colorizeMeshPoints(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void colorizeMeshPoints(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief Colorize mesh (cell color).
      *
      * @param[in]  mesh data::Mesh mesh structure to colorize.
      */
-    DATA_API static void colorizeMeshCells(sight::data::Mesh::sptr mesh);
+    GEOMETRY_DATA_API static void colorizeMeshCells(sight::data::Mesh::sptr mesh);
 
     /**
      * @brief
@@ -117,7 +117,7 @@ public:
      * @param[in]  mesh data::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellTypes cell);
+    GEOMETRY_DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellTypes cell);
 
     /**
      * @brief
@@ -125,24 +125,24 @@ public:
      * @param[in]  mesh data::Mesh mesh structure to find cell type.
      * @param[in]  cell CellType to find in mesh (POINT, EDGE, TRAINGLE, ...).
      */
-    DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellType cell);
+    GEOMETRY_DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellType cell);
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
-    DATA_API static void transform(
+    GEOMETRY_DATA_API static void transform(
         sight::data::Mesh::csptr inMesh,
         sight::data::Mesh::sptr outMesh,
-        sight::data::Matrix4::csptr t
+        const sight::data::Matrix4& t
     );
 
     /// Apply a transformation 4x4 on a mesh
-    DATA_API static void transform(sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t);
+    GEOMETRY_DATA_API static void transform(sight::data::Mesh::sptr mesh, const sight::data::Matrix4& t);
 
     /**
      * @brief Colorize the mesh points with the given color
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshPoints(
+    GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& mesh,
         const std::uint8_t colorR,
         const std::uint8_t colorG,
@@ -155,7 +155,7 @@ public:
      * @pre point color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshPoints(
+    GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& _mesh,
         const std::vector<size_t>& _vectorNumTriangle,
         const std::uint8_t _colorR,
@@ -169,7 +169,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshCells(
+    GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
         const std::uint8_t colorR,
         const std::uint8_t colorG,
@@ -181,7 +181,7 @@ public:
      * @pre cell color array must be allocated
      * @pre mesh must only contain triangle
      */
-    DATA_API static void colorizeMeshCells(
+    GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
         const std::vector<size_t>& triangleIndexVector,
         const std::uint8_t colorR,
@@ -194,7 +194,7 @@ public:
      * @brief Return true if the mesh is closed.
      * The result is computed for each call.
      */
-    DATA_API static bool isClosed(const sight::data::Mesh::csptr& mesh);
+    GEOMETRY_DATA_API static bool isClosed(const sight::data::Mesh::csptr& mesh);
 };
 
 } // namespace sight::geometry::data

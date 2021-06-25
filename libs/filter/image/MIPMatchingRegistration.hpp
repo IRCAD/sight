@@ -165,7 +165,7 @@ void MIPMatchingRegistration<PIX>::registerImage(
     if(fixedVoxelVolume < movingVoxelVolume)
     {
         auto inverseTransform = data::Matrix4::New();
-        geometry::data::invert(_transform, inverseTransform);
+        geometry::data::invert(*_transform, *inverseTransform);
 
         fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
     }
@@ -187,13 +187,13 @@ void MIPMatchingRegistration<PIX>::registerImage(
 
     const std::array<double, 3> res {{transY[0], transX[1], transY[1]}};
 
-    data::Matrix4::sptr translation = data::Matrix4::New();
+    data::Matrix4 translation;
     for(std::uint8_t i = 0 ; i != 3 ; ++i)
     {
-        translation->setCoefficient(i, 3, res[i]);
+        translation.setCoefficient(i, 3, res[i]);
     }
 
-    geometry::data::multiply(translation, _transform, _transform);
+    geometry::data::multiply(translation, *_transform, *_transform);
 }
 
 //------------------------------------------------------------------------------

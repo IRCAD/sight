@@ -34,16 +34,16 @@ namespace sight::geometry::data
 //------------------------------------------------------------------------------
 
 bool invert(
-    const ::sight::data::Matrix4::csptr& _input,
-    ::sight::data::Matrix4::sptr& _output
+    const ::sight::data::Matrix4& _input,
+    ::sight::data::Matrix4& _output
 )
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
-    const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input->getCoefficients().data());
+    const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input.getCoefficients().data());
     const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
 
-    auto& coefs = _output->getCoefficients();
+    auto& coefs = _output.getCoefficients();
     for(size_t i = 0 ; i < 4 ; ++i)
     {
         const size_t rowDst          = i * 4;
@@ -61,20 +61,20 @@ bool invert(
 // ----------------------------------------------------------------------------
 
 void multiply(
-    const ::sight::data::Matrix4::csptr& _trfA,
-    const ::sight::data::Matrix4::csptr& _trfB,
-    ::sight::data::Matrix4::sptr& _output
+    const sight::data::Matrix4& _trfA,
+    const sight::data::Matrix4& _trfB,
+    sight::data::Matrix4& _output
 )
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
-    const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA->getCoefficients().data());
-    const ::glm::dmat4x4 matB = ::glm::make_mat4<double>(_trfB->getCoefficients().data());
+    const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA.getCoefficients().data());
+    const ::glm::dmat4x4 matB = ::glm::make_mat4<double>(_trfB.getCoefficients().data());
 
     const ::glm::dmat4x4 matC = matB * matA;
 
-    auto& coefs = _output->getCoefficients();
+    auto& coefs = _output.getCoefficients();
     for(size_t i = 0 ; i < 4 ; ++i)
     {
         const size_t rowDst          = i * 4;
@@ -89,13 +89,13 @@ void multiply(
 
 // ----------------------------------------------------------------------------
 
-void identity(::sight::data::Matrix4::sptr& _trf)
+void identity(sight::data::Matrix4& _trf)
 {
     for(size_t i = 0 ; i < 4 ; ++i)
     {
         for(size_t j = 0 ; j < 4 ; ++j)
         {
-            _trf->setCoefficient(i, j, i == j ? 1 : 0);
+            _trf.setCoefficient(i, j, i == j ? 1 : 0);
         }
     }
 }
@@ -103,17 +103,17 @@ void identity(::sight::data::Matrix4::sptr& _trf)
 // ----------------------------------------------------------------------------
 
 void multiply(
-    const ::sight::data::Matrix4::csptr& _trf,
-    const ::sight::data::Point::csptr& _input,
-    ::sight::data::Point::sptr& _output
+    const sight::data::Matrix4& _trf,
+    const sight::data::Point& _input,
+    sight::data::Point& _output
 )
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
     // and perform the inverse multiplication
-    const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf->getCoefficients().data());
+    const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf.getCoefficients().data());
 
-    const auto& inCoord = _input->getCoord();
+    const auto& inCoord = _input.getCoord();
     ::glm::dvec4 in;
     in[0] = inCoord[0];
     in[1] = inCoord[1];
@@ -122,17 +122,17 @@ void multiply(
 
     ::glm::dvec4 out          = in * mat;
     std::array<double, 3> res = {{out[0], out[1], out[2]}};
-    _output->setCoord(res);
+    _output.setCoord(res);
 }
 
 // ----------------------------------------------------------------------------
 
-bool isIdentity(const ::sight::data::Matrix4::csptr& _trf, const double _epsilon)
+bool isIdentity(const ::sight::data::Matrix4& _trf, const double _epsilon)
 {
-    static const ::sight::data::Matrix4::sptr s_IDENTITY = ::sight::data::Matrix4::New();
+    static const ::sight::data::Matrix4 s_IDENTITY;
 
-    const ::sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
-    const ::sight::data::Matrix4::TMCoefArray& arrayTrf = _trf->getCoefficients();
+    const ::sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY.getCoefficients();
+    const ::sight::data::Matrix4::TMCoefArray& arrayTrf = _trf.getCoefficients();
 
     for(size_t i = 0 ; i < arrayID.size() ; ++i)
     {

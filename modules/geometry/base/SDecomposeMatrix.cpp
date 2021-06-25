@@ -100,7 +100,7 @@ void SDecomposeMatrix::updating()
     if(rotation)
     {
         data::mt::ObjectWriteLock rotLock(rotation);
-        sight::geometry::data::identity(rotation);
+        sight::geometry::data::identity(*rotation);
         sight::geometry::data::setTF3DFromMatrix(rotation, orientationMat);
 
         auto rotSig = rotation->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
@@ -110,7 +110,7 @@ void SDecomposeMatrix::updating()
     if(translationMat)
     {
         data::mt::ObjectWriteLock transLock(translationMat);
-        sight::geometry::data::identity(translationMat);
+        sight::geometry::data::identity(*translationMat);
         for(size_t i = 0 ; i < 3 ; ++i)
         {
             translationMat->setCoefficient(i, 3, translation[i]);
@@ -124,7 +124,7 @@ void SDecomposeMatrix::updating()
     if(scaleMat)
     {
         data::mt::ObjectWriteLock scaleLock(scaleMat);
-        sight::geometry::data::identity(scaleMat);
+        sight::geometry::data::identity(*scaleMat);
         for(size_t i = 0 ; i < 3 ; ++i)
         {
             for(size_t j = 0 ; j < 3 ; j++)

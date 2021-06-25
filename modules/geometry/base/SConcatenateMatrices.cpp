@@ -36,8 +36,8 @@
 namespace sight::module::geometry::base
 {
 
-static const service::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
-static const service::IService::KeyType s_OUTPUT             = "output";
+const service::IService::KeyType SConcatenateMatrices::s_MATRIX_GROUP_INPUT = "matrix";
+const service::IService::KeyType SConcatenateMatrices::s_OUTPUT             = "output";
 
 // ----------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ void SConcatenateMatrices::configuring()
     std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
     SIGHT_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 
-    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INOUT);
+    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INPUT);
 
     std::vector<ConfigurationType> matrixCfgs = inCfgs[0]->find("key");
 
@@ -86,29 +86,26 @@ void SConcatenateMatrices::stopping()
 
 void SConcatenateMatrices::updating()
 {
-    auto outputMatrix = this->getInOut<data::Matrix4>(s_OUTPUT);
+    auto outputMatrix = m_output.lock();
     SIGHT_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
     {
-        data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
+        sight::geometry::data::identity(*outputMatrix);
 
-        sight::geometry::data::identity(outputMatrix);
-
-        auto inverse = data::Matrix4::New();
+        data::Matrix4 inverse;
 
         size_t index = 0;
         for(const bool invertCurrentMatrix : m_invertVector)
         {
-            auto inputMatrix = this->getInput<data::Matrix4>(s_MATRIX_GROUP_INOUT, index++);
-            data::mt::ObjectReadLock inputMatrixLock(inputMatrix);
+            auto inputMatrix = m_matrices[index++].lock();
 
             if(invertCurrentMatrix)
             {
-                sight::geometry::data::invert(inputMatrix, inverse);
-                sight::geometry::data::multiply(outputMatrix, inverse, outputMatrix);
+                sight::geometry::data::invert(*inputMatrix, inverse);
+                sight::geometry::data::multiply(*outputMatrix, inverse, *outputMatrix);
             }
             else
             {
-                sight::geometry::data::multiply(outputMatrix, inputMatrix, outputMatrix);
+                sight::geometry::data::multiply(*outputMatrix, *inputMatrix, *outputMatrix);
             }
         }
     }
@@ -126,7 +123,7 @@ service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() 
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MATRIX_GROUP_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

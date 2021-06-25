@@ -521,7 +521,7 @@ void Mesh::shakePoint(sight::data::Mesh::sptr mesh)
 void Mesh::transform(
     sight::data::Mesh::csptr inMesh,
     sight::data::Mesh::sptr outMesh,
-    sight::data::Matrix4::csptr t
+    const sight::data::Matrix4& t
 )
 {
     const auto inDumpLock  = inMesh->lock();
@@ -532,7 +532,7 @@ void Mesh::transform(
     auto itr          = outMesh->begin<sight::data::iterator::PointIterator>();
     const auto itrEnd = outMesh->end<sight::data::iterator::PointIterator>();
 
-    const ::glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
+    const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
     [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
     SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
@@ -586,7 +586,7 @@ void Mesh::transform(
 
 //------------------------------------------------------------------------------
 
-void Mesh::transform(sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t)
+void Mesh::transform(sight::data::Mesh::sptr mesh, const sight::data::Matrix4& t)
 {
     Mesh::transform(mesh, mesh, t);
 }
