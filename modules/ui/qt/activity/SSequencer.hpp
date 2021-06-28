@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2016-2021 IRCAD France
- * Copyright (C) 2016-2019 IHU Strasbourg
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -45,10 +45,17 @@ namespace activity
  * The order of the activities is given in the configuration.
  *
  * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
- * stored in the current SeriesDB.
+ * stored in the current SeriesDB. By default all the data are stored, you can to backward and forward as you want in
+ * the existing activities. Using the tag 'clearActivities', you can remove the last activities when going backward to
+ * force the user to re-generate the data.
  *
  * @warning If an activity can not be launched with the existing parameters, the signal 'dataRequired' is emitted. It
  * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
+ *
+ * @note If the inout SeriesDB already contains activities, their are parsed and the sequencer open on the last
+ * activities. Be careful to store them in the right order.
+ *
+ * @warning If the SeriesDB contains other series (or unkonwn activities), they are removed with a simple log error.
  *
  * @section Signal Signal
  * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
@@ -73,6 +80,7 @@ namespace activity
         <activity id="..." name="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
+        <clearActivities>false</cleanActivities>
         <clear>#FFFFFF</clear>
         <theme>#FF00FF</theme>
         <accent>#FF00FF</accent>
@@ -95,7 +103,9 @@ namespace activity
  *     - \b id: id of the activities to launch. The first activity in the list is the first that will be launched.
  *     - \b name(optional): name of the activity to display in the editor. If it is empty, the the activity's will be
  *          used
- * - \b theme (optional, lihgt/dark): the global theme used by the sequencer.
+ * - \b clearActivities (optional, default: false): define if the activities and their requirements should be removed
+ * when going backward.
+ * - \b theme (optional, light/dark): the global theme used by the sequencer.
  * - \b clear (optional): the color of the opengl background scene.
  * - \b accent (optional): the accent color used by the sequencer.
  * - \b foreground (optional): the foreground color used by the sequencer.
@@ -178,15 +188,23 @@ private:
     /// Invoke 'enableActivity' method in Qml file
     void enableActivity(int index);
 
+    /// Invoke 'disableActivity' method in Qml file
+    void disableActivity(int index);
+
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;
     EnabledPreviousSignalType::sptr m_sigEnabledPrevious;
     EnabledNextSignalType::sptr m_sigEnabledNext;
 
+    /// List of the activities
     std::vector<std::string> m_activityNames;
 
     QPointer<QQuickWidget> m_widget;
 
+    /// Define if the activities should be cleared when going backward
+    bool m_clearActivities {false};
+
+    /// Colors used to customize sequencer
     std::string m_theme;
     std::string m_accent;
     std::string m_clear;

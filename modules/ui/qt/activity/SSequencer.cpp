@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2016-2021 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -60,13 +60,14 @@ const core::com::Slots::SlotKeyType s_NEXT_SLOT       = "next";
 const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 const core::com::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
 
-static const std::string s_THEME_CONFIG      = "theme";
-static const std::string s_CLEAR_CONFIG      = "clear";
-static const std::string s_ACCENT_CONFIG     = "accent";
-static const std::string s_FOREGROUND_CONFIG = "foreground";
-static const std::string s_BACKGROUND_CONFIG = "background";
-static const std::string s_PRIMARY_CONFIG    = "primary";
-static const std::string s_ELEVATION_CONFIG  = "elevation";
+static const std::string s_CLEAR_ACTIVITIES_CONFIG = "clearActivities";
+static const std::string s_THEME_CONFIG            = "theme";
+static const std::string s_CLEAR_CONFIG            = "clear";
+static const std::string s_ACCENT_CONFIG           = "accent";
+static const std::string s_FOREGROUND_CONFIG       = "foreground";
+static const std::string s_BACKGROUND_CONFIG       = "background";
+static const std::string s_PRIMARY_CONFIG          = "primary";
+static const std::string s_ELEVATION_CONFIG        = "elevation";
 
 //------------------------------------------------------------------------------
 
@@ -105,6 +106,8 @@ void SSequencer::configuring()
         m_activityNames.push_back(it->second.get<std::string>("<xmlattr>.name", ""));
     }
 
+    m_clearActivities = config.get<bool>(s_CLEAR_ACTIVITIES_CONFIG, m_clearActivities);
+
     m_theme      = config.get<std::string>(s_THEME_CONFIG, m_theme);
     m_clear      = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
     m_accent     = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
@@ -138,6 +141,7 @@ void SSequencer::starting()
     if(m_clear.empty())
     {
         clear = parent->palette().color(QPalette::Background);
+
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
         if(!qApp->styleSheet().isEmpty())
@@ -156,6 +160,7 @@ void SSequencer::starting()
     if(theme.isEmpty())
     {
         theme = "light";
+
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
         if(!qApp->styleSheet().isEmpty())
@@ -270,7 +275,29 @@ void SSequencer::goTo(int index)
     data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
     SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
 
-    if(m_currentActivity >= 0)
+    if(m_clearActivities && m_currentActivity > index)
+    {
+        auto dialog = sight::ui::base::dialog::MessageDialog(
+            "Sequencer",
+            "The data will be deleted! \nDo you want to continue?",
+            sight::ui::base::dialog::IMessageDialog::WARNING
+        );
+        dialog.addButton(sight::ui::base::dialog::IMessageDialog::YES_NO);
+        const auto button = dialog.show();
+
+        if((button == sight::ui::base::dialog::IMessageDialog::NO))
+        {
+            return;
+        }
+
+        for(size_t i = index + 1 ; i < seriesDB->size() ; ++i)
+        {
+            this->disableActivity(i);
+        }
+
+        this->clearLastActivities(seriesDB, index);
+    }
+    else if(m_currentActivity >= 0)
     {
         this->storeActivityData(seriesDB, m_currentActivity);
     }
@@ -360,6 +387,14 @@ void SSequencer::enableActivity(int index)
 {
     QObject* object = m_widget->rootObject();
     QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, index));
+}
+
+//------------------------------------------------------------------------------
+
+void SSequencer::disableActivity(int index)
+{
+    QObject* object = m_widget->rootObject();
+    QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, index));
 }
 
 //------------------------------------------------------------------------------

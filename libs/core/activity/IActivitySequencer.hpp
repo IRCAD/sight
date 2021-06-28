@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2019-2021 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -83,6 +83,19 @@ protected:
         size_t index,
         const core::com::SlotBase::sptr& slot   = nullptr,
         const data::Composite::csptr& overrides = nullptr
+    );
+
+    /**
+     * @brief Remove the activity with index and its requirements and all the following activities.
+     *
+     * This is used to clear the series and requirement when going backward.
+     *
+     * @param seriesDB Series DB containing all the activities
+     * @param index the activity in index and all the following will be removed
+     */
+    ACTIVITY_API void clearLastActivities(
+        const data::SeriesDB::sptr& seriesDB,
+        size_t index
     );
 
     /// List of the activity to create.
