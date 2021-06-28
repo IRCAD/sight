@@ -55,7 +55,7 @@ void MatrixRegressorTest::tearDown()
 
 void MatrixRegressorTest::identityTest()
 {
-    data::Matrix4::sptr id = data::Matrix4::New();
+    auto id = data::Matrix4::New();
 
     data::Vector::sptr matList = data::Vector::New();
 
@@ -78,7 +78,7 @@ void MatrixRegressorTest::identityTest()
 
     MatrixRegressor regressor(matList, ptList);
 
-    data::Matrix4::sptr res = regressor.minimize(id);
+    data::Matrix4::sptr res = regressor.minimize(*id);
 
     for(int i = 0 ; i < 16 ; ++i)
     {
@@ -93,15 +93,15 @@ void MatrixRegressorTest::identityTest()
 
 void MatrixRegressorTest::avgTranslationTest()
 {
-    data::Matrix4::sptr id     = data::Matrix4::New();
-    data::Matrix4::sptr trans1 = data::Matrix4::New();
-    data::Matrix4::sptr trans2 = data::Matrix4::New();
+    data::Matrix4 id;
+    auto trans1 = data::Matrix4::New();
+    auto trans2 = data::Matrix4::New();
 
-    ::glm::dmat4 t1 = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(3, 3, 3));
-    ::glm::dmat4 t2 = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(5, 5, 5));
+    glm::dmat4 t1 = glm::translate(glm::dmat4(1.), glm::dvec3(3, 3, 3));
+    glm::dmat4 t2 = glm::translate(glm::dmat4(1.), glm::dvec3(5, 5, 5));
 
-    geometry::data::setTF3DFromMatrix(trans1, t1);
-    geometry::data::setTF3DFromMatrix(trans2, t2);
+    geometry::data::setTF3DFromMatrix(*trans1, t1);
+    geometry::data::setTF3DFromMatrix(*trans2, t2);
 
     data::Vector::sptr matList = data::Vector::New();
 
@@ -124,14 +124,14 @@ void MatrixRegressorTest::avgTranslationTest()
 
     data::Matrix4::sptr res = regressor.minimize(id);
 
-    const ::glm::dmat4 transExpected = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(4, 4, 4));
-    data::Matrix4::sptr expectedMat  = data::Matrix4::New();
+    const glm::dmat4 transExpected = glm::translate(glm::dmat4(1.), glm::dvec3(4, 4, 4));
+    data::Matrix4 expectedMat;
 
     geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
 
     for(int i = 0 ; i < 16 ; ++i)
     {
-        const double expected = expectedMat->getCoefficients()[i];
+        const double expected = expectedMat.getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, result, 1e-3);
@@ -145,9 +145,9 @@ void MatrixRegressorTest::avgRotationTest()
     data::Matrix4::sptr id  = data::Matrix4::New();
     data::Matrix4::sptr rot = data::Matrix4::New();
 
-    ::glm::dmat4 r1 = ::glm::rotate(::glm::dmat4(1.), ::glm::pi<double>() / 2., ::glm::dvec3(0., 0., 1.));
+    glm::dmat4 r1 = glm::rotate(glm::dmat4(1.), glm::pi<double>() / 2., glm::dvec3(0., 0., 1.));
 
-    geometry::data::setTF3DFromMatrix(rot, r1);
+    geometry::data::setTF3DFromMatrix(*rot, r1);
 
     data::Vector::sptr matList = data::Vector::New();
 
@@ -168,17 +168,17 @@ void MatrixRegressorTest::avgRotationTest()
 
     MatrixRegressor regressor(matList, ptList);
 
-    data::Matrix4::sptr res = regressor.minimize(id, 1., 1e-5, 1e-5);
+    data::Matrix4::sptr res = regressor.minimize(*id, 1., 1e-5, 1e-5);
 
-    ::glm::dmat4 glmRes = geometry::data::getMatrixFromTF3D(res);
+    glm::dmat4 glmRes = geometry::data::getMatrixFromTF3D(*res);
 
     // Extract the rotation from the result.
-    double scale = std::pow(::glm::determinant(glmRes), 1. / 3.);
+    double scale = std::pow(glm::determinant(glmRes), 1. / 3.);
 
-    // Remove the scale from the matrix. This is required by the ::glm::toQuat() function.
-    ::glm::dvec3 angles = ::glm::eulerAngles(::glm::toQuat(glmRes / scale));
+    // Remove the scale from the matrix. This is required by the glm::toQuat() function.
+    glm::dvec3 angles = glm::eulerAngles(glm::toQuat(glmRes / scale));
 
-    CPPUNIT_ASSERT(::glm::all(::glm::epsilonEqual(angles, ::glm::dvec3(0., 0., ::glm::pi<double>() / 4.), 1e-3)));
+    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(angles, glm::dvec3(0., 0., glm::pi<double>() / 4.), 1e-3)));
 }
 
 //------------------------------------------------------------------------------

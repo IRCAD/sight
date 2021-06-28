@@ -62,7 +62,7 @@ public:
      * @return the 'average' matrix
      */
     FILTER_IMAGE_API data::Matrix4::sptr minimize(
-        const data::Matrix4::csptr& initValue,
+        const data::Matrix4& initValue,
         double stepLength     = 1.,
         double stepTolerance  = 1e-2,
         double valueTolerance = 1e-2,
