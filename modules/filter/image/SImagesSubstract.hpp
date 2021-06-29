@@ -69,9 +69,6 @@ protected:
 
     /// Overrides
     MODULE_FILTER_IMAGE_API void updating() override;
-
-    /// Overrides
-    MODULE_FILTER_IMAGE_API void swapping() override;
 };
 
 } // namespace sight::module::filter::image

@@ -218,14 +218,6 @@ void SOpenCVWriter::updating()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::swapping()
-{
-    this->stop();
-    this->start();
-}
-
-// ----------------------------------------------------------------------------
-
 sight::io::base::service::IOPathType SOpenCVWriter::getIOPathType() const
 {
     return sight::io::base::service::FILE;

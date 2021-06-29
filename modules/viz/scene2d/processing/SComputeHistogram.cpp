@@ -104,13 +104,6 @@ void SComputeHistogram::updating()
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::swapping()
-{
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
 void SComputeHistogram::stopping()
 {
 }

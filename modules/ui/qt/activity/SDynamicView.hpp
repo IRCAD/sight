@@ -146,13 +146,6 @@ protected:
     void updating() override;
 
     /**
-     * @brief Swap
-     *
-     * Update the editors.
-     */
-    void swapping() override;
-
-    /**
      * @brief Configure the view
      * @see sight::ui::base::IGuiContainer::initialize()
      */

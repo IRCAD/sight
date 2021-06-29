@@ -108,12 +108,6 @@ void SnapshotEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SnapshotEditor::info(std::ostream& _sstream)
 {
 }

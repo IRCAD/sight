@@ -127,13 +127,6 @@ void SListView::updating()
 }
 
 //------------------------------------------------------------------------------
-
-void SListView::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
 void SListView::insertItem(int index, std::string value)
 {
     // insert item at the index position of the list

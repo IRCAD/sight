@@ -87,19 +87,6 @@ void SShaderParameterEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::swapping()
-{
-    m_connections.disconnect();
-    data::Reconstruction::sptr rec = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    data::Material::sptr material  = rec->getMaterial();
-
-    m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void SShaderParameterEditor::configuring()
 {
     this->initialize();

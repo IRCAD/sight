@@ -701,13 +701,6 @@ void DumpEditor::onBufferInfo()
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void DumpEditor::info(std::ostream& _sstream)
 {
     _sstream << "Dump Editor";

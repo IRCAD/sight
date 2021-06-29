@@ -70,9 +70,6 @@ public:
     /// Overrides
     MODULE_MEMORY_API void updating() override;
 
-    /// Overrides
-    MODULE_MEMORY_API void swapping() override;
-
 protected:
 
     typedef std::vector<std::pair<core::memory::IPolicy::ParamNamesType::value_type, std::string> > ParametersType;

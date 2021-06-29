@@ -236,13 +236,6 @@ void SSlider::updating()
 }
 
 //------------------------------------------------------------------------------
-
-void SSlider::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
 void SSlider::sliderPressed()
 {
     m_sliderPressed = true;

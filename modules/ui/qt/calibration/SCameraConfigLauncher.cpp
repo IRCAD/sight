@@ -187,12 +187,6 @@ void SCameraConfigLauncher::updating()
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
     SIGHT_ASSERT(

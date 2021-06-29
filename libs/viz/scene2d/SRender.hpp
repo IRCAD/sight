@@ -155,11 +155,6 @@ protected:
     /// Do nothing.
     VIZ_SCENE2D_API void updating() override;
 
-    VIZ_SCENE2D_API void swapping() override;
-
-    /// Start/stop adaptors
-    VIZ_SCENE2D_API void swapping(const KeyType& key) override;
-
     /// Stop all the adaptors attached to the render related composite,
     /// stop all those attached to the objects contained
     /// by the render related composite, clear the maps and call stopContext().

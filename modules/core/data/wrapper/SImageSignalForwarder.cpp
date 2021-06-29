@@ -147,14 +147,6 @@ void SImageSignalForwarder::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::swapping()
-{
-    this->stopping();
-    this->starting();
-}
-
-//-----------------------------------------------------------------------------
-
 void SImageSignalForwarder::updating()
 {
 }

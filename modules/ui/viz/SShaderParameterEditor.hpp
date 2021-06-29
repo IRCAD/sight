@@ -82,9 +82,6 @@ protected:
     /// Destroy the service and the container.
     MODULE_UI_VIZ_API void stopping() override;
 
-    /// Called once we change the data.
-    MODULE_UI_VIZ_API void swapping() override;
-
     /// Update the interface.
     MODULE_UI_VIZ_API void updating() override;
 

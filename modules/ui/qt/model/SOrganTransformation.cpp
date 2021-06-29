@@ -150,13 +150,6 @@ void SOrganTransformation::stopping()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void SOrganTransformation::updating()
 {
     this->addMeshTransform();

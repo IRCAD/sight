@@ -78,8 +78,6 @@ protected:
 
     void updating() override;
 
-    void swapping() override;
-
     void configuring() override;
 
     void info(std::ostream& _sstream) override;

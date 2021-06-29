@@ -127,12 +127,4 @@ void SImagesSubstract::updating()
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::swapping()
-{
-    // Classic default approach to update service when object changes
-    this->updating();
-}
-
-// -----------------------------------------------------------------------------
-
 } // namespace sight::module::filter::image

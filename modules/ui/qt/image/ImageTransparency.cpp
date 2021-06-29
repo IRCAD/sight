@@ -172,13 +172,6 @@ void ImageTransparency::updating()
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTransparency::info(std::ostream& _sstream)
 {
     _sstream << "Image Features Editor";

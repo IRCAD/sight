@@ -62,9 +62,6 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     MODULE_DATA_API void stopping() override;
 
-    /// Implements swapping method derived from IService. Convert the image.
-    MODULE_DATA_API void swapping() override;
-
     /// Implements configuring method derived from IService. Do nothing.
     MODULE_DATA_API void configuring() override;
 

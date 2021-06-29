@@ -83,9 +83,6 @@ protected:
     /// Update the choice selection
     void updating() override;
 
-    /// Call updating() method
-    void swapping() override;
-
     /// Calls classic IAction methods to configure
     void configuring() override;
 

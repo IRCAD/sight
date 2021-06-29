@@ -64,9 +64,6 @@ protected:
     /// Notifies message to change cross type
     void updating() override;
 
-    /// Does nothing
-    void swapping() override;
-
     /**
      * @brief Configure action.
      * @code{.xml}

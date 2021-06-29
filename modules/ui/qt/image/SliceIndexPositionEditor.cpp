@@ -174,13 +174,6 @@ void SliceIndexPositionEditor::updating()
     this->updateSliceIndexFromImg();
 }
 
-//------------------------------------------------------------------------------
-
-void SliceIndexPositionEditor::swapping()
-{
-    this->updating();
-}
-
 //-----------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagittal)

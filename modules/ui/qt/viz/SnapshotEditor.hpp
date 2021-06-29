@@ -76,9 +76,6 @@ protected:
     /// Do nothing
     void updating() override;
 
-    /// Do nothing
-    void swapping() override;
-
     /**
      * @brief Configure the editor.
      *

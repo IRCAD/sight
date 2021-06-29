@@ -89,9 +89,6 @@ protected:
     /// Computes the histogram and notifies Histogram::s_MODIFIED_SIG.
     MODULE_VIZ_SCENE2D_API void updating() override;
 
-    /// Swaps the service. Calls updating().
-    MODULE_VIZ_SCENE2D_API void swapping() override;
-
     /// Stops the service. Does nothing.
     MODULE_VIZ_SCENE2D_API void stopping() override;
 

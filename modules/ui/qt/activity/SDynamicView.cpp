@@ -172,12 +172,6 @@ void SDynamicView::updating()
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
 {
     if(this->validateActivity(activitySeries))

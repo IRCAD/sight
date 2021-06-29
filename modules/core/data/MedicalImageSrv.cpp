@@ -83,13 +83,6 @@ void MedicalImageSrv::stopping()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::swapping()
-{
-    this->convertImage();
-}
-
-//-----------------------------------------------------------------------------
-
 void MedicalImageSrv::configuring()
 {
 }

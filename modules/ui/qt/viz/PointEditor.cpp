@@ -122,13 +122,6 @@ void PointEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void PointEditor::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void PointEditor::getInteraction(data::tools::PickingInfo info)
 {
     if(info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)

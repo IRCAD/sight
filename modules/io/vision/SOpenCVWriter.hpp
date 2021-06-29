@@ -114,9 +114,6 @@ protected:
     /// Does nothing.
     MODULE_IO_VISION_API void starting() override;
 
-    /// Calls stopping and starting.
-    MODULE_IO_VISION_API void swapping() override;
-
     /// Computes intrinsic calibration
     MODULE_IO_VISION_API void updating() override;
 

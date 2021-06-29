@@ -87,9 +87,6 @@ protected:
     /// Update editor information from the image
     void updating() override;
 
-    /// Swap of image
-    void swapping() override;
-
     /**
      * @brief Configure the editor.
      *

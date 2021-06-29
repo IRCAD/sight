@@ -67,9 +67,6 @@ protected:
     /// Show a file dialog and notify the scene which must be printed.
     void updating() override;
 
-    /// Does nothing
-    void swapping() override;
-
     /**
      * @brief Configure action.
      * @code{.xml}

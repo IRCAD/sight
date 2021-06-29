@@ -105,13 +105,6 @@ void SCameraSeriesEditor::stopping()
 
 // -------------------------------------------------------------------------
 
-void SCameraSeriesEditor::swapping()
-{
-    updateInformations();
-}
-
-// -------------------------------------------------------------------------
-
 void SCameraSeriesEditor::updateInformations()
 {
     data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>("cameraSeries");

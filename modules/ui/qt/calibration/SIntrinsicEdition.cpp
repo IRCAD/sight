@@ -154,14 +154,6 @@ void SIntrinsicEdition::stopping()
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::swapping()
-{
-    this->stopping();
-    this->starting();
-}
-
-// -------------------------------------------------------------------------
-
 void SIntrinsicEdition::updating()
 {
     this->readCalibration();

@@ -152,10 +152,6 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void swapping() override
-    {
-    }
-
     void updating() override;
 };
 
@@ -194,10 +190,6 @@ protected:
     }
 
     //------------------------------------------------------------------------------
-
-    void swapping() override
-    {
-    }
 
     void updating() override;
 
@@ -245,10 +237,6 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void swapping() override
-    {
-    }
-
     void updating() override;
 
     KeyConnectionsMap getAutoConnections() const override;
@@ -294,10 +282,6 @@ protected:
     }
 
     //------------------------------------------------------------------------------
-
-    void swapping() override
-    {
-    }
 
     void updating() override;
 

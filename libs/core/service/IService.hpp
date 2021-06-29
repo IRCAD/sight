@@ -937,18 +937,6 @@ protected:
     SERVICE_API virtual void stopping() = 0;
 
     /**
-     * @brief Swap the service from associated object to another object
-     * @see swap()
-     * @todo This method must be pure virtual
-     * @todo FIXME after code update for all services
-     * @todo This method must have in parameter the new object or the old ?
-     * @deprecated use swapping(const KeyType& key) instead
-     */
-    virtual void swapping()
-    {
-    }
-
-    /**
      * @brief Swap the service from an associated object to another object.
      * The key in parameter indicates allows to retrieve the new data with getInput(), getInOut() or getOutput().
      * If you need the old object, you need to keep a shared pointer on it inside your service implementation.

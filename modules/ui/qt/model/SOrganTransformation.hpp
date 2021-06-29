@@ -79,7 +79,6 @@ protected:
     MODULE_UI_QT_API void configuring() override;
     MODULE_UI_QT_API void starting() override;
     MODULE_UI_QT_API void stopping() override;
-    MODULE_UI_QT_API void swapping() override;
     MODULE_UI_QT_API void updating() override;
     MODULE_UI_QT_API void info(::std::ostream& stream) override;
 
