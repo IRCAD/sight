@@ -102,7 +102,7 @@ void SSeriesPuller::starting()
     m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
-    m_dicomReader->registerInOut(m_seriesDB, "data");
+    m_dicomReader->setInOut(m_seriesDB, "data");
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
@@ -317,7 +317,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         sight::io::dimse::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
     // Create temporary series helper.
-    data::helper::SeriesDB readerSeriesHelper(m_seriesDB);
+    data::helper::SeriesDB readerSeriesHelper(*m_seriesDB);
 
     for(const data::Series::sptr& series : _selectedSeries)
     {
@@ -357,7 +357,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                     m_localSeries.push_back(selectedSeriesUID);
                 }
 
-                data::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
+                data::helper::SeriesDB seriesHelper(*destinationSeriesDB);
                 seriesHelper.merge(m_seriesDB);
                 seriesHelper.notify();
             }

@@ -186,22 +186,24 @@ void SGrabberProxy::startCamera()
 
             size_t numCamerasInSeries = 1;
 
-            auto cameraInput = this->getInput<data::Object>(s_CAMERA_INPUT);
-            auto camera      = data::Camera::dynamicConstCast(cameraInput);
-            if(camera)
             {
-                sourceType = camera->getCameraSource();
-            }
-            else
-            {
-                auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput);
-                if(cameraSeries)
+                auto cameraInput = m_camera.lock();
+                auto camera      = data::Camera::dynamicConstCast(cameraInput.get_shared());
+                if(camera)
                 {
-                    numCamerasInSeries = cameraSeries->getNumberOfCameras();
-                    SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
+                    sourceType = camera->getCameraSource();
+                }
+                else
+                {
+                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
+                    if(cameraSeries)
+                    {
+                        numCamerasInSeries = cameraSeries->getNumberOfCameras();
+                        SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
-                    // Assume same source on all cameras
-                    sourceType = cameraSeries->getCamera(0)->getCameraSource();
+                        // Assume same source on all cameras
+                        sourceType = cameraSeries->getCamera(0)->getCameraSource();
+                    }
                 }
             }
 
@@ -236,7 +238,7 @@ void SGrabberProxy::startCamera()
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getInOut<data::Object>(key);
+                        const auto obj = this->getLockedInOut<data::Object>(key);
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
@@ -413,15 +415,15 @@ void SGrabberProxy::startCamera()
             {
                 srv = this->registerService<service::IGrabber>(m_grabberImpl);
 
-                auto cameraInput = this->getInput<data::Object>(s_CAMERA_INPUT);
-                auto camera      = data::Camera::dynamicConstCast(cameraInput);
+                auto cameraInput = m_camera.lock();
+                auto camera      = data::Camera::dynamicConstCast(cameraInput.get_shared());
                 if(camera)
                 {
-                    srv->registerInput(camera, s_CAMERA_INPUT);
+                    srv->setInput(camera, s_CAMERA_INPUT);
                 }
                 else
                 {
-                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput);
+                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
                     if(cameraSeries)
                     {
                         const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
@@ -430,7 +432,7 @@ void SGrabberProxy::startCamera()
                             srvCount < numCamerasInSeries
                         );
 
-                        srv->registerInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
+                        srv->setInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
                     }
                 }
 
@@ -442,7 +444,7 @@ void SGrabberProxy::startCamera()
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getInOut<data::FrameTL>(key);
+                    auto frameTL = this->getLockedInOut<data::FrameTL>(key);
                     if(frameTL)
                     {
                         if(m_services.size() > 1)
@@ -450,13 +452,13 @@ void SGrabberProxy::startCamera()
                             if(inputTLCount == srvCount)
                             {
                                 // We are emulating a grabber with several ones, reuse the first TL slot
-                                srv->registerInOut(frameTL, s_FRAMETL_INOUT);
+                                srv->setInOut(frameTL.get_shared(), s_FRAMETL_INOUT);
                                 break;
                             }
                         }
                         else
                         {
-                            srv->registerInOut(frameTL, key);
+                            srv->setInOut(frameTL.get_shared(), key);
                         }
                     }
 

@@ -54,7 +54,7 @@ struct SetFromConfig
     }
 };
 
-static const service::IService::KeyType s_CONFIG_INOUT = "config";
+const service::key_t SPacsConfigurationInitializer::s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
 
@@ -109,9 +109,8 @@ void SPacsConfigurationInitializer::configuring()
 
 void SPacsConfigurationInitializer::starting()
 {
-    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
-    SIGHT_ASSERT("input '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = m_config.lock();
+    SIGHT_ASSERT("inout '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
 
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
@@ -159,9 +158,8 @@ service::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConne
 
 void SPacsConfigurationInitializer::updating()
 {
-    const sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
-        this->getInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
-    SIGHT_ASSERT("input '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
+    const auto pacsConfiguration = m_config.lock();
+    SIGHT_ASSERT("inout '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
 
     // Check if the user has changed the Pacs configuration and update the local var
     if(pacsConfiguration->getLocalApplicationTitle() != m_SCUAppEntityTitle

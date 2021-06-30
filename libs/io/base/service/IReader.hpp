@@ -238,7 +238,7 @@ protected:
     bool m_readFailed {false};
 
     /// Generic output data
-    data::ptr<data::Object, data::Access::inout> m_data {this, "data", false};
+    data::ptr<data::Object, data::Access::inout> m_data {this, "data"};
 
 private:
 

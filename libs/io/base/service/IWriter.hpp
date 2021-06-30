@@ -214,7 +214,7 @@ protected:
     bool m_writeFailed {false};
 
     /// Generic input data
-    data::ptr<data::Object, data::Access::in> m_data {this, "data", false};
+    data::ptr<data::Object, data::Access::in> m_data {this, "data"};
 
 private:
 

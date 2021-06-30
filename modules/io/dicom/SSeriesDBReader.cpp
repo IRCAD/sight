@@ -37,9 +37,9 @@
 #include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
 #include <service/macros.hpp>
-#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -127,14 +127,14 @@ void SSeriesDBReader::openLocationDialog()
         // Init and execute the service
         service::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = service::add("::sight::module::ui::dicom::SFilterSelectorDialog");
-        filterSelectorSrv->registerInOut(key, "filter");
+        filterSelectorSrv = service::add("sight::module::ui::dicom::SFilterSelectorDialog");
+        filterSelectorSrv->setInOut(key, "filter");
         filterSelectorSrv->setConfiguration(core::runtime::ConfigurationElement::constCast(filterSelectorConfig));
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
         filterSelectorSrv->stop();
-        service::OSR::unregisterService(filterSelectorSrv);
+        service::remove(filterSelectorSrv);
 
         m_filterType = key->getValue();
 
@@ -304,7 +304,7 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                data::helper::SeriesDB sDBhelper(dummy);
+                data::helper::SeriesDB sDBhelper(*dummy);
                 sDBhelper.clear();
             }
         }
@@ -344,17 +344,16 @@ void SSeriesDBReader::updating()
         if(!localSeriesDB->empty())
         {
             // Retrieve dataStruct associated with this service
-            data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
+            auto data                     = m_data.lock();
+            data::SeriesDB::sptr seriesDB = std::dynamic_pointer_cast<data::SeriesDB>(data.get_shared());
 
             // Clear SeriesDB and add new series
-            data::helper::SeriesDB sDBhelper(seriesDB);
-            data::mt::ObjectWriteLock lock(seriesDB);
+            data::helper::SeriesDB sDBhelper(*seriesDB);
             sDBhelper.clear();
 
             // Notify removal.
             sDBhelper.notify();
             {
-                data::mt::ObjectWriteLock lock(localSeriesDB);
                 seriesDB->shallowCopy(localSeriesDB);
             }
 

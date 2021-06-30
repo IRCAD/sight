@@ -178,7 +178,7 @@ void SeriesDB::readDicomSeries()
     }
 
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    data::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Push Dicom Series
     if(!m_job->cancelRequested())
@@ -386,7 +386,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
                 if(series)
                 {
                     // Add the series to the DB
-                    data::helper::SeriesDB seriesDBHelper(seriesDB);
+                    data::helper::SeriesDB seriesDBHelper(*seriesDB);
                     seriesDBHelper.add(series);
 
                     if(notifier)

@@ -361,7 +361,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         sight::io::http::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
-    data::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
+    data::helper::SeriesDB tempSDBhelper(*m_tempSeriesDB);
 
     for(const data::Series::sptr& series : selectedSeries)
     {
@@ -387,7 +387,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             m_dicomReader->update();
 
             // Merge series
-            data::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+            data::helper::SeriesDB sDBhelper(*m_destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }

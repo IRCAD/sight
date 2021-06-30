@@ -189,7 +189,7 @@ void SInrSeriesDBReader::updating()
             localSeriesDB->getContainer().push_back(imgSeries);
         }
 
-        data::helper::SeriesDB sDBhelper(seriesDB);
+        data::helper::SeriesDB sDBhelper(*seriesDB);
 
         data::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);

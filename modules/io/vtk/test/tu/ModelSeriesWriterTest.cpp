@@ -31,9 +31,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
 #include <utestData/helper/compare.hpp>
@@ -85,11 +83,11 @@ void runModelSeriesSrv(
 
     if(srv->isA("sight::io::base::service::IReader"))
     {
-        srv->registerInOut(obj, "data");
+        srv->setInOut(obj, "data");
     }
     else
     {
-        srv->registerInput(obj, "data");
+        srv->setInput(obj, "data");
     }
 
     CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(cfg));
@@ -97,7 +95,7 @@ void runModelSeriesSrv(
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    service::OSR::unregisterService(srv);
+    service::remove(srv);
 }
 
 //------------------------------------------------------------------------------

@@ -80,7 +80,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     configElement->setAttributeValue("retrieveMethod", "GET");
 
     // Use the service
-    srv->registerInOut(pacsConfiguration, "config");
+    srv->setInOut(pacsConfiguration, "config");
     srv->setConfiguration(srvElement);
     srv->configure();
     srv->start();

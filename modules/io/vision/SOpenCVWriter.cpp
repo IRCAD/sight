@@ -122,15 +122,6 @@ void SOpenCVWriter::stopping()
 
 void SOpenCVWriter::updating()
 {
-    data::CameraSeries::csptr camSeries = this->getInput<data::CameraSeries>(sight::io::base::service::s_DATA_KEY);
-
-    if(!camSeries)
-    {
-        m_writeFailed = true;
-    }
-
-    SIGHT_ASSERT("CameraSeries is null", camSeries);
-
     bool use_dialog = false;
     if(!this->hasLocationDefined())
     {
@@ -142,7 +133,16 @@ void SOpenCVWriter::updating()
         }
     }
 
-    data::mt::ObjectReadLock lock(camSeries);
+    auto data      = m_data.lock();
+    auto camSeries = data::CameraSeries::dynamicConstCast(data.get_shared());
+
+    if(!camSeries)
+    {
+        m_writeFailed = true;
+    }
+
+    SIGHT_ASSERT("CameraSeries is null", camSeries);
+
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
     std::vector<data::Camera::sptr> cameras;

@@ -195,7 +195,7 @@ void SSeriesDBReader::updating()
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        data::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
+        data::helper::SeriesDB sdbHelper(*lockedSeriesDB);
         sdbHelper.clear();
 
         // Notify removal.

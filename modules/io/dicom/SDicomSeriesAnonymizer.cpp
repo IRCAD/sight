@@ -127,7 +127,7 @@ void SDicomSeriesAnonymizer::anonymize()
     data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>("seriesDB");
     data::Vector::sptr vector     = this->getInOut<data::Vector>("selectedSeries");
 
-    data::helper::SeriesDB sDBhelper(seriesDB);
+    data::helper::SeriesDB sDBhelper(*seriesDB);
 
     auto anonymizer = sight::io::dicom::helper::DicomSeriesAnonymizer::New();
     m_sigJobCreated->emit(anonymizer->getJob());
