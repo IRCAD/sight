@@ -172,7 +172,7 @@ void SManage::addOrSwap()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if(iter == seriesDB->end())
         {
-            sight::data::helper::SeriesDB helper(seriesDB);
+            sight::data::helper::SeriesDB helper(*seriesDB);
             helper.add(series);
             helper.notify();
         }
@@ -259,7 +259,7 @@ void SManage::remove()
         SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
-        sight::data::helper::SeriesDB helper(seriesDB);
+        sight::data::helper::SeriesDB helper(*seriesDB);
         helper.remove(series);
         helper.notify();
     }
@@ -323,7 +323,7 @@ void SManage::removeIfPresent()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if(iter != seriesDB->end())
         {
-            sight::data::helper::SeriesDB helper(seriesDB);
+            sight::data::helper::SeriesDB helper(*seriesDB);
             helper.remove(series);
             helper.notify();
         }
@@ -377,7 +377,7 @@ void SManage::clear()
     }
     else if(seriesDB)
     {
-        sight::data::helper::SeriesDB helper(seriesDB);
+        sight::data::helper::SeriesDB helper(*seriesDB);
         helper.clear();
         helper.notify();
     }
@@ -432,7 +432,7 @@ void SManage::internalAdd(bool _copy)
         sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
         SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-        sight::data::helper::SeriesDB helper(seriesDB);
+        sight::data::helper::SeriesDB helper(*seriesDB);
         helper.add(series);
         helper.notify();
     }

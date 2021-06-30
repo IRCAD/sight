@@ -36,7 +36,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(data::SeriesDB::wptr seriesDB) :
+SeriesDB::SeriesDB(data::SeriesDB& seriesDB) :
     m_seriesDB(seriesDB)
 {
 }
@@ -51,14 +51,13 @@ SeriesDB::~SeriesDB()
 
 void SeriesDB::add(data::Series::sptr newSeries)
 {
-    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
     SIGHT_ASSERT(
         "The object " << newSeries->getID() << " must not exist in SeriesDB.",
-        std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end()
+        std::find(m_seriesDB.begin(), m_seriesDB.end(), newSeries) == m_seriesDB.end()
     );
 
     // Modify SeriesDB
-    seriesDB->getContainer().push_back(newSeries);
+    m_seriesDB.getContainer().push_back(newSeries);
 
     m_addedSeries.push_back(newSeries);
 }
@@ -67,15 +66,14 @@ void SeriesDB::add(data::Series::sptr newSeries)
 
 void SeriesDB::remove(data::Series::sptr oldSeries)
 {
-    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-    data::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
+    data::SeriesDB::iterator iter = std::find(m_seriesDB.begin(), m_seriesDB.end(), oldSeries);
     SIGHT_ASSERT(
         "The object " << oldSeries->getID() << " must exist in SeriesDB.",
-        iter != seriesDB->end()
+        iter != m_seriesDB.end()
     );
 
     // Modify SeriesDB
-    seriesDB->getContainer().erase(iter);
+    m_seriesDB.getContainer().erase(iter);
 
     m_removedSeries.push_back(oldSeries);
 }
@@ -84,11 +82,9 @@ void SeriesDB::remove(data::Series::sptr oldSeries)
 
 void SeriesDB::clear()
 {
-    data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-
-    while(!seriesDB->empty())
+    while(!m_seriesDB.empty())
     {
-        this->remove(seriesDB->front());
+        this->remove(m_seriesDB.front());
     }
 }
 
@@ -109,7 +105,7 @@ void SeriesDB::notify()
 {
     if(!m_addedSeries.empty())
     {
-        auto sig = m_seriesDB.lock()->signal<data::SeriesDB::AddedSeriesSignalType>(
+        auto sig = m_seriesDB.signal<data::SeriesDB::AddedSeriesSignalType>(
             data::SeriesDB::s_ADDED_SERIES_SIG
         );
         sig->asyncEmit(m_addedSeries);
@@ -117,14 +113,14 @@ void SeriesDB::notify()
 
     if(!m_removedSeries.empty())
     {
-        auto sig = m_seriesDB.lock()->signal<data::SeriesDB::RemovedSeriesSignalType>(
+        auto sig = m_seriesDB.signal<data::SeriesDB::RemovedSeriesSignalType>(
             data::SeriesDB::s_REMOVED_SERIES_SIG
         );
         sig->asyncEmit(m_removedSeries);
     }
 
     SIGHT_INFO_IF(
-        "No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
+        "No changes were found on the SeriesDB '" + m_seriesDB.getID() + "', nothing to notify.",
         m_addedSeries.empty() && m_removedSeries.empty()
     );
 }

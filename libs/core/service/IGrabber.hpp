@@ -25,12 +25,8 @@
 #include "service/config.hpp"
 #include <service/IService.hpp>
 
-namespace sight::data
-{
-
-class FrameTL;
-
-}
+#include <data/Camera.hpp>
+#include <data/FrameTL.hpp>
 
 namespace sight::service
 {
@@ -172,6 +168,8 @@ protected:
      * @brief sets the current start state of the grabber.
      */
     SERVICE_API void setStartState(bool state);
+
+    data::ptr<data::FrameTL, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};
 
 private:
 

@@ -57,11 +57,11 @@ protected:
      *
      * @warning This method remove the series that are not in the list of activity to launch
      */
-    ACTIVITY_API int parseActivities(const data::SeriesDB::sptr& seriesDB);
+    ACTIVITY_API int parseActivities(data::SeriesDB& seriesDB);
 
     /// Store the data of the activity at the given index
     ACTIVITY_API void storeActivityData(
-        const data::SeriesDB::sptr& seriesDB,
+        const data::SeriesDB& seriesDB,
         int index,
         const data::Composite::csptr& overrides = nullptr
     );
@@ -79,7 +79,7 @@ protected:
      * @param overrides Composite that contains data to override the previouly stored data (from the other activities)
      */
     ACTIVITY_API data::ActivitySeries::sptr getActivity(
-        const data::SeriesDB::sptr& seriesDB,
+        data::SeriesDB& seriesDB,
         size_t index,
         const core::com::SlotBase::sptr& slot   = nullptr,
         const data::Composite::csptr& overrides = nullptr
