@@ -65,7 +65,7 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[3] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
+const service::IService::KeyType SliceIndexPositionEditor::s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +73,6 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
-    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -107,9 +106,11 @@ void SliceIndexPositionEditor::starting()
     layout->addWidget(m_sliceSelectorPanel);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
-    m_helper.updateImageInfos(image);
+    {
+        auto image = m_image.lock();
+        SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image.get());
+        m_helper.updateImageInfos(image.get_shared());
+    }
     this->updateSliceTypeFromImg(m_helper.getOrientation());
 
     qtContainer->setLayout(layout);
@@ -163,12 +164,13 @@ void SliceIndexPositionEditor::configuring()
 
 void SliceIndexPositionEditor::updating()
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    {
+        const auto image = m_image.lock();
 
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
-    m_sliceSelectorPanel->setEnable(imageIsValid);
-    m_helper.updateImageInfos(image);
+        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        m_sliceSelectorPanel->setEnable(imageIsValid);
+        m_helper.updateImageInfos(image.get_shared());
+    }
     this->updateSliceIndexFromImg();
 }
 
@@ -186,14 +188,15 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     const int indexes[] = {sagittal, frontal, axial};
     m_helper.setSliceIndex(indexes);
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    {
+        const auto image = m_image.lock();
 
-    data::Integer::sptr indexesPtr[3];
-    m_helper.getSliceIndex(indexesPtr);
-    image->setField(data::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
-    image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
-    image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
+        data::Integer::sptr indexesPtr[3];
+        m_helper.getSliceIndex(indexesPtr);
+        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
+        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
+        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
+    }
     this->updateSliceIndexFromImg();
 }
 
@@ -223,10 +226,9 @@ void SliceIndexPositionEditor::info(std::ostream&)
 
 void SliceIndexPositionEditor::updateSliceIndexFromImg()
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    const auto image = m_image.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
@@ -262,8 +264,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type)
 
 void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    const auto image = m_image.lock();
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
     SIGHT_ASSERT("Field " << fieldID << " is missing", image->getField(fieldID));
@@ -299,15 +300,16 @@ void SliceIndexPositionEditor::sliceTypeNotification(int _type)
     m_helper.setOrientation(type);
 
     // Fire the signal
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
-
-    auto sig = image->signal<data::Image::SliceTypeModifiedSignalType>(
-        data::Image::s_SLICE_TYPE_MODIFIED_SIG
-    );
     {
-        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
-        sig->asyncEmit(oldType, _type);
+        const auto image = m_image.lock();
+
+        auto sig = image->signal<data::Image::SliceTypeModifiedSignalType>(
+            data::Image::s_SLICE_TYPE_MODIFIED_SIG
+        );
+        {
+            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
+            sig->asyncEmit(oldType, _type);
+        }
     }
     this->updateSliceIndexFromImg();
 }

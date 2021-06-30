@@ -24,6 +24,8 @@
 
 #include "modules/ui/qml/config.hpp"
 
+#include <data/Reconstruction.hpp>
+
 #include <ui/qml/IQmlEditor.hpp>
 
 #include <QColor>
@@ -122,6 +124,9 @@ private:
 
     /// Notify the material changes
     void materialNotification();
+
+    static const service::key_t s_RECONSTRUCTION_INOUT;
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT};
 };
 
 } // uiReconstructionQml

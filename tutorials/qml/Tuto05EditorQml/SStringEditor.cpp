@@ -24,20 +24,17 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/String.hpp>
-
 using namespace sight;
 
 namespace Tuto05EditorQml
 {
 
-static const service::IService::KeyType s_STRING_INOUT = "string";
+const service::key_t SStringEditor::s_STRING_INOUT = "string";
 
 //------------------------------------------------------------------------------
 
 SStringEditor::SStringEditor() noexcept
 {
-    this->registerObject(s_STRING_INOUT, service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +67,7 @@ void SStringEditor::stopping()
 
 void SStringEditor::updating()
 {
-    auto sstr = this->getInOut<data::String>(s_STRING_INOUT);
+    auto sstr = m_string.lock();
     SIGHT_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
     const std::string value = sstr->value();
 
@@ -81,7 +78,7 @@ void SStringEditor::updating()
 
 void SStringEditor::updateString(const QString& str)
 {
-    auto sstr = this->getInOut<data::String>(s_STRING_INOUT);
+    auto sstr = m_string.lock();
     SIGHT_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
 
     sstr->value() = str.toStdString();
@@ -98,9 +95,7 @@ void SStringEditor::updateString(const QString& str)
 service::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
     connections.push(s_STRING_INOUT, data::String::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
     return connections;
 }
 

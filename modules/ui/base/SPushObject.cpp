@@ -97,7 +97,7 @@ void SPushObject::updating()
     SIGHT_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
     if(service::OSR::isRegistered(
            s_DESTINATION_KEY,
-           service::IService::AccessType::OUTPUT,
+           data::Access::out,
            this->getSptr()
     ))
     {

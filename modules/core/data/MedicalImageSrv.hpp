@@ -24,8 +24,9 @@
 
 #include "modules/data/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IController.hpp>
-#include <service/IService.hpp>
 
 namespace sight::module::data
 {
@@ -90,6 +91,8 @@ private:
     void convertImage();
 
     std::vector<std::string> m_imageCompositeKeys;
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "image", true};
 };
 
 } // sight::module::data

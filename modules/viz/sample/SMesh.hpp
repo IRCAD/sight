@@ -25,6 +25,7 @@
 #include "modules/viz/sample/config.hpp"
 
 #include <data/Matrix4.hpp>
+#include <data/Mesh.hpp>
 
 #include <ui/base/IGuiContainer.hpp>
 
@@ -116,14 +117,13 @@ private:
     /// Contains the transformation adaptor.
     data::Matrix4::sptr m_cameraTransform;
 
-    /// Defines whether or not to autoConnect to the mesh, needed for the purpose of tutorials.
-    bool m_meshAutoConnect {false};
-
     /// Contains the signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;
 
     /// Stores connection with the camera transform.
     core::com::helper::SigSlotConnection m_connections;
+
+    data::ptr<data::Mesh, data::Access::in> m_mesh {this, "mesh", false};
 };
 
 } // namespace sight::module::viz::sample.

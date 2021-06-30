@@ -471,7 +471,7 @@
             <!-- Computes the reprojection error -->
             <service uid="errorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error" >
                 <in group="matrix" autoConnect="true" >
-                    <key uid="markerToCamera" id="104" />
+                    <key uid="markerToCamera" id="101" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
                 <in key="camera" uid="camera" />

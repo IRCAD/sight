@@ -76,13 +76,21 @@ void executeService(
     const SPTR(data::Object)& obj,
     const std::string& srvImpl,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
-    const service::IService::AccessType access = service::IService::AccessType::INOUT
+    const data::Access access = data::Access::inout
 )
 {
     service::IService::sptr srv = service::add(srvImpl);
-
     CPPUNIT_ASSERT(srv);
-    service::OSR::registerService(obj, sight::io::base::service::s_DATA_KEY, access, srv);
+
+    if(access == data::Access::inout)
+    {
+        srv->setInOut(obj, sight::io::base::service::s_DATA_KEY);
+    }
+    else
+    {
+        srv->setInput(obj, sight::io::base::service::s_DATA_KEY);
+    }
+
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
@@ -117,7 +125,7 @@ void IoItkTest::testImageSeriesWriterJPG()
         imageSeries,
         "::sight::module::io::itk::SJpgImageSeriesWriter",
         srvCfg,
-        service::IService::AccessType::INPUT
+        data::Access::in
     );
 }
 
@@ -144,7 +152,7 @@ void IoItkTest::testImageWriterJPG()
         image,
         "::sight::module::io::itk::JpgImageWriterService",
         srvCfg,
-        service::IService::AccessType::INPUT
+        data::Access::in
     );
 }
 
@@ -181,7 +189,7 @@ void IoItkTest::testSaveLoadInr()
         image,
         "::sight::module::io::itk::InrImageWriterService",
         srvCfg,
-        service::IService::AccessType::INPUT
+        data::Access::in
     );
 
     // load Image
@@ -190,7 +198,7 @@ void IoItkTest::testSaveLoadInr()
         image2,
         "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
-        service::IService::AccessType::INOUT
+        data::Access::inout
     );
 
     data::Image::Spacing spacing = image2->getSpacing2();
@@ -234,7 +242,7 @@ void IoItkTest::ImageSeriesInrTest()
         imageSeries,
         "::sight::module::io::itk::SImageSeriesWriter",
         srvCfg,
-        service::IService::AccessType::INPUT
+        data::Access::in
     );
 
     // load Image
@@ -243,7 +251,7 @@ void IoItkTest::ImageSeriesInrTest()
         image2,
         "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
-        service::IService::AccessType::INOUT
+        data::Access::inout
     );
 
     data::Image::Spacing spacing = image2->getSpacing2();
@@ -295,7 +303,7 @@ void IoItkTest::SeriesDBInrTest()
         sdb,
         "::sight::module::io::itk::SInrSeriesDBReader",
         srvCfg,
-        service::IService::AccessType::INOUT
+        data::Access::inout
     );
 
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};

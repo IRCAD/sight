@@ -229,6 +229,8 @@ private:
     /// Contains the slot to show (or hide) reconstructions.
     typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
+
+    data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries"};
 };
 
 } // namespace model.

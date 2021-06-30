@@ -24,6 +24,8 @@
 
 #include "modules/viz/sample/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <ui/base/IGuiContainer.hpp>
 
 namespace sight::module::viz::sample
@@ -89,8 +91,7 @@ private:
     /// Contains the negato adaptor.
     service::IService::sptr m_negatoSrv {nullptr};
 
-    /// Defines whether or not to autoConnect to the image, needed for the purpose of tutorials.
-    bool m_imageAutoConnect {false};
+    data::ptr<data::Image, data::Access::in> m_image {this, "image", false};
 };
 
 } // namespace sight::module::viz::sample.

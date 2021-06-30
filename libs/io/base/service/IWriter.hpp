@@ -213,6 +213,9 @@ protected:
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
     bool m_writeFailed {false};
 
+    /// Generic input data
+    data::ptr<data::Object, data::Access::in> m_data {this, "data", false};
+
 private:
 
     /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.

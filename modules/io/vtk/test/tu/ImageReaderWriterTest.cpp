@@ -31,9 +31,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -67,11 +65,11 @@ void runImageSrv(
 
     if(srv->isA("sight::io::base::service::IReader"))
     {
-        srv->registerInOut(image, "data");
+        srv->setInOut(image, "data");
     }
     else
     {
-        srv->registerInput(image, "data");
+        srv->setInput(image, "data");
     }
 
     CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(cfg));
@@ -79,7 +77,7 @@ void runImageSrv(
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    service::OSR::unregisterService(srv);
+    service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -294,14 +292,14 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        srv->registerInOut(image, "data");
+        srv->setInOut(image, "data");
 
         CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(file)));
         CPPUNIT_ASSERT_NO_THROW(srv->configure());
         CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
         CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::Failed);
         CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-        service::OSR::unregisterService(srv);
+        service::remove(srv);
     }
     std::filesystem::remove(file);
 }
@@ -641,13 +639,13 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        srv->registerInput(image, "data");
+        srv->setInput(image, "data");
         CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(file)));
         CPPUNIT_ASSERT_NO_THROW(srv->configure());
         CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
         CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::Failed);
         CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-        service::OSR::unregisterService(srv);
+        service::remove(srv);
     }
 }
 

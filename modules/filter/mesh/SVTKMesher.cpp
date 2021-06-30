@@ -49,16 +49,11 @@ namespace sight::module::filter::mesh
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_IMAGE_INPUT  = "imageSeries";
-static const std::string s_MODEL_OUTPUT = "modelSeries";
-
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
-    this->registerObject(s_IMAGE_INPUT, service::IService::AccessType::INPUT, false);
-    this->registerObject(s_MODEL_OUTPUT, service::IService::AccessType::OUTPUT, false, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,6 +72,7 @@ void SVTKMesher::starting()
 
 void SVTKMesher::stopping()
 {
+    this->setOutput("modelSeries", nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,11 +94,11 @@ void SVTKMesher::configuring()
 
 void SVTKMesher::updating()
 {
-    data::ImageSeries::csptr imageSeries = this->getInput<data::ImageSeries>(s_IMAGE_INPUT);
-    data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
+    auto imageSeries                    = m_image.lock();
+    data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
 
     data::Object::DeepCopyCacheType cache;
-    modelSeries->data::Series::cachedDeepCopy(imageSeries, cache);
+    modelSeries->data::Series::cachedDeepCopy(imageSeries.get_shared(), cache);
 
     // vtk img
     vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
@@ -167,7 +163,7 @@ void SVTKMesher::updating()
     modelSeries->setReconstructionDB(recs);
     modelSeries->setDicomReference(imageSeries->getDicomReference());
 
-    this->setOutput(s_MODEL_OUTPUT, modelSeries);
+    this->setOutput("modelSeries", modelSeries);
 }
 
 //-----------------------------------------------------------------------------

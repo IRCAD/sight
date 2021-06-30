@@ -196,8 +196,8 @@ void Plugin::initialize()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    meshReaderSrv->registerInOut(mesh, "data");
-    meshAdaptor->registerInOut(mesh, "mesh", true);
+    meshReaderSrv->setInOut(mesh, "data");
+    meshAdaptor->setInOut(mesh, "mesh", true);
 
     m_appManager->addObject(mesh, mesh->getID());
 

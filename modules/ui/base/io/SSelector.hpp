@@ -28,6 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/jobs/IJob.hpp>
 
+#include <io/base/service/ioTypes.hpp>
+
 #include <ui/base/IDialogEditor.hpp>
 
 namespace sight::module::ui::base
@@ -60,21 +62,8 @@ namespace io
           </service>
  * @endcode
  *
- * Readers can generate output data. In this case, you must define the type of the output data.
- *
- * @code{.xml}
-          <service uid="..." type="sight::module::ui::base::io::SSelector">
-              <out key="data" uid="image" />
-              <type mode="reader" class="data::Image" />
-              <selection mode="include" />
-              <addSelection service="::sight::module::io::atoms::SReader" />
-          </service>
- * @endcode
- *
  * @subsection In-Out In-Out
  * - \b data [sight::data::Object]: the read or saved object.
- * @subsection Output Output
- * - \b data [sight::data::Object]: the loaded object (not used if an inout data is defined).
  * @subsection Configuration Configuration
  * - \b type
  *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
@@ -175,6 +164,8 @@ private:
     SPTR(JobSucceededSignalType) m_sigJobSucceeded;
 
     SPTR(ForwardJobSlotType) m_slotForwardJob;
+
+    data::ptr<data::Object, data::Access::inout> m_data {this, sight::io::base::service::s_DATA_KEY, false};
 };
 
 } // namespace io

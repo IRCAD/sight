@@ -42,8 +42,6 @@ SModelSeriesList::SModelSeriesList() noexcept :
 {
     m_sigReconstructionSelected = newSignal<ReconstructionSelectedSignalType>(s_RECONSTRUCTION_SELECTED_SIG);
     m_sigEmptiedSelection       = newSignal<EmptiedSelectionSignalType>(s_EMPTIED_SELECTION_SIG);
-
-    this->registerObject(s_MODEL_SERIES_INOUT, AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -78,11 +76,11 @@ void SModelSeriesList::configuring()
 
 void SModelSeriesList::updating()
 {
-    data::ModelSeries::sptr modelSeries = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    auto modelSeries = m_modelSeries.lock();
     SIGHT_ASSERT("inout 'modelSeries' is missing", modelSeries);
 
     SIGHT_ASSERT("list model is not defined.", m_listModel);
-    m_listModel->updateModelSeries(modelSeries);
+    m_listModel->updateModelSeries(modelSeries.get_shared());
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +89,7 @@ void SModelSeriesList::onOrganSelected(int index)
 {
     if(index >= 0)
     {
-        data::ModelSeries::sptr modelSeries = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+        auto modelSeries = m_modelSeries.lock();
         SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
 
         const auto& recs = modelSeries->getReconstructionDB();
@@ -109,9 +107,9 @@ void SModelSeriesList::onOrganSelected(int index)
 
 void SModelSeriesList::onShowReconstructions(int state)
 {
-    data::ModelSeries::sptr modelSeries = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    auto modelSeries = m_modelSeries.lock();
     SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
-    data::helper::Field helper(modelSeries);
+    data::helper::Field helper(modelSeries.get_shared());
     helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
     helper.notify();
 }
@@ -122,7 +120,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 {
     if(index >= 0)
     {
-        data::ModelSeries::sptr modelSeries = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+        auto modelSeries = m_modelSeries.lock();
         SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
 
         const auto& recs        = modelSeries->getReconstructionDB();
@@ -145,7 +143,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 
 void SModelSeriesList::onCheckAllBoxes(bool checked)
 {
-    data::ModelSeries::sptr modelSeries = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    auto modelSeries = m_modelSeries.lock();
     SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
 
     for(const auto& rec : modelSeries->getReconstructionDB())
@@ -172,7 +170,8 @@ service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() cons
     KeyConnectionsMap connections;
 
     // FIXME hack to support deprecated getObject() with any key
-    if(this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT))
+    auto modelSeries = m_modelSeries.lock();
+    if(modelSeries)
     {
         connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);

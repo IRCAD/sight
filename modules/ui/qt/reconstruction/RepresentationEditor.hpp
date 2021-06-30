@@ -29,6 +29,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Material.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -115,6 +116,8 @@ private:
     QPointer<QButtonGroup> m_normalsRadioBox;
 
     data::Material::sptr m_material;
+
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, "reconstruction"};
 };
 
 } // uiReconstructionQt

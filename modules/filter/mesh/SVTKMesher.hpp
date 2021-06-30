@@ -24,6 +24,9 @@
 
 #include "modules/filter/mesh/config.hpp"
 
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+
 #include <service/IOperator.hpp>
 
 #include <string>
@@ -41,8 +44,7 @@ namespace sight::module::filter::mesh
        <out key="modelSeries" uid="..." />
        <config>
             <percentReduction>80</percentReduction>
-        </config>
-   </service>
+        </config>   </service>
     @endcode
  *
  * @subsection Input Input
@@ -60,7 +62,6 @@ public:
     SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::IOperator);
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
-
     MODULE_FILTER_MESH_API virtual ~SVTKMesher() noexcept;
 
 protected:
@@ -76,6 +77,11 @@ protected:
 private:
 
     unsigned int m_reduction;
+
+    /// Input image mask
+    data::ptr<data::ImageSeries, data::Access::in> m_image {this, "imageSeries", false};
+    /// Output segmentation
+    data::ptr<data::ModelSeries, data::Access::out> m_model {this, "modelSeries", false};
 };
 
 } // namespace sight::module::filter::mesh

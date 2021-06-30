@@ -95,8 +95,6 @@ void SSelector::configuring()
     m_mode = (mode == "writer") ? WRITER_MODE : READER_MODE;
     SIGHT_DEBUG("mode => " + mode);
 
-    m_dataClassname = srvConfig.get<std::string>("type.<xmlattr>.class", "");
-
     const std::string selectionMode = srvConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
     SIGHT_ASSERT(
         "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
@@ -130,19 +128,6 @@ void SSelector::configuring()
         m_serviceToConfig[service] = configId;
         SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
     }
-
-    if(m_mode == WRITER_MODE)
-    {
-        this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
-    }
-    else if(m_dataClassname.empty())
-    {
-        this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
-    }
-    else
-    {
-        this->registerObject(io::base::service::s_DATA_KEY, AccessType::OUTPUT, false, true);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -161,46 +146,33 @@ void SSelector::stopping()
 
 void SSelector::updating()
 {
-    bool createOutput      = false;
-    data::Object::sptr obj = this->getInOut<data::Object>(io::base::service::s_DATA_KEY);
-
-    // Retrieve implementation of type io::base::service::IReader for this object
     std::vector<std::string> availableExtensionsId;
-    if(m_mode == READER_MODE)
     {
-        std::string classname = m_dataClassname;
+        auto objLock           = m_data.lock();
+        data::Object::sptr obj = objLock.get_shared();
 
-        SIGHT_ASSERT(
-            "An inout key '" + io::base::service::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
-            obj || !classname.empty()
-        );
-
-        if(obj)
+        // Retrieve implementation of type io::base::service::IReader for this object
+        if(m_mode == READER_MODE)
         {
-            SIGHT_WARN_IF(
-                "The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
-                "is used",
-                !classname.empty()
-            )
-            classname = obj->getClassname();
+            SIGHT_ASSERT("An inout key '" + io::base::service::s_DATA_KEY + "' must be defined.", obj);
+            const auto classname = obj->getClassname();
+
+            availableExtensionsId =
+                service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
+                    classname,
+                    "::sight::io::base::service::IReader"
+                );
         }
+        else // m_mode == WRITER_MODE
+        {
+            SIGHT_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
-        createOutput          = (!obj && !m_dataClassname.empty());
-        availableExtensionsId =
-            service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
-                classname,
-                "::sight::io::base::service::IReader"
-            );
-    }
-    else // m_mode == WRITER_MODE
-    {
-        SIGHT_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
-
-        availableExtensionsId =
-            service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
-                obj->getClassname(),
-                "::sight::io::base::service::IWriter"
-            );
+            availableExtensionsId =
+                service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
+                    obj->getClassname(),
+                    "::sight::io::base::service::IWriter"
+                );
+        }
     }
 
     // Filter available extensions and replace id by service description
@@ -318,14 +290,12 @@ void SSelector::updating()
             // Configure and start service
             if(m_mode == READER_MODE)
             {
-                if(createOutput)
-                {
-                    obj = data::factory::New(m_dataClassname);
-                    SIGHT_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
-                }
-
                 io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(extensionId);
-                reader->registerInOut(obj, io::base::service::s_DATA_KEY);
+                {
+                    auto objLock           = m_data.lock();
+                    data::Object::sptr obj = objLock.get_shared();
+                    reader->setInOut(obj, io::base::service::s_DATA_KEY);
+                }
                 reader->setWorker(m_associatedWorker);
 
                 if(hasConfigForService)
@@ -352,11 +322,6 @@ void SSelector::updating()
 
                     reader->stop();
                     service::OSR::unregisterService(reader);
-
-                    if(createOutput && !reader->hasFailed())
-                    {
-                        this->setOutput(io::base::service::s_DATA_KEY, obj);
-                    }
                 }
                 catch(std::exception& e)
                 {
@@ -388,7 +353,10 @@ void SSelector::updating()
                             extensionId
                         )
                     );
-                writer->registerInput(obj, io::base::service::s_DATA_KEY);
+                {
+                    auto obj = m_data.lock();
+                    writer->setInput(obj.get_shared(), io::base::service::s_DATA_KEY);
+                }
 
                 writer->setWorker(m_associatedWorker);
 

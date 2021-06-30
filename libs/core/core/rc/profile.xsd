@@ -5,7 +5,7 @@
 
 <xs:complexType name="ProfileType">
   <xs:sequence>
-    <xs:element name="activate" type="ActivateType" minOccurs="1" maxOccurs="unbounded" />
+    <xs:element name="activate" type="ActivateType" minOccurs="0" maxOccurs="unbounded" />
     <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
   </xs:sequence>
   <xs:attribute name="name" type="xs:string" use="required"/>

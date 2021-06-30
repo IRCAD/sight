@@ -60,18 +60,6 @@ SMesh::~SMesh() noexcept
 void SMesh::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
-
-    const auto config = this->getConfigTree();
-
-    auto inoutsCfg = config.equal_range("in");
-    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
-    {
-        if(itCfg->second.get<std::string>("<xmlattr>.key") == s_MESH_INPUT)
-        {
-            m_meshAutoConnect =
-                itCfg->second.get_optional<std::string>("<xmlattr>.autoConnect").get_value_or("false") == "true";
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -86,7 +74,7 @@ void SMesh::starting()
     const auto genericSceneId = this->getID() + "-genericScene";
     sight::ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
-    auto mesh = this->getLockedInput<data::Object>(s_MESH_INPUT);
+    auto mesh = m_mesh.lock();
 
     // create and register the render service
     // create the frame configuration

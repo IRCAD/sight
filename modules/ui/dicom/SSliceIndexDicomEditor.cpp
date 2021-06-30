@@ -160,10 +160,9 @@ void SSliceIndexDicomEditor::starting()
                                                                       "::sight::module::ui::dicom::SSliceIndexDicomEditor.",
         dicomReader
     );
-    service::OSR::registerService(
+    service::OSR::registerService<data::Access::inout>(
         m_tempSeriesDB,
         sight::io::base::service::s_DATA_KEY,
-        service::IService::AccessType::INOUT,
         dicomReader
     );
 

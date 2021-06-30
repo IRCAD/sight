@@ -117,7 +117,7 @@ void SReconstruction::updating()
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = service::OSR::getRegistered("mesh", service::IService::AccessType::INOUT, meshAdaptor);
+        auto mesh = service::OSR::getRegistered("mesh", data::Access::inout, meshAdaptor);
         if(mesh != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction

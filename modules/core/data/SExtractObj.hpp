@@ -99,6 +99,9 @@ private:
 
     /// Vector to associate source paths
     std::vector<std::string> m_sourcePaths;
+
+    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_source {this, "source"};
+    sight::data::ptr_vector<sight::data::Object, sight::data::Access::out> m_target {this, "target", false};
 };
 
 } // namespace sight::module::data

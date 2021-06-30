@@ -32,15 +32,10 @@
 namespace sight::module::data
 {
 
-static const std::string s_SOURCE_INOUT  = "source";
-static const std::string s_TARGET_OUTPUT = "target";
-
 //-----------------------------------------------------------------------------
 
 SExtractObj::SExtractObj()
 {
-    this->registerObject(s_SOURCE_INOUT, AccessType::INOUT);
-    this->registerObjectGroup(s_TARGET_OUTPUT, AccessType::OUTPUT, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +75,7 @@ void SExtractObj::starting()
 
 void SExtractObj::updating()
 {
-    auto sourceObject = this->getInOut<sight::data::Object>(s_SOURCE_INOUT);
+    auto sourceObject = m_source.lock();
 
     size_t index = 0;
     for(auto path : m_sourcePaths)
@@ -90,7 +85,7 @@ void SExtractObj::updating()
         sight::data::Object::sptr object;
         try
         {
-            object = sight::data::reflection::getObject(sourceObject, from, true);
+            object = sight::data::reflection::getObject(sourceObject.get_shared(), from, true);
         }
         catch(sight::data::reflection::exception::NullPointer&)
         {
@@ -108,7 +103,7 @@ void SExtractObj::updating()
         SIGHT_WARN_IF("Object from '" + from + "' not found", !object);
         if(object)
         {
-            this->setOutput(s_TARGET_OUTPUT, object, index);
+            this->setOutput("target", object, index);
         }
 
         ++index;
@@ -120,7 +115,7 @@ void SExtractObj::updating()
 void SExtractObj::stopping()
 {
     // Unregister outputs
-    for(size_t i = 0 ; i < this->getKeyGroupSize(s_TARGET_OUTPUT) ; ++i)
+    for(size_t i = 0 ; i < this->getKeyGroupSize("target") ; ++i)
     {
         this->setOutput("target", nullptr, i);
     }

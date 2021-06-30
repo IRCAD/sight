@@ -237,6 +237,9 @@ protected:
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
     bool m_readFailed {false};
 
+    /// Generic output data
+    data::ptr<data::Object, data::Access::inout> m_data {this, "data", false};
+
 private:
 
     /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.

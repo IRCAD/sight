@@ -136,6 +136,10 @@ private:
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     OrganListModel* m_listModel;
+
+    /// Model series data
+    const service::key_t s_MODEL_SERIES_INOUT;
+    data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, s_MODEL_SERIES_INOUT, true};
 };
 
 } // uiMedDataQml

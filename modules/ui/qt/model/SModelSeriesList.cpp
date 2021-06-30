@@ -159,8 +159,6 @@ SModelSeriesList::SModelSeriesList() noexcept
     m_sigEmptiedSelection       = newSignal<EmptiedSelectionSignalType>(s_EMPTIED_SELECTION_SIG);
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
-
-    this->registerObject("modelSeries", service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -357,9 +355,7 @@ void SModelSeriesList::updateReconstructions()
 
     SIGHT_ASSERT("container not instanced", container);
 
-    data::mt::locked_ptr<data::ModelSeries> modelSeries =
-        this->getLockedInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
-
+    auto modelSeries        = m_modelSeries.lock();
     bool hasReconstructions = !modelSeries->getReconstructionDB().empty();
     container->setEnabled(hasReconstructions);
 
@@ -463,10 +459,8 @@ void SModelSeriesList::onShowReconstructions(int _state)
     m_unCheckAllButton->setEnabled(!visible);
     m_tree->setEnabled(!visible);
 
-    data::mt::locked_ptr<data::ModelSeries> modelSeries =
-        this->getLockedInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
-
     {
+        auto modelSeries = m_modelSeries.lock();
         data::helper::Field helper(modelSeries.get_shared());
         helper.addOrSwap("ShowReconstructions", data::Boolean::New(_state == Qt::Unchecked));
     }
@@ -524,8 +518,7 @@ void SModelSeriesList::onCheckAllBoxes(bool _visible)
 
 void SModelSeriesList::onDeleteAllCheckBox()
 {
-    data::mt::locked_ptr<data::ModelSeries> modelSeries =
-        this->getLockedInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    auto modelSeries = m_modelSeries.lock();
 
     // Remove all reconstructions.
     data::ModelSeries::ReconstructionVectorType reconstructions = modelSeries->getReconstructionDB();
@@ -552,10 +545,7 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
             this,
             [ = ]()
                 {
-                    data::mt::locked_ptr<data::ModelSeries> modelSeries =
-                        this->getLockedInOut<data::ModelSeries>(
-                            s_MODEL_SERIES_INOUT
-                        );
+                    auto modelSeries = m_modelSeries.lock();
 
                     data::ModelSeries::ReconstructionVectorType deletedReconstructions;
 
