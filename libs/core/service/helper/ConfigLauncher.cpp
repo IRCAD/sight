@@ -75,6 +75,8 @@ void ConfigLauncher::parseConfig(
     service::IService::ConfigType& newCfg = srvCfg.get_child("config.appConfig");
     curConfig = &srvCfg;
 
+    auto inouts = _service->getInOuts();
+
     auto inoutsCfg = oldConfig.equal_range("inout");
     for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
     {
@@ -90,7 +92,6 @@ void ConfigLauncher::parseConfig(
 
         const bool optional = core::runtime::get_ptree_value(itCfg->second, "<xmlattr>.optional", false);
 
-        auto obj = _service->getInOut<data::Object>(key);
         if(optional)
         {
             m_optionalInputs[key] = uid;
@@ -98,6 +99,9 @@ void ConfigLauncher::parseConfig(
         }
         else
         {
+            const auto it = inouts.find(key);
+            SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
+            auto obj = it->second.lock();
             SIGHT_ASSERT("Object key '" + key + "' with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
@@ -105,8 +109,6 @@ void ConfigLauncher::parseConfig(
         newCfg.add_child("parameters.parameter", parameterCfg);
     }
 
-    // @deprecated This is no longer necessary to use "uid" to get the prefix replacement, since
-    // this is now done in AppConfig. However we keep that code for a while for backward compatibility
     auto paramsCfg = oldConfig.equal_range("parameter");
     for(auto itCfg = paramsCfg.first ; itCfg != paramsCfg.second ; ++itCfg)
     {
@@ -114,20 +116,11 @@ void ConfigLauncher::parseConfig(
 
         const std::string replace = itCfg->second.get<std::string>("<xmlattr>.replace");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
-
         parameterCfg.add("<xmlattr>.replace", replace);
 
-        if(itCfg->second.get_child("<xmlattr>").count("uid") == 1)
-        {
-            FW_DEPRECATED_MSG("'uid' is deprecated for parameters of ConfigLauncher, use 'by' instead", "22.0");
-            const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
-            parameterCfg.add("<xmlattr>.uid", uid);
-        }
-        else
-        {
-            const std::string by = itCfg->second.get<std::string>("<xmlattr>.by");
-            parameterCfg.add("<xmlattr>.by", by);
-        }
+        const std::string by = itCfg->second.get<std::string>("<xmlattr>.by");
+        SIGHT_ASSERT("[" + appCfgId + "] Missing 'by' tag.", !by.empty());
+        parameterCfg.add("<xmlattr>.by", by);
 
         newCfg.add_child("parameters.parameter", parameterCfg);
     }
@@ -165,15 +158,18 @@ void ConfigLauncher::startConfig(
     m_appConfigManager = service::AppConfigManager::New();
     m_appConfigManager->setConfig(m_appConfig.id, replaceMap);
 
+    auto inouts = _srv->getInOuts();
+
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
     // Whitout that, the data is considered as null.
     for(const auto& [key, uid] : m_optionalInputs)
     {
-        auto obj = _srv->getInOut<data::Object>(key);
-        if(obj)
+        const auto it = inouts.find(key);
+        if(it != inouts.end())
         {
-            m_appConfigManager->addExistingDeferredObject(obj, uid);
+            auto obj = it->second.lock();
+            m_appConfigManager->addExistingDeferredObject(obj.get_shared(), uid);
         }
     }
 

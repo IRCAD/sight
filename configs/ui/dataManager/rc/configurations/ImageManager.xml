@@ -6,7 +6,7 @@ Example:
 
 <service uid="..." type="sight::service::SConfigController">
     <appConfig id="ImageManager" />
-    <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
+    <parameter replace="WID_PARENT" by="referenceSceneEditor" />
     <inout key="image" uid="..." />
     <inout key="transferFunction" uid="..." />
 </service>

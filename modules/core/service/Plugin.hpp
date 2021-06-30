@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "service/config.hpp"
-
 #include <core/runtime/Plugin.hpp>
 
 namespace sight::module::service
@@ -32,22 +30,22 @@ namespace sight::module::service
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct SERVICE_CLASS_API Plugin : public core::runtime::Plugin
+struct Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    SERVICE_API ~Plugin() noexcept;
+    ~Plugin() noexcept;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    SERVICE_API void start();
+    void start();
 
     /// Overrides initialize method
-    SERVICE_API void initialize();
+    void initialize();
 
     /// Overrides uninitialize method
-    SERVICE_API void uninitialize();
+    void uninitialize();
 
     /// Overrides stop method. Do nothing
-    SERVICE_API void stop() noexcept;
+    void stop() noexcept;
 };
 
 } // namespace sight::module::service

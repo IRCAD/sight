@@ -69,7 +69,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
         const auto it       = inouts.find(key);
         SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        data::Object::csptr obj = it->second.getShared();
+        auto obj = it->second.lock();
         ParameterType param;
         param.replace = key;
         if(optional)

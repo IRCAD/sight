@@ -105,11 +105,11 @@
             <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
-                <parameter replace="CREATE_ACTIVITY_RECEIVER_CHANNEL" uid="CREATE_ACTIVITY_SENDER_CHANNEL" />
-                <parameter replace="LAUNCH_ACTIVITY_SENDER_CHANNEL" uid="LAUNCH_ACTIVITY_RECEIVER_CHANNEL" />
-                <parameter replace="LAUNCH_ACTIVITY_SERIES_SENDER_CHANNEL" uid="LAUNCH_ACTIVITY_SERIES_RECEIVER_CHANNEL" />
-                <parameter replace="LOAD_ACTIVITY_SENDER_CHANNEL" uid="LOAD_ACTIVITY_RECEIVER_CHANNEL" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                <parameter replace="CREATE_ACTIVITY_RECEIVER_CHANNEL" by="CREATE_ACTIVITY_SENDER_CHANNEL" />
+                <parameter replace="LAUNCH_ACTIVITY_SENDER_CHANNEL" by="LAUNCH_ACTIVITY_RECEIVER_CHANNEL" />
+                <parameter replace="LAUNCH_ACTIVITY_SERIES_SENDER_CHANNEL" by="LAUNCH_ACTIVITY_SERIES_RECEIVER_CHANNEL" />
+                <parameter replace="LOAD_ACTIVITY_SENDER_CHANNEL" by="LOAD_ACTIVITY_RECEIVER_CHANNEL" />
             </parameters>
             <config document="false" />
         </service>
@@ -151,7 +151,7 @@
         <service uid="selectorAct" type="sight::module::ui::base::SConfigLauncher" >
             <appConfig id="SightCalibrator_Selector_AppCfg" />
             <inout key="SERIESDB" uid="seriesDB" />
-            <parameter replace="WID_PARENT" uid="selectorView" />
+            <parameter replace="WID_PARENT" by="selectorView" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         </service>
 
