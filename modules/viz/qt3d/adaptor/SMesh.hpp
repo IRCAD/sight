@@ -112,6 +112,9 @@ private:
 
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {false};
+
+    static const service::key_t s_MESH_INOUT;
+    data::ptr<data::Mesh, data::Access::inout> m_meshData {this, s_MESH_INOUT, true};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor.

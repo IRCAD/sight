@@ -113,7 +113,7 @@ void SMaterial::starting()
 {
     this->initialize();
     {
-        const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+        const auto material = m_materialData.lock();
 
         if(!m_shadingMode.empty())
         {
@@ -205,7 +205,7 @@ service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 
 void SMaterial::updating()
 {
-    const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const auto material = m_materialData.lock();
 
     if(m_r2vbObject)
     {
@@ -235,7 +235,7 @@ void SMaterial::stopping()
 
     ::Ogre::MaterialManager::getSingleton().remove(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
 
-    const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const auto material = m_materialData.lock();
 
     if(material->getField("shaderParameters"))
     {
@@ -272,10 +272,10 @@ void SMaterial::createShaderParameterAdaptors()
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
                 this->registerService<sight::module::viz::scene3d::adaptor::SShaderParameter>(
-                    "::sight::module::viz::scene3d::adaptor::SShaderParameter",
+                    "sight::module::viz::scene3d::adaptor::SShaderParameter",
                     id
                 );
-            srv->registerInOut(obj, "parameter", true);
+            srv->setInOut(obj, "parameter", true);
 
             // Naming convention for shader parameters
             srv->setRenderService(this->getRenderService());
@@ -291,7 +291,7 @@ void SMaterial::createShaderParameterAdaptors()
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            const auto materialData = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+            const auto materialData = m_materialData.lock();
 
             data::Composite::sptr composite = materialData->setDefaultField(
                 "shaderParameters",
@@ -343,7 +343,7 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
         {
             this->unregisterServices("::sight::module::viz::scene3d::adaptor::SShaderParameter");
             {
-                const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+                const auto material = m_materialData.lock();
 
                 data::String::csptr string = data::String::dynamicCast(elt.second);
                 this->setMaterialTemplateName(string->getValue());
@@ -373,7 +373,7 @@ void SMaterial::swapTexture()
     m_materialFw->setDiffuseTexture(currentTexture);
 
     // Update the shaders
-    const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const auto material = m_materialData.lock();
 
     m_materialFw->updateShadingMode(
         material->getShadingMode(),
@@ -391,7 +391,7 @@ void SMaterial::createTextureAdaptor()
 {
     SIGHT_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
-    const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const auto material = m_materialData.lock();
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
     if(material->getDiffuseTexture())
@@ -399,9 +399,9 @@ void SMaterial::createTextureAdaptor()
         // Creates an Ogre adaptor and associates it with the Sight texture object
         auto texture = material->getDiffuseTexture();
         m_texAdaptor = this->registerService<module::viz::scene3d::adaptor::STexture>(
-            "::sight::module::viz::scene3d::adaptor::STexture"
+            "sight::module::viz::scene3d::adaptor::STexture"
         );
-        m_texAdaptor->registerInput(texture, "image", true);
+        m_texAdaptor->setInput(texture, "image", true);
 
         m_texAdaptor->setID(this->getID() + "_" + m_texAdaptor->getID());
         m_texAdaptor->setRenderService(this->getRenderService());
@@ -437,7 +437,7 @@ void SMaterial::removeTextureAdaptor()
     m_texAdaptor.reset();
 
     // Update the shaders
-    const auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const auto material = m_materialData.lock();
 
     m_materialFw->updateShadingMode(
         material->getShadingMode(),

@@ -144,7 +144,7 @@ void SModelSeries::updating()
         auto adaptor = this->registerService<module::viz::scene3d::adaptor::SReconstruction>(
             "::sight::module::viz::scene3d::adaptor::SReconstruction"
         );
-        adaptor->registerInput(reconstruction, "reconstruction", true);
+        adaptor->setInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
         adaptor->setID(this->getID() + "_" + adaptor->getID());

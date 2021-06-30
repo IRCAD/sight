@@ -207,6 +207,11 @@ public:
      * @return True if the visual feedback is activated.
      */
     VIZ_SCENE3D_API virtual bool isVisualFeedbackOn() const = 0;
+
+protected:
+
+    data::ptr<data::Color, data::Access::inout> m_diffuse {this, "diffuseColor", true};
+    data::ptr<data::Color, data::Access::inout> m_specular {this, "specularColor", true};
 };
 
 } // namespace sight::viz::scene3d

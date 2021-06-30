@@ -110,7 +110,7 @@ void SMesh::starting()
     meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = service::add("::sight::module::viz::scene3d::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
-    m_meshSrv->registerInOut(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
+    m_meshSrv->setInOut(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
 
@@ -126,7 +126,7 @@ void SMesh::starting()
     cameraConfig.put("config.<xmlattr>.layer", "default");
     m_cameraSrv = service::add("::sight::module::viz::scene3d::adaptor::SCamera");
     m_cameraSrv->setConfiguration(cameraConfig);
-    m_cameraSrv->registerInOut(m_cameraTransform->getSptr(), "transform", true);
+    m_cameraSrv->setInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
     m_cameraSrv->configure();
 

@@ -44,7 +44,7 @@ namespace sight::module::viz::qt3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_MESH_INOUT = "mesh";
+const service::key_t SMesh::s_MESH_INOUT = "mesh";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_MATERIAL_NAME_CONFIG    = "materialName";
@@ -87,8 +87,8 @@ void SMesh::starting()
     this->initialize();
 
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
-    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
+    auto mesh = m_meshData.lock();
+    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Create a Qt3D mesh from sight data.
     m_mesh = new sight::viz::qt3d::data::Mesh(this->getRenderService()->getScene());
@@ -112,8 +112,8 @@ service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 void SMesh::updating()
 {
     // Read the mesh from the input as sight data.
-    auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
-    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
+    auto mesh = m_meshData.lock();
+    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh);
 
     // Update the mesh and center camera if necessary.
     m_mesh->setMesh(mesh.get_shared());

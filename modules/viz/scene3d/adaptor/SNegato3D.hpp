@@ -286,7 +286,7 @@ private:
     PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 
     static const std::string s_IMAGE_INOUT;
-    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
 
     static const std::string s_TF_INOUT;
     data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF_INOUT, false, true};

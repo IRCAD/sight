@@ -96,6 +96,11 @@ private:
 
     /// Desired bins width used to classified pixel.
     float m_binsWidth;
+
+    static const service::key_t s_HISTOGRAM_INPUT;
+    static const service::key_t s_IMAGE_INPUT;
+    data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    data::ptr<data::Histogram, data::Access::inout> m_histogram {this, s_HISTOGRAM_INPUT};
 };
 
 } // namespace processing

@@ -43,9 +43,9 @@ namespace sight::module::viz::scene3d::adaptor
 const core::com::Signals::SignalKeyType module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG =
     "textureSwapped";
 
-static const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
+const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
 
-static const std::string s_TEXTURE_INOUT = "image";
+const service::key_t STexture::s_TEXTURE_INOUT = "image";
 
 static const std::string s_TEXTURE_NAME_CONFIG = "textureName";
 static const std::string s_FILTERING_CONFIG    = "filtering";
@@ -120,7 +120,7 @@ service::IService::KeyConnectionsMap STexture::getAutoConnections() const
 void STexture::updating()
 {
     // Retrieves associated Sight image
-    const auto image = this->getLockedInput<data::Image>(s_TEXTURE_INOUT);
+    const auto image = m_image.lock();
 
     if(image->getAllocatedSizeInBytes() != 0)
     {

@@ -28,9 +28,7 @@
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
 
-#include <service/IController.hpp>
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
+#include <service/base.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
@@ -68,7 +66,7 @@ void ProcessingTest::histogramTest()
     const int sizeZ     = 50;
     const int imageSize = sizeX * sizeY * sizeZ;
 
-    std::string implementation = "::sight::module::viz::scene2d::processing::SComputeHistogram";
+    std::string implementation = "sight::module::viz::scene2d::processing::SComputeHistogram";
 
     // Configure data hirearchy
     data::Image::sptr image         = data::Image::New();
@@ -104,21 +102,21 @@ void ProcessingTest::histogramTest()
         ++count;
     }
 
-    auto srv = service::add<service::IController>(implementation, "");
+    auto srv = service::add(implementation, "");
     CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
     service::IService::ConfigType config;
     config.add("binsWidth", 1.0f);
 
-    srv->registerInput(image, "image");
-    srv->registerInOut(histogram, "histogram");
+    srv->setInput(image, "image");
+    srv->setInOut(histogram, "histogram");
 
     srv->setConfiguration(config);
     srv->configure();
     srv->start().wait();
     srv->update().wait();
     srv->stop().wait();
-    service::OSR::unregisterService(srv);
+    service::remove(srv);
 
     data::Histogram::fwHistogramValues values = histogram->getValues();
     CPPUNIT_ASSERT_EQUAL((size_t) 40 - 10 + 1, values.size());

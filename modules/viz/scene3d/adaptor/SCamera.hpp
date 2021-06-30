@@ -25,19 +25,13 @@
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
+#include <data/Matrix4.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 
 #include <OGRE/OgreMovableObject.h>
-
-#include <string>
-#include <vector>
 
 namespace sight::data
 {
@@ -58,16 +52,19 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b calibrate(): applies calibration information to Ogre camera.
  *
  * @section XML XML Configuration
+ *  *
  * @code{.xml}
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::SCamera">
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
+        <in key="cameraSeries" uid="..." />
         <config layer="..." />
     </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b calibration [sight::data::Camera]: camera containing calibration information.
+ * - \b calibration [sight::data::Camera] (optional): camera containing calibration information.
+ * - \b calibration [sight::data::CameraSeries] (optional): camera series containing calibration information.
  *
  * @subsection InOut InOut
  * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
@@ -122,11 +119,11 @@ private:
      * @brief Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
      * @param _cam data use to retreive the camera intrinsic parameters.
      */
-    void calibrateMonoCamera(const data::Camera::csptr& _cam);
+    void calibrateMonoCamera(const data::Camera& _cam);
 
     /// Computes a projection matrix for each camera in the series and set them in the layer.
     /// This matrix is equal to the intrinsic times the extrinsic matrix.
-    void calibrateCameraSeries(const data::CameraSeries::csptr& _cs);
+    void calibrateCameraSeries(const data::CameraSeries& _cs);
 
     /// Updates Transformation Matrix.
     void updateTF3D();
@@ -155,6 +152,14 @@ private:
 
     /// This avoids a self-call to updateTF3D() when we update() the camera
     bool m_skipUpdate {false};
+
+    static const service::key_t s_CALIBRATION_INPUT;
+    static const service::key_t s_CAMERA_SERIES_INPUT;
+    static const service::key_t s_TRANSFORM_INOUT;
+
+    data::ptr<data::Camera, data::Access::in> m_cameraCalibration {this, s_CALIBRATION_INPUT, true, true};
+    data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT, true, true};
+    data::ptr<data::Matrix4, data::Access::inout> m_transform {this, s_TRANSFORM_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

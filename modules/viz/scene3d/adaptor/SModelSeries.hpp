@@ -157,7 +157,7 @@ private:
     bool m_isVisibleTag {false};
 
     static const std::string s_MODEL_INPUT;
-    data::ptr<data::ModelSeries, data::Access::inout> m_model {this, s_MODEL_INPUT};
+    data::ptr<data::ModelSeries, data::Access::inout> m_model {this, s_MODEL_INPUT, true};
 };
 
 //------------------------------------------------------------------------------

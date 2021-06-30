@@ -229,6 +229,8 @@ private:
 
     /// Contains the renderable object.
     sight::viz::scene3d::R2VBRenderable* m_r2vbObject {nullptr};
+
+    data::ptr<data::Material, data::Access::inout> m_materialData {this, s_MATERIAL_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

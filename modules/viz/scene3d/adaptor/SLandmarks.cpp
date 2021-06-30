@@ -174,7 +174,7 @@ void SLandmarks::starting()
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "::sight::module::viz::scene3d::adaptor::SMaterial"
     );
-    m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService(this->getRenderService());
