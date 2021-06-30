@@ -25,6 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <data/Landmarks.hpp>
+#include <data/Matrix4.hpp>
 #include <data/tools/PickingInfo.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -350,6 +351,11 @@ public:
 
     /// Sets the text displayed at the top of this editor.
     std::string m_text {"Use 'Ctrl+Left Click' to add new landmarks"};
+
+    static const service::key_t s_LANDMARKS_INOUT;
+    static const service::key_t s_MATRIX_IN;
+    data::ptr<data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN, false, true};
+    data::ptr<data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
 };
 
 } // sight::module::ui::qt::metrics

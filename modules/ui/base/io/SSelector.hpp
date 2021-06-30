@@ -165,7 +165,7 @@ private:
 
     SPTR(ForwardJobSlotType) m_slotForwardJob;
 
-    data::ptr<data::Object, data::Access::inout> m_data {this, sight::io::base::service::s_DATA_KEY, false};
+    data::ptr<data::Object, data::Access::inout> m_data {this, sight::io::base::service::s_DATA_KEY};
 };
 
 } // namespace io

@@ -76,7 +76,7 @@ void SSeriesDBMerger::updating()
     auto destinationSeriesDB = this->getInOut<data::SeriesDB>("seriesDB");
     SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
-    data::helper::SeriesDB sDBhelper(destinationSeriesDB);
+    data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
     data::Vector::csptr selectedSeries      = this->getInput<data::Vector>("selectedSeries");
 

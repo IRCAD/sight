@@ -126,7 +126,7 @@ private:
     void materialNotification();
 
     static const service::key_t s_RECONSTRUCTION_INOUT;
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT};
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 };
 
 } // uiReconstructionQml

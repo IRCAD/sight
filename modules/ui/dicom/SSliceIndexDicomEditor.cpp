@@ -281,7 +281,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     }
 
     // Clear temporary seriesDB
-    data::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
+    data::helper::SeriesDB sDBTempohelper(*m_tempSeriesDB);
     sDBTempohelper.clear();
 
     // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)

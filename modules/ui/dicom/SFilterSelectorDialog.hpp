@@ -24,6 +24,8 @@
 
 #include "modules/ui/dicom/config.hpp"
 
+#include <data/String.hpp>
+
 #include <ui/base/IDialogEditor.hpp>
 
 namespace sight::module::ui::dicom
@@ -42,7 +44,7 @@ namespace sight::module::ui::dicom
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b filter [sight::data::String]: string that will contain the identifier of the choosen filter.
+ * - \b filter [sight::data::String]: string that will contain the identifier of the chosen filter.
  * @subsection Configuration Configuration
  * None of these parameters are mandatory.
  *  - \b selection
@@ -102,6 +104,8 @@ private:
      * @see SFilterSelectorDialog::m_filtersAreExcluded.
      */
     std::vector<std::string> m_selectedFilters;
+
+    data::ptr<data::String, data::Access::inout> m_filter {this, "filter"};
 };
 
 } // namespace sight::module::ui::dicom

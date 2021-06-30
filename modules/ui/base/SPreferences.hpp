@@ -84,6 +84,8 @@ private:
     void load();
     /// saves preferences
     void save();
+
+    data::ptr<data::Object, data::Access::in> m_preferences {this, "preferences"};
 };
 
 } // namespace sight::module::ui::base

@@ -105,7 +105,7 @@ private:
     QPointer<QLabel> m_transparencyValue;
 
     static const service::IService::KeyType s_RECONSTRUCTION_INOUT;
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT};
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 
 private Q_SLOTS:
 

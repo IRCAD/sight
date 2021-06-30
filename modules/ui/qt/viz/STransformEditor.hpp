@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Matrix4.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
@@ -143,6 +145,9 @@ private:
 
     /// Range of rotation sliders
     int m_rotationRange[2];
+
+    static const service::key_t s_MATRIX_INOUT;
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_matrix {this, s_MATRIX_INOUT, true};
 };
 
 } // namespace sight::module::ui::qt::viz

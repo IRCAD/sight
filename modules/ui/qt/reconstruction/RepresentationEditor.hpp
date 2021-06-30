@@ -117,7 +117,7 @@ private:
 
     data::Material::sptr m_material;
 
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, "reconstruction"};
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, "reconstruction", true};
 };
 
 } // uiReconstructionQt

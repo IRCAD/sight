@@ -27,6 +27,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 
+#include <data/Series.hpp>
+
 #include <ui/base/IAction.hpp>
 
 namespace sight::core::jobs
@@ -132,6 +134,8 @@ private:
 
     SPTR(JobCreatedSignalType) m_sigJobCreated; ///< signal emitted to forward SSelector job process
     SPTR(ForwardJobSlotType) m_slotForwardJob;  ///< slot used to forward SSelector job process
+
+    data::ptr<data::Series, data::Access::inout> m_series {this, "series"};
 };
 
 } // namespace series

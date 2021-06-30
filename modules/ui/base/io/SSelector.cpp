@@ -347,12 +347,7 @@ void SSelector::updating()
 
                 auto factory                            = service::extension::Factory::getDefault();
                 io::base::service::IWriter::sptr writer =
-                    io::base::service::IWriter::dynamicCast(
-                        factory->create(
-                            "::sight::io::base::service::IWriter",
-                            extensionId
-                        )
-                    );
+                    io::base::service::IWriter::dynamicCast(factory->create(extensionId));
                 {
                     auto obj = m_data.lock();
                     writer->setInput(obj.get_shared(), io::base::service::s_DATA_KEY);

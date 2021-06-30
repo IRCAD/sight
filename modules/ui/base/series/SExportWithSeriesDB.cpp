@@ -27,14 +27,12 @@
 #include <core/com/Slots.hxx>
 #include <core/jobs/IJob.hpp>
 
-#include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -46,8 +44,6 @@ namespace series
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
-
-static const service::IService::KeyType s_SERIES_INOUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -91,12 +87,12 @@ void SExportWithSeriesDB::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    data::Series::sptr series = this->getInOut<data::Series>(s_SERIES_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
+    const auto series = m_series.lock();
+    SIGHT_ASSERT("The inout key 'series' is not correctly set.", series);
 
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
-    localSeriesDB->getContainer().push_back(series);
+    localSeriesDB->getContainer().push_back(series.get_shared());
 
     /// Create IOSelectorService on the new SeriesDB and execute it.
 
@@ -115,8 +111,8 @@ void SExportWithSeriesDB::updating()
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
-    ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
+    ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
+    ioSelectorSrv->setInOut(localSeriesDB, io::base::service::s_DATA_KEY);
 
     ioSelectorSrv->setWorker(m_associatedWorker);
 
@@ -131,7 +127,7 @@ void SExportWithSeriesDB::updating()
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
-    service::OSR::unregisterService(ioSelectorSrv);
+    service::remove(ioSelectorSrv);
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +136,7 @@ void SExportWithSeriesDB::starting()
 {
     this->sight::ui::base::IAction::actionServiceStarting();
 
-    data::Series::sptr series = this->getInOut<data::Series>(s_SERIES_INOUT);
+    const auto series = m_series.lock();
     SIGHT_FATAL_IF("The associated object must be a data::Series.", !series);
 }
 

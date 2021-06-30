@@ -151,7 +151,7 @@ void SExport::updating()
         series->setPerformingPhysiciansName(physicians);
         series->setDescription(description);
 
-        data::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::helper::SeriesDB seriesDBHelper(*seriesDB);
         seriesDBHelper.add(series);
         seriesDBHelper.notify();
         this->setIsExecutable(false);

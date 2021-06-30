@@ -155,7 +155,7 @@ private:
 
     data::helper::MedicalImage m_helper;
 
-    data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
+    data::ptr<data::Image, data::Access::inout> m_image {this, "image", true};
 };
 
 } // uiImageQt

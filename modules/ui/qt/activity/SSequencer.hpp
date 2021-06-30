@@ -194,6 +194,9 @@ private:
     std::string m_background;
     std::string m_primary;
     std::string m_elevation;
+
+    static const service::key_t s_SERIESDB_INOUT;
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
 };
 
 } // namespace activity

@@ -80,7 +80,7 @@ namespace sight::module::ui::qml::activity
  * the seriesDB inout and register the service.
  *
  * @code{.cpp}
-     m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
+     m_activitySequencer->setInOut(m_seriesDB, "seriesDB", true);
    @endcode
  *
  *  @subsubsection In-Out In-Out
@@ -163,6 +163,9 @@ private:
 
     /// List of activity ids
     QStringList m_qActivityIds;
+
+    static const service::key_t s_SERIESDB_INOUT;
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
 };
 
 } // uiActivitiesQml

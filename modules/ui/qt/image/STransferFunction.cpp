@@ -475,12 +475,11 @@ void STransferFunction::renameTF()
 
 void STransferFunction::importTF()
 {
-    const data::TransferFunction::sptr tf         = data::TransferFunction::New();
-    const io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-        "::sight::module::io::atoms::SReader"
-    );
+    const data::TransferFunction::sptr tf = data::TransferFunction::New();
+    const auto reader                     =
+        service::add<io::base::service::IReader>("sight::module::io::atoms::SReader");
 
-    reader->registerInOut(tf, io::base::service::s_DATA_KEY);
+    reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
@@ -516,11 +515,9 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
-        "::sight::module::io::atoms::SWriter"
-    );
+    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::atoms::SWriter");
 
-    writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
+    writer->setInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
@@ -575,17 +572,14 @@ void STransferFunction::initTransferFunctions()
                 }
             }
 
-            const data::TransferFunction::sptr tf         = data::TransferFunction::New();
-            const io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-                "::sight::module::io::atoms::SReader"
+            const data::TransferFunction::sptr tf = data::TransferFunction::New();
+            const auto reader                     = service::add<io::base::service::IReader>(
+                "sight::module::io::atoms::SReader"
             );
-            reader->registerInOut(tf, io::base::service::s_DATA_KEY);
+            reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
-            const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
-                "service"
-            );
-            const core::runtime::EConfigurationElement::sptr fileCfg =
-                core::runtime::EConfigurationElement::New("file");
+            const auto srvCfg  = core::runtime::EConfigurationElement::New("service");
+            const auto fileCfg = core::runtime::EConfigurationElement::New("file");
             srvCfg->addConfigurationElement(fileCfg);
 
             for(std::filesystem::path file : paths)

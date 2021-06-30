@@ -24,17 +24,11 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
@@ -52,7 +46,7 @@ namespace sight::module::ui::qt::viz
 
 //------------------------------------------------------------------------------
 
-const service::IService::KeyType s_MATRIX_INOUT = "matrix";
+const service::IService::KeyType STransformEditor::s_MATRIX_INOUT = "matrix";
 
 //------------------------------------------------------------------------------
 
@@ -241,23 +235,21 @@ service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() cons
 
 void STransformEditor::onSliderChanged(int)
 {
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
-
-    const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
-    const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
-    const double rz = ::glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
+    const double rx = glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
+    const double ry = glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
+    const double rz = glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
 
     const double tx = m_sliders[POSITION_X].m_slider->value();
     const double ty = m_sliders[POSITION_Y].m_slider->value();
     const double tz = m_sliders[POSITION_Z].m_slider->value();
 
-    ::glm::dquat quat  = ::glm::dquat(::glm::dvec3(rx, ry, rz));
-    ::glm::dmat4x4 mat = ::glm::mat4_cast(quat);
+    glm::dquat quat  = glm::dquat(glm::dvec3(rx, ry, rz));
+    glm::dmat4x4 mat = glm::mat4_cast(quat);
 
-    mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
+    mat[3] = glm::dvec4(tx, ty, tz, 1.);
 
-    data::mt::ObjectWriteLock lock(matrix);
-    geometry::data::setTF3DFromMatrix(matrix, mat);
+    const auto matrix = m_matrix.lock();
+    geometry::data::setTF3DFromMatrix(*matrix, mat);
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
@@ -286,17 +278,15 @@ void STransformEditor::onTextChanged()
 
 void STransformEditor::updateFromMatrix()
 {
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>("matrix");
-
+    const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("Unable to get matrix", matrix);
 
-    data::mt::ObjectReadLock lock(matrix);
-    const ::glm::dmat4x4 mat = geometry::data::getMatrixFromTF3D(matrix);
+    const glm::dmat4x4 mat = geometry::data::getMatrixFromTF3D(*matrix);
 
-    const ::glm::dquat quat(mat);
-    const ::glm::dvec3 angles = ::glm::eulerAngles(quat);
+    const glm::dquat quat(mat);
+    const glm::dvec3 angles = glm::eulerAngles(quat);
 
-    const ::glm::dvec4 translation = mat[3];
+    const glm::dvec4 translation = mat[3];
 
     // Block
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
@@ -305,14 +295,14 @@ void STransformEditor::updateFromMatrix()
         m_sliders[i].m_sliderValue->blockSignals(true);
     }
 
-    for(::glm::length_t i = POSITION_X, j = 0 ; i <= POSITION_Z ; i++, ++j)
+    for(glm::length_t i = POSITION_X, j = 0 ; i <= POSITION_Z ; i++, ++j)
     {
         m_sliders[i].m_slider->setValue(static_cast<int>(translation[j]));
     }
 
-    for(::glm::length_t i = ROTATION_X, j = 0 ; i <= ROTATION_Z ; i++, ++j)
+    for(glm::length_t i = ROTATION_X, j = 0 ; i <= ROTATION_Z ; i++, ++j)
     {
-        m_sliders[i].m_slider->setValue(static_cast<int>(::glm::degrees<double>(angles[j])));
+        m_sliders[i].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
     }
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)

@@ -789,12 +789,12 @@ data::Object::sptr DataView::readObject(
 
     try
     {
+        obj = data::factory::New(_classname);
         ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
-        ioSelectorSrv->setObjectId(io::base::service::s_DATA_KEY, "objRead");
+        ioSelectorSrv->setInOut(obj, io::base::service::s_DATA_KEY);
         ioSelectorSrv->start();
         ioSelectorSrv->update();
-        obj = ioSelectorSrv->getOutput<data::Object>(io::base::service::s_DATA_KEY);
         ioSelectorSrv->stop();
         service::OSR::unregisterService(ioSelectorSrv);
     }
