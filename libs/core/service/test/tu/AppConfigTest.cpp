@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,6 +40,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Image.hpp>
+#include <data/String.hpp>
 
 #include <utest/wait.hpp>
 
@@ -1387,6 +1388,39 @@ void AppConfigTest::parameterReplaceTest()
 
     fwTestWaitMacro(srvInSubConfig->getIsUpdated());
     CPPUNIT_ASSERT(srvInSubConfig->getIsUpdated());
+}
+
+//------------------------------------------------------------------------------
+
+void AppConfigTest::objectConfigTest()
+{
+    m_appConfigMgr = this->launchAppConfigMgr("objectConfigTest");
+
+    // =================================================================================================================
+    // Test a service with an external configuration and test Composite with sub-object parsing
+    // =================================================================================================================
+
+    auto compo1 = std::dynamic_pointer_cast<data::Composite>(core::tools::fwID::getObject("compo1Id"));
+    CPPUNIT_ASSERT(compo1 != nullptr);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), compo1->count("dataInComposite"));
+    auto data2 = compo1->at<data::String>("dataInComposite");
+    CPPUNIT_ASSERT(data2);
+    CPPUNIT_ASSERT_EQUAL(std::string("data2Id"), data2->getID());
+    CPPUNIT_ASSERT_EQUAL(std::string("Hello"), data2->value());
+
+    // This service should have a composite data and contain an external configuration with 2 parameters
+    core::tools::Object::sptr service = core::tools::fwID::getObject("TestService1Uid");
+    auto srv1                         = service::ut::TestService::dynamicCast(service);
+    CPPUNIT_ASSERT(srv1 != nullptr);
+    CPPUNIT_ASSERT_EQUAL(service::IService::CONFIGURED, srv1->getConfigurationStatus());
+
+    auto srvData1 = srv1->getLockedInput<data::Composite>("data1");
+    CPPUNIT_ASSERT(srvData1);
+    CPPUNIT_ASSERT(compo1 == srvData1.get_shared());
+
+    auto config = srv1->getConfigTree();
+    CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
+    CPPUNIT_ASSERT_EQUAL(std::string("value2"), config.get<std::string>("param2"));
 }
 
 //------------------------------------------------------------------------------
