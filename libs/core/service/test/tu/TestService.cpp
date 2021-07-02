@@ -28,10 +28,21 @@
 
 #include <service/macros.hpp>
 
-SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestServiceImplementation);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::TestServiceImplementation, ::sight::data::Object);
-SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestServiceImplementation2);
-SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestSrvAutoconnect);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestNoData);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestNoData2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Input);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2Inputs);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2InputsV2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest4Inputs);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Inout);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest3Inouts);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest3InoutsV2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2Inouts1Input);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest2InputGroups);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Input1Output2Inouts);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Input1InputGroup);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Input1OptInput1OptInOut);
+SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestOut);
 SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::TestServiceWithData);
 
 namespace sight::service
@@ -40,11 +51,11 @@ namespace sight::service
 namespace ut
 {
 
-const core::com::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
-const core::com::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     = "update2";
+const core::com::Signals::SignalKeyType ISTest::s_MSG_SENT_SIG = "msgSent";
+const core::com::Slots::SlotKeyType ISTest::s_UPDATE2_SLOT     = "update2";
 
-const core::com::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";
-const core::com::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
+const core::com::Signals::SignalKeyType ISTest::s_SIG_1 = "signal1";
+const core::com::Slots::SlotKeyType ISTest::s_SLOT_1    = "slot1";
 
 unsigned int TestService::s_START_COUNTER  = 0;
 unsigned int TestService::s_UPDATE_COUNTER = 0;
@@ -89,20 +100,6 @@ void TestService::updating()
     }
 
     m_updateOrder = s_UPDATE_COUNTER++;
-}
-
-//------------------------------------------------------------------------------
-
-TestServiceImplementation::TestServiceImplementation() noexcept
-{
-    newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
-    newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
-}
-
-//------------------------------------------------------------------------------
-
-TestServiceImplementation::~TestServiceImplementation() noexcept
-{
 }
 
 //------------------------------------------------------------------------------

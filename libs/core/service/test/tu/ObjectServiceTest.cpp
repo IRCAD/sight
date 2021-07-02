@@ -67,17 +67,17 @@ void ObjectServiceTest::tearDown()
 
 void ObjectServiceTest::registerKeyTest()
 {
-    const std::string srvType("::sight::service::ut::TestService");
-    const std::string srvImplementation1("::sight::service::ut::TestServiceImplementation");
-    const std::string srvImplementation2("::sight::service::ut::TestServiceImplementation2");
+    const std::string srvType("sight::service::ut::ISTest");
+    const std::string srvImplementation1("sight::service::ut::STestNoData");
+    const std::string srvImplementation2("sight::service::ut::STestNoData2");
 
     data::Integer::sptr obj1 = data::Integer::New();
     data::Integer::sptr obj2 = data::Integer::New();
     data::Integer::sptr obj3 = data::Integer::New();
 
-    auto service1 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
-    auto service2 = service::extension::Factory::getDefault()->create(srvType, srvImplementation2);
-    auto service3 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
+    auto service1 = service::extension::Factory::getDefault()->create(srvImplementation1);
+    auto service2 = service::extension::Factory::getDefault()->create(srvImplementation2);
+    auto service3 = service::extension::Factory::getDefault()->create(srvImplementation1);
 
     service::registry::ObjectService osr;
     CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
@@ -121,25 +121,25 @@ void ObjectServiceTest::registerKeyTest()
     // 3 services in total
     {
         auto servicesByType         = osr.getServices(srvType);
-        auto servicesByTemplateType = osr.getServices<service::ut::TestService>();
+        auto servicesByTemplateType = osr.getServices<service::ut::ISTest>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
-    // 2 services of type "::sight::service::ut::TestServiceImplementation"
+    // 2 services of type "sight::service::ut::STestNoData"
     {
         auto servicesByType         = osr.getServices(srvImplementation1);
-        auto servicesByTemplateType = osr.getServices<service::ut::TestServiceImplementation>();
+        auto servicesByTemplateType = osr.getServices<service::ut::STestNoData>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
     }
 
-    // 1 service of type "::sight::service::ut::TestServiceImplementation2"
+    // 1 service of type "sight::service::ut::STestNoData2"
     {
         auto servicesByType         = osr.getServices(srvImplementation2);
-        auto servicesByTemplateType = osr.getServices<service::ut::TestServiceImplementation2>();
+        auto servicesByTemplateType = osr.getServices<service::ut::STestNoData2>();
 
         CPPUNIT_ASSERT_EQUAL(size_t(1), servicesByType.size());
         CPPUNIT_ASSERT(std::equal(servicesByType.begin(), servicesByType.end(), servicesByTemplateType.begin()));
@@ -197,13 +197,12 @@ void ObjectServiceTest::registerConnectionTest()
 {
     service::registry::ObjectService osr;
 
-    const std::string srvType("::sight::service::ut::TestService");
-    const std::string srvImplementation1("::sight::service::ut::TestServiceImplementation");
+    const std::string srvImplementation1("sight::service::ut::STest2Inputs");
 
     data::Integer::sptr obj1 = data::Integer::New();
     data::Integer::sptr obj2 = data::Integer::New();
 
-    auto service1 = service::extension::Factory::getDefault()->create(srvType, srvImplementation1);
+    auto service1 = service::extension::Factory::getDefault()->create(srvImplementation1);
 
     auto worker         = core::thread::Worker::New();
     auto slotRegister   = core::com::newSlot(&ObjectServiceTest::registerService, this);
@@ -216,7 +215,7 @@ void ObjectServiceTest::registerConnectionTest()
 
     // Register callback test
     // Each time we wait the slot with a timeout to avoid blocking the test in case of failure
-    service1->registerObject("uid1", "key1", data::Access::out);
+    service1->registerObject("data1", "key1", data::Access::out);
     osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -226,7 +225,7 @@ void ObjectServiceTest::registerConnectionTest()
         CPPUNIT_ASSERT(obj1 == m_obj);
     }
 
-    service1->registerObject("uid2", "key2", data::Access::out);
+    service1->registerObject("data2", "key2", data::Access::out);
     osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -237,7 +236,7 @@ void ObjectServiceTest::registerConnectionTest()
     }
 
     // Unregister callback test
-    osr.unregisterServiceOutput("key1", service1);
+    osr.unregisterServiceOutput("data1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this]{return m_ret == "uid1";});

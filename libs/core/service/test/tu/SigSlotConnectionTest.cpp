@@ -66,7 +66,7 @@ void SigSlotConnectionTest::basicTest()
 
     SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
     service::OSR::registerService(showTestSrv);
-    showTestSrv->registerInOut(buffer, "buffer", true);
+    showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT, true);
     showTestSrv->setWorker(activeWorkers->getWorker(core::thread::ActiveWorkers::s_DEFAULT_WORKER));
 
     data::Object::ModifiedSignalType::sptr sig =

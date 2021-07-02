@@ -83,8 +83,8 @@ void ServiceTest::tearDown()
 void ServiceTest::testServiceConfiguration()
 {
     // Test adding service
-    auto srv  = service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation");
-    auto srv2 = service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation");
+    auto srv  = service::add<service::ut::ISTest>("sight::service::ut::STestNoData");
+    auto srv2 = service::add<service::ut::ISTest>("sight::service::ut::STestNoData");
 
     CPPUNIT_ASSERT_EQUAL(service::IService::ConfigurationStatus::UNCONFIGURED, srv->getConfigurationStatus());
     CPPUNIT_ASSERT_EQUAL(TestService::s_UNCONFIGURED, srv->getOption());
@@ -142,12 +142,12 @@ void ServiceTest::testServiceCreationWithMultipleData()
     );
 
     // Test adding service
-    service::IService::sptr srv = service::add("sight::service::ut::TestServiceImplementation");
-    srv->registerInOut(obj1, dataKey1);
+    service::IService::sptr srv = service::add("sight::service::ut::STest2Inouts1Input");
+    srv->setInOut(obj1, dataKey1);
     CPPUNIT_ASSERT_EQUAL(true, service::OSR::isRegistered(dataKey1, data::Access::inout, srv));
     CPPUNIT_ASSERT(obj1 == service::OSR::getRegistered(dataKey1, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey2, data::Access::inout, srv));
-    CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey3, data::Access::inout, srv));
+    CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey3, data::Access::in, srv));
 
     // Test getting the service object
     CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut<data::Integer>(dataKey1).get_shared());
@@ -159,7 +159,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
     // Test getting the service object
     CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut<data::Integer>(dataKey2).get_shared());
 
-    srv->registerInput(obj3, dataKey3);
+    srv->setInput(obj3, dataKey3);
     CPPUNIT_ASSERT_EQUAL(true, service::OSR::isRegistered(dataKey3, data::Access::in, srv));
     CPPUNIT_ASSERT(obj3 == service::OSR::getRegistered(dataKey3, data::Access::in, srv));
 
@@ -167,17 +167,17 @@ void ServiceTest::testServiceCreationWithMultipleData()
     CPPUNIT_ASSERT(obj3 == srv->getLockedInput<data::Integer>(dataKey3).get_shared());
 
     // Test unregistering the objects
-    srv->unregisterInOut(dataKey1);
+    srv->setInOut(nullptr, dataKey1);
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey1, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(true, service::OSR::isRegistered(dataKey2, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(true, service::OSR::isRegistered(dataKey3, data::Access::in, srv));
 
-    srv->unregisterInOut(dataKey2);
+    srv->setInOut(nullptr, dataKey2);
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey1, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey2, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(true, service::OSR::isRegistered(dataKey3, data::Access::in, srv));
 
-    srv->unregisterInput(dataKey3);
+    srv->setInput(nullptr, dataKey3);
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey1, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey2, data::Access::inout, srv));
     CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey3, data::Access::in, srv));
@@ -190,7 +190,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
 
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
-    const std::string dataKey = "data";
+    const std::string dataKey = "data1";
     data::Integer::sptr obj   = data::Integer::New();
 
     // Test if the object support the service
@@ -202,20 +202,16 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     );
 
     // Test adding service
-    service::ut::TestService::sptr srv =
-        service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation");
-    srv->registerInOut(obj, dataKey);
+    auto srv = service::add<service::ut::TestService>("sight::service::ut::STest1Inout");
+    srv->setInOut(obj, dataKey);
     CPPUNIT_ASSERT(service::OSR::isRegistered(dataKey, data::Access::inout, srv));
     CPPUNIT_ASSERT(obj == service::OSR::getRegistered(dataKey, data::Access::inout, srv));
 
     // Test getting the service its object
     CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut<data::Integer>(dataKey).get_shared());
 
-    srv->unregisterInOut(dataKey);
-    CPPUNIT_ASSERT_EQUAL(
-        false,
-        service::OSR::isRegistered(dataKey, data::Access::inout, srv)
-    );
+    srv->setInOut(nullptr, dataKey);
+    CPPUNIT_ASSERT_EQUAL(false, service::OSR::isRegistered(dataKey, data::Access::inout, srv));
 
     // Test erasing service
     service::remove(srv);
@@ -228,7 +224,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID  = "myUUID";
     const std::string myUUID2 = "myUUID2";
     const std::string myUUID3 = "myUUID3";
-    const std::string dataKey = "data";
+    const std::string dataKey = "data1";
     size_t nbServices         = 0;
 
     data::Integer::sptr obj = data::Integer::New();
@@ -244,13 +240,13 @@ void ServiceTest::testServiceCreationWithUUID()
     );
 
     // Test adding service
-    service = service::add("sight::service::ut::TestServiceImplementation", myUUID);
+    service = service::add("sight::service::ut::STest1Inout", myUUID);
     CPPUNIT_ASSERT(service);
-    service->registerInOut(obj, dataKey);
+    service->setInOut(obj, dataKey);
 
-    service2 = service::add("sight::service::ut::TestServiceImplementation", myUUID2);
+    service2 = service::add("sight::service::ut::STest1Inout", myUUID2);
     CPPUNIT_ASSERT(service2);
-    service2->registerInOut(obj, dataKey);
+    service2->setInOut(obj, dataKey);
 
     nbServices = 2;
     CPPUNIT_ASSERT(core::tools::fwID::exist(myUUID));
@@ -284,10 +280,10 @@ void ServiceTest::testStartStopUpdate()
     CPPUNIT_ASSERT(
         service::extension::Factory::getDefault()->support(
             obj->getClassname(),
-            "::sight::service::ut::TestService"
+            "sight::service::ut::TestService"
         )
     );
-    service = service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation", myUUID);
+    service = service::add<service::ut::TestService>("sight::service::ut::STestNoData", myUUID);
     CPPUNIT_ASSERT(service);
 
     // Service must be stop when it is created
@@ -318,12 +314,12 @@ void ServiceTest::testStartStopUpdateExceptions()
 {
     // Test on the same worker
     {
-        auto service = service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation");
+        auto service = service::add<service::ut::TestService>("sight::service::ut::STestNoData");
         ServiceTest::startStopUpdateExceptions(service);
     }
     // Test on a different worker
     {
-        auto service = service::add<service::ut::TestService>("sight::service::ut::TestServiceImplementation");
+        auto service = service::add<service::ut::TestService>("sight::service::ut::STestNoData");
         auto worker  = core::thread::Worker::New();
         service->setWorker(worker);
         ServiceTest::startStopUpdateExceptions(service);
@@ -394,7 +390,7 @@ void ServiceTest::testCommunication()
     activeWorkers->initRegistry();
 
     const std::string EVENT        = "EVENT";
-    const std::string dataKey      = "data";
+    const std::string dataKey      = "data1";
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
@@ -403,17 +399,14 @@ void ServiceTest::testCommunication()
     service::ut::TestService::sptr service2;
 
     // Add services
-    service::add("sight::service::ut::TestServiceImplementation", service1UUID);
-    service1 = service::ut::TestService::dynamicCast(service::get(service1UUID));
+    service::add("sight::service::ut::STest1Input", service1UUID);
+    service1 = service::ut::ISTest::dynamicCast(service::get(service1UUID));
     CPPUNIT_ASSERT(service1);
-    service1->registerInput(obj, dataKey, true);
+    service1->setInput(obj, dataKey, true);
 
-    service2 = service::add<service::ut::TestService>(
-        "::sight::service::ut::TestServiceImplementation",
-        service2UUID
-    );
+    service2 = service::add<service::ut::ISTest>("sight::service::ut::STest1Input", service2UUID);
     CPPUNIT_ASSERT(service2);
-    service2->registerInput(obj, dataKey, true);
+    service2->setInput(obj, dataKey, true);
 
     // Object used to check service signals
     TestServiceSignals::sptr receiver1 = std::make_shared<TestServiceSignals>();
@@ -453,21 +446,17 @@ void ServiceTest::testCommunication()
     // Register communication channel
     comHelper.connect(
         service1,
-        service::ut::TestServiceImplementation::s_MSG_SENT_SIG,
+        service::ut::ISTest::s_MSG_SENT_SIG,
         service2,
-        service::ut::TestServiceImplementation::s_UPDATE2_SLOT
+        service::ut::ISTest::s_UPDATE2_SLOT
     );
 
     CPPUNIT_ASSERT(!service2->getIsUpdated2());
 
     // Service1 send notification
-    service::ut::TestServiceImplementation::MsgSentSignalType::sptr sig;
-    sig = service1->signal<service::ut::TestServiceImplementation::MsgSentSignalType>(
-        service::ut::TestServiceImplementation::s_MSG_SENT_SIG
-    );
     {
-        core::com::SlotBase::sptr slot;
-        slot = service1->slot(service::IService::s_UPDATE_SLOT);
+        auto sig  = service1->signal<service::ut::ISTest::MsgSentSignalType>(service::ut::ISTest::s_MSG_SENT_SIG);
+        auto slot = service1->slot(service::IService::s_UPDATE_SLOT);
         core::com::Connection::Blocker block(sig->getConnection(slot));
         sig->asyncEmit(EVENT);
     }
@@ -672,11 +661,6 @@ void ServiceTest::testWithInAndOut()
 
     CPPUNIT_ASSERT_EQUAL(
         true,
-        service::OSR::isRegistered(service::ut::TestServiceWithData::s_INPUT, data::Access::in, service)
-    );
-    service->unregisterInput(service::ut::TestServiceWithData::s_INPUT);
-    CPPUNIT_ASSERT_EQUAL(
-        false,
         service::OSR::isRegistered(service::ut::TestServiceWithData::s_INPUT, data::Access::in, service)
     );
     service::OSR::unregisterService(service);

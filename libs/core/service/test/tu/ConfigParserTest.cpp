@@ -120,7 +120,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Object's service A
     service::IService::ConfigType serviceA;
     serviceA.add("<xmlattr>.uid", "myTestService1");
-    serviceA.add("<xmlattr>.type", "::sight::service::ut::TestServiceImplementationImage");
+    serviceA.add("<xmlattr>.type", "::sight::service::ut::STest1Image");
 
     service::IService::ConfigType dataServiceA;
     dataServiceA.add("<xmlattr>.key", "data");
@@ -131,7 +131,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Object's service B
     service::IService::ConfigType serviceB;
     serviceB.add("<xmlattr>.uid", "myTestService2");
-    serviceB.add("<xmlattr>.type", "::sight::service::ut::TestServiceImplementationImage");
+    serviceB.add("<xmlattr>.type", "::sight::service::ut::STest1Image");
     config.add_child("service", serviceB);
 
     // Start method from object's services

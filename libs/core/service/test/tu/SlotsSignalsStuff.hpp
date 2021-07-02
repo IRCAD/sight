@@ -86,6 +86,10 @@ public:
     SIGHT_DECLARE_SERVICE(IBasicTest, service::IService);
 
     static const KeyType s_BUFFER_INOUT;
+
+private:
+
+    data::ptr<Buffer, data::Access::inout> m_inout {this, s_BUFFER_INOUT, true};
 };
 
 class SBasicTest : public IBasicTest,
