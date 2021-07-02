@@ -70,9 +70,9 @@ IService::IService() :
     newSignal<UpdatedSignalType>(s_UPDATED_SIG);
     newSignal<SwappedSignalType>(s_SWAPPED_SIG);
     newSignal<StoppedSignalType>(s_STOPPED_SIG);
-    newSignal<InfoNotifiedSignalType>(s_INFO_NOTIFIED_SIG);
-    newSignal<SuccessNotifiedSignalType>(s_SUCCESS_NOTIFIED_SIG);
-    newSignal<FailureNotifiedSignalType>(s_FAILURE_NOTIFIED_SIG);
+    newSignal<NotifSignalType>(s_INFO_NOTIFIED_SIG);
+    newSignal<NotifSignalType>(s_SUCCESS_NOTIFIED_SIG);
+    newSignal<NotifSignalType>(s_FAILURE_NOTIFIED_SIG);
 
     m_slotStart   = newSlot(s_START_SLOT, &IService::startSlot, this);
     m_slotStop    = newSlot(s_STOP_SLOT, &IService::stopSlot, this);
@@ -1078,6 +1078,39 @@ bool IService::hasAllRequiredObjects() const
     }
 
     return hasAllObjects;
+}
+
+//------------------------------------------------------------------------------
+
+SERVICE_API void IService::notify(NotificationType type, const std::string& message) const
+{
+    switch(type)
+    {
+        case NotificationType::SUCCESS:
+        {
+            const auto sig = this->signal<NotifSignalType>(s_SUCCESS_NOTIFIED_SIG);
+            sig->asyncEmit(message);
+            break;
+        }
+
+        case NotificationType::FAILURE:
+        {
+            const auto sig = this->signal<NotifSignalType>(s_FAILURE_NOTIFIED_SIG);
+            sig->asyncEmit(message);
+            break;
+        }
+
+        case NotificationType::INFO:
+        {
+            const auto sig = this->signal<NotifSignalType>(s_INFO_NOTIFIED_SIG);
+            sig->asyncEmit(message);
+            break;
+        }
+
+        default:
+            SIGHT_ERROR("Unknown NotificationType");
+            break;
+    }
 }
 
 //------------------------------------------------------------------------------
