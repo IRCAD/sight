@@ -81,9 +81,9 @@ void ObjectServiceTest::registerKeyTest()
 
     service::registry::ObjectService osr;
     CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
-    service1->registerObject("uid1", "key1", service::IService::AccessType::INOUT);
-    service1->registerObject("uid2", "key2", service::IService::AccessType::INOUT);
-    service1->registerObject("uid3", "key3", service::IService::AccessType::INOUT);
+    service1->registerObject("uid1", "key1", data::Access::inout);
+    service1->registerObject("uid2", "key2", data::Access::inout);
+    service1->registerObject("uid3", "key3", data::Access::inout);
 
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key1"));
     CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId("key2"));
@@ -95,28 +95,28 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(std::string("uid3"), service1->getObjectId("key3"));
     CPPUNIT_ASSERT_THROW(service1->getObjectId("another_key"), core::Exception);
 
-    osr.registerService(obj1, "key1", service::IService::AccessType::INOUT, service1);
-    osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service1);
-    osr.registerService(obj3, "key3", service::IService::AccessType::INOUT, service1);
+    osr.registerService<data::Access::inout>(obj1, "key1", service1);
+    osr.registerService<data::Access::inout>(obj2, "key2", service1);
+    osr.registerService<data::Access::inout>(obj3, "key3", service1);
 
-    CPPUNIT_ASSERT(osr.isRegistered("key1", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(osr.isRegistered("key3", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service1));
+    CPPUNIT_ASSERT(osr.isRegistered("key1", data::Access::inout, service1));
+    CPPUNIT_ASSERT(osr.isRegistered("key2", data::Access::inout, service1));
+    CPPUNIT_ASSERT(osr.isRegistered("key3", data::Access::inout, service1));
+    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", data::Access::inout, service1));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", data::Access::inout, service1));
+    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", data::Access::inout, service1));
 
-    osr.registerService(obj1, "key1", service::IService::AccessType::INOUT, service2);
-    osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service2);
+    osr.registerService<data::Access::inout>(obj1, "key1", service2);
+    osr.registerService<data::Access::inout>(obj2, "key2", service2);
 
-    CPPUNIT_ASSERT(osr.isRegistered("key1", service::IService::AccessType::INOUT, service2));
-    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service2));
-    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", service::IService::AccessType::INOUT, service2));
-    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service2));
+    CPPUNIT_ASSERT(osr.isRegistered("key1", data::Access::inout, service2));
+    CPPUNIT_ASSERT(osr.isRegistered("key2", data::Access::inout, service2));
+    CPPUNIT_ASSERT(obj1 == osr.getRegistered("key1", data::Access::inout, service2));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", data::Access::inout, service2));
 
-    osr.registerService(obj3, "key3", service::IService::AccessType::INOUT, service3);
-    CPPUNIT_ASSERT(osr.isRegistered("key3", service::IService::AccessType::INOUT, service3));
-    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", service::IService::AccessType::INOUT, service3));
+    osr.registerService<data::Access::inout>(obj3, "key3", service3);
+    CPPUNIT_ASSERT(osr.isRegistered("key3", data::Access::inout, service3));
+    CPPUNIT_ASSERT(obj3 == osr.getRegistered("key3", data::Access::inout, service3));
 
     // 3 services in total
     {
@@ -153,8 +153,8 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT(servicesByType.find(service3) != servicesByType.end());
 
     // Remove key 1 from service 1 and check consistency
-    osr.unregisterService("key1", service::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT(false == osr.isRegistered("key1", service::IService::AccessType::INOUT, service1));
+    osr.unregisterService("key1", data::Access::inout, service1);
+    CPPUNIT_ASSERT(false == osr.isRegistered("key1", data::Access::inout, service1));
     servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
@@ -163,16 +163,16 @@ void ObjectServiceTest::registerKeyTest()
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Remove key 2 from service 2 and check consistency
-    osr.unregisterService("key2", service::IService::AccessType::INOUT, service2);
-    CPPUNIT_ASSERT(false == osr.isRegistered("key2", service::IService::AccessType::INOUT, service2));
+    osr.unregisterService("key2", data::Access::inout, service2);
+    CPPUNIT_ASSERT(false == osr.isRegistered("key2", data::Access::inout, service2));
 
     servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(2), servicesByType.size());
 
     // Register key 2 to service 1 just for fun
-    osr.registerService(obj2, "key2", service::IService::AccessType::INOUT, service1);
-    CPPUNIT_ASSERT(osr.isRegistered("key2", service::IService::AccessType::INOUT, service1));
-    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", service::IService::AccessType::INOUT, service1));
+    osr.registerService<data::Access::inout>(obj2, "key2", service1);
+    CPPUNIT_ASSERT(osr.isRegistered("key2", data::Access::inout, service1));
+    CPPUNIT_ASSERT(obj2 == osr.getRegistered("key2", data::Access::inout, service1));
     servicesByType = osr.getServices(srvType);
     CPPUNIT_ASSERT_EQUAL(size_t(3), servicesByType.size());
 
@@ -216,7 +216,7 @@ void ObjectServiceTest::registerConnectionTest()
 
     // Register callback test
     // Each time we wait the slot with a timeout to avoid blocking the test in case of failure
-    service1->registerObject("uid1", "key1", service::IService::AccessType::OUTPUT);
+    service1->registerObject("uid1", "key1", data::Access::out);
     osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -226,7 +226,7 @@ void ObjectServiceTest::registerConnectionTest()
         CPPUNIT_ASSERT(obj1 == m_obj);
     }
 
-    service1->registerObject("uid2", "key2", service::IService::AccessType::OUTPUT);
+    service1->registerObject("uid2", "key2", data::Access::out);
     osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);

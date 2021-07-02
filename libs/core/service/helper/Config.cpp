@@ -379,15 +379,15 @@ service::IService::Config Config::parseService(
         service::IService::ObjectServiceConfig objConfig;
         if(cfg.first == "in")
         {
-            objConfig.m_access = service::IService::AccessType::INPUT;
+            objConfig.m_access = data::Access::in;
         }
         else if(cfg.first == "out")
         {
-            objConfig.m_access = service::IService::AccessType::OUTPUT;
+            objConfig.m_access = data::Access::out;
         }
         else if(cfg.first == "inout")
         {
-            objConfig.m_access = service::IService::AccessType::INOUT;
+            objConfig.m_access = data::Access::inout;
         }
         else
         {
@@ -398,7 +398,7 @@ service::IService::Config Config::parseService(
         objConfig.m_autoConnect = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.autoConnect", false);
 
         // Optional
-        if(objConfig.m_access != service::IService::AccessType::OUTPUT)
+        if(objConfig.m_access != data::Access::out)
         {
             objConfig.m_optional = core::runtime::get_ptree_value(cfg.second, "<xmlattr>.optional", false);
         }
@@ -432,7 +432,7 @@ service::IService::Config Config::parseService(
                 );
 
                 // Optional
-                if(grouObjConfig.m_access != service::IService::AccessType::OUTPUT)
+                if(grouObjConfig.m_access != data::Access::out)
                 {
                     grouObjConfig.m_optional = core::runtime::get_ptree_value(
                         groupCfg->second,

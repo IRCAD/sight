@@ -27,6 +27,8 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/ptr.hpp>
 
 #include <service/IService.hpp>
 
@@ -345,9 +347,6 @@ private:
     int m_received;
 };
 
-/**
- * @brief Service with input and output
- */
 class TestServiceWithData : public service::IService
 {
 public:
@@ -357,22 +356,8 @@ public:
     static const KeyType s_OUTPUT;
 
     SIGHT_DECLARE_SERVICE(TestServiceWithData, service::IService);
-    TestServiceWithData() noexcept
-    {
-        this->registerObject(s_INPUT, AccessType::INPUT, true, false);
-        this->registerObject(s_OUTPUT, AccessType::OUTPUT, false, true);
-    }
-
-    virtual ~TestServiceWithData() noexcept
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void registerGroup()
-    {
-        this->registerObjectGroup(s_INOUT_GROUP, AccessType::INOUT, 2, true);
-    }
+    TestServiceWithData() noexcept           = default;
+    ~TestServiceWithData() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
@@ -390,6 +375,10 @@ public:
 
     void stopping() override;
     void updating() override;
+
+    data::ptr<data::Object, data::Access::in> m_input {this, "input"};
+    data::ptr_vector<data::Integer, data::Access::inout> m_inoutGroup {this, "inoutGroup", true, 2};
+    data::ptr<data::Object, data::Access::out> m_output {this, "output", false, true};
 };
 
 } //namespace ut

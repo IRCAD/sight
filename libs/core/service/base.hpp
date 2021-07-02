@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,26 +21,24 @@
 
 #pragma once
 
-#include "service/extension/Factory.hpp"
-#include "service/IService.hpp"
-#include "service/registry/ObjectService.hpp"
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/op/Get.hpp>
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::service
 {
 
-//------------------------------------------------------------------------------
-
-template<class SERVICE>
-SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
+/**
+ * @brief Remove an existing service.
+ * This provides a symmetric function to sight::service::add().
+ * @return a pointer to the new service
+ */
+inline void remove(const SPTR(service::IService)& _srv)
 {
-    service::IService::sptr genericSrv = service::add( _implType, _id );
-    auto srv                           = std::dynamic_pointer_cast< SERVICE >(genericSrv);
-    SIGHT_THROW_IF("Failed to cast service from factory type '" + _implType + "' into '" +
-                   core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
-
-    return srv;
+    service::OSR::unregisterService(_srv);
 }
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::service

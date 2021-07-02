@@ -89,8 +89,8 @@ void ConfigParserTest::testObjectCreationWithConfig()
     CPPUNIT_ASSERT(srv2->isStarted());
 
     // Test if object's service is created
-    CPPUNIT_ASSERT(service::OSR::isRegistered("data", service::IService::AccessType::INPUT, srv1));
-    CPPUNIT_ASSERT(image == service::OSR::getRegistered("data", service::IService::AccessType::INPUT, srv1));
+    CPPUNIT_ASSERT(service::OSR::isRegistered("data", data::Access::in, srv1));
+    CPPUNIT_ASSERT(image == service::OSR::getRegistered("data", data::Access::in, srv1));
 
     // Test update services
     configManager->update();

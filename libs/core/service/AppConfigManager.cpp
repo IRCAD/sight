@@ -596,7 +596,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
                     "::sight::service::IXMLParser"
                 );
 
-                service::IService::sptr srv = srvFactory->create("::sight::service::IXMLParser", srvImpl);
+                service::IService::sptr srv = srvFactory->create(srvImpl);
                 auto objectParser           = service::IXMLParser::dynamicCast(srv);
                 objectParser->setObjectConfig(elem);
                 objectParser->createConfig(obj);
@@ -648,7 +648,7 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
             }
 
             // Extra check to warn the user that an object is used as output but not marked as deferred
-            if(objectCfg.m_access == service::IService::AccessType::OUTPUT)
+            if(objectCfg.m_access == data::Access::out)
             {
                 SIGHT_ERROR_IF(
                     this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '"
@@ -721,9 +721,9 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
             this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
             (!objectCfg.m_optional && obj) || objectCfg.m_optional
         );
-        if((obj || !objectCfg.m_optional) && objectCfg.m_access != service::IService::AccessType::OUTPUT)
+        if((obj || !objectCfg.m_optional) && objectCfg.m_access != data::Access::out)
         {
-            srv->registerObject(
+            srv->setObject(
                 obj,
                 objectCfg.m_key,
                 objectCfg.m_access,
@@ -742,7 +742,7 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
     {
         for(const auto& itProxy : itSrvProxy->second.m_proxyCnt)
         {
-            srv->addProxyConnection(itProxy.second);
+            srv->_addProxyConnection(itProxy.second);
         }
     }
 
@@ -1023,14 +1023,14 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                             // If this is not the object we have to swap, then unregister it
                             if(registeredObj != object)
                             {
-                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                                srv->unsetObject(objCfg.m_key, objCfg.m_access);
                             }
                         }
 
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            srv->registerObject(
+                            srv->setObject(
                                 object,
                                 objCfg.m_key,
                                 objCfg.m_access,
@@ -1143,7 +1143,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                         {
                             if(service::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
-                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                                srv->unsetObject(objCfg.m_key, objCfg.m_access);
 
                                 if(srv->isStarted())
                                 {
@@ -1210,8 +1210,8 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     service::IService::sptr srv = service::get(srvCfg.m_uid);
                     SIGHT_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                    srv->autoDisconnect();
-                    srv->autoConnect();
+                    srv->_autoDisconnect();
+                    srv->_autoConnect();
                 }
             }
         }

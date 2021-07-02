@@ -123,26 +123,11 @@ public:
      * @param access Access (INPUT, INOUT, OUTPUT) of this key
      * @param service Service whose key should be added
      */
-    SERVICE_API void registerService(
-        data::Object::sptr object,
+    template<data::Access A>
+    void registerService(
+        typename data::access_traits<A>::value obj,
         const service::IService::KeyType& objKey,
-        service::IService::AccessType access,
         service::IService::sptr service
-    );
-
-    /**
-     * @brief Register the service (service) for the input object (obj) at the given service key.
-     * It also updates IService inputs of service to point to obj
-     * removal at obj destruction.
-     *
-     * @param object Object to register
-     * @param objKey Key of the object
-     * @param service Service whose key should be added
-     */
-    SERVICE_API void registerServiceInput(
-        const data::Object::csptr& object,
-        const service::IService::KeyType& objKey,
-        const service::IService::sptr& service
     );
 
     /**
@@ -181,7 +166,7 @@ public:
      */
     SERVICE_API void unregisterService(
         const service::IService::KeyType& objKey,
-        service::IService::AccessType access,
+        data::Access access,
         service::IService::sptr service
     );
 
@@ -205,7 +190,7 @@ public:
      */
     SERVICE_API bool isRegistered(
         const service::IService::KeyType& objKey,
-        service::IService::AccessType access,
+        data::Access access,
         service::IService::sptr service
     ) const;
 
@@ -218,7 +203,7 @@ public:
      */
     SERVICE_API data::Object::csptr getRegistered(
         const service::IService::KeyType& objKey,
-        service::IService::AccessType access,
+        data::Access access,
         IService::sptr service
     ) const;
     //@}
@@ -261,22 +246,10 @@ private:
      * removal at obj destruction.
      * @warning not thread-safe
      */
+    template<data::Access A>
     void internalRegisterService(
-        data::Object::sptr obj,
+        typename data::access_traits<A>::value object,
         service::IService::sptr service,
-        const service::IService::KeyType& objKey,
-        service::IService::AccessType access
-    );
-
-    /**
-     * @brief Register the service (service) for the input object (obj)
-     * It also updates IService::m_inputs of service to point to obj
-     * removal at obj destruction.
-     * @warning not thread-safe
-     */
-    void internalRegisterServiceInput(
-        const data::Object::csptr& obj,
-        const service::IService::sptr& service,
         const service::IService::KeyType& objKey
     );
 
@@ -334,24 +307,9 @@ SERVICE_API void registerService(service::IService::sptr service);
  * @param access Access (INPUT, INOUT, OUTPUT) of this key
  * @param service Service whose key should be added
  */
-SERVICE_API void registerService(
-    data::Object::sptr obj,
-    const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
-    service::IService::sptr service
-);
-
-/**
- * @brief Register the service (service) for the input object (obj) at the given service key.
- * It also updates IService::m_inputs of service to point to obj
- * removal at obj destruction.
- *
- * @param object Object to register
- * @param objKey Key of the object
- * @param service Service whose key should be added
- */
-SERVICE_API void registerServiceInput(
-    data::Object::csptr obj,
+template<data::Access A>
+void registerService(
+    typename data::access_traits<A>::value obj,
     const service::IService::KeyType& objKey,
     service::IService::sptr service
 );
@@ -385,7 +343,7 @@ SERVICE_API void unregisterService(service::IService::sptr service);
  */
 SERVICE_API void unregisterService(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     service::IService::sptr service
 );
 
@@ -409,7 +367,7 @@ SERVICE_API void unregisterServiceOutput(
  */
 SERVICE_API bool isRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     service::IService::sptr service
 );
 
@@ -422,7 +380,7 @@ SERVICE_API bool isRegistered(
  */
 SERVICE_API data::Object::csptr getRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     service::IService::sptr service
 );
 

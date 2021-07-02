@@ -89,7 +89,7 @@ public:
                                               core::mt::WriteLock>(data->getMutex());
             }
 
-            m_buffer_locks = BufferLocks(data);
+            m_buffer_locks = buffer_locks<DATATYPE>(data);
         }
 
         return *this;

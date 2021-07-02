@@ -278,7 +278,7 @@ struct TestIHasServices : public service::IHasServices
             testService->swapKey("data3", nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("data3"), testService->getSwappedObjectKey());
 
-            service::OSR::unregisterService("data2", service::IService::AccessType::INPUT, testService);
+            service::OSR::unregisterService("data2", data::Access::in, testService);
             testService->swapKey("data2", nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());

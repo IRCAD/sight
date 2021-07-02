@@ -37,13 +37,6 @@ class IService;
 
 }
 
-namespace sight::activity
-{
-
-class IActivityLauncher;
-
-}
-
 namespace sight::data
 {
 

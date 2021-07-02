@@ -65,28 +65,24 @@ public:
 
     LockedService() noexcept
     {
-        this->registerObject(s_INPUT, AccessType::INPUT, false, false);
-        this->registerObject(s_INOUT, AccessType::INOUT, false, false);
-        this->registerObject(s_OUTPUT, AccessType::OUTPUT, false, true);
     }
 
     std::atomic_bool m_started {false};
     std::atomic_bool m_stopped {false};
-    std::atomic_int64_t m_input {-1};
+    std::atomic_int64_t m_inputValue {-1};
 
     //------------------------------------------------------------------------------
 
     virtual void starting() final
     {
         // Reading should not be blocked by other reader
-        auto weakInput   = this->getWeakInput<data::Integer>(s_INPUT);
-        auto sharedInput = weakInput.lock();
+        auto input = m_input.lock();
 
         // Simulate working....
         std::this_thread::sleep_for(std::chrono::seconds(2));
 
-        m_input   = sharedInput->getValue();
-        m_started = true;
+        m_inputValue = std::dynamic_pointer_cast<const sight::data::Integer>(input.get_shared())->getValue();
+        m_started    = true;
     }
 
     //------------------------------------------------------------------------------
@@ -94,8 +90,7 @@ public:
     virtual void stopping() final
     {
         // Reading should not be blocked by other reader
-        auto weakOutput   = this->getWeakOutput<data::Integer>(s_OUTPUT);
-        auto sharedOutput = weakOutput.lock();
+        auto sharedOutput = m_output.lock();
 
         sharedOutput->setValue(-1);
 
@@ -123,6 +118,10 @@ public:
     virtual void updating() final
     {
     }
+
+    data::ptr<data::Object, data::Access::in> m_input {this, s_INPUT, false, false};
+    data::ptr<data::Integer, data::Access::inout> m_inout {this, s_INOUT, false, false};
+    data::ptr<data::Integer, data::Access::out> m_output {this, s_OUTPUT, false, true};
 };
 
 const service::IService::KeyType LockedService::s_INPUT  = "input";
@@ -171,8 +170,8 @@ void LockTest::testScopedLock()
     data::Integer::sptr output = data::Integer::New(0);
 
     // Register the data
-    lockedService->registerInput(input, service::ut::LockedService::s_INPUT);
-    lockedService->registerInOut(inout, service::ut::LockedService::s_INOUT);
+    lockedService->setInput(input, service::ut::LockedService::s_INPUT);
+    lockedService->setInOut(inout, service::ut::LockedService::s_INOUT);
     lockedService->setOutput(service::ut::LockedService::s_OUTPUT, output);
     CPPUNIT_ASSERT_EQUAL(true, lockedService->hasAllRequiredObjects());
 
@@ -245,10 +244,10 @@ void LockTest::testDumpLock()
     utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_UINT8);
 
     // Add the service
-    service::IService::sptr lockedService = service::add("::sight::service::ut::LockedService");
+    service::IService::sptr lockedService = service::add("sight::service::ut::LockedService");
     CPPUNIT_ASSERT(lockedService);
 
-    lockedService->registerInput(image, service::ut::LockedService::s_INPUT);
+    lockedService->setInput(image, service::ut::LockedService::s_INPUT);
 
     {
         auto sharedInput = lockedService->getLockedInput<data::Image>(service::ut::LockedService::s_INPUT);
@@ -280,7 +279,7 @@ void LockTest::testDumpLock()
 
     data::Mesh::sptr mesh = data::Mesh::New();
 
-    lockedService->registerInput(mesh, service::ut::LockedService::s_INPUT);
+    lockedService->setInput(mesh, service::ut::LockedService::s_INPUT);
 
     {
         auto sharedInput = lockedService->getLockedInput<data::Mesh>(service::ut::LockedService::s_INPUT);
@@ -353,8 +352,8 @@ void LockTest::testThreadedLock()
     data::Integer::sptr output = data::Integer::New(0);
 
     // Register the data
-    lockedService->registerInput(input, service::ut::LockedService::s_INPUT);
-    lockedService->registerInOut(inout, service::ut::LockedService::s_INOUT);
+    lockedService->setInput(input, service::ut::LockedService::s_INPUT);
+    lockedService->setInOut(inout, service::ut::LockedService::s_INOUT);
     lockedService->setOutput(service::ut::LockedService::s_OUTPUT, output);
     CPPUNIT_ASSERT_EQUAL(true, lockedService->hasAllRequiredObjects());
 
@@ -370,13 +369,13 @@ void LockTest::testThreadedLock()
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t1 should be in the sleep_for, so m_started and m_input should still be the initial value
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), lockedService->m_input.load());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), lockedService->m_inputValue.load());
         CPPUNIT_ASSERT_EQUAL(false, lockedService->m_started.load());
 
         // Wait for t1 execution (1s)
         t1.join();
 
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), lockedService->m_input.load());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), lockedService->m_inputValue.load());
         CPPUNIT_ASSERT_EQUAL(true, lockedService->m_started.load());
     }
 

@@ -1070,7 +1070,7 @@ void AppConfigTest::optionalKeyTest()
             data2bis
             == service::OSR::getRegistered(
                 "out2",
-                service::IService::AccessType::OUTPUT,
+                data::Access::out,
                 genDataSrv
             )
         );
@@ -1093,7 +1093,7 @@ void AppConfigTest::optionalKeyTest()
             data2b
             == service::OSR::getRegistered(
                 "out2",
-                service::IService::AccessType::OUTPUT,
+                data::Access::out,
                 genDataSrv
             )
         );

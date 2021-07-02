@@ -75,29 +75,6 @@ void registerService(service::IService::sptr service)
 
 //------------------------------------------------------------------------------
 
-void registerService(
-    data::Object::sptr obj,
-    const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
-    service::IService::sptr service
-)
-{
-    service::OSR::get()->registerService(obj, objKey, access, service);
-}
-
-//------------------------------------------------------------------------------
-
-void registerServiceInput(
-    data::Object::csptr obj,
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
-)
-{
-    service::OSR::get()->registerServiceInput(obj, objKey, service);
-}
-
-//------------------------------------------------------------------------------
-
 void registerServiceOutput(
     data::Object::sptr obj,
     const service::IService::KeyType& objKey,
@@ -118,7 +95,7 @@ void unregisterService(service::IService::sptr service)
 
 void unregisterService(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     IService::sptr service
 )
 {
@@ -136,7 +113,7 @@ void unregisterServiceOutput(const service::IService::KeyType& objKey, IService:
 
 bool isRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     IService::sptr service
 )
 {
@@ -147,7 +124,7 @@ bool isRegistered(
 
 data::Object::csptr getRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     IService::sptr service
 )
 {
@@ -156,9 +133,8 @@ data::Object::csptr getRegistered(
 
 //------------------------------------------------------------------------------
 
-} //namespace OSR
+} // namespace OSR
 
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 namespace registry
@@ -228,31 +204,6 @@ void ObjectService::registerService(service::IService::sptr service)
 
 //------------------------------------------------------------------------------
 
-void ObjectService::registerService(
-    data::Object::sptr object,
-    const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
-    service::IService::sptr service
-)
-{
-    core::mt::WriteLock writeLock(m_containerMutex);
-    this->internalRegisterService(object, service, objKey, access);
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::registerServiceInput(
-    const data::Object::csptr& object,
-    const service::IService::KeyType& objKey,
-    const service::IService::sptr& service
-)
-{
-    core::mt::WriteLock writeLock(m_containerMutex);
-    this->internalRegisterServiceInput(object, service, objKey);
-}
-
-//------------------------------------------------------------------------------
-
 void ObjectService::registerServiceOutput(
     data::Object::sptr object,
     const service::IService::KeyType& objKey,
@@ -260,7 +211,7 @@ void ObjectService::registerServiceOutput(
 )
 {
     core::mt::WriteLock writeLock(m_containerMutex);
-    this->internalRegisterService(object, service, objKey, service::IService::AccessType::OUTPUT);
+    this->internalRegisterService<data::Access::out>(object, service, objKey);
 
     const bool hasID = service->hasObjectId(objKey);
     SIGHT_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
@@ -320,17 +271,17 @@ void ObjectService::unregisterService(service::IService::sptr service)
 
 void ObjectService::unregisterService(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     service::IService::sptr service
 )
 {
     core::mt::WriteLock writeLock(m_containerMutex);
 
-    if(access == service::IService::AccessType::INPUT)
+    if(access == data::Access::in)
     {
         service->m_inputsMap.erase(objKey);
     }
-    else if(access == service::IService::AccessType::INOUT)
+    else if(access == data::Access::inout)
     {
         service->m_inOutsMap.erase(objKey);
     }
@@ -365,17 +316,17 @@ void ObjectService::unregisterServiceOutput(
 
 bool ObjectService::isRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     IService::sptr service
 ) const
 {
     core::mt::ReadLock readLock(m_containerMutex);
 
-    if(access == service::IService::AccessType::INPUT)
+    if(access == data::Access::in)
     {
         return service->m_inputsMap.find(objKey) != service->m_inputsMap.end();
     }
-    else if(access == service::IService::AccessType::INOUT)
+    else if(access == data::Access::inout)
     {
         return service->m_inOutsMap.find(objKey) != service->m_inOutsMap.end();
     }
@@ -389,13 +340,13 @@ bool ObjectService::isRegistered(
 
 data::Object::csptr ObjectService::getRegistered(
     const service::IService::KeyType& objKey,
-    service::IService::AccessType access,
+    data::Access access,
     IService::sptr service
 ) const
 {
     core::mt::ReadLock readLock(m_containerMutex);
 
-    if(access == service::IService::AccessType::INPUT)
+    if(access == data::Access::in)
     {
         auto it = service->m_inputsMap.find(objKey);
         if(it != service->m_inputsMap.end())
@@ -403,7 +354,7 @@ data::Object::csptr ObjectService::getRegistered(
             return it->second.getShared();
         }
     }
-    else if(access == service::IService::AccessType::INOUT)
+    else if(access == data::Access::inout)
     {
         auto it = service->m_inOutsMap.find(objKey);
         if(it != service->m_inOutsMap.end())
@@ -421,54 +372,6 @@ data::Object::csptr ObjectService::getRegistered(
     }
 
     return nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::internalRegisterService(
-    data::Object::sptr object,
-    service::IService::sptr service,
-    const service::IService::KeyType& objKey,
-    service::IService::AccessType access
-)
-{
-    SIGHT_ASSERT("Can't register a null service in OSR.", service);
-    SIGHT_ASSERT("Can't register a null object in OSR.", object);
-
-    SIGHT_FATAL_IF("object key is not defined", objKey.empty());
-
-    // new behavior with N objects -> N Services
-    if(access == service::IService::AccessType::INPUT)
-    {
-        service->m_inputsMap[objKey] = object;
-    }
-    else if(access == service::IService::AccessType::INOUT)
-    {
-        service->m_inOutsMap[objKey] = object;
-    }
-    else
-    {
-        service->m_outputsMap[objKey] = object;
-    }
-
-    m_services.insert(service);
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::internalRegisterServiceInput(
-    const data::Object::csptr& object,
-    const IService::sptr& service,
-    const service::IService::KeyType& objKey
-)
-{
-    SIGHT_ASSERT("Can't register a null service in OSR.", service);
-    SIGHT_ASSERT("Can't register a null object in OSR.", object);
-    SIGHT_ASSERT("Can't register an input object without key.", !objKey.empty());
-
-    service->m_inputsMap[objKey] = object;
-
-    m_services.insert(service);
 }
 
 //------------------------------------------------------------------------------

@@ -28,11 +28,11 @@
 
 #include <service/macros.hpp>
 
-SIGHT_REGISTER_SERVICE(::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation);
+SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestServiceImplementation);
 SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::TestServiceImplementation, ::sight::data::Object);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation2);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::TestService, ::sight::service::ut::TestSrvAutoconnect);
-SIGHT_REGISTER_SERVICE(::sight::service::IService, ::sight::service::ut::TestServiceWithData);
+SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestServiceImplementation2);
+SIGHT_REGISTER_SERVICE(sight::service::ut::TestService, sight::service::ut::TestSrvAutoconnect);
+SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::TestServiceWithData);
 
 namespace sight::service
 {
@@ -109,18 +109,18 @@ TestServiceImplementation::~TestServiceImplementation() noexcept
 
 void TestServiceWithData::updating()
 {
-    data::Object::csptr input = this->getInput<data::Object>(s_INPUT);
+    auto lock                 = m_input.lock();
+    data::Object::csptr input = lock.get_shared();
 
     data::Object::sptr output = data::Object::copy(input);
-
-    this->setOutput(s_OUTPUT, output);
+    this->setOutput("output", output);
 }
 
 //------------------------------------------------------------------------------
 
 void TestServiceWithData::stopping()
 {
-    this->setOutput(s_OUTPUT, nullptr);
+    this->setOutput("output", nullptr);
 }
 
 //------------------------------------------------------------------------------

@@ -37,6 +37,7 @@
 #include <data/mt/locked_ptr.hpp>
 #include <data/mt/weak_ptr.hpp>
 #include <data/mt/shared_ptr.hpp>
+#include <data/ptr.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
@@ -73,6 +74,8 @@ class Worker;
 
 #define KEY_GROUP_NAME(key, index) (key + "#" + std::to_string(index))
 
+typedef std::string key_t;
+
 /**
  * @brief   Base class for all services.
  *
@@ -96,7 +99,8 @@ class Worker;
  */
 class SERVICE_CLASS_API IService : public core::tools::Object,
                                    public core::com::HasSlots,
-                                   public core::com::HasSignals
+                                   public core::com::HasSignals,
+                                   public data::IHasData
 {
 // to give to OSR an access on IService objects;
 friend class registry::ObjectService;
@@ -111,17 +115,10 @@ public:
     typedef ::boost::property_tree::ptree ConfigType;
 
     typedef std::string IdType;
-    typedef std::string KeyType;
+    using KeyType = sight::service::key_t;
     typedef std::map<KeyType, data::mt::weak_ptr<const data::Object> > InputMapType;
     typedef std::map<KeyType, data::mt::weak_ptr<data::Object> > InOutMapType;
     typedef std::map<KeyType, data::mt::shared_ptr<data::Object> > OutputMapType;
-
-    enum class AccessType : std::uint8_t
-    {
-        INPUT,
-        OUTPUT,
-        INOUT,
-    };
 
     /// Used to store object configuration in a service.
     struct ObjectServiceConfig
@@ -133,7 +130,7 @@ public:
         std::string m_key;
 
         /// Obejt access (INPUT, INOUT, OUTPUT)
-        AccessType m_access;
+        data::Access m_access;
 
         /// True if the service is autoConnected this object according to the auto-connection map
         bool m_autoConnect {false};
@@ -593,22 +590,6 @@ public:
     inline data::mt::locked_ptr<DATATYPE> geLockedOutput(const KeyType& keybase, size_t index) const;
 
     /**
-     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
-     * @param key name of the data or the group to register.
-     * @param object pointer to the object to register.
-     * @param index optional index of the key in the case of a member of a group of keys.
-     * @warning The service manages the output object lifetime: if it creates a new object, it will be the only
-     * maintainer of this object, when calling setOutput, it allows to share the object with other services. But these
-     * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
-     * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
-     */
-    SERVICE_API void setOutput(
-        const service::IService::KeyType& key,
-        const data::Object::sptr& object,
-        size_t index = 0
-    );
-
-    /**
      * @brief Return the number of key in a group of keys.
      * @param keybase group name.
      * @return number of keys in this group.
@@ -717,68 +698,157 @@ public:
     //@}
 
     /**
-     * @brief Register an input object for this service
+     * @brief Set an input object for this service
+     *
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object
+     */
+    SERVICE_API void setInput(
+        const data::Object::csptr& obj,
+        const key_t& key
+    );
+
+    /**
+     * @brief Set an object of a group of inputs
+     *
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object
+     * @param[in] index index of the data in the group
+     */
+    SERVICE_API void setInput(
+        const data::Object::csptr& obj,
+        const key_t& key,
+        size_t index
+    );
+
+    /**
+     * @brief Set an input object for this service, and overrides the default autoConnect and optional settings.
      *
      * @param[in] obj input object used by the service
      * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    SERVICE_API void registerInput(
+    SERVICE_API void setInput(
         const data::Object::csptr& obj,
-        const std::string& key,
-        const bool autoConnect = false,
-        const bool optional    = false
+        const key_t& key,
+        const bool autoConnect,
+        const bool optional = false
     );
 
     /**
-     * @brief Unregister an input object for this service
+     * @brief Set an object of a group of inputs, and overrides the default autoConnect and optional settings.
      *
+     * @param[in] obj input object used by the service
      * @param[in] key key of the object
+     * @param[in] index index of the data in the group
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    SERVICE_API void unregisterInput(const std::string& key);
+    SERVICE_API void setInput(
+        const data::Object::csptr& obj,
+        const key_t& key,
+        size_t index,
+        const bool autoConnect,
+        const bool optional = false
+    );
 
     /**
-     * @brief Register an in/out object for this service
+     * @brief Set an in/out object for this service
+     *
+     * @param[in] obj in/out object used by the service
+     * @param[in] key key of the object
+     */
+    SERVICE_API void setInOut(
+        const data::Object::sptr& obj,
+        const key_t& key
+    );
+
+    /**
+     * @brief Set an object of a group of in/outs
+     *
+     * @param[in] obj in/out object used by the service
+     * @param[in] key key of the object
+     * @param[in] index index of the data in the group
+     */
+    SERVICE_API void setInOut(
+        const data::Object::sptr& obj,
+        const key_t& key,
+        size_t index
+    );
+
+    /**
+     * @brief Set an in/out object for this service
      *
      * @param[in] obj in/out object used by the service
      * @param[in] key key of the object
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    SERVICE_API void registerInOut(
+    SERVICE_API void setInOut(
         const data::Object::sptr& obj,
-        const std::string& key,
-        const bool autoConnect = false,
-        const bool optional    = false
+        const key_t& key,
+        const bool autoConnect,
+        const bool optional = false
     );
 
     /**
-     * @brief Unregister an inout object for this service
+     * @brief Set an object of a group of in/outs, and overrides the default autoConnect and optional settings.
      *
-     * If the service is defined with autoStart=true, it will be automatically stopped if the removed object is not
-     * optional.
-     *
+     * @param[in] obj in/out object used by the service
      * @param[in] key key of the object
-     */
-    SERVICE_API void unregisterInOut(const std::string& key);
-
-    /**
-     * @brief Register an object for this service
-     *
-     * @param[in] obj input object used by the service
-     * @param[in] key key of the object
-     * @param[in] access access to the object (in or inout)
+     * @param[in] index index of the data in the group
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
-    SERVICE_API void registerObject(
+    SERVICE_API void setInOut(
         const data::Object::sptr& obj,
-        const std::string& key,
-        AccessType access,
-        const bool autoConnect = false,
-        const bool optional    = false
+        const key_t& key,
+        size_t index,
+        const bool autoConnect,
+        const bool optional = false
     );
+
+    /**
+     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
+     * @param key name of the data or the group to register.
+     * @param object pointer to the object to register.
+     * @param index optional index of the key in the case of a member of a group of keys.
+     * @warning The service manages the output object lifetime: if it creates a new object, it will be the only
+     * maintainer of this object, when calling setOutput, it allows to share the object with other services. But these
+     * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
+     * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
+     */
+    SERVICE_API void setOutput(
+        const service::IService::KeyType& key,
+        const data::Object::sptr& object,
+        size_t index = 0
+    );
+
+    /**
+     * @brief Set a registered object for this service
+     *
+     * @param[in] obj object used by the service
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in/inout/out)
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
+     */
+    SERVICE_API void setObject(
+        const data::Object::sptr& obj,
+        const key_t& key,
+        data::Access access,
+        const bool autoConnect,
+        const bool optional
+    );
+
+    /**
+     * @brief Unset a registered object for this service
+     *
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in/inout/out)
+     */
+    SERVICE_API void unsetObject(const key_t& key, data::Access access);
 
     /**
      * @brief Define an object required by this service.
@@ -795,25 +865,11 @@ public:
      */
     SERVICE_API void registerObject(
         const std::string& objId,
-        const std::string& key,
-        AccessType access,
+        const key_t& key,
+        data::Access access,
         const bool autoConnect = false,
         const bool optional    = false
     );
-
-    /**
-     * @brief Unregister an object for this service
-     *
-     * @param[in] key key of the object
-     */
-    SERVICE_API void unregisterObject(const std::string& key, AccessType access);
-
-    /**
-     * @brief Unregister an object for this service
-     *
-     * @param[in] objId identifier of the object to be used by the service.
-     */
-    SERVICE_API void unregisterObject(const std::string& objId);
 
     /// Return true if all the non-optional object required by the service are present
     SERVICE_API bool hasAllRequiredObjects() const;
@@ -943,47 +999,6 @@ protected:
     //@}
 
     /**
-     * @brief Define an object required by this service.
-     *
-     * This method allows to define the required objects to use the service. It can be called in the constructor of the
-     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
-     *
-     * @param[in] key key of the object
-     * @param[in] access access to the object (in or inout)
-     * @param[in] autoConnect if true, the service will be connected to the object's signals
-     * @param[in] optional if true, the service can be started even if the objet is not present
-     */
-    SERVICE_API void registerObject(
-        const std::string& key,
-        AccessType access,
-        const bool autoConnect = false,
-        const bool optional    = false
-    );
-
-    /**
-     * @brief Define an object group required by this service.
-     *
-     * This method allows to define the required objects to use the service. It can be called in the constructor of the
-     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
-     *
-     * @param[in] key key of the object
-     * @param[in] access access to the object (in or inout)
-     * @param[in] minNbObject number of object to register (it is the minimum number of objects required by the service)
-     * @param[in] autoConnect if true, the service will be connected to the object's signals
-     * @param[in] maxNbObject maximum number of object to register (they are defined as optional
-     *
-     * @note This method will register maxNbObject in the group named (<key>#0, <key>#1, ... <key>#<maxNbObject>). The
-     * first Nth objects (minNbObject) are required, the other are optional.
-     */
-    SERVICE_API void registerObjectGroup(
-        const std::string& key,
-        AccessType access,
-        const std::uint8_t minNbObject,
-        const bool autoConnect         = false,
-        const std::uint8_t maxNbObject = 10
-    );
-
-    /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure
      * TODO Make this const, we are not supposed to edit that !
      */
@@ -1013,49 +1028,97 @@ protected:
     /// Associated worker
     SPTR(core::thread::Worker) m_associatedWorker;
 
-//@}
+    //@}
 
 private:
 
+    /**
+     * @brief Internal method that sets an input of the service and registers it into the OSR.     *
+     * @param[in] obj data object
+     * @param[in] key key of the object
+     */
+    void _setInput(
+        const data::Object::csptr& obj,
+        const key_t& key
+    );
+
+    /**
+     * @brief Internal method that sets an inout of the service and registers it into the OSR.     *
+     * @param[in] obj data object
+     * @param[in] key key of the object
+     */
+    void _setInOut(
+        const data::Object::sptr& obj,
+        const key_t& key
+    );
+
+    /**
+     * @brief Define an object required by this service.
+     *
+     * This method allows to define the required objects to use the service. It can be called in the constructor of the
+     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
+     *
+     * @param[in] key key of the object
+     * @param[in] access access to the object (in/inout/out)
+     */
+    void _registerObject(
+        const key_t& key,
+        data::Access access
+    );
+
+    /// @copydoc sight::data::IHasData::_registerObject
+    SERVICE_API void _registerObject(
+        const key_t& key,
+        data::Access access,
+        const bool autoConnect,
+        const bool optional = false
+    ) override;
+
+    /// @copydoc sight::data::IHasData::_registerObjectGroup
+    SERVICE_API void _registerObjectGroup(
+        const key_t& key,
+        data::Access access,
+        const std::uint8_t minNbObject,
+        const bool autoConnect         = false,
+        const std::uint8_t maxNbObject = 10
+    ) override;
+
     // Slot: start the service
-    SharedFutureType startSlot();
-    SharedFutureType internalStart(bool _async);
+    SharedFutureType _startSlot();
+    SharedFutureType _start(bool _async);
 
     // Slot: stop the service
-    SharedFutureType stopSlot();
-    SharedFutureType internalStop(bool _async);
+    SharedFutureType _stopSlot();
+    SharedFutureType _stop(bool _async);
 
     // Slot: swap an object
-    SharedFutureType swapKeySlot(const KeyType& _key, data::Object::sptr _obj);
-    SharedFutureType internalSwapKey(const KeyType& _key, data::Object::sptr _obj, bool _async);
+    SharedFutureType _swapKeySlot(const KeyType& _key, data::Object::sptr _obj);
+    SharedFutureType _swapKey(const KeyType& _key, data::Object::sptr _obj, bool _async);
 
     // Slot: update the service
-    SharedFutureType updateSlot();
-    SharedFutureType internalUpdate(bool _async);
+    SharedFutureType _updateSlot();
+    SharedFutureType _update(bool _async);
 
     /// Connect the service with configuration services and objects
-    void connectToConfig();
+    void _connectToConfig();
 
     /// Disconnect the service from configuration services and objects
-    void disconnectFromConfig();
+    void _disconnectFromConfig();
 
     /// Connect the service with its data
-    void autoConnect();
+    void _autoConnect();
 
     /// Disconnect the service from its data
-    void autoDisconnect();
+    void _autoDisconnect();
 
     /// Add a known connection from the appConfig
-    void addProxyConnection(const helper::ProxyConnections& info);
-
-    /// Return true if the service contains this object into its requirement
-    bool hasObjInfoFromId(const std::string& objId) const;
+    void _addProxyConnection(const helper::ProxyConnections& info);
 
     /// Return the information about the required object
-    const service::IService::ObjectServiceConfig& getObjInfoFromId(const std::string& objId) const;
+    const service::IService::ObjectServiceConfig* _getObjInfoFromId(const std::string& objId) const;
 
     /// Return the information about the required object
-    const service::IService::ObjectServiceConfig& getObjInfoFromKey(const std::string& key) const;
+    const service::IService::ObjectServiceConfig& _getObjInfoFromKey(const key_t& key) const;
 
     /**
      * @brief associated inputs of the service ordered by key

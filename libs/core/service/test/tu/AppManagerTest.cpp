@@ -174,12 +174,12 @@ void AppManagerTest::managerWithObjectTest()
     data::Image::sptr image     = data::Image::New();
     data::Boolean::sptr boolean = data::Boolean::New();
 
-    service->registerObject(imageId, "data1", service::IService::AccessType::INPUT);
-    service2->registerObject(imageId, "data1", service::IService::AccessType::INPUT, true);
-    service3->registerObject(imageId, "data1", service::IService::AccessType::INPUT, false, true);
-    service3->registerObject(booleanId, "data2", service::IService::AccessType::INPUT, true, true);
-    service4->registerObject(booleanId, "data1", service::IService::AccessType::INPUT, true);
-    service4->registerObject(imageId, "data2", service::IService::AccessType::INPUT, true);
+    service->registerObject(imageId, "data1", data::Access::in);
+    service2->registerObject(imageId, "data1", data::Access::in, true);
+    service3->registerObject(imageId, "data1", data::Access::in, false, true);
+    service3->registerObject(booleanId, "data2", data::Access::in, true, true);
+    service4->registerObject(booleanId, "data1", data::Access::in, true);
+    service4->registerObject(imageId, "data2", data::Access::in, true);
 
     CPPUNIT_ASSERT_THROW(m_appMgr->startService(service), core::Exception);
 
@@ -214,8 +214,8 @@ void AppManagerTest::managerWithObjectTest()
 
     // add a service when object are already added
     auto service5 = service::add("::sight::service::ut::TestServiceImplementation");
-    service5->registerObject(imageId, "data1", service::IService::AccessType::INPUT, false, false);
-    service5->registerObject(booleanId, "data2", service::IService::AccessType::INPUT, true, false);
+    service5->registerObject(imageId, "data1", data::Access::in, false, false);
+    service5->registerObject(booleanId, "data2", data::Access::in, true, false);
     m_appMgr->addService(service5, true, true);
 
     fwTestWaitMacro(service5->isStarted());
@@ -288,12 +288,12 @@ void AppManagerTest::managerWithObjectConnectionTest()
     data::Image::sptr image     = data::Image::New();
     data::Boolean::sptr boolean = data::Boolean::New();
 
-    service1->registerObject(imageId, "data1", service::IService::AccessType::INPUT);
-    service2->registerObject(imageId, "data1", service::IService::AccessType::INPUT, true);
-    service3->registerObject(imageId, "data1", service::IService::AccessType::INPUT, false, true);
-    service3->registerObject(booleanId, "data2", service::IService::AccessType::INPUT, true, true);
-    service4->registerObject(imageId, "data1", service::IService::AccessType::INPUT, true);
-    service4->registerObject(booleanId, "data2", service::IService::AccessType::INPUT, true);
+    service1->registerObject(imageId, "data1", data::Access::in);
+    service2->registerObject(imageId, "data1", data::Access::in, true);
+    service3->registerObject(imageId, "data1", data::Access::in, false, true);
+    service3->registerObject(booleanId, "data2", data::Access::in, true, true);
+    service4->registerObject(imageId, "data1", data::Access::in, true);
+    service4->registerObject(booleanId, "data2", data::Access::in, true);
 
     m_appMgr->startServices();
 
@@ -445,20 +445,20 @@ void AppManagerTest::managerWithOutputCreationTest()
     data::Integer::sptr integer1 = data::Integer::New(15);
 
     auto service1 = m_appMgr->addService<service::ut::TestServiceWithData>(
-        "::sight::service::ut::TestServiceWithData",
+        "sight::service::ut::TestServiceWithData",
         true,
         true
     );
     auto service2 = m_appMgr->addService<service::ut::TestServiceWithData>(
-        "::sight::service::ut::TestServiceWithData",
+        "sight::service::ut::TestServiceWithData",
         true
     );
     auto service3 = m_appMgr->addService<service::ut::TestServiceWithData>(
-        "::sight::service::ut::TestServiceWithData",
+        "sight::service::ut::TestServiceWithData",
         true
     );
     auto service4 = m_appMgr->addService<service::ut::TestServiceWithData>(
-        "::sight::service::ut::TestServiceWithData",
+        "sight::service::ut::TestServiceWithData",
         true
     );
 
@@ -466,6 +466,20 @@ void AppManagerTest::managerWithOutputCreationTest()
     CPPUNIT_ASSERT(service2);
     CPPUNIT_ASSERT(service3);
     CPPUNIT_ASSERT(service4);
+
+    // Fill inouts of services with dummy data, there are not considered in this test
+    data::Integer::sptr dummy = data::Integer::New(0);
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
+    service1->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
+    service2->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
+    service3->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
+
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(0));
+    service4->setInOut(dummy, service::ut::TestServiceWithData::s_INOUT_GROUP, size_t(1));
 
     m_appMgr->startServices();
     CPPUNIT_ASSERT_EQUAL(false, service1->isStarted());
@@ -530,10 +544,9 @@ void AppManagerTest::managerWithGroupTest()
     data::Integer::sptr integer3 = data::Integer::New(28);
 
     auto service1 = m_appMgr->addService<service::ut::TestServiceWithData>(
-        "::sight::service::ut::TestServiceWithData",
+        "sight::service::ut::TestServiceWithData",
         true
     );
-    service1->registerGroup();
 
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
     CPPUNIT_ASSERT_EQUAL(size_t(2), service1->getKeyGroupSize(service::ut::TestServiceWithData::s_INOUT_GROUP));

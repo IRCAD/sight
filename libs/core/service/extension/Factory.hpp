@@ -78,9 +78,6 @@ public:
     /// Create a service from a factory type
     SERVICE_API SPTR(IService) create(const std::string& _srvImpl) const;
 
-    /// Create a service from a factory type and verify that it is an inherited type of _srvType
-    SERVICE_API SPTR(IService) create(const std::string& _srvType, const std::string& _srvImpl) const;
-
     SERVICE_API void clearFactory();
 
     /// return a vector of service implementation

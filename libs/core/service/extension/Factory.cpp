@@ -222,35 +222,6 @@ IService::sptr Factory::create(const std::string& _srvImpl) const
     return service;
 }
 
-//-----------------------------------------------------------------------------
-
-IService::sptr Factory::create(const std::string& _srvType, const std::string& _srvImpl) const
-{
-    const std::string srvImpl = core::runtime::filterID(_srvImpl);
-#ifdef _DEBUG
-    {
-        core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
-
-        SIGHT_ASSERT(
-            "The service called " << srvImpl << " does not exist in the Factory.",
-            m_srvImplTosrvInfo.find(srvImpl) != m_srvImplTosrvInfo.end()
-        );
-
-        const std::string srvType = core::runtime::filterID(_srvType);
-        SIGHT_ASSERT(
-            "Conflicting types were defined for this service, "
-            << srvType << " != " << m_srvImplTosrvInfo.find(srvImpl)->second.serviceType,
-            srvType == m_srvImplTosrvInfo.find(srvImpl)->second.serviceType
-        );
-    }
-#else
-    SIGHT_NOT_USED(_srvType);
-#endif //_DEBUG
-
-    IService::sptr service = this->create(srvImpl);
-    return service;
-}
-
 //------------------------------------------------------------------------------
 
 void Factory::addServiceFactory(
