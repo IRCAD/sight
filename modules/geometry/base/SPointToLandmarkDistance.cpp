@@ -25,14 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Landmarks.hpp>
-#include <data/Matrix4.hpp>
-#include <data/String.hpp>
-
 #include <geometry/data/Matrix4.hpp>
-
-#include <service/macros.hpp>
-
 namespace sight::module::geometry::base
 {
 
@@ -91,20 +84,17 @@ void SPointToLandmarkDistance::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto pointMat =
-            this->getLockedInput<data::Matrix4>("pointMatrix");
-        auto pointToLandmarkMatLocked =
-            this->getLockedInOut<data::Matrix4>("pointToLandmarkMatrix");
-        auto pointToLandmarkMat          = pointToLandmarkMatLocked.get_shared();
-        const auto distanceText          = this->getLockedInOut<data::String>("distanceText");
-        const ::glm::dmat4x4 pointMatrix = sight::geometry::data::getMatrixFromTF3D(
-            pointMat.get_shared()
+        const auto pointMat            = m_pointMatrix.lock();
+        auto pointToLandmarkMat        = m_pointToLandmarkMatrix.lock();
+        const auto distanceText        = m_distanceText.lock();
+        const glm::dmat4x4 pointMatrix = sight::geometry::data::getMatrixFromTF3D(
+            *pointMat
         );
-        const ::glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
-        const ::glm::dvec3 point = ::glm::dvec3(pointMatrix * originPoint);
+        const glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
+        const glm::dvec3 point = glm::dvec3(pointMatrix * originPoint);
 
-        const ::glm::dvec3 direction = m_currentLandmark - point;
-        const float length           = static_cast<float>(::glm::length(direction));
+        const glm::dvec3 direction = m_currentLandmark - point;
+        const float length         = static_cast<float>(glm::length(direction));
 
         std::ostringstream out;
         out.precision(m_precision);
@@ -117,20 +107,20 @@ void SPointToLandmarkDistance::updating()
         distanceText->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG)->asyncEmit();
 
         // compute the matrix
-        ::glm::dmat4x4 cameraMatrix;
+        glm::dmat4x4 cameraMatrix;
 
-        const ::glm::dvec3 front = ::glm::normalize(direction);
+        const glm::dvec3 front = glm::normalize(direction);
         // compute an orthogonal vector to front ( vec(a,b,c) --> vecOrtho(-b,a,0))
-        ::glm::dvec3 up          = ::glm::dvec3(-front[1], front[0], 0);
-        const ::glm::dvec3 right = ::glm::normalize(cross(up, front));
-        up = ::glm::cross(front, right);
+        glm::dvec3 up          = glm::dvec3(-front[1], front[0], 0);
+        const glm::dvec3 right = glm::normalize(cross(up, front));
+        up = glm::cross(front, right);
 
-        cameraMatrix[0] = ::glm::dvec4(right, 0.0);
-        cameraMatrix[1] = ::glm::dvec4(up, 0.0);
-        cameraMatrix[2] = ::glm::dvec4(front, 0.0);
-        cameraMatrix[3] = ::glm::dvec4(point, 1.0);
+        cameraMatrix[0] = glm::dvec4(right, 0.0);
+        cameraMatrix[1] = glm::dvec4(up, 0.0);
+        cameraMatrix[2] = glm::dvec4(front, 0.0);
+        cameraMatrix[3] = glm::dvec4(point, 1.0);
         sight::geometry::data::setTF3DFromMatrix(
-            pointToLandmarkMat,
+            *pointToLandmarkMat,
             cameraMatrix
         );
         auto sig =
@@ -147,7 +137,7 @@ void SPointToLandmarkDistance::updateSelectedPoint(std::string name, size_t inde
 {
     m_landmarkSelected = true;
 
-    const auto landmark = this->getLockedInput<data::Landmarks>("landmark");
+    const auto landmark = m_landmark.lock();
 
     const data::Landmarks::PointType& point = landmark->getPoint(name, index);
     for(int i = 0 ; i < 3 ; ++i)
@@ -163,7 +153,7 @@ void SPointToLandmarkDistance::updatePoint(std::string name)
 {
     m_landmarkSelected = true;
 
-    const auto landmark                     = this->getLockedInput<data::Landmarks>("landmark");
+    const auto landmark                     = m_landmark.lock();
     size_t size                             = landmark->getGroup(name).m_points.size();
     const data::Landmarks::PointType& point = landmark->getPoint(name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
@@ -182,7 +172,7 @@ void SPointToLandmarkDistance::removePoint()
     // Notify that distance is modified
     this->signal<DistanceChangedSignalType>(DISTANCE_CHANGED_SIG)->asyncEmit(static_cast<float>(0.0));
 
-    auto distanceText = this->getLockedInOut<data::String>("distanceText");
+    auto distanceText = m_distanceText.lock();
     distanceText->setValue("");
 
     // notify that text distance is modified

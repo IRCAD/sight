@@ -22,34 +22,20 @@
 
 #include "SManagePointList.hpp"
 
-#include <core/com/Connection.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
 #include <data/fieldHelper/Image.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/PointList.hpp>
 #include <data/String.hpp>
-
-#include <geometry/data/Matrix4.hpp>
-#include <geometry/data/PointList.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
 
 static const core::com::Slots::SlotKeyType s_PICK_SLOT         = "pick";
 static const core::com::Slots::SlotKeyType s_CLEAR_POINTS_SLOT = "clearPoints";
-
-static const std::string s_MATRIX_INPUT = "matrix";
-
-static const std::string s_POINTLIST_INOUT = "pointList";
 
 static const std::string s_MAX_CONFIG       = "max";
 static const std::string s_REMOVABLE_CONFIG = "removable";
@@ -112,16 +98,15 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
     {
         const data::Point::sptr point = data::Point::New();
 
-        const auto matrixW = this->getWeakInput<data::Matrix4>(s_MATRIX_INPUT);
-        const auto matrix  = matrixW.lock();
+        const auto matrix = m_transform.lock();
 
         if(matrix)
         {
             const double* const pickedCoord = _info.m_worldPos;
-            const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const ::glm::dmat4x4 mat        = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
+            const glm::dvec4 pickedPoint    = glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
+            const glm::dmat4x4 mat          = sight::geometry::data::getMatrixFromTF3D(*matrix);
 
-            const ::glm::dvec4 modifiedPickedPoint = mat * pickedPoint;
+            const glm::dvec4 modifiedPickedPoint = mat * pickedPoint;
             point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
         }
         else
@@ -144,7 +129,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
 
 void SManagePointList::addPoint(const data::Point::sptr _point) const
 {
-    const auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+    const auto pointList = m_pointList.lock();
 
     if(m_label)
     {
@@ -176,7 +161,7 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList             = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+        const auto pointList             = m_pointList.lock();
         const data::Point::sptr pointRes =
             sight::geometry::data::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
@@ -194,7 +179,7 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
 
 void SManagePointList::clearPoints() const
 {
-    const auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+    const auto pointList = m_pointList.lock();
 
     using PLContainer = data::PointList::PointListContainer;
     const PLContainer container = pointList->getPoints();

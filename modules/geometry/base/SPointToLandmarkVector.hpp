@@ -25,6 +25,7 @@
 #include "modules/geometry/base/config.hpp"
 
 #include <data/Landmarks.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IService.hpp>
 
@@ -118,9 +119,6 @@ private:
     /// landmarks group's label for the end of the vector.
     std::string m_endLabel {""};
 
-    /// Landmark containing the target point.
-    data::Landmarks::sptr m_computedLandmark;
-
     /// Computed landmark group name.
     std::string m_groupLabel {""};
 
@@ -129,6 +127,12 @@ private:
 
     /// Label to prefix the message sent in the sameSlice signal.
     std::string m_sameSliceLabel {"Same axial slice"};
+
+    static const service::key_t s_LANDMARK_INPUT;
+    data::ptr<data::Landmarks, sight::data::Access::in> m_landmark {this, s_LANDMARK_INPUT, true};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_transform {this, "transform"};
+    data::ptr<data::Landmarks, sight::data::Access::inout> m_computedLandmark {this, "computedLandmark"};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_translationMatrix {this, "translationMatrix"};
 };
 
 } // namespace sight::module::geometry::base

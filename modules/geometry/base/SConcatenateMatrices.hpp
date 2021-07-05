@@ -108,7 +108,7 @@ private:
     InvertVectorType m_invertVector;
 
     static const service::key_t s_MATRIX_GROUP_INPUT;
-    data::ptr_vector<data::Matrix4, sight::data::Access::in> m_matrices {this, s_MATRIX_GROUP_INPUT};
+    data::ptr_vector<data::Matrix4, sight::data::Access::in> m_matrices {this, s_MATRIX_GROUP_INPUT, true};
 
     static const service::key_t s_OUTPUT;
     data::ptr<data::Matrix4, sight::data::Access::inout> m_output {this, s_OUTPUT};

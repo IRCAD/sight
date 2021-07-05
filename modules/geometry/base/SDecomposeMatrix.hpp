@@ -24,6 +24,8 @@
 
 #include "modules/geometry/base/config.hpp"
 
+#include <geometry/data/Matrix4.hpp>
+
 #include <service/IOperator.hpp>
 
 namespace sight::module::geometry::base
@@ -91,6 +93,16 @@ protected:
      * Connect Object::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
     MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
+
+    static const service::key_t s_SOURCE_INPUT;
+    static const service::key_t s_TRANSLATION_INOUT;
+    static const service::key_t s_ROTATION_INOUT;
+    static const service::key_t s_SCALE_INOUT;
+
+    data::ptr<data::Matrix4, sight::data::Access::in> m_source {this, s_SOURCE_INPUT, true};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_translation {this, s_TRANSLATION_INOUT};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_rotation {this, s_ROTATION_INOUT};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_scale {this, s_SCALE_INOUT};
 };
 
 } //namespace sight::module::geometry::base

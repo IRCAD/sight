@@ -25,24 +25,17 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Matrix4.hpp>
-#include <data/PointList.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
 #include <glm/glm.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
 
 // -----------------------------------------------------------------------------
 
-const service::IService::KeyType s_LANDMARK_INPUT                     = "landmark";
-const service::IService::KeyType s_TRANSFORM_INOUT                    = "transform";
-const service::IService::KeyType s_TRANSLATION_INOUT                  = "translationMatrix";
-const service::IService::KeyType s_COMPUTED_LANDMARK_INOUT            = "computedLandmark";
+const service::key_t SPointToLandmarkVector::s_LANDMARK_INPUT = "landmark";
+
 static const core::com::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
 static const core::com::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
 static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";
@@ -68,9 +61,8 @@ SPointToLandmarkVector::~SPointToLandmarkVector() noexcept
 
 void SPointToLandmarkVector::starting()
 {
-    auto computedLandmarkLocked = this->getLockedInOut<data::Landmarks>(s_COMPUTED_LANDMARK_INOUT);
-    m_computedLandmark = computedLandmarkLocked.get_shared();
-    m_computedLandmark->addGroup(m_groupLabel);
+    auto computedLandmark = m_computedLandmark.lock();
+    computedLandmark->addGroup(m_groupLabel);
 }
 
 // -----------------------------------------------------------------------------
@@ -95,10 +87,9 @@ void SPointToLandmarkVector::configuring()
 
 void SPointToLandmarkVector::updating()
 {
-    auto transformLocked = this->getLockedInOut<data::Matrix4>(s_TRANSFORM_INOUT);
-    auto transform = transformLocked.get_shared();
-    auto translationMatrix = this->getLockedInOut<data::Matrix4>(s_TRANSLATION_INOUT);
-    const auto landmark = this->getLockedInput<data::Landmarks>(s_LANDMARK_INPUT);
+    auto transform = m_transform.lock();
+    auto translationMatrix = m_translationMatrix.lock();
+    const auto landmark = m_landmark.lock();
     std::array<double, 3> sourcePoint, targetPoint;
     if(landmark->getGroup(m_originLabel).m_size >= 1)
     {
@@ -140,21 +131,21 @@ void SPointToLandmarkVector::updating()
     pointToTargetMat[2] = ::glm::dvec4(front, 0.0);
     pointToTargetMat[3] = ::glm::dvec4(sourcePt, 1.0);
 
-    sight::geometry::data::setTF3DFromMatrix(transform, pointToTargetMat);
+    sight::geometry::data::setTF3DFromMatrix(*transform, pointToTargetMat);
     auto sig = transform->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     // Create the computed landmark containing the position of the target point
-    if(m_computedLandmark->getGroup(m_groupLabel).m_size > 0)
+
+    auto computedLandmark = m_computedLandmark.lock();
+    if(computedLandmark->getGroup(m_groupLabel).m_size > 0)
     {
-        m_computedLandmark->clearPoints(m_groupLabel);
+        computedLandmark->clearPoints(m_groupLabel);
     }
 
-    m_computedLandmark->addPoint(m_groupLabel, targetPoint);
+    computedLandmark->addPoint(m_groupLabel, targetPoint);
 
-    auto sig1 = m_computedLandmark->signal<data::Landmarks::PointAddedSignalType>(
-        data::Landmarks::s_POINT_ADDED_SIG
-    );
+    auto sig1 = computedLandmark->signal<data::Landmarks::PointAddedSignalType>(data::Landmarks::s_POINT_ADDED_SIG);
     sig1->asyncEmit(m_groupLabel);
 
     translationMatrix->setCoefficient(0, 3, pointToTarget[0]);

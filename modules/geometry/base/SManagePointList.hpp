@@ -27,6 +27,9 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+#include <geometry/data/PointList.hpp>
+
 #include <service/IController.hpp>
 
 namespace sight::module::geometry::base
@@ -120,6 +123,9 @@ private:
     bool m_label {false};
 
     float m_tolerance {10.f};
+
+    data::ptr<data::Matrix4, sight::data::Access::in> m_transform {this, "matrix", false, true};
+    data::ptr<data::PointList, sight::data::Access::inout> m_pointList {this, "pointList", false};
 };
 
 } // ctrlPicking

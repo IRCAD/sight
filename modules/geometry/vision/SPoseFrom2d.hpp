@@ -26,10 +26,13 @@
 #include <core/HiResClock.hpp>
 #include <core/mt/types.hpp>
 
+#include <data/Camera.hpp>
 #include <data/MarkerMap.hpp>
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
 
 #include <service/IRegisterer.hpp>
-#include <service/macros.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -45,23 +48,6 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
-         <in group="markerTL" autoConnect="true">
-             <key uid="..." />
-             <key uid="..." />
-         </in>
-         <in group="camera">
-             <key uid="..." />
-             <key uid="..." />
-         </in>
-         <in key="extrinsic" uid="..." />
-         <inout key="matrixTL" uid="..." />
-         <inout key="pointList" uid="..." />
-         <patternWidth>80</patternWidth>
-     </service>
-
-     or
-
      <service uid="..." type="sight::module::geometry::vision::SPoseFrom2d">
          <in group="markerMap" autoConnect="true">
              <key uid="..." />
@@ -82,12 +68,10 @@ namespace sight::module::geometry::vision
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerTL [sight::data::MarkerTL]: timeline for markers.
  * - \b markerMap [sight::data::MarkerMap]: markers map list.
  * - \b camera [sight::data::Camera]: calibrated cameras.
  * - \b extrinsic [sight::data::Matrix4]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
- * - \b matrixTL [sight::data::MatrixTL]: timeline of 3D transformation matrices.
  * - \b matrix [sight::data::Matrix4]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
  * - \b pointList [sight::data::PointList] (optional): list of points corresponding to the model.
@@ -148,27 +132,27 @@ private:
      */
     struct Marker
     {
-        std::vector< ::cv::Point2f> corners2D;
-        ::cv::Point3f centroid;
+        std::vector<cv::Point2f> corners2D;
+        cv::Point3f centroid;
     };
 
     /**
-     * @brief The Camera struct : to handle intrinsic parameters and distorsion coeficient.
+     * @brief The Camera struct : to handle intrinsic parameters and distorsion coefficient.
      */
     struct Camera
     {
-        ::cv::Size imageSize;
-        ::cv::Mat intrinsicMat;
-        ::cv::Mat distCoef;
+        cv::Size imageSize;
+        cv::Mat intrinsicMat;
+        cv::Mat distCoef;
     };
     /**
      * @brief The Extrinsic struct : to handle several format of extrinsic matrix
      */
     struct Extrinsic
     {
-        ::cv::Mat rotation;
-        ::cv::Mat translation;
-        ::cv::Mat Matrix4x4;
+        cv::Mat rotation;
+        cv::Mat translation;
+        cv::Mat Matrix4x4;
     };
 
     /// Initialize cameras
@@ -179,12 +163,12 @@ private:
      * @param : Marker points in each view
      *
      **/
-    const ::cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
+    const cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    const ::cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
+    const cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp;
@@ -196,16 +180,28 @@ private:
     bool m_isInitialized;
 
     /// 3d model
-    std::vector< ::cv::Point3f> m_3dModel;
+    std::vector<cv::Point3f> m_3dModel;
 
     /// std::vector of cameras
     std::vector<Camera> m_cameras;
 
     /// Extrinsic matrix
-    Extrinsic m_extrinsic;
+    Extrinsic m_extrinsicMat;
 
     /// List of tags associated with each inout matrix
     std::vector<data::MarkerMap::KeyType> m_matricesTag;
+
+    static const service::key_t s_MARKERMAP_INPUT;
+    static const service::key_t s_CAMERA_INPUT;
+    static const service::key_t s_EXTRINSIC_INPUT;
+    static const service::key_t s_MATRIX_INOUT;
+    static const service::key_t s_POINTLIST_INOUT;
+
+    data::ptr_vector<data::MarkerMap, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT, true};
+    data::ptr_vector<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::Matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};
+    data::ptr_vector<data::Matrix4, data::Access::inout> m_matrix {this, s_MATRIX_INOUT};
+    data::ptr<data::PointList, data::Access::inout> m_pointList {this, s_POINTLIST_INOUT, false, true};
 };
 
 } // namespace sight::module::geometry::vision
