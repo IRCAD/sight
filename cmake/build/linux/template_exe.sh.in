@@ -11,7 +11,7 @@ bindir=$(cd "$(dirname "$0")"; pwd)
 rootdir=$(cd "$bindir/.." ; pwd)
 libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
-extdir="@FW_EXTERNAL_LIBRARIES_DIRS@"
+extdir="@Sight_EXTRA_LIBRARY_DIR@"
 
 # compute LD_LIBRARY_PATH
 if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
