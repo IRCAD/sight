@@ -330,4 +330,11 @@
          <service>sight::module::ui::qt::viz::SnapshotEditor</service>
          <desc>SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.</desc>
     </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::ui::base::IEditor</type>
+        <service>sight::module::ui::qt::SMaterialOpacityEditor</service>
+        <object>sight::data::Material</object>
+        <desc>Allows to edit a Mesh's opacity</desc>
+    </extension>
 </plugin>
