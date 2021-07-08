@@ -69,9 +69,6 @@ public:
      */
     void render(QPainter*);
 
-    /// Enables animations i.e. forces the window to keep rendering.
-    void setAnimating(bool _animating);
-
     /// Creates the Ogre render window associated to this window,
     /// called by renderNow() once the window is first exposed.
     void initialize();
@@ -173,9 +170,6 @@ private:
 
     /// Tells if an update is requested
     bool m_update_pending {false};
-
-    /// Tells if the window is currently showed
-    bool m_animating {false};
 
     /// Stores previous mouse positions.
     std::optional<QPoint> m_lastMousePosition;

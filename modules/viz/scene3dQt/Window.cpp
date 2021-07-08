@@ -91,18 +91,6 @@ void Window::render(QPainter*)
 
 // ----------------------------------------------------------------------------
 
-void Window::setAnimating(bool _animating)
-{
-    m_animating = _animating;
-
-    if(_animating)
-    {
-        renderLater();
-    }
-}
-
-// ----------------------------------------------------------------------------
-
 void Window::initialize()
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
@@ -339,11 +327,6 @@ void Window::renderNow()
     }
 
     this->render();
-
-    if(m_animating)
-    {
-        this->renderLater();
-    }
 }
 
 // ----------------------------------------------------------------------------

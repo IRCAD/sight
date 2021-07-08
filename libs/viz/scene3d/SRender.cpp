@@ -148,17 +148,13 @@ void SRender::configuring()
     {
         m_renderMode = RenderMode::AUTO;
     }
-    else if(renderMode == "always")
-    {
-        m_renderMode = RenderMode::ALWAYS;
-    }
     else if(renderMode == "sync")
     {
         m_renderMode = RenderMode::SYNC;
     }
     else
     {
-        SIGHT_ERROR("Unknown rendering mode '" + renderMode + "'");
+        SIGHT_ERROR("Unknown rendering mode '" + renderMode + "', use the default 'auto'.");
     }
 
     auto adaptorConfigs = sceneCfg.equal_range("adaptor");
@@ -232,14 +228,14 @@ void SRender::starting()
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(nullptr, m_renderMode != RenderMode::ALWAYS, m_fullscreen);
+        m_interactorManager->createContainer(nullptr, m_fullscreen);
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(this->getContainer(), m_renderMode != RenderMode::ALWAYS, m_fullscreen);
+        m_interactorManager->createContainer(this->getContainer(), m_fullscreen);
     }
 
     // Initialize resources to load overlay scripts.

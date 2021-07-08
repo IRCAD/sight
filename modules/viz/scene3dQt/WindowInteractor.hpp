@@ -79,7 +79,6 @@ public:
      */
     MODULE_VIZ_SCENE3DQT_API void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool _renderOnDemand,
         bool _fullscreen
     ) final;
 
