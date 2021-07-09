@@ -1,4 +1,4 @@
-#version 410
+#version 420
 
 #if defined(QUAD)
 layout (lines_adjacency) in;
@@ -33,8 +33,10 @@ out vec2 oUv0;
 #endif // DIFFUSE_TEX
 
 #ifdef PER_PRIMITIVE_COLOR
-uniform sampler2D u_colorPrimitiveTexture;
-uniform vec2 u_colorPrimitiveTextureSize;
+// Set the default texunit value: this is actually a workaround to fix the first rendering of the object,
+// where the texunit value is not well set by Ogre, for some unknown reason, and despite the command buffer shows
+// it is set before the draw call
+layout(binding=1) uniform sampler2D u_colorPrimitiveTexture;
 #endif // PER_PRIMITIVE_COLOR
 
 void emit(int index, vec4 ppcolor)
@@ -66,11 +68,12 @@ void main(void)
 {
     vec4 ppcolor = vec4(1.,1.,1.,1.);
 #ifdef PER_PRIMITIVE_COLOR
+    ivec2 colorPrimitiveTextureSize = textureSize(u_colorPrimitiveTexture, 0);
     // compute offset
-    int div = gl_PrimitiveIDIn / int(u_colorPrimitiveTextureSize[0]);
-    int mod = gl_PrimitiveIDIn - int(u_colorPrimitiveTextureSize[0]) * div;
+    int div = gl_PrimitiveIDIn / int(colorPrimitiveTextureSize.x);
+    int mod = gl_PrimitiveIDIn - int(colorPrimitiveTextureSize.x) * div;
 
-    vec2 range = max(vec2(1.0, 1.0), u_colorPrimitiveTextureSize - 1.0);
+    vec2 range = max(vec2(1.0, 1.0), colorPrimitiveTextureSize - 1.0);
     vec2 uv = vec2(mod / range.x , div/ range.y);
     ppcolor = texture(u_colorPrimitiveTexture, uv );
 #endif // PER_PRIMITIVE_COLOR

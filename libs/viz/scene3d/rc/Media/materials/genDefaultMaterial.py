@@ -98,8 +98,7 @@ diffuseColorParams = ['// Diffuse color',
                       'param_named_auto u_diffuse surface_diffuse_colour']
 
 ## Per primitive color
-ppColorParams = ['param_named u_colorPrimitiveTexture int 0',
-                 'param_named u_colorPrimitiveTextureSize float2 0 0']
+ppColorParams = ['param_named u_colorPrimitiveTexture int 0']
 
 ## 'Name', '#Define', 'Attached vp', 'Attached fp', 'useAdjacency [0|1]', {parameters dict}
 cfgAmbient = ['Ambient', 'AMBIENT=1', '', '', '', { 'renderSceneVP' : ambientParams } ]
