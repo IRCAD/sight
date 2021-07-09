@@ -218,8 +218,6 @@ void Window::render()
         return;
     }
 
-    Q_EMIT cameraClippingComputation();
-
     ++m_frameId;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call

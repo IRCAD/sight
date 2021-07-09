@@ -182,7 +182,6 @@ void SNegato2D::updating()
 {
     this->newImage();
     this->setVisible(m_isVisible);
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

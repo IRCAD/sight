@@ -222,7 +222,6 @@ void SMesh::updating()
     }
 
     this->updateMesh(mesh.get_shared());
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
