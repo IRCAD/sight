@@ -67,16 +67,16 @@ public:
 private:
 
     /// Configures the service.
-    void configuring() final;
+    void configuring() override;
 
     /// Sets the connections and the UI elements.
-    void starting() final;
+    void starting() override;
 
     /// Does nothing.
-    void updating() final;
+    void updating() override;
 
     /// Destroys the connections and cleans the container.
-    void stopping() final;
+    void stopping() override;
 
     QPointer<QSlider> m_opacitySlider;
     QPointer<QLabel> m_opacityValue;

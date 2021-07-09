@@ -78,7 +78,7 @@ void SMaterialOpacityEditor::starting()
     mainLayout->addLayout(opacityLayout, 0);
     qtContainer->setLayout(mainLayout);
 
-    QObject::connect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
+    QObject::connect(m_opacitySlider, &QSlider::valueChanged, this, &SMaterialOpacityEditor::onOpacitySlider);
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +105,6 @@ void SMaterialOpacityEditor::onOpacitySlider(int _value)
 
 void SMaterialOpacityEditor::stopping()
 {
-    QObject::disconnect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
     this->destroy();
 }
 
