@@ -63,45 +63,35 @@ void Mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> polyData, data::Mesh::sptr m
         vtkSmartPointer<vtkFloatArray> pointTexCoords     = nullptr;
         vtkSmartPointer<vtkFloatArray> cellTexCoords      = nullptr;
 
-        if(polyData->GetPointData()->HasArray("Colors"))
+        const char* color_array_name[3] = {"Colors", "RGB", "RGBA"};
+
+        for(auto& color_array : color_array_name)
         {
-            int idx;
-            polyData->GetPointData()->GetAbstractArray("Colors", idx);
-            if(idx == vtkDataSetAttributes::SCALARS)
+            if(polyData->GetPointData()->HasArray(color_array))
             {
-                attributes  = attributes | data::Mesh::Attributes::POINT_COLORS;
-                pointColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetScalars("Colors"));
-            }
-        }
-        else if(polyData->GetPointData()->HasArray("RGB"))
-        {
-            int idx;
-            polyData->GetPointData()->GetAbstractArray("RGB", idx);
-            if(idx == vtkDataSetAttributes::SCALARS)
-            {
-                attributes  = attributes | data::Mesh::Attributes::POINT_COLORS;
-                pointColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetScalars("RGB"));
+                int idx;
+                polyData->GetPointData()->GetAbstractArray(color_array, idx);
+                if(idx == vtkDataSetAttributes::SCALARS)
+                {
+                    attributes  = attributes | data::Mesh::Attributes::POINT_COLORS;
+                    pointColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetScalars(color_array));
+                    break;
+                }
             }
         }
 
-        if(polyData->GetCellData()->HasArray("Colors"))
+        for(auto& color_array : color_array_name)
         {
-            int idx = -1;
-            polyData->GetCellData()->GetAbstractArray("Colors", idx);
-            if(idx == vtkDataSetAttributes::SCALARS)
+            if(polyData->GetCellData()->HasArray(color_array))
             {
-                attributes = attributes | data::Mesh::Attributes::CELL_COLORS;
-                cellColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetCellData()->GetScalars("Colors"));
-            }
-        }
-        else if(polyData->GetCellData()->HasArray("RGB"))
-        {
-            int idx = -1;
-            polyData->GetCellData()->GetAbstractArray("RGB", idx);
-            if(idx == vtkDataSetAttributes::SCALARS)
-            {
-                attributes = attributes | data::Mesh::Attributes::CELL_COLORS;
-                cellColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetCellData()->GetScalars("RGB"));
+                int idx;
+                polyData->GetCellData()->GetAbstractArray(color_array, idx);
+                if(idx == vtkDataSetAttributes::SCALARS)
+                {
+                    attributes = attributes | data::Mesh::Attributes::CELL_COLORS;
+                    cellColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetCellData()->GetScalars(color_array));
+                    break;
+                }
             }
         }
 
