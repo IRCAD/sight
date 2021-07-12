@@ -77,7 +77,7 @@ void SMaterialOpacityEditor::starting()
 
     mainLayout->addLayout(opacityLayout, 0);
     qtContainer->setLayout(mainLayout);
-
+    this->updating();
     QObject::connect(m_opacitySlider, &QSlider::valueChanged, this, &SMaterialOpacityEditor::onOpacitySlider);
 }
 
@@ -85,6 +85,9 @@ void SMaterialOpacityEditor::starting()
 
 void SMaterialOpacityEditor::updating()
 {
+    auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    const int a   = static_cast<int>(material->diffuse()->alpha() * 100.f);
+    m_opacitySlider->setValue(a);
 }
 
 //------------------------------------------------------------------------------

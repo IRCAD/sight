@@ -268,11 +268,11 @@
                 <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" compositors="Remap" />
+                    <layer id="video" order="1" compositors="Remap" transparency=""/>
                     <adaptor uid="videoAdp" />
                     <adaptor uid="undistortAdp" />
 
-                    <layer id="default" order="3" compositors="Remap" />
+                    <layer id="default" order="3" compositors="Remap" transparency=""/>
                     <adaptor uid="axisAdp" />
                     <adaptor uid="cameraAdp" />
                     <adaptor uid="materialAdp" />
@@ -606,7 +606,6 @@
             <start uid="loadMeshSrv" />
             <start uid="genericSceneSrv" />
             <start uid="materialAdp" />
-            <!--            <start uid="materialOpacityEditor" />-->
             <start uid="videoAdp" />
             <start uid="undistortAdp" />
             <start uid="axisAdp" />
