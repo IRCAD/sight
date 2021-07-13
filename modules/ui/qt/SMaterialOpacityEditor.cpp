@@ -47,6 +47,9 @@ SMaterialOpacityEditor::~SMaterialOpacityEditor() noexcept
 
 void SMaterialOpacityEditor::configuring()
 {
+    const ConfigType configuration = this->getConfigTree();
+    m_label = configuration.get<std::string>("label", m_label);
+
     this->initialize();
 }
 
@@ -57,9 +60,9 @@ void SMaterialOpacityEditor::starting()
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    auto* const opacityLabel = new QLabel(tr("Material's opacity : "));
+    auto* const opacityLabel = new QLabel(tr(m_label.c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
-    m_opacitySlider->setToolTip(tr("Selected meshe's opacity"));
+    m_opacitySlider->setToolTip(tr("Adjust opacity level"));
     m_opacitySlider->setRange(0, 100);
     m_opacitySlider->setTickInterval(20);
     m_opacitySlider->setTickPosition(QSlider::TicksBelow);

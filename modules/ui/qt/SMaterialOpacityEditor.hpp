@@ -42,11 +42,15 @@ namespace sight::module::ui::qt
  * @code{.xml}
    <service type="sight::module::ui::qt::SMaterialOpacityEditor">
        <inout key="material" uid="..." />
+       <label>Object's opacity: </label>
    </service>
    @endcode
  *
  *@subsection In-Out In-Out
  * - \b material [sight::data::Material]: material object to update.
+ *
+ *@subsection Configuration Configuration
+ * - \b label (optional, default="Material opacity : "): label of the slider.
  */
 
 class MODULE_UI_QT_CLASS_API SMaterialOpacityEditor : public QObject,
@@ -66,13 +70,13 @@ public:
 
 private:
 
-    /// Configures the service.
+    /// Configures the slider's label.
     void configuring() override;
 
     /// Sets the connections and the UI elements.
     void starting() override;
 
-    /// Does nothing.
+    /// Sets the opacity slider's value to the material's alpha value.
     void updating() override;
 
     /// Destroys the connections and cleans the container.
@@ -80,6 +84,9 @@ private:
 
     QPointer<QSlider> m_opacitySlider;
     QPointer<QLabel> m_opacityValue;
+
+    /// Name that appears next to the slider.
+    std::string m_label {"Material opacity : "};
 
 private Q_SLOTS:
 

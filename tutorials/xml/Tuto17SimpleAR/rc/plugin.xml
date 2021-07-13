@@ -507,6 +507,7 @@
 
             <service uid="materialOpacityEditor" type="sight::module::ui::qt::SMaterialOpacityEditor">
                 <inout key="material" uid="cubeMaterial"/>
+                <label>Cube opacity</label>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
