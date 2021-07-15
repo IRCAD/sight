@@ -112,9 +112,11 @@ namespace sight::module::ui::qt
  * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
  * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
  * and will send 'imageBlend' or 'imageCheckerboard'.
- * depends (optional, string): key of the dependency.
- * dependsValue (optional, string): value of the dependency in case of enum.
- * dependsReverse (optional, bool, default=false): reverse the dependency status checking.
+ * - \b depends (optional, string): key of the dependency.
+ * - \b dependsValue (optional, string): value of the dependency in case of enum.
+ * - \b dependsReverse (optional, bool, default=false): reverse the dependency status checking.
+ * - \b emitOnRelease (optional, default = false): int/double sliders only, if true send value when slider is released,
+ * send value when value changed otherwise.
  */
 class MODULE_UI_QT_CLASS_API SParameters : public QObject,
                                            public sight::ui::base::IEditor
@@ -278,7 +280,8 @@ private:
         double min,
         double max,
         std::uint8_t decimals,
-        bool resetButton
+        bool resetButton,
+        bool onRelease
     );
 
     /// Create a slider widget associated with an integer type
@@ -289,7 +292,8 @@ private:
         int defaultValue,
         int min,
         int max,
-        bool resetButton
+        bool resetButton,
+        bool onRelease
     );
 
     /// Create a spin widget associated with an integer type
@@ -327,6 +331,7 @@ private:
      * @name Slots
      * @{
      */
+
     /// Slot: This method is used to set a boolean parameter.
     void setBoolParameter(bool val, std::string key);
 
@@ -368,6 +373,7 @@ private:
 
     /// Slot: Set the maximum value of a double parameter (double, double2, double3)
     void setDoubleMaxParameter(double max, std::string key);
+
     /// @}
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist

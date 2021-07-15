@@ -181,7 +181,18 @@ void SParameters::starting()
                 SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 const std::uint8_t decimals = cfg.get<std::uint8_t>("<xmlattr>.decimals", 2);
-                this->createDoubleSliderWidget(*layout, row, key, defaultValue, min, max, decimals, resetButton);
+                const bool onRelease        = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
+                this->createDoubleSliderWidget(
+                    *layout,
+                    row,
+                    key,
+                    defaultValue,
+                    min,
+                    max,
+                    decimals,
+                    resetButton,
+                    onRelease
+                );
             }
             else
             {
@@ -207,7 +218,8 @@ void SParameters::starting()
                 // We don't support multiple sliders because we will not have the room in a single row
                 SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
-                this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max, resetButton);
+                const bool onRelease = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
+                this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max, resetButton, onRelease);
             }
             else
             {
@@ -1106,7 +1118,8 @@ void SParameters::createDoubleSliderWidget(
     double min,
     double max,
     std::uint8_t decimals,
-    bool resetButton
+    bool resetButton,
+    bool onRelease
 )
 {
     const double valueRange = max - min;
@@ -1120,6 +1133,9 @@ void SParameters::createDoubleSliderWidget(
     slider->setProperty("decimals", decimals);
     slider->setProperty("min", min);
     slider->setProperty("max", max);
+
+    // tracking true: emit signal when value change, false: emit signal when slider released.
+    slider->setTracking(!onRelease);
 
     setDoubleSliderRange(slider, defaultValue);
 
@@ -1193,7 +1209,8 @@ void SParameters::createIntegerSliderWidget(
     int defaultValue,
     int min,
     int max,
-    bool resetButton
+    bool resetButton,
+    bool onRelease
 )
 {
     QSlider* slider = new QSlider(Qt::Horizontal);
@@ -1201,6 +1218,9 @@ void SParameters::createIntegerSliderWidget(
     slider->setMinimum(min);
     slider->setMaximum(max);
     slider->setValue(defaultValue);
+
+    // tracking true: emit signal when value change, false: emit signal when slider released.
+    slider->setTracking(!onRelease);
 
     QFont font;
     font.setPointSize(7);
@@ -1807,6 +1827,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
     if(currentValue <= min)
     {
         slider->setValue(0);
+
         // qt does not emit the signal if the value does not change, we have to force qt signal to update the displayed
         // value and emit 'doubleChanged' signal
         Q_EMIT slider->valueChanged(0);
