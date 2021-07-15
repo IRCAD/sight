@@ -92,8 +92,8 @@ class Layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *      - \b renderMode (optional, auto/always/sync, default=auto): 'auto' (only when something has changed), 'always'
- *           (render continuously) or 'sync' (only when the slot "requestRender" is called).
+ *      - \b renderMode (optional, auto/sync, default=auto): 'auto' (only when something has changed), or 'sync'
+ *           (only when the slot "requestRender" is called).
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
  *      - \b height (optional, int, default=720): height for off-screen rendering.
  *  - \b background (optional): defines the scene background color.
@@ -140,7 +140,6 @@ public:
     /// Represents all possible render modes.
     enum class RenderMode
     {
-        ALWAYS,
         AUTO,
         SYNC
     };

@@ -89,7 +89,6 @@ void WindowInteractor::requestRender()
 
 void WindowInteractor::createContainer(
     sight::ui::base::container::fwContainer::sptr _parent,
-    bool _renderOnDemand,
     bool _fullscreen
 )
 {
@@ -101,7 +100,6 @@ void WindowInteractor::createContainer(
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_qOgreWidget = new module::viz::scene3dQt::Window();
-    m_qOgreWidget->setAnimating(!_renderOnDemand);
 #ifdef __linux
     // When using qt on linux we need to allocate the window resources before being able to use openGL.
     // This is because the underlying X API requires a drawable surface to draw on when calling

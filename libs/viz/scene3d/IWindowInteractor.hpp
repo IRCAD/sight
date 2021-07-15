@@ -161,7 +161,6 @@ public:
     /// Creates an interactor and installs it in window.
     VIZ_SCENE3D_API virtual void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool renderOnDemand,
         bool fullscreen
     ) = 0;
 
