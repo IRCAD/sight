@@ -71,7 +71,7 @@ void Mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> polyData, data::Mesh::sptr m
             {
                 int idx;
                 polyData->GetPointData()->GetAbstractArray(color_array, idx);
-                if(idx == vtkDataSetAttributes::SCALARS)
+                if(polyData->GetPointData()->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
                     attributes  = attributes | data::Mesh::Attributes::POINT_COLORS;
                     pointColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetScalars(color_array));
@@ -86,7 +86,7 @@ void Mesh::fromVTKMesh(vtkSmartPointer<vtkPolyData> polyData, data::Mesh::sptr m
             {
                 int idx;
                 polyData->GetCellData()->GetAbstractArray(color_array, idx);
-                if(idx == vtkDataSetAttributes::SCALARS)
+                if(polyData->GetCellData()->IsArrayAnAttribute(idx) == vtkDataSetAttributes::SCALARS)
                 {
                     attributes = attributes | data::Mesh::Attributes::CELL_COLORS;
                     cellColors = vtkUnsignedCharArray::SafeDownCast(polyData->GetCellData()->GetScalars(color_array));
