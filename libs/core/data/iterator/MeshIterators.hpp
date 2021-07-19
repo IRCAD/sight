@@ -273,7 +273,7 @@ public:
 
     /// Constructor
     DATA_API PointIterator();
-    DATA_API PointIterator(Mesh* mesh);
+    DATA_API PointIterator(const Mesh* const mesh);
     DATA_API PointIterator(const PointIterator& other) = default;
     DATA_API PointIterator(const PointIteratorBase& other);
     DATA_API ~PointIterator() override;

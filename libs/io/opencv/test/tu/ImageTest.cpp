@@ -223,8 +223,6 @@ static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
 
 void ImageTest::setUp()
 {
-    // Set up context before running a test.
-    std::srand(101101);
 }
 
 //------------------------------------------------------------------------------

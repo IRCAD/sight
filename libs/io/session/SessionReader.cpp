@@ -86,7 +86,7 @@ private:
     const std::unique_ptr<PasswordKeeper> m_password;
 };
 
-SessionReader::SessionReader(base::reader::IObjectReader::Key key) :
+SessionReader::SessionReader(base::reader::IObjectReader::Key) :
     m_pimpl(std::make_unique<SessionReaderImpl>(this))
 {
 }

@@ -34,9 +34,16 @@ namespace sight::core::crypto
 template<typename T>
 inline static T from_base64(const T& message)
 {
-    // Compute the ouput size
     const std::size_t message_size = message.size();
-    const std::size_t predicted    = 3 * message_size / 4;
+
+    // Do nothing if the message is empty...
+    if(message_size <= 0)
+    {
+        return message;
+    }
+
+    // Compute the ouput size
+    const std::size_t predicted = 3 * message_size / 4;
 
     // Create the output (take care of final \0);
     T output;

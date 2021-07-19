@@ -62,6 +62,19 @@ data::Object::sptr ProcessObject::getValue(const ParamNameType& name, const Proc
 
 //------------------------------------------------------------------------------
 
+data::Object::csptr ProcessObject::getValue(const ParamNameType& name, const ProcessObjectMapType& params) const
+{
+    const auto& iter = params.find(name);
+    if(iter != params.cend())
+    {
+        return iter->second;
+    }
+
+    return data::Object::csptr();
+}
+
+//------------------------------------------------------------------------------
+
 data::Object::sptr ProcessObject::getInput(const ParamNameType& name)
 {
     return this->getValue(name, m_inputs);
@@ -69,7 +82,21 @@ data::Object::sptr ProcessObject::getInput(const ParamNameType& name)
 
 //------------------------------------------------------------------------------
 
+data::Object::csptr ProcessObject::getInput(const ParamNameType& name) const
+{
+    return this->getValue(name, m_inputs);
+}
+
+//------------------------------------------------------------------------------
+
 data::Object::sptr ProcessObject::getOutput(const ParamNameType& name)
+{
+    return this->getValue(name, m_outputs);
+}
+
+//------------------------------------------------------------------------------
+
+data::Object::csptr ProcessObject::getOutput(const ParamNameType& name) const
 {
     return this->getValue(name, m_outputs);
 }

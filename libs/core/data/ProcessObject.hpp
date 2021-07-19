@@ -72,6 +72,7 @@ public:
      * @return null sptr if input is not found
      */
     DATA_API data::Object::sptr getInput(const ParamNameType& name);
+    DATA_API data::Object::csptr getInput(const ParamNameType& name) const;
 
     /**
      * @brief Retrieves the input data associated with specified name type OBJECTTYPE (null if non exist).
@@ -81,12 +82,16 @@ public:
     template<class OBJECTTYPE>
     typename OBJECTTYPE::sptr getInput(const ParamNameType& name);
 
+    template<class OBJECTTYPE>
+    typename OBJECTTYPE::csptr getInput(const ParamNameType& name) const;
+
     /**
      * @brief Retrieves the output data associated with specified name (null if non exist).
      * @param[in] name Output name
      * @return null sptr if output is not found
      */
     DATA_API data::Object::sptr getOutput(const ParamNameType& name);
+    DATA_API data::Object::csptr getOutput(const ParamNameType& name) const;
 
     /**
      * @brief Retrieves the output data associated with specified name type OBJECTTYPE (null if non exist).
@@ -95,6 +100,9 @@ public:
      */
     template<class OBJECTTYPE>
     typename OBJECTTYPE::sptr getOutput(const ParamNameType& name);
+
+    template<class OBJECTTYPE>
+    typename OBJECTTYPE::csptr getOutput(const ParamNameType& name) const;
 
     /**
      * @{
@@ -179,6 +187,7 @@ protected:
      * @return null sptr if param is not found
      */
     DATA_API data::Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
+    DATA_API data::Object::csptr getValue(const ParamNameType& name, const ProcessObjectMapType& params) const;
 
     /**
      * @brief Unregister all parameters in params map.
@@ -200,10 +209,26 @@ inline typename OBJECTTYPE::sptr ProcessObject::getInput(const ProcessObject::Pa
     return OBJECTTYPE::dynamicCast(this->getInput(name));
 }
 
+//------------------------------------------------------------------------------
+
+template<class OBJECTTYPE>
+inline typename OBJECTTYPE::csptr ProcessObject::getInput(const ProcessObject::ParamNameType& name) const
+{
+    return OBJECTTYPE::dynamicCast(this->getInput(name));
+}
+
 //-----------------------------------------------------------------------------
 
 template<class OBJECTTYPE>
 inline typename OBJECTTYPE::sptr ProcessObject::getOutput(const ProcessObject::ParamNameType& name)
+{
+    return OBJECTTYPE::dynamicCast(this->getOutput(name));
+}
+
+//------------------------------------------------------------------------------
+
+template<class OBJECTTYPE>
+inline typename OBJECTTYPE::csptr ProcessObject::getOutput(const ProcessObject::ParamNameType& name) const
 {
     return OBJECTTYPE::dynamicCast(this->getOutput(name));
 }

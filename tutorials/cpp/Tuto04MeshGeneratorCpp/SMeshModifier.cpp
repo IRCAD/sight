@@ -77,7 +77,6 @@ void SMeshModifier::configuring()
 void SMeshModifier::starting()
 {
     this->actionServiceStarting();
-    geometry::data::Mesh::initRand();
 }
 
 //------------------------------------------------------------------------------

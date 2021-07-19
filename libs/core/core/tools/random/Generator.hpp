@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <ctime>
 #include <functional>
+#include <mutex>
 #include <random>
 #include <type_traits>
 
@@ -91,6 +92,9 @@ void fillContainer(
     const auto generator = std::bind(dist, gen);
     std::generate(randContainer.begin(), randContainer.end(), generator);
 }
+
+/// This is a thread safe "std::rand" implementation
+CORE_API int safeRand(const bool reset = false);
 
 } // namespace random
 

@@ -43,8 +43,6 @@ namespace ut
 
 void ImageTest::setUp()
 {
-    // Set up context before running a test.
-    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------

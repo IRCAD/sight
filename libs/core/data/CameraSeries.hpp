@@ -109,9 +109,15 @@ public:
     DATA_API void removeCamera(const data::Camera::sptr& camera);
 
     /// Returns the number of cameras
-    size_t getNumberOfCameras() const
+    DATA_API inline size_t getNumberOfCameras() const
     {
         return m_cameras.size();
+    }
+
+    /// Clear all cameras
+    DATA_API inline void clearCameras()
+    {
+        m_cameras.clear();
     }
 
     /**

@@ -23,6 +23,7 @@
 #include "MeshTest.hpp"
 
 #include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/random/Generator.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/reflection/visitor/CompareObjects.hpp>
@@ -61,6 +62,8 @@ namespace sight::io::vtk
 namespace ut
 {
 
+using core::tools::random::safeRand;
+
 //-----------------------------------------------------------------------------
 
 void compare(data::Object::sptr objRef, data::Object::sptr objComp)
@@ -80,9 +83,6 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
 
 void MeshTest::setUp()
 {
-    // Set up context before running a test.
-
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
 void MeshTest::testPointCloud()
 {
-    const data::Mesh::Size NB_POINTS = static_cast<data::Mesh::Size>(100 + rand() % 1000);
+    const data::Mesh::Size NB_POINTS = static_cast<data::Mesh::Size>(100 + safeRand() % 1000);
 
     const data::Mesh::sptr mesh1 = data::Mesh::New();
 
@@ -274,9 +274,9 @@ void MeshTest::testPointCloud()
     for(data::Mesh::Size i = 0 ; i < NB_POINTS ; ++i)
     {
         data::Mesh::PointValueType point[3];
-        point[0] = (static_cast<float>(rand() % 1000) - 500.f) / 3.f;
-        point[1] = (static_cast<float>(rand() % 1000) - 500.f) / 3.f;
-        point[2] = (static_cast<float>(rand() % 1000) - 500.f) / 3.f;
+        point[0] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
+        point[1] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
+        point[2] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
         mesh1->pushPoint(point);
         mesh1->pushCell(i);
     }

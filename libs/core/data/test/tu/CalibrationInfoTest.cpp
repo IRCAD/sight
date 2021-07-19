@@ -45,8 +45,6 @@ namespace ut
 
 void CalibrationInfoTest::setUp()
 {
-    // Set up context before running a test.
-    utestData::generator::Image::initRand();
 }
 
 //------------------------------------------------------------------------------

@@ -23,6 +23,7 @@
 #include "CameraTest.hpp"
 
 #include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/random/Generator.hpp>
 
 #include <data/Camera.hpp>
 
@@ -37,12 +38,12 @@ namespace sight::data
 namespace ut
 {
 
+using core::tools::random::safeRand;
+
 //------------------------------------------------------------------------------
 
 void CameraTest::setUp()
 {
-    // Set up context before running a test.
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -55,16 +56,16 @@ void CameraTest::tearDown()
 
 data::Camera::sptr initCamera()
 {
-    const double CX                             = rand() % 10000 / 100;
-    const double CY                             = rand() % 10000 / 100;
-    const double FX                             = rand() % 10000 / 100;
-    const double FY                             = rand() % 10000 / 100;
-    const double SKEW                           = rand() % 10000 / 100;
-    const double K1                             = rand() % 10000 / 100;
-    const double K2                             = rand() % 10000 / 100;
-    const double P1                             = rand() % 10000 / 100;
-    const double P2                             = rand() % 10000 / 100;
-    const double K3                             = rand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100;
+    const double CY                             = safeRand() % 10000 / 100;
+    const double FX                             = safeRand() % 10000 / 100;
+    const double FY                             = safeRand() % 10000 / 100;
+    const double SKEW                           = safeRand() % 10000 / 100;
+    const double K1                             = safeRand() % 10000 / 100;
+    const double K2                             = safeRand() % 10000 / 100;
+    const double P1                             = safeRand() % 10000 / 100;
+    const double P2                             = safeRand() % 10000 / 100;
+    const double K3                             = safeRand() % 10000 / 100;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -104,16 +105,16 @@ data::Camera::sptr initCamera()
 
 void CameraTest::paramTest()
 {
-    const double CX                             = rand() % 10000 / 100;
-    const double CY                             = rand() % 10000 / 100;
-    const double FX                             = rand() % 10000 / 100;
-    const double FY                             = rand() % 10000 / 100;
-    const double SKEW                           = rand() % 10000 / 100;
-    const double K1                             = rand() % 10000 / 100;
-    const double K2                             = rand() % 10000 / 100;
-    const double P1                             = rand() % 10000 / 100;
-    const double P2                             = rand() % 10000 / 100;
-    const double K3                             = rand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100;
+    const double CY                             = safeRand() % 10000 / 100;
+    const double FX                             = safeRand() % 10000 / 100;
+    const double FY                             = safeRand() % 10000 / 100;
+    const double SKEW                           = safeRand() % 10000 / 100;
+    const double K1                             = safeRand() % 10000 / 100;
+    const double K2                             = safeRand() % 10000 / 100;
+    const double P1                             = safeRand() % 10000 / 100;
+    const double P2                             = safeRand() % 10000 / 100;
+    const double K3                             = safeRand() % 10000 / 100;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";

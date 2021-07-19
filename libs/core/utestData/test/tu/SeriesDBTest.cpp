@@ -48,15 +48,12 @@ namespace ut
 
 void SeriesDBTest::setUp()
 {
-    // Set up context before running a test.
-    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesDBTest::tearDown()
 {
-    // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------

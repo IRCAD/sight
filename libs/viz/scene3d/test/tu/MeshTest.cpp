@@ -22,7 +22,9 @@
 
 #include "MeshTest.hpp"
 
-#include "viz/scene3d/helper/Mesh.hpp"
+#include <core/tools/random/Generator.hpp>
+
+#include <viz/scene3d/helper/Mesh.hpp>
 
 #include <cstdint>
 
@@ -37,6 +39,8 @@ namespace helper
 
 namespace ut
 {
+
+using core::tools::random::safeRand;
 
 //------------------------------------------------------------------------------
 
@@ -66,9 +70,9 @@ void MeshTest::copyColors()
 
         for(size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(rand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(rand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[0] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(safeRand() % 255);
             pSrc   += numComponents;
         }
 
@@ -101,10 +105,10 @@ void MeshTest::copyColors()
 
         for(size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(rand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(rand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(rand() % 255);
-            pSrc[3] = static_cast<std::uint8_t>(rand() % 255);
+            pSrc[0] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[3] = static_cast<std::uint8_t>(safeRand() % 255);
             pSrc   += numComponents;
         }
 

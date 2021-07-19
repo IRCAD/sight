@@ -23,6 +23,7 @@
 #include "utestData/generator/Mesh.hpp"
 
 #include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/random/Generator.hpp>
 
 #include <cstdlib>
 #include <ctime>
@@ -33,22 +34,17 @@ namespace sight::utestData
 namespace generator
 {
 
+using core::tools::random::safeRand;
+
 struct RandFloat
 {
     //------------------------------------------------------------------------------
 
     float operator()()
     {
-        return (static_cast<float>(rand() % 101) - 50.f) / 500.f;
+        return (static_cast<float>(safeRand() % 101) - 50.f) / 500.f;
     }
 };
-
-//------------------------------------------------------------------------------
-
-void Mesh::initRand()
-{
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
-}
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +54,7 @@ void Mesh::generateMesh(const data::Mesh::sptr& mesh)
                                               | data::Mesh::Attributes::POINT_NORMALS
                                               | data::Mesh::Attributes::CELL_COLORS
                                               | data::Mesh::Attributes::CELL_NORMALS;
-    utestData::generator::Mesh::initRand();
+
     utestData::generator::Mesh::generateTriangleMesh(mesh, attributes);
     utestData::generator::Mesh::shakePoints(mesh);
     mesh->adjustAllocatedMemory();
@@ -162,10 +158,10 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
 
             if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
@@ -209,10 +205,10 @@ void Mesh::addQuadMesh(const data::Mesh::sptr& mesh, PointsMapType& points, size
             const auto cellId = mesh->pushCell(idx1, idx3, idx4, idx2);
             if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId, R, G, B, A);
             }
 
@@ -274,10 +270,10 @@ void Mesh::addTriangleMesh(
 
             if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
@@ -325,10 +321,10 @@ void Mesh::addTriangleMesh(
 
             if(mesh->hasCellColors())
             {
-                const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
-                const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
+                const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
+                const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
                 mesh->setCellColor(cellId1, R, G, B, A);
                 mesh->setCellColor(cellId2, A, G, R, B);
             }
@@ -366,10 +362,10 @@ data::Mesh::Size Mesh::addPoint(
     const data::Mesh::PointId idx = mesh->pushPoint(pt[0], pt[1], pt[2]);
     if(mesh->hasPointColors())
     {
-        const std::uint8_t R = static_cast<std::uint8_t>(rand() % 255);
-        const std::uint8_t G = static_cast<std::uint8_t>(rand() % 255);
-        const std::uint8_t B = static_cast<std::uint8_t>(rand() % 255);
-        const std::uint8_t A = static_cast<std::uint8_t>(rand() % 255);
+        const std::uint8_t R = static_cast<std::uint8_t>(safeRand() % 255);
+        const std::uint8_t G = static_cast<std::uint8_t>(safeRand() % 255);
+        const std::uint8_t B = static_cast<std::uint8_t>(safeRand() % 255);
+        const std::uint8_t A = static_cast<std::uint8_t>(safeRand() % 255);
         mesh->setPointColor(idx, R, G, B, A);
     }
 

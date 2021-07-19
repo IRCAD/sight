@@ -56,15 +56,12 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
 
 void ImageTest::setUp()
 {
-    // Set up context before running a test.
-    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::tearDown()
 {
-    // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------

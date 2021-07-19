@@ -24,6 +24,8 @@
 
 #include "DataCampHelper.hpp"
 
+#include <core/tools/random/Generator.hpp>
+
 #include <data/Camera.hpp>
 
 #include <boost/lexical_cast.hpp>
@@ -43,6 +45,8 @@ namespace reflection
 namespace ut
 {
 
+using core::tools::random::safeRand;
+
 //------------------------------------------------------------------------------
 
 void CameraTest::setUp()
@@ -61,16 +65,16 @@ void CameraTest::tearDown()
 
 void CameraTest::propertiesTest()
 {
-    const double CX           = rand() % 10000 / 100;
-    const double CY           = rand() % 10000 / 100;
-    const double FX           = rand() % 10000 / 100;
-    const double FY           = rand() % 10000 / 100;
-    const double SKEW         = rand() % 10000 / 100;
-    const double K1           = rand() % 10000 / 100;
-    const double K2           = rand() % 10000 / 100;
-    const double P1           = rand() % 10000 / 100;
-    const double P2           = rand() % 10000 / 100;
-    const double K3           = rand() % 10000 / 100;
+    const double CX           = safeRand() % 10000 / 100;
+    const double CY           = safeRand() % 10000 / 100;
+    const double FX           = safeRand() % 10000 / 100;
+    const double FY           = safeRand() % 10000 / 100;
+    const double SKEW         = safeRand() % 10000 / 100;
+    const double K1           = safeRand() % 10000 / 100;
+    const double K2           = safeRand() % 10000 / 100;
+    const double P1           = safeRand() % 10000 / 100;
+    const double P2           = safeRand() % 10000 / 100;
+    const double K3           = safeRand() % 10000 / 100;
     const bool IS_CALIBRATED  = true;
     const std::string DESC    = "My camera";
     const std::string CAM_ID  = "CAM_461384568";

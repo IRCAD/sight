@@ -25,6 +25,7 @@
 #include "helper.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/random/Generator.hpp>
 
 #include <data/Object.hpp>
 
@@ -42,12 +43,12 @@ namespace sight::io::itk
 namespace ut
 {
 
+using core::tools::random::safeRand;
+
 //------------------------------------------------------------------------------
 
 void ImageConversionTest::setUp()
 {
-    // Set up context before running a test.
-    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
@@ -112,10 +113,11 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    data::Image::sptr image      = data::Image::New();
-    data::Image::Size size       = {static_cast<size_t>(rand() % 100 + 2), static_cast<size_t>(rand() % 100 + 2), 0};
-    data::Image::Spacing spacing = {(rand() % 200 + 1) / 100., (rand() % 200 + 1) / 100., 0.};
-    data::Image::Origin origin   = {(rand() % 200 - 100) / 3., (rand() % 200 - 100) / 3., 0.};
+    data::Image::sptr image = data::Image::New();
+    data::Image::Size size  = {static_cast<size_t>(safeRand() % 100 + 2), static_cast<size_t>(safeRand() % 100 + 2), 0
+    };
+    data::Image::Spacing spacing = {(safeRand() % 200 + 1) / 100., (safeRand() % 200 + 1) / 100., 0.};
+    data::Image::Origin origin   = {(safeRand() % 200 - 100) / 3., (safeRand() % 200 - 100) / 3., 0.};
     core::tools::Type type       = core::tools::Type::s_INT16;
 
     utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);

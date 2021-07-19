@@ -38,7 +38,7 @@ PointIterator::PointIterator()
 
 //------------------------------------------------------------------------------
 
-PointIterator::PointIterator(data::Mesh* mesh)
+PointIterator::PointIterator(const data::Mesh* const mesh)
 {
     m_numberOfElements = static_cast<difference_type>(mesh->getNumberOfPoints());
     m_pointInfo->point = static_cast<PointInfo::point_value_type*>(mesh->m_points->getBuffer());

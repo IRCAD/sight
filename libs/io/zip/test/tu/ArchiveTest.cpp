@@ -61,16 +61,16 @@ void ArchiveTest::newTest()
     // Nominal test
     {
         // Create a temporary file
-        const std::filesystem::path folder_path = core::tools::System::getTemporaryFolder();
-        std::filesystem::create_directories(folder_path);
-        const std::filesystem::path archive_path = folder_path / "test.zip";
+        const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
+        std::filesystem::create_directories(folderPath);
+        const std::filesystem::path archivePath = folderPath / "newTest.zip";
 
         {
-            auto archive_writer = ArchiveWriter::shared(archive_path);
+            auto archiveWriter = ArchiveWriter::shared(archivePath);
         }
 
         {
-            auto archive_reader = ArchiveReader::shared(archive_path);
+            auto archive_reader = ArchiveReader::shared(archivePath);
         }
     }
 
@@ -86,50 +86,20 @@ void ArchiveTest::newTest()
 
 //------------------------------------------------------------------------------
 
-void ArchiveTest::cacheTest()
+void ArchiveTest::singletonTest()
 {
     // Create a temporary file
-    const std::filesystem::path folder_path = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(folder_path);
-    const std::filesystem::path archive_path = folder_path / "test.zip";
-
-    // Nominal test
-    {
-        // Test writer
-        std::uintptr_t old_archive_ptr = 0;
-        {
-            auto archive_writer = ArchiveWriter::shared(archive_path);
-
-            CPPUNIT_ASSERT_MESSAGE(
-                "New ArchiveWriter shared_ptr, with same path, should share the same handle",
-                archive_writer.get() == ArchiveWriter::shared(archive_path).get()
-            );
-
-            // Store the pointed address
-            old_archive_ptr = reinterpret_cast<std::uintptr_t>(archive_writer.get());
-        }
-
-        // Test reader
-        {
-            auto archive_reader = ArchiveReader::shared(archive_path);
-
-            CPPUNIT_ASSERT_MESSAGE(
-                "New ArchiveWriter shared_ptr, with same path, should share the same handle",
-                archive_reader.get() == ArchiveReader::shared(archive_path).get()
-            );
-
-            // Store the pointed address
-            old_archive_ptr = reinterpret_cast<std::uintptr_t>(archive_reader.get());
-        }
-    }
+    const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(folderPath);
+    const std::filesystem::path archivePath = folderPath / "singletonTest.zip";
 
     // Error test
     {
         // Due to internal limitation of minizip, you should not be able to open the same archive in both mode
-        auto archive_writer = ArchiveWriter::shared(archive_path);
+        auto archiveWriter = ArchiveWriter::shared(archivePath);
         CPPUNIT_ASSERT_THROW_MESSAGE(
             "Open the same archive in writing and in reading at the same time, should trigger an exception.",
-            ArchiveReader::shared(archive_path),
+            ArchiveReader::shared(archivePath),
             io::zip::exception::Read
         );
     }
@@ -140,24 +110,24 @@ void ArchiveTest::cacheTest()
 void ArchiveTest::openTest()
 {
     // Create a temporary file
-    const std::filesystem::path folder_path = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(folder_path);
-    const std::filesystem::path archive_path = folder_path / "test.zip";
+    const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(folderPath);
+    const std::filesystem::path archivePath = folderPath / "openTest.zip";
 
     // Test default parameters
     const std::string unencrypted_zstd_default("unencrypted_zstd_default");
     {
         // Create the archive writer
-        auto archive_writer = ArchiveWriter::shared(archive_path);
+        auto archiveWriter = ArchiveWriter::shared(archivePath);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archive_writer->openFile(unencrypted_zstd_default);
+        auto ostream = archiveWriter->openFile(unencrypted_zstd_default);
         ostream->write(unencrypted_zstd_default.data(), static_cast<std::streamsize>(unencrypted_zstd_default.size()));
     }
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::shared(archive_path);
+        auto archive_reader = ArchiveReader::shared(archivePath);
 
         // Read the stream
         std::string buffer(unencrypted_zstd_default.size(), 0);
@@ -171,10 +141,10 @@ void ArchiveTest::openTest()
     const core::crypto::secure_string encrypted_zstd_best("encrypted_zstd_best");
     {
         // Create the archive writer
-        auto archive_writer = ArchiveWriter::shared(archive_path);
+        auto archiveWriter = ArchiveWriter::shared(archivePath);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archive_writer->openFile(
+        auto ostream = archiveWriter->openFile(
             encrypted_zstd_best,
             encrypted_zstd_best,
             Method::ZSTD,
@@ -186,7 +156,7 @@ void ArchiveTest::openTest()
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::shared(archive_path);
+        auto archive_reader = ArchiveReader::shared(archivePath);
 
         // Read the stream
         std::string buffer(encrypted_zstd_best.size(), 0);
@@ -200,10 +170,10 @@ void ArchiveTest::openTest()
     const std::string unencrypted_deflate_fast("unencrypted_deflate_fast");
     {
         // Create the archive writer
-        auto archive_writer = ArchiveWriter::shared(archive_path);
+        auto archiveWriter = ArchiveWriter::shared(archivePath);
 
         // Write a new file in the archive with default parameters
-        auto ostream = archive_writer->openFile(
+        auto ostream = archiveWriter->openFile(
             unencrypted_deflate_fast,
             "",
             Method::DEFLATE,
@@ -215,7 +185,7 @@ void ArchiveTest::openTest()
 
     {
         // Create the archive reader
-        auto archive_reader = ArchiveReader::shared(archive_path);
+        auto archive_reader = ArchiveReader::shared(archivePath);
 
         // Read the stream
         std::string buffer(unencrypted_deflate_fast.size(), 0);

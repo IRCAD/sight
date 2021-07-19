@@ -38,6 +38,8 @@
 #include <QSlider>
 #include <QTreeWidget>
 
+#include <random>
+
 namespace sight::module::ui::qt::metrics
 {
 
@@ -356,6 +358,10 @@ public:
     static constexpr std::string_view s_MATRIX_IN       = "matrix";
     data::ptr<data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN, false, true};
     data::ptr<data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
+
+    /// Used to generate random color
+    std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};
+    std::mt19937 m_generator {static_cast<std::uint32_t>(std::time(nullptr))};
 };
 
 } // sight::module::ui::qt::metrics

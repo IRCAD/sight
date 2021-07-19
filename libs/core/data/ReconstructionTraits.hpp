@@ -74,21 +74,49 @@ public:
 
     /// Get the reconstruction operator mask node. Return a null pointer if the mask node is not defined.
     DATA_API data::Node::sptr getMaskOpNode();
+    //------------------------------------------------------------------------------
+
+    DATA_API data::Node::csptr getMaskOpNode() const
+    {
+        return m_maskOpNode;
+    }
 
     /// Set the reconstruction operator mesh node.
     DATA_API void setMeshOpNode(const data::Node::sptr& meshOpNode);
 
     /// Get the reconstruction operator mesh node. Return a null pointer if the mesh node is not defined.
     DATA_API data::Node::sptr getMeshOpNode();
+    //------------------------------------------------------------------------------
+
+    DATA_API data::Node::csptr getMeshOpNode() const
+    {
+        return m_meshOpNode;
+    }
 
     /// Set the associated structure traits
     DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits);
 
     /// Get the associated structure traits
     DATA_API data::StructureTraits::sptr getStructureTraits();
+    //------------------------------------------------------------------------------
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API data::StructureTraits::csptr getStructureTraits() const
+    {
+        return m_structureTraits;
+    }
+
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 

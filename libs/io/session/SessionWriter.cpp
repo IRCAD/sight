@@ -87,7 +87,7 @@ private:
     const std::unique_ptr<PasswordKeeper> m_password;
 };
 
-SessionWriter::SessionWriter(base::writer::IObjectWriter::Key key) :
+SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
     m_pimpl(std::make_unique<SessionWriterImpl>(this))
 {
 }

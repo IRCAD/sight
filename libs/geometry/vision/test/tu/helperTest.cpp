@@ -23,6 +23,7 @@
 #include "helperTest.hpp"
 
 #include <core/data/Point.hpp>
+#include <core/tools/random/Generator.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 #include <geometry/vision/helper.hpp>
@@ -44,6 +45,8 @@ namespace sight::geometry::vision
 
 namespace ut
 {
+
+using core::tools::random::safeRand;
 
 using ExpectedChessboardType = std::vector<sight::data::Point::PointCoordArrayType>;
 
@@ -81,7 +84,6 @@ static inline void compareChessboards(
 
 void helperTest::setUp()
 {
-    std::srand(static_cast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -335,12 +337,12 @@ void helperTest::toolCalibrationBasic()
     // generates matrices
     for(size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = rand() % 180;
+        const double angleInDegrees = safeRand() % 180;
         const double angle          = ::glm::radians(angleInDegrees);
 
-        const double x = rand() % 100 / 100.;
-        const double y = rand() % 100 / 100.;
-        const double z = rand() % 100 / 100.;
+        const double x = safeRand() % 100 / 100.;
+        const double y = safeRand() % 100 / 100.;
+        const double z = safeRand() % 100 / 100.;
 
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
@@ -409,12 +411,12 @@ void helperTest::toolCalibration()
     // generates matrices
     for(size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = rand() % 360;
+        const double angleInDegrees = safeRand() % 360;
         const double angle          = ::glm::radians(angleInDegrees);
 
-        const double x = rand() % 100 / 100.;
-        const double y = rand() % 100 / 100.;
-        const double z = rand() % 100 / 100.;
+        const double x = safeRand() % 100 / 100.;
+        const double y = safeRand() % 100 / 100.;
+        const double z = safeRand() % 100 / 100.;
 
         ::glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);

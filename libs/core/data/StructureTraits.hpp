@@ -180,8 +180,18 @@ public:
     void setPropertyType(const std::string& _propertyType);
     /// @}
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /**
+     * @brief Defines shallow copy.
+     * @param _source the source object where find data.
+     */
+    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object where find data.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 

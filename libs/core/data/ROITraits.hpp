@@ -62,6 +62,12 @@ public:
      */
     DATA_API virtual ~ROITraits();
 
+    /// Defines shallow copy
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
     /**
      * @{
      * @brief Get/Set value of the ROIs identifier.
@@ -86,15 +92,14 @@ public:
     /// Get the ROI mask node used for ROI, the only case where sptr can be null is when m_evaluatedExp correspond to
     // "W" ( W <=> World <=> no roi constraint ).
     DATA_API data::Node::sptr getMaskOpNode();
+    DATA_API data::Node::csptr getMaskOpNode() const;
 
     /// Set the associated structure traits
     DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits);
 
     /// Get the associated structure traits
     DATA_API data::StructureTraits::sptr getStructureTraits();
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API data::StructureTraits::csptr getStructureTraits() const;
 
 private:
 

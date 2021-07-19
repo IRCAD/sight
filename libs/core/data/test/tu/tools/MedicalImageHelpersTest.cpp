@@ -22,6 +22,8 @@
 
 #include "MedicalImageHelpersTest.hpp"
 
+#include <core/tools/random/Generator.hpp>
+
 #include <data/Array.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
@@ -38,6 +40,8 @@ namespace sight::data::tools
 
 namespace ut
 {
+
+using core::tools::random::safeRand;
 
 // ------------------------------------------------------------------------------
 
@@ -86,7 +90,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -127,7 +131,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -180,7 +184,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(std::rand() % static_cast<int>(RANGE));
+            *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
         Type resMin, resMax;
@@ -234,7 +238,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<size_t>(rand()) % size[0];});
+    std::generate_n(coords, 3, [&](){return static_cast<size_t>(safeRand()) % size[0];});
     const auto dumpLock = image->lock();
     auto imageBufferPtr = image->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
@@ -305,7 +309,7 @@ void setPixelBufferTestHelper(P& pixelValue)
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<size_t>(rand()) % size[0];});
+    std::generate_n(coords, 3, [&](){return static_cast<size_t>(safeRand()) % size[0];});
     const size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dumpLock     = image->lock();
     image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));

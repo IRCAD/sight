@@ -67,6 +67,9 @@ void ResectionDB::shallowCopy(const Object::csptr& _source)
         !bool(other)
     );
     this->fieldShallowCopy(_source);
+
+    m_safeResection = other->m_safeResection;
+    m_resections    = other->m_resections;
 }
 
 //------------------------------------------------------------------------------
@@ -82,6 +85,14 @@ void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
         !bool(other)
     );
     this->fieldDeepCopy(_source, cache);
+
+    m_safeResection = data::Object::copy(other->m_safeResection, cache);
+
+    m_resections.clear();
+    for(const auto& resection : other->m_resections)
+    {
+        m_resections.push_back(data::Object::copy(resection, cache));
+    }
 }
 
 //------------------------------------------------------------------------------
