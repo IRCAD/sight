@@ -116,7 +116,11 @@ protected:
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;
 
-    static const TMCoefArray s_IDENTITY;
+    static constexpr TMCoefArray s_IDENTITY = {1., 0., 0., 0.,
+                                               0., 1., 0., 0.,
+                                               0., 0., 1., 0.,
+                                               0., 0., 0., 1.
+    };
 };
 
 //-----------------------------------------------------------------------------

@@ -136,7 +136,7 @@ public:
     SERVICE_API AppManager();
     SERVICE_API ~AppManager();
 
-    typedef data::Access Access;
+    using Access = data::Access;
 
     /// Initialize the Manager
     SERVICE_API virtual void create();

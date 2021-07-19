@@ -30,12 +30,6 @@ SIGHT_REGISTER_DATA(sight::data::Matrix4);
 namespace sight::data
 {
 
-const Matrix4::TMCoefArray Matrix4::s_IDENTITY = {1., 0., 0., 0.,
-                                                  0., 1., 0., 0.,
-                                                  0., 0., 1., 0.,
-                                                  0., 0., 0., 1.
-};
-
 //------------------------------------------------------------------------------
 
 Matrix4::Matrix4()

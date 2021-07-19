@@ -1302,7 +1302,7 @@ void IService::_registerObject(
 
 void IService::_registerObjectGroup(
     const key_t& key,
-    data::Access access,
+    const data::Access access,
     const std::uint8_t minNbObject,
     const bool autoConnect,
     const std::uint8_t maxNbObject

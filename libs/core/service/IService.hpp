@@ -74,7 +74,7 @@ class Worker;
 
 #define KEY_GROUP_NAME(key, index) (key + "#" + std::to_string(index))
 
-typedef std::string key_t;
+using key_t = std::string;
 
 /**
  * @brief   Base class for all services.
@@ -1051,13 +1051,13 @@ private:
      */
     void _registerObject(
         const key_t& key,
-        data::Access access
+        const data::Access access
     );
 
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(
         const key_t& key,
-        data::Access access,
+        const data::Access access,
         const bool autoConnect,
         const bool optional = false
     ) override;
@@ -1065,7 +1065,7 @@ private:
     /// @copydoc sight::data::IHasData::_registerObjectGroup
     SERVICE_API void _registerObjectGroup(
         const key_t& key,
-        data::Access access,
+        const data::Access access,
         const std::uint8_t minNbObject,
         const bool autoConnect         = false,
         const std::uint8_t maxNbObject = 10

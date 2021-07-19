@@ -111,13 +111,13 @@ public:
 
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
 
-    /// Returns true if the weak pointer have expired
+    /// Returns true if the weak pointer has expired
     inline bool expired() const noexcept
     {
         return m_data.expired();
     }
 
-    /// Returns true if the weak pointer have expired
+    /// Resets the pointer to null
     inline void reset() noexcept
     {
         m_data.reset();

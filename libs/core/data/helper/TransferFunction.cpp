@@ -125,7 +125,6 @@ void TransferFunction::setOrCreateTF(const data::TransferFunction::sptr& _tf, co
     this->removeTFConnections();
     if(_tf)
     {
-        SIGHT_ASSERT("Transfer function should not be null", _tf);
         this->setTransferFunction(_tf);
     }
     else

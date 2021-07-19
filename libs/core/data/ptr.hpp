@@ -33,11 +33,11 @@ namespace sight::data
 enum class Access : std::uint8_t
 {
     in     = 0,
-    INPUT  = 0,
+    INPUT  = in,
     out    = 1,
-    OUTPUT = 1,
-    INOUT  = 2,
+    OUTPUT = out,
     inout  = 2,
+    INOUT  = inout,
 };
 
 //------------------------------------------------------------------------------
@@ -49,24 +49,24 @@ struct access_typed_traits;
 template<class DATATYPE>
 struct access_typed_traits<DATATYPE, data::Access::in>
 {
-    typedef CSPTR(DATATYPE) value;
-    typedef const DATATYPE object;
+    using value  = CSPTR(DATATYPE);
+    using object = const DATATYPE;
     static constexpr bool optional = false;
 };
 
 template<class DATATYPE>
 struct access_typed_traits<DATATYPE, data::Access::inout>
 {
-    typedef SPTR(DATATYPE) value;
-    typedef DATATYPE object;
+    using value  = SPTR(DATATYPE);
+    using object = DATATYPE;
     static constexpr bool optional = false;
 };
 
 template<class DATATYPE>
 struct access_typed_traits<DATATYPE, data::Access::out>
 {
-    typedef SPTR(DATATYPE) value;
-    typedef DATATYPE object;
+    using value  = SPTR(DATATYPE);
+    using object = DATATYPE;
     static constexpr bool optional = true;
 };
 
@@ -82,7 +82,6 @@ class base_ptr
 {
 public:
 
-    base_ptr()          = default;
     virtual ~base_ptr() = default;
 
     /// Assignment operator
@@ -114,7 +113,7 @@ public:
      */
     DATA_API virtual void _registerObject(
         const std::string& _key,
-        Access _access,
+        const Access _access,
         const bool _autoConnect = false,
         const bool _optional    = false
     )                           = 0;
@@ -137,7 +136,7 @@ public:
      */
     DATA_API virtual void _registerObjectGroup(
         const std::string& _key,
-        data::Access _access,
+        const data::Access _access,
         const std::uint8_t _minNbObject,
         const bool _autoConnect         = false,
         const std::uint8_t _maxNbObject = 10
