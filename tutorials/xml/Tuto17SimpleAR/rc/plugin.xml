@@ -45,6 +45,7 @@
             <object uid="cubeMesh" type="sight::data::Mesh" />
             <object uid="undistortMap" type="sight::data::Image" />
             <object uid="distortMap" type="sight::data::Image" />
+            <object uid="cubeMaterial" type="sight::data::Material"/>
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -136,12 +137,14 @@
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="2" />
+                        <view proportion="1" />
                         <spacer/>
                     </layout>
                 </gui>
                 <registry>
                     <view sid="arucoParamametersSrv" start="true" />
                     <view sid="reprojectionParamametersSrv" start="true" />
+                    <view sid="materialOpacityEditor" start="true" />
                 </registry>
             </service>
 
@@ -265,13 +268,14 @@
                 <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" compositors="Remap" />
+                    <layer id="video" order="1" compositors="Remap" transparency=""/>
                     <adaptor uid="videoAdp" />
                     <adaptor uid="undistortAdp" />
 
-                    <layer id="default" order="3" compositors="Remap" />
+                    <layer id="default" order="3" compositors="Remap" transparency=""/>
                     <adaptor uid="axisAdp" />
                     <adaptor uid="cameraAdp" />
+                    <adaptor uid="materialAdp" />
                     <adaptor uid="cubeAdp" />
                     <adaptor uid="distortAdp" />
                 </scene>
@@ -298,10 +302,15 @@
                 <config layer="default" />
             </service>
 
+            <service uid="materialAdp" type="sight::module::viz::scene3d::adaptor::SMaterial" autoConnect="true">
+                <inout key="material" uid="cubeMaterial" />
+                <config layer="default" materialName="cube" />
+            </service>
+
             <!-- Cube displayed on top of the marker plane -->
             <service uid="cubeAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
                 <inout key="mesh" uid="cubeMesh" />
-                <config layer="default" autoresetcamera="false" />
+                <config layer="default" autoresetcamera="false" materialName="cube" />
             </service>
 
             <service uid="distortAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="true" >
@@ -454,7 +463,7 @@
                     <key uid="camera" />
                 </in>
                 <inout group="matrix" >
-                    <key uid="markerToCamera" id="104" />
+                    <key uid="markerToCamera" id="101" />
                 </inout>
                 <patternWidth>60</patternWidth>
             </service>
@@ -494,6 +503,11 @@
             <service uid="syncGenericSceneSrv" type="sight::module::sync::SSignalGate" >
                 <signal>sourceFrame/bufferModified</signal>
                 <signal>cameraToMarker/modified</signal>
+            </service>
+
+            <service uid="materialOpacityEditor" type="sight::module::ui::qt::SMaterialOpacityEditor">
+                <inout key="material" uid="cubeMaterial"/>
+                <label>Cube opacity</label>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -592,6 +606,7 @@
             <start uid="syncGenericSceneSrv" />
             <start uid="loadMeshSrv" />
             <start uid="genericSceneSrv" />
+            <start uid="materialAdp" />
             <start uid="videoAdp" />
             <start uid="undistortAdp" />
             <start uid="axisAdp" />
