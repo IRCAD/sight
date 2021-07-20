@@ -43,8 +43,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 
-const std::string SModelSeries::s_MODEL_INPUT = "model";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_MATERIAL_CONFIG         = "material";
 static const std::string s_DYNAMIC_CONFIG          = "dynamic";

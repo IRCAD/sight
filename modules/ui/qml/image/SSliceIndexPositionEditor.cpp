@@ -46,8 +46,6 @@ const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[3] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-const service::key_t SSliceIndexPositionEditor::s_IMAGE_INOUT = "image";
-
 //------------------------------------------------------------------------------
 
 SSliceIndexPositionEditor::SSliceIndexPositionEditor() noexcept

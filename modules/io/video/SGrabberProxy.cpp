@@ -188,14 +188,14 @@ void SGrabberProxy::startCamera()
 
             {
                 auto cameraInput = m_camera.lock();
-                auto camera      = data::Camera::dynamicConstCast(cameraInput.get_shared());
+                auto camera      = std::dynamic_pointer_cast<const data::Camera>(cameraInput.get_shared());
                 if(camera)
                 {
                     sourceType = camera->getCameraSource();
                 }
                 else
                 {
-                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
+                    auto cameraSeries = std::dynamic_pointer_cast<const data::CameraSeries>(cameraInput.get_shared());
                     if(cameraSeries)
                     {
                         numCamerasInSeries = cameraSeries->getNumberOfCameras();

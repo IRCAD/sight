@@ -114,7 +114,7 @@ protected:
 
     void starting() override;
     void stopping() override;
-    void swapping(const KeyType& key) override;
+    void swapping(std::string_view key) override;
     void updating() override;
 };
 

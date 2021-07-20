@@ -246,8 +246,8 @@ private:
     /// Defines the font size in points.
     size_t m_fontSize {16};
 
-    static const service::key_t s_POINTLIST_INPUT;
-    static const service::key_t s_MESH_INPUT;
+    static constexpr std::string_view s_POINTLIST_INPUT = "pointList";
+    static constexpr std::string_view s_MESH_INPUT      = "mesh";
 
     data::ptr<data::PointList, data::Access::in> m_pointList {this, s_POINTLIST_INPUT, true, true};
     data::ptr<data::Mesh, data::Access::in> m_mesh {this, s_MESH_INPUT, true, true};

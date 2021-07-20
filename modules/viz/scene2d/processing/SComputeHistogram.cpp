@@ -44,9 +44,6 @@ namespace sight::module::viz::scene2d
 namespace processing
 {
 
-const service::key_t SComputeHistogram::s_IMAGE_INPUT     = "image";
-const service::key_t SComputeHistogram::s_HISTOGRAM_INPUT = "histogram";
-
 //-----------------------------------------------------------------------------
 
 SComputeHistogram::SComputeHistogram() noexcept :

@@ -30,21 +30,9 @@ namespace sight::service
 {
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
 namespace OSR
 {
-
-//------------------------------------------------------------------------------
-template<data::Access A>
-void registerService(
-    typename data::access_traits<A>::value obj,
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
-)
-{
-    service::OSR::get()->registerService<A>(obj, objKey, service);
-}
 
 //------------------------------------------------------------------------------
 
@@ -92,70 +80,6 @@ std::set<SPTR(SERVICE)> ObjectService::getServices() const
     }
 
     return services;
-}
-
-//------------------------------------------------------------------------------
-
-template<data::Access A>
-void ObjectService::registerService(
-    typename data::access_traits<A>::value object,
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
-)
-{
-    core::mt::WriteLock writeLock(m_containerMutex);
-    this->internalRegisterService<A>(object, service, objKey);
-}
-
-//------------------------------------------------------------------------------
-template<>
-inline void ObjectService::internalRegisterService<data::Access::in>(
-    typename data::access_traits<data::Access::in>::value object,
-    service::IService::sptr service,
-    const service::IService::KeyType& objKey
-)
-{
-    SIGHT_ASSERT("Can't register a null service in OSR.", service);
-    SIGHT_ASSERT("Can't register a null object in OSR.", object);
-
-    SIGHT_FATAL_IF("object key is not defined", objKey.empty());
-
-    service->m_inputsMap[objKey] = object;
-    m_services.insert(service);
-}
-
-//------------------------------------------------------------------------------
-template<>
-inline void ObjectService::internalRegisterService<data::Access::inout>(
-    typename data::access_traits<data::Access::inout>::value object,
-    service::IService::sptr service,
-    const service::IService::KeyType& objKey
-)
-{
-    SIGHT_ASSERT("Can't register a null service in OSR.", service);
-    SIGHT_ASSERT("Can't register a null object in OSR.", object);
-
-    SIGHT_FATAL_IF("object key is not defined", objKey.empty());
-
-    service->m_inOutsMap[objKey] = object;
-    m_services.insert(service);
-}
-
-//------------------------------------------------------------------------------
-template<>
-inline void ObjectService::internalRegisterService<data::Access::out>(
-    typename data::access_traits<data::Access::out>::value object,
-    service::IService::sptr service,
-    const service::IService::KeyType& objKey
-)
-{
-    SIGHT_ASSERT("Can't register a null service in OSR.", service);
-    SIGHT_ASSERT("Can't register a null object in OSR.", object);
-
-    SIGHT_FATAL_IF("object key is not defined", objKey.empty());
-
-    service->m_outputsMap[objKey] = object;
-    m_services.insert(service);
 }
 
 //------------------------------------------------------------------------------

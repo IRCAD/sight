@@ -350,7 +350,7 @@ void SNegato::updating()
 
 //------------------------------------------------------------------------------
 
-void SNegato::swapping(const KeyType& key)
+void SNegato::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {

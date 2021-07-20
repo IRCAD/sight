@@ -80,10 +80,6 @@ struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Lis
     }
 };
 
-const service::key_t SFragmentsInfo::s_IMAGE_INOUT        = "image";
-const service::key_t SFragmentsInfo::s_DEPTH_INOUT        = "depth";
-const service::key_t SFragmentsInfo::s_PRIMITIVE_ID_INOUT = "primitiveID";
-
 static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = nullptr;
 
 //-----------------------------------------------------------------------------

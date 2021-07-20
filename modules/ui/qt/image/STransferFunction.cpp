@@ -263,7 +263,7 @@ void STransferFunction::updating()
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::swapping(const KeyType& _key)
+void STransferFunction::swapping(std::string_view _key)
 {
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_INPUT)

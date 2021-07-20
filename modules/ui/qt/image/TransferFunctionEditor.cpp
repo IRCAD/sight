@@ -197,7 +197,7 @@ void TransferFunctionEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-void TransferFunctionEditor::swapping(const KeyType& key)
+void TransferFunctionEditor::swapping(std::string_view key)
 {
     if(key == s_CURRENT_TF_INPUT)
     {

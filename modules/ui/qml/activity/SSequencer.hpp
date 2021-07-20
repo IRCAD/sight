@@ -164,7 +164,7 @@ private:
     /// List of activity ids
     QStringList m_qActivityIds;
 
-    static const service::key_t s_SERIESDB_INOUT;
+    static constexpr std::string_view s_SERIESDB_INOUT = "seriesDB";
     data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
 };
 

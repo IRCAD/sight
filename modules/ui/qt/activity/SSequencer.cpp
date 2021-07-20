@@ -45,8 +45,6 @@ namespace activity
 
 //------------------------------------------------------------------------------
 
-const service::key_t SSequencer::s_SERIESDB_INOUT = "seriesDB";
-
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
 const core::com::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
@@ -235,7 +233,7 @@ void SSequencer::updating()
 {
     {
         auto seriesDB = m_seriesDB.lock();
-        SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+        SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
         m_currentActivity = this->parseActivities(*seriesDB);
     }
@@ -268,7 +266,7 @@ void SSequencer::goTo(int index)
     }
 
     auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
     if(m_currentActivity >= 0)
     {
@@ -304,7 +302,7 @@ void SSequencer::goTo(int index)
 void SSequencer::checkNext()
 {
     auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.

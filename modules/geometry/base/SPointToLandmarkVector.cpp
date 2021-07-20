@@ -34,8 +34,6 @@ namespace sight::module::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const service::key_t SPointToLandmarkVector::s_LANDMARK_INPUT = "landmark";
-
 static const core::com::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
 static const core::com::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
 static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";

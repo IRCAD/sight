@@ -98,7 +98,8 @@ IService::~IService()
                     objectKeys += ", ";
                 }
 
-                objectKeys += "'" + obj.first + "'(nbRef: " + std::to_string(output.use_count()) + ")";
+                objectKeys += "'" + std::string(obj.first.first) + "'(nbRef: " + std::to_string(output.use_count())
+                              + ")";
             }
         }
 
@@ -119,183 +120,162 @@ void IService::info(std::ostream&)
 
 //-----------------------------------------------------------------------------
 
-void IService::setOutput(const IService::KeyType& key, const data::Object::sptr& object, size_t index)
+data::Object::csptr IService::getObject(std::string_view _key, data::Access _access, size_t _index) const
 {
-    std::string outKey = key;
-
-    if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
+    const auto key = std::make_pair(std::string(_key), _index);
+    if(_access == data::Access::in)
     {
-        outKey = KEY_GROUP_NAME(key, index);
+        auto it = m_inputsMap.find(key);
+        if(it != m_inputsMap.end())
+        {
+            return it->second.getShared();
+        }
+    }
+    else if(_access == data::Access::inout)
+    {
+        auto it = m_inOutsMap.find(key);
+        if(it != m_inOutsMap.end())
+        {
+            return it->second.getShared();
+        }
+    }
+    else
+    {
+        auto it = m_outputsMap.find(key);
+        if(it != m_outputsMap.end())
+        {
+            return it->second.get_shared();
+        }
     }
 
-    if(service::OSR::isRegistered(outKey, data::Access::out, this->getSptr()))
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::setOutput(std::string_view key, data::Object::sptr object, size_t index)
+{
+    auto keyPair = std::make_pair(std::string(key), index);
+    if(m_outputsMap.find(keyPair) != m_outputsMap.end())
     {
-        service::OSR::unregisterServiceOutput(outKey, this->getSptr());
+        service::OSR::unregisterServiceOutput(key, this->getSptr(), index);
     }
 
-    if(object != nullptr)
+    if(object == nullptr)
     {
-        service::OSR::registerServiceOutput(object, outKey, this->getSptr());
+        m_outputsMap.erase(keyPair);
+    }
+    else
+    {
+        m_outputsMap[keyPair] = object;
+        service::OSR::registerServiceOutput(object, key, this->getSptr(), index);
     }
 
-    this->setPtrObject<data::Access::out>(outKey, object);
+    this->setPtrObject<data::Access::out>(key, object, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::setInput(
-    const data::Object::csptr& obj,
-    const key_t& key
-)
-{
-    this->_registerObject(key, data::Access::in);
-    this->_setInput(obj, key);
-}
-
-//------------------------------------------------------------------------------
-
-void IService::setInput(
-    const data::Object::csptr& obj,
-    const key_t& key,
+    data::Object::csptr obj,
+    std::string_view key,
     size_t index
 )
 {
-    const auto keyNum = KEY_GROUP_NAME(key, index);
-    this->_registerObject(keyNum, data::Access::in);
-    this->_setInput(obj, keyNum);
+    this->_setInput(obj, key, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::setInput(
-    const data::Object::csptr& obj,
-    const key_t& key,
+    data::Object::csptr obj,
+    std::string_view key,
     const bool autoConnect,
-    const bool optional
+    const bool optional,
+    size_t index
 )
 {
-    this->_registerObject(key, data::Access::in, autoConnect, optional);
-    this->_setInput(obj, key);
-}
-
-//------------------------------------------------------------------------------
-
-void IService::setInput(
-    const data::Object::csptr& obj,
-    const key_t& key,
-    size_t index,
-    const bool autoConnect,
-    const bool optional
-)
-{
-    const auto keyNum = KEY_GROUP_NAME(key, index);
-    this->_registerObject(keyNum, data::Access::in, autoConnect, optional);
-    this->_setInput(obj, keyNum);
+    this->_registerObject(key, data::Access::in, index, autoConnect, optional);
+    this->_setInput(obj, key, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::_setInput(
-    const data::Object::csptr& obj,
-    const key_t& key
-)
-{
-    if(obj == nullptr)
-    {
-        this->setObjectId(key, key_t());
-        service::OSR::unregisterService(key, data::Access::in, this->getSptr());
-        m_inputsMap.erase(key);
-    }
-    else
-    {
-        this->setObjectId(key, obj->getID());
-        service::OSR::registerService<data::Access::in>(obj, key, this->getSptr());
-        m_inputsMap[key] = obj; // For compatibility
-    }
-
-    this->setPtrObject<data::Access::in>(key, obj);
-}
-
-//------------------------------------------------------------------------------
-
-void IService::setInOut(
-    const data::Object::sptr& obj,
-    const key_t& key
-)
-{
-    this->_registerObject(key, data::Access::inout);
-    this->_setInOut(obj, key);
-}
-
-//------------------------------------------------------------------------------
-
-void IService::setInOut(
-    const data::Object::sptr& obj,
-    const key_t& key,
+    data::Object::csptr obj,
+    std::string_view key,
     size_t index
 )
 {
-    const auto keyNum = KEY_GROUP_NAME(key, index);
-    this->_registerObject(keyNum, data::Access::inout);
-    this->_setInOut(obj, keyNum);
+    auto keyPair = std::make_pair(std::string(key), index);
+    if(obj == nullptr)
+    {
+        this->setObjectId(key, "", index);
+        m_inputsMap.erase(keyPair);
+    }
+    else
+    {
+        this->setObjectId(key, obj->getID(), index);
+        m_inputsMap[keyPair] = obj; // For compatibility
+    }
+
+    this->setPtrObject<data::Access::in>(key, obj, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::setInOut(
-    const data::Object::sptr& obj,
-    const key_t& key,
-    const bool autoConnect,
-    const bool optional
+    data::Object::sptr obj,
+    std::string_view key,
+    size_t index
 )
 {
-    this->_registerObject(key, data::Access::inout, autoConnect, optional);
-    this->_setInOut(obj, key);
+    this->_setInOut(obj, key, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::setInOut(
-    const data::Object::sptr& obj,
-    const key_t& key,
-    size_t index,
+    data::Object::sptr obj,
+    std::string_view key,
     const bool autoConnect,
-    const bool optional
+    const bool optional,
+    size_t index
 )
 {
-    const auto keyNum = KEY_GROUP_NAME(key, index);
-    this->_registerObject(keyNum, data::Access::inout, autoConnect, optional);
-    this->_setInOut(obj, keyNum);
+    this->_registerObject(key, data::Access::inout, index, autoConnect, optional);
+    this->_setInOut(obj, key, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::_setInOut(
-    const data::Object::sptr& obj,
-    const key_t& key
+    data::Object::sptr obj,
+    std::string_view _key,
+    size_t index
 )
 {
+    auto key = std::make_pair(std::string(_key), index);
     if(obj == nullptr)
     {
-        this->setObjectId(key, key_t());
-        service::OSR::unregisterService(key, data::Access::inout, this->getSptr());
+        this->setObjectId(_key, std::string());
         m_inOutsMap.erase(key);
     }
     else
     {
-        this->setObjectId(key, obj->getID());
+        this->setObjectId(_key, obj->getID());
         m_inOutsMap[key] = obj; // For compatibility
-        service::OSR::registerService<data::Access::inout>(obj, key, this->getSptr());
     }
 
-    this->setPtrObject<data::Access::inout>(key, obj);
+    this->setPtrObject<data::Access::inout>(_key, obj, index);
 }
 
 //------------------------------------------------------------------------------
 
 void IService::setObject(
-    const data::Object::sptr& obj,
-    const key_t& key,
+    data::Object::sptr obj,
+    std::string_view key,
+    size_t index,
     data::Access access,
     const bool autoConnect,
     const bool optional
@@ -303,51 +283,51 @@ void IService::setObject(
 {
     // TODO: Do the registration everytime for compatibility, but when everything works on the new data::ptr system,
     // we should switch to a different code that asserts if the key is not registered
-    this->_registerObject(key, access, autoConnect, optional);
+    this->_registerObject(key, access, index, autoConnect, optional);
+
+    const auto keypair = std::make_pair(std::string(key), index);
 
     if(access == data::Access::in)
     {
-        this->setPtrObject<data::Access::in>(key, obj);
-        m_inputsMap[key] = std::dynamic_pointer_cast<const data::Object>(obj);
-        service::OSR::registerService<data::Access::in>(obj, key, this->getSptr());
+        this->setPtrObject<data::Access::in>(key, obj, index);
+        m_inputsMap[keypair] = std::dynamic_pointer_cast<const data::Object>(obj);
     }
     else if(access == data::Access::inout)
     {
-        this->setPtrObject<data::Access::inout>(key, obj);
-        m_inOutsMap[key] = obj;
-        service::OSR::registerService<data::Access::inout>(obj, key, this->getSptr());
+        this->setPtrObject<data::Access::inout>(key, obj, index);
+        m_inOutsMap[keypair] = obj;
     }
     else if(access == data::Access::out)
     {
-        this->setPtrObject<data::Access::out>(key, obj);
-        m_outputsMap[key] = obj;
-        service::OSR::registerService<data::Access::out>(obj, key, this->getSptr());
+        this->setPtrObject<data::Access::out>(key, obj, index);
+        m_outputsMap[keypair] = obj;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void IService::unsetObject(
-    const key_t& key,
+void IService::resetObject(
+    std::string_view key,
+    size_t index,
     data::Access access
 )
 {
-    service::OSR::unregisterService(key, access, this->getSptr());
+    const auto keypair = std::make_pair(std::string(key), index);
 
     if(access == data::Access::in)
     {
-        m_inputsMap.erase(key);
-        this->setPtrObject<data::Access::in>(key, nullptr);
+        m_inputsMap.erase(keypair);
+        this->setPtrObject<data::Access::in>(key, nullptr, index);
     }
     else if(access == data::Access::inout)
     {
-        m_inOutsMap.erase(key);
-        this->setPtrObject<data::Access::inout>(key, nullptr);
+        m_inOutsMap.erase(keypair);
+        this->setPtrObject<data::Access::inout>(key, nullptr, index);
     }
     else
     {
-        m_outputsMap.erase(key);
-        this->setPtrObject<data::Access::out>(key, nullptr);
+        m_outputsMap.erase(keypair);
+        this->setPtrObject<data::Access::out>(key, nullptr, index);
     }
 }
 
@@ -355,34 +335,27 @@ void IService::unsetObject(
 
 void IService::registerObject(
     const std::string& objId,
-    const service::IService::KeyType& key,
+    std::string_view key,
     const data::Access access,
     const bool autoConnect,
-    const bool optional
+    const bool optional,
+    size_t index
 )
 {
     // TODO: remove this method, should be replaced by a correct usage of data::ptr + setObjectId() or its replacement
-    this->_registerObject(key, access, autoConnect, optional);
+    this->_registerObject(key, access, index, autoConnect, optional);
     SIGHT_ASSERT("Object id must be defined", !objId.empty());
-    this->setObjectId(key, objId);
+    this->setObjectId(key, objId, index);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IService::hasObjectId(const KeyType& _key) const
+bool IService::hasObjectId(std::string_view _key, const size_t _index) const
 {
     bool hasId = false;
-    auto itr   = std::find_if(
-        m_serviceConfig.m_objects.begin(),
-        m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objCfg)
-        {
-            return objCfg.m_key == _key;
-        });
-
-    if(itr != m_serviceConfig.m_objects.end())
+    if(auto itr = m_serviceConfig.m_objects.find({std::string(_key), _index}); itr != m_serviceConfig.m_objects.end())
     {
-        hasId = (!itr->m_uid.empty());
+        hasId = !itr->second.m_uid.empty();
     }
 
     return hasId;
@@ -390,43 +363,31 @@ bool IService::hasObjectId(const KeyType& _key) const
 
 //-----------------------------------------------------------------------------
 
-IService::IdType IService::getObjectId(const IService::KeyType& _key) const
+IService::IdType IService::getObjectId(std::string_view _key, const size_t _index) const
 {
-    const ObjectServiceConfig& cfg = this->_getObjInfoFromKey(_key);
-    SIGHT_THROW_IF("Object key '" + _key + "' is not found for service '" + this->getID() + "'", cfg.m_uid.empty());
-    return cfg.m_uid;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::setObjectId(const IService::KeyType& _key, const IService::IdType& _id)
-{
-    auto keyItr = std::find_if(
-        m_serviceConfig.m_objects.begin(),
-        m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objCfg)
-        {
-            return objCfg.m_key == _key;
-        });
+    auto keyItr = m_serviceConfig.m_objects.find({std::string(_key), _index});
     SIGHT_THROW_IF(
-        "key '" + _key + "' is not registered for '" + this->getID() + "'.",
+        "key '" << _key << "' is not registered for '" << this->getID() << "'.",
         keyItr == m_serviceConfig.m_objects.end()
     );
-    ObjectServiceConfig& cfg = *keyItr;
-    cfg.m_uid = _id;
+    SIGHT_THROW_IF(
+        "Object key '" << _key << "' is not found for service '" << this->getID() << "'",
+        keyItr->second.m_uid.empty()
+    );
+    return keyItr->second.m_uid;
 }
 
 //-----------------------------------------------------------------------------
 
-void IService::setObjectId(const IService::KeyType& _key, const size_t index, const IService::IdType& _id)
+void IService::setObjectId(std::string_view _key, const IService::IdType& _id, const size_t _index)
 {
-    const std::string groupKey = KEY_GROUP_NAME(_key, index);
-
-    this->setObjectId(groupKey, _id);
-    if(index >= this->getKeyGroupSize(_key))
-    {
-        m_keyGroupSize[_key] = index + 1;
-    }
+    auto keyItr = m_serviceConfig.m_objects.find({std::string(_key), _index});
+    SIGHT_THROW_IF(
+        "key '" << _key << "' is not registered for '" << this->getID() << "'.",
+        keyItr == m_serviceConfig.m_objects.end()
+    );
+    ObjectServiceConfig& cfg = keyItr->second;
+    cfg.m_uid = _id;
 }
 
 //-----------------------------------------------------------------------------
@@ -610,7 +571,7 @@ IService::SharedFutureType IService::update()
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, data::Object::sptr _obj)
+IService::SharedFutureType IService::swapKey(std::string_view _key, data::Object::sptr _obj)
 {
     if(!m_associatedWorker || core::thread::getCurrentThreadId() == m_associatedWorker->getThreadId())
     {
@@ -790,14 +751,14 @@ IService::SharedFutureType IService::_stop(bool _async)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::_swapKeySlot(const KeyType& _key, data::Object::sptr _obj)
+IService::SharedFutureType IService::_swapKeySlot(std::string_view _key, data::Object::sptr _obj)
 {
     return this->_swapKey(_key, _obj, true);
 }
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::_swapKey(const KeyType& _key, data::Object::sptr _obj, bool _async)
+IService::SharedFutureType IService::_swapKey(std::string_view _key, data::Object::sptr _obj, bool _async)
 {
     SIGHT_FATAL_IF(
         "Service " << this->getID() << " is not STARTED, no swapping with Object "
@@ -805,7 +766,7 @@ IService::SharedFutureType IService::_swapKey(const KeyType& _key, data::Object:
         m_globalState != STARTED
     );
 
-    auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
+    auto fn = std::bind(static_cast<void (IService::*)(std::string_view)>(&IService::swapping), this, _key);
     PackagedTaskType task(fn);
     SharedFutureType future = task.get_future();
 
@@ -969,7 +930,7 @@ void IService::_autoConnect()
         m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty()
     );
 
-    for(const auto& objectCfg : m_serviceConfig.m_objects)
+    for(const auto& [key, objectCfg] : m_serviceConfig.m_objects)
     {
         if(m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect)
         {
@@ -1017,7 +978,7 @@ void IService::_autoConnect()
             {
                 case data::Access::in:
                 {
-                    auto itObj = m_inputsMap.find(objectCfg.m_key);
+                    auto itObj = m_inputsMap.find(key);
                     if(itObj != m_inputsMap.end())
                     {
                         obj = itObj->second.getShared();
@@ -1028,7 +989,7 @@ void IService::_autoConnect()
 
                 case data::Access::inout:
                 {
-                    auto itObj = m_inOutsMap.find(objectCfg.m_key);
+                    auto itObj = m_inOutsMap.find(key);
                     if(itObj != m_inOutsMap.end())
                     {
                         obj = itObj->second.getShared();
@@ -1040,7 +1001,7 @@ void IService::_autoConnect()
                 case data::Access::out:
                 {
                     SIGHT_WARN("Can't autoConnect to an output for now");
-                    auto itObj = m_outputsMap.find(objectCfg.m_key);
+                    auto itObj = m_outputsMap.find(key);
                     if(itObj != m_outputsMap.end())
                     {
                         obj = itObj->second.get_shared();
@@ -1135,13 +1096,13 @@ bool IService::hasAllRequiredObjects() const
 {
     bool hasAllObjects = true;
 
-    for(const auto& objectCfg : m_serviceConfig.m_objects)
+    for(const auto& [key, objectCfg] : m_serviceConfig.m_objects)
     {
         if(objectCfg.m_optional == false)
         {
             if(objectCfg.m_access == data::Access::in)
             {
-                if(m_inputsMap.find(objectCfg.m_key) == m_inputsMap.end())
+                if(m_inputsMap.find(key) == m_inputsMap.end())
                 {
                     SIGHT_DEBUG(
                         "The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
@@ -1153,7 +1114,7 @@ bool IService::hasAllRequiredObjects() const
             }
             else if(objectCfg.m_access == data::Access::inout)
             {
-                if(m_inOutsMap.find(objectCfg.m_key) == m_inOutsMap.end())
+                if(m_inOutsMap.find(key) == m_inOutsMap.end())
                 {
                     SIGHT_DEBUG(
                         "The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
@@ -1204,76 +1165,41 @@ SERVICE_API void IService::notify(NotificationType type, const std::string& mess
 
 //------------------------------------------------------------------------------
 
-const IService::ObjectServiceConfig* IService::_getObjInfoFromId(const std::string& objId) const
+std::optional<std::tuple<const std::string&, size_t,
+                         const service::IService::ObjectServiceConfig&> > IService::_getObjInfoFromId(
+    const std::string& objId
+) const
 {
     auto idItr = std::find_if(
         m_serviceConfig.m_objects.begin(),
         m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objCfg)
+        [&](const auto& objCfg)
         {
-            return objCfg.m_uid == objId;
+            return objCfg.second.m_uid == objId;
         });
 
-    return (idItr == m_serviceConfig.m_objects.end()) ? nullptr : &*idItr;
-}
-
-//------------------------------------------------------------------------------
-
-const IService::ObjectServiceConfig& IService::_getObjInfoFromKey(const key_t& key) const
-{
-    auto keyItr = std::find_if(
-        m_serviceConfig.m_objects.begin(),
-        m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objCfg)
-        {
-            return objCfg.m_key == key;
-        });
-    SIGHT_THROW_IF(
-        "key '" + key + "' is not registered for '" + this->getID() + "'.",
-        keyItr == m_serviceConfig.m_objects.end()
-    );
-
-    return *keyItr;
+    return (idItr == m_serviceConfig.m_objects.end()) ? std::nullopt
+                                                      : std::make_optional(
+        std::make_tuple(
+            std::cref(idItr->first.first),
+            idItr->first.second,
+            std::cref(idItr->second)
+        )
+                                                      );
 }
 
 //-----------------------------------------------------------------------------
 
 void IService::_registerObject(
-    const service::IService::KeyType& key,
-    const data::Access access
-)
-{
-    auto itr = std::find_if(
-        m_serviceConfig.m_objects.begin(),
-        m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objInfo)
-        {
-            return objInfo.m_key == key;
-        });
-
-    SIGHT_ASSERT("Object '" + key + "' not found", itr != m_serviceConfig.m_objects.end());
-
-    ObjectServiceConfig& objConfig = *itr;
-    objConfig.m_key    = key;
-    objConfig.m_access = access;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::_registerObject(
-    const service::IService::KeyType& key,
+    const std::string_view key,
     const data::Access access,
+    size_t index,
     const bool autoConnect,
     const bool optional
 )
 {
-    auto itr = std::find_if(
-        m_serviceConfig.m_objects.begin(),
-        m_serviceConfig.m_objects.end(),
-        [&](const ObjectServiceConfig& objInfo)
-        {
-            return objInfo.m_key == key;
-        });
+    auto keyPair = std::make_pair(std::string(key), index);
+    auto itr     = m_serviceConfig.m_objects.find(keyPair);
     if(itr == m_serviceConfig.m_objects.end())
     {
         ObjectServiceConfig objConfig;
@@ -1282,14 +1208,14 @@ void IService::_registerObject(
         objConfig.m_autoConnect = autoConnect;
         objConfig.m_optional    = optional;
 
-        m_serviceConfig.m_objects.push_back(objConfig);
+        m_serviceConfig.m_objects[keyPair] = objConfig;
     }
     else
     {
-        ObjectServiceConfig& objConfig = *itr;
+        ObjectServiceConfig& objConfig = itr->second;
 
         SIGHT_ASSERT(
-            "Object '" + key + "' access type does not match previous registration",
+            "Object '" << key << "' access type does not match previous registration",
             access == objConfig.m_access
         );
 
@@ -1301,7 +1227,7 @@ void IService::_registerObject(
 //-----------------------------------------------------------------------------
 
 void IService::_registerObjectGroup(
-    const key_t& key,
+    std::string_view key,
     const data::Access access,
     const std::uint8_t minNbObject,
     const bool autoConnect,
@@ -1317,10 +1243,8 @@ void IService::_registerObjectGroup(
         objConfig.m_autoConnect = autoConnect;
         objConfig.m_optional    = optional;
 
-        m_serviceConfig.m_objects.push_back(objConfig);
+        m_serviceConfig.m_objects[{std::string(key), i}] = objConfig;
     }
-
-    m_keyGroupSize[key] = minNbObject;
 }
 
 //-----------------------------------------------------------------------------

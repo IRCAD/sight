@@ -127,7 +127,7 @@ protected:
      * @brief Selects the current transfer function.
      * @param _key key of the swapped data.
      */
-    MODULE_UI_QT_API void swapping(const KeyType& _key) override;
+    MODULE_UI_QT_API void swapping(std::string_view _key) override;
 
     /// Stops the service, disconnect buttons and combo box, delete them and clean the container.
     MODULE_UI_QT_API void stopping() override;

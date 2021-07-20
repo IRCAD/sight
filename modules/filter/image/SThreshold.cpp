@@ -22,24 +22,14 @@
 
 #include "modules/filter/image/SThreshold.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/fwID.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
-
-//-----------------------------------------------------------------------------
-
-static const std::string s_IMAGE_INPUT  = "source";
-static const std::string s_IMAGE_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
 
@@ -138,7 +128,7 @@ void SThreshold::updating()
     ThresholdFilter::Parameter param; // filter parameters: threshold value, image source, image target
 
     // retrieve the input object
-    auto input = this->getLockedInput<data::Object>(s_IMAGE_INPUT);
+    auto input = m_source.lock();
 
     // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
     data::ImageSeries::csptr imageSeriesSrc = data::ImageSeries::dynamicConstCast(input.get_shared());
@@ -191,7 +181,7 @@ void SThreshold::updating()
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ThresholdFilter>::invoke(type, param);
 
     // register the output image to be accesible by the other service from the XML configuration
-    this->setOutput(s_IMAGE_OUTPUT, output);
+    this->setOutput(s_IMAGE_OUT, output);
 }
 
 //-----------------------------------------------------------------------------

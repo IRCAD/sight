@@ -109,11 +109,11 @@ Config::ConnectionInfo Config::parseConnections(
                     "There must be only one signal by connection",
                     info.m_signal.first.empty() && info.m_signal.second.empty()
                 );
-                info.m_signal = std::make_pair(uid, key);
+                info.m_signal = {uid, key};
             }
             else if(elem->getName() == "slot")
             {
-                info.m_slots.push_back(std::make_pair(uid, key));
+                info.m_slots.push_back({uid, key});
             }
         }
         else
@@ -126,7 +126,7 @@ Config::ConnectionInfo Config::parseConnections(
                 "There must be only one signal by connection",
                 info.m_signal.first.empty() && info.m_signal.second.empty()
             );
-            info.m_signal = std::make_pair(uid, key);
+            info.m_signal = {uid, key};
         }
     }
 
@@ -368,7 +368,7 @@ service::IService::Config Config::parseService(
         auto objCfgs = srvElem.equal_range(dataKeyword);
         for(auto objCfg = objCfgs.first ; objCfg != objCfgs.second ; ++objCfg)
         {
-            objectCfgs.push_back(std::make_pair(objCfg->first, objCfg->second));
+            objectCfgs.push_back({objCfg->first, objCfg->second});
         }
     }
 
@@ -422,7 +422,9 @@ service::IService::Config Config::parseService(
                 grouObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
                 SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
 
-                grouObjConfig.m_key = KEY_GROUP_NAME(group.value(), count++);
+                const std::string key = group.value();
+                const size_t index    = count++;
+                grouObjConfig.m_key = KEY_GROUP_NAME(key, index);
 
                 // AutoConnect
                 grouObjConfig.m_autoConnect = core::runtime::get_ptree_value(
@@ -441,10 +443,8 @@ service::IService::Config Config::parseService(
                     );
                 }
 
-                srvConfig.m_objects.emplace_back(grouObjConfig);
+                srvConfig.m_objects[{key, index}] = grouObjConfig;
             }
-
-            srvConfig.m_groupSize[group.value()] = count;
         }
         else
         {
@@ -456,7 +456,7 @@ service::IService::Config Config::parseService(
             objConfig.m_key = cfg.second.get<std::string>("<xmlattr>.key", "");
             SIGHT_ASSERT(errMsgHead + "Missing object attribute 'key'" + errMsgTail, !objConfig.m_key.empty());
 
-            srvConfig.m_objects.emplace_back(objConfig);
+            srvConfig.m_objects[{objConfig.m_key, 0}] = objConfig;
         }
     }
 

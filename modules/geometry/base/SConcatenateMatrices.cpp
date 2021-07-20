@@ -36,9 +36,6 @@
 namespace sight::module::geometry::base
 {
 
-const service::IService::KeyType SConcatenateMatrices::s_MATRIX_GROUP_INPUT = "matrix";
-const service::IService::KeyType SConcatenateMatrices::s_OUTPUT             = "output";
-
 // ----------------------------------------------------------------------------
 
 SConcatenateMatrices::SConcatenateMatrices() noexcept
@@ -87,7 +84,7 @@ void SConcatenateMatrices::stopping()
 void SConcatenateMatrices::updating()
 {
     auto outputMatrix = m_output.lock();
-    SIGHT_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
+    SIGHT_ASSERT("inout '" << s_OUTPUT << "' is not defined", outputMatrix);
     {
         sight::geometry::data::identity(*outputMatrix);
 
@@ -122,9 +119,7 @@ void SConcatenateMatrices::updating()
 service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
     connections.push(s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
     return connections;
 }
 

@@ -152,7 +152,7 @@ private:
      */
     SERVICE_API virtual void startModule();
 
-    data::Object::sptr findObject(const std::string& uid, const std::string& errMsgTail) const;
+    data::Object::sptr findObject(const std::string& uid, std::string_view errMsgTail) const;
 
     data::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
 

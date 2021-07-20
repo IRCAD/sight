@@ -85,7 +85,7 @@ private:
 
     QString m_value;
 
-    static const sight::service::key_t s_STRING_INOUT;
+    static constexpr std::string_view s_STRING_INOUT = "string";
     sight::data::ptr<sight::data::String, sight::data::Access::inout> m_string {this, s_STRING_INOUT, true};
 };
 

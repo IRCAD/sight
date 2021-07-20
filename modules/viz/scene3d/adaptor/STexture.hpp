@@ -141,7 +141,7 @@ private:
     typedef core::com::Signal<void ()> TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
 
-    static const service::key_t s_TEXTURE_INOUT;
+    static constexpr std::string_view s_TEXTURE_INOUT = "image";
     data::ptr<data::Image, data::Access::in> m_image {this, s_TEXTURE_INOUT, true};
 };
 

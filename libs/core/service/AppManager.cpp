@@ -403,13 +403,14 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
     for(auto& srvInfo : m_services)
     {
         service::IService::sptr srv = srvInfo.m_service.lock();
-        if(const auto objCfg = srv->_getObjInfoFromId(id); objCfg != nullptr)
+        if(const auto objCfgOpt = srv->_getObjInfoFromId(id); objCfgOpt != std::nullopt)
         {
-            auto registeredObj = service::OSR::getRegistered(objCfg->m_key, objCfg->m_access, srv);
+            const auto& [key, index, objCfg] = objCfgOpt.value();
+            auto registeredObj = srv->getObject(key, objCfg.m_access, index);
 
             if(registeredObj != obj)
             {
-                if(srv->isStarted() && !objCfg->m_optional)
+                if(srv->isStarted() && !objCfg.m_optional)
                 {
                     SIGHT_ERROR("Service should be stopped.");
                     this->stop(srvInfo).wait();
@@ -418,16 +419,16 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
                 // unregister the previous object
                 if(registeredObj != nullptr)
                 {
-                    srv->unsetObject(objCfg->m_key, objCfg->m_access);
+                    srv->resetObject(key, index, objCfg.m_access);
                 }
 
                 // Register the key on the service
-                srv->setObject(obj, objCfg->m_key, objCfg->m_access, objCfg->m_autoConnect, objCfg->m_optional);
+                srv->setObject(obj, key, index, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
 
-                if(objCfg->m_optional && srv->isStarted())
+                if(objCfg.m_optional && srv->isStarted())
                 {
                     // Call the swapping callback of the service and wait for it
-                    srv->swapKey(objCfg->m_key, data::Object::constCast(registeredObj)).wait();
+                    srv->swapKey(objCfg.m_key, data::Object::constCast(registeredObj)).wait();
                 }
             }
 
@@ -481,20 +482,21 @@ void AppManager::removeObject(data::Object::sptr obj, const std::string& id)
         {
             SIGHT_THROW_IF("service is expired", srvInfo.m_service.expired());
             service::IService::sptr srv = srvInfo.m_service.lock();
-            if(const auto objCfg = srv->_getObjInfoFromId(id); objCfg != nullptr)
+            if(const auto objCfgOpt = srv->_getObjInfoFromId(id); objCfgOpt != std::nullopt)
             {
-                if(service::OSR::isRegistered(objCfg->m_key, objCfg->m_access, srv))
+                const auto& [key, index, objCfg] = objCfgOpt.value();
+                if(srv->getObject(key, objCfg.m_access, index))
                 {
-                    if(srv->isStarted() && !objCfg->m_optional)
+                    if(srv->isStarted() && !objCfg.m_optional)
                     {
                         this->stop(srvInfo).wait();
                     }
 
-                    srv->unsetObject(objCfg->m_key, objCfg->m_access);
+                    srv->resetObject(key, index, objCfg.m_access);
 
-                    if(objCfg->m_optional && srv->isStarted())
+                    if(objCfg.m_optional && srv->isStarted())
                     {
-                        srv->swapKey(objCfg->m_key, obj).wait();
+                        srv->swapKey(objCfg.m_key, obj).wait();
                     }
                 }
             }
@@ -554,10 +556,11 @@ void AppManager::internalAddService(
     // register the object to the service
     for(const auto& obj : m_registeredObject)
     {
-        if(const auto objCfg = srv->_getObjInfoFromId(obj.first); objCfg != nullptr)
+        if(const auto objCfgOpt = srv->_getObjInfoFromId(obj.first); objCfgOpt != std::nullopt)
         {
+            const auto& [key, index, objCfg] = objCfgOpt.value();
             // Register the key on the service
-            srv->setObject(obj.second, objCfg->m_key, objCfg->m_access, objCfg->m_autoConnect, objCfg->m_optional);
+            srv->setObject(obj.second, key, index, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
         }
     }
 

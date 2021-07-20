@@ -45,8 +45,6 @@ const core::com::Signals::SignalKeyType module::viz::scene3d::adaptor::STexture:
 
 const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
 
-const service::key_t STexture::s_TEXTURE_INOUT = "image";
-
 static const std::string s_TEXTURE_NAME_CONFIG = "textureName";
 static const std::string s_FILTERING_CONFIG    = "filtering";
 static const std::string s_WRAPPING_CONFIG     = "wrapping";

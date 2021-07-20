@@ -24,10 +24,6 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <core/base.hpp>
-#include <core/com/helper/SigSlotConnection.hpp>
-#include <core/com/Slot.hpp>
-
 #include <data/Matrix4.hpp>
 
 #include <service/IController.hpp>
@@ -110,6 +106,12 @@ protected:
 private:
 
     size_t m_indexOfDesiredMatrix;
+
+    static constexpr std::string_view s_MATRIX_INPUT  = "matrix";
+    static constexpr std::string_view s_MATRIX_OUTPUT = "output";
+
+    data::ptr_vector<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true};
+    data::ptr<data::Matrix4, data::Access::inout> m_output {this, s_MATRIX_OUTPUT};
 };
 
 } //namespace sight::module::geometry::base

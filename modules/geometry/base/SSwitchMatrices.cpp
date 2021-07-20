@@ -22,23 +22,16 @@
 
 #include "modules/geometry/base/SSwitchMatrices.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <geometry/data/Matrix4.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
 
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchToMatrix";
-
-const service::IService::KeyType s_MATRIX_OUTPUT = "output";
-const service::IService::KeyType s_MATRIX_INPUT  = "matrix";
 
 // ----------------------------------------------------------------------------
 
@@ -81,11 +74,10 @@ service::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 
 void SSwitchMatrices::updating()
 {
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_OUTPUT);
+    auto matrix = m_output.lock();
 
-    auto desiredMatrix = this->getInput<data::Matrix4>(s_MATRIX_INPUT, m_indexOfDesiredMatrix);
-
-    matrix->shallowCopy(desiredMatrix);
+    auto desiredMatrix = m_matrix[m_indexOfDesiredMatrix].lock();
+    matrix->shallowCopy(desiredMatrix.get_shared());
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
@@ -99,7 +91,7 @@ void SSwitchMatrices::updating()
 void SSwitchMatrices::switchMatrix()
 {
     ++m_indexOfDesiredMatrix;
-    if(m_indexOfDesiredMatrix >= this->getKeyGroupSize(s_MATRIX_INPUT))
+    if(m_indexOfDesiredMatrix >= m_matrix.size())
     {
         m_indexOfDesiredMatrix = 0;
     }
@@ -111,7 +103,7 @@ void SSwitchMatrices::switchMatrix()
 
 void SSwitchMatrices::switchToMatrix(size_t index)
 {
-    if(index < this->getKeyGroupSize(s_MATRIX_INPUT))
+    if(index < m_matrix.size())
     {
         m_indexOfDesiredMatrix = index;
     }

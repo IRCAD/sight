@@ -99,7 +99,7 @@ void ConfigLauncher::parseConfig(
         }
         else
         {
-            const auto it = inouts.find(key);
+            const auto it = inouts.find({key, 0});
             SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
             auto obj = it->second.lock();
             SIGHT_ASSERT("Object key '" + key + "' with uid '" + uid + "' does not exist.", obj);
@@ -165,7 +165,7 @@ void ConfigLauncher::startConfig(
     // Whitout that, the data is considered as null.
     for(const auto& [key, uid] : m_optionalInputs)
     {
-        const auto it = inouts.find(key);
+        const auto it = inouts.find({key, 0});
         if(it != inouts.end())
         {
             auto obj = it->second.lock();

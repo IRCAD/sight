@@ -113,7 +113,7 @@ private:
     /// Defines whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {false};
 
-    static const service::key_t s_MESH_INOUT;
+    static constexpr std::string_view s_MESH_INOUT = "mesh";
     data::ptr<data::Mesh, data::Access::inout> m_meshData {this, s_MESH_INOUT, true};
 };
 

@@ -30,8 +30,6 @@
 namespace sight::module::ui::qml::reconstruction
 {
 
-const service::key_t SRepresentationEditor::s_RECONSTRUCTION_INOUT = "reconstruction";
-
 //------------------------------------------------------------------------------
 
 SRepresentationEditor::SRepresentationEditor() noexcept
@@ -70,7 +68,7 @@ void SRepresentationEditor::updating()
 {
     {
         auto reconstruction = m_rec.lock();
-        SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+        SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
         m_material = reconstruction->getMaterial();
     }
 

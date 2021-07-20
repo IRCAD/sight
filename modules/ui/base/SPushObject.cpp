@@ -22,28 +22,15 @@
 
 #include "SPushObject.hpp"
 
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
 
-#include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
-
-#include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
 
 namespace sight::module::ui::base
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
-
-static const std::string s_SOURCE_KEY      = "source";
-static const std::string s_DESTINATION_KEY = "destination";
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
@@ -89,17 +76,13 @@ void SPushObject::stopping()
 
 void SPushObject::updating()
 {
-    data::Composite::sptr compositeSrc = this->getInOut<data::Composite>(s_SOURCE_KEY);
-    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
+    auto compositeSrc = m_source.lock();
+    SIGHT_ASSERT(s_SOURCE_KEY << " doesn't exist or is not a composite", compositeSrc);
 
     data::Object::sptr obj = compositeSrc->at<data::Object>(m_srcKey);
 
     SIGHT_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
-    if(service::OSR::isRegistered(
-           s_DESTINATION_KEY,
-           data::Access::out,
-           this->getSptr()
-    ))
+    if(getOutput<sight::data::Object>(s_DESTINATION_KEY))
     {
         this->setOutput(s_DESTINATION_KEY, nullptr);
     }
@@ -113,8 +96,8 @@ void SPushObject::updating()
 
 void SPushObject::updateObjects()
 {
-    data::Composite::sptr compositeSrc = this->getInOut<data::Composite>(s_SOURCE_KEY);
-    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
+    auto compositeSrc = m_source.lock();
+    SIGHT_ASSERT(s_SOURCE_KEY << " doesn't exist or is not a composite", compositeSrc);
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
 

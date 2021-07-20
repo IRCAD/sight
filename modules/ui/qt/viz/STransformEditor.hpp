@@ -146,7 +146,7 @@ private:
     /// Range of rotation sliders
     int m_rotationRange[2];
 
-    static const service::key_t s_MATRIX_INOUT;
+    static constexpr std::string_view s_MATRIX_INOUT = "matrix";
     data::ptr<data::Matrix4, sight::data::Access::inout> m_matrix {this, s_MATRIX_INOUT, true};
 };
 

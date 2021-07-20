@@ -58,7 +58,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API STransform final :
 {
 public:
 
-    static const service::IService::KeyType s_TRANSFORM_INOUT;
+    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor);

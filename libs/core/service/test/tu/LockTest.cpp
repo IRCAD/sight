@@ -339,11 +339,7 @@ void LockTest::testDumpLock()
 void LockTest::testThreadedLock()
 {
     // Add the service
-    service::ut::LockedService::sptr lockedService = service::ut::LockedService::dynamicCast(
-        service::add(
-            "::sight::service::ut::LockedService"
-        )
-    );
+    auto lockedService = service::add<service::ut::LockedService>("sight::service::ut::LockedService");
     CPPUNIT_ASSERT(lockedService);
 
     // Create the data

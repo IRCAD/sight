@@ -106,7 +106,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
     /// Retrives the current transfer function
-    MODULE_VIZ_SCENE2D_API void swapping(const KeyType& key) override;
+    MODULE_VIZ_SCENE2D_API void swapping(std::string_view key) override;
 
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 

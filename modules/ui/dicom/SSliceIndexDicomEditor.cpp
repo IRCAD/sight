@@ -38,8 +38,7 @@
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -151,20 +150,13 @@ void SSliceIndexDicomEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
-
-    sight::io::base::service::IReader::sptr dicomReader;
-    dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    auto dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
     SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-                                                                      "::sight::module::ui::dicom::SSliceIndexDicomEditor.",
+                                                                      "sight::module::ui::dicom::SSliceIndexDicomEditor.",
         dicomReader
     );
-    service::OSR::registerService<data::Access::inout>(
-        m_tempSeriesDB,
-        sight::io::base::service::s_DATA_KEY,
-        dicomReader
-    );
+    dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
 
     if(m_readerConfig)
     {
@@ -202,7 +194,7 @@ void SSliceIndexDicomEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        service::OSR::unregisterService(m_dicomReader.lock());
+        service::remove(m_dicomReader.lock());
     }
 
     // Disconnect the signals

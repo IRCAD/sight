@@ -38,12 +38,6 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-const service::key_t SPoseFrom2d::s_MARKERMAP_INPUT = "markerMap";
-const service::key_t SPoseFrom2d::s_CAMERA_INPUT    = "camera";
-const service::key_t SPoseFrom2d::s_EXTRINSIC_INPUT = "extrinsic";
-const service::key_t SPoseFrom2d::s_MATRIX_INOUT    = "matrix";
-const service::key_t SPoseFrom2d::s_POINTLIST_INOUT = "pointList";
-
 //-----------------------------------------------------------------------------
 
 SPoseFrom2d::SPoseFrom2d() noexcept :

@@ -25,6 +25,10 @@
 #include <data/mt/weak_ptr.hpp>
 #include <data/Object.hpp>
 
+#include <charconv>
+#include <string_view>
+#include <system_error>
+
 namespace sight::data
 {
 
@@ -112,8 +116,9 @@ public:
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
     DATA_API virtual void _registerObject(
-        const std::string& _key,
+        std::string_view _key,
         const Access _access,
+        size_t index,
         const bool _autoConnect = false,
         const bool _optional    = false
     )                           = 0;
@@ -135,7 +140,7 @@ public:
      * first Nth objects (minNbObject) are required, the other are optional.
      */
     DATA_API virtual void _registerObjectGroup(
-        const std::string& _key,
+        std::string_view _key,
         const data::Access _access,
         const std::uint8_t _minNbObject,
         const bool _autoConnect         = false,
@@ -143,7 +148,7 @@ public:
     )                                   = 0;
 
     /// Registers a pointer
-    void _registerPtr(const std::string& _key, base_ptr* _data)
+    void _registerPtr(std::string_view _key, base_ptr* _data, size_t = 0)
     {
         m_dataContainer[_key] = _data;
     }
@@ -152,12 +157,12 @@ protected:
 
     /// Set the actual content of the pointer
     template<Access A>
-    void setPtrObject(const std::string& _key, const typename access_traits<A>::value& _obj);
+    void setPtrObject(std::string_view _key, const typename access_traits<A>::value& _obj, size_t index = 0);
 
 private:
 
     /// Map of pointers indexed by key name
-    std::map<std::string, base_ptr*> m_dataContainer;
+    std::map<std::string_view, base_ptr*> m_dataContainer;
 };
 
 /**
@@ -176,12 +181,12 @@ public:
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr(
         IHasData* _holder,
-        const std::string& _key,
+        std::string_view _key,
         bool _autoConnect = false,
         bool _optional    = access_typed_traits<DATATYPE, ACCESS>::optional
     ) noexcept
     {
-        _holder->_registerObject(_key, ACCESS, _autoConnect, _optional);
+        _holder->_registerObject(_key, ACCESS, 0, _autoConnect, _optional);
         _holder->_registerPtr(_key, this);
     }
 
@@ -234,7 +239,7 @@ public:
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr_vector(
         IHasData* _holder,
-        const std::string& _key,
+        std::string_view _key,
         bool _autoConnect               = false,
         const std::uint8_t _minNbObject = 0
     ) noexcept
@@ -306,7 +311,7 @@ private:
     {
         if(_obj == nullptr)
         {
-            m_ptrs[_index].reset();
+            m_ptrs.erase(_index);
         }
         else
         {
@@ -330,26 +335,19 @@ private:
 
 template<Access A>
 inline void IHasData::setPtrObject(
-    const std::string& _key,
-    const typename access_traits<A>::value& _obj
+    std::string_view _key,
+    const typename access_traits<A>::value& _obj,
+    size_t index
 )
 {
-    std::string key = _key;
-    size_t index    = 0;
-    if(auto keyDelimiterPos = _key.rfind('#'); keyDelimiterPos != std::string::npos)
-    {
-        key   = _key.substr(0, keyDelimiterPos);
-        index = std::stoul(_key.substr(keyDelimiterPos + 1, _key.size()));
-    }
-
-    auto itData = m_dataContainer.find(key);
+    auto itData = m_dataContainer.find(_key);
     if(itData != m_dataContainer.end())
     {
         itData->second->set(std::const_pointer_cast<sight::data::Object>(_obj), index);
     }
     else
     {
-        SIGHT_WARN("Could not find any registered ptr with key '" + _key + "'");
+        SIGHT_WARN("Could not find any registered ptr with key '" << _key << "'");
     }
 }
 

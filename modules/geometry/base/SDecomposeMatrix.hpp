@@ -94,10 +94,10 @@ protected:
      */
     MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
-    static const service::key_t s_SOURCE_INPUT;
-    static const service::key_t s_TRANSLATION_INOUT;
-    static const service::key_t s_ROTATION_INOUT;
-    static const service::key_t s_SCALE_INOUT;
+    static constexpr std::string_view s_SOURCE_INPUT      = "source";
+    static constexpr std::string_view s_TRANSLATION_INOUT = "translation";
+    static constexpr std::string_view s_ROTATION_INOUT    = "rotation";
+    static constexpr std::string_view s_SCALE_INOUT       = "scale";
 
     data::ptr<data::Matrix4, sight::data::Access::in> m_source {this, s_SOURCE_INPUT, true};
     data::ptr<data::Matrix4, sight::data::Access::inout> m_translation {this, s_TRANSLATION_INOUT};

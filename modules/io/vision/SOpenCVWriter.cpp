@@ -26,9 +26,6 @@
 #include <core/location/SingleFolder.hpp>
 
 #include <data/CameraSeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -134,7 +131,7 @@ void SOpenCVWriter::updating()
     }
 
     auto data      = m_data.lock();
-    auto camSeries = data::CameraSeries::dynamicConstCast(data.get_shared());
+    auto camSeries = std::dynamic_pointer_cast<const data::CameraSeries>(data.get_shared());
 
     if(!camSeries)
     {
@@ -152,8 +149,6 @@ void SOpenCVWriter::updating()
     // Set the cameras
     data::Matrix4::sptr extrinsicMatrix;
     ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
-
-    data::mt::ObjectReadLock camSeriesLock(camSeries);
 
     for(size_t i = 0 ; i < numberOfCameras ; ++i)
     {

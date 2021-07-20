@@ -138,7 +138,7 @@ private:
     OrganListModel* m_listModel;
 
     /// Model series data
-    const service::key_t s_MODEL_SERIES_INOUT;
+    static constexpr std::string_view s_MODEL_SERIES_INOUT = "modelSeries";
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, s_MODEL_SERIES_INOUT, true};
 };
 

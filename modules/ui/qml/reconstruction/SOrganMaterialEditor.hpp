@@ -125,7 +125,7 @@ private:
     /// Notify the material changes
     void materialNotification();
 
-    static const service::key_t s_RECONSTRUCTION_INOUT;
+    static constexpr std::string_view s_RECONSTRUCTION_INOUT = "reconstruction";
     data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 };
 

@@ -73,9 +73,6 @@ static constexpr std::uint8_t s_NEGATO_WIDGET_RQ_GROUP_ID =
     sight::viz::scene3d::compositor::Core::s_SURFACE_RQ_GROUP_ID
     - 1;
 
-const std::string SNegato3D::s_IMAGE_INOUT = "image";
-const std::string SNegato3D::s_TF_INOUT    = "tf";
-
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -253,7 +250,7 @@ void SNegato3D::updating()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::swapping(const KeyType& key)
+void SNegato3D::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {

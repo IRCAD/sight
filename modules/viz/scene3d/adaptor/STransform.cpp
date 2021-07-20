@@ -30,8 +30,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const service::key_t STransform::s_TRANSFORM_INOUT = "transform";
-
 static const std::string s_PARENT_CONFIG = "parent";
 
 //------------------------------------------------------------------------------

@@ -25,17 +25,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/CalibrationInfo.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Image.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -52,10 +46,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "upda
 
 static const core::com::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
 static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
-
-static const service::IService::KeyType s_IMAGE_INPUT     = "image";
-static const service::IService::KeyType s_CALINFO_INOUT   = "calInfo";
-static const service::IService::KeyType s_DETECTION_INOUT = "detection";
 
 // ----------------------------------------------------------------------------
 
@@ -80,7 +70,7 @@ void SChessBoardDetector::configuring()
 {
     SIGHT_ASSERT(
         "This service must have the same number of 'image' keys and 'calInfo' keys",
-        this->getKeyGroupSize(s_IMAGE_INPUT) == this->getKeyGroupSize(s_CALINFO_INOUT)
+        m_image.size() == m_calInfo.size()
     );
 
     const ConfigType config      = this->getConfigTree();
@@ -99,7 +89,7 @@ void SChessBoardDetector::starting()
 {
     this->updateChessboardSize();
 
-    const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
+    const size_t imageGroupSize = m_image.size();
 
     m_images.resize(imageGroupSize);
     m_pointLists.resize(imageGroupSize);
@@ -109,7 +99,7 @@ void SChessBoardDetector::starting()
 
 void SChessBoardDetector::updating()
 {
-    const size_t imageGroupSize = this->getKeyGroupSize(s_IMAGE_INPUT);
+    const size_t imageGroupSize = m_image.size();
 
     // Run parallel detections in separate threads.
     std::vector<std::thread> detectionJobs;
@@ -159,7 +149,7 @@ service::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() c
 
 void SChessBoardDetector::recordPoints()
 {
-    const size_t calibGroupSize = this->getKeyGroupSize(s_CALINFO_INOUT);
+    const size_t calibGroupSize = m_calInfo.size();
 
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
@@ -167,17 +157,15 @@ void SChessBoardDetector::recordPoints()
     {
         for(size_t i = 0 ; i < calibGroupSize ; ++i)
         {
-            auto calInfo = this->getInOut<data::CalibrationInfo>(s_CALINFO_INOUT, i);
+            auto calInfo = m_calInfo[i].lock();
             SIGHT_ASSERT("Missing 'calibInfo' in-out.", calInfo);
-            data::mt::ObjectWriteLock calInfoLock(calInfo);
 
             if(m_pointLists[i])
             {
                 calInfo->addRecord(m_images[i], m_pointLists[i]);
 
                 // Notify
-                data::CalibrationInfo::AddedRecordSignalType::sptr sig;
-                sig = calInfo->signal<data::CalibrationInfo::AddedRecordSignalType>(
+                auto sig = calInfo->signal<data::CalibrationInfo::AddedRecordSignalType>(
                     data::CalibrationInfo::s_ADDED_RECORD_SIG
                 );
 
@@ -224,15 +212,14 @@ void SChessBoardDetector::updateChessboardSize()
 
 void SChessBoardDetector::doDetection(size_t _imageIndex)
 {
-    const auto img = this->getInput<data::Image>(s_IMAGE_INPUT, _imageIndex);
+    const auto img = m_image[_imageIndex].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);
 
-    data::mt::ObjectReadLock imgLock(img);
-    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
 
     if(isValid)
     {
-        const ::cv::Mat cvImg = io::opencv::Image::moveToCv(img);
+        const ::cv::Mat cvImg = io::opencv::Image::moveToCv(img.get_shared());
 
         m_pointLists[_imageIndex] =
             sight::geometry::vision::helper::detectChessboard(cvImg, m_width, m_height, m_scale);
@@ -240,18 +227,18 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
         if(m_pointLists[_imageIndex] != nullptr)
         {
             m_images[_imageIndex] = data::Image::New();
-            m_images[_imageIndex]->deepCopy(img);
+            m_images[_imageIndex]->deepCopy(img.get_shared());
         }
         else
         {
             m_images[_imageIndex] = nullptr;
         }
 
-        const bool outputDetection = (this->getKeyGroupSize(s_DETECTION_INOUT) == this->getKeyGroupSize(s_IMAGE_INPUT));
+        const bool outputDetection = (m_detection.size() == m_image.size());
         if(outputDetection)
         {
-            auto outPl = this->getInOut<data::PointList>(s_DETECTION_INOUT, _imageIndex);
-            data::mt::ObjectWriteLock writeLockOutPl(outPl);
+            auto outPl = m_detection[_imageIndex].lock();
+
             if(m_pointLists[_imageIndex] != nullptr)
             {
                 outPl->deepCopy(m_pointLists[_imageIndex]);

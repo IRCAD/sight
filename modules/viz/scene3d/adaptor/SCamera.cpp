@@ -40,10 +40,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
 
-const service::key_t SCamera::s_CALIBRATION_INPUT   = "calibration";
-const service::key_t SCamera::s_CAMERA_SERIES_INPUT = "cameraSeries";
-const service::key_t SCamera::s_TRANSFORM_INOUT     = "transform";
-
 //-----------------------------------------------------------------------------
 
 struct SCamera::CameraNodeListener : public ::Ogre::MovableObject::Listener
@@ -291,8 +287,8 @@ void SCamera::calibrate()
     const auto cameraCalibration = m_cameraCalibration.lock();
 
     SIGHT_WARN_IF(
-        "A '" + s_CALIBRATION_INPUT + "' input was set but will not be used because a '"
-        + s_CAMERA_SERIES_INPUT + "' was defined as well",
+        "A '" << s_CALIBRATION_INPUT << "' input was set but will not be used because a '"
+        << s_CAMERA_SERIES_INPUT << "' was defined as well",
         cameraSeries && cameraCalibration
     );
 
@@ -350,8 +346,8 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
     const size_t nbCams  = _cs.getNumberOfCameras();
 
     SIGHT_WARN_IF(
-        "There are no cameras in the '" + s_CAMERA_SERIES_INPUT + "', the default projection transform"
-                                                                  "will be used.",
+        "There are no cameras in the '" << s_CAMERA_SERIES_INPUT << "', the default projection transform"
+                                                                    "will be used.",
         nbCams == 0
     );
 

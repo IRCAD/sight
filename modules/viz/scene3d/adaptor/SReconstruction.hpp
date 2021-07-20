@@ -169,7 +169,7 @@ private:
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    static const service::key_t s_RECONSTRUCTION_INPUT;
+    static constexpr std::string_view s_RECONSTRUCTION_INPUT = "reconstruction";
     data::ptr<data::Reconstruction, data::Access::in> m_reconstruction {this, s_RECONSTRUCTION_INPUT, true};
 };
 

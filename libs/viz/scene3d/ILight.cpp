@@ -46,14 +46,15 @@ viz::scene3d::ILight::sptr ILight::createLightAdaptor(
     data::Color::sptr _specular
 )
 {
-    viz::scene3d::ILight::sptr light = viz::scene3d::lightFactory::New(viz::scene3d::ILight::REGISTRY_KEY);
-    SIGHT_ASSERT("The factory process to create an ILight failed.", light);
+    viz::scene3d::ILight::sptr lightAdaptor = viz::scene3d::lightFactory::New(viz::scene3d::ILight::REGISTRY_KEY);
+    service::OSR::registerService(lightAdaptor);
+    SIGHT_ASSERT("The factory process to create an ILight failed.", lightAdaptor);
     SIGHT_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
 
-    light->setInOut(_diffuse, "diffuseColor");
-    light->setInOut(_specular, "specularColor");
+    lightAdaptor->setInOut(_diffuse, "diffuseColor");
+    lightAdaptor->setInOut(_specular, "specularColor");
 
-    return light;
+    return lightAdaptor;
 }
 
 //-----------------------------------------------------------------------------

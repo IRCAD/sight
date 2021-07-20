@@ -55,6 +55,7 @@
 #endif
 
 #include <cstdint>
+#include <optional>
 
 namespace sight::service
 {
@@ -72,9 +73,8 @@ class Worker;
 
 }
 
-#define KEY_GROUP_NAME(key, index) (key + "#" + std::to_string(index))
-
-using key_t = std::string;
+#define KEY_GROUP_NAME(key, \
+                       index) (std::string(key) + "#" + std::to_string(index))
 
 /**
  * @brief   Base class for all services.
@@ -112,24 +112,24 @@ public:
     SIGHT_DECLARE_SERVICE(IService, core::tools::Object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    typedef ::boost::property_tree::ptree ConfigType;
+    using ConfigType = boost::property_tree::ptree;
 
-    typedef std::string IdType;
-    using KeyType = sight::service::key_t;
-    typedef std::map<KeyType, data::mt::weak_ptr<const data::Object> > InputMapType;
-    typedef std::map<KeyType, data::mt::weak_ptr<data::Object> > InOutMapType;
-    typedef std::map<KeyType, data::mt::shared_ptr<data::Object> > OutputMapType;
+    using IdType        = std::string;
+    using KeyType       = std::string;
+    using InputMapType  = std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<const data::Object> >;
+    using InOutMapType  = std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<data::Object> >;
+    using OutputMapType = std::map<std::pair<std::string, size_t>, data::mt::shared_ptr<data::Object> >;
 
     /// Used to store object configuration in a service.
     struct ObjectServiceConfig
     {
-        /// Object identiifer
-        std::string m_uid;
-
-        /// Object key used to by getInput()/getInOut()/...
+        /// Object key name, may contains a suffix #N with the number of the key if it is part of a group
         std::string m_key;
 
-        /// Obejt access (INPUT, INOUT, OUTPUT)
+        /// Object identifier
+        std::string m_uid;
+
+        /// Object access (INPUT, INOUT, OUTPUT)
         data::Access m_access;
 
         /// True if the service is autoConnected this object according to the auto-connection map
@@ -154,11 +154,8 @@ public:
         /// Service worker
         std::string m_worker;
 
-        /// list of required service's objects information (inputs, inouts and outputs)
-        std::vector<ObjectServiceConfig> m_objects;
-
-        /// Number of elements in each group
-        std::map<std::string, size_t> m_groupSize;
+        /// list of required objects information (inputs, inouts and outputs), indexed by key name and index
+        std::map<std::pair<std::string, size_t>, ObjectServiceConfig> m_objects;
 
         /// Service configuration (only used with XML config)
         CSPTR(core::runtime::ConfigurationElement) m_config;
@@ -254,7 +251,7 @@ public:
     typedef core::com::Slot<SharedFutureType(data::Object::sptr)> SwapSlotType;
 
     SERVICE_API static const core::com::Slots::SlotKeyType s_SWAPKEY_SLOT;
-    typedef core::com::Slot<SharedFutureType(const KeyType&, data::Object::sptr)> SwapKeySlotType;
+    typedef core::com::Slot<SharedFutureType(std::string_view, data::Object::sptr)> SwapKeySlotType;
 
     /// Initializes m_associatedWorker and associates this worker to all service slots
     SERVICE_API void setWorker(SPTR(core::thread::Worker) worker);
@@ -329,18 +326,12 @@ public:
 
     /**
      * @brief Associate the service to another object
-     * @param[in] _obj change association service from key to _obj
+     * @param[in] _key key of the object
+     * @param[in] _index of the data to retrieve
+     * @param[in] _obj change object at given key to _obj
      * @pre m_globalState == STARTED
-     * @pre old object != _obj
-     *
-     * This method provides to associate the service to another object without stopping
-     * and deleting it. Furthermore, this method modify all observations to be aware to
-     * _obj notifications.
-     *
-     *
      */
-    SERVICE_API SharedFutureType swapKey(const KeyType& _key, data::Object::sptr _obj);
-
+    SERVICE_API SharedFutureType swapKey(std::string_view _key, data::Object::sptr _obj);
     //@}
 
     /**
@@ -426,176 +417,90 @@ public:
 
     /**
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
+     * @param key key of data to retrieve.
+     * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
     template<class DATATYPE>
     [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline CSPTR(DATATYPE) getInput(const KeyType& key) const;
+    inline CSPTR(DATATYPE) getInput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
+     * @param key key of data to retrieve.
+     * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
     template<class DATATYPE>
     [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getInOut(const KeyType& key) const;
+    inline SPTR(DATATYPE) getInOut(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getOutput(const KeyType& key) const;
-
-    /**
-     * @brief Return the input object at the given key. Asserts if the data is not of the right type.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
      */
     template<class DATATYPE>
     [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline CSPTR(DATATYPE) getInput(const KeyType& keybase, size_t index) const;
-
-    /**
-     * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
-     * @param group key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getInOut(const KeyType& keybase, size_t index) const;
-
-    /**
-     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param group key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getOutput(const KeyType& keybase, size_t index) const;
-
-    /**
-     * @brief Return a weak data pointer of the input object at the given key.
-     * @param key name of the data to retrieve.
-     * @return weak data pointer in the right type, expired pointer if not found.
-     */
-    template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::weak_ptr<CONST_DATATYPE> getWeakInput(const KeyType& key) const;
-
-    /**
-     * @brief Return a weak data pointer of the in/out object at the given key.
-     * @param key name of the data to retrieve.
-     * @return weak data pointer in the right type, expired pointer if not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakInOut(const KeyType& key) const;
-
-    /**
-     * @brief Return a weak data pointer of the out object at the given key.
-     * @param key name of the data to retrieve.
-     * @return weak data pointer in the right type, expired pointer if not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakOutput(const KeyType& key) const;
+    inline SPTR(DATATYPE) getOutput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the input object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::weak_ptr<CONST_DATATYPE> getWeakInput(const KeyType& keybase, size_t index) const;
+    inline data::mt::weak_ptr<CONST_DATATYPE> getWeakInput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakInOut(const KeyType& keybase, size_t index) const;
+    inline data::mt::weak_ptr<DATATYPE> getWeakInOut(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakOutput(const KeyType& keybase, size_t index) const;
-
-    /**
-     * @brief Return a locked data pointer of the input object at the given key.
-     * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::locked_ptr<CONST_DATATYPE> getLockedInput(const KeyType& key) const;
-
-    /**
-     * @brief Return a locked data pointer of the in/out object at the given key.
-     * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> getLockedInOut(const KeyType& key) const;
-
-    /**
-     * @brief Return a locked data pointer of the out object at the given key.
-     * @param key name of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> getLockedOutput(const KeyType& key) const;
+    inline data::mt::weak_ptr<DATATYPE> getWeakOutput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a locked data pointer of the input object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
      * @throw data::Exception if the data object is not found.
      */
     template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::locked_ptr<CONST_DATATYPE> getLockedInput(const KeyType& keybase, size_t index) const;
+    inline data::mt::locked_ptr<CONST_DATATYPE> getLockedInput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a locked data pointer of the in/out object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
      * @throw data::Exception if the data object is not found.
      */
     template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> getLockedInOut(const KeyType& keybase, size_t index) const;
+    inline data::mt::locked_ptr<DATATYPE> getLockedInOut(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a locked data pointer of the out object at the given key and index.
-     * @param group key of data to retrieve.
+     * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return locked data pointer in the right type.
      * @throw data::Exception if the data object is not found.
      */
     template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> geLockedOutput(const KeyType& keybase, size_t index) const;
-
-    /**
-     * @brief Return the number of key in a group of keys.
-     * @param keybase group name.
-     * @return number of keys in this group.
-     */
-    size_t getKeyGroupSize(const KeyType& keybase) const;
-
+    inline data::mt::locked_ptr<DATATYPE> getLockedOutput(std::string_view key, size_t index = 0) const;
     //@}
 
     /**
@@ -616,7 +521,7 @@ public:
         //------------------------------------------------------------------------------
 
         void push(
-            const KeyType& key,
+            std::string_view key,
             const core::com::Signals::SignalKeyType& sig,
             const core::com::Slots::SlotKeyType& slot
 )
@@ -624,11 +529,11 @@ public:
             m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
         }
 
-        typedef std::map<KeyType, KeyConnectionsType> KeyConnectionsMapType;
+        typedef std::map<std::string_view, KeyConnectionsType> KeyConnectionsMapType;
 
         //------------------------------------------------------------------------------
 
-        KeyConnectionsMapType::const_iterator find(const KeyType& key) const
+        KeyConnectionsMapType::const_iterator find(std::string_view key) const
         {
             return m_keyConnectionsMap.find(key);
         }
@@ -656,7 +561,7 @@ public:
 
     private:
 
-        std::map<KeyType, KeyConnectionsType> m_keyConnectionsMap;
+        KeyConnectionsMapType m_keyConnectionsMap;
     };
 
     //@}
@@ -677,36 +582,21 @@ public:
     /**
      * @brief Return true if the object with the given key has an identifier.
      * @param _key object key
+     * @param[in] _index index of the data in the group
      */
-    SERVICE_API bool hasObjectId(const KeyType& _key) const;
+    SERVICE_API bool hasObjectId(std::string_view _key, const size_t _index = 0) const;
 
     /**
      * @brief Return the id of the object, throw if it is not found
      */
-    SERVICE_API IdType getObjectId(const KeyType& _key) const;
-
-    /**
-     * @brief Set the id of an object key
-     */
-    SERVICE_API void setObjectId(const KeyType& _key, const IdType& _id);
+    SERVICE_API IdType getObjectId(std::string_view _key, const size_t _index = 0) const;
 
     /**
      * @brief Set the id of an object key from a group
      */
-    SERVICE_API void setObjectId(const IService::KeyType& _key, const size_t index, const IService::IdType& _id);
+    SERVICE_API void setObjectId(std::string_view _key, const IService::IdType& _id, const size_t _index = 0);
 
     //@}
-
-    /**
-     * @brief Set an input object for this service
-     *
-     * @param[in] obj input object used by the service
-     * @param[in] key key of the object
-     */
-    SERVICE_API void setInput(
-        const data::Object::csptr& obj,
-        const key_t& key
-    );
 
     /**
      * @brief Set an object of a group of inputs
@@ -716,24 +606,9 @@ public:
      * @param[in] index index of the data in the group
      */
     SERVICE_API void setInput(
-        const data::Object::csptr& obj,
-        const key_t& key,
-        size_t index
-    );
-
-    /**
-     * @brief Set an input object for this service, and overrides the default autoConnect and optional settings.
-     *
-     * @param[in] obj input object used by the service
-     * @param[in] key key of the object
-     * @param[in] autoConnect if true, the service will be connected to the object's signals
-     * @param[in] optional if true, the service can be started even if the objet is not present
-     */
-    SERVICE_API void setInput(
-        const data::Object::csptr& obj,
-        const key_t& key,
-        const bool autoConnect,
-        const bool optional = false
+        data::Object::csptr obj,
+        std::string_view key,
+        size_t index = 0
     );
 
     /**
@@ -744,24 +619,14 @@ public:
      * @param[in] index index of the data in the group
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
+     * @param[in] index index of the data in the group
      */
     SERVICE_API void setInput(
-        const data::Object::csptr& obj,
-        const key_t& key,
-        size_t index,
+        data::Object::csptr obj,
+        std::string_view key,
         const bool autoConnect,
-        const bool optional = false
-    );
-
-    /**
-     * @brief Set an in/out object for this service
-     *
-     * @param[in] obj in/out object used by the service
-     * @param[in] key key of the object
-     */
-    SERVICE_API void setInOut(
-        const data::Object::sptr& obj,
-        const key_t& key
+        const bool optional = false,
+        size_t index        = 0
     );
 
     /**
@@ -772,24 +637,9 @@ public:
      * @param[in] index index of the data in the group
      */
     SERVICE_API void setInOut(
-        const data::Object::sptr& obj,
-        const key_t& key,
-        size_t index
-    );
-
-    /**
-     * @brief Set an in/out object for this service
-     *
-     * @param[in] obj in/out object used by the service
-     * @param[in] key key of the object
-     * @param[in] autoConnect if true, the service will be connected to the object's signals
-     * @param[in] optional if true, the service can be started even if the objet is not present
-     */
-    SERVICE_API void setInOut(
-        const data::Object::sptr& obj,
-        const key_t& key,
-        const bool autoConnect,
-        const bool optional = false
+        data::Object::sptr obj,
+        std::string_view key,
+        size_t index = 0
     );
 
     /**
@@ -800,13 +650,14 @@ public:
      * @param[in] index index of the data in the group
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
+     * @param[in] index index of the data in the group
      */
     SERVICE_API void setInOut(
-        const data::Object::sptr& obj,
-        const key_t& key,
-        size_t index,
+        data::Object::sptr obj,
+        std::string_view key,
         const bool autoConnect,
-        const bool optional = false
+        const bool optional = false,
+        size_t index        = 0
     );
 
     /**
@@ -820,8 +671,8 @@ public:
      * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
      */
     SERVICE_API void setOutput(
-        const service::IService::KeyType& key,
-        const data::Object::sptr& object,
+        std::string_view key,
+        data::Object::sptr object,
         size_t index = 0
     );
 
@@ -830,13 +681,15 @@ public:
      *
      * @param[in] obj object used by the service
      * @param[in] key key of the object
+     * @param[in] index index of the data in the group
      * @param[in] access access to the object (in/inout/out)
      * @param[in] autoConnect if true, the service will be connected to the object's signals
      * @param[in] optional if true, the service can be started even if the objet is not present
      */
     SERVICE_API void setObject(
-        const data::Object::sptr& obj,
-        const key_t& key,
+        data::Object::sptr obj,
+        std::string_view key,
+        size_t index,
         data::Access access,
         const bool autoConnect,
         const bool optional
@@ -848,7 +701,16 @@ public:
      * @param[in] key key of the object
      * @param[in] access access to the object (in/inout/out)
      */
-    SERVICE_API void unsetObject(const key_t& key, data::Access access);
+    SERVICE_API void resetObject(std::string_view key, size_t index, data::Access access);
+
+    /**
+     * @brief Return the input, inout or output object at the given key.
+     * @param _key key of data to retrieve.
+     * @param[in] _access access to the object (in/inout/out)
+     * @param _index optional index of the data to retrieve.
+     * @return data object, nullptr if not found.
+     */
+    SERVICE_API data::Object::csptr getObject(std::string_view _key, data::Access _access, size_t _index = 0) const;
 
     /**
      * @brief Define an object required by this service.
@@ -865,10 +727,11 @@ public:
      */
     SERVICE_API void registerObject(
         const std::string& objId,
-        const key_t& key,
+        std::string_view key,
         data::Access access,
         const bool autoConnect = false,
-        const bool optional    = false
+        const bool optional    = false,
+        size_t index           = 0
     );
 
     /// Return true if all the non-optional object required by the service are present
@@ -946,7 +809,7 @@ protected:
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping(const KeyType&)
+    virtual void swapping(std::string_view)
     {
     }
 
@@ -1021,50 +884,39 @@ protected:
 private:
 
     /**
-     * @brief Internal method that sets an input of the service and registers it into the OSR.     *
+     * @brief Internal method that sets an input of the service and registers it into the OSR.
      * @param[in] obj data object
      * @param[in] key key of the object
      */
     void _setInput(
-        const data::Object::csptr& obj,
-        const key_t& key
+        data::Object::csptr obj,
+        std::string_view key,
+        size_t index = 0
     );
 
     /**
-     * @brief Internal method that sets an inout of the service and registers it into the OSR.     *
+     * @brief Internal method that sets an inout of the service and registers it into the OSR.
      * @param[in] obj data object
      * @param[in] key key of the object
      */
     void _setInOut(
-        const data::Object::sptr& obj,
-        const key_t& key
-    );
-
-    /**
-     * @brief Define an object required by this service.
-     *
-     * This method allows to define the required objects to use the service. It can be called in the constructor of the
-     * service implementation. So you can call 'hasAllRequiredObjects()' to know if the service can be started.
-     *
-     * @param[in] key key of the object
-     * @param[in] access access to the object (in/inout/out)
-     */
-    void _registerObject(
-        const key_t& key,
-        const data::Access access
+        data::Object::sptr obj,
+        std::string_view key,
+        size_t index = 0
     );
 
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(
-        const key_t& key,
+        std::string_view key,
         const data::Access access,
+        size_t index,
         const bool autoConnect,
         const bool optional = false
     ) override;
 
     /// @copydoc sight::data::IHasData::_registerObjectGroup
     SERVICE_API void _registerObjectGroup(
-        const key_t& key,
+        std::string_view key,
         const data::Access access,
         const std::uint8_t minNbObject,
         const bool autoConnect         = false,
@@ -1080,8 +932,8 @@ private:
     SharedFutureType _stop(bool _async);
 
     // Slot: swap an object
-    SharedFutureType _swapKeySlot(const KeyType& _key, data::Object::sptr _obj);
-    SharedFutureType _swapKey(const KeyType& _key, data::Object::sptr _obj, bool _async);
+    SharedFutureType _swapKeySlot(std::string_view _key, data::Object::sptr _obj);
+    SharedFutureType _swapKey(std::string_view _key, data::Object::sptr _obj, bool _async);
 
     // Slot: update the service
     SharedFutureType _updateSlot();
@@ -1103,10 +955,10 @@ private:
     void _addProxyConnection(const helper::ProxyConnections& info);
 
     /// Return the information about the required object
-    const service::IService::ObjectServiceConfig* _getObjInfoFromId(const std::string& objId) const;
-
-    /// Return the information about the required object
-    const service::IService::ObjectServiceConfig& _getObjInfoFromKey(const key_t& key) const;
+    std::optional<std::tuple<const std::string&, size_t,
+                             const service::IService::ObjectServiceConfig&> > _getObjInfoFromId(
+        const std::string& objId
+    ) const;
 
     /**
      * @brief associated inputs of the service ordered by key
@@ -1122,11 +974,6 @@ private:
      * @brief associated outputs of the service ordered by key
      */
     OutputMapType m_outputsMap;
-
-    /**
-     * @brief size of key groups if they exist
-     */
-    std::map<std::string, size_t> m_keyGroupSize;
 
     /**
      * @brief Defines the current global status of the service.

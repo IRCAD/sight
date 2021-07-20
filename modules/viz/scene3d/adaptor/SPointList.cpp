@@ -52,9 +52,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-const service::key_t SPointList::s_POINTLIST_INPUT = "pointList";
-const service::key_t SPointList::s_MESH_INPUT      = "mesh";
-
 static const std::string s_COLOR_CONFIG             = "color";
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
@@ -197,7 +194,7 @@ void SPointList::starting()
         }
         else
         {
-            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
         }
     }
 }
@@ -267,7 +264,7 @@ void SPointList::updating()
         }
         else
         {
-            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
         }
     }
 

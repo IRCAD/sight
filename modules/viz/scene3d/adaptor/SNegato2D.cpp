@@ -186,7 +186,7 @@ void SNegato2D::updating()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::swapping(const KeyType& _key)
+void SNegato2D::swapping(std::string_view _key)
 {
     if(_key == s_TF_INOUT)
     {

@@ -54,8 +54,6 @@ struct SetFromConfig
     }
 };
 
-const service::key_t SPacsConfigurationInitializer::s_CONFIG_INOUT = "config";
-
 //------------------------------------------------------------------------------
 
 SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
@@ -110,7 +108,7 @@ void SPacsConfigurationInitializer::configuring()
 void SPacsConfigurationInitializer::starting()
 {
     const auto pacsConfiguration = m_config.lock();
-    SIGHT_ASSERT("inout '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
+    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacsConfiguration);
 
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
@@ -159,7 +157,7 @@ service::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConne
 void SPacsConfigurationInitializer::updating()
 {
     const auto pacsConfiguration = m_config.lock();
-    SIGHT_ASSERT("inout '" + s_CONFIG_INOUT + "' does not exist.", pacsConfiguration);
+    SIGHT_ASSERT("inout '" << s_CONFIG_INOUT << "' does not exist.", pacsConfiguration);
 
     // Check if the user has changed the Pacs configuration and update the local var
     if(pacsConfiguration->getLocalApplicationTitle() != m_SCUAppEntityTitle

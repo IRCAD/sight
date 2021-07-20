@@ -114,7 +114,7 @@ protected:
      * @brief Retrieves the current transfer function.
      * @param _key key of the swapped data.
      */
-    MODULE_VIZ_SCENE3D_API void swapping(const KeyType& _key) override;
+    MODULE_VIZ_SCENE3D_API void swapping(std::string_view _key) override;
 
     /// Disconnects the attached data from the received slot.
     MODULE_VIZ_SCENE3D_API void stopping() override;

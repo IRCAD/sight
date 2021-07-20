@@ -35,11 +35,6 @@
 namespace sight::module::geometry::base
 {
 
-const service::key_t SDecomposeMatrix::s_SOURCE_INPUT      = "source";
-const service::key_t SDecomposeMatrix::s_TRANSLATION_INOUT = "translation";
-const service::key_t SDecomposeMatrix::s_ROTATION_INOUT    = "rotation";
-const service::key_t SDecomposeMatrix::s_SCALE_INOUT       = "scale";
-
 // ----------------------------------------------------------------------------
 
 SDecomposeMatrix::SDecomposeMatrix() noexcept
@@ -78,7 +73,7 @@ service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() cons
 void SDecomposeMatrix::updating()
 {
     auto matrix = m_source.lock();
-    SIGHT_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
+    SIGHT_ASSERT("input matrix '" << s_SOURCE_INPUT << "' is not defined", matrix);
 
     glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(*matrix);
     glm::dvec3 glmScale;

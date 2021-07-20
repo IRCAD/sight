@@ -260,7 +260,7 @@ void SMultipleTF::updating()
 
 //------------------------------------------------------------------------------
 
-void SMultipleTF::swapping(const KeyType& _key)
+void SMultipleTF::swapping(std::string_view _key)
 {
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_POOL_INPUT)

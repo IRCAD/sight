@@ -32,8 +32,6 @@ namespace sight::module::io::igtl
 const core::com::Signals::SignalKeyType INetworkSender::s_CONNECTED_SIGNAL    = "connected";
 const core::com::Signals::SignalKeyType INetworkSender::s_DISCONNECTED_SIGNAL = "disconnected";
 
-static const service::IService::KeyType s_OBJECTS_INOUT = "objects";
-
 //-----------------------------------------------------------------------------
 
 INetworkSender::INetworkSender()
@@ -54,15 +52,15 @@ void INetworkSender::updating()
 {
     if(this->isStarted())
     {
-        const size_t numObjects = this->getKeyGroupSize(s_OBJECTS_INOUT);
+        const size_t numObjects = m_objects.size();
         // Grab the objects to send.
         for(size_t i = 0 ; i < numObjects ; ++i)
         {
-            data::Object::csptr object = this->getInput<data::Object>(s_OBJECTS_INOUT, i);
+            const auto object = m_objects[i].lock();
 
             if(object)
             {
-                this->sendObject(object, i);
+                this->sendObject(object.get_shared(), i);
             }
         }
     }

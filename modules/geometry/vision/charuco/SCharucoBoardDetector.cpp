@@ -25,18 +25,10 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Array.hpp>
-#include <data/CalibrationInfo.hpp>
-#include <data/Composite.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -57,10 +49,6 @@ const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_UPDATE_CHARUCOBOARD
 const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DETECTED_SIG     = "charucoBoardDetected";
 const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG =
     "charucoBoardNotDetected";
-
-static const service::IService::KeyType s_TIMELINE_INPUT    = "timeline";
-static const service::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
-static const service::IService::KeyType s_DETECTION_INOUT   = "detection";
 
 // ----------------------------------------------------------------------------
 
@@ -91,7 +79,7 @@ void SCharucoBoardDetector::configuring()
 {
     SIGHT_ASSERT(
         "You must have the same number of 'timeline' keys and 'calInfo' keys",
-        this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT)
+        m_timeline.size() == m_calInfo.size()
     );
 
     const auto configTree = this->getConfigTree();
@@ -110,7 +98,7 @@ void SCharucoBoardDetector::configuring()
 
 void SCharucoBoardDetector::starting()
 {
-    m_cornerAndIdLists.resize(this->getKeyGroupSize(s_TIMELINE_INPUT));
+    m_cornerAndIdLists.resize(m_timeline.size());
 }
 
 // ----------------------------------------------------------------------------
@@ -134,8 +122,8 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         core::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits<core::HiResClock::HiResClockType>::max();
 
-        const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
-        const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
+        const size_t numTimeline  = m_timeline.size();
+        const size_t numDetection = m_detection.size();
 
         SIGHT_ERROR_IF(
             "Different number of input timelines and detected point lists.",
@@ -201,14 +189,13 @@ void SCharucoBoardDetector::detectPoints()
 {
     if(m_isDetected)
     {
-        const size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
+        const size_t numInfo = m_calInfo.size();
         for(size_t i = 0 ; i < numInfo ; ++i)
         {
-            auto calInfo                  = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INOUT, i);
-            const auto frameTL            = this->getInput<data::FrameTL>(s_TIMELINE_INPUT, i);
-            const data::Image::sptr image = this->createImage(frameTL, m_lastTimestamp);
+            auto calInfo                  = m_calInfo[i].lock();
+            const auto frameTL            = m_timeline[i].lock();
+            const data::Image::sptr image = this->createImage(*frameTL, m_lastTimestamp);
 
-            data::mt::ObjectWriteLock lock(calInfo);
             calInfo->addRecord(image, m_cornerAndIdLists[i]);
 
             // Notify
@@ -284,22 +271,21 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
 // ----------------------------------------------------------------------------
 
 data::Image::sptr SCharucoBoardDetector::createImage(
-    data::FrameTL::csptr tl,
+    const data::FrameTL& tl,
     core::HiResClock::HiResClockType timestamp
 )
 {
     data::Image::sptr image;
 
-    const CSPTR(data::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
+    const CSPTR(data::FrameTL::BufferType) buffer = tl.getClosestBuffer(timestamp);
     if(buffer)
     {
         image = data::Image::New();
 
         data::Image::PixelFormat format = data::Image::PixelFormat::UNDEFINED;
 
-        // FIXME: Currently, FrameTL does not comntains Pixel format, so we assume that format is GrayScale, RGB or
-        // RGBA.
-        switch(tl->getNumberOfComponents())
+        // FIXME: Currently, FrameTL does not contain Pixel format, so we assume that format is GrayScale, RGB or RGBA.
+        switch(tl.getNumberOfComponents())
         {
             case 1:
                 format = data::Image::PixelFormat::GRAY_SCALE;
@@ -317,8 +303,8 @@ data::Image::sptr SCharucoBoardDetector::createImage(
                 format = data::Image::PixelFormat::UNDEFINED;
         }
 
-        const data::Image::Size size = {tl->getWidth(), tl->getHeight(), 1};
-        image->resize(size, tl->getType(), format);
+        const data::Image::Size size = {tl.getWidth(), tl.getHeight(), 1};
+        image->resize(size, tl.getType(), format);
         const data::Image::Origin origin = {0., 0., 0.};
         image->setOrigin2(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};

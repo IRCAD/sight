@@ -139,13 +139,13 @@ private:
     /// Flips Ogre texture when converting to sight, can be useful when using VTK to save images.
     bool m_flipImage {false};
 
-    static const service::key_t s_IMAGE_INOUT;
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT};
 
-    static const service::key_t s_DEPTH_INOUT;
+    static constexpr std::string_view s_DEPTH_INOUT = "depth";
     data::ptr<data::Image, data::Access::inout> m_depth {this, s_DEPTH_INOUT};
 
-    static const service::key_t s_PRIMITIVE_ID_INOUT;
+    static constexpr std::string_view s_PRIMITIVE_ID_INOUT = "primitiveID";
     data::ptr<data::Image, data::Access::inout> m_primitive {this, s_PRIMITIVE_ID_INOUT};
 };
 

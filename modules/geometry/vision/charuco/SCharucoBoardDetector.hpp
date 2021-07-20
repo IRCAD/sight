@@ -24,6 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
@@ -173,7 +174,7 @@ private:
     /**
      * @brief Create an image from frame timeline
      */
-    data::Image::sptr createImage(data::FrameTL::csptr tl, core::HiResClock::HiResClockType timestamp);
+    data::Image::sptr createImage(const data::FrameTL& tl, core::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when charucoBoard is detected
     CharucoBoardDetectedSignalType::sptr m_sigCharucoBoardDetected;
@@ -225,6 +226,14 @@ private:
 
     /// Chessboard-aruco board
     ::cv::Ptr< ::cv::aruco::CharucoBoard> m_board;
+
+    static constexpr std::string_view s_TIMELINE_INPUT    = "timeline";
+    static constexpr std::string_view s_CALIBRATION_INOUT = "calInfo";
+    static constexpr std::string_view s_DETECTION_INOUT   = "detection";
+
+    data::ptr_vector<data::FrameTL, data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
+    data::ptr_vector<data::CalibrationInfo, data::Access::inout> m_calInfo {this, s_CALIBRATION_INOUT};
+    data::ptr_vector<data::PointList, data::Access::inout> m_detection {this, s_DETECTION_INOUT};
 };
 
 } //namespace sight::module::geometry::vision::charuco

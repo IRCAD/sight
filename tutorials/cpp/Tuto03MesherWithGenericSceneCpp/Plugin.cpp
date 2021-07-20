@@ -521,7 +521,7 @@ void Plugin::initialize()
     modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
-    extractImage->setObjectId("target", 0, s_IMAGE_ID);
+    extractImage->setObjectId("target", s_IMAGE_ID, 0);
     medicaImageConverter->setObjectId("image", s_IMAGE_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);

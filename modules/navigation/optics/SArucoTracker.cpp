@@ -25,13 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-#include <data/FrameTL.hpp>
-#include <data/Image.hpp>
-#include <data/MarkerMap.hpp>
-#include <data/MarkerTL.hpp>
-#include <data/mt/ObjectReadToWriteLock.hpp>
-
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
@@ -56,10 +49,6 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT =
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
-const service::IService::KeyType s_CAMERA_INPUT           = "camera";
-const service::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
-const service::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
-
 //-----------------------------------------------------------------------------
 
 SArucoTracker::SArucoTracker() noexcept :
@@ -75,7 +64,7 @@ SArucoTracker::SArucoTracker() noexcept :
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
 
     // Initialize detector parameters
-    m_detectorParams = ::cv::aruco::DetectorParameters::create();
+    m_detectorParams = cv::aruco::DetectorParameters::create();
 
     // We need to tweak some parameters to adjust detection in our cases.
     //minimum distance of any corner to the image border for detected markers (in pixels) (default 3)
@@ -88,10 +77,10 @@ SArucoTracker::SArucoTracker() noexcept :
 
     // corner refinement method. (CORNER_REFINE_NONE, no refinement. CORNER_REFINE_SUBPIX,
     // do subpixel refinement.)
-    m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+    m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
 
     // For now only original aruco markers are used
-    m_dictionary = ::cv::aruco::Dictionary::get(::cv::aruco::DICT_ARUCO_ORIGINAL);
+    m_dictionary = cv::aruco::Dictionary::get(cv::aruco::DICT_ARUCO_ORIGINAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +95,6 @@ service::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_TIMELINE_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT);
     connections.push(s_FRAME_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_FRAME_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
@@ -127,7 +115,7 @@ void SArucoTracker::configuring()
     {
         const auto& cfg                = elt.second;
         const std::string markersIDStr = cfg.get<std::string>("<xmlattr>.id");
-        ::boost::tokenizer<> tok(markersIDStr);
+        boost::tokenizer<> tok(markersIDStr);
         MarkerIDType markersID;
         for(const auto& it : tok)
         {
@@ -144,26 +132,14 @@ void SArucoTracker::configuring()
     // Do corner refinement ?
     const bool doCornerRefinement = config.get<bool>("cornerRefinement", true);
     m_detectorParams->cornerRefinementMethod = (doCornerRefinement
-                                                ? ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
-                                                : ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
+                                                ? cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE
+                                                : cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX);
 }
 
 //-----------------------------------------------------------------------------
 
 void SArucoTracker::starting()
 {
-    // initialized marker timeline matrix (4*2D points)
-    const size_t numTagTL = this->getKeyGroupSize(s_TAGTL_INOUT_GROUP);
-    for(size_t i = 0 ; i < numTagTL ; ++i)
-    {
-        data::MarkerTL::sptr markerTL = this->getInOut<data::MarkerTL>(s_TAGTL_INOUT_GROUP, i);
-        if(markerTL)
-        {
-            SIGHT_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
-            markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
-        }
-    }
-
     m_isTracking = true;
 }
 
@@ -192,46 +168,19 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 {
     if(!m_isInitialized)
     {
-        data::Camera::csptr arCam = this->getInput<data::Camera>(s_CAMERA_INPUT);
+        const auto arCam = m_camera.lock();
 
         std::tie(m_cameraParams.intrinsic, m_cameraParams.size, m_cameraParams.distorsion) =
-            io::opencv::Camera::copyToCv(arCam);
+            io::opencv::Camera::copyToCv(arCam.get_shared());
 
         m_isInitialized = true;
     }
 
-    ::cv::Mat inImage;
-
-    auto frame = this->getInOut<data::Image>(s_FRAME_INOUT);
-    std::unique_ptr<data::mt::ObjectReadToWriteLock> lockFrame;
+    cv::Mat inImage;
+    auto frame = m_frame.lock();
     if(frame)
     {
-        lockFrame = std::make_unique<data::mt::ObjectReadToWriteLock>(frame);
-        inImage   = io::opencv::Image::moveToCv(frame);
-    }
-    else
-    {
-        data::FrameTL::csptr frameTL = this->getInput<data::FrameTL>(s_TIMELINE_INPUT);
-
-        if(frameTL)
-        {
-            const CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
-
-            SIGHT_WARN_IF("Buffer not found with timestamp " << timestamp, !buffer);
-
-            if(buffer)
-            {
-                m_lastTimestamp = timestamp;
-
-                const std::uint8_t* frameBuff = &buffer->getElement(0);
-
-                // read the input image
-                const ::cv::Size frameSize(static_cast<int>(frameTL->getWidth()),
-                                           static_cast<int>(frameTL->getHeight()));
-
-                inImage = io::opencv::FrameTL::moveToCv(frameTL, frameBuff);
-            }
-        }
+        inImage = io::opencv::Image::moveToCv(frame.get_shared());
     }
 
     if(!inImage.empty())
@@ -239,15 +188,15 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         // Check number of components of image.
         const auto nbOfComponents = inImage.channels();
 
-        ::cv::Mat grey, bgr;
+        cv::Mat grey, bgr;
 
         if(nbOfComponents == 4) // RGBA or BGRA.
         {
-            ::cv::cvtColor(inImage, grey, ::cv::COLOR_BGRA2GRAY);
+            cv::cvtColor(inImage, grey, cv::COLOR_BGRA2GRAY);
         }
         else if(nbOfComponents == 3) // RGB or BGR.
         {
-            ::cv::cvtColor(inImage, grey, ::cv::COLOR_BGR2GRAY);
+            cv::cvtColor(inImage, grey, cv::COLOR_BGR2GRAY);
         }
         else if(nbOfComponents == 1) // Grey level.
         {
@@ -265,17 +214,17 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         }
 
         bool foundMarker = false;
-        std::vector<std::vector< ::cv::Point2f> > detectedMarkers;
+        std::vector<std::vector<cv::Point2f> > detectedMarkers;
         std::vector<int> detectedMarkersIds;
 
         // Ok, let's detect
-        ::cv::aruco::detectMarkers(
+        cv::aruco::detectMarkers(
             grey,
             m_dictionary,
             detectedMarkers,
             detectedMarkersIds,
             m_detectorParams,
-            ::cv::noArray(),
+            cv::noArray(),
             m_cameraParams.intrinsic,
             m_cameraParams.distorsion
         );
@@ -283,38 +232,24 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         //Note: This draws all detected markers
         if(m_debugMarkers)
         {
-            if(lockFrame)
-            {
-                lockFrame->upgrade();
-            }
-
             if(nbOfComponents == 4) // RGBA or BGRA.
             {
-                // since drawDetectedMarkers does not handle 4 channels ::cv::mat
-                ::cv::cvtColor(inImage, bgr, ::cv::COLOR_BGRA2BGR);
-                ::cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
-                ::cv::cvtColor(bgr, inImage, ::cv::COLOR_BGR2BGRA);
+                // since drawDetectedMarkers does not handle 4 channels cv::mat
+                cv::cvtColor(inImage, bgr, cv::COLOR_BGRA2BGR);
+                cv::aruco::drawDetectedMarkers(bgr, detectedMarkers, detectedMarkersIds);
+                cv::cvtColor(bgr, inImage, cv::COLOR_BGR2BGRA);
             }
             // If nbOfComponents == 1 or == 3 it's ok.
             // It is useless to test other values since "wrong" number of components has previoulsy been discarded.
             else
             {
-                ::cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);
+                cv::aruco::drawDetectedMarkers(inImage, detectedMarkers, detectedMarkersIds);
             }
         }
 
         size_t tagTLIndex = 0;
         for(const auto& markersID : m_markers)
         {
-            data::MarkerTL::sptr markerTL;
-
-            if(this->getKeyGroupSize(s_TAGTL_INOUT_GROUP))
-            {
-                markerTL = this->getInOut<data::MarkerTL>(s_TAGTL_INOUT_GROUP, tagTLIndex);
-            }
-
-            SPTR(data::MarkerTL::BufferType) trackerObject;
-
             unsigned int markerPosition = 0;
             for(const auto& markerID : markersID)
             {
@@ -325,63 +260,29 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                         foundMarker = true;
 
                         // Push matrix
-                        if(markerTL)
+                        auto markerMap = m_markerMap[tagTLIndex].lock();
+                        SIGHT_ASSERT("Marker map not found", markerMap);
+
+                        data::MarkerMap::MarkerType marker;
+                        marker.resize(4);
+                        for(size_t j = 0 ; j < 4 ; ++j)
                         {
-                            float markerBuffer[8];
-                            for(size_t j = 0 ; j < 4 ; ++j)
-                            {
-                                markerBuffer[j * 2]     = detectedMarkers[i][j].x;
-                                markerBuffer[j * 2 + 1] = detectedMarkers[i][j].y;
-                            }
-
-                            if(trackerObject == nullptr)
-                            {
-                                trackerObject = markerTL->createBuffer(timestamp);
-                                markerTL->pushObject(trackerObject);
-                            }
-
-                            trackerObject->setElement(markerBuffer, markerPosition);
+                            marker[j][0] = detectedMarkers[i][j].x;
+                            marker[j][1] = detectedMarkers[i][j].y;
                         }
-                        else
-                        {
-                            auto markerMap =
-                                this->getInOut<data::MarkerMap>(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
-                            SIGHT_ASSERT("Marker map not found", markerMap);
 
-                            data::MarkerMap::MarkerType marker;
-                            marker.resize(4);
-                            for(size_t j = 0 ; j < 4 ; ++j)
-                            {
-                                marker[j][0] = detectedMarkers[i][j].x;
-                                marker[j][1] = detectedMarkers[i][j].y;
-                            }
-
-                            markerMap->setMarker(std::to_string(markerID), marker);
-                        }
+                        markerMap->setMarker(std::to_string(markerID), marker);
                     }
                 }
 
                 ++markerPosition;
             }
 
-            // Notify
-            if(trackerObject != nullptr)
-            {
-                data::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = markerTL->signal<data::TimeLine::ObjectPushedSignalType>(
-                    data::TimeLine::s_OBJECT_PUSHED_SIG
-                );
-                sig->asyncEmit(timestamp);
-            }
-
-            if(this->getKeyGroupSize(s_MARKER_MAP_INOUT_GROUP))
-            {
-                auto markerMap = this->getInOut<data::MarkerMap>(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
-                // Always send the signal even if we did not find anything.
-                // This allows to keep updating the whole processing pipeline.
-                auto sig = markerMap->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
-            }
+            auto markerMap = m_markerMap[tagTLIndex].lock();
+            // Always send the signal even if we did not find anything.
+            // This allows to keep updating the whole processing pipeline.
+            auto sig = markerMap->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
 
             this->signal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG)->asyncEmit(foundMarker);
 
@@ -536,11 +437,11 @@ void SArucoTracker::setBoolParameter(bool _val, std::string _key)
     {
         if(_val)
         {
-            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
+            m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
         }
         else
         {
-            m_detectorParams->cornerRefinementMethod = ::cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
+            m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_NONE;
         }
     }
     else

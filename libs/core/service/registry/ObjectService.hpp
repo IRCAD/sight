@@ -27,20 +27,15 @@
 
 #include <core/com/HasSignals.hpp>
 
-#include <core/LogicStamp.hpp>
 #include <core/mt/types.hpp>
 
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <boost/bimap.hpp>
-#include <boost/bimap/multiset_of.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
 #include <map>
-#include <unordered_map>
 #include <set>
 
 namespace sight::data
@@ -70,16 +65,6 @@ public:
     SIGHT_DECLARE_CLASS(ObjectService, core::BaseObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    /**
-     * @brief Service container
-     * keeps relation between objects identifiers and attached services
-     */
-    typedef ::boost::bimaps::bimap<
-            ::boost::bimaps::multiset_of<data::Object::cwptr, std::owner_less<data::Object::cwptr> >,
-            ::boost::bimaps::multiset_of<service::IService::sptr>
-    > ServiceContainerType;
-
-    typedef std::set<CSPTR(data::Object)> ObjectVectorType;
     typedef std::set<SPTR(service::IService)> ServiceVectorType;
 
     typedef std::map<service::IService::KeyType, WPTR(data::Object)> ObjectMapType;
@@ -114,23 +99,6 @@ public:
     SERVICE_API void registerService(service::IService::sptr service);
 
     /**
-     * @brief Register the service (service) for the object (obj) at the given service key.
-     * It also updates IService objects of service to point to obj
-     * removal at obj destruction.
-     *
-     * @param object Object to register
-     * @param objKey Key of the object
-     * @param access Access (INPUT, INOUT, OUTPUT) of this key
-     * @param service Service whose key should be added
-     */
-    template<data::Access A>
-    void registerService(
-        typename data::access_traits<A>::value obj,
-        const service::IService::KeyType& objKey,
-        service::IService::sptr service
-    );
-
-    /**
      * @brief Emit the signal 'registered'
      *
      * @param object Object to register
@@ -139,13 +107,14 @@ public:
      */
     SERVICE_API void registerServiceOutput(
         data::Object::sptr object,
-        const service::IService::KeyType& objKey,
-        service::IService::sptr service
+        std::string_view objKey,
+        service::IService::sptr service,
+        size_t index = 0
     );
     //@}
 
     /**
-     * @name Management of unregistrations
+     * @name Management of unregistration
      */
 
     //@{
@@ -158,54 +127,16 @@ public:
     SERVICE_API void unregisterService(service::IService::sptr service);
 
     /**
-     * @brief Remove an object key from a service
-     *
-     * @param objKey Key of the object
-     * @param access Access (INPUT, INOUT, OUTPUT) of this key
-     * @param service Service whose key should be removed
-     */
-    SERVICE_API void unregisterService(
-        const service::IService::KeyType& objKey,
-        data::Access access,
-        service::IService::sptr service
-    );
-
-    /**
      * @brief Emit the signal 'unregistered'
      *
      * @param objKey Key of the object
      * @param service Service whose key should be removed
      */
     SERVICE_API void unregisterServiceOutput(
-        const service::IService::KeyType& objKey,
-        service::IService::sptr service
+        std::string_view objKey,
+        service::IService::sptr service,
+        size_t index = 0
     );
-
-    /**
-     * @brief Return true if a key is registered for a given service
-     *
-     * @param objKey Key of the object
-     * @param access Access (INPUT, INOUT, OUTPUT) of this key
-     * @param service Service where to look for the key
-     */
-    SERVICE_API bool isRegistered(
-        const service::IService::KeyType& objKey,
-        data::Access access,
-        service::IService::sptr service
-    ) const;
-
-    /**
-     * @brief Return the object pointer of a key of a given service
-     *
-     * @param objKey Key of the object
-     * @param access Access (INPUT, INOUT, OUTPUT) of this key
-     * @param service Service where to look for the key
-     */
-    SERVICE_API data::Object::csptr getRegistered(
-        const service::IService::KeyType& objKey,
-        data::Access access,
-        IService::sptr service
-    ) const;
     //@}
 
     /**
@@ -239,19 +170,6 @@ protected:
     mutable core::mt::ReadWriteMutex m_containerMutex;
 
 private:
-
-    /**
-     * @brief Register the service (service) for the object (obj)
-     * It also updates IService objects of service to point to obj
-     * removal at obj destruction.
-     * @warning not thread-safe
-     */
-    template<data::Access A>
-    void internalRegisterService(
-        typename data::access_traits<A>::value object,
-        service::IService::sptr service,
-        const service::IService::KeyType& objKey
-    );
 
     /**
      * @brief container manipulator (Helper)
@@ -298,23 +216,6 @@ SERVICE_API service::registry::ObjectService::ServiceVectorType getServices(cons
 SERVICE_API void registerService(service::IService::sptr service);
 
 /**
- * @brief Register the service (service) for the object (obj) at the given service key.
- * It also updates IService objects of service to point to obj
- * removal at obj destruction.
- *
- * @param object Object to register
- * @param objKey Key of the object
- * @param access Access (INPUT, INOUT, OUTPUT) of this key
- * @param service Service whose key should be added
- */
-template<data::Access A>
-void registerService(
-    typename data::access_traits<A>::value obj,
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
-);
-
-/**
  * @brief Emit the signal 'registered'
  *
  * @param object Object to register
@@ -323,8 +224,9 @@ void registerService(
  */
 SERVICE_API void registerServiceOutput(
     data::Object::sptr obj,
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
+    std::string_view objKey,
+    service::IService::sptr service,
+    size_t index = 0
 );
 
 /**
@@ -335,53 +237,15 @@ SERVICE_API void registerServiceOutput(
 SERVICE_API void unregisterService(service::IService::sptr service);
 
 /**
- * @brief Remove an object key from a service
- *
- * @param objKey Key of the object
- * @param access Access (INPUT, INOUT, OUTPUT) of this key
- * @param service Service whose key should be removed
- */
-SERVICE_API void unregisterService(
-    const service::IService::KeyType& objKey,
-    data::Access access,
-    service::IService::sptr service
-);
-
-/**
  * @brief Emit the signal 'unregistered'
  *
  * @param objKey Key of the object
  * @param service Service whose key should be removed
  */
 SERVICE_API void unregisterServiceOutput(
-    const service::IService::KeyType& objKey,
-    service::IService::sptr service
-);
-
-/**
- * @brief Return true if a key is registered for a given service
- *
- * @param objKey Key of the object
- * @param access Access (INPUT, INOUT, OUTPUT) of this key
- * @param service Service where to look for the key
- */
-SERVICE_API bool isRegistered(
-    const service::IService::KeyType& objKey,
-    data::Access access,
-    service::IService::sptr service
-);
-
-/**
- * @brief Return the object pointer of a key of a given service
- *
- * @param objKey Key of the object
- * @param access Access (INPUT, INOUT, OUTPUT) of this key
- * @param service Service where to look for the key
- */
-SERVICE_API data::Object::csptr getRegistered(
-    const service::IService::KeyType& objKey,
-    data::Access access,
-    service::IService::sptr service
+    std::string_view objKey,
+    service::IService::sptr service,
+    size_t index = 0
 );
 
 SERVICE_API SPTR(service::registry::ObjectService::RegisterSignalType) getRegisterSignal();

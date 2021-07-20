@@ -27,8 +27,6 @@
 namespace sight::module::ui::qml::reconstruction
 {
 
-const service::key_t SOrganMaterialEditor::s_RECONSTRUCTION_INOUT = "reconstruction";
-
 //------------------------------------------------------------------------------
 
 SOrganMaterialEditor::SOrganMaterialEditor() noexcept
@@ -66,7 +64,7 @@ void SOrganMaterialEditor::stopping()
 void SOrganMaterialEditor::updating()
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
 
@@ -82,7 +80,7 @@ void SOrganMaterialEditor::updating()
 void SOrganMaterialEditor::onColor(QColor color)
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     material->diffuse()->red()   = static_cast<float>(color.redF());
@@ -96,7 +94,7 @@ void SOrganMaterialEditor::onColor(QColor color)
 void SOrganMaterialEditor::onOpacitySlider(int value)
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     material->diffuse()->alpha() = value / 100.0f;
@@ -108,7 +106,7 @@ void SOrganMaterialEditor::onOpacitySlider(int value)
 void SOrganMaterialEditor::materialNotification()
 {
     auto reconstruction = m_rec.lock();
-    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(

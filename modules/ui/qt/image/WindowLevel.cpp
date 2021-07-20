@@ -266,7 +266,7 @@ void WindowLevel::stopping()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping(const KeyType& key)
+void WindowLevel::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {

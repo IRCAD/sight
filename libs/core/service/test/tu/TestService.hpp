@@ -232,7 +232,7 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    void swapping(const KeyType& key) final
+    void swapping(std::string_view key) final
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput<data::Object>(key);
@@ -443,10 +443,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(STest2InputGroups, service::ut::ISTest);
 
-private:
-
-    data::ptr<data::Object, data::Access::in> m_input1 {this, "dataGroup0", true};
-    data::ptr<data::Object, data::Access::in> m_input2 {this, "dataGroup1", true};
+    data::ptr_vector<data::Object, data::Access::in> m_input1 {this, "dataGroup0", true};
+    data::ptr_vector<data::Object, data::Access::in> m_input2 {this, "dataGroup1", true};
 };
 
 class STest1Input1InputGroup : public ISTest
@@ -455,10 +453,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(STest1Input1InputGroup, service::ut::ISTest);
 
-private:
-
     data::ptr<data::Object, data::Access::in> m_input {this, "data1", true};
-    data::ptr<data::Object, data::Access::in> m_inputGroup {this, "dataGroup", true};
+    data::ptr_vector<data::Object, data::Access::in> m_inputGroup {this, "dataGroup", true};
 };
 
 class STest1Input1Output2Inouts : public ISTest

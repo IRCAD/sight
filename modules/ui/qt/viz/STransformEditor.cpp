@@ -46,10 +46,6 @@ namespace sight::module::ui::qt::viz
 
 //------------------------------------------------------------------------------
 
-const service::IService::KeyType STransformEditor::s_MATRIX_INOUT = "matrix";
-
-//------------------------------------------------------------------------------
-
 STransformEditor::STransformEditor() noexcept :
     m_rotation("xyz"),
     m_translation("xyz")

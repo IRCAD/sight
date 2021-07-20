@@ -140,7 +140,7 @@ private:
     /// Defines the key to save/load preferences.
     std::string m_preferenceKey;
 
-    static const service::key_t s_CONFIG_INOUT;
+    static constexpr std::string_view s_CONFIG_INOUT = "config";
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, s_CONFIG_INOUT, true};
 };
 

@@ -24,9 +24,8 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <core/com/Signal.hpp>
-
 #include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
 
 #include <service/IOperator.hpp>
 
@@ -92,6 +91,9 @@ private:
 
     /// Append mode
     bool m_append;
+
+    data::ptr_vector<data::Matrix4, data::Access::in> m_matrices {this, "matrices"};
+    data::ptr<data::PointList, data::Access::inout> m_pointList {this, "pointList"};
 };
 
 } // namespace sight::module::geometry::base.

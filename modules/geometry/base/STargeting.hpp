@@ -126,7 +126,7 @@ private:
     /// Width of the background image (pixels).
     int m_width {400};
 
-    static const service::key_t s_MATRIX_INPUT;
+    static constexpr std::string_view s_MATRIX_INPUT = "matrix";
     data::ptr<data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_INPUT, true};
     data::ptr<data::Landmarks, sight::data::Access::in> m_landmark {this, "landmark", false};
     data::ptr<data::PointList, sight::data::Access::inout> m_pointList {this, "pointList", false};

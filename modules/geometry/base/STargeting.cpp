@@ -40,8 +40,6 @@ namespace sight::module::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const service::key_t STargeting::s_MATRIX_INPUT = "matrix";
-
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
 const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
 const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";

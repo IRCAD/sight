@@ -35,8 +35,6 @@ namespace sight::module::ui::qml::model
 const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 const core::com::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 
-const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-
 SModelSeriesList::SModelSeriesList() noexcept :
     m_listModel(nullptr)
 {
@@ -90,7 +88,7 @@ void SModelSeriesList::onOrganSelected(int index)
     if(index >= 0)
     {
         auto modelSeries = m_modelSeries.lock();
-        SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
+        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
 
         const auto& recs = modelSeries->getReconstructionDB();
 
@@ -108,7 +106,7 @@ void SModelSeriesList::onOrganSelected(int index)
 void SModelSeriesList::onShowReconstructions(int state)
 {
     auto modelSeries = m_modelSeries.lock();
-    SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
+    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
     data::helper::Field helper(modelSeries.get_shared());
     helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
     helper.notify();
@@ -121,7 +119,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
     if(index >= 0)
     {
         auto modelSeries = m_modelSeries.lock();
-        SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
+        SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
 
         const auto& recs        = modelSeries->getReconstructionDB();
         const auto& selectedRec = recs.at(static_cast<size_t>(index));
@@ -144,7 +142,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 void SModelSeriesList::onCheckAllBoxes(bool checked)
 {
     auto modelSeries = m_modelSeries.lock();
-    SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT + "' must be defined as 'inout'", modelSeries);
+    SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
 
     for(const auto& rec : modelSeries->getReconstructionDB())
     {

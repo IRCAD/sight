@@ -48,8 +48,6 @@ static const core::com::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "mod
 static const core::com::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const core::com::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
 
-const service::key_t SMesh::s_MESH_INOUT = "mesh";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
 static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";

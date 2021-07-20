@@ -542,64 +542,39 @@ void AppManagerTest::managerWithGroupTest()
     );
 
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
-    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->getKeyGroupSize(service::ut::TestServiceWithData::s_INOUT_GROUP));
+    CPPUNIT_ASSERT_EQUAL(size_t(0), service1->m_inoutGroup.size());
     service1->setObjectId(service::ut::TestServiceWithData::s_INPUT, integerId0);
-    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 0, integerId1);
-    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 1, integerId2);
-    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 2, integerId3);
-    CPPUNIT_ASSERT_EQUAL(size_t(3), service1->getKeyGroupSize(service::ut::TestServiceWithData::s_INOUT_GROUP));
+    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId1, 0);
+    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId2, 1);
+    service1->setObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, integerId3, 2);
+    CPPUNIT_ASSERT_EQUAL(size_t(0), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer0, integerId0);
 
     m_appMgr->startServices();
 
-    CPPUNIT_ASSERT_EQUAL(
-        true,
-        service1->hasObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)
-        )
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        integerId1,
-        service1->getObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 0)
-        )
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        true,
-        service1->hasObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)
-        )
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        integerId2,
-        service1->getObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 1)
-        )
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        true,
-        service1->hasObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)
-        )
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        integerId3,
-        service1->getObjectId(
-            KEY_GROUP_NAME(service::ut::TestServiceWithData::s_INOUT_GROUP, 2)
-        )
-    );
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 0));
+    CPPUNIT_ASSERT_EQUAL(integerId1, service1->getObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 0));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 1));
+    CPPUNIT_ASSERT_EQUAL(integerId2, service1->getObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 1));
+    CPPUNIT_ASSERT_EQUAL(true, service1->hasObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 2));
+    CPPUNIT_ASSERT_EQUAL(integerId3, service1->getObjectId(service::ut::TestServiceWithData::s_INOUT_GROUP, 2));
 
     m_appMgr->addObject(integer1, integerId1);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer2, integerId2);
     CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->m_inoutGroup.size());
     m_appMgr->addObject(integer3, integerId3);
     CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(3), service1->m_inoutGroup.size());
 
     m_appMgr->removeObject(integer3, integerId3);
     CPPUNIT_ASSERT_EQUAL(true, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), service1->m_inoutGroup.size());
     m_appMgr->removeObject(integer2, integerId2);
     CPPUNIT_ASSERT_EQUAL(false, service1->hasAllRequiredObjects());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), service1->m_inoutGroup.size());
 
     m_appMgr->destroy();
 }

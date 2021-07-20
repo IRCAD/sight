@@ -251,7 +251,7 @@ void SVolumeRender::updating()
 
 //------------------------------------------------------------------------------
 
-void SVolumeRender::swapping(const KeyType& _key)
+void SVolumeRender::swapping(std::string_view _key)
 {
     if(_key == s_VOLUME_TF_INOUT)
     {

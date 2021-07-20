@@ -45,7 +45,7 @@ public:
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
-    typedef std::map<std::string, data::mt::weak_ptr<data::Object> > InOutMapType;
+    typedef std::map<std::pair<std::string, size_t>, data::mt::weak_ptr<data::Object> > InOutMapType;
 
     /// Constructor. Do nothing.
     ACTIVITY_API IActivityLauncher();

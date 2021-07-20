@@ -78,10 +78,12 @@ private:
 
     unsigned int m_reduction;
 
+    static constexpr std::string_view s_MODELSERIES_OUT = "modelSeries";
+
     /// Input image mask
     data::ptr<data::ImageSeries, data::Access::in> m_image {this, "imageSeries", false};
     /// Output segmentation
-    data::ptr<data::ModelSeries, data::Access::out> m_model {this, "modelSeries", false};
+    data::ptr<data::ModelSeries, data::Access::out> m_model {this, s_MODELSERIES_OUT, false};
 };
 
 } // namespace sight::module::filter::mesh

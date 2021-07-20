@@ -37,8 +37,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
 static const core::com::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
 
-const service::key_t SReconstruction::s_RECONSTRUCTION_INPUT = "reconstruction";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_QUERY_CONFIG            = "queryFlags";
 
@@ -116,8 +114,8 @@ void SReconstruction::updating()
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = service::OSR::getRegistered("mesh", data::Access::inout, meshAdaptor);
-        if(mesh != reconstruction->getMesh())
+        auto mesh = meshAdaptor->getLockedInOut<sight::data::Mesh>("mesh");
+        if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction
             meshAdaptor->setMaterial(reconstruction->getMaterial());

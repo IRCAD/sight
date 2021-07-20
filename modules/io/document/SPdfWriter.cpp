@@ -42,9 +42,6 @@
 namespace sight::module::io::document
 {
 
-const service::IService::KeyType s_IMAGE_INPUT     = "image";
-const service::IService::KeyType s_CONTAINER_INPUT = "container";
-
 //-----------------------------------------------------------------------------
 
 SPdfWriter::SPdfWriter()
@@ -70,10 +67,11 @@ SPdfWriter::~SPdfWriter() noexcept
 
 void SPdfWriter::configuring()
 {
+    static constexpr auto s_CONTAINER_INPUT = "container";
     this->IWriter::configuring();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-    const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
+    const ConfigurationType containersConfig = m_configuration->findConfigurationElement(s_CONTAINER_INPUT);
     if(containersConfig)
     {
         const std::vector<ConfigurationType> containersCfg = containersConfig->find(s_CONTAINER_INPUT);
@@ -141,14 +139,22 @@ void SPdfWriter::updating()
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;
         std::vector<std::shared_future<QImage> > futuresQImage;
-        for(const data::Image::sptr& fwImage : m_imagesToExport)
-        {
-            std::shared_future<QImage> future;
-            future = pool.post(&SPdfWriter::convertFwImageToQImage, fwImage);
-            futuresQImage.push_back(future);
-        }
 
-        std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future<QImage>::wait));
+        {
+            // Keep locked_ptr until tasks are done
+            std::vector<data::mt::locked_ptr<const data::Image> > lockedImages;
+
+            for(const auto& imagePtr : m_images)
+            {
+                std::shared_future<QImage> future;
+                auto lockedImage = imagePtr.second.lock();
+                future = pool.post(&SPdfWriter::convertFwImageToQImage, std::ref(*lockedImage));
+                lockedImages.push_back(std::move(lockedImage));
+                futuresQImage.push_back(future);
+            }
+
+            std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future<QImage>::wait));
+        }
         for(auto& future : futuresQImage)
         {
             QImage imageToDraw = future.get();
@@ -195,13 +201,6 @@ void SPdfWriter::updating()
 
 void SPdfWriter::starting()
 {
-    const size_t groupImageSize = this->getKeyGroupSize(s_IMAGE_INPUT);
-    for(size_t idxImage = 0 ; idxImage < groupImageSize ; ++idxImage)
-    {
-        data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INPUT, idxImage);
-        m_imagesToExport.push_back(image);
-    }
-
     for(const auto& id : m_containersIDs)
     {
         ui::qt::container::QtContainer::sptr containerElt;
@@ -233,7 +232,6 @@ void SPdfWriter::stopping()
     }
 
     m_containersToExport.clear();
-    m_imagesToExport.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -253,23 +251,23 @@ void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 
 //------------------------------------------------------------------------------
 
-QImage SPdfWriter::convertFwImageToQImage(data::Image::sptr fwImage)
+QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 {
-    if(fwImage->getNumberOfComponents() == 3
-       && fwImage->getType().string() == "uint8"
-       && fwImage->getSize2()[2] == 1)
+    if(fwImage.getNumberOfComponents() == 3
+       && fwImage.getType().string() == "uint8"
+       && fwImage.getSize2()[2] == 1)
     {
         // Initialize QImage parameters
-        const data::Image::Size dimension = fwImage->getSize2();
+        const data::Image::Size dimension = fwImage.getSize2();
         const int width                   = static_cast<int>(dimension[0]);
         const int height                  = static_cast<int>(dimension[1]);
 
         QImage qImage(width, height, QImage::Format_ARGB32);
         std::uint8_t* qImageBuffer = qImage.bits();
 
-        const auto dumpLock = fwImage->lock();
+        const auto dumpLock = fwImage.lock();
 
-        auto imageItr = fwImage->begin<data::iterator::RGB>();
+        auto imageItr = fwImage.begin<data::iterator::RGB>();
 
         const unsigned int size = static_cast<unsigned int>(width * height) * 4;
         for(unsigned int idx = 0 ; idx < size ; idx += 4, ++imageItr)

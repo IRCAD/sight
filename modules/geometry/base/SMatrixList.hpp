@@ -114,17 +114,16 @@ private:
     ///SLOT: removes a matrix.
     void removeMatrix(int);
 
-    /// Vector containing input matrices.
-    std::vector<data::Matrix4::sptr> m_inputVector;
-
-    /// Vector containing output vector.
-    std::vector<data::Vector::sptr> m_outputVector;
-
-    /// Vector containing selected vector.
-    std::vector<data::Matrix4::sptr> m_selectedVector;
-
     typedef core::com::Signal<void (int, std::string)> MatrixAddedSignalType;
     typedef core::com::Signal<void (int)> MatrixRemovedSignalType;
+
+    static constexpr std::string_view s_MATRICES_INOUT = "matrices";
+    static constexpr std::string_view s_SELECTED_INOUT = "selectedMatrix";
+    static constexpr std::string_view s_VECTOR_INOUT   = "vector";
+
+    data::ptr_vector<data::Matrix4, data::Access::inout> m_inputVector {this, s_MATRICES_INOUT};
+    data::ptr_vector<data::Matrix4, data::Access::inout> m_selectedVector {this, s_SELECTED_INOUT};
+    data::ptr_vector<data::Vector, data::Access::out> m_outputVector {this, s_VECTOR_INOUT};
 };
 
 } // namespace sight::module::geometry::base.

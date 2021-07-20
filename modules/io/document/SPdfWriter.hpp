@@ -162,24 +162,19 @@ private:
      * @param data::Image to convert
      * @return converted QImage
      */
-    MODULE_IO_DOCUMENT_API static QImage convertFwImageToQImage(data::Image::sptr image);
+    static QImage convertFwImageToQImage(const data::Image& image);
 
     /**
      * @brief scaleQImage: applies a scale the QImages
      * @param A QImage and a factor of scaling.
      */
-    MODULE_IO_DOCUMENT_API static void scaleQImage(QImage& qImage, const int scale);
+    static void scaleQImage(QImage& qImage, const int scale);
 
     /**
      * @brief List of images IDs to export into the PDF.
      * Filled at the configuring from the XML configuration, and used at starting().
      */
     ImagesIDsType m_imagesUIDs;
-
-    /**
-     * @brief List of images to export into the PDF.
-     */
-    ImagesListType m_imagesToExport;
 
     /**
      * @brief List of containers IDs to export into the PDF.
@@ -191,6 +186,9 @@ private:
      * @brief List of containers to export into the PDF.
      */
     ContainersListType m_containersToExport;
+
+    static constexpr std::string_view s_IMAGE_INPUT = "image";
+    data::ptr_vector<data::Image, sight::data::Access::in> m_images {this, s_IMAGE_INPUT};
 };
 
 } // namespace sight::module

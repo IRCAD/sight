@@ -153,9 +153,9 @@ private:
     /// This avoids a self-call to updateTF3D() when we update() the camera
     bool m_skipUpdate {false};
 
-    static const service::key_t s_CALIBRATION_INPUT;
-    static const service::key_t s_CAMERA_SERIES_INPUT;
-    static const service::key_t s_TRANSFORM_INOUT;
+    static constexpr std::string_view s_CALIBRATION_INPUT   = "calibration";
+    static constexpr std::string_view s_CAMERA_SERIES_INPUT = "cameraSeries";
+    static constexpr std::string_view s_TRANSFORM_INOUT     = "transform";
 
     data::ptr<data::Camera, data::Access::in> m_cameraCalibration {this, s_CALIBRATION_INPUT, true, true};
     data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT, true, true};

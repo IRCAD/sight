@@ -191,11 +191,11 @@ private:
     /// List of tags associated with each inout matrix
     std::vector<data::MarkerMap::KeyType> m_matricesTag;
 
-    static const service::key_t s_MARKERMAP_INPUT;
-    static const service::key_t s_CAMERA_INPUT;
-    static const service::key_t s_EXTRINSIC_INPUT;
-    static const service::key_t s_MATRIX_INOUT;
-    static const service::key_t s_POINTLIST_INOUT;
+    static constexpr std::string_view s_MARKERMAP_INPUT = "markerMap";
+    static constexpr std::string_view s_CAMERA_INPUT    = "camera";
+    static constexpr std::string_view s_EXTRINSIC_INPUT = "extrinsic";
+    static constexpr std::string_view s_MATRIX_INOUT    = "matrix";
+    static constexpr std::string_view s_POINTLIST_INOUT = "pointList";
 
     data::ptr_vector<data::MarkerMap, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT, true};
     data::ptr_vector<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
