@@ -196,7 +196,7 @@ inline static data::Object::sptr deepDeserialize(
 
         // Try to reuse existing rather than create new one
         // Existing object will be overwritten
-        auto object = data::Object::dynamicCast(data::Object::fromUUID(uuid));
+        auto object = std::dynamic_pointer_cast<data::Object>(data::Object::fromUUID(uuid));
 
         if(!object)
         {

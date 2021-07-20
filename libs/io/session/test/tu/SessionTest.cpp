@@ -315,10 +315,10 @@ inline static void testComposite(const data::Composite::csptr& actual, const std
 
     const auto& container = actual->getContainer();
 
-    testBoolean(data::Boolean::dynamicCast(container.at(data::Boolean::classname())), variant);
-    testInteger(data::Integer::dynamicCast(container.at(data::Integer::classname())), variant);
-    testFloat(data::Float::dynamicCast(container.at(data::Float::classname())), variant);
-    testString(data::String::dynamicCast(container.at(data::String::classname())), variant);
+    testBoolean(std::dynamic_pointer_cast<data::Boolean>(container.at(data::Boolean::classname())), variant);
+    testInteger(std::dynamic_pointer_cast<data::Integer>(container.at(data::Integer::classname())), variant);
+    testFloat(std::dynamic_pointer_cast<data::Float>(container.at(data::Float::classname())), variant);
+    testString(std::dynamic_pointer_cast<data::String>(container.at(data::String::classname())), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -1076,11 +1076,11 @@ inline static void testVector(const data::Vector::csptr& actual, const std::size
     CPPUNIT_ASSERT(actual);
 
     auto it = actual->getContainer().cbegin();
-    testBoolean(data::Boolean::dynamicCast(*it++), variant);
-    testInteger(data::Integer::dynamicCast(*it++), variant);
-    testFloat(data::Float::dynamicCast(*it++), variant);
-    testString(data::String::dynamicCast(*it++), variant);
-    testActivitySeries(data::ActivitySeries::dynamicCast(*it++), variant);
+    testBoolean(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
+    testInteger(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
+    testFloat(std::dynamic_pointer_cast<data::Float>(*it++), variant);
+    testString(std::dynamic_pointer_cast<data::String>(*it++), variant);
+    testActivitySeries(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -1612,7 +1612,7 @@ inline static void testNode(const data::Node::csptr& actual, const std::size_t v
 {
     CPPUNIT_ASSERT(actual);
 
-    testString(data::String::dynamicCast(actual->getObject()), variant);
+    testString(std::dynamic_pointer_cast<data::String>(actual->getObject()), variant);
 
     const auto& inputs = actual->getInputPorts();
     for(std::size_t i = 0, end = inputs.size() ; i < end ; ++i)
@@ -1957,11 +1957,11 @@ inline static void testList(const data::List::csptr& actual, const std::size_t v
     CPPUNIT_ASSERT(actual);
 
     auto it = actual->getContainer().cbegin();
-    testBoolean(data::Boolean::dynamicCast(*it++), variant);
-    testInteger(data::Integer::dynamicCast(*it++), variant);
-    testFloat(data::Float::dynamicCast(*it++), variant);
-    testString(data::String::dynamicCast(*it++), variant);
-    testActivitySeries(data::ActivitySeries::dynamicCast(*it++), variant);
+    testBoolean(std::dynamic_pointer_cast<data::Boolean>(*it++), variant);
+    testInteger(std::dynamic_pointer_cast<data::Integer>(*it++), variant);
+    testFloat(std::dynamic_pointer_cast<data::Float>(*it++), variant);
+    testString(std::dynamic_pointer_cast<data::String>(*it++), variant);
+    testActivitySeries(std::dynamic_pointer_cast<data::ActivitySeries>(*it++), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -3086,11 +3086,11 @@ void SessionTest::booleanTest()
         sessionReader->read();
 
         // Test value
-        const auto& boolean = data::Boolean::dynamicCast(sessionReader->getObject());
+        auto boolean = std::dynamic_pointer_cast<data::Boolean>(sessionReader->getObject());
         testBoolean(boolean);
 
         // Test field
-        const auto& boolean2 = data::Boolean::dynamicCast(boolean->getField(fieldName));
+        auto boolean2 = std::dynamic_pointer_cast<data::Boolean>(boolean->getField(fieldName));
         testBoolean(boolean2, 1);
     }
 }
@@ -3134,11 +3134,11 @@ void SessionTest::integerTest()
         sessionReader->read();
 
         // Test value
-        const auto& integer = data::Integer::dynamicCast(sessionReader->getObject());
+        auto integer = std::dynamic_pointer_cast<data::Integer>(sessionReader->getObject());
         testInteger(integer);
 
         // Test field
-        const auto& integer2 = data::Integer::dynamicCast(integer->getField(fieldName));
+        auto integer2 = std::dynamic_pointer_cast<data::Integer>(integer->getField(fieldName));
         testInteger(integer2, 1);
     }
 }
@@ -3182,11 +3182,11 @@ void SessionTest::floatTest()
         sessionReader->read();
 
         // Test value
-        const auto& real = data::Float::dynamicCast(sessionReader->getObject());
+        auto real = std::dynamic_pointer_cast<data::Float>(sessionReader->getObject());
         testFloat(real);
 
         // Test field
-        const auto& real2 = data::Float::dynamicCast(real->getField(fieldName));
+        auto real2 = std::dynamic_pointer_cast<data::Float>(real->getField(fieldName));
         testFloat(real2, 1);
     }
 }
@@ -3229,11 +3229,11 @@ void SessionTest::stringTest()
         sessionReader->read();
 
         // Test value
-        const auto& string = data::String::dynamicCast(sessionReader->getObject());
+        const auto& string = std::dynamic_pointer_cast<data::String>(sessionReader->getObject());
         testString(string);
 
         // Test field
-        const auto& string2 = data::String::dynamicCast(string->getField(fieldName));
+        const auto& string2 = std::dynamic_pointer_cast<data::String>(string->getField(fieldName));
         testString(string2, 1);
     }
 }
@@ -3272,7 +3272,7 @@ void SessionTest::compositeTest()
         sessionReader->read();
 
         // Test value
-        testComposite(data::Composite::dynamicCast(sessionReader->getObject()));
+        testComposite(std::dynamic_pointer_cast<data::Composite>(sessionReader->getObject()));
     }
 }
 
@@ -3309,7 +3309,7 @@ void SessionTest::meshTest()
         sessionReader->read();
 
         // Test value
-        testMesh(data::Mesh::dynamicCast(sessionReader->getObject()));
+        testMesh(std::dynamic_pointer_cast<data::Mesh>(sessionReader->getObject()));
     }
 }
 
@@ -3348,7 +3348,7 @@ void SessionTest::equipmentTest()
         sessionReader->read();
 
         // Test value
-        testEquipment(data::Equipment::dynamicCast(sessionReader->getObject()));
+        testEquipment(std::dynamic_pointer_cast<data::Equipment>(sessionReader->getObject()));
     }
 }
 
@@ -3385,7 +3385,7 @@ void SessionTest::patientTest()
         sessionReader->read();
 
         // Test value
-        testPatient(data::Patient::dynamicCast(sessionReader->getObject()));
+        testPatient(std::dynamic_pointer_cast<data::Patient>(sessionReader->getObject()));
     }
 }
 
@@ -3422,7 +3422,7 @@ void SessionTest::studyTest()
         sessionReader->read();
 
         // Test value
-        testStudy(data::Study::dynamicCast(sessionReader->getObject()));
+        testStudy(std::dynamic_pointer_cast<data::Study>(sessionReader->getObject()));
     }
 }
 
@@ -3459,7 +3459,7 @@ void SessionTest::seriesTest()
         sessionReader->read();
 
         // Test value
-        testSeries(data::Series::dynamicCast(sessionReader->getObject()));
+        testSeries(std::dynamic_pointer_cast<data::Series>(sessionReader->getObject()));
     }
 }
 
@@ -3496,7 +3496,7 @@ void SessionTest::activitySeriesTest()
         sessionReader->read();
 
         // Test value
-        testActivitySeries(data::ActivitySeries::dynamicCast(sessionReader->getObject()));
+        testActivitySeries(std::dynamic_pointer_cast<data::ActivitySeries>(sessionReader->getObject()));
     }
 }
 
@@ -3534,7 +3534,7 @@ void SessionTest::arrayTest()
         sessionReader->read();
 
         // Test value
-        testArray(data::Array::dynamicCast(sessionReader->getObject()));
+        testArray(std::dynamic_pointer_cast<data::Array>(sessionReader->getObject()));
     }
 }
 
@@ -3572,7 +3572,7 @@ void SessionTest::imageTest()
         sessionReader->read();
 
         // Test value
-        testImage(data::Image::dynamicCast(sessionReader->getObject()));
+        testImage(std::dynamic_pointer_cast<data::Image>(sessionReader->getObject()));
     }
 }
 
@@ -3612,7 +3612,7 @@ void SessionTest::vectorTest()
         sessionReader->read();
 
         // Test value
-        testVector(data::Vector::dynamicCast(sessionReader->getObject()));
+        testVector(std::dynamic_pointer_cast<data::Vector>(sessionReader->getObject()));
     }
 }
 
@@ -3650,7 +3650,7 @@ void SessionTest::pointTest()
         sessionReader->read();
 
         // Test value
-        testPoint(data::Point::dynamicCast(sessionReader->getObject()));
+        testPoint(std::dynamic_pointer_cast<data::Point>(sessionReader->getObject()));
     }
 }
 
@@ -3688,7 +3688,7 @@ void SessionTest::pointListTest()
         sessionReader->read();
 
         // Test value
-        testPointList(data::PointList::dynamicCast(sessionReader->getObject()));
+        testPointList(std::dynamic_pointer_cast<data::PointList>(sessionReader->getObject()));
     }
 }
 
@@ -3726,7 +3726,7 @@ void SessionTest::calibrationInfoTest()
         sessionReader->read();
 
         // Test value
-        testCalibrationInfo(data::CalibrationInfo::dynamicCast(sessionReader->getObject()));
+        testCalibrationInfo(std::dynamic_pointer_cast<data::CalibrationInfo>(sessionReader->getObject()));
     }
 }
 
@@ -3763,7 +3763,7 @@ void SessionTest::cameraTest()
         sessionReader->read();
 
         // Test value
-        testCamera(data::Camera::dynamicCast(sessionReader->getObject()));
+        testCamera(std::dynamic_pointer_cast<data::Camera>(sessionReader->getObject()));
     }
 }
 
@@ -3800,7 +3800,7 @@ void SessionTest::cameraSeriesTest()
         sessionReader->read();
 
         // Test value
-        testCameraSeries(data::CameraSeries::dynamicCast(sessionReader->getObject()));
+        testCameraSeries(std::dynamic_pointer_cast<data::CameraSeries>(sessionReader->getObject()));
     }
 }
 
@@ -3838,7 +3838,7 @@ void SessionTest::colorTest()
         sessionReader->read();
 
         // Test value
-        testColor(data::Color::dynamicCast(sessionReader->getObject()));
+        testColor(std::dynamic_pointer_cast<data::Color>(sessionReader->getObject()));
     }
 }
 
@@ -3876,7 +3876,7 @@ void SessionTest::edgeTest()
         sessionReader->read();
 
         // Test value
-        testEdge(data::Edge::dynamicCast(sessionReader->getObject()));
+        testEdge(std::dynamic_pointer_cast<data::Edge>(sessionReader->getObject()));
     }
 }
 
@@ -3917,7 +3917,7 @@ void SessionTest::portTest()
         sessionReader->read();
 
         // Test value
-        testPort(data::Port::dynamicCast(sessionReader->getObject()));
+        testPort(std::dynamic_pointer_cast<data::Port>(sessionReader->getObject()));
     }
 }
 
@@ -3955,7 +3955,7 @@ void SessionTest::nodeTest()
         sessionReader->read();
 
         // Test value
-        testNode(data::Node::dynamicCast(sessionReader->getObject()));
+        testNode(std::dynamic_pointer_cast<data::Node>(sessionReader->getObject()));
     }
 }
 
@@ -3993,7 +3993,7 @@ void SessionTest::graphTest()
         sessionReader->read();
 
         // Test value
-        testGraph(data::Graph::dynamicCast(sessionReader->getObject()));
+        testGraph(std::dynamic_pointer_cast<data::Graph>(sessionReader->getObject()));
     }
 }
 
@@ -4031,7 +4031,7 @@ void SessionTest::histogramTest()
         sessionReader->read();
 
         // Test value
-        testHistogram(data::Histogram::dynamicCast(sessionReader->getObject()));
+        testHistogram(std::dynamic_pointer_cast<data::Histogram>(sessionReader->getObject()));
     }
 }
 
@@ -4069,7 +4069,7 @@ void SessionTest::landmarksTest()
         sessionReader->read();
 
         // Test value
-        testLandmarks(data::Landmarks::dynamicCast(sessionReader->getObject()));
+        testLandmarks(std::dynamic_pointer_cast<data::Landmarks>(sessionReader->getObject()));
     }
 }
 
@@ -4107,7 +4107,7 @@ void SessionTest::lineTest()
         sessionReader->read();
 
         // Test value
-        testLine(data::Line::dynamicCast(sessionReader->getObject()));
+        testLine(std::dynamic_pointer_cast<data::Line>(sessionReader->getObject()));
     }
 }
 
@@ -4145,7 +4145,7 @@ void SessionTest::listTest()
         sessionReader->read();
 
         // Test value
-        testList(data::List::dynamicCast(sessionReader->getObject()));
+        testList(std::dynamic_pointer_cast<data::List>(sessionReader->getObject()));
     }
 }
 
@@ -4183,7 +4183,7 @@ void SessionTest::materialTest()
         sessionReader->read();
 
         // Test value
-        testMaterial(data::Material::dynamicCast(sessionReader->getObject()));
+        testMaterial(std::dynamic_pointer_cast<data::Material>(sessionReader->getObject()));
     }
 }
 
@@ -4226,11 +4226,11 @@ void SessionTest::matrix4Test()
         sessionReader->read();
 
         // Test Value
-        const auto& matrix = data::Matrix4::dynamicCast(sessionReader->getObject());
+        auto matrix = std::dynamic_pointer_cast<data::Matrix4>(sessionReader->getObject());
         testMatrix4(matrix);
 
         // Test Field
-        testMatrix4(data::Matrix4::dynamicCast(matrix->getField(fieldName)), 1);
+        testMatrix4(std::dynamic_pointer_cast<data::Matrix4>(matrix->getField(fieldName)), 1);
     }
 }
 
@@ -4268,7 +4268,7 @@ void SessionTest::planeTest()
         sessionReader->read();
 
         // Test value
-        testPlane(data::Plane::dynamicCast(sessionReader->getObject()));
+        testPlane(std::dynamic_pointer_cast<data::Plane>(sessionReader->getObject()));
     }
 }
 
@@ -4306,7 +4306,7 @@ void SessionTest::planeListTest()
         sessionReader->read();
 
         // Test value
-        testPlaneList(data::PlaneList::dynamicCast(sessionReader->getObject()));
+        testPlaneList(std::dynamic_pointer_cast<data::PlaneList>(sessionReader->getObject()));
     }
 }
 
@@ -4344,7 +4344,7 @@ void SessionTest::processObjectTest()
         sessionReader->read();
 
         // Test value
-        testProcessObject(data::ProcessObject::dynamicCast(sessionReader->getObject()));
+        testProcessObject(std::dynamic_pointer_cast<data::ProcessObject>(sessionReader->getObject()));
     }
 }
 
@@ -4382,7 +4382,7 @@ void SessionTest::reconstructionTest()
         sessionReader->read();
 
         // Test value
-        testReconstruction(data::Reconstruction::dynamicCast(sessionReader->getObject()));
+        testReconstruction(std::dynamic_pointer_cast<data::Reconstruction>(sessionReader->getObject()));
     }
 }
 
@@ -4420,7 +4420,7 @@ void SessionTest::structureTraitsTest()
         sessionReader->read();
 
         // Test value
-        testStructureTraits(data::StructureTraits::dynamicCast(sessionReader->getObject()));
+        testStructureTraits(std::dynamic_pointer_cast<data::StructureTraits>(sessionReader->getObject()));
     }
 }
 
@@ -4458,7 +4458,7 @@ void SessionTest::reconstructionTraitsTest()
         sessionReader->read();
 
         // Test value
-        testReconstructionTraits(data::ReconstructionTraits::dynamicCast(sessionReader->getObject()));
+        testReconstructionTraits(std::dynamic_pointer_cast<data::ReconstructionTraits>(sessionReader->getObject()));
     }
 }
 
@@ -4496,7 +4496,7 @@ void SessionTest::resectionTest()
         sessionReader->read();
 
         // Test value
-        testResection(data::Resection::dynamicCast(sessionReader->getObject()));
+        testResection(std::dynamic_pointer_cast<data::Resection>(sessionReader->getObject()));
     }
 }
 
@@ -4534,7 +4534,7 @@ void SessionTest::resectionDBTest()
         sessionReader->read();
 
         // Test value
-        testResectionDB(data::ResectionDB::dynamicCast(sessionReader->getObject()));
+        testResectionDB(std::dynamic_pointer_cast<data::ResectionDB>(sessionReader->getObject()));
     }
 }
 
@@ -4572,7 +4572,7 @@ void SessionTest::roiTraitsTest()
         sessionReader->read();
 
         // Test value
-        testROITraits(data::ROITraits::dynamicCast(sessionReader->getObject()));
+        testROITraits(std::dynamic_pointer_cast<data::ROITraits>(sessionReader->getObject()));
     }
 }
 
@@ -4610,7 +4610,7 @@ void SessionTest::seriesDBTest()
         sessionReader->read();
 
         // Test value
-        testSeriesDB(data::SeriesDB::dynamicCast(sessionReader->getObject()));
+        testSeriesDB(std::dynamic_pointer_cast<data::SeriesDB>(sessionReader->getObject()));
     }
 }
 
@@ -4648,7 +4648,9 @@ void SessionTest::structureTraitsDictionaryTest()
         sessionReader->read();
 
         // Test value
-        testStructureTraitsDictionary(data::StructureTraitsDictionary::dynamicCast(sessionReader->getObject()));
+        testStructureTraitsDictionary(
+            std::dynamic_pointer_cast<data::StructureTraitsDictionary>(sessionReader->getObject())
+        );
     }
 }
 
@@ -4686,7 +4688,7 @@ void SessionTest::tagTest()
         sessionReader->read();
 
         // Test value
-        testTag(data::Tag::dynamicCast(sessionReader->getObject()));
+        testTag(std::dynamic_pointer_cast<data::Tag>(sessionReader->getObject()));
     }
 }
 
@@ -4726,7 +4728,7 @@ void SessionTest::transferFunctionTest()
         sessionReader->read();
 
         // Test value
-        testTransferFunction(data::TransferFunction::dynamicCast(sessionReader->getObject()));
+        testTransferFunction(std::dynamic_pointer_cast<data::TransferFunction>(sessionReader->getObject()));
     }
 }
 

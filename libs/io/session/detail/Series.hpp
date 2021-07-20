@@ -63,7 +63,7 @@ constexpr static auto s_PerformingPhysiciansNames {"PerformingPhysiciansNames"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -128,7 +128,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Series::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -142,9 +142,9 @@ inline static data::Series::sptr deserialize(
     Helper::readVersion<data::Series>(tree, 0, 1);
 
     // Set children from map
-    series->setPatient(data::Patient::dynamicCast(children.at(s_Patient)));
-    series->setStudy(data::Study::dynamicCast(children.at(s_Study)));
-    series->setEquipment(data::Equipment::dynamicCast(children.at(s_Equipment)));
+    series->setPatient(std::dynamic_pointer_cast<data::Patient>(children.at(s_Patient)));
+    series->setStudy(std::dynamic_pointer_cast<data::Study>(children.at(s_Study)));
+    series->setEquipment(std::dynamic_pointer_cast<data::Equipment>(children.at(s_Equipment)));
 
     // Deserialize patient data
     series->setModality(Helper::readString(tree, s_Modality, password));

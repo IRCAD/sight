@@ -49,7 +49,7 @@ constexpr static auto s_Color {"Color"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -88,7 +88,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::StructureTraits::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -123,7 +123,7 @@ inline static data::StructureTraits::sptr deserialize(
     }
 
     // Color
-    structureTraits->setColor(data::Color::dynamicCast(children.at(s_Color)));
+    structureTraits->setColor(std::dynamic_pointer_cast<data::Color>(children.at(s_Color)));
 
     return structureTraits;
 }

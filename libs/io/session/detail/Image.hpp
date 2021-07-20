@@ -49,7 +49,7 @@ inline static void serialize(
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>& children,
+    std::map<std::string, data::Object::csptr>&,
     const core::crypto::secure_string& password = ""
 )
 {
@@ -89,7 +89,7 @@ inline static void serialize(
 inline static data::Image::sptr deserialize(
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>& children,
+    const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
     const core::crypto::secure_string& password = ""
 )

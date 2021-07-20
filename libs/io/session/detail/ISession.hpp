@@ -140,6 +140,8 @@ inline core::crypto::secure_string ISession::pickle(
         case ISession::EncryptionLevel::FORCED:
             return password + core::crypto::secure_string(salt);
     }
+
+    return password;
 }
 
 } // namespace detail

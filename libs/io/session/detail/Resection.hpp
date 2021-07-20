@@ -44,7 +44,7 @@ constexpr static auto s_IsVisible {"IsVisible"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -82,7 +82,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Resection::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -101,7 +101,7 @@ inline static data::Resection::sptr deserialize(
     resection->setIsValid(tree.get<bool>(s_IsValid));
     resection->setIsVisible(tree.get<bool>(s_IsVisible));
 
-    resection->setPlaneList(data::PlaneList::dynamicCast(children.at(s_PlaneList)));
+    resection->setPlaneList(std::dynamic_pointer_cast<data::PlaneList>(children.at(s_PlaneList)));
 
     // Deserialize intputs / outputs
     auto& inputs = resection->getInputs();
@@ -122,12 +122,12 @@ inline static data::Resection::sptr deserialize(
 
         if(inputIt != children.cend())
         {
-            inputs.push_back(data::Reconstruction::dynamicCast(inputIt->second));
+            inputs.push_back(std::dynamic_pointer_cast<data::Reconstruction>(inputIt->second));
         }
 
         if(outputIt != children.cend())
         {
-            outputs.push_back(data::Reconstruction::dynamicCast(outputIt->second));
+            outputs.push_back(std::dynamic_pointer_cast<data::Reconstruction>(outputIt->second));
         }
     }
 

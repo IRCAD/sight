@@ -93,7 +93,7 @@ inline static data::CameraSeries::sptr deserialize(
             break;
         }
 
-        cameraSeries->addCamera(data::Camera::dynamicCast(cameraIt->second));
+        cameraSeries->addCamera(std::dynamic_pointer_cast<data::Camera>(cameraIt->second));
     }
 
     return cameraSeries;

@@ -37,11 +37,11 @@ namespace detail::SeriesDB
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto seriesDB = Helper::safeCast<data::SeriesDB>(object);
@@ -59,11 +59,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::SeriesDB::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -87,7 +87,7 @@ inline static data::SeriesDB::sptr deserialize(
             break;
         }
 
-        series.push_back(data::Series::dynamicCast(it->second));
+        series.push_back(std::dynamic_pointer_cast<data::Series>(it->second));
     }
 
     return seriesDB;

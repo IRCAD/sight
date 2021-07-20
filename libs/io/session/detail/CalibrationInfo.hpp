@@ -38,11 +38,11 @@ namespace detail::CalibrationInfo
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto calibrationInfo = Helper::safeCast<data::CalibrationInfo>(object);
@@ -68,11 +68,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::CalibrationInfo::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -98,8 +98,8 @@ inline static data::CalibrationInfo::sptr deserialize(
             break;
         }
 
-        const auto& image     = data::Image::dynamicCast(imageIt->second);
-        const auto& pointList = data::PointList::dynamicCast(pointListIt->second);
+        auto image     = std::dynamic_pointer_cast<data::Image>(imageIt->second);
+        auto pointList = std::dynamic_pointer_cast<data::PointList>(pointListIt->second);
 
         calibrationInfo->addRecord(image, pointList);
     }

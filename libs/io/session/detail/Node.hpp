@@ -40,11 +40,11 @@ constexpr static auto s_Output {"Output"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto node = Helper::safeCast<data::Node>(object);
@@ -70,11 +70,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Node::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -102,12 +102,12 @@ inline static data::Node::sptr deserialize(
 
         if(inputIt != children.cend())
         {
-            node->addInputPort(data::Port::dynamicCast(inputIt->second));
+            node->addInputPort(std::dynamic_pointer_cast<data::Port>(inputIt->second));
         }
 
         if(outputIt != children.cend())
         {
-            node->addOutputPort(data::Port::dynamicCast(outputIt->second));
+            node->addOutputPort(std::dynamic_pointer_cast<data::Port>(outputIt->second));
         }
     }
 

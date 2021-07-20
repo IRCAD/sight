@@ -36,11 +36,11 @@ namespace detail::Composite
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto composite = Helper::safeCast<data::Composite>(object);
@@ -56,11 +56,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Composite::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object

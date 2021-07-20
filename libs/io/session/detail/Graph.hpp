@@ -41,11 +41,11 @@ constexpr static auto s_Down {"Down"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto graph = Helper::safeCast<data::Graph>(object);
@@ -77,11 +77,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Graph::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -104,7 +104,7 @@ inline static data::Graph::sptr deserialize(
             break;
         }
 
-        graph->addNode(data::Node::dynamicCast(nodeIt->second));
+        graph->addNode(std::dynamic_pointer_cast<data::Node>(nodeIt->second));
     }
 
     // Deserialize connections
@@ -125,9 +125,9 @@ inline static data::Graph::sptr deserialize(
             break;
         }
 
-        const auto& edge     = data::Edge::dynamicCast(edgeIt->second);
-        const auto& upNode   = data::Node::dynamicCast(upIt->second);
-        const auto& downNode = data::Node::dynamicCast(downIt->second);
+        const auto& edge     = std::dynamic_pointer_cast<data::Edge>(edgeIt->second);
+        const auto& upNode   = std::dynamic_pointer_cast<data::Node>(upIt->second);
+        const auto& downNode = std::dynamic_pointer_cast<data::Node>(downIt->second);
 
         graph->addEdge(edge, upNode, downNode);
     }

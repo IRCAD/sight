@@ -118,11 +118,11 @@ inline static void writeString(
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::sptr safeCast(const sight::data::Object::sptr& object)
+inline static typename T::sptr safeCast(sight::data::Object::sptr object)
 {
     if(object)
     {
-        const auto& casted = T::dynamicCast(object);
+        const auto& casted = std::dynamic_pointer_cast<T>(object);
 
         SIGHT_THROW_IF(
             "Object '" << object->getClassname() << "' is not a '" << T::classname() << "'",
@@ -139,9 +139,9 @@ inline static typename T::sptr safeCast(const sight::data::Object::sptr& object)
 /// Mainly to factorize error management
 /// @param[in] object the object to cast to type T
 template<typename T>
-inline static typename T::csptr safeCast(const sight::data::Object::csptr& object)
+inline static typename T::csptr safeCast(sight::data::Object::csptr object)
 {
-    const auto& casted = T::dynamicCast(object);
+    const auto& casted = std::dynamic_pointer_cast<const T>(object);
     SIGHT_THROW_IF(
         "Object '"
         << (object ? object->getClassname() : sight::data::Object::classname())
@@ -162,11 +162,11 @@ inline static typename T::csptr safeCast(const sight::data::Object::csptr& objec
 /// @param[in] password (optional) the password to use if encryption is enabled
 template<typename T>
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    std::map<std::string, data::Object::csptr>&,
+    const core::crypto::secure_string& = ""
 )
 {
     const auto& casted = safeCast<T>(object);
@@ -185,11 +185,11 @@ inline static void serialize(
 /// @param[in] password (optional) the password used for encryption
 template<typename T>
 inline static typename T::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>& children,
+    const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object

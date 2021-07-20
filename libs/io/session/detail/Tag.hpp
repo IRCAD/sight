@@ -41,7 +41,7 @@ constexpr static auto s_Size {"Size"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -61,7 +61,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Tag::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -76,7 +76,7 @@ inline static data::Tag::sptr deserialize(
 
     tag->setType(Helper::readString(tree, s_Type, password));
     tag->setSize(tree.get<double>(s_Size));
-    tag->setPointList(data::PointList::dynamicCast(children.at(s_PointList)));
+    tag->setPointList(std::dynamic_pointer_cast<data::PointList>(children.at(s_PointList)));
 
     return tag;
 }

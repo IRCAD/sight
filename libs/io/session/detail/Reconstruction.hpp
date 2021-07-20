@@ -47,7 +47,7 @@ constexpr static auto s_ComputedMaskVolume {"ComputedMaskVolume"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -74,7 +74,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Reconstruction::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -92,9 +92,9 @@ inline static data::Reconstruction::sptr deserialize(
     reconstruction->setOrganName(Helper::readString(tree, s_OrganName, password));
     reconstruction->setStructureType(Helper::readString(tree, s_StructureType, password));
 
-    reconstruction->setMaterial(data::Material::dynamicCast(children.at(s_Material)));
-    reconstruction->setImage(data::Image::dynamicCast(children.at(s_Image)));
-    reconstruction->setMesh(data::Mesh::dynamicCast(children.at(s_Mesh)));
+    reconstruction->setMaterial(std::dynamic_pointer_cast<data::Material>(children.at(s_Material)));
+    reconstruction->setImage(std::dynamic_pointer_cast<data::Image>(children.at(s_Image)));
+    reconstruction->setMesh(std::dynamic_pointer_cast<data::Mesh>(children.at(s_Mesh)));
 
     reconstruction->setComputedMaskVolume(tree.get<double>(s_ComputedMaskVolume));
 

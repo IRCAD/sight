@@ -85,7 +85,7 @@ inline static data::ActivitySeries::sptr deserialize(
 
     // Deserialize the remaining
     // Deserialize children properties
-    activitySeries->setData(data::Composite::dynamicCast(children.at(s_Data)));
+    activitySeries->setData(std::dynamic_pointer_cast<data::Composite>(children.at(s_Data)));
 
     // Serialize trivial properties
     activitySeries->setActivityConfigId(Helper::readString(tree, s_ActivityConfigId, password));

@@ -39,11 +39,11 @@ constexpr static auto s_IsIntersection {"IsIntersection"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto plane = Helper::safeCast<data::Plane>(object);
@@ -63,11 +63,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Plane::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -89,7 +89,7 @@ inline static data::Plane::sptr deserialize(
             break;
         }
 
-        points[index] = data::Point::dynamicCast(it->second);
+        points[index] = std::dynamic_pointer_cast<data::Point>(it->second);
     }
 
     return plane;

@@ -57,7 +57,7 @@ public:
     inline void write()
     {
         // Retrieve the root object
-        auto root_object = data::Object::dynamicCast(m_SessionWriter->getObject());
+        auto root_object = std::dynamic_pointer_cast<const data::Object>(m_SessionWriter->getObject());
         SIGHT_FATAL_IF("Root object is null or not a data object.", !root_object);
 
         // Create the session and serialize the root object

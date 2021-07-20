@@ -43,7 +43,7 @@ constexpr static auto s_StructureTraits {"StructureTraits"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
@@ -65,7 +65,7 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ReconstructionTraits::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
@@ -80,9 +80,15 @@ inline static data::ReconstructionTraits::sptr deserialize(
 
     // Deserialize attributes
     reconstructionTraits->setIdentifier(Helper::readString(tree, s_Identifier, password));
-    reconstructionTraits->setMaskOpNode(data::Node::dynamicCast(children.at(s_MaskOpNode)));
-    reconstructionTraits->setMeshOpNode(data::Node::dynamicCast(children.at(s_MeshOpNode)));
-    reconstructionTraits->setStructureTraits(data::StructureTraits::dynamicCast(children.at(s_StructureTraits)));
+    reconstructionTraits->setMaskOpNode(std::dynamic_pointer_cast<data::Node>(children.at(s_MaskOpNode)));
+    reconstructionTraits->setMeshOpNode(std::dynamic_pointer_cast<data::Node>(children.at(s_MeshOpNode)));
+    reconstructionTraits->setStructureTraits(
+        std::dynamic_pointer_cast<data::StructureTraits>(
+            children.at(
+                s_StructureTraits
+            )
+        )
+    );
 
     return reconstructionTraits;
 }

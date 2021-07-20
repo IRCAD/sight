@@ -43,11 +43,11 @@ constexpr static auto s_IsVisible {"IsVisible"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter& archive,
+    zip::ArchiveWriter&,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto resectionDB = Helper::safeCast<data::ResectionDB>(object);
@@ -68,11 +68,11 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ResectionDB::sptr deserialize(
-    zip::ArchiveReader& archive,
+    zip::ArchiveReader&,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -81,7 +81,7 @@ inline static data::ResectionDB::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ResectionDB>(tree, 0, 1);
 
-    resectionDB->setSafeResection(data::Resection::dynamicCast(children.at(s_SafeResection)));
+    resectionDB->setSafeResection(std::dynamic_pointer_cast<data::Resection>(children.at(s_SafeResection)));
 
     // Clearing is required in case the object is reused
     resectionDB->setResections(data::ResectionDB::ResectionContainerType());
@@ -95,7 +95,7 @@ inline static data::ResectionDB::sptr deserialize(
             break;
         }
 
-        resectionDB->addResection(data::Resection::dynamicCast(it->second));
+        resectionDB->addResection(std::dynamic_pointer_cast<data::Resection>(it->second));
     }
 
     return resectionDB;
