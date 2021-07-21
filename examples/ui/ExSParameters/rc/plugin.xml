@@ -114,7 +114,7 @@ This example shows the possibilities of SParameters:
                     <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="20.5" min="0." max="80." />
                     <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="20.5" min="0." max="80." />
                     <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="0" min="0" max="80" />
-                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="0" min="0" max="80" emitOnRelease="true"/>
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="0" min="0" max="80" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="0" min="0" max="80" />
                 </parameters>
@@ -127,7 +127,7 @@ This example shows the possibilities of SParameters:
                     <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="75.3" min="35." max="150." />
                     <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="75.3" min="35." max="150." />
                     <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="20" min="0" max="100" />
-                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="20" min="0" max="100" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="20" min="0" max="100" emitOnRelease="true" />
                     <param type="int"     name="2 Integer" key="int2_1"    widget="slider" defaultValue="20" min="0" max="100" />
                     <param type="int"     name="3 Integer" key="int3_1"    widget="slider" defaultValue="20" min="0" max="100" />
                 </parameters>
