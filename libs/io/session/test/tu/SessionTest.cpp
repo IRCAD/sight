@@ -34,6 +34,7 @@
 #include <data/CameraSeries.hpp>
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
+#include <data/DicomSeries.hpp>
 #include <data/Edge.hpp>
 #include <data/Equipment.hpp>
 #include <data/Float.hpp>
@@ -76,12 +77,15 @@
 
 #include <geometry/data/Mesh.hpp>
 
+#include <io/dicom/reader/SeriesDB.hpp>
 #include <io/session/detail/SessionDeserializer.hpp>
 #include <io/session/detail/SessionSerializer.hpp>
 #include <io/session/SessionReader.hpp>
 #include <io/session/SessionWriter.hpp>
 #include <io/zip/exception/Read.hpp>
 #include <io/zip/exception/Write.hpp>
+
+#include <utest/Filter.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -3037,6 +3041,94 @@ inline static void testTransferFunction(const data::TransferFunction::csptr& act
 
 //------------------------------------------------------------------------------
 
+inline static const data::DicomSeries::csptr& expectedDicomSeries(const std::size_t variant = 0)
+{
+    const auto& generator =
+        [&]
+        {
+            data::DicomSeries::sptr dicomSeries;
+
+            // Only load the real dicom once
+            if(variant == 0)
+            {
+                // Setup the SeriesDB to be able to read
+                auto seriesDB                    = data::SeriesDB::New();
+                const std::filesystem::path path = utestData::Data::dir()
+                                                   / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
+
+                CPPUNIT_ASSERT_MESSAGE(
+                    "The dicom directory '" + path.string() + "' does not exist",
+                    std::filesystem::exists(path)
+                );
+
+                // Read source Dicom
+                auto reader = io::dicom::reader::SeriesDB::New();
+                reader->setObject(seriesDB);
+                reader->setFolder(path);
+
+                CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
+                CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), seriesDB->size());
+
+                dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(seriesDB->getContainer().front());
+            }
+            else
+            {
+                // Take the first variant as basis
+                dicomSeries = std::const_pointer_cast<data::DicomSeries>(expectedDicomSeries(0));
+            }
+
+            // Randomize a bit the dicomSeries
+            for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+            {
+                dicomSeries->addSOPClassUID(UUID::generateUUID());
+                dicomSeries->addComputedTagValue(UUID::generateUUID(), UUID::generateUUID());
+            }
+
+            return dicomSeries;
+        };
+
+    static std::map<std::size_t, data::DicomSeries::csptr> dicomSeries;
+    const auto& it = dicomSeries.find(variant);
+
+    if(it == dicomSeries.cend())
+    {
+        return dicomSeries.insert_or_assign(variant, generator()).first->second;
+    }
+    else
+    {
+        return it->second;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static data::DicomSeries::sptr newDicomSeries(const std::size_t variant = 0)
+{
+    const auto& dicomSeries = data::DicomSeries::New();
+    dicomSeries->deepCopy(expectedDicomSeries(variant));
+    return dicomSeries;
+}
+
+//------------------------------------------------------------------------------
+
+inline static void testDicomSeries(const data::DicomSeries::csptr& actual, const std::size_t variant = 0)
+{
+    CPPUNIT_ASSERT(actual);
+
+    const auto& expected = expectedDicomSeries(variant);
+
+    const auto& expectedSOPClassUIDs = expected->getSOPClassUIDs();
+    const auto& actualSOPClassUIDs   = actual->getSOPClassUIDs();
+    CPPUNIT_ASSERT_EQUAL(expectedSOPClassUIDs.size(), actualSOPClassUIDs.size());
+
+    for(const auto& expectedSOPClassUID : expectedSOPClassUIDs)
+    {
+        CPPUNIT_ASSERT(actualSOPClassUIDs.find(expectedSOPClassUID) != actualSOPClassUIDs.cend());
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SessionTest::setUp()
 {
 }
@@ -4701,8 +4793,6 @@ void SessionTest::transferFunctionTest()
     std::filesystem::create_directories(tmpfolder);
     const std::filesystem::path testPath = tmpfolder / "transferFunctionTest.zip";
 
-    const std::string fieldName(UUID::generateUUID());
-
     // Test serialization
     {
         // Create the data::TransferFunction
@@ -4729,6 +4819,49 @@ void SessionTest::transferFunctionTest()
 
         // Test value
         testTransferFunction(std::dynamic_pointer_cast<data::TransferFunction>(sessionReader->getObject()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::dicomSeriesTest()
+{
+    if(utest::Filter::ignoreSlowTests())
+    {
+        return;
+    }
+
+    // Create a temporary directory
+    const std::filesystem::path tmpfolder = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(tmpfolder);
+    const std::filesystem::path testPath = tmpfolder / "dicomSeriesTest.zip";
+
+    // Test serialization
+    {
+        // Create the data::DicomSeries
+        auto dicomSeries = newDicomSeries();
+
+        // Create the session writer
+        auto sessionWriter = io::session::SessionWriter::New();
+        CPPUNIT_ASSERT(sessionWriter);
+
+        // Configure the session
+        sessionWriter->setObject(dicomSeries);
+        sessionWriter->setFile(testPath);
+        sessionWriter->write();
+
+        CPPUNIT_ASSERT(std::filesystem::exists(testPath));
+    }
+
+    // Test deserialization
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+        sessionReader->setFile(testPath);
+        sessionReader->read();
+
+        // Test value
+        testDicomSeries(std::dynamic_pointer_cast<data::DicomSeries>(sessionReader->getObject()));
     }
 }
 

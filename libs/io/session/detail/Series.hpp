@@ -119,7 +119,8 @@ inline static void serialize(
 
     for(const auto& name : series->getPerformingPhysiciansName())
     {
-        namesTree.add(s_PerformingPhysiciansName, core::crypto::to_base64(name));
+        const auto& raw = password.empty() ? name : core::crypto::encrypt(name, password + s_PerformingPhysiciansName);
+        namesTree.add(s_PerformingPhysiciansName, core::crypto::to_base64(raw));
     }
 
     tree.add_child(s_PerformingPhysiciansNames, namesTree);

@@ -28,11 +28,13 @@
 #include "CameraSeries.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
+#include "DicomSeries.hpp"
 #include "Edge.hpp"
 #include "Equipment.hpp"
 #include "Graph.hpp"
 #include "Histogram.hpp"
 #include "Image.hpp"
+#include "ImageSeries.hpp"
 #include "Landmarks.hpp"
 #include "Line.hpp"
 #include "List.hpp"
@@ -98,6 +100,7 @@ static const std::unordered_map<std::string, serializer> s_serializers = {
     {data::CalibrationInfo::classname(), &CalibrationInfo::serialize},
     {data::Color::classname(), &Color::serialize},
     {data::Composite::classname(), &Composite::serialize},
+    {data::DicomSeries::classname(), &DicomSeries::serialize},
     {data::Edge::classname(), &Edge::serialize},
     {data::Equipment::classname(), &Equipment::serialize},
     {data::Float::classname(), &Helper::serialize<data::Float>},
@@ -105,6 +108,7 @@ static const std::unordered_map<std::string, serializer> s_serializers = {
     {data::Histogram::classname(), &Histogram::serialize},
     {data::Integer::classname(), &Helper::serialize<data::Integer>},
     {data::Image::classname(), &Image::serialize},
+    {data::ImageSeries::classname(), &ImageSeries::serialize},
     {data::Landmarks::classname(), &Landmarks::serialize},
     {data::Line::classname(), &Line::serialize},
     {data::List::classname(), &List::serialize},
