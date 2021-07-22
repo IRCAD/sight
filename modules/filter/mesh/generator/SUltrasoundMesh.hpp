@@ -153,7 +153,7 @@ private:
     int m_deltaDepth {50};
 
     /// Defines the shape of the US plane, rectangle or US beam.
-    bool m_shape {false};
+    bool m_shape {true};
 
     /// Stores mesh positions.
     boost::multi_array<float, 3> m_meshPositionArray;
