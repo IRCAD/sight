@@ -59,6 +59,19 @@ void ImageSeries::shallowCopy(const data::Object::csptr& _source)
 
     m_image          = other->m_image;
     m_dicomReference = other->m_dicomReference;
+
+    m_contrastBolusAgent                   = other->m_contrastBolusAgent;
+    m_contrastBolusRoute                   = other->m_contrastBolusRoute;
+    m_contrastBolusVolume                  = other->m_contrastBolusVolume;
+    m_contrastBolusStartTime               = other->m_contrastBolusStartTime;
+    m_contrastBolusStopTime                = other->m_contrastBolusStopTime;
+    m_contrastBolusTotalDose               = other->m_contrastBolusTotalDose;
+    m_contrastBolusFlowRate                = other->m_contrastBolusFlowRate;
+    m_contrastBolusFlowDuration            = other->m_contrastBolusFlowDuration;
+    m_contrastBolusIngredient              = other->m_contrastBolusIngredient;
+    m_contrastBolusIngredientConcentration = other->m_contrastBolusIngredientConcentration;
+    m_acquisitionDate                      = other->m_acquisitionDate;
+    m_acquisitionTime                      = other->m_acquisitionTime;
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +91,19 @@ void ImageSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
 
     m_image          = data::Object::copy(other->m_image);
     m_dicomReference = data::Object::copy(other->m_dicomReference);
+
+    m_contrastBolusAgent                   = other->m_contrastBolusAgent;
+    m_contrastBolusRoute                   = other->m_contrastBolusRoute;
+    m_contrastBolusVolume                  = other->m_contrastBolusVolume;
+    m_contrastBolusStartTime               = other->m_contrastBolusStartTime;
+    m_contrastBolusStopTime                = other->m_contrastBolusStopTime;
+    m_contrastBolusTotalDose               = other->m_contrastBolusTotalDose;
+    m_contrastBolusFlowRate                = other->m_contrastBolusFlowRate;
+    m_contrastBolusFlowDuration            = other->m_contrastBolusFlowDuration;
+    m_contrastBolusIngredient              = other->m_contrastBolusIngredient;
+    m_contrastBolusIngredientConcentration = other->m_contrastBolusIngredientConcentration;
+    m_acquisitionDate                      = other->m_acquisitionDate;
+    m_acquisitionTime                      = other->m_acquisitionTime;
 }
 
 //------------------------------------------------------------------------------

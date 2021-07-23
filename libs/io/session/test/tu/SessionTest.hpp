@@ -79,6 +79,7 @@ public:
     CPPUNIT_TEST(tagTest);
     CPPUNIT_TEST(transferFunctionTest);
     CPPUNIT_TEST(dicomSeriesTest);
+    CPPUNIT_TEST(imageSeriesTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -132,6 +133,7 @@ public:
     void tagTest();
     void transferFunctionTest();
     void dicomSeriesTest();
+    void imageSeriesTest();
 };
 
 } // namespace ut

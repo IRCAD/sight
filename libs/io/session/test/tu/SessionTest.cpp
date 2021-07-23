@@ -41,6 +41,7 @@
 #include <data/Graph.hpp>
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/iterator/ImageIterator.hpp>
 #include <data/iterator/ImageIterator.hxx>
@@ -645,6 +646,7 @@ inline static void testSeries(const data::Series::csptr& actual, const std::size
     CPPUNIT_ASSERT(actual);
 
     const auto& expected = expectedSeries(variant);
+
     // Equipment
     testEquipment(actual->getEquipment(), variant);
 
@@ -697,31 +699,9 @@ inline static const data::ActivitySeries::csptr& expectedActivitySeries(const st
         {
             auto tmp = data::ActivitySeries::New();
             tmp->setData(newComposite(variant));
-            tmp->setPatient(newPatient(variant));
-            tmp->setStudy(newStudy(variant));
-            tmp->setEquipment(newEquipment(variant));
 
-            // Fill trivial attributes
-            tmp->setActivityConfigId(UUID::generateUUID());
-            tmp->setModality(UUID::generateUUID());
-            tmp->setInstanceUID(UUID::generateUUID());
-            tmp->setNumber(UUID::generateUUID());
-            tmp->setLaterality(UUID::generateUUID());
-            tmp->setDate(UUID::generateUUID());
-            tmp->setTime(UUID::generateUUID());
-            tmp->setPerformingPhysiciansName({UUID::generateUUID(), UUID::generateUUID()});
-            tmp->setProtocolName(UUID::generateUUID());
-            tmp->setDescription(UUID::generateUUID());
-            tmp->setBodyPartExamined(UUID::generateUUID());
-            tmp->setPatientPosition(UUID::generateUUID());
-            tmp->setAnatomicalOrientationType(UUID::generateUUID());
-            tmp->setPerformedProcedureStepID(UUID::generateUUID());
-            tmp->setPerformedProcedureStepStartDate(UUID::generateUUID());
-            tmp->setPerformedProcedureStepStartTime(UUID::generateUUID());
-            tmp->setPerformedProcedureStepEndDate(UUID::generateUUID());
-            tmp->setPerformedProcedureStepEndTime(UUID::generateUUID());
-            tmp->setPerformedProcedureStepDescription(UUID::generateUUID());
-            tmp->setPerformedProcedureComments(UUID::generateUUID());
+            // Inherited attributes
+            tmp->data::Series::shallowCopy(expectedSeries(variant));
 
             return tmp;
         };
@@ -754,65 +734,15 @@ inline static void testActivitySeries(const data::ActivitySeries::csptr& actual,
 {
     CPPUNIT_ASSERT(actual);
 
-    const auto& expected = expectedActivitySeries(variant);
-
-    // Equipment
-    testEquipment(actual->getEquipment(), variant);
-
-    // Study
-    testStudy(actual->getStudy(), variant);
-
-    // Patient
-    testPatient(actual->getPatient(), variant);
-
-    // Data
-    testComposite(actual->getData(), variant);
-
     // Trivial attributes
+    const auto& expected = expectedActivitySeries(variant);
     CPPUNIT_ASSERT_EQUAL(expected->getActivityConfigId(), actual->getActivityConfigId());
-    CPPUNIT_ASSERT_EQUAL(expected->getModality(), actual->getModality());
-    CPPUNIT_ASSERT_EQUAL(expected->getInstanceUID(), actual->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(expected->getNumber(), actual->getNumber());
-    CPPUNIT_ASSERT_EQUAL(expected->getLaterality(), actual->getLaterality());
-    CPPUNIT_ASSERT_EQUAL(expected->getDate(), actual->getDate());
-    CPPUNIT_ASSERT_EQUAL(expected->getTime(), actual->getTime());
 
-    const auto& expectedNames = expected->getPerformingPhysiciansName();
-    const auto& actualNames   = actual->getPerformingPhysiciansName();
-    CPPUNIT_ASSERT_EQUAL(expectedNames.size(), actualNames.size());
+    // Test inherited attributes
+    testSeries(actual, variant);
 
-    for(std::size_t i = 0 ; i < expectedNames.size() ; ++i)
-    {
-        CPPUNIT_ASSERT_EQUAL(expectedNames[i], actualNames[i]);
-    }
-
-    CPPUNIT_ASSERT_EQUAL(expected->getProtocolName(), actual->getProtocolName());
-    CPPUNIT_ASSERT_EQUAL(expected->getDescription(), actual->getDescription());
-    CPPUNIT_ASSERT_EQUAL(expected->getBodyPartExamined(), actual->getBodyPartExamined());
-    CPPUNIT_ASSERT_EQUAL(expected->getPatientPosition(), actual->getPatientPosition());
-    CPPUNIT_ASSERT_EQUAL(expected->getAnatomicalOrientationType(), actual->getAnatomicalOrientationType());
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureStepID(), actual->getPerformedProcedureStepID());
-    CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepStartDate(),
-        actual->getPerformedProcedureStepStartDate()
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepStartTime(),
-        actual->getPerformedProcedureStepStartTime()
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepEndDate(),
-        actual->getPerformedProcedureStepEndDate()
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepEndTime(),
-        actual->getPerformedProcedureStepEndTime()
-    );
-    CPPUNIT_ASSERT_EQUAL(
-        expected->getPerformedProcedureStepDescription(),
-        actual->getPerformedProcedureStepDescription()
-    );
-    CPPUNIT_ASSERT_EQUAL(expected->getPerformedProcedureComments(), actual->getPerformedProcedureComments());
+    // test Data
+    testComposite(actual->getData(), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -1380,6 +1310,9 @@ inline static const data::CameraSeries::csptr& expectedCameraSeries(const std::s
                 tmp->addCamera(newCamera(variant + i));
             }
 
+            // Inherited attributes
+            tmp->data::Series::shallowCopy(expectedSeries(variant));
+
             return tmp;
         };
 
@@ -1415,6 +1348,8 @@ inline static void testCameraSeries(const data::CameraSeries::csptr& actual, con
     {
         testCamera(actual->getCamera(i), variant + i);
     }
+
+    testSeries(actual, variant);
 }
 
 //------------------------------------------------------------------------------
@@ -3084,6 +3019,9 @@ inline static const data::DicomSeries::csptr& expectedDicomSeries(const std::siz
                 dicomSeries->addComputedTagValue(UUID::generateUUID(), UUID::generateUUID());
             }
 
+            // Inherited attributes
+            dicomSeries->data::Series::shallowCopy(expectedSeries(variant));
+
             return dicomSeries;
         };
 
@@ -3115,6 +3053,9 @@ inline static void testDicomSeries(const data::DicomSeries::csptr& actual, const
 {
     CPPUNIT_ASSERT(actual);
 
+    // Test inherited attributes
+    testSeries(actual, variant);
+
     const auto& expected = expectedDicomSeries(variant);
 
     const auto& expectedSOPClassUIDs = expected->getSOPClassUIDs();
@@ -3125,6 +3066,87 @@ inline static void testDicomSeries(const data::DicomSeries::csptr& actual, const
     {
         CPPUNIT_ASSERT(actualSOPClassUIDs.find(expectedSOPClassUID) != actualSOPClassUIDs.cend());
     }
+}
+
+//------------------------------------------------------------------------------
+
+inline static const data::ImageSeries::csptr& expectedImageSeries(const std::size_t variant = 0)
+{
+    const auto& generator =
+        [&]
+        {
+            auto tmp = data::ImageSeries::New();
+
+            tmp->setContrastAgent(UUID::generateUUID());
+            tmp->setContrastRoute(UUID::generateUUID());
+            tmp->setContrastVolume(UUID::generateUUID());
+            tmp->setContrastStartTime(UUID::generateUUID());
+            tmp->setContrastStopTime(UUID::generateUUID());
+            tmp->setContrastTotalDose(UUID::generateUUID());
+            tmp->setContrastFlowRate(UUID::generateUUID());
+            tmp->setContrastFlowDuration(UUID::generateUUID());
+            tmp->setContrastIngredient(UUID::generateUUID());
+            tmp->setContrastIngredientConcentration(UUID::generateUUID());
+            tmp->setAcquisitionDate(UUID::generateUUID());
+            tmp->setAcquisitionTime(UUID::generateUUID());
+
+            tmp->setImage(newImage(variant));
+            tmp->setDicomReference(newDicomSeries(variant));
+
+            // Inherited attributes
+            tmp->data::Series::shallowCopy(expectedSeries(variant));
+
+            return tmp;
+        };
+
+    static std::map<std::size_t, data::ImageSeries::csptr> imageSeries;
+    const auto& it = imageSeries.find(variant);
+
+    if(it == imageSeries.cend())
+    {
+        return imageSeries.insert_or_assign(variant, generator()).first->second;
+    }
+    else
+    {
+        return it->second;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static data::ImageSeries::sptr newImageSeries(const std::size_t variant = 0)
+{
+    const auto& imageSeries = data::ImageSeries::New();
+    imageSeries->deepCopy(expectedImageSeries(variant));
+    return imageSeries;
+}
+
+//------------------------------------------------------------------------------
+
+inline static void testImageSeries(const data::ImageSeries::csptr& actual, const std::size_t variant = 0)
+{
+    CPPUNIT_ASSERT(actual);
+
+    // Test inherited attributes
+    testSeries(actual, variant);
+
+    const auto& expected = expectedImageSeries(variant);
+
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastAgent(), actual->getContrastAgent());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastRoute(), actual->getContrastRoute());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastVolume(), actual->getContrastVolume());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastStartTime(), actual->getContrastStartTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastStopTime(), actual->getContrastStopTime());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastTotalDose(), actual->getContrastTotalDose());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowRate(), actual->getContrastFlowRate());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastFlowDuration(), actual->getContrastFlowDuration());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastIngredient(), actual->getContrastIngredient());
+    CPPUNIT_ASSERT_EQUAL(expected->getContrastIngredientConcentration(), actual->getContrastIngredientConcentration());
+    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionDate(), actual->getAcquisitionDate());
+    CPPUNIT_ASSERT_EQUAL(expected->getAcquisitionTime(), actual->getAcquisitionTime());
+
+    testImage(actual->getImage(), variant);
+    testDicomSeries(actual->getDicomReference(), variant);
 }
 
 //------------------------------------------------------------------------------
@@ -4862,6 +4884,49 @@ void SessionTest::dicomSeriesTest()
 
         // Test value
         testDicomSeries(std::dynamic_pointer_cast<data::DicomSeries>(sessionReader->getObject()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::imageSeriesTest()
+{
+    if(utest::Filter::ignoreSlowTests())
+    {
+        return;
+    }
+
+    // Create a temporary directory
+    const std::filesystem::path tmpfolder = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(tmpfolder);
+    const std::filesystem::path testPath = tmpfolder / "imageSeriesTest.zip";
+
+    // Test serialization
+    {
+        // Create the data::ImageSeries
+        auto imageSeries = newImageSeries();
+
+        // Create the session writer
+        auto sessionWriter = io::session::SessionWriter::New();
+        CPPUNIT_ASSERT(sessionWriter);
+
+        // Configure the session
+        sessionWriter->setObject(imageSeries);
+        sessionWriter->setFile(testPath);
+        sessionWriter->write();
+
+        CPPUNIT_ASSERT(std::filesystem::exists(testPath));
+    }
+
+    // Test deserialization
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+        sessionReader->setFile(testPath);
+        sessionReader->read();
+
+        // Test value
+        testImageSeries(std::dynamic_pointer_cast<data::ImageSeries>(sessionReader->getObject()));
     }
 }
 
