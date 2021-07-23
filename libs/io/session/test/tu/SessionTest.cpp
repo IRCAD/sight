@@ -52,6 +52,7 @@
 #include <data/List.hpp>
 #include <data/Material.hpp>
 #include <data/Matrix4.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/mt/locked_ptr.hpp>
 #include <data/Node.hpp>
 #include <data/Patient.hpp>
@@ -152,7 +153,8 @@ inline static const data::Integer::csptr& expectedInteger(const std::size_t vari
         return integers.insert_or_assign(
             variant,
             data::Integer::New(1 + static_cast<std::int64_t>(variant))
-        ).first->second;
+        )
+               .first->second;
     }
     else
     {
@@ -189,7 +191,8 @@ inline static const data::Float::csptr& expectedFloat(const std::size_t variant 
         return floats.insert_or_assign(
             variant,
             data::Float::New(1.0F + static_cast<float>(variant))
-        ).first->second;
+        )
+               .first->second;
     }
     else
     {
@@ -596,10 +599,9 @@ inline static const data::Series::csptr& expectedSeries(const std::size_t varian
             tmp->setDate(UUID::generateUUID());
             tmp->setTime(UUID::generateUUID());
             tmp->setPerformingPhysiciansName(
-                {
-                    UUID::generateUUID(),
-                    UUID::generateUUID(),
-                    UUID::generateUUID()
+                {UUID::generateUUID(),
+                 UUID::generateUUID(),
+                 UUID::generateUUID()
                 });
             tmp->setProtocolName(UUID::generateUUID());
             tmp->setDescription(UUID::generateUUID());
@@ -2988,8 +2990,7 @@ inline static const data::DicomSeries::csptr& expectedDicomSeries(const std::siz
             {
                 // Setup the SeriesDB to be able to read
                 auto seriesDB                    = data::SeriesDB::New();
-                const std::filesystem::path path = utestData::Data::dir()
-                                                   / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
+                const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
 
                 CPPUNIT_ASSERT_MESSAGE(
                     "The dicom directory '" + path.string() + "' does not exist",
@@ -3147,6 +3148,72 @@ inline static void testImageSeries(const data::ImageSeries::csptr& actual, const
 
     testImage(actual->getImage(), variant);
     testDicomSeries(actual->getDicomReference(), variant);
+}
+
+//------------------------------------------------------------------------------
+
+inline static const data::ModelSeries::csptr& expectedModelSeries(const std::size_t variant = 0)
+{
+    const auto& generator =
+        [&]
+        {
+            auto tmp = data::ModelSeries::New();
+
+            tmp->setDicomReference(newDicomSeries(variant));
+
+            std::vector<data::Reconstruction::sptr> reconstructionDB;
+            for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+            {
+                reconstructionDB.push_back(newReconstruction(variant + i));
+            }
+
+            tmp->setReconstructionDB(reconstructionDB);
+
+            // Inherited attributes
+            tmp->data::Series::shallowCopy(expectedSeries(variant));
+
+            return tmp;
+        };
+
+    static std::map<std::size_t, data::ModelSeries::csptr> modelSeries;
+    const auto& it = modelSeries.find(variant);
+
+    if(it == modelSeries.cend())
+    {
+        return modelSeries.insert_or_assign(variant, generator()).first->second;
+    }
+    else
+    {
+        return it->second;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static data::ModelSeries::sptr newModelSeries(const std::size_t variant = 0)
+{
+    const auto& modelSeries = data::ModelSeries::New();
+    modelSeries->deepCopy(expectedModelSeries(variant));
+    return modelSeries;
+}
+
+//------------------------------------------------------------------------------
+
+inline static void testModelSeries(const data::ModelSeries::csptr& actual, const std::size_t variant = 0)
+{
+    CPPUNIT_ASSERT(actual);
+
+    // Test inherited attributes
+    testSeries(actual, variant);
+
+    // Test other attributes
+    testDicomSeries(actual->getDicomReference(), variant);
+
+    const auto& reconstructionDB = actual->getReconstructionDB();
+    for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
+    {
+        testReconstruction(reconstructionDB.at(i), variant + i);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -4927,6 +4994,49 @@ void SessionTest::imageSeriesTest()
 
         // Test value
         testImageSeries(std::dynamic_pointer_cast<data::ImageSeries>(sessionReader->getObject()));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::modelSeriesTest()
+{
+    if(utest::Filter::ignoreSlowTests())
+    {
+        return;
+    }
+
+    // Create a temporary directory
+    const std::filesystem::path tmpfolder = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(tmpfolder);
+    const std::filesystem::path testPath = tmpfolder / "modelSeriesTest.zip";
+
+    // Test serialization
+    {
+        // Create the data::ModelSeries
+        auto modelSeries = newModelSeries();
+
+        // Create the session writer
+        auto sessionWriter = io::session::SessionWriter::New();
+        CPPUNIT_ASSERT(sessionWriter);
+
+        // Configure the session
+        sessionWriter->setObject(modelSeries);
+        sessionWriter->setFile(testPath);
+        sessionWriter->write();
+
+        CPPUNIT_ASSERT(std::filesystem::exists(testPath));
+    }
+
+    // Test deserialization
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+        sessionReader->setFile(testPath);
+        sessionReader->read();
+
+        // Test value
+        testModelSeries(std::dynamic_pointer_cast<data::ModelSeries>(sessionReader->getObject()));
     }
 }
 

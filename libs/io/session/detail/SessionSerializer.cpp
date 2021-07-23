@@ -41,6 +41,7 @@
 #include "Material.hpp"
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
+#include "ModelSeries.hpp"
 #include "Node.hpp"
 #include "Patient.hpp"
 #include "Plane.hpp"
@@ -115,6 +116,7 @@ static const std::unordered_map<std::string, serializer> s_serializers = {
     {data::Material::classname(), &Material::serialize},
     {data::Matrix4::classname(), &Matrix4::serialize},
     {data::Mesh::classname(), &Mesh::serialize},
+    {data::ModelSeries::classname(), &ModelSeries::serialize},
     {data::Node::classname(), &Node::serialize},
     {data::Patient::classname(), &Patient::serialize},
     {data::Point::classname(), &Point::serialize},

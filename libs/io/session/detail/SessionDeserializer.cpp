@@ -41,6 +41,7 @@
 #include "Material.hpp"
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
+#include "ModelSeries.hpp"
 #include "Node.hpp"
 #include "Patient.hpp"
 #include "Plane.hpp"
@@ -117,6 +118,7 @@ static const std::unordered_map<std::string, deserializer> s_deserializers = {
     {data::Material::classname(), &Material::deserialize},
     {data::Matrix4::classname(), &Matrix4::deserialize},
     {data::Mesh::classname(), &Mesh::deserialize},
+    {data::ModelSeries::classname(), &ModelSeries::deserialize},
     {data::Node::classname(), &Node::deserialize},
     {data::Patient::classname(), &Patient::deserialize},
     {data::Point::classname(), &Point::deserialize},
