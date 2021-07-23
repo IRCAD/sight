@@ -47,6 +47,7 @@ AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = {{"object", 
     {"service", "uid"},
     {"view", "sid"},
     {"view", "wid"},
+    {"slideView", "wid"},
     {"connect", "channel"},
 };
 static const std::regex s_isVariable("\\$\\{.*\\}.*");
