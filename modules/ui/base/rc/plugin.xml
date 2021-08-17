@@ -169,6 +169,13 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
+        <type>sight::ui::base::IAction</type>
+        <service>sight::module::ui::base::series::SPushSelection</service>
+        <object>sight::data::Vector</object>
+        <desc>Push Series to SeriesDB</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::ui::base::video::SImagePicker</service>
          <object>sight::data::PointList</object>

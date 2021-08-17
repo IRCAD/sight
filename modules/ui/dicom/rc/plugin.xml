@@ -14,13 +14,6 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>sight::ui::base::IAction</type>
-        <service>sight::module::ui::dicom::SSeriesDBMerger</service>
-        <object>sight::data::Vector</object>
-        <desc>Push Series to SeriesDB</desc>
-    </extension>
-
-    <extension implements="::sight::service::extension::Factory">
         <type>sight::ui::base::IEditor</type>
         <service>sight::module::ui::dicom::SSliceIndexDicomEditor</service>
         <object>sight::data::DicomSeries</object>

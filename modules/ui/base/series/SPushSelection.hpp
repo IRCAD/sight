@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/dicom/config.hpp"
+#include "modules/ui/base/config.hpp"
 
 #include <data/SeriesDB.hpp>
 
@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-namespace sight::module::ui::dicom
+namespace sight::module::ui::base::series
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sight::module::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="sight::module::ui::dicom::SSeriesDBMerger">
+        <service type="sight::module::ui::base::series::SPushSelection">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -50,34 +50,34 @@ namespace sight::module::ui::dicom
  * @subsection In-Out In-Out:
  * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the series.
  */
-class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SPushSelection : public ::sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesDBMerger, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SPushSelection, sight::ui::base::IAction);
 
     /// Constructor
-    MODULE_UI_DICOM_API SSeriesDBMerger() noexcept;
+    MODULE_UI_BASE_API SPushSelection() noexcept;
 
     /// Destructor
-    MODULE_UI_DICOM_API virtual ~SSeriesDBMerger() noexcept;
+    MODULE_UI_BASE_API virtual ~SPushSelection() noexcept;
 
 protected:
 
     /// Do nothing.
-    MODULE_UI_DICOM_API void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /// Override
-    MODULE_UI_DICOM_API void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /// Override
-    MODULE_UI_DICOM_API void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /// Override
-    MODULE_UI_DICOM_API void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     /// Override
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
 };
 
-} // namespace sight::module::ui::dicom
+} // namespace sight::module::ui::base::series
