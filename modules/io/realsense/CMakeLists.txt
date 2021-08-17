@@ -1,4 +1,4 @@
-sight_add_target( module_io_realsense TYPE MODULE PCH pchServicesOmp )
+sight_add_target( module_io_realsense TYPE MODULE PCH pchServiceOmp )
 
 find_package(OpenMP QUIET)
 
