@@ -109,9 +109,6 @@ protected:
     /// Perform the registration
     MODULE_FILTER_POINT_API void updating() override;
 
-    /// Do nothing
-    MODULE_FILTER_POINT_API void swapping() override;
-
 private:
 
     ///SLOT: changeMode

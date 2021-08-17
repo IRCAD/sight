@@ -272,7 +272,7 @@ data::Object::sptr AppConfigManager::getConfigRoot() const
 
 // ------------------------------------------------------------------------
 
-data::Object::sptr AppConfigManager::findObject(const std::string& uid, const std::string& errMsgTail) const
+data::Object::sptr AppConfigManager::findObject(const std::string& uid, std::string_view errMsgTail) const
 {
 #ifndef _DEBUG
     SIGHT_NOT_USED(errMsgTail);
@@ -291,7 +291,7 @@ data::Object::sptr AppConfigManager::findObject(const std::string& uid, const st
         auto itDeferredObj = m_deferredObjects.find(uid);
 
         SIGHT_ASSERT(
-            this->msgHead() + "Object '" + uid + "' has not been found" + errMsgTail,
+            this->msgHead() + "Object '" << uid << "' has not been found" << errMsgTail,
             itDeferredObj != m_deferredObjects.end()
         );
         obj = itDeferredObj->second.m_object;
@@ -596,7 +596,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
                     "::sight::service::IXMLParser"
                 );
 
-                service::IService::sptr srv = srvFactory->create("::sight::service::IXMLParser", srvImpl);
+                service::IService::sptr srv = srvFactory->create(srvImpl);
                 auto objectParser           = service::IXMLParser::dynamicCast(srv);
                 objectParser->setObjectConfig(elem);
                 objectParser->createConfig(obj);
@@ -621,7 +621,7 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
         bool createService = true;
         std::vector<std::string> uids;
 
-        for(const auto& objectCfg : srvConfig.m_objects)
+        for(const auto& [key, objectCfg] : srvConfig.m_objects)
         {
             // If the current service uses an object that is marked as deferred, this means
             // we will have to manage automatically the start/stop and the connections
@@ -648,7 +648,7 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
             }
 
             // Extra check to warn the user that an object is used as output but not marked as deferred
-            if(objectCfg.m_access == service::IService::AccessType::OUTPUT)
+            if(objectCfg.m_access == data::Access::out)
             {
                 SIGHT_ERROR_IF(
                     this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '"
@@ -708,24 +708,25 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
         srv->setWorker(worker);
     }
 
-    std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
+    const std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
     srv->setConfiguration(srvConfig);
 
-    for(const auto& objectCfg : srvConfig.m_objects)
+    for(const auto& [key, objectCfg] : srvConfig.m_objects)
     {
-        srv->setObjectId(objectCfg.m_key, objectCfg.m_uid);
+        srv->setObjectId(key.first, objectCfg.m_uid);
 
         data::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 
         SIGHT_ASSERT(
-            this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
+            this->msgHead() + "Object '" << objectCfg.m_uid << "' has not been found" << errMsgTail,
             (!objectCfg.m_optional && obj) || objectCfg.m_optional
         );
-        if((obj || !objectCfg.m_optional) && objectCfg.m_access != service::IService::AccessType::OUTPUT)
+        if((obj || !objectCfg.m_optional) && objectCfg.m_access != data::Access::out)
         {
-            srv->registerObject(
+            srv->setObject(
                 obj,
-                objectCfg.m_key,
+                key.first,
+                key.second,
                 objectCfg.m_access,
                 objectCfg.m_autoConnect,
                 objectCfg.m_optional
@@ -733,16 +734,13 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
         }
     }
 
-    // Set the size of the key groups
-    srv->m_keyGroupSize = srvConfig.m_groupSize;
-
     // Set the proxies
     const auto& itSrvProxy = m_servicesProxies.find(srvConfig.m_uid);
     if(itSrvProxy != m_servicesProxies.end())
     {
         for(const auto& itProxy : itSrvProxy->second.m_proxyCnt)
         {
-            srv->addProxyConnection(itProxy.second);
+            srv->_addProxyConnection(itProxy.second);
         }
     }
 
@@ -982,7 +980,7 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
         bool createService = true;
 
         // Look for all objects (there could be more than the current object) and check if they are all created
-        for(const auto& objCfg : srvCfg->m_objects)
+        for(const auto& [key, objCfg] : srvCfg->m_objects)
         {
             // Look first in objects created in this appConfig
             if(m_createdObjects.find(objCfg.m_uid) == m_createdObjects.end())
@@ -1017,22 +1015,23 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                     if(objCfg.m_optional)
                     {
                         // Check if we already registered an object at this key
-                        auto registeredObj = service::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
+                        auto registeredObj = srv->getObject(key.first, objCfg.m_access, key.second);
                         if(registeredObj != nullptr)
                         {
                             // If this is not the object we have to swap, then unregister it
                             if(registeredObj != object)
                             {
-                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                                srv->resetObject(key.first, key.second, objCfg.m_access);
                             }
                         }
 
                         if(registeredObj != object)
                         {
                             // Register the key on the service
-                            srv->registerObject(
+                            srv->setObject(
                                 object,
-                                objCfg.m_key,
+                                key.first,
+                                key.second,
                                 objCfg.m_access,
                                 objCfg.m_autoConnect,
                                 objCfg.m_optional
@@ -1084,7 +1083,7 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
         }
     }
 
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    boost::wait_for_all(futures.begin(), futures.end());
     futures.clear();
 
     // Update services according to the order given in the configuration
@@ -1103,7 +1102,7 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
         }
     }
 
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    boost::wait_for_all(futures.begin(), futures.end());
 }
 
 //------------------------------------------------------------------------------
@@ -1131,7 +1130,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                 // Check all objects, to know if this object is optional
                 bool optional = true;
 
-                for(const auto& objCfg : srvCfg.m_objects)
+                for(const auto& [key, objCfg] : srvCfg.m_objects)
                 {
                     if(_id == objCfg.m_uid)
                     {
@@ -1141,9 +1140,9 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                         optional &= objCfg.m_optional;
                         if(objCfg.m_optional)
                         {
-                            if(service::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
+                            if(srv->getObject(key.first, objCfg.m_access, key.second))
                             {
-                                srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                                srv->resetObject(key.first, key.second, objCfg.m_access);
 
                                 if(srv->isStarted())
                                 {
@@ -1210,8 +1209,8 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     service::IService::sptr srv = service::get(srvCfg.m_uid);
                     SIGHT_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                    srv->autoDisconnect();
-                    srv->autoConnect();
+                    srv->_autoDisconnect();
+                    srv->_autoConnect();
                 }
             }
         }

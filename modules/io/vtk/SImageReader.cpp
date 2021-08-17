@@ -160,7 +160,7 @@ void SImageReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        const auto image = this->getLockedInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto image = m_data.dynamicPointerCast<data::Image>().lock();
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image

@@ -126,7 +126,7 @@ protected:
      * @brief Selects the current transfer function pool.
      * @param _key key of the swapped data.
      */
-    MODULE_UI_QT_API void swapping(const KeyType& _key) override;
+    MODULE_UI_QT_API void swapping(std::string_view _key) override;
 
     /// Destroyes the UI.
     MODULE_UI_QT_API void stopping() override;

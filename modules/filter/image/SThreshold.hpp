@@ -24,6 +24,8 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IOperator.hpp>
 
 namespace sight::module::filter::image
@@ -83,6 +85,12 @@ private:
 
     /// Threshold value used in filter
     double m_threshold;
+
+    static constexpr std::string_view s_IMAGE_IN  = "source";
+    static constexpr std::string_view s_IMAGE_OUT = "target";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_source {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::out> m_target {this, s_IMAGE_OUT};
 };
 
 } // namespace sight::module::filter::image

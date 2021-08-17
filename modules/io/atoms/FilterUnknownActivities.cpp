@@ -36,7 +36,7 @@ fwAtomsFilterRegisterMacro(::sight::module::io::atoms::FilterUnknownActivities, 
 namespace sight::module::io::atoms
 {
 
-FilterUnknownActivities::FilterUnknownActivities(sight::io::atoms::filter::IFilter::Key key)
+FilterUnknownActivities::FilterUnknownActivities(sight::io::atoms::filter::IFilter::Key)
 {
 }
 

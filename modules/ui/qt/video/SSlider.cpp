@@ -135,13 +135,6 @@ void SSlider::updating()
 
 //------------------------------------------------------------------------------
 
-void SSlider::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void SSlider::changePosition()
 {
     int64_t newPos = m_positionSlider->sliderPosition();

@@ -29,6 +29,6 @@
 
 SIGHT_REGISTER_SERVICE(
     ::sight::service::ut::TestConfigService,
-    ::sight::service::ut::TestServiceImplementationImage,
+    ::sight::service::ut::STest1Image,
     ::sight::data::Image
 );

@@ -422,7 +422,7 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB
-    data::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+    data::helper::SeriesDB sDBhelper(*m_destinationSeriesDB);
     sDBhelper.clear();
 
     // Be sure series are selected

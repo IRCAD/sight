@@ -34,8 +34,8 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
+#include <service/base.hpp>
 #include <service/macros.hpp>
-#include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
@@ -110,17 +110,17 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    service::IService::sptr srv = service::add("::sight::module::io::vtk::SSeriesDBReader");
+    service::IService::sptr srv = service::add("sight::module::io::vtk::SSeriesDBReader");
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
-    srv->registerInOut(seriesDB, "data");
+    srv->setInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
     srv->start();
     srv->update();
     srv->stop();
-    service::OSR::unregisterService(srv);
+    service::remove(srv);
 
     // Data expected
     const data::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
@@ -189,17 +189,17 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     data::SeriesDB::sptr seriesDB       = data::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
-    service::IService::sptr srv = service::add("::sight::module::io::vtk::SSeriesDBReader");
+    service::IService::sptr srv = service::add("sight::module::io::vtk::SSeriesDBReader");
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
-    srv->registerInOut(seriesDB, "data");
+    srv->setInOut(seriesDB, "data");
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
     srv->start().wait();
     srv->update().wait();
     srv->stop().wait();
-    service::OSR::unregisterService(srv);
+    service::remove(srv);
 
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 }

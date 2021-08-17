@@ -24,7 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/Camera.hpp>
+#include <data/Image.hpp>
 #include <data/MarkerMap.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IController.hpp>
 
@@ -42,18 +45,6 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::SReprojectionError">
-        <in key="matrixTL" uid="..."/>
-        <in key="markerTL" uid="..."/>
-        <in key="camera" uid="..."/>
-        <in key="extrinsic" uid="..."/>
-        <inout key="frameTL" uid="..." />
-        <out key="error" uid="..." />
-        <patternWidth>80</patternWidth>
-     </service>
-
-     or
-
-     <service uid="..." type="sight::module::geometry::vision::SReprojectionError">
          <in group="matrix">
              <key uid="..." />
              <key uid="..." />
@@ -68,15 +59,12 @@ namespace sight::module::geometry::vision
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerTL [sight::data::MarkerTL]: timeline for markers.
  * - \b markerMap [sight::data::MarkerMap]: markers map list.
  * - \b camera [sight::data::Camera]: calibrated cameras.
  * - \b extrinsic [sight::data::Matrix4]: extrinsic matrix, only used if you have two cameras configured.
- * - \b matrixTL [sight::data::MatrixTL]: timeline of 3D transformation matrices.
  * - \b matrix [sight::data::Matrix4]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
  * @subsection InOut InOut
- * - \b frameTL [sight::data::FrameTL] : frame timeline used to draw reprojected points (optional)
  * - \b frame [sight::data::Image]: video frame.
  * @subsection Output Output
  * - \b error [sight::data::Float] : computed error
@@ -101,7 +89,7 @@ public:
     MODULE_GEOMETRY_VISION_API SReprojectionError();
 
     ///Destructor
-    MODULE_GEOMETRY_VISION_API ~SReprojectionError();
+    MODULE_GEOMETRY_VISION_API ~SReprojectionError() override;
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
     service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -144,20 +132,32 @@ private:
     double m_patternWidth;
 
     /// 3D object points
-    std::vector< ::cv::Point3f> m_objectPoints;
+    std::vector<cv::Point3f> m_objectPoints;
     /// Camera Matrix (fx, fy, cx, cy)
-    ::cv::Mat m_cameraMatrix;
+    cv::Mat m_cameraMatrix;
     ///Distorsion coefficient
-    ::cv::Mat m_distorsionCoef;
+    cv::Mat m_distorsionCoef;
     /// Color of the reprojection circle
-    ::cv::Scalar m_cvColor;
+    cv::Scalar m_cvColor;
     /// if true: display circle centered at reprojection point.
     bool m_display;
     /// extrinsic matrix (can be identity)
-    ::cv::Mat m_extrinsic;
+    cv::Mat m_cvExtrinsic;
 
     /// List of tags associated with each input matrix
     std::vector<data::MarkerMap::KeyType> m_matricesTag;
+
+    static constexpr std::string_view s_MATRIX_INPUT    = "matrix";
+    static constexpr std::string_view s_MARKERMAP_INPUT = "markerMap";
+    static constexpr std::string_view s_CAMERA_INPUT    = "camera";
+    static constexpr std::string_view s_EXTRINSIC_INPUT = "extrinsic";
+    static constexpr std::string_view s_FRAME_INOUT     = "frame";
+
+    data::ptr_vector<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX_INPUT, true, 1};
+    data::ptr<data::MarkerMap, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT};
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::Matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};
+    data::ptr<data::Image, data::Access::inout> m_frame {this, s_FRAME_INOUT};
 };
 
 } //namespace sight::module::geometry::vision

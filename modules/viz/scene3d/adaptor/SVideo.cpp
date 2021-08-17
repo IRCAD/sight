@@ -132,10 +132,10 @@ void SVideo::starting()
         updatePL();
 
         m_pointListAdaptor = this->registerService<sight::viz::scene3d::IAdaptor>(
-            "::sight::module::viz::scene3d::adaptor::SPointList"
+            "sight::module::viz::scene3d::adaptor::SPointList"
         );
 
-        m_pointListAdaptor->registerInput(m_pointList, s_PL_INPUT, true);
+        m_pointListAdaptor->setInput(m_pointList, s_PL_INPUT, true);
 
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", this->getLayerID());

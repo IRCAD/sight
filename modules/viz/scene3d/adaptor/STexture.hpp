@@ -24,7 +24,6 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slot.hpp>
 
@@ -141,6 +140,9 @@ private:
     /// Defines the signal emitted when the texture has to be changed on the associated material.
     typedef core::com::Signal<void ()> TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
+
+    static constexpr std::string_view s_TEXTURE_INOUT = "image";
+    data::ptr<data::Image, data::Access::in> m_image {this, s_TEXTURE_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

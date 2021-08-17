@@ -25,9 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/Material.hpp>
 #include <data/Mesh.hpp>
-#include <data/Reconstruction.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
@@ -51,7 +49,6 @@ static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction
 
 RepresentationEditor::RepresentationEditor() noexcept
 {
-    this->registerObject(s_RECONSTRUCTION_INOUT, service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -180,15 +177,14 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
-
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    auto reconstruction = m_rec.lock();
     m_material = reconstruction->getMaterial();
     container->setEnabled(!reconstruction->getOrganName().empty());
 
@@ -339,9 +335,6 @@ void RepresentationEditor::refreshNormals()
 
 void RepresentationEditor::onShowNormals(int state)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
-
     switch(state)
     {
         case 0:
@@ -359,6 +352,9 @@ void RepresentationEditor::onShowNormals(int state)
 
     this->notifyMaterial();
 
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    auto reconstruction = m_rec.lock();
+
     // In VTK backend the normals is handled by the mesh and not by the material
     auto sig = reconstruction->signal<data::Reconstruction::MeshChangedSignalType>(
         data::Reconstruction::s_MESH_CHANGED_SIG
@@ -370,8 +366,8 @@ void RepresentationEditor::onShowNormals(int state)
 
 void RepresentationEditor::notifyMaterial()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    auto reconstruction = m_rec.lock();
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(

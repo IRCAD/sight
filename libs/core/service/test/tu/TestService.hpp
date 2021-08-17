@@ -27,6 +27,8 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/ptr.hpp>
 
 #include <service/IService.hpp>
 
@@ -149,159 +151,58 @@ protected:
 };
 
 /**
- * @brief Service implementation for test
+ * @brief Service interface for autoconnect test
  */
-class TestServiceImplementation : public TestService
+class ISTest : public TestService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(TestServiceImplementation, service::ut::TestService);
+    SIGHT_DECLARE_CLASS(ISTest, TestService);
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_MSG_SENT_SIG;
     /// Keys to register Slot
     static const core::com::Slots::SlotKeyType s_UPDATE2_SLOT;
 
-    /// Type os signal
+    /// Type of signal
     typedef core::com::Signal<void (const std::string&)> MsgSentSignalType;
-
-    //-------------------------------------------------------------------------
-    TestServiceImplementation() noexcept;
-
-    //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation() noexcept;
-
-    //-------------------------------------------------------------------------
-    virtual void starting() final
-    {
-        TestService::starting();
-    }
-
-    //-------------------------------------------------------------------------
-    void updating() override
-    {
-        TestService::updating();
-        m_isUpdated = true;
-    }
-
-    //-------------------------------------------------------------------------
-    void update2()
-    {
-        m_isUpdated2 = true;
-    }
-
-    //-------------------------------------------------------------------------
-    void swapping(const KeyType& key) override
-    {
-        m_swappedObjectKey = key;
-        m_swappedObject    = this->getInput<data::Object>(key);
-    }
-
-    //-------------------------------------------------------------------------
-    KeyConnectionsMap getAutoConnections() const override
-    {
-        KeyConnectionsMap connections;
-        connections.push("data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        return connections;
-    }
-
-    //-------------------------------------------------------------------------
-    void info(std::ostream& _sstream) override
-    {
-        _sstream << "TestServiceImplementation";
-    }
-
-    //-------------------------------------------------------------------------
-
-    const std::string& getSwappedObjectKey() const
-    {
-        return m_swappedObjectKey;
-    }
-
-    //-------------------------------------------------------------------------
-
-    data::Object::csptr getSwappedObject() const
-    {
-        return m_swappedObject;
-    }
-
-//-------------------------------------------------------------------------
-
-private:
-
-    std::string m_swappedObjectKey;
-    data::Object::csptr m_swappedObject;
-};
-
-/**
- * @brief Service implementation for test
- */
-class TestServiceImplementation2 : public TestService
-{
-public:
-
-    SIGHT_DECLARE_SERVICE(TestServiceImplementation2, service::ut::TestService);
-
-    //-------------------------------------------------------------------------
-    TestServiceImplementation2() noexcept
-    {
-    }
-
-    //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation2() noexcept
-    {
-    }
-};
-
-/**
- * @brief Service implementation for autoconnect test
- */
-class TestSrvAutoconnect : public TestService
-{
-public:
-
-    SIGHT_DECLARE_SERVICE(TestSrvAutoconnect, service::ut::TestService);
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_SIG_1;
     /// Keys to register Slot
     static const core::com::Slots::SlotKeyType s_SLOT_1;
 
-    /// Type os signal
-    typedef core::com::Signal<void (int)> MsgSentSignalType;
+    /// Type of signal
+    typedef core::com::Signal<void (int)> IntSentSignalType;
 
     //-------------------------------------------------------------------------
 
-    TestSrvAutoconnect() noexcept :
+    ISTest() noexcept :
         m_received(false)
     {
-        newSignal<MsgSentSignalType>(s_SIG_1);
-        newSlot(s_SLOT_1, &TestSrvAutoconnect::receiveSlot, this);
+        newSignal<IntSentSignalType>(s_SIG_1);
+        newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
+        newSlot(s_SLOT_1, &ISTest::receiveSlot, this);
+        newSlot(s_UPDATE2_SLOT, &ISTest::update2, this);
     }
 
     //-------------------------------------------------------------------------
-    virtual ~TestSrvAutoconnect() noexcept
+    ~ISTest() noexcept override
     {
     }
 
     //-------------------------------------------------------------------------
-
-    void updating() override
+    void starting() final
     {
+        TestService::starting();
+    }
+
+    //-------------------------------------------------------------------------
+
+    void updating() final
+    {
+        TestService::updating();
         m_isUpdated = true;
-    }
-
-    //-------------------------------------------------------------------------
-
-    void info(std::ostream& _sstream) override
-    {
-        _sstream << "TestSrvAutoconnect";
     }
 
     //-------------------------------------------------------------------------
@@ -325,13 +226,44 @@ public:
     }
 
     //-------------------------------------------------------------------------
+    void update2()
+    {
+        m_isUpdated2 = true;
+    }
+
+    //-------------------------------------------------------------------------
+    void swapping(std::string_view key) final
+    {
+        m_swappedObjectKey = key;
+        m_swappedObject    = this->getInput<data::Object>(key);
+    }
+
+    //-------------------------------------------------------------------------
+
+    const std::string& getSwappedObjectKey() const
+    {
+        return m_swappedObjectKey;
+    }
+
+    //-------------------------------------------------------------------------
+
+    data::Object::csptr getSwappedObject() const
+    {
+        return m_swappedObject;
+    }
+
+    //-------------------------------------------------------------------------
 
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
+        connections.push("data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
-        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("dataGroup0", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
@@ -343,11 +275,217 @@ public:
 private:
 
     int m_received;
+    std::string m_swappedObjectKey;
+    data::Object::csptr m_swappedObject;
 };
 
-/**
- * @brief Service with input and output
- */
+class STestNoData : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STestNoData, service::ut::ISTest);
+};
+
+class STestNoData2 : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STestNoData2, service::ut::ISTest);
+};
+
+class STest1Input : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1Input, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true};
+};
+
+class STest2Inputs : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest2Inputs, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_input2 {this, "data2", true};
+};
+
+class STest2InputsV2 : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest2InputsV2, service::ut::ISTest);
+
+    //-------------------------------------------------------------------------
+
+    IService::KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        return connections;
+    }
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_input2 {this, "data2", true};
+};
+
+class STest4Inputs : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest4Inputs, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_inout1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_inout2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::in> m_inout3 {this, "data3", true};
+    data::ptr<data::Object, data::Access::in> m_inout4 {this, "data4", true};
+};
+
+class STest1Inout : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1Inout, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::inout> m_inout {this, "data1", true};
+};
+
+class STest3Inouts : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest3Inouts, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::inout> m_inout3 {this, "data3", true};
+};
+
+class STest3InoutsV2 : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest3InoutsV2, service::ut::ISTest);
+
+    //-------------------------------------------------------------------------
+
+    IService::KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        return connections;
+    }
+
+private:
+
+    data::ptr<data::Object, data::Access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::inout> m_inout3 {this, "data3", false};
+};
+
+class STest2Inouts1Input : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest2Inouts1Input, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::inout> m_inout1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::inout> m_inout2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::in> m_input3 {this, "data3", true};
+};
+
+class STest1Input1OptInput1OptInOut : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1Input1OptInput1OptInOut, service::ut::ISTest);
+
+    //-------------------------------------------------------------------------
+
+    IService::KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        return connections;
+    }
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::in> m_input2 {this, "data2", true, true};
+    data::ptr<data::Object, data::Access::inout> m_inout {this, "data3", false, true};
+};
+
+class STest2InputGroups : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest2InputGroups, service::ut::ISTest);
+
+    data::ptr_vector<data::Object, data::Access::in> m_input1 {this, "dataGroup0", true};
+    data::ptr_vector<data::Object, data::Access::in> m_input2 {this, "dataGroup1", true};
+};
+
+class STest1Input1InputGroup : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1Input1InputGroup, service::ut::ISTest);
+
+    data::ptr<data::Object, data::Access::in> m_input {this, "data1", true};
+    data::ptr_vector<data::Object, data::Access::in> m_inputGroup {this, "dataGroup", true};
+};
+
+class STest1Input1Output2Inouts : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STest1Input1Output2Inouts, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::in> m_input1 {this, "data1", true};
+    data::ptr<data::Object, data::Access::out> m_out2 {this, "data2", true};
+    data::ptr<data::Object, data::Access::inout> m_inout3 {this, "data3", true};
+    data::ptr<data::Object, data::Access::inout> m_inout4 {this, "data4", true};
+};
+
+class STestOut : public ISTest
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(STestOut, service::ut::ISTest);
+
+private:
+
+    data::ptr<data::Object, data::Access::out> m_out {this, "out"};
+    data::ptr<data::Object, data::Access::out> m_out2 {this, "out2"};
+    data::ptr<data::Object, data::Access::out> m_out3 {this, "out3"};
+    data::ptr<data::Object, data::Access::out> m_out4 {this, "out4"};
+    data::ptr<data::Object, data::Access::out> m_out5 {this, "out5"};
+};
+
 class TestServiceWithData : public service::IService
 {
 public:
@@ -357,22 +495,8 @@ public:
     static const KeyType s_OUTPUT;
 
     SIGHT_DECLARE_SERVICE(TestServiceWithData, service::IService);
-    TestServiceWithData() noexcept
-    {
-        this->registerObject(s_INPUT, AccessType::INPUT, true, false);
-        this->registerObject(s_OUTPUT, AccessType::OUTPUT, false, true);
-    }
-
-    virtual ~TestServiceWithData() noexcept
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void registerGroup()
-    {
-        this->registerObjectGroup(s_INOUT_GROUP, AccessType::INOUT, 2, true);
-    }
+    TestServiceWithData() noexcept           = default;
+    ~TestServiceWithData() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
@@ -390,6 +514,10 @@ public:
 
     void stopping() override;
     void updating() override;
+
+    data::ptr<data::Object, data::Access::in> m_input {this, "input", true};
+    data::ptr_vector<data::Integer, data::Access::inout> m_inoutGroup {this, "inoutGroup", true, 2};
+    data::ptr<data::Object, data::Access::out> m_output {this, "output", false, true};
 };
 
 } //namespace ut

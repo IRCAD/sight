@@ -28,6 +28,7 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Material.hpp>
+#include <data/Reconstruction.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
 
@@ -144,6 +145,9 @@ protected Q_SLOTS:
 private:
 
     data::Material::sptr m_material;
+
+    static constexpr std::string_view s_RECONSTRUCTION_INOUT = "reconstruction";
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 };
 
 } // uiReconstructionQml

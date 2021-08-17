@@ -25,14 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-#include <data/FrameTL.hpp>
-#include <data/Image.hpp>
-#include <data/MarkerTL.hpp>
-#include <data/Matrix4.hpp>
-#include <data/MatrixTL.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Camera.hpp>
@@ -53,21 +45,12 @@ const core::com::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SL
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
-const service::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
-const service::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
-const service::IService::KeyType s_CAMERA_INPUT    = "camera";
-const service::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
-const service::IService::KeyType s_MATRIXTL_INPUT  = "matrixTL";
-const service::IService::KeyType s_MATRIX_INPUT    = "matrix";
-const service::IService::KeyType s_FRAMETL_INOUT   = "frameTL";
-const service::IService::KeyType s_FRAME_INOUT     = "frame";
-
 //-----------------------------------------------------------------------------
 
 SReprojectionError::SReprojectionError() :
     m_lastTimestamp(0),
     m_patternWidth(80),
-    m_cvColor(::cv::Scalar(255, 255, 255, 255)),
+    m_cvColor(cv::Scalar(255, 255, 255, 255)),
     m_display(true)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
@@ -116,30 +99,30 @@ void SReprojectionError::starting()
     //3D Points
     const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
 
-    m_objectPoints.push_back(::cv::Point3f(-halfWidth, halfWidth, 0));
-    m_objectPoints.push_back(::cv::Point3f(halfWidth, halfWidth, 0));
-    m_objectPoints.push_back(::cv::Point3f(halfWidth, -halfWidth, 0));
-    m_objectPoints.push_back(::cv::Point3f(-halfWidth, -halfWidth, 0));
+    m_objectPoints.push_back(cv::Point3f(-halfWidth, halfWidth, 0));
+    m_objectPoints.push_back(cv::Point3f(halfWidth, halfWidth, 0));
+    m_objectPoints.push_back(cv::Point3f(halfWidth, -halfWidth, 0));
+    m_objectPoints.push_back(cv::Point3f(-halfWidth, -halfWidth, 0));
 
     //TODO: Add an option to use a chessboard instead of a marker
     // --> configure height, width and square size(in mm)
 
-    auto camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
+    auto camera = m_camera.lock();
     SIGHT_ASSERT("Camera is not found", camera);
 
-    ::cv::Size imgSize;
-    std::tie(m_cameraMatrix, imgSize, m_distorsionCoef) = io::opencv::Camera::copyToCv(camera);
+    cv::Size imgSize;
+    std::tie(m_cameraMatrix, imgSize, m_distorsionCoef) = io::opencv::Camera::copyToCv(camera.get_shared());
 
-    m_extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
+    m_cvExtrinsic = cv::Mat::eye(4, 4, CV_64F);
 
-    auto extrinsic = this->getInput<data::Matrix4>(s_EXTRINSIC_INPUT);
-    if(extrinsic != nullptr)
+    auto extrinsic = m_extrinsic.lock();
+    if(extrinsic)
     {
         for(std::uint8_t i = 0 ; i < 4 ; ++i)
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
-                m_extrinsic.at<double>(i, j) = extrinsic->getCoefficient(i, j);
+                m_cvExtrinsic.at<double>(i, j) = extrinsic->getCoefficient(i, j);
             }
         }
     }
@@ -163,181 +146,81 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
     if(timestamp > m_lastTimestamp)
     {
-        auto markerTL = this->getInput<data::MarkerTL>(s_MARKERTL_INPUT);
-        if(markerTL)
+        auto markerMap = m_markerMap.lock();
+
+        // For each matrix
+        unsigned int i = 0;
+        for(auto markerKey : m_matricesTag)
         {
-            auto matrixTL                       = this->getInput<data::MatrixTL>(s_MATRIXTL_INPUT);
-            core::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
-            if(ts <= 0)
+            auto matrix = m_matrix[i].lock();
+
+            const auto* marker = markerMap->getMarker(markerKey);
+
+            if(marker)
             {
-                SIGHT_WARN("No matrix found in a timeline for timestamp '" << ts << "'.");
-                return;
-            }
+                std::vector<cv::Point2f> points2D;
 
-            const CSPTR(data::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
-            const CSPTR(data::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
+                cv::Mat rot = cv::Mat(3, 3, CV_64F);
+                cv::Mat mat = cv::Mat::eye(4, 4, CV_64F);
 
-            if(matBuff == nullptr || buffer == nullptr)
-            {
-                return;
-            }
-
-            const size_t nbMatrices = matBuff->getMaxElementNum();
-            const size_t nbMarkers  = buffer->getMaxElementNum();
-
-            SIGHT_ASSERT("Number of matrices should be equal to the number of marker", nbMatrices == nbMarkers);
-
-            for(unsigned int i = 0 ; i < nbMatrices ; ++i)
-            {
-                const float* marker = buffer->getElement(i);
-                const float* matrix = matBuff->getElement(i);
-                std::vector< ::cv::Point2f> points2D;
-
-                ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
-                ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
-
-                for(int r = 0 ; r < 4 ; ++r)
+                for(std::uint8_t r = 0 ; r < 4 ; ++r)
                 {
-                    for(int c = 0 ; c < 4 ; ++c)
+                    for(std::uint8_t c = 0 ; c < 4 ; ++c)
                     {
-                        mat.at<double>(r, c) = static_cast<double>(matrix[r * 4 + c]);
+                        mat.at<double>(r, c) = static_cast<double>(matrix->getCoefficient(r, c));
                     }
                 }
 
-                ::cv::Mat pose = m_extrinsic * mat;
+                const cv::Mat pose = m_cvExtrinsic * mat;
 
-                rot = pose(::cv::Rect(0, 0, 3, 3));
+                rot = pose(cv::Rect(0, 0, 3, 3));
 
-                ::cv::Mat tvec = ::cv::Mat(3, 1, CV_64F);
+                cv::Mat tvec = cv::Mat(3, 1, CV_64F);
                 tvec.at<double>(0) = pose.at<double>(0, 3);
                 tvec.at<double>(1) = pose.at<double>(1, 3);
                 tvec.at<double>(2) = pose.at<double>(2, 3);
 
-                ::cv::Mat rvec;
+                cv::Mat rvec;
 
-                ::cv::Rodrigues(rot, rvec);
+                cv::Rodrigues(rot, rvec);
 
-                for(size_t p = 0 ; p < 4 ; ++p)
+                for(const auto& p : *marker)
                 {
-                    points2D.push_back(::cv::Point2f(marker[p * 2], marker[p * 2 + 1]));
+                    points2D.push_back(cv::Point2f(p[0], p[1]));
                 }
 
-                auto errP = sight::geometry::vision::helper::computeReprojectionError(
-                    m_objectPoints,
-                    points2D,
-                    rvec,
-                    tvec,
-                    m_cameraMatrix,
-                    m_distorsionCoef
-                );
+                sight::geometry::vision::helper::ErrorAndPointsType errP =
+                    sight::geometry::vision::helper::computeReprojectionError(
+                        m_objectPoints,
+                        points2D,
+                        rvec,
+                        tvec,
+                        m_cameraMatrix,
+                        m_distorsionCoef
+                    );
 
                 this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
 
                 if(m_display) //draw reprojected points
                 {
-                    auto frameTL = this->getInOut<data::FrameTL>(s_FRAMETL_INOUT);
-                    SIGHT_ASSERT("The input " + s_FRAMETL_INOUT + " is not valid.", frameTL);
+                    auto frame = m_frame.lock();
+                    SIGHT_ASSERT("The input " << s_FRAME_INOUT << " is not valid.", frame);
 
-                    CSPTR(data::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
-
-                    if(bufferFrame != nullptr)
+                    if(frame->getSizeInBytes() > 0)
                     {
-                        const std::uint8_t* frameData = &bufferFrame->getElement(0);
-                        const int width               = static_cast<int>(frameTL->getWidth());
-                        const int height              = static_cast<int>(frameTL->getHeight());
-                        ::cv::Mat img(::cv::Size(width, height), CV_8UC4);
-                        img.data = const_cast<uchar*>(frameData);
+                        cv::Mat cvImage = io::opencv::Image::moveToCv(frame.get_shared());
 
-                        std::vector< ::cv::Point2f> reprojectedP = errP.second;
+                        std::vector<cv::Point2f> reprojectedP = errP.second;
 
                         for(size_t i = 0 ; i < reprojectedP.size() ; ++i)
                         {
-                            ::cv::circle(img, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
+                            cv::circle(cvImage, reprojectedP[i], 7, m_cvColor, 1, cv::LINE_8);
                         }
                     }
                 }
             }
-        }
-        else
-        {
-            auto markerMap = this->getInput<data::MarkerMap>(s_MARKERMAP_INPUT);
 
-            // For each matrix
-            unsigned int i = 0;
-            for(auto markerKey : m_matricesTag)
-            {
-                auto matrix = this->getInput<data::Matrix4>(s_MATRIX_INPUT, i);
-
-                const auto* marker = markerMap->getMarker(markerKey);
-
-                if(marker)
-                {
-                    std::vector< ::cv::Point2f> points2D;
-
-                    ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
-                    ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
-
-                    for(std::uint8_t r = 0 ; r < 4 ; ++r)
-                    {
-                        for(std::uint8_t c = 0 ; c < 4 ; ++c)
-                        {
-                            mat.at<double>(r, c) = static_cast<double>(matrix->getCoefficient(r, c));
-                        }
-                    }
-
-                    const ::cv::Mat pose = m_extrinsic * mat;
-
-                    rot = pose(::cv::Rect(0, 0, 3, 3));
-
-                    ::cv::Mat tvec = ::cv::Mat(3, 1, CV_64F);
-                    tvec.at<double>(0) = pose.at<double>(0, 3);
-                    tvec.at<double>(1) = pose.at<double>(1, 3);
-                    tvec.at<double>(2) = pose.at<double>(2, 3);
-
-                    ::cv::Mat rvec;
-
-                    ::cv::Rodrigues(rot, rvec);
-
-                    for(const auto& p : *marker)
-                    {
-                        points2D.push_back(::cv::Point2f(p[0], p[1]));
-                    }
-
-                    sight::geometry::vision::helper::ErrorAndPointsType errP =
-                        sight::geometry::vision::helper::computeReprojectionError(
-                            m_objectPoints,
-                            points2D,
-                            rvec,
-                            tvec,
-                            m_cameraMatrix,
-                            m_distorsionCoef
-                        );
-
-                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
-
-                    if(m_display) //draw reprojected points
-                    {
-                        auto frame = this->getInOut<data::Image>(s_FRAME_INOUT);
-                        SIGHT_ASSERT("The input " + s_FRAMETL_INOUT + " is not valid.", frame);
-
-                        data::mt::ObjectWriteLock lock(frame);
-
-                        if(frame->getSizeInBytes() > 0)
-                        {
-                            ::cv::Mat cvImage = io::opencv::Image::moveToCv(frame);
-
-                            std::vector< ::cv::Point2f> reprojectedP = errP.second;
-
-                            for(size_t i = 0 ; i < reprojectedP.size() ; ++i)
-                            {
-                                ::cv::circle(cvImage, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
-                            }
-                        }
-                    }
-                }
-
-                ++i;
-            }
+            ++i;
         }
     }
 }
@@ -362,7 +245,7 @@ void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::str
 {
     if(_key == "color")
     {
-        m_cvColor = ::cv::Scalar(_val[0], _val[1], _val[2], 255);
+        m_cvColor = cv::Scalar(_val[0], _val[1], _val[2], 255);
     }
     else
     {
@@ -386,10 +269,7 @@ void SReprojectionError::updating()
 service::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
-    connections.push(s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT);
     connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
     return connections;
 }
 

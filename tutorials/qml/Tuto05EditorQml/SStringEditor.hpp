@@ -24,6 +24,8 @@
 
 #include "Tuto05EditorQml/config.hpp"
 
+#include <data/String.hpp>
+
 #include <ui/qml/IQmlEditor.hpp>
 
 #include <QObject>
@@ -82,6 +84,9 @@ protected Q_SLOTS:
 private:
 
     QString m_value;
+
+    static constexpr std::string_view s_STRING_INOUT = "string";
+    sight::data::ptr<sight::data::String, sight::data::Access::inout> m_string {this, s_STRING_INOUT, true};
 };
 
 } // namespace Tuto05EditorQml

@@ -26,6 +26,8 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/Composite.hpp>
+
 #include <ui/base/IAction.hpp>
 
 #include <map>
@@ -102,6 +104,12 @@ private:
 
     /// Key in the source composite to extract
     std::string m_srcKey;
+
+    static constexpr std::string_view s_SOURCE_KEY      = "source";
+    static constexpr std::string_view s_DESTINATION_KEY = "destination";
+
+    sight::data::ptr<sight::data::Composite, sight::data::Access::inout> m_source {this, s_SOURCE_KEY, false};
+    sight::data::ptr<sight::data::Object, sight::data::Access::out> m_target {this, s_DESTINATION_KEY, false};
 };
 
 } // namespace sight::module::ui::base

@@ -82,9 +82,6 @@ protected:
     /// Does nothing.
     MODULE_GEOMETRY_VISION_API void starting() override;
 
-    /// Calls stopping and starting.
-    MODULE_GEOMETRY_VISION_API void swapping() override;
-
     /// Computes intrinsic calibration
     MODULE_GEOMETRY_VISION_API void updating() override;
 

@@ -136,6 +136,10 @@ private:
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     OrganListModel* m_listModel;
+
+    /// Model series data
+    static constexpr std::string_view s_MODEL_SERIES_INOUT = "modelSeries";
+    data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, s_MODEL_SERIES_INOUT, true};
 };
 
 } // uiMedDataQml

@@ -113,14 +113,6 @@ void SOpenCVExtrinsic::stopping()
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::swapping()
-{
-    this->stopping();
-    this->starting();
-}
-
-//--------------------------------------------------------------------- ---------
-
 void SOpenCVExtrinsic::updating()
 {
     data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>("cameraSeries");

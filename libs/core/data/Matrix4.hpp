@@ -49,6 +49,11 @@ public:
     typedef std::array<std::array<TM3DType, 4>, 4> MatrixType;
 
     /**
+     * @brief Default constructor
+     */
+    DATA_API Matrix4();
+
+    /**
      * @brief Constructor
      * @param key Private construction key
      */
@@ -110,6 +115,12 @@ protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;
+
+    static constexpr TMCoefArray s_IDENTITY = {1., 0., 0., 0.,
+                                               0., 1., 0., 0.,
+                                               0., 0., 1., 0.,
+                                               0., 0., 0., 1.
+    };
 };
 
 //-----------------------------------------------------------------------------

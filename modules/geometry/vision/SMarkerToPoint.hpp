@@ -92,9 +92,6 @@ protected:
     MODULE_GEOMETRY_VISION_API void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void swapping() override;
-
-    /// Does nothing.
     MODULE_GEOMETRY_VISION_API void updating() override;
 
     /// Does nothing.

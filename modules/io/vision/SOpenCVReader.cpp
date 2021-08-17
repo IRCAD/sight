@@ -271,14 +271,6 @@ void SOpenCVReader::updating()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::swapping()
-{
-    this->stop();
-    this->start();
-}
-
-// ----------------------------------------------------------------------------
-
 sight::io::base::service::IOPathType SOpenCVReader::getIOPathType() const
 {
     return sight::io::base::service::FILE;

@@ -93,7 +93,7 @@ void SMatrixRegressor::updating()
         data::Matrix4::csptr initVal =
             data::Matrix4::dynamicCast((*matrixList)[0]);
 
-        data::Matrix4::sptr res = regressor.minimize(initVal, 1., 1e-4, 1e-4);
+        data::Matrix4::sptr res = regressor.minimize(*initVal, 1., 1e-4, 1e-4);
         optimalMatrix->deepCopy(res);
 
         m_sigComputed->asyncEmit();

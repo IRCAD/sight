@@ -80,7 +80,7 @@ void SBasicTest::stopping()
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping(const KeyType&)
+void SBasicTest::swapping(std::string_view)
 {
     std::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;

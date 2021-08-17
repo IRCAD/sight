@@ -25,16 +25,10 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <filter/image/Flipper.hpp>
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN  = "source";
-static const service::IService::KeyType s_IMAGE_OUT = "target";
 
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
@@ -72,16 +66,14 @@ void SFlip::starting()
 
 void SFlip::updating()
 {
-    data::Image::csptr inImg = this->getInput<data::Image>(s_IMAGE_IN);
+    const auto inImg = m_source.lock();
 
     SIGHT_ASSERT("No 'imageIn' found !", inImg);
     if(inImg)
     {
-        data::mt::ObjectReadLock inImLock(inImg);
-
         data::Image::sptr outImg = data::Image::New();
 
-        sight::filter::image::Flipper::flip(inImg, outImg, m_flipAxes);
+        sight::filter::image::Flipper::flip(inImg.get_shared(), outImg, m_flipAxes);
 
         this->setOutput(s_IMAGE_OUT, outImg);
 

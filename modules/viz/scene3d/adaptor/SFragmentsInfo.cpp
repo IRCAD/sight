@@ -80,10 +80,6 @@ struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Lis
     }
 };
 
-static const service::IService::KeyType s_IMAGE_INOUT        = "image";
-static const service::IService::KeyType s_DEPTH_INOUT        = "depth";
-static const service::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
-
 static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = nullptr;
 
 //-----------------------------------------------------------------------------
@@ -160,9 +156,8 @@ void SFragmentsInfo::starting()
 
 void SFragmentsInfo::updating() noexcept
 {
-    const auto imageW = this->getWeakInOut<data::Image>(s_IMAGE_INOUT);
     {
-        const auto image = imageW.lock();
+        const auto image = m_image.lock();
         if(image)
         {
             const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
@@ -174,9 +169,8 @@ void SFragmentsInfo::updating() noexcept
         }
     }
 
-    const auto depthW = this->getWeakInOut<data::Image>(s_DEPTH_INOUT);
     {
-        const auto depth = depthW.lock();
+        const auto depth = m_depth.lock();
         if(depth)
         {
             const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
@@ -188,9 +182,8 @@ void SFragmentsInfo::updating() noexcept
         }
     }
 
-    const auto primitiveIDW = this->getWeakInOut<data::Image>(s_PRIMITIVE_ID_INOUT);
     {
-        const auto primitiveID = primitiveIDW.lock();
+        const auto primitiveID = m_primitive.lock();
         if(primitiveID)
         {
             const ::Ogre::TexturePtr primitiveIDText = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
@@ -266,11 +259,8 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
             }
        }*/
 
-    const bool retrieveDepth =
-        this->getWeakInOut<data::Image>(s_DEPTH_INOUT).lock().operator bool();
-
-    const bool retrievePrimitiveID =
-        this->getWeakInOut<data::Image>(s_PRIMITIVE_ID_INOUT).lock().operator bool();
+    const bool retrieveDepth       = m_depth.lock().operator bool();
+    const bool retrievePrimitiveID = m_primitive.lock().operator bool();
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 

@@ -28,18 +28,12 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <geometry/data/Matrix4.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace sight::module::geometry::base
 {
-
-const service::IService::KeyType s_SOURCE_INPUT      = "source";
-const service::IService::KeyType s_TRANSLATION_INOUT = "translation";
-const service::IService::KeyType s_ROTATION_INOUT    = "rotation";
-const service::IService::KeyType s_SCALE_INOUT       = "scale";
 
 // ----------------------------------------------------------------------------
 
@@ -78,66 +72,66 @@ service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() cons
 
 void SDecomposeMatrix::updating()
 {
-    auto matrix = this->getInput<data::Matrix4>(s_SOURCE_INPUT);
-    SIGHT_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
-    data::mt::ObjectReadLock srcLock(matrix);
+    auto matrix = m_source.lock();
+    SIGHT_ASSERT("input matrix '" << s_SOURCE_INPUT << "' is not defined", matrix);
 
-    ::glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(matrix);
-    ::glm::dvec3 scale;
-    ::glm::dquat orientation;
-    ::glm::dvec3 translation;
-    ::glm::dvec3 skew;
-    ::glm::dvec4 perspective;
+    glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(*matrix);
+    glm::dvec3 glmScale;
+    glm::dquat orientation;
+    glm::dvec3 glmTranslation;
+    glm::dvec3 skew;
+    glm::dvec4 perspective;
 
     /// Matrix decomposition
-    ::glm::decompose(glmMatrix, scale, orientation, translation, skew, perspective);
-    ::glm::dmat4 orientationMat = ::glm::toMat4(orientation);
+    glm::decompose(glmMatrix, glmScale, orientation, glmTranslation, skew, perspective);
+    glm::dmat4 orientationMat = glm::toMat4(orientation);
 
-    auto rotation       = this->getInOut<data::Matrix4>(s_ROTATION_INOUT);
-    auto translationMat = this->getInOut<data::Matrix4>(s_TRANSLATION_INOUT);
-    auto scaleMat       = this->getInOut<data::Matrix4>(s_SCALE_INOUT);
-
-    if(rotation)
     {
-        data::mt::ObjectWriteLock rotLock(rotation);
-        sight::geometry::data::identity(rotation);
-        sight::geometry::data::setTF3DFromMatrix(rotation, orientationMat);
-
-        auto rotSig = rotation->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        rotSig->asyncEmit();
-    }
-
-    if(translationMat)
-    {
-        data::mt::ObjectWriteLock transLock(translationMat);
-        sight::geometry::data::identity(translationMat);
-        for(size_t i = 0 ; i < 3 ; ++i)
+        auto rotation = m_rotation.lock();
+        if(rotation)
         {
-            translationMat->setCoefficient(i, 3, translation[i]);
+            sight::geometry::data::identity(*rotation);
+            sight::geometry::data::setTF3DFromMatrix(*rotation, orientationMat);
+
+            auto rotSig = rotation->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            rotSig->asyncEmit();
         }
+    }
+    {
+        auto translation = m_translation.lock();
+        if(translation)
+        {
+            sight::geometry::data::identity(*translation);
+            for(size_t i = 0 ; i < 3 ; ++i)
+            {
+                translation->setCoefficient(i, 3, glmTranslation[i]);
+            }
 
-        auto transSig =
-            translationMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        transSig->asyncEmit();
+            auto transSig =
+                translation->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            transSig->asyncEmit();
+        }
     }
 
-    if(scaleMat)
+    auto scale = m_scale.lock();
+    if(scale)
     {
-        data::mt::ObjectWriteLock scaleLock(scaleMat);
-        sight::geometry::data::identity(scaleMat);
-        for(size_t i = 0 ; i < 3 ; ++i)
         {
-            for(size_t j = 0 ; j < 3 ; j++)
+            sight::geometry::data::identity(*scale);
+            for(size_t i = 0 ; i < 3 ; ++i)
             {
-                if(i == j)
+                for(size_t j = 0 ; j < 3 ; j++)
                 {
-                    scaleMat->setCoefficient(i, j, scale[i]);
+                    if(i == j)
+                    {
+                        scale->setCoefficient(i, j, glmScale[i]);
+                    }
                 }
             }
-        }
 
-        auto scaleSig = scaleMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        scaleSig->asyncEmit();
+            auto scaleSig = scale->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            scaleSig->asyncEmit();
+        }
     }
 
     m_sigComputed->asyncEmit();

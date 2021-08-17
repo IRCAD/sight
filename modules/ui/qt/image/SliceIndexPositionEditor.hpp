@@ -69,6 +69,8 @@ public:
 
 protected:
 
+    static const service::IService::KeyType s_IMAGE_INOUT;
+
     /// @brief The slice type: axial, frontal, sagittal.
     typedef data::helper::MedicalImage::Orientation Orientation;
 
@@ -84,9 +86,6 @@ protected:
 
     /// Update editor information from the image
     void updating() override;
-
-    /// Swap of image
-    void swapping() override;
 
     /**
      * @brief Configure the editor.
@@ -152,6 +151,8 @@ private:
     sight::ui::qt::SliceSelector* m_sliceSelectorPanel;
 
     data::helper::MedicalImage m_helper;
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, "image", true};
 };
 
 } // uiImageQt

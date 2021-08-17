@@ -46,11 +46,11 @@ IActivitySequencer::~IActivitySequencer()
 
 //------------------------------------------------------------------------------
 
-int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
+int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
 {
     int lastActivityIndex = -1;
 
-    for(const auto& series : seriesDB->getContainer())
+    for(const auto& series : seriesDB.getContainer())
     {
         data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
 
@@ -97,15 +97,15 @@ int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
 //------------------------------------------------------------------------------
 
 void IActivitySequencer::storeActivityData(
-    const data::SeriesDB::sptr& seriesDB,
+    const data::SeriesDB& seriesDB,
     int index,
     const data::Composite::csptr& overrides
 )
 {
     // Retrives the current activity data
     const size_t currentIdx = static_cast<size_t>(index);
-    SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB->size() > currentIdx);
-    data::Series::sptr series           = seriesDB->getContainer()[currentIdx];
+    SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB.size() > currentIdx);
+    data::Series::sptr series           = seriesDB.getContainer()[currentIdx];
     data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
     SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
     data::Composite::sptr composite = activity->getData();
@@ -134,16 +134,16 @@ void IActivitySequencer::storeActivityData(
 //------------------------------------------------------------------------------
 
 data::ActivitySeries::sptr IActivitySequencer::getActivity(
-    const data::SeriesDB::sptr& seriesDB,
+    data::SeriesDB& seriesDB,
     size_t index,
     const core::com::SlotBase::sptr& slot,
     const data::Composite::csptr& overrides
 )
 {
     data::ActivitySeries::sptr activity;
-    if(seriesDB->size() > index) // The activity already exists, update the data
+    if(seriesDB.size() > index) // The activity already exists, update the data
     {
-        data::Series::sptr series = seriesDB->getContainer()[index];
+        data::Series::sptr series = seriesDB.getContainer()[index];
         activity = data::ActivitySeries::dynamicCast(series);
         SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
         data::Composite::sptr composite = activity->getData();
@@ -185,7 +185,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
     else // create a new activity series
     {
         // try to create the intermediate activities
-        if(index > 0 && (index - 1) >= seriesDB->size())
+        if(index > 0 && (index - 1) >= seriesDB.size())
         {
             this->getActivity(seriesDB, index - 1, slot, overrides);
         }
@@ -241,7 +241,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
         data::helper::SeriesDB helper(seriesDB);
         helper.add(activity);
         {
-            auto sig = seriesDB->signal<data::SeriesDB::AddedSeriesSignalType>(
+            auto sig = seriesDB.signal<data::SeriesDB::AddedSeriesSignalType>(
                 data::SeriesDB::s_ADDED_SERIES_SIG
             );
             if(slot)

@@ -403,11 +403,10 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
     for(auto& srvInfo : m_services)
     {
         service::IService::sptr srv = srvInfo.m_service.lock();
-        if(srv->hasObjInfoFromId(id))
+        if(const auto objCfgOpt = srv->_getObjInfoFromId(id); objCfgOpt != std::nullopt)
         {
-            const service::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
-
-            auto registeredObj = service::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
+            const auto& [key, index, objCfg] = objCfgOpt.value();
+            auto registeredObj = srv->getObject(key, objCfg.m_access, index);
 
             if(registeredObj != obj)
             {
@@ -420,11 +419,11 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
                 // unregister the previous object
                 if(registeredObj != nullptr)
                 {
-                    srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                    srv->resetObject(key, index, objCfg.m_access);
                 }
 
                 // Register the key on the service
-                srv->registerObject(obj, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
+                srv->setObject(obj, key, index, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
 
                 if(objCfg.m_optional && srv->isStarted())
                 {
@@ -483,18 +482,17 @@ void AppManager::removeObject(data::Object::sptr obj, const std::string& id)
         {
             SIGHT_THROW_IF("service is expired", srvInfo.m_service.expired());
             service::IService::sptr srv = srvInfo.m_service.lock();
-            if(srv->hasObjInfoFromId(id))
+            if(const auto objCfgOpt = srv->_getObjInfoFromId(id); objCfgOpt != std::nullopt)
             {
-                const service::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(id);
-
-                if(service::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
+                const auto& [key, index, objCfg] = objCfgOpt.value();
+                if(srv->getObject(key, objCfg.m_access, index))
                 {
                     if(srv->isStarted() && !objCfg.m_optional)
                     {
                         this->stop(srvInfo).wait();
                     }
 
-                    srv->unregisterObject(objCfg.m_key, objCfg.m_access);
+                    srv->resetObject(key, index, objCfg.m_access);
 
                     if(objCfg.m_optional && srv->isStarted())
                     {
@@ -558,12 +556,11 @@ void AppManager::internalAddService(
     // register the object to the service
     for(const auto& obj : m_registeredObject)
     {
-        if(srv->hasObjInfoFromId(obj.first))
+        if(const auto objCfgOpt = srv->_getObjInfoFromId(obj.first); objCfgOpt != std::nullopt)
         {
-            const service::IService::ObjectServiceConfig& objCfg = srv->getObjInfoFromId(obj.first);
-
+            const auto& [key, index, objCfg] = objCfgOpt.value();
             // Register the key on the service
-            srv->registerObject(obj.second, objCfg.m_key, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
+            srv->setObject(obj.second, key, index, objCfg.m_access, objCfg.m_autoConnect, objCfg.m_optional);
         }
     }
 
@@ -634,7 +631,7 @@ service::IService::SharedFutureType AppManager::start(const ServiceInfo& info)
     {
         for(const auto& proxyCnt : proxyIt->second.m_proxyCnt)
         {
-            srv->addProxyConnection(proxyCnt.second);
+            srv->_addProxyConnection(proxyCnt.second);
         }
     }
 

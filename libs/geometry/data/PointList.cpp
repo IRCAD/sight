@@ -93,10 +93,10 @@ void PointList::transform(
 
     for(size_t i = 0 ; i < size ; ++i)
     {
-        ::sight::data::Point::sptr& pt = points[i];
+        sight::data::Point& pt = *points[i];
 
         // Transform the current point with the input matrix
-        ::sight::geometry::data::multiply(_matrix, pt, pt);
+        sight::geometry::data::multiply(*_matrix, pt, pt);
     }
 }
 

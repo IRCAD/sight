@@ -142,13 +142,6 @@ void SMaterialSelector::updating()
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void SMaterialSelector::updateMaterial()
 {
     data::Reconstruction::sptr reconst = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);

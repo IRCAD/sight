@@ -109,9 +109,6 @@ protected:
     /// Do nothing
     void updating() override;
 
-    /// Do nothing
-    void swapping() override;
-
     /// Configure the editor.
     void configuring() override;
 

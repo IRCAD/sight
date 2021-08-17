@@ -36,7 +36,6 @@
 
 #include <data/Equipment.hpp>
 #include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
 
@@ -183,8 +182,7 @@ void SImageSeriesReader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto imageSeries =
-            this->getLockedInOut<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto imageSeries = m_imageSeries.lock();
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -197,7 +195,12 @@ void SImageSeriesReader::updating()
             {
                 imageSeries->setImage(image.get_shared());
                 initSeries(imageSeries.get_shared());
-                this->notificationOfDBUpdate();
+
+                auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                {
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
         }
         catch(core::tools::Failed& e)
@@ -205,19 +208,6 @@ void SImageSeriesReader::updating()
             SIGHT_THROW_EXCEPTION(e);
         }
         cursor.setDefaultCursor();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageSeriesReader::notificationOfDBUpdate()
-{
-    const auto imageSeries = this->getLockedInOut<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
-
-    auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
     }
 }
 

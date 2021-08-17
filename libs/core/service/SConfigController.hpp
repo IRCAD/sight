@@ -105,9 +105,6 @@ protected:
      */
     void configuring() override;
 
-    /// Swaps the config
-    void swapping() override;
-
     /// Overrides
     void info(std::ostream& _sstream) override;
 

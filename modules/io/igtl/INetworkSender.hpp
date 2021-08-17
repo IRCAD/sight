@@ -80,6 +80,9 @@ protected:
     /// Defines the signal emitted when service is disconnected.
     typedef core::com::Signal<void ()> DisconnectSignalType;
     DisconnectSignalType::sptr m_sigDisconnected;
+
+    static constexpr std::string_view s_OBJECTS_INOUT = "objects";
+    data::ptr_vector<data::Object, sight::data::Access::inout> m_objects {this, s_OBJECTS_INOUT, true};
 };
 
 } // namespace sight::module::io::igtl.

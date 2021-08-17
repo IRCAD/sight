@@ -175,12 +175,6 @@ void SSelectionMenuButton::updating()
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SSelectionMenuButton::info(std::ostream& _sstream)
 {
 }

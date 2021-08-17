@@ -34,7 +34,7 @@
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
 
-#include <service/op/Add.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -260,7 +260,7 @@ void SMultipleTF::updating()
 
 //------------------------------------------------------------------------------
 
-void SMultipleTF::swapping(const KeyType& _key)
+void SMultipleTF::swapping(std::string_view _key)
 {
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_POOL_INPUT)
@@ -338,9 +338,9 @@ void SMultipleTF::initializePools()
             // Creates the TF atoms reader.
             const data::TransferFunction::sptr tf = data::TransferFunction::New();
             const auto tfReader                   = service::add<io::base::service::IReader>(
-                "::sight::module::io::atoms::SReader"
+                "sight::module::io::atoms::SReader"
             );
-            tfReader->registerInOut(tf, io::base::service::s_DATA_KEY);
+            tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
             for(std::filesystem::path dirPath : m_paths)
@@ -403,14 +403,14 @@ void SMultipleTF::initializePools()
             }
 
             // Delete the reader.
-            service::OSR::unregisterService(tfReader);
+            service::remove(tfReader);
 
             // Creates the multiple TF atoms reader.
             data::Composite::sptr tfPool                       = data::Composite::New();
             const io::base::service::IReader::sptr mulTFReader = service::add<io::base::service::IReader>(
-                "::sight::module::io::atoms::SReader"
+                "sight::module::io::atoms::SReader"
             );
-            mulTFReader->registerInOut(tfPool, io::base::service::s_DATA_KEY);
+            mulTFReader->setInOut(tfPool, io::base::service::s_DATA_KEY);
 
             // Parse all path contained in m_path and read multiple TF.
             for(std::filesystem::path dirPath : m_paths)
@@ -456,7 +456,7 @@ void SMultipleTF::initializePools()
             }
 
             // Delete the reader.
-            service::OSR::unregisterService(mulTFReader);
+            service::remove(mulTFReader);
         }
 
         // Sends signals.
@@ -786,10 +786,10 @@ void SMultipleTF::importPool()
     const data::Composite::sptr tfPool = data::Composite::New();
 
     const io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-        "::sight::module::io::atoms::SReader"
+        "sight::module::io::atoms::SReader"
     );
 
-    reader->registerInOut(tfPool, io::base::service::s_DATA_KEY);
+    reader->setInOut(tfPool, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
@@ -801,7 +801,7 @@ void SMultipleTF::importPool()
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    service::OSR::unregisterService(reader);
+    service::remove(reader);
 
     // Check the loaded composite.
     if(tfPool->size() >= 1)
@@ -837,9 +837,9 @@ void SMultipleTF::importPool()
 void SMultipleTF::exportPool()
 {
     const io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
-        "::sight::module::io::atoms::SWriter"
+        "sight::module::io::atoms::SWriter"
     );
-    writer->registerInput(m_currentTFPool, io::base::service::s_DATA_KEY);
+    writer->setInput(m_currentTFPool, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
@@ -854,7 +854,7 @@ void SMultipleTF::exportPool()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    service::OSR::unregisterService(writer);
+    service::remove(writer);
 }
 
 //------------------------------------------------------------------------------

@@ -108,8 +108,6 @@ protected:
 
     void updating() override;
 
-    void swapping() override;
-
 private Q_SLOTS:
 
     void onAddClicked();

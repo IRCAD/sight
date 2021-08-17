@@ -229,6 +229,8 @@ private:
 
     /// Total number of frames in a video file.
     size_t m_videoFramesNb;
+
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };
 
 } // namespace sight::module::io::video

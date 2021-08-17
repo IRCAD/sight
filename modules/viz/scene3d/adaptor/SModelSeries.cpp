@@ -31,8 +31,6 @@
 #include <data/Boolean.hpp>
 #include <data/Material.hpp>
 #include <data/Matrix4.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <service/macros.hpp>
@@ -44,8 +42,6 @@ namespace sight::module::viz::scene3d::adaptor
 //-----------------------------------------------------------------------------
 
 static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
-
-static const std::string s_MODEL_INPUT = "model";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_MATERIAL_CONFIG         = "material";
@@ -134,7 +130,7 @@ service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = this->getLockedInput<data::ModelSeries>(s_MODEL_INPUT);
+    const auto modelSeries = m_model.lock();
 
     this->stopping();
 
@@ -146,7 +142,7 @@ void SModelSeries::updating()
         auto adaptor = this->registerService<module::viz::scene3d::adaptor::SReconstruction>(
             "::sight::module::viz::scene3d::adaptor::SReconstruction"
         );
-        adaptor->registerInput(reconstruction, "reconstruction", true);
+        adaptor->setInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
         adaptor->setID(this->getID() + "_" + adaptor->getID());
@@ -199,7 +195,7 @@ void SModelSeries::setVisible(bool _visible)
 
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = this->getLockedInput<data::ModelSeries>(s_MODEL_INPUT);
+    const auto modelSeries = m_model.lock();
 
     const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
 

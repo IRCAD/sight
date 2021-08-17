@@ -84,7 +84,7 @@ namespace sight::module::io::video
  * - \b camera [sight::data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [sight::data::FrameTL]: timeline where to extract the video frames.
- * - \b depthTL [sight::data::FrameTL] (optional): timeline where to extract the depth frames.
+ * - \b      [sight::data::FrameTL] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
@@ -227,6 +227,9 @@ private:
 
     /// Configure if selected services are excluded (true) or included (false).
     bool m_exclude {true};
+
+    /// Camera can be either a data::Camera or a data::CameraSeries depending on the implementation
+    data::ptr<data::Object, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };
 
 } // namespace sight::module::io::video

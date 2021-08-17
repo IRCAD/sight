@@ -122,7 +122,7 @@ void SNegato2DCamera::updating() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::swapping(const KeyType& _key)
+void SNegato2DCamera::swapping(std::string_view _key)
 {
     if(_key == s_TF_INOUT)
     {

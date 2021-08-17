@@ -93,7 +93,7 @@ void SSliceIndexDicomEditor::starting()
     m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
-    m_dicomReader->registerInOut(m_seriesDB, "data");
+    m_dicomReader->setInOut(m_seriesDB, "data");
 
     if(!m_readerConfig.empty())
     {

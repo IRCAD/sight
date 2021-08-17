@@ -222,7 +222,7 @@ void SMultipleTF::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SMultipleTF::swapping(const KeyType& _key)
+void SMultipleTF::swapping(std::string_view _key)
 {
     SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 

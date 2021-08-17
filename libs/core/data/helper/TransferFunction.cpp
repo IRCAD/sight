@@ -120,6 +120,8 @@ void TransferFunction::createTransferFunction(data::Image::sptr image)
 
 void TransferFunction::setOrCreateTF(const data::TransferFunction::sptr& _tf, const data::Image::sptr& _image)
 {
+    SIGHT_ASSERT("Image should not be null", _image);
+
     this->removeTFConnections();
     if(_tf)
     {

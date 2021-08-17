@@ -30,8 +30,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
-
 static const std::string s_PARENT_CONFIG = "parent";
 
 //------------------------------------------------------------------------------
@@ -98,7 +96,7 @@ void STransform::starting()
 void STransform::updating()
 {
     {
-        const auto transform = this->getLockedInOut<data::Matrix4>(s_TRANSFORM_INOUT);
+        const auto transform = m_matrix.lock();
         m_ogreTransform = ::Ogre::Affine3(sight::viz::scene3d::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 

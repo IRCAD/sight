@@ -23,6 +23,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Material.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
@@ -62,11 +64,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SMaterialOpacityEditor, sight::ui::base::IEditor);
 
-    /// Creates the service.
-    MODULE_UI_QT_API SMaterialOpacityEditor() noexcept;
-
     /// Destroys the service.
-    MODULE_UI_QT_API ~SMaterialOpacityEditor() noexcept override;
+    MODULE_UI_QT_API ~SMaterialOpacityEditor() noexcept override = default;
 
 private:
 
@@ -87,6 +86,8 @@ private:
 
     /// Name that appears next to the slider.
     std::string m_label {"Material opacity : "};
+
+    data::ptr<data::Material, data::Access::inout> m_material {this, "material", true};
 
 private Q_SLOTS:
 

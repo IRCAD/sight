@@ -133,12 +133,12 @@ void SDicomSeriesConverter::updating()
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                data::helper::SeriesDB sDBhelper(dummy);
+                data::helper::SeriesDB sDBhelper(*dummy);
                 sDBhelper.clear();
             }
             else
             {
-                data::helper::SeriesDB sDBhelper(destinationSeriesDB);
+                data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
                 sDBhelper.merge(dummy);
                 sDBhelper.notify();
             }

@@ -546,7 +546,7 @@ void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
 {
     const auto seriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIESDB_INOUT);
 
-    data::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
+    data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Delete old series from the SeriesDB.
     seriesDBHelper.clear();

@@ -233,7 +233,7 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
             // If the user cancel the reading process we delete the loaded series
             if(!result || reader->getJob()->cancelRequested())
             {
-                data::helper::SeriesDB sDBhelper(seriesDB);
+                data::helper::SeriesDB sDBhelper(*seriesDB);
                 sDBhelper.clear();
             }
         }
@@ -283,7 +283,7 @@ void SDicomSeriesDBReader::updating()
             SIGHT_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
-            data::helper::SeriesDB sDBhelper(associatedSeriesDB);
+            data::helper::SeriesDB sDBhelper(*associatedSeriesDB);
             data::mt::ObjectWriteLock lock(associatedSeriesDB);
             sDBhelper.clear();
 

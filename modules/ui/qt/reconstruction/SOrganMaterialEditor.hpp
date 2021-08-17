@@ -26,6 +26,8 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/Reconstruction.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
@@ -101,6 +103,9 @@ private:
     QPointer<QPushButton> m_ambientColourButton;
     QPointer<QSlider> m_opacitySlider;
     QPointer<QLabel> m_transparencyValue;
+
+    static const service::IService::KeyType s_RECONSTRUCTION_INOUT;
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
 
 private Q_SLOTS:
 

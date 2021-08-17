@@ -337,7 +337,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
     size_t nbRealPoints     = 0;
-    auto glmExtrinsicMatrix = geometry::data::getMatrixFromTF3D(extrinsic);
+    auto glmExtrinsicMatrix = geometry::data::getMatrixFromTF3D(*extrinsic);
 
     const auto imageSize = height * width;
     for(size_t y = 0 ; y != height ; ++y)

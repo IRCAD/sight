@@ -58,6 +58,8 @@ class MODULE_VIZ_SCENE3D_CLASS_API STransform final :
 {
 public:
 
+    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor);
 
@@ -102,6 +104,8 @@ private:
 
     /// Defines the Ogre transformation of this service
     ::Ogre::Affine3 m_ogreTransform;
+
+    data::ptr<data::Matrix4, data::Access::inout> m_matrix {this, s_TRANSFORM_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

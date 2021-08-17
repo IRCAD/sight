@@ -105,14 +105,6 @@ void SOpenCVIntrinsic::stopping()
 {
 }
 
-//------------------------------------------------------------------------------
-
-void SOpenCVIntrinsic::swapping()
-{
-    this->stopping();
-    this->starting();
-}
-
 //--------------------------------------------------------------------- ---------
 
 void SOpenCVIntrinsic::updating()

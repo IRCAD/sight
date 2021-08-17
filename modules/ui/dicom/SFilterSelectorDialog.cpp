@@ -22,7 +22,6 @@
 
 #include "SFilterSelectorDialog.hpp"
 
-#include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
@@ -33,21 +32,12 @@
 
 #include <filter/dicom/IFilter.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-#include <sstream>
-#include <string>
-
 namespace sight::module::ui::dicom
 {
-
-//------------------------------------------------------------------------------
-
-static const service::IService::KeyType s_FILTER_INOUT = "filter";
 
 //------------------------------------------------------------------------------
 
@@ -183,8 +173,8 @@ void SFilterSelectorDialog::updating()
         {
             filter::dicom::IFilter::sptr filter = availableFiltersMap[filterName];
 
-            data::String::sptr obj = this->getInOut<data::String>(s_FILTER_INOUT);
-            SIGHT_ASSERT("The inout key '" + s_FILTER_INOUT + "' is not correctly set.", obj);
+            auto obj = m_filter.lock();
+            SIGHT_ASSERT("The inout key 'filter' is not correctly set.", obj);
 
             obj->setValue(filter->getClassname());
 

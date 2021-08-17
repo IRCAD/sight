@@ -24,6 +24,8 @@
 
 #include "modules/io/vtk/config.hpp"
 
+#include <data/ImageSeries.hpp>
+
 #include <io/base/service/IReader.hpp>
 
 #include <filesystem>
@@ -131,13 +133,13 @@ protected:
 
 private:
 
-    /// This method notifies other ImageSeries services that a new image has been loaded.
-    void notificationOfDBUpdate();
-
     /// Image path.
     std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
+
+    /// Input image
+    data::ptr<data::ImageSeries, data::Access::inout> m_imageSeries {this, sight::io::base::service::s_DATA_KEY};
 };
 
 } // namespace sight::module::io::vtk

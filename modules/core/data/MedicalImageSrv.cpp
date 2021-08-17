@@ -33,15 +33,12 @@
 namespace sight::module::data
 {
 
-static const std::string s_IMAGE_INOUT = "image";
-
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 
 MedicalImageSrv::MedicalImageSrv() noexcept
 {
-    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,14 +51,14 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 
 void MedicalImageSrv::convertImage()
 {
-    auto pImg = this->getInOut<sight::data::Image>(s_IMAGE_INOUT);
+    auto pImg = m_image.lock();
 
-    if(sight::data::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    if(sight::data::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg.get_shared()))
     {
         bool isModified = false;
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg);
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg);
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg);
+        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg.get_shared());
+        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg.get_shared());
+        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg.get_shared());
 
         if(isModified)
         {
@@ -82,13 +79,6 @@ void MedicalImageSrv::starting()
 
 void MedicalImageSrv::stopping()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void MedicalImageSrv::swapping()
-{
-    this->convertImage();
 }
 
 //-----------------------------------------------------------------------------

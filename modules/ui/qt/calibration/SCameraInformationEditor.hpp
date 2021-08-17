@@ -99,11 +99,6 @@ public:
     {
     }
 
-    /**
-     * @brief Swapping method : This method is used to swap the service.
-     */
-    MODULE_UI_QT_API void swapping() override;
-
 protected:
 
     service::IService::KeyConnectionsMap getAutoConnections() const override;

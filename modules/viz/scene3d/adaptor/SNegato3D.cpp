@@ -57,9 +57,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_OPACITY_SLOT = "updateOpacit
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
-static const std::string s_IMAGE_INOUT = "image";
-static const std::string s_TF_INOUT    = "tf";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_TRANSFORM_CONFIG        = "transform";
 static const std::string s_FILTERING_CONFIG        = "filtering";
@@ -154,10 +151,8 @@ void SNegato3D::starting()
     this->getRenderService()->makeCurrent();
 
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 
@@ -255,14 +250,12 @@ void SNegato3D::updating()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::swapping(const KeyType& key)
+void SNegato3D::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         this->updateTF();
@@ -334,10 +327,8 @@ void SNegato3D::newImage()
     int frontalIdx  = 0;
     int sagittalIdx = 0;
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
@@ -404,7 +395,7 @@ void SNegato3D::changeSliceType(int, int)
 
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     auto imgSize = image->getSize2();
 
@@ -459,7 +450,7 @@ void SNegato3D::setPlanesOpacity()
 
     if(std::all_of(m_planes.begin(), m_planes.end(), notNull))
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
 
         const auto transparency = image->setDefaultField(s_TRANSPARENCY_FIELD, data::Integer::New(0));
         const auto isVisible    = image->setDefaultField(s_VISIBILITY_FIELD, data::Boolean::New(true));
@@ -488,7 +479,7 @@ void SNegato3D::setVisible(bool _visible)
     std::shared_ptr<VisModSigType> visModSig;
 
     {
-        const auto image      = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image      = m_image.lock();
         const auto visibility = image->getField<data::Boolean>(s_VISIBILITY_FIELD);
 
         // We propagate the visibility change if it has never been applied or if have changed
@@ -603,7 +594,7 @@ void SNegato3D::moveSlices(int _x, int _y)
 
     if(pickRes.has_value())
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
 
         auto pickedPt = pickRes.value();
 
@@ -635,7 +626,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
         if(pickedPos.has_value())
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+            const auto image = m_image.lock();
 
             if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
             {

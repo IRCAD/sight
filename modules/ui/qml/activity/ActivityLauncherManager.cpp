@@ -26,8 +26,8 @@
 
 #include <data/SeriesDB.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
-#include <service/op/Add.hpp>
 #include <service/registry/Proxy.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
@@ -107,7 +107,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
         {
             // create the services;
             m_activitySequencer = srv;
-            m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
+            m_activitySequencer->setInOut(m_seriesDB, "seriesDB", true);
 
             // connect to launch the activity when it is created/updated.
             service::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
@@ -136,7 +136,7 @@ void ActivityLauncherManager::open()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
     auto reader          = service::add("::sight::module::ui::base::io::SSelector");
-    reader->registerInOut(seriesDB, "data");
+    reader->setInOut(seriesDB, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityReaderConfig",
@@ -148,7 +148,7 @@ void ActivityLauncherManager::open()
     reader->start();
     reader->update();
     reader->stop();
-    service::OSR::unregisterService(reader);
+    service::remove(reader);
 
     auto sig = seriesDB->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -160,7 +160,7 @@ void ActivityLauncherManager::save()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
     auto writer          = service::add("::sight::module::ui::base::io::SSelector");
-    writer->registerInOut(seriesDB, "data");
+    writer->setInOut(seriesDB, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityWriterConfig",
@@ -171,7 +171,7 @@ void ActivityLauncherManager::save()
     writer->start();
     writer->update();
     writer->stop();
-    service::OSR::unregisterService(writer);
+    service::remove(writer);
 }
 
 //------------------------------------------------------------------------------

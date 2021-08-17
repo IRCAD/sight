@@ -46,16 +46,12 @@ const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[3] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-
 //------------------------------------------------------------------------------
 
 SSliceIndexPositionEditor::SSliceIndexPositionEditor() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SSliceIndexPositionEditor::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SSliceIndexPositionEditor::updateSliceType, this);
-
-    this->registerObject(s_IMAGE_INOUT, AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -68,8 +64,10 @@ SSliceIndexPositionEditor::~SSliceIndexPositionEditor() noexcept
 
 void SSliceIndexPositionEditor::starting()
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    this->updateImageInfos(image);
+    {
+        auto image = m_image.lock();
+        this->updateImageInfos(image.get_shared());
+    }
     this->updateSliceTypeFromImg(m_orientation);
 
     this->updating();
@@ -91,9 +89,10 @@ void SSliceIndexPositionEditor::configuring()
 
 void SSliceIndexPositionEditor::updating()
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
-    this->updateImageInfos(image);
+    {
+        auto image = m_image.lock();
+        this->updateImageInfos(image.get_shared());
+    }
     this->updateSliceIndexFromImg();
 }
 
@@ -104,12 +103,13 @@ void SSliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sag
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
     m_sagittalIndex->value() = sagittal;
+    {
+        auto image = m_image.lock();
+        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+    }
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
-    image->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
-    image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
-    image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
     this->updateSliceIndexFromImg();
 }
 
@@ -148,9 +148,9 @@ void SSliceIndexPositionEditor::updateSliceType(int from, int to)
 
 void SSliceIndexPositionEditor::updateSliceIndexFromImg()
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
+    auto image = m_image.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
@@ -175,9 +175,6 @@ void SSliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type)
 {
     // Update Type Choice
     this->setSliceType(static_cast<int>(type));
-
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
     this->updateSliceIndexFromImg();
 }
 
@@ -185,7 +182,7 @@ void SSliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type)
 
 void SSliceIndexPositionEditor::onSliceIndex(int index)
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
+    auto image = m_image.lock();
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     SIGHT_ASSERT("Field " << fieldID << " is missing", image->getField(fieldID));
@@ -219,9 +216,8 @@ void SSliceIndexPositionEditor::onSliceType(int _type)
     m_orientation = type;
 
     // Fire the signal
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
-    auto sig = image->signal<data::Image::SliceTypeModifiedSignalType>(
+    auto image = m_image.lock();
+    auto sig   = image->signal<data::Image::SliceTypeModifiedSignalType>(
         data::Image::s_SLICE_TYPE_MODIFIED_SIG
     );
     {

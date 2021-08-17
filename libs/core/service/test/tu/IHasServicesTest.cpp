@@ -29,7 +29,7 @@
 #include <service/IHasServices.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::IHasServicesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::IHasServicesTest);
 
 //------------------------------------------------------------------------------
 
@@ -55,8 +55,6 @@ void IHasServicesTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-static const std::string srvType = "::sight::service::ut::TestSrvAutoconnect";
-
 struct TestIHasServices : public service::IHasServices
 {
     virtual ~TestIHasServices() noexcept
@@ -77,10 +75,10 @@ struct TestIHasServices : public service::IHasServices
         auto sig2 = data2->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         auto sig3 = data3->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
-            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService->registerInOut(data1, "data1", true);
-            testService->registerInOut(data2, "data2", false);
-            testService->registerInOut(data3, "data3", true);
+            auto testService = this->registerService<service::ut::ISTest>("sight::service::ut::STest3InoutsV2");
+            testService->setInOut(data1, "data1", true);
+            testService->setInOut(data2, "data2", false);
+            testService->setInOut(data3, "data3", true);
             testService->start();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
@@ -95,10 +93,10 @@ struct TestIHasServices : public service::IHasServices
         }
 
         {
-            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService->registerInOut(data1, "data1", true);
-            testService->registerInOut(data2, "data2", true);
-            testService->registerInOut(data3, "data3");
+            auto testService = this->registerService<service::ut::ISTest>("sight::service::ut::STest3InoutsV2");
+            testService->setInOut(data1, "data1", true);
+            testService->setInOut(data2, "data2", true);
+            testService->setInOut(data3, "data3");
             testService->start();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
@@ -114,10 +112,10 @@ struct TestIHasServices : public service::IHasServices
 
         {
             // same test but with input instead of inout
-            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService->registerInput(data1, "data1", true);
-            testService->registerInput(data2, "data2", true);
-            testService->registerInput(data3, "data3");
+            auto testService = this->registerService<service::ut::ISTest>("sight::service::ut::STest3InoutsV2");
+            testService->setInOut(data1, "data1", true);
+            testService->setInOut(data2, "data2", true);
+            testService->setInOut(data3, "data3");
             testService->start();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
@@ -145,15 +143,15 @@ struct TestIHasServices : public service::IHasServices
         {
             service::IService::wptr refService1;
             {
-                auto testService1 = this->registerService(srvType);
-                testService1->registerInOut(data1, "data1", true);
+                auto testService1 = this->registerService("sight::service::ut::STest1Inout");
+                testService1->setInOut(data1, "data1", true);
                 testService1->start();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
-                auto testService2 = this->registerService(srvType);
+                auto testService2 = this->registerService("sight::service::ut::STestNoData");
                 testService2->start();
                 refService2 = testService2;
             }
@@ -175,15 +173,15 @@ struct TestIHasServices : public service::IHasServices
         {
             service::IService::wptr refService1;
             {
-                auto testService1 = this->registerService(srvType);
-                testService1->registerInput(data1, "data1", true);
+                auto testService1 = this->registerService("sight::service::ut::STest1Input");
+                testService1->setInput(data1, "data1", true);
                 testService1->start();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
-                auto testService2 = this->registerService(srvType);
+                auto testService2 = this->registerService("sight::service::ut::STestNoData");
                 testService2->start();
                 refService2 = testService2;
             }
@@ -205,15 +203,15 @@ struct TestIHasServices : public service::IHasServices
         {
             service::IService::wptr refService1;
             {
-                auto testService1 = this->registerService(srvType);
-                testService1->registerInOut(data1, "data1", true);
+                auto testService1 = this->registerService("sight::service::ut::STest1Inout");
+                testService1->setInOut(data1, "data1", true);
                 testService1->start();
                 refService1 = testService1;
             }
 
             service::IService::wptr refService2;
             {
-                auto testService2 = this->registerService("::sight::service::ut::TestServiceImplementation");
+                auto testService2 = this->registerService("sight::service::ut::STestNoData");
                 testService2->start();
                 refService2 = testService2;
             }
@@ -223,29 +221,30 @@ struct TestIHasServices : public service::IHasServices
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
-            this->unregisterServices("::sight::service::ut::TestSrvAutoconnect");
+            this->unregisterServices("sight::service::ut::STest1Inout");
             CPPUNIT_ASSERT(refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
 
-            this->unregisterServices("::sight::service::ut::TestServiceImplementation");
+            this->unregisterServices("sight::service::ut::STestNoData");
             CPPUNIT_ASSERT(refService1.expired());
             CPPUNIT_ASSERT(refService2.expired());
         }
         {
-            auto testService1 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService1->registerInOut(data1, "data1", true);
+            auto testService1 = this->registerService("sight::service::ut::STest1Inout");
+            testService1->setInOut(data1, "data1", true);
             testService1->start();
 
-            auto testService2 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
+            auto testService2 = this->registerService("sight::service::ut::STestNoData");
             testService2->start();
 
-            auto testService3 = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService3->registerInOut(data1, "data1", true);
+            auto testService3 = this->registerService("sight::service::ut::STest1Inout");
+            testService3->setInOut(data1, "data1", true);
             testService3->start();
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
-            this->unregisterServices("::sight::service::ut::TestSrvAutoconnect");
+            this->unregisterServices("sight::service::ut::STest1Inout");
+            this->unregisterServices("sight::service::ut::STestNoData");
 
             CPPUNIT_ASSERT_EQUAL(size_t(0), this->getRegisteredServices().size());
         }
@@ -260,25 +259,25 @@ struct TestIHasServices : public service::IHasServices
         data::Boolean::sptr data3 = data::Boolean::New();
 
         {
-            auto testService = this->registerService<service::ut::TestServiceImplementation>(
-                "::sight::service::ut::TestServiceImplementation"
+            auto testService = this->registerService<sight::service::ut::ISTest>(
+                "sight::service::ut::STest1Input1OptInput1OptInOut"
             );
-            testService->registerInput(data1, "data1", true, false);
+            testService->setInput(data1, "data1", true, false);
             testService->start();
 
             CPPUNIT_ASSERT(testService->getSwappedObjectKey().empty());
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
 
-            testService->registerInput(data2, "data2", true, true);
+            testService->setInput(data2, "data2");
             testService->swapKey("data2", nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
             CPPUNIT_ASSERT(data2 == testService->getSwappedObject());
 
-            testService->registerInOut(data3, "data3", false, true);
+            testService->setInOut(data3, "data3");
             testService->swapKey("data3", nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("data3"), testService->getSwappedObjectKey());
 
-            service::OSR::unregisterService("data2", service::IService::AccessType::INPUT, testService);
+            testService->setInput(nullptr, "data2");
             testService->swapKey("data2", nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
             CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
@@ -289,8 +288,10 @@ struct TestIHasServices : public service::IHasServices
         auto sig3 = data3->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
         {
-            auto testService = this->registerService<service::ut::TestSrvAutoconnect>(srvType);
-            testService->registerInput(data1, "data1", true, false);
+            auto testService = this->registerService<sight::service::ut::ISTest>(
+                "sight::service::ut::STest1Input1OptInput1OptInOut"
+            );
+            testService->setInput(data1, "data1", true, false);
             testService->start();
 
             CPPUNIT_ASSERT(!testService->getIsUpdated());
@@ -299,14 +300,14 @@ struct TestIHasServices : public service::IHasServices
             sig1->emit();
             CPPUNIT_ASSERT(testService->getIsUpdated());
 
-            testService->registerInput(data2, "data2", false, true);
+            testService->setInput(data2, "data2", false, true);
             testService->swapKey("data2", nullptr);
 
             sig2->emit();
             CPPUNIT_ASSERT(!testService->getReceived());
 
-            testService->registerInOut(data3, "data3", true, true);
-            testService->swapKey("data3", nullptr);
+            testService->setInOut(data3, "data3", true, true);
+            testService->swapKey("data3", data3);
 
             sig3->emit();
             CPPUNIT_ASSERT(testService->getReceived());

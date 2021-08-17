@@ -32,7 +32,7 @@ using namespace sight;
 namespace Tuto01DataServiceBasicCpp
 {
 
-SIGHT_REGISTER_PLUGIN("::Tuto01DataServiceBasicCpp::Plugin");
+SIGHT_REGISTER_PLUGIN("Tuto01DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ void Plugin::initialize()
     m_image = data::Image::New();
 
     // UI declaration
-    m_frameSrv = service::add("::sight::module::ui::base::SFrame");
+    m_frameSrv = service::add("sight::module::ui::base::SFrame");
     {
         service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto01DataServiceBasicCpp");
@@ -67,18 +67,18 @@ void Plugin::initialize()
     }
 
     // Services
-    m_readerSrv = service::add("::sight::module::io::vtk::SImageReader");
+    m_readerSrv = service::add("sight::module::io::vtk::SImageReader");
     {
-        m_readerSrv->registerInOut(m_image, "data");
+        m_readerSrv->setInOut(m_image, "data");
         service::IService::ConfigType config;
         config.put("file", "../../data/patient1.vtk");
         m_readerSrv->setConfiguration(config);
         m_readerSrv->configure();
     }
 
-    m_renderSrv = service::add("::sight::module::viz::sample::SImage");
+    m_renderSrv = service::add("sight::module::viz::sample::SImage");
     {
-        m_renderSrv->registerInput(m_image, "image");
+        m_renderSrv->setInput(m_image, "image");
         m_renderSrv->setID("imageRendereSrv");
         m_renderSrv->configure();
     }

@@ -26,9 +26,6 @@
 #include <core/location/SingleFolder.hpp>
 
 #include <data/CameraSeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -122,15 +119,6 @@ void SOpenCVWriter::stopping()
 
 void SOpenCVWriter::updating()
 {
-    data::CameraSeries::csptr camSeries = this->getInput<data::CameraSeries>(sight::io::base::service::s_DATA_KEY);
-
-    if(!camSeries)
-    {
-        m_writeFailed = true;
-    }
-
-    SIGHT_ASSERT("CameraSeries is null", camSeries);
-
     bool use_dialog = false;
     if(!this->hasLocationDefined())
     {
@@ -142,7 +130,16 @@ void SOpenCVWriter::updating()
         }
     }
 
-    data::mt::ObjectReadLock lock(camSeries);
+    auto data      = m_data.lock();
+    auto camSeries = std::dynamic_pointer_cast<const data::CameraSeries>(data.get_shared());
+
+    if(!camSeries)
+    {
+        m_writeFailed = true;
+    }
+
+    SIGHT_ASSERT("CameraSeries is null", camSeries);
+
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
     std::vector<data::Camera::sptr> cameras;
@@ -152,8 +149,6 @@ void SOpenCVWriter::updating()
     // Set the cameras
     data::Matrix4::sptr extrinsicMatrix;
     ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
-
-    data::mt::ObjectReadLock camSeriesLock(camSeries);
 
     for(size_t i = 0 ; i < numberOfCameras ; ++i)
     {
@@ -214,14 +209,6 @@ void SOpenCVWriter::updating()
     {
         this->clearLocations();
     }
-}
-
-// ----------------------------------------------------------------------------
-
-void SOpenCVWriter::swapping()
-{
-    this->stop();
-    this->start();
 }
 
 // ----------------------------------------------------------------------------

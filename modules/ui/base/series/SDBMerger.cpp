@@ -32,9 +32,8 @@
 
 #include <io/base/service/ioTypes.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -103,7 +102,7 @@ void SDBMerger::updating()
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         m_ioSelectorSrvConfig,
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
     SIGHT_ASSERT(
         "There is no service configuration "
@@ -114,8 +113,8 @@ void SDBMerger::updating()
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
-    ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
+    ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
+    ioSelectorSrv->setInOut(localSeriesDB, io::base::service::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
@@ -129,9 +128,9 @@ void SDBMerger::updating()
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
-    service::OSR::unregisterService(ioSelectorSrv);
+    service::remove(ioSelectorSrv);
 
-    data::helper::SeriesDB sDBhelper(seriesDB);
+    data::helper::SeriesDB sDBhelper(*seriesDB);
     sDBhelper.merge(localSeriesDB);
     sDBhelper.notify();
 }

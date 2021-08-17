@@ -50,6 +50,10 @@ public:
 
     /// Destructor.
     SERVICE_API virtual ~IRGBDGrabber() noexcept;
+
+protected:
+
+    data::ptr<data::FrameTL, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
 };
 
 } //namespace sight::service

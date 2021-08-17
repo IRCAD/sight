@@ -48,8 +48,6 @@ static const core::com::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "mod
 static const core::com::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const core::com::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
 
-static const std::string s_MESH_INOUT = "mesh";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
 static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
@@ -395,7 +393,7 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "::sight::module::viz::scene3d::adaptor::SMaterial"
     );
-    materialAdaptor->registerInOut(m_material, "material", true);
+    materialAdaptor->setInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
     materialAdaptor->setRenderService(this->getRenderService());

@@ -89,12 +89,7 @@ void write(const service::IService::ConfigType& srvCfg, const SPTR(T)& obj, cons
     service::IService::sptr writerSrv = service::add(writer);
     CPPUNIT_ASSERT(writerSrv);
 
-    service::OSR::registerService(
-        obj,
-        sight::io::base::service::s_DATA_KEY,
-        service::IService::AccessType::INPUT,
-        writerSrv
-    );
+    writerSrv->setInput(obj, sight::io::base::service::s_DATA_KEY);
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();
@@ -110,12 +105,7 @@ SPTR(T) read(const service::IService::ConfigType& srvCfg, const std::string& rea
     service::IService::sptr readerSrv = service::add(reader);
     CPPUNIT_ASSERT(readerSrv);
 
-    service::OSR::registerService(
-        readObj,
-        sight::io::base::service::s_DATA_KEY,
-        service::IService::AccessType::INOUT,
-        readerSrv
-    );
+    readerSrv->setInOut(readObj, sight::io::base::service::s_DATA_KEY);
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start().wait();

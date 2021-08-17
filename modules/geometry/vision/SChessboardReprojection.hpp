@@ -81,7 +81,7 @@ namespace sight::module::geometry::vision
  * - \b distortReprojection (optional, default="true"): whether the 'videoImage' is undistorted, in which case the
  *                                                      reprojected points should not be distorted.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection : public service::IService
+class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection final : public service::IService
 {
 public:
 

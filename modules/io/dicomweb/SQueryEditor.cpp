@@ -318,7 +318,7 @@ void SQueryEditor::queryStudyDate()
 void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 {
     data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>("seriesDB");
-    data::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Delete old series from the SeriesDB
     seriesDBHelper.clear();

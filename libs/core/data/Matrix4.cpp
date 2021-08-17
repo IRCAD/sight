@@ -32,14 +32,16 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
+Matrix4::Matrix4()
+{
+    m_vCoefficients = s_IDENTITY;
+}
+
+//------------------------------------------------------------------------------
+
 Matrix4::Matrix4(data::Object::Key)
 {
-    //default initialization
-    m_vCoefficients.fill(0.);
-    for(size_t t = 0 ; t < MATRIX_SIZE ; ++t)
-    {
-        m_vCoefficients[t * MATRIX_SIZE + t] = 1.;
-    }
+    m_vCoefficients = s_IDENTITY;
 }
 
 //------------------------------------------------------------------------------

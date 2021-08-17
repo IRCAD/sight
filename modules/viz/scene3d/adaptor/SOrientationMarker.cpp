@@ -91,7 +91,7 @@ void SOrientationMarker::starting()
         this->registerService<sight::module::viz::scene3d::adaptor::SMaterial>(
             "::sight::module::viz::scene3d::adaptor::SMaterial"
         );
-    materialAdaptor->registerInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
     materialAdaptor->setRenderService(this->getRenderService());

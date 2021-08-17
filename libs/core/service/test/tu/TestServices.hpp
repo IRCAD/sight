@@ -24,6 +24,8 @@
 
 #include <core/base.hpp>
 
+#include <data/Image.hpp>
+
 #include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -96,16 +98,16 @@ protected:
 /**
  * @brief   Test service implementation for image
  */
-class TestServiceImplementationImage : public TestConfigService
+class STest1Image : public TestConfigService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(TestServiceImplementationImage, service::ut::TestConfigService);
-    TestServiceImplementationImage() noexcept
+    SIGHT_DECLARE_SERVICE(STest1Image, service::ut::TestConfigService);
+    STest1Image() noexcept
     {
     }
 
-    virtual ~TestServiceImplementationImage() noexcept
+    ~STest1Image() noexcept override
     {
     }
 
@@ -133,6 +135,8 @@ public:
     {
         m_isUpdated = true;
     }
+
+    data::ptr<data::Image, data::Access::in> m_input {this, "data", true};
 };
 
 } //namespace ut

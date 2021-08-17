@@ -115,7 +115,7 @@ protected:
     void stopping() final;
 
     /// Selects the current tf.
-    void swapping(const KeyType&) final;
+    void swapping(std::string_view) final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.

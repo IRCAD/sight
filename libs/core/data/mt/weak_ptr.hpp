@@ -65,7 +65,7 @@ class locked_ptr;
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
 template<class DATATYPE>
-class weak_ptr final
+class weak_ptr
 {
 public:
 
@@ -111,10 +111,16 @@ public:
 
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
 
-    /// Returns true if the weak pointer have expired
+    /// Returns true if the weak pointer has expired
     inline bool expired() const noexcept
     {
         return m_data.expired();
+    }
+
+    /// Resets the pointer to null
+    inline void reset() noexcept
+    {
+        m_data.reset();
     }
 
     /// Convenience function that mimic std::dynamic_pointer_cast()
@@ -129,7 +135,6 @@ private:
     /// @todo remove me when IService and ObjectService will be ready to use lock()
     friend class service::IService;
     friend class service::registry::ObjectService;
-    friend class activity::IActivityLauncher;
 
     /// Convenience getter for weak_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()

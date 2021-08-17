@@ -138,6 +138,8 @@ private:
     ::Ogre::TexturePtr m_texture;
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty;
+
+    data::ptr<data::Object, data::Access::inout> m_parameter {this, s_PARAMETER_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

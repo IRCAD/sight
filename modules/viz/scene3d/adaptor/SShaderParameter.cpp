@@ -96,10 +96,4 @@ void SShaderParameter::stopping()
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace sight::module::viz::scene3d::adaptor.

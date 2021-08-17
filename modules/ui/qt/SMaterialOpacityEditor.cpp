@@ -20,8 +20,6 @@
  ***********************************************************************/
 #include "modules/ui/qt/SMaterialOpacityEditor.hpp"
 
-#include <data/Material.hpp>
-
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
@@ -31,17 +29,6 @@
 
 namespace sight::module::ui::qt
 {
-
-static const service::IService::KeyType s_MATERIAL_INOUT = "material";
-
-SMaterialOpacityEditor::SMaterialOpacityEditor() noexcept
-{
-    this->registerObject(s_MATERIAL_INOUT, service::IService::AccessType::INOUT, true);
-}
-
-SMaterialOpacityEditor::~SMaterialOpacityEditor() noexcept
-{
-}
 
 //------------------------------------------------------------------------------
 
@@ -88,7 +75,7 @@ void SMaterialOpacityEditor::starting()
 
 void SMaterialOpacityEditor::updating()
 {
-    auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
+    auto material = m_material.lock();
     const int a   = static_cast<int>(material->diffuse()->alpha() * 100.f);
     m_opacitySlider->setValue(a);
 }
@@ -97,8 +84,7 @@ void SMaterialOpacityEditor::updating()
 
 void SMaterialOpacityEditor::onOpacitySlider(int _value)
 {
-    auto material = this->getLockedInOut<data::Material>(s_MATERIAL_INOUT);
-
+    auto material = m_material.lock();
     material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
     std::stringstream ss;
     ss << _value << "%";

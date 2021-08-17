@@ -24,30 +24,10 @@
 
 #include "modules/sync/config.hpp"
 
-#include <core/base.hpp>
-#include <core/HiResClock.hpp>
-#include <core/thread/Timer.hpp>
+#include <data/Matrix4.hpp>
+#include <data/MatrixTL.hpp>
 
-#include <data/Composite.hpp>
-
-#include <service/IController.hpp>
 #include <service/ISynchronizer.hpp>
-
-namespace sight::data
-{
-
-class FrameTL;
-class MatrixTL;
-
-}
-
-namespace sight::data
-{
-
-class Image;
-class Matrix4;
-
-}
 
 namespace sight::module::sync
 {
@@ -124,6 +104,12 @@ protected:
 private:
 
     MatrixIndexNameType m_matrixIndexName;
+
+    static constexpr std::string_view s_MATRIXTL_INPUT = "matrixTL";
+    static constexpr std::string_view s_MATRICES_INOUT = "matrices";
+
+    data::ptr<data::MatrixTL, data::Access::in> m_matrixTL {this, s_MATRIXTL_INPUT, true};
+    data::ptr_vector<data::Matrix4, data::Access::inout> m_matrices {this, s_MATRICES_INOUT};
 };
 
 } //namespace sight::module::sync

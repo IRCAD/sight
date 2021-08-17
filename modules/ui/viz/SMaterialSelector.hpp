@@ -102,8 +102,6 @@ protected:
     /// Update UI depending on current reconstruction
     MODULE_UI_VIZ_API void updating() override;
 
-    MODULE_UI_VIZ_API void swapping() override;
-
 protected Q_SLOTS:
 
     /// SLOT: Called when a material is selected

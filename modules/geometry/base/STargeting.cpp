@@ -25,10 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Matrix4.hpp>
-#include <data/PointList.hpp>
-#include <data/Landmarks.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
 #include <service/macros.hpp>
@@ -44,9 +40,6 @@ namespace sight::module::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const service::IService::KeyType s_LANDMARK_INPUT         = "landmark";
-const service::IService::KeyType s_MATRIX_INPUT           = "matrix";
-const service::IService::KeyType s_POINTLIST_INOUT        = "pointList";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
 const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
 const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
@@ -56,7 +49,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 // -----------------------------------------------------------------------------
 
 STargeting::STargeting() noexcept :
-    m_targetLandmark(::glm::dvec3(0.0, 0.0, 0.0))
+    m_targetLandmark(glm::dvec3(0.0, 0.0, 0.0))
 {
     newSlot(s_SELECTED_POINT_SLOT, &STargeting::updateSelectedPoint, this);
     newSlot(s_UPDATE_POINT_SLOT, &STargeting::updatePoint, this);
@@ -101,12 +94,12 @@ void STargeting::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto landmark = this->getLockedInput<data::Landmarks>(s_LANDMARK_INPUT);
+        const auto landmark = m_landmark.lock();
         SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
         if(landmark->getGroup(m_label).m_points.size() > 0)
         {
             const data::Landmarks::PointType point = landmark->getPoint(m_label, m_index);
-            m_targetLandmark = ::glm::dvec3(point[0], point[1], point[2]);
+            m_targetLandmark = glm::dvec3(point[0], point[1], point[2]);
         }
         else
         {
@@ -115,31 +108,30 @@ void STargeting::updating()
     }
 
     // Get the input matrix for the needle tip
-    const auto matrix =
-        this->getLockedInput<data::Matrix4>(s_MATRIX_INPUT);
+    const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("Input \"matrix\" is missing.", matrix);
 
-    const ::glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
+    const glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(*matrix);
 
-    const ::glm::dvec4 origin(0.0, 0.0, 0.0, 1.0);
+    const glm::dvec4 origin(0.0, 0.0, 0.0, 1.0);
 
-    const ::glm::dvec4 axisX(1.0, 0.0, 0.0, 0.0);
-    const ::glm::dvec4 axisZ(0.0, 0.0, 1.0, 0.0);
+    const glm::dvec4 axisX(1.0, 0.0, 0.0, 0.0);
+    const glm::dvec4 axisZ(0.0, 0.0, 1.0, 0.0);
 
     // Compute the needle tip position
-    const ::glm::dvec3 needleTip = ::glm::dvec3(mat * origin);
+    const glm::dvec3 needleTip = glm::dvec3(mat * origin);
 
     // Compute the needle orientation vectors
-    const ::glm::dvec3 needleTipX = ::glm::dvec3(mat * axisX);
-    const ::glm::dvec3 needleTipZ = ::glm::dvec3(mat * axisZ);
+    const glm::dvec3 needleTipX = glm::dvec3(mat * axisX);
+    const glm::dvec3 needleTipZ = glm::dvec3(mat * axisZ);
 
     // WARNING: this axis must be consistent with the orientation of the input matrix
     // For example:
     // - If you use a camera matrix, this must be the Z axis
     // - If you use an EM sensor from the trakSTAR, this must be the X axis
-    const ::glm::dvec3 needleDirection = ::glm::normalize(needleTipZ);
+    const glm::dvec3 needleDirection = glm::normalize(needleTipZ);
 
-    const ::glm::dvec3 needleTipToLandmark = ::glm::normalize(m_targetLandmark - needleTip);
+    const glm::dvec3 needleTipToLandmark = glm::normalize(m_targetLandmark - needleTip);
 
     // Compute the intersection between the needle (from the tip) and the landmark plane
     double distance  = 0.0;
@@ -147,8 +139,8 @@ void STargeting::updating()
 
     /* Project the needle tip origin and the associated X axis of the matrices on the landmark plane */
     /* To get a coordinate system on this plane (the Y axis will be obtained via a cross product) */
-    if(::glm::intersectRayPlane(needleTip, needleDirection, m_targetLandmark, -needleTipToLandmark, distance)
-       && ::glm::intersectRayPlane(
+    if(glm::intersectRayPlane(needleTip, needleDirection, m_targetLandmark, -needleTipToLandmark, distance)
+       && glm::intersectRayPlane(
            needleTip + needleTipX,
            needleDirection,
            m_targetLandmark,
@@ -158,30 +150,30 @@ void STargeting::updating()
        && !m_label.empty())
     {
         // Compute the 3D position of the intersection between the needle and the landmark plane
-        const ::glm::dvec3 projectedNeedleOrigin = needleTip + needleDirection * distance;
+        const glm::dvec3 projectedNeedleOrigin = needleTip + needleDirection * distance;
         // Shift the needleTip with the axis vector
-        const ::glm::dvec3 projectedNeedleX = needleTip + needleTipX + needleDirection * distanceX;
+        const glm::dvec3 projectedNeedleX = needleTip + needleTipX + needleDirection * distanceX;
 
-        const ::glm::dvec3 projectedXAxis = ::glm::normalize(projectedNeedleX - projectedNeedleOrigin);
-        const ::glm::dvec3 projectedYAxis = ::glm::cross(needleTipToLandmark, projectedXAxis);
+        const glm::dvec3 projectedXAxis = glm::normalize(projectedNeedleX - projectedNeedleOrigin);
+        const glm::dvec3 projectedYAxis = glm::cross(needleTipToLandmark, projectedXAxis);
 
         // Compute the matrix from the world coordinates to the landmark plane coordinates
-        ::glm::dmat4x4 worldToPlaneMatrix;
-        worldToPlaneMatrix[0] = ::glm::dvec4(projectedXAxis, 0.0);
-        worldToPlaneMatrix[1] = ::glm::dvec4(projectedYAxis, 0.0);
-        worldToPlaneMatrix[2] = ::glm::dvec4(needleTipToLandmark, 0.0);
-        worldToPlaneMatrix[3] = ::glm::dvec4(m_targetLandmark, 1.0);
+        glm::dmat4x4 worldToPlaneMatrix;
+        worldToPlaneMatrix[0] = glm::dvec4(projectedXAxis, 0.0);
+        worldToPlaneMatrix[1] = glm::dvec4(projectedYAxis, 0.0);
+        worldToPlaneMatrix[2] = glm::dvec4(needleTipToLandmark, 0.0);
+        worldToPlaneMatrix[3] = glm::dvec4(m_targetLandmark, 1.0);
 
         // Invert the world to landmark plane matrix
-        const ::glm::dmat4x4 planeToWorldMatrix = ::glm::affineInverse(worldToPlaneMatrix);
+        const glm::dmat4x4 planeToWorldMatrix = glm::affineInverse(worldToPlaneMatrix);
 
         // Transform in the 2D landmark plane the needle intersection
-        ::glm::dvec3 transformedNeedleIntersection =
-            ::glm::dvec3(planeToWorldMatrix * ::glm::dvec4(projectedNeedleOrigin, 1.0));
-        transformedNeedleIntersection = ::glm::normalize(transformedNeedleIntersection);
+        glm::dvec3 transformedNeedleIntersection =
+            glm::dvec3(planeToWorldMatrix * glm::dvec4(projectedNeedleOrigin, 1.0));
+        transformedNeedleIntersection = glm::normalize(transformedNeedleIntersection);
 
         // Get the distance between the projected needle point and the landmark position
-        const double projectedNeedleToLandmarkdistance = ::glm::distance(projectedNeedleOrigin, m_targetLandmark);
+        const double projectedNeedleToLandmarkdistance = glm::distance(projectedNeedleOrigin, m_targetLandmark);
 
         // Compute a scale value so that the vector will represent the correct distance value on the view
         const double maxDistance = 50.0;
@@ -190,7 +182,7 @@ void STargeting::updating()
 
         transformedNeedleIntersection = transformedNeedleIntersection * scale;
 
-        auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+        auto pointList = m_pointList.lock();
         SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
         if(pointList->getPoints().size() > 0)
         {
@@ -237,11 +229,13 @@ void STargeting::updatePoint(std::string name)
 {
     m_label            = name;
     m_landmarkSelected = true;
-    const auto landmark = this->getLockedInput<data::Landmarks>(s_LANDMARK_INPUT);
-    SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
+    {
+        const auto landmark = m_landmark.lock();
+        SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
 
-    const size_t size = landmark->getGroup(m_label).m_points.size();
-    m_index = size - 1;
+        const size_t size = landmark->getGroup(m_label).m_points.size();
+        m_index = size - 1;
+    }
     this->update();
 }
 
@@ -252,7 +246,7 @@ void STargeting::removePoint()
     // When a point is removed, it's not selected anymore
     m_landmarkSelected = false;
 
-    auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+    auto pointList = m_pointList.lock();
     SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
     auto points = pointList->getPoints(); // copy the points.
     pointList->clear();

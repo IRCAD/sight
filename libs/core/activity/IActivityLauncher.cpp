@@ -67,9 +67,9 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
-        const auto it       = inouts.find(key);
+        const auto it       = inouts.find({key, 0});
         SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        data::Object::csptr obj = it->second.getShared();
+        auto obj = it->second.lock();
         ParameterType param;
         param.replace = key;
         if(optional)

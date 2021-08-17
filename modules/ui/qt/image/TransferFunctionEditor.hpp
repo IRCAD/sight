@@ -107,7 +107,7 @@ protected:
     MODULE_UI_QT_API void stopping() override;
 
     /// Selects the current transfer function
-    MODULE_UI_QT_API void swapping(const KeyType& key) override;
+    MODULE_UI_QT_API void swapping(std::string_view key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

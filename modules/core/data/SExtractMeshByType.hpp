@@ -26,7 +26,8 @@
 
 #include "modules/data/config.hpp"
 
-#include <core/base.hpp>
+#include <data/Mesh.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -106,6 +107,12 @@ private:
 
     /// Vector to associate \<from, to\> for object extraction
     ExtractVectorType m_extract;
+
+    static constexpr std::string_view s_SOURCE = "source";
+    static constexpr std::string_view s_TARGET = "target";
+
+    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::inout> m_source {this, s_SOURCE, false};
+    sight::data::ptr_vector<sight::data::Mesh, sight::data::Access::out> m_target {this, s_TARGET, false};
 };
 
 } // namespace sight::module::data

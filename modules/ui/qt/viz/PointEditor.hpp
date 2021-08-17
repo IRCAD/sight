@@ -68,8 +68,6 @@ protected:
 
     void updating() override;
 
-    void swapping() override;
-
     void configuring() override;
 
     /// Overrides

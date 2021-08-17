@@ -25,7 +25,6 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Mesh.hpp>
-#include <data/Reconstruction.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
@@ -37,8 +36,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
 static const core::com::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
-
-static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
 static const std::string s_QUERY_CONFIG            = "queryFlags";
@@ -112,13 +109,13 @@ void SReconstruction::updating()
 {
     if(!m_meshAdaptor.expired())
     {
-        const auto reconstruction = this->getLockedInput<data::Reconstruction>(s_RECONSTRUCTION_INPUT);
+        const auto reconstruction = m_reconstruction.lock();
 
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = service::OSR::getRegistered("mesh", service::IService::AccessType::INOUT, meshAdaptor);
-        if(mesh != reconstruction->getMesh())
+        auto mesh = meshAdaptor->getLockedInOut<sight::data::Mesh>("mesh");
+        if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction
             meshAdaptor->setMaterial(reconstruction->getMaterial());
@@ -144,7 +141,7 @@ void SReconstruction::stopping()
 void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
-    const auto reconstruction = this->getLockedInput<data::Reconstruction>(s_RECONSTRUCTION_INPUT);
+    const auto reconstruction = m_reconstruction.lock();
     data::Mesh::sptr mesh     = reconstruction->getMesh();
     if(mesh)
     {
@@ -152,7 +149,7 @@ void SReconstruction::createMeshService()
         auto meshAdaptor = this->registerService<module::viz::scene3d::adaptor::SMesh>(
             "::sight::module::viz::scene3d::adaptor::SMesh"
         );
-        meshAdaptor->registerInOut(mesh, "mesh", true);
+        meshAdaptor->setInOut(mesh, "mesh", true);
 
         meshAdaptor->setID(this->getID() + meshAdaptor->getID());
         meshAdaptor->setLayerID(m_layerID);
@@ -184,7 +181,7 @@ void SReconstruction::setVisible(bool _hide)
 
         if(meshAdaptor)
         {
-            const auto reconstruction = this->getLockedInput<data::Reconstruction>(s_RECONSTRUCTION_INPUT);
+            const auto reconstruction = m_reconstruction.lock();
             meshAdaptor->setVisible(_hide ? false : reconstruction->getIsVisible());
         }
     }
@@ -203,7 +200,7 @@ void SReconstruction::modifyVisibility()
 {
     if(!m_meshAdaptor.expired())
     {
-        const auto reconstruction = this->getLockedInput<data::Reconstruction>(s_RECONSTRUCTION_INPUT);
+        const auto reconstruction = m_reconstruction.lock();
         this->updateVisibility(!reconstruction->getIsVisible());
     }
 }
@@ -213,9 +210,8 @@ void SReconstruction::modifyVisibility()
 adaptor::SMesh::sptr SReconstruction::getMeshAdaptor()
 {
     // Retrieves the associated mesh adaptor
-    sight::viz::scene3d::IAdaptor::sptr adaptor            = m_meshAdaptor.lock();
-    module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor =
-        module::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
+    auto adaptor     = m_meshAdaptor.lock();
+    auto meshAdaptor = module::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
 
     return meshAdaptor;
 }

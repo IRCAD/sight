@@ -22,10 +22,6 @@
 
 #include "SExtractMeshByType.hpp"
 
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
@@ -68,7 +64,7 @@ void SExtractMeshByType::configuring()
     {
         if(cfg->hasAttribute("group"))
         {
-            if(cfg->getAttributeValue("group") == "target")
+            if(cfg->getAttributeValue("group") == s_TARGET)
             {
                 const std::vector<ConfigType> keyCfg = cfg->find("key");
                 SIGHT_ASSERT(
@@ -101,10 +97,8 @@ void SExtractMeshByType::starting()
 
 void SExtractMeshByType::updating()
 {
-    sight::data::ModelSeries::sptr modelSeries = this->getInOut<sight::data::ModelSeries>("source");
+    auto modelSeries = m_source.lock();
     SIGHT_ASSERT("ModelSeries not found", modelSeries);
-
-    sight::data::mt::ObjectReadLock lock(modelSeries);
 
     size_t index = 0;
     for(const auto& elt : m_extract)
@@ -126,7 +120,7 @@ void SExtractMeshByType::updating()
                 {
                     sight::data::Mesh::sptr obj = element->getMesh();
 
-                    this->setOutput("target", obj, index);
+                    this->setOutput(s_TARGET, obj, index);
                     found = true;
                     ++index;
 
@@ -147,9 +141,9 @@ void SExtractMeshByType::updating()
 void SExtractMeshByType::stopping()
 {
     // Unregister outputs
-    for(size_t i = 0 ; i < this->getKeyGroupSize("target") ; ++i)
+    for(size_t i = 0 ; i < m_target.size() ; ++i)
     {
-        this->setOutput("target", nullptr, i);
+        setOutput(s_TARGET, nullptr, i);
     }
 }
 

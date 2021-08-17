@@ -310,6 +310,9 @@ private:
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    static constexpr std::string_view s_MESH_INOUT = "mesh";
+    data::ptr<data::Mesh, data::Access::inout> m_mesh {this, s_MESH_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

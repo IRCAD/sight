@@ -125,13 +125,6 @@ void SCameraInformationEditor::stopping()
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::swapping()
-{
-    updateInformations();
-}
-
-// -------------------------------------------------------------------------
-
 void SCameraInformationEditor::updateInformations()
 {
     data::Camera::csptr camera = this->getInput<data::Camera>("camera");

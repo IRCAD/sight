@@ -23,18 +23,6 @@
 #include "SMatrixTLSynchronizer.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-
-#include <data/Matrix4.hpp>
-#include <data/MatrixTL.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/timeline/Buffer.hpp>
-
-#include <service/macros.hpp>
-
-#include <functional>
-#include <sstream>
 
 namespace sight::module::sync
 {
@@ -43,9 +31,6 @@ namespace sight::module::sync
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
-
-static const service::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-static const service::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
@@ -84,46 +69,41 @@ void SMatrixTLSynchronizer::updating()
 
 void SMatrixTLSynchronizer::synchronize()
 {
-    core::HiResClock::HiResClockType currentTimestamp =
-        std::numeric_limits<core::HiResClock::HiResClockType>::max();
+    const auto currentTimestamp = std::numeric_limits<core::HiResClock::HiResClockType>::max();
 
-    data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>(s_MATRIXTL_INPUT);
+    const auto matrixTL = m_matrixTL.lock();
     CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
 
     if(buffer)
     {
         std::stringstream matrixPrint;
 
-        for(size_t matrixIndex = 0 ; matrixIndex < this->getKeyGroupSize(s_MATRICES_INOUT) ; ++matrixIndex)
+        for(size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
         {
             const unsigned int index = static_cast<unsigned int>(matrixIndex);
 
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
-                auto matrix         = this->getInOut<data::Matrix4>(s_MATRICES_INOUT, matrixIndex);
 
+                auto matrix = m_matrices[matrixIndex].lock();
+                SIGHT_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
+
+                matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
+
+                for(std::uint8_t i = 0 ; i < 4 ; ++i)
                 {
-                    data::mt::ObjectWriteLock lock(matrix);
-                    SIGHT_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
-
-                    matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
-
-                    for(std::uint8_t i = 0 ; i < 4 ; ++i)
+                    for(std::uint8_t j = 0 ; j < 4 ; ++j)
                     {
-                        for(std::uint8_t j = 0 ; j < 4 ; ++j)
-                        {
-                            matrix->setCoefficient(i, j, static_cast<double>(values[i * 4 + j]));
-                            matrixPrint << values[i * 4 + j] << " ; ";
-                        }
-
-                        matrixPrint << std::endl;
+                        matrix->setCoefficient(i, j, static_cast<double>(values[i * 4 + j]));
+                        matrixPrint << values[i * 4 + j] << " ; ";
                     }
+
+                    matrixPrint << std::endl;
                 }
+
                 this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(index);
-                auto sig = matrix->signal<data::Object::ModifiedSignalType>(
-                    data::Object::s_MODIFIED_SIG
-                );
+                auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
             }
             else
@@ -142,7 +122,6 @@ service::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections()
 {
     KeyConnectionsMap connections;
     connections.push(s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-
     return connections;
 }
 

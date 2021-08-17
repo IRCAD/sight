@@ -27,9 +27,7 @@
 
 #include <data/String.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/op/Get.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -53,8 +51,8 @@ void Plugin::start()
     m_preferences = data::Composite::New();
 
     service::IService::sptr prefSrv;
-    prefSrv = service::add("::sight::module::ui::base::SPreferences", s_PREF_SERVICE_UID);
-    prefSrv->registerInOut(m_preferences, sight::ui::base::preferences::s_PREFERENCES_KEY);
+    prefSrv = service::add("sight::module::ui::base::SPreferences", s_PREF_SERVICE_UID);
+    prefSrv->setInOut(m_preferences, sight::ui::base::preferences::s_PREFERENCES_KEY);
 
     try
     {
@@ -86,7 +84,7 @@ void Plugin::stop() noexcept
     {
         service::IService::sptr prefSrv = service::get(s_PREF_SERVICE_UID);
         prefSrv->stop();
-        service::OSR::unregisterService(prefSrv);
+        service::remove(prefSrv);
     }
 
     m_preferences.reset();

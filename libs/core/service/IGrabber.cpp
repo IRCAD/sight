@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/FrameTL.hpp>
-
 namespace sight::service
 {
 

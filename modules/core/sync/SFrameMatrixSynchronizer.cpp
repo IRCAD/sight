@@ -24,21 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-
-#include <data/FrameTL.hpp>
-#include <data/Image.hpp>
-#include <data/Matrix4.hpp>
-#include <data/MatrixTL.hpp>
-#include <data/timeline/Buffer.hpp>
-
-#include <geometry/data/Compare.hpp>
-
-#include <service/macros.hpp>
-
-#include <algorithm>
-#include <functional>
 
 namespace sight::module::sync
 {
@@ -49,11 +34,6 @@ const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZAT
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG    = "allMatricesFound";
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
-
-const service::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
-const service::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-const service::IService::KeyType s_IMAGE_INOUT    = "image";
-const service::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
 const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
@@ -115,40 +95,21 @@ void SFrameMatrixSynchronizer::configuring()
 
 void SFrameMatrixSynchronizer::starting()
 {
-    const size_t numFrameTLs = this->getKeyGroupSize(s_FRAMETL_INPUT);
-    const size_t numImages   = this->getKeyGroupSize(s_IMAGE_INOUT);
+    const size_t numFrameTLs = m_frameTLs.size();
+    const size_t numImages   = m_images.size();
     SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
 
-    m_frameTLs.reserve(numFrameTLs);
-    m_images.reserve(numFrameTLs);
-    for(size_t i = 0 ; i < numFrameTLs ; ++i)
-    {
-        m_frameTLs.push_back(this->getWeakInput<data::FrameTL>(s_FRAMETL_INPUT, i));
-        m_images.push_back(this->getWeakInOut<data::Image>(s_IMAGE_INOUT, i));
-    }
-
-    const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
+    const size_t numMatrixTLs = m_matrixTLs.size();
+    SIGHT_ASSERT(
+        "Maximum number of matrix timelines is exceeded: " << numMatrixTLs << ">= " << s_MAX_MATRICES_TL,
+        numMatrixTLs < s_MAX_MATRICES_TL
+    );
 
     m_totalOutputMatrices = 0;
-    m_matrixTLs.reserve(numMatrixTLs);
     for(size_t i = 0 ; i < numMatrixTLs ; ++i)
     {
-        // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
-        // if ever the group is not found 'getKeyGroupSize' will assert.
-        const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT + std::to_string(i));
-
-        m_matrixTLs.push_back(this->getWeakInput<data::MatrixTL>(s_MATRIXTL_INPUT, i));
-
-        std::vector<data::mt::weak_ptr<data::Matrix4> > matricesVector;
-        for(size_t j = 0 ; j < numMatrices ; ++j)
-        {
-            matricesVector.push_back(
-                this->getWeakInOut<data::Matrix4>(s_MATRICES_INOUT + std::to_string(i), j)
-            );
-        }
-
+        const size_t numMatrices = m_matrices[i].size();
         m_totalOutputMatrices += numMatrices;
-        m_matrices.push_back(matricesVector);
     }
 
     // We need to browser the XML tree to check if a matrix (inside a matrixTL) has or not a `sendStatus` configuration
@@ -158,7 +119,7 @@ void SFrameMatrixSynchronizer::starting()
     for(auto itConfig = inoutsConfig.first ; itConfig != inoutsConfig.second ; ++itConfig)
     {
         const std::string group = itConfig->second.get<std::string>("<xmlattr>.group", "");
-        if(group.find(s_MATRICES_INOUT) != std::string::npos)
+        if(group.find("matrices") != std::string::npos)
         {
             std::vector<int> sendStatus;
 
@@ -202,12 +163,6 @@ void SFrameMatrixSynchronizer::stopping()
     {
         m_timer->stop();
     }
-
-    m_frameTLs.clear();
-    m_images.clear();
-    m_matrixTLs.clear();
-    m_matrices.clear();
-    m_sendMatricesStatus.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -427,9 +382,9 @@ void SFrameMatrixSynchronizer::synchronize()
 
         if(buffer)
         {
-            const auto& matrixVector = m_matrices[tlIdx];
+            auto& matrixVector = m_matrices[tlIdx];
 
-            for(unsigned int k = 0 ; k < matrixVector.size() ; ++k)
+            for(size_t k = 0 ; k < matrixVector.size() ; ++k)
             {
                 const auto matrix = matrixVector[k].lock();
                 SIGHT_ASSERT("Matrix with indices '" << tlIdx << ", " << k << "' does not exist", matrix);
@@ -452,9 +407,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         m_sigMatrixSynchronized->asyncEmit(sendStatus);
                     }
 
-                    auto sig = matrix->signal<data::Object::ModifiedSignalType>(
-                        data::Object::s_MODIFIED_SIG
-                    );
+                    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                     sig->asyncEmit();
 
                     matrixFound = true;

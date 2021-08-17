@@ -30,7 +30,6 @@ namespace sight::service
 {
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
 namespace OSR
 {
@@ -38,28 +37,27 @@ namespace OSR
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::set< SPTR(SERVICE) > getServices()
+std::set<SPTR(SERVICE)> getServices()
 {
-    return service::OSR::get()->getServices< SERVICE >();
+    return service::OSR::get()->getServices<SERVICE>();
 }
 
 //------------------------------------------------------------------------------
 
-inline SPTR( service::registry::ObjectService::RegisterSignalType ) getRegisterSignal()
+inline SPTR(service::registry::ObjectService::RegisterSignalType) getRegisterSignal()
 {
-    return service::OSR::get()->signal< service::registry::ObjectService::RegisterSignalType >
+    return service::OSR::get()->signal<service::registry::ObjectService::RegisterSignalType>
                (service::registry::ObjectService::s_REGISTERED_SIG);
 }
 
-inline SPTR( service::registry::ObjectService::RegisterSignalType ) getUnregisterSignal()
+inline SPTR(service::registry::ObjectService::RegisterSignalType) getUnregisterSignal()
 {
-    return service::OSR::get()->signal< service::registry::ObjectService::RegisterSignalType >
+    return service::OSR::get()->signal<service::registry::ObjectService::RegisterSignalType>
                (service::registry::ObjectService::s_UNREGISTERED_SIG);
 }
 
 } //namespace OSR
 
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 namespace registry
@@ -68,22 +66,24 @@ namespace registry
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::set< SPTR(SERVICE) > ObjectService::getServices() const
+std::set<SPTR(SERVICE)> ObjectService::getServices() const
 {
-    std::set< SPTR(SERVICE) > services;
+    std::set<SPTR(SERVICE)> services;
 
     for(const auto& srv : m_services)
     {
-        SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( srv );
-        if ( service )
+        SPTR(SERVICE) service = std::dynamic_pointer_cast<SERVICE>(srv);
+        if(service)
         {
-            services.insert( service );
+            services.insert(service);
         }
     }
+
     return services;
 }
 
 //------------------------------------------------------------------------------
 
-} // end registry
-} // end fwServices
+} // namespace registry
+
+} // namespace sight::service

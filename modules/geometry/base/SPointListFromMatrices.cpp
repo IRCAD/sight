@@ -25,16 +25,12 @@
 #include <core/com/Signal.hxx>
 
 #include <data/fieldHelper/Image.hpp>
-#include <data/PointList.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
-
-const service::IService::KeyType s_MATRICES_INPUT  = "matrices";
-const service::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 
@@ -77,10 +73,10 @@ void SPointListFromMatrices::stopping()
 
 void SPointListFromMatrices::updating()
 {
-    const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INPUT);
+    const size_t numMatrices = m_matrices.size();
     SIGHT_ASSERT("no matrices found", numMatrices != 0);
 
-    auto pointList = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
+    auto pointList = m_pointList.lock();
     if(!m_append)
     {
         pointList->getPoints().clear();
@@ -88,10 +84,8 @@ void SPointListFromMatrices::updating()
 
     for(size_t j = 0 ; j < numMatrices ; ++j)
     {
-        const auto mat = this->getLockedInput<data::Matrix4>(
-            s_MATRICES_INPUT,
-            j
-        );
+        const auto mat = m_matrices[j].lock();
+
         data::Matrix4::TMCoefArray coefs = mat->getCoefficients();
 
         //extract translation

@@ -121,10 +121,4 @@ void SDumpPolicy::updating()
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::swapping()
-{
-    this->stopping();
-    this->starting();
-}
-
 } // namespace sight::module::memory

@@ -137,7 +137,7 @@ protected:
      * @brief Notifies that the TF is swapped.
      * @param _key key of the swapped data.
      */
-    void swapping(const KeyType& _key) override;
+    void swapping(std::string_view _key) override;
 
 private:
 

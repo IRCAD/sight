@@ -24,8 +24,9 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Slots.hpp>
+#include <data/Landmarks.hpp>
+#include <data/Matrix4.hpp>
+#include <data/String.hpp>
 
 #include <service/IService.hpp>
 
@@ -115,7 +116,7 @@ private:
     void removePoint();
 
     /// Selected landmark.
-    ::glm::dvec3 m_currentLandmark;
+    glm::dvec3 m_currentLandmark;
 
     /// Bool showing if a landmark is selected.
     bool m_landmarkSelected;
@@ -125,6 +126,11 @@ private:
 
     /// Precision of the displayed distance.
     int m_precision {6};
+
+    data::ptr<data::Matrix4, sight::data::Access::in> m_pointMatrix {this, "pointMatrix"};
+    data::ptr<data::Landmarks, sight::data::Access::in> m_landmark {this, "landmark"};
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_pointToLandmarkMatrix {this, "pointToLandmarkMatrix"};
+    data::ptr<data::String, sight::data::Access::inout> m_distanceText {this, "distanceText"};
 };
 
 } // namespace sight::module::geometry::base

@@ -10,11 +10,11 @@
         <config>
             <object uid="${TEST_IMAGE}" type="sight::data::Image" />
 
-            <service uid="myTestService1" type="sight::service::ut::TestServiceImplementationImage" autoConnect="false">
+            <service uid="myTestService1" type="sight::service::ut::STest1Image" autoConnect="false">
                 <in key="data" uid="${TEST_IMAGE}" />
             </service>
 
-            <service uid="${UID_SERVICE2}" type="sight::service::ut::TestServiceImplementationImage" />
+            <service uid="${UID_SERVICE2}" type="sight::service::ut::STest1Image" />
 
             <connect channel="channel1">
                 <signal>${TEST_IMAGE}/modified</signal>
@@ -40,20 +40,20 @@
             <object uid="data4Id" type="sight::data::Image" src="deferred" />
 
             <!-- Service used to generate data -->
-            <service uid="SGenerateData" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out2" uid="data2Id" />
                 <out key="out4" uid="data4Id" />
             </service>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation" />
-            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" />
-            <service uid="TestService3Uid" type="sight::service::ut::TestServiceImplementation">
-                <in key="data" uid="data2Id" optional="true" />
+            <service uid="TestService1Uid" type="sight::service::ut::STestNoData" />
+            <service uid="TestService2Uid" type="sight::service::ut::STestNoData" />
+            <service uid="TestService3Uid" type="sight::service::ut::STest1Input">
+                <in key="data1" uid="data2Id" optional="true" />
             </service>
-            <service uid="TestService4Uid" type="sight::service::ut::TestServiceImplementation">
-                <in key="data" uid="data2Id" />
+            <service uid="TestService4Uid" type="sight::service::ut::STest1Input">
+                <in key="data1" uid="data2Id" />
             </service>
-            <service uid="TestService5Uid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestService5Uid" type="sight::service::ut::STest4Inputs">
                 <in key="data1" uid="data1Id" />
                 <in key="data2" uid="data2Id" />
                 <in key="data3" uid="data3Id" />
@@ -84,27 +84,27 @@
             <object uid="data3Id" type="sight::data::Image" src="deferred" />
 
             <!-- Service used to generate data -->
-            <service uid="SGenerateData" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out3" uid="data3Id" />
             </service>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestSrvAutoconnect">
+            <service uid="TestService1Uid" type="sight::service::ut::STest1Input">
                 <in key="data1" uid="data1Id" />
             </service>
-            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" autoConnect="true">
+            <service uid="TestService2Uid" type="sight::service::ut::STest2Inputs" autoConnect="true">
                 <in key="data1" uid="data1Id" />
-                <inout key="data2" uid="data2Id" />
+                <in key="data2" uid="data2Id" />
             </service>
-            <service uid="TestService3Uid" type="sight::service::ut::TestSrvAutoconnect">
+            <service uid="TestService3Uid" type="sight::service::ut::STest2InputsV2">
                 <in key="data1" uid="data1Id" autoConnect="true" />
-                <inout key="data2" uid="data2Id" autoConnect="true" />
+                <in key="data2" uid="data2Id" autoConnect="true" />
             </service>
-            <service uid="TestService4Uid" type="sight::service::ut::TestSrvAutoconnect">
+            <service uid="TestService4Uid" type="sight::service::ut::STest1Input">
                 <in key="data3" uid="data3Id" />
             </service>
-            <service uid="TestService5Uid" type="sight::service::ut::TestSrvAutoconnect" autoConnect="true">
+            <service uid="TestService5Uid" type="sight::service::ut::STest2InputsV2" autoConnect="true">
                 <in key="data1" uid="data1Id" />
-                <in key="data3" uid="data3Id" />
+                <in key="data2" uid="data3Id" />
             </service>
 
             <start uid="SGenerateData" />
@@ -128,22 +128,22 @@
             <object uid="data4Id" type="sight::data::Image" />
 
             <!-- Service used to generate data -->
-            <service uid="SGenerateData" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out2" uid="data2Id" />
                 <out key="out3" uid="data3Id" />
             </service>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation" />
-            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" >
+            <service uid="TestService1Uid" type="sight::service::ut::STestNoData" />
+            <service uid="TestService2Uid" type="sight::service::ut::STest1Input" >
                 <in key="data1" uid="data1Id" />
             </service>
-            <service uid="TestService3Uid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestService3Uid" type="sight::service::ut::STest1Input1Output2Inouts">
                 <in key="data1" uid="data1Id" />
                 <out key="data2" uid="data2Id" />
                 <inout key="data3" uid="data3Id" />
                 <inout key="data4" uid="data4Id" />
             </service>
-            <service uid="TestService4Uid" type="sight::service::ut::TestServiceImplementation" />
+            <service uid="TestService4Uid" type="sight::service::ut::STestNoData" />
 
             <connect>
                 <signal>data1Id/modified</signal>
@@ -201,25 +201,25 @@
             <object uid="data5Id" type="sight::data::Boolean" src="deferred" />
 
             <!-- Service used to generate data -->
-            <service uid="SGenerateData" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out2" uid="data2Id" />
                 <out key="out3" uid="data3Id" />
                 <out key="out4" uid="data4Id" />
                 <out key="out5" uid="data5Id" />
             </service>
 
-            <service uid="SGenerateData2" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData2" type="sight::service::ut::STestOut">
                 <out key="out" uid="data2Id" />
             </service>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestService1Uid" type="sight::service::ut::STest4Inputs">
                 <in key="data1" uid="data1Id" autoConnect="true" />
                 <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
                 <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
                 <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
             </service>
-            <service uid="TestService2Uid" type="sight::service::ut::TestServiceImplementation" >
-                <in key="data5" uid="data5Id" autoConnect="true" />
+            <service uid="TestService2Uid" type="sight::service::ut::STest4Inputs" >
+                <in key="data1" uid="data5Id" autoConnect="true" />
                 <in key="data2" uid="data2Id" autoConnect="false"  optional="true" />
                 <in key="data3" uid="data3Id" autoConnect="false"  optional="true" />
                 <in key="data4" uid="data4Id" autoConnect="true" optional="true" />
@@ -253,19 +253,19 @@
             <object uid="data5Id" type="sight::data::Image" />
 
             <!-- Service used to generate data -->
-            <service uid="SGenerateData" type="sight::service::ut::TestServiceImplementation">
+            <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out2" uid="data2Id" />
                 <out key="out3" uid="data3Id" />
             </service>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestService1Uid" type="sight::service::ut::STest1Input1InputGroup">
                 <in key="data1" uid="data1Id" autoConnect="true" />
                 <in group="dataGroup" autoConnect="true">
                     <key uid="data2Id" />
                     <key uid="data3Id" optional="true" />
                 </in>
             </service>
-            <service uid="TestService2Uid" type="sight::service::ut::TestSrvAutoconnect" >
+            <service uid="TestService2Uid" type="sight::service::ut::STest2InputGroups" >
                 <in group="dataGroup0">
                     <key uid="data1Id" />
                     <key uid="data2Id" autoConnect="true" optional="true" />
@@ -302,7 +302,7 @@
             <object uid="${data1}" type="sight::data::String"  />
             <object uid="data2Id" type="sight::data::Boolean" />
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestService1Uid" type="sight::service::ut::STest2Inputs">
                 <in key="data1" uid="${data1}" />
                 <in key="data2" uid="data2Id" />
                 <view wid="view1" />
@@ -349,7 +349,7 @@
             <object uid="${data1}" type="sight::data::String" src="ref" />
             <object uid="${data2}" type="sight::data::Boolean" src="ref"  />
 
-            <service uid="TestServiceUid" type="sight::service::ut::TestServiceImplementation">
+            <service uid="TestServiceUid" type="sight::service::ut::STest2Inputs">
                 <in key="data1" uid="${data1}" />
                 <in key="data2" uid="${data2}" />
                 <view wid="${WID_PARENT}" />
@@ -382,7 +382,7 @@
                 </item>
             </object>
 
-            <service uid="TestService1Uid" type="sight::service::ut::TestServiceImplementation" config="serviceConfigTest">
+            <service uid="TestService1Uid" type="sight::service::ut::STest1Input" config="serviceConfigTest">
                 <in key="data1" uid="compo1Id" />
             </service>
 
@@ -393,7 +393,7 @@
 
     <extension implements="sight::service::extension::Config">
         <id>serviceConfigTest</id>
-        <service>sight::service::ut::TestServiceImplementation</service>
+        <service>sight::service::ut::STest1Input</service>
         <desc>service configuration for unit test</desc>
         <config>
             <param1>value1</param1>

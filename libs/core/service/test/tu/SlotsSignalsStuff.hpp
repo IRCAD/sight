@@ -86,6 +86,10 @@ public:
     SIGHT_DECLARE_SERVICE(IBasicTest, service::IService);
 
     static const KeyType s_BUFFER_INOUT;
+
+private:
+
+    data::ptr<Buffer, data::Access::inout> m_inout {this, s_BUFFER_INOUT, true};
 };
 
 class SBasicTest : public IBasicTest,
@@ -110,7 +114,7 @@ protected:
 
     void starting() override;
     void stopping() override;
-    void swapping(const KeyType& key) override;
+    void swapping(std::string_view key) override;
     void updating() override;
 };
 
@@ -147,10 +151,6 @@ protected:
     }
 
     //------------------------------------------------------------------------------
-
-    void swapping() override
-    {
-    }
 
     void updating() override;
 };
@@ -190,10 +190,6 @@ protected:
     }
 
     //------------------------------------------------------------------------------
-
-    void swapping() override
-    {
-    }
 
     void updating() override;
 
@@ -241,10 +237,6 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void swapping() override
-    {
-    }
-
     void updating() override;
 
     KeyConnectionsMap getAutoConnections() const override;
@@ -290,10 +282,6 @@ protected:
     }
 
     //------------------------------------------------------------------------------
-
-    void swapping() override
-    {
-    }
 
     void updating() override;
 

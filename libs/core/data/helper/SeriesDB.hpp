@@ -41,7 +41,7 @@ class DATA_CLASS_API SeriesDB
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API SeriesDB(data::SeriesDB::wptr seriesDB);
+    DATA_API SeriesDB(data::SeriesDB& seriesDB);
 
     /// Destrucotr. Do nothing.
     DATA_API ~SeriesDB();
@@ -83,7 +83,7 @@ private:
 
     data::SeriesDB::ContainerType m_addedSeries;
     data::SeriesDB::ContainerType m_removedSeries;
-    data::SeriesDB::wptr m_seriesDB;
+    data::SeriesDB& m_seriesDB;
 };
 
 } // namespace helper

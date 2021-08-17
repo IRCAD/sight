@@ -115,12 +115,7 @@ void SSeriesPuller::starting()
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader
     );
-    service::OSR::registerService(
-        m_tempSeriesDB,
-        sight::io::base::service::s_DATA_KEY,
-        service::IService::AccessType::INOUT,
-        m_dicomReader
-    );
+    m_dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
 
     if(!m_dicomReaderSrvConfig.empty())
     {
@@ -366,7 +361,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         sight::io::http::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
-    data::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
+    data::helper::SeriesDB tempSDBhelper(*m_tempSeriesDB);
 
     for(const data::Series::sptr& series : selectedSeries)
     {
@@ -392,7 +387,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             m_dicomReader->update();
 
             // Merge series
-            data::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+            data::helper::SeriesDB sDBhelper(*m_destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }

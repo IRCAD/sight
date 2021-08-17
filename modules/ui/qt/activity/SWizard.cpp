@@ -308,7 +308,7 @@ void SWizard::createActivity(std::string activityID)
         data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
         SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-        data::helper::SeriesDB helper(seriesDB);
+        data::helper::SeriesDB helper(*seriesDB);
         helper.add(m_actSeries);
         helper.notify();
         m_sigActivityCreated->asyncEmit(m_actSeries);
@@ -504,7 +504,7 @@ void SWizard::onBuildActivity()
                     data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
                     SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-                    data::helper::SeriesDB helper(seriesDB);
+                    data::helper::SeriesDB helper(*seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();
                     m_sigActivityCreated->asyncEmit(m_actSeries);

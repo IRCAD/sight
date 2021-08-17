@@ -26,18 +26,14 @@
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
-#include <data/Reconstruction.hpp>
 
 namespace sight::module::ui::qml::reconstruction
 {
-
-static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
 SRepresentationEditor::SRepresentationEditor() noexcept
 {
-    this->registerObject(s_RECONSTRUCTION_INOUT, AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -70,9 +66,11 @@ void SRepresentationEditor::stopping()
 
 void SRepresentationEditor::updating()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
-    m_material = reconstruction->getMaterial();
+    {
+        auto reconstruction = m_rec.lock();
+        SIGHT_ASSERT("'" << s_RECONSTRUCTION_INOUT << "' must be set as 'inout'", reconstruction);
+        m_material = reconstruction->getMaterial();
+    }
 
     int representationMode = m_material->getRepresentationMode();
     int shadingMode        = m_material->getShadingMode();
@@ -148,9 +146,6 @@ void SRepresentationEditor::onChangeShading(int id)
 
 void SRepresentationEditor::onShowNormals(int state)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("No Reconstruction!", reconstruction);
-
     switch(state)
     {
         case 1:
@@ -170,19 +165,13 @@ void SRepresentationEditor::onShowNormals(int state)
     }
 
     this->notifyMaterial();
-
-    // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal<data::Reconstruction::MeshChangedSignalType>(
-        data::Reconstruction::s_MESH_CHANGED_SIG
-    );
-    sig->asyncEmit(reconstruction->getMesh());
 }
 
 //------------------------------------------------------------------------------
 
 void SRepresentationEditor::notifyMaterial()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
+    auto reconstruction = m_rec.lock();
     SIGHT_ASSERT("No Reconstruction!", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
@@ -197,9 +186,7 @@ void SRepresentationEditor::notifyMaterial()
 service::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
     return connections;
 }
 

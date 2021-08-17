@@ -106,6 +106,12 @@ private:
 
     /// Vector to specify if matrix must be inverted.
     InvertVectorType m_invertVector;
+
+    static constexpr std::string_view s_MATRIX_GROUP_INPUT = "matrix";
+    data::ptr_vector<data::Matrix4, sight::data::Access::in> m_matrices {this, s_MATRIX_GROUP_INPUT, true};
+
+    static constexpr std::string_view s_OUTPUT = "output";
+    data::ptr<data::Matrix4, sight::data::Access::inout> m_output {this, s_OUTPUT};
 };
 
 } //namespace sight::module::geometry::base

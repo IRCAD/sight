@@ -25,6 +25,9 @@
 #include <core/com/Slot.hxx>
 #include <core/thread/ActiveWorkers.hpp>
 
+#include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
+
 #include <service/registry/Proxy.hpp>
 
 using namespace sight;
@@ -32,7 +35,7 @@ using namespace sight;
 namespace Tuto03MesherWithGenericSceneCpp
 {
 
-SIGHT_REGISTER_PLUGIN("::Tuto03MesherWithGenericSceneCpp::Plugin");
+SIGHT_REGISTER_PLUGIN("Tuto03MesherWithGenericSceneCpp::Plugin");
 
 static const std::string s_IMAGE_ID          = "image";
 static const std::string s_IMAGE_SERIES_ID   = "imageSeries";
@@ -66,40 +69,39 @@ void Plugin::initialize()
 {
     m_appManager = std::unique_ptr<service::AppManager>(new service::AppManager);
     m_appManager->create();
-
     /* **************************************************************************************
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv = m_appManager->addService("::sight::module::ui::base::SFrame", true, false);
+    auto frameSrv = m_appManager->addService("sight::module::ui::base::SFrame", true, false);
     auto menuBar  = m_appManager->addService(
-        "::sight::module::ui::base::SMenuBar",
+        "sight::module::ui::base::SMenuBar",
         "menuBar",
         true,
         false
     );
     auto menuFile =
-        m_appManager->addService("::sight::module::ui::base::SMenu", "menuFile", true, false);
+        m_appManager->addService("sight::module::ui::base::SMenu", "menuFile", true, false);
     auto menuMesher = m_appManager->addService(
-        "::sight::module::ui::base::SMenu",
+        "sight::module::ui::base::SMenu",
         "menuMesher",
         true,
         false
     );
     auto mainView = m_appManager->addService(
-        "::sight::module::ui::base::SView",
+        "sight::module::ui::base::SView",
         "mainView",
         true,
         false
     );
     auto multiViewOrgans = m_appManager->addService(
-        "::sight::module::ui::base::SView",
+        "sight::module::ui::base::SView",
         "multiViewOrgans",
         true,
         false
     );
     auto sceneEditorsView = m_appManager->addService(
-        "::sight::module::ui::base::SView",
+        "sight::module::ui::base::SView",
         "scenesceneEditorsView",
         true,
         false
@@ -107,108 +109,130 @@ void Plugin::initialize()
 
     // actions
     auto actionOpenImage = m_appManager->addService(
-        "::sight::module::ui::base::com::SStarter",
+        "sight::module::ui::base::com::SStarter",
         "actionOpenImage",
         true,
         false
     );
     auto actionSaveModelSeries = m_appManager->addService(
-        "::sight::module::ui::base::com::SStarter",
+        "sight::module::ui::base::com::SStarter",
         "actionSaveModelSeries",
         false,
         false
     );
     auto actionCreateMesh50 = m_appManager->addService(
-        "::sight::module::ui::base::com::SStarter",
+        "sight::module::ui::base::com::SStarter",
         "actionCreateMesh50",
         true,
         false
     );
     auto actionCreateMesh80 = m_appManager->addService(
-        "::sight::module::ui::base::com::SStarter",
+        "sight::module::ui::base::com::SStarter",
         "actionCreateMesh80",
         true,
         false
     );
-    auto actionQuit = m_appManager->addService("::sight::module::ui::base::SQuit", "actionQuit", true, false);
+    auto actionQuit = m_appManager->addService("sight::module::ui::base::SQuit", "actionQuit", true, false);
 
     //readers/writers
     auto imageSeriesReader = m_appManager->addService(
-        "::sight::module::ui::base::io::SSelector",
+        "sight::module::ui::base::io::SSelector",
         "imageSeriesReader",
         true,
         false
     );
     auto modelSeriesWriter = m_appManager->addService(
-        "::sight::module::ui::base::io::SSelector",
+        "sight::module::ui::base::io::SSelector",
         "modelSeriesWriter",
         true,
         false
     );
 
     // extrator/converter
-    auto extractImage         = m_appManager->addService("::sight::module::data::SExtractObj", true, true);
-    auto medicaImageConverter = m_appManager->addService("::sight::module::data::MedicalImageSrv", true);
+    auto extractImage         = m_appManager->addService("sight::module::data::SExtractObj", true, false);
+    auto medicaImageConverter = m_appManager->addService("sight::module::data::MedicalImageSrv", true);
 
     //editors
-    auto snapshotEditor = m_appManager->addService(
-        "::sight::module::ui::qt::viz::SnapshotEditor",
-        "snapshotEditor",
+    auto snapshotAdp = m_appManager->addService(
+        "sight::module::viz::scene3d::adaptor::SFragmentsInfo",
+        "snapshotAdp",
         true,
         false
     );
-    auto sliceListEditor = m_appManager->addService(
-        "::sight::module::ui::qt::SSelectionMenuButton",
-        "sliceListEditor",
-        true,
-        false
-    );
+    {
+        service::IService::ConfigType config;
+        config.add("config.<xmlattr>.layer", "default");
+        config.add("config.<xmlattr>.flip", "true");
+        snapshotAdp->configure(config);
+    }
+
     auto showScanEditor = m_appManager->addService(
-        "::sight::module::ui::qt::com::SSignalButton",
+        "sight::module::ui::qt::com::SSignalButton",
         "showScanEditor",
         true,
         false
     );
     auto sliderIndexEditor = m_appManager->addService(
-        "::sight::module::ui::qt::image::SliceIndexPositionEditor",
+        "sight::module::ui::qt::image::SliceIndexPositionEditor",
         "sliderIndexEditor",
         true,
         false
     );
     auto listOrganEditor = m_appManager->addService(
-        "::sight::module::ui::qt::model::SModelSeriesList",
+        "sight::module::ui::qt::model::SModelSeriesList",
         "listOrganEditor",
         true,
         false
     );
     auto organMaterialEditor = m_appManager->addService(
-        "::sight::module::ui::qt::reconstruction::SOrganMaterialEditor",
+        "sight::module::ui::qt::reconstruction::SOrganMaterialEditor",
         "organMaterialEditor",
         true,
         false
     );
     auto representationEditor = m_appManager->addService(
-        "::sight::module::ui::qt::reconstruction::RepresentationEditor",
+        "sight::module::ui::qt::reconstruction::RepresentationEditor",
         "representationEditor",
         true,
         false
     );
-    auto progressBar = m_appManager->addService("::sight::module::ui::base::SJobBar", true, false);
+    auto progressBar = m_appManager->addService("sight::module::ui::base::SJobBar", true, false);
 
     // meshers
-    auto mesher50 = m_appManager->addService("::sight::module::filter::mesh::SVTKMesher", "mesher50", true, false);
-    auto mesher80 = m_appManager->addService("::sight::module::filter::mesh::SVTKMesher", "mesher80", true, false);
+    auto mesher50 = m_appManager->addService("sight::module::filter::mesh::SVTKMesher", "mesher50", true, false);
+    auto mesher80 = m_appManager->addService("sight::module::filter::mesh::SVTKMesher", "mesher80", true, false);
 
     // generic scene
-    auto renderSrv          = m_appManager->addService("::fwRenderVTK::SRender", "genericScene", true, false);
-    auto imageAdaptor       = m_appManager->addService("::visuVTKAdaptor::SNegatoMPR", "imageAdaptor", true, false);
+    auto renderSrv    = m_appManager->addService("sight::viz::scene3d::SRender", "genericScene", true, false);
+    auto imageAdaptor = m_appManager->addService(
+        "sight::module::viz::scene3d::adaptor::SNegato3D",
+        "imageAdaptor",
+        true,
+        false
+    );
+
     auto modelSeriesAdaptor = m_appManager->addService(
-        "::visuVTKAdaptor::SModelSeries",
+        "sight::module::viz::scene3d::adaptor::SModelSeries",
         "modelSeriesAdaptor",
         true,
         false
     );
-    auto snapshotAdaptor = m_appManager->addService("::visuVTKAdaptor::SSnapshot", "snapshotAdaptor", true, false);
+    auto snapshotAdaptor = m_appManager->addService(
+        "sight::module::viz::scene3d::adaptor::SFragmentsInfo",
+        "snapshotAdaptor",
+        true,
+        false
+    );
+    auto trackballInteractorAdp = m_appManager->addService(
+        "sight::module::viz::scene3d::adaptor::STrackballCamera",
+        "trackballInteractorAdp",
+        true,
+        false
+    );
+
+    // Objects declaration
+    auto imageSeries = data::ImageSeries::New();
+    auto snapshot    = data::Image::New();
 
     /* **************************************************************************************
     *              GUI configuration
@@ -286,7 +310,7 @@ void Plugin::initialize()
     // mainview
     service::IService::ConfigType mainViewConfig;
     service::IService::ConfigType mainViewLayoutConfig;
-    mainViewLayoutConfig.put("<xmlattr>.type", "::sight::ui::base::CardinalLayoutManager");
+    mainViewLayoutConfig.put("<xmlattr>.type", "sight::ui::base::CardinalLayoutManager");
     service::IService::ConfigType mainView1Config;
     mainView1Config.put("<xmlattr>.align", "center");
     service::IService::ConfigType mainView2Config;
@@ -313,7 +337,7 @@ void Plugin::initialize()
     // multiViewOrgans
     service::IService::ConfigType multiViewOrgansConfig;
     service::IService::ConfigType multiViewOrgansLayoutConfig;
-    multiViewOrgansLayoutConfig.put("<xmlattr>.type", "::sight::ui::base::ToolboxLayoutManager");
+    multiViewOrgansLayoutConfig.put("<xmlattr>.type", "sight::ui::base::ToolboxLayoutManager");
     service::IService::ConfigType multiViewOrgans1Config;
     multiViewOrgans1Config.put("<xmlattr>.caption", "Organs");
     multiViewOrgans1Config.put("<xmlattr>.expanded", true);
@@ -340,14 +364,10 @@ void Plugin::initialize()
     // sceneEditorsView
     service::IService::ConfigType sceneEditorsViewConfig;
     service::IService::ConfigType sceneEditorsViewLayoutConfig;
-    sceneEditorsViewLayoutConfig.put("<xmlattr>.type", "::sight::ui::base::LineLayoutManager");
+    sceneEditorsViewLayoutConfig.put("<xmlattr>.type", "sight::ui::base::LineLayoutManager");
     service::IService::ConfigType editorsOrientation;
     editorsOrientation.put("<xmlattr>.value", "horizontal");
     sceneEditorsViewLayoutConfig.add_child("orientation", editorsOrientation);
-    service::IService::ConfigType sceneEditorsView1;
-    sceneEditorsView1.put("<xmlattr>.proportion", "0");
-    sceneEditorsView1.put("<xmlattr>.minWidth", "30");
-    sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView1);
     service::IService::ConfigType sceneEditorsView2;
     sceneEditorsView2.put("<xmlattr>.proportion", "0");
     sceneEditorsView2.put("<xmlattr>.minWidth", "50");
@@ -361,9 +381,6 @@ void Plugin::initialize()
     sceneEditorsViewLayoutConfig.add_child("view", sceneEditorsView4);
     menuFileConfig.add_child("gui.layout", sceneEditorsViewLayoutConfig);
     sceneEditorsViewConfig.add_child("gui.layout", sceneEditorsViewLayoutConfig);
-    service::IService::ConfigType sceneEditorsView1Reg;
-    sceneEditorsView1Reg.put("<xmlattr>.sid", "sliceListEditor");
-    sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView1Reg);
     service::IService::ConfigType sceneEditorsView2Reg;
     sceneEditorsView2Reg.put("<xmlattr>.sid", "showScanEditor");
     sceneEditorsViewConfig.add_child("registry.view", sceneEditorsView2Reg);
@@ -405,7 +422,7 @@ void Plugin::initialize()
 
     service::IService::ConfigType imageSeriesReaderConfig;
     imageSeriesReaderConfig.put("type.<xmlattr>.mode", "reader");
-    imageSeriesReaderConfig.put("type.<xmlattr>.class", "::sight::data::ImageSeries");
+    imageSeriesReaderConfig.put("type.<xmlattr>.class", "sight::data::ImageSeries");
     imageSeriesReader->configure(imageSeriesReaderConfig);
 
     service::IService::ConfigType modelSeriesWriterConfig;
@@ -424,23 +441,10 @@ void Plugin::initialize()
     *              editors configuration
     ****************************************************************************************/
 
-    service::IService::ConfigType sliceListEditorConfig;
-    sliceListEditorConfig.add("toolTip", "Manage slice visibility");
-    sliceListEditorConfig.add("selected", "3");
-    service::IService::ConfigType sliceListEditorItem1Config;
-    sliceListEditorItem1Config.put("<xmlattr>.text", "One slice");
-    sliceListEditorItem1Config.put("<xmlattr>.value", "1");
-    sliceListEditorConfig.add_child("items.item", sliceListEditorItem1Config);
-    service::IService::ConfigType sliceListEditorItem2Config;
-    sliceListEditorItem2Config.put("<xmlattr>.text", "Three slices");
-    sliceListEditorItem2Config.put("<xmlattr>.value", "3");
-    sliceListEditorConfig.add_child("items.item", sliceListEditorItem2Config);
-    sliceListEditor->configure(sliceListEditorConfig);
-
     service::IService::ConfigType showScanEditorConfig;
     showScanEditorConfig.add("config.checkable", true);
-    showScanEditorConfig.add("config.icon", "module_ui_icons/sliceHide.png");
-    showScanEditorConfig.add("config.icon2", "module_ui_icons/sliceShow.png");
+    showScanEditorConfig.add("config.icon", "sight::module::ui::flaticons/RedCross.svg");
+    showScanEditorConfig.add("config.icon2", "sight::module::ui::flaticons/Layers.svg");
     showScanEditorConfig.add("config.iconWidth", "40");
     showScanEditorConfig.add("config.iconHeight", "16");
     showScanEditorConfig.add("config.checked", true);
@@ -456,7 +460,7 @@ void Plugin::initialize()
 
     organMaterialEditor->configure();
     representationEditor->configure();
-    snapshotEditor->configure();
+    snapshotAdp->configure();
 
     /* **************************************************************************************
     *              genericScene configuration
@@ -464,11 +468,12 @@ void Plugin::initialize()
 
     // create and register the render service
     service::IService::ConfigType renderConfig;
-    service::IService::ConfigType pickerConfig;
-    pickerConfig.add("<xmlattr>.id", "picker");
-    pickerConfig.add("<xmlattr>.vtkclass", "fwVtkCellPicker");
-    renderConfig.add_child("scene.picker", pickerConfig);
-    renderConfig.add("scene.renderer.<xmlattr>.id", "default");
+
+    renderConfig.add("scene.background.<xmlattr>.topColor", "#36393E");
+    renderConfig.add("scene.background.<xmlattr>.bottomColor", "#36393E");
+    renderConfig.add("scene.layer.<xmlattr>.id", "default");
+    renderConfig.add("scene.layer.<xmlattr>.order", "1");
+
     service::IService::ConfigType adpt1Config;
     adpt1Config.put("<xmlattr>.uid", "modelSeriesAdaptor");
     renderConfig.add_child("scene.adaptor", adpt1Config);
@@ -478,42 +483,50 @@ void Plugin::initialize()
     service::IService::ConfigType adpt3Config;
     adpt3Config.put("<xmlattr>.uid", "snapshotAdaptor");
     renderConfig.add_child("scene.adaptor", adpt3Config);
+    service::IService::ConfigType adpt4Config;
+    adpt4Config.put("<xmlattr>.uid", "trackballInteractorAdp");
+    renderConfig.add_child("scene.adaptor", adpt4Config);
     renderSrv->configure(renderConfig);
 
     service::IService::ConfigType imageAdaptorConfig;
-    imageAdaptorConfig.add("config.<xmlattr>.renderer", "default");
-    imageAdaptorConfig.add("config.<xmlattr>.picker", "picker");
+    imageAdaptorConfig.add("config.<xmlattr>.layer", "default");
     imageAdaptorConfig.add("config.<xmlattr>.mode", "3d");
     imageAdaptorConfig.add("config.<xmlattr>.slice", "3");
     imageAdaptorConfig.add("config.<xmlattr>.sliceIndex", "axial");
     imageAdaptor->configure(imageAdaptorConfig);
 
     service::IService::ConfigType modelSeriesAdaptorConfig;
-    modelSeriesAdaptorConfig.add("config.<xmlattr>.renderer", "default");
+    modelSeriesAdaptorConfig.add("config.<xmlattr>.layer", "default");
     modelSeriesAdaptorConfig.add("config.<xmlattr>.picker", "");
     modelSeriesAdaptor->configure(modelSeriesAdaptorConfig);
 
     service::IService::ConfigType snapshotAdaptorConfig;
-    snapshotAdaptorConfig.add("config.<xmlattr>.renderer", "default");
+    snapshotAdaptorConfig.add("config.<xmlattr>.layer", "default");
     snapshotAdaptor->configure(snapshotAdaptorConfig);
+
+    service::IService::ConfigType trackballInteractorAdpConfig;
+    trackballInteractorAdpConfig.add("config.<xmlattr>.layer", "default");
+    trackballInteractorAdp->configure(trackballInteractorAdpConfig);
 
     /* **************************************************************************************
     *              register inputs/inouts
     ****************************************************************************************/
 
-    imageSeriesReader->setObjectId("data", s_IMAGE_SERIES_ID);
+    imageSeriesReader->setInOut(imageSeries, "data");
+    snapshotAdp->setInOut(snapshot, "image", true);
+    extractImage->setInOut(imageSeries, "source");
+    mesher50->setInput(imageSeries, "imageSeries");
+    mesher80->setInput(imageSeries, "imageSeries");
+
     modelSeriesWriter->setObjectId("data", s_MODEL_SERIES_ID);
     sliderIndexEditor->setObjectId("image", s_IMAGE_ID);
     imageAdaptor->setObjectId("image", s_IMAGE_ID);
-    extractImage->setObjectId("source", s_IMAGE_SERIES_ID);
-    extractImage->setObjectId("target", 0, s_IMAGE_ID);
+    extractImage->setObjectId("target", s_IMAGE_ID, 0);
     medicaImageConverter->setObjectId("image", s_IMAGE_ID);
     listOrganEditor->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     organMaterialEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
     representationEditor->setObjectId("reconstruction", s_RECONSTRUCTION_ID);
-    mesher50->setObjectId("imageSeries", s_IMAGE_SERIES_ID);
     mesher50->setObjectId("modelSeries", s_MODEL_SERIES_ID);
-    mesher80->setObjectId("imageSeries", s_IMAGE_SERIES_ID);
     mesher80->setObjectId("modelSeries", s_MODEL_SERIES_ID);
     modelSeriesAdaptor->setObjectId("model", s_MODEL_SERIES_ID);
 
@@ -551,21 +564,15 @@ void Plugin::initialize()
     jobCnt.addSlotConnection(progressBar->getID(), "showJob");
     m_appManager->addProxyConnection(jobCnt);
 
+    service::helper::ProxyConnections extractCnt;
+    extractCnt.addSignalConnection(imageSeries->getID(), "modified");
+    extractCnt.addSlotConnection(extractImage->getID(), "update");
+    m_appManager->addProxyConnection(extractCnt);
+
     service::helper::ProxyConnections showScanCnt;
     showScanCnt.addSignalConnection(showScanEditor->getID(), "toggled");
-    showScanCnt.addSlotConnection(sliceListEditor->getID(), "setEnabled");
-    showScanCnt.addSlotConnection(imageAdaptor->getID(), "showSlice");
+    showScanCnt.addSlotConnection(imageAdaptor->getID(), "updateVisibility");
     m_appManager->addProxyConnection(showScanCnt);
-
-    service::helper::ProxyConnections snapCnt;
-    snapCnt.addSignalConnection(snapshotEditor->getID(), "snapped");
-    snapCnt.addSlotConnection(snapshotAdaptor->getID(), "snap");
-    m_appManager->addProxyConnection(snapCnt);
-
-    service::helper::ProxyConnections sliceListCnt;
-    sliceListCnt.addSignalConnection(sliceListEditor->getID(), "selected");
-    sliceListCnt.addSlotConnection(imageAdaptor->getID(), "updateSliceMode");
-    m_appManager->addProxyConnection(sliceListCnt);
 
     service::helper::ProxyConnections recSelectedCnt(s_REC_SELECTED_CHANNEL);
     recSelectedCnt.addSignalConnection(listOrganEditor->getID(), "reconstructionSelected");
@@ -587,6 +594,9 @@ void Plugin::initialize()
     mesherOffCnt.addSlotConnection(actionCreateMesh50->getID(), "setInexecutable");
     mesherOffCnt.addSlotConnection(actionCreateMesh80->getID(), "setInexecutable");
     m_appManager->addProxyConnection(mesherOffCnt);
+
+    m_appManager->addObject(imageSeries, imageSeries->getID());
+    m_appManager->addObject(snapshot, snapshot->getID());
 
     /* **************************************************************************************
     *              start the services

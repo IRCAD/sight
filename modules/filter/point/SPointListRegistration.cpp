@@ -270,15 +270,6 @@ void SPointListRegistration::updating()
 
 //----------------------------------------------------------------------------
 
-void SPointListRegistration::swapping()
-{
-    // Classic default approach to update service when object change
-    this->stopping();
-    this->starting();
-}
-
-//----------------------------------------------------------------------------
-
 void SPointListRegistration::changeMode(std::string _value)
 {
     if(_value == "RIGID")

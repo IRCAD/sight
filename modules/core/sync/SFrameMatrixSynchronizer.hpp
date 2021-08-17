@@ -24,30 +24,14 @@
 
 #include "modules/sync/config.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/HiResClock.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <service/IController.hpp>
+#include <data/FrameTL.hpp>
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
+#include <data/MatrixTL.hpp>
+
 #include <service/ISynchronizer.hpp>
-
-namespace sight::data
-{
-
-class FrameTL;
-class MatrixTL;
-
-}
-
-namespace sight::data
-{
-
-class Image;
-class Matrix4;
-
-}
 
 namespace sight::module::sync
 {
@@ -129,7 +113,7 @@ class MODULE_SYNC_CLASS_API SFrameMatrixSynchronizer : public service::ISynchron
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameMatrixSynchronizer, service::IController);
+    SIGHT_DECLARE_SERVICE(SFrameMatrixSynchronizer, service::ISynchronizer);
 
     /**
      * @name Signal API
@@ -218,17 +202,31 @@ private:
     /// Check if output images are initialized
     bool m_imagesInitialized;
 
-    /// Contains the input video timelines.
-    std::vector<data::mt::weak_ptr<const data::FrameTL> > m_frameTLs;
+    static constexpr size_t s_MAX_MATRICES_TL                             = 4;
+    static constexpr std::string_view s_FRAMETL_INPUT                     = "frameTL";
+    static constexpr std::string_view s_IMAGE_INOUT                       = "image";
+    static constexpr std::string_view s_MATRIXTL_INPUT                    = "matrixTL";
+    static constexpr std::string_view s_MATRICES_INOUT[s_MAX_MATRICES_TL] = {
+        "matrices0", "matrices1", "matrices2", "matrices3"
+    };
 
-    /// Contains the input matrix timelines.
-    std::vector<data::mt::weak_ptr<const data::MatrixTL> > m_matrixTLs;
+    /// Contains the input video timelines.
+    data::ptr_vector<data::FrameTL, data::Access::in> m_frameTLs {this, s_FRAMETL_INPUT, true};
 
     /// Contains the output images.
-    std::vector<data::mt::weak_ptr<data::Image> > m_images;
+    data::ptr_vector<data::Image, data::Access::inout> m_images {this, s_IMAGE_INOUT};
+
+    /// Contains the input matrix timelines.
+    data::ptr_vector<data::MatrixTL, data::Access::in> m_matrixTLs {this, s_MATRIXTL_INPUT, true, true};
 
     /// registers matrices with associated timeline key
-    std::vector<std::vector<data::mt::weak_ptr<data::Matrix4> > > m_matrices;
+    std::array<data::ptr_vector<data::Matrix4, data::Access::inout>, s_MAX_MATRICES_TL> m_matrices = {{
+        {this, s_MATRICES_INOUT[0], false, 1},
+        {this, s_MATRICES_INOUT[1], false, 1},
+        {this, s_MATRICES_INOUT[2], false, 1},
+        {this, s_MATRICES_INOUT[3], false, 1}
+    }
+    };
 
     /// registers index of matrices that need to send their status through signals
     std::vector<std::vector<int> > m_sendMatricesStatus;

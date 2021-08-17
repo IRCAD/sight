@@ -44,8 +44,7 @@ namespace sight::module::viz::scene2d
 namespace processing
 {
 
-static const service::IService::KeyType s_IMAGE_INPUT     = "image";
-static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+//-----------------------------------------------------------------------------
 
 SComputeHistogram::SComputeHistogram() noexcept :
     m_binsWidth(1.0f)
@@ -77,11 +76,11 @@ void SComputeHistogram::starting()
 
 void SComputeHistogram::updating()
 {
-    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
+    const auto image = m_image.lock();
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        auto histogram = this->getLockedInOut<data::Histogram>(s_HISTOGRAM_INPUT);
+        auto histogram = m_histogram.lock();
 
         ComputeHistogramFunctor::Parameter param;
         param.image     = image.get_shared();
@@ -100,13 +99,6 @@ void SComputeHistogram::updating()
             sig->asyncEmit();
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SComputeHistogram::swapping()
-{
-    this->updating();
 }
 
 //-----------------------------------------------------------------------------

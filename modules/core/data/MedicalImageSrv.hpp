@@ -24,8 +24,9 @@
 
 #include "modules/data/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IController.hpp>
-#include <service/IService.hpp>
 
 namespace sight::module::data
 {
@@ -61,9 +62,6 @@ protected:
     /// Implements stopping method derived from IService. Do nothing.
     MODULE_DATA_API void stopping() override;
 
-    /// Implements swapping method derived from IService. Convert the image.
-    MODULE_DATA_API void swapping() override;
-
     /// Implements configuring method derived from IService. Do nothing.
     MODULE_DATA_API void configuring() override;
 
@@ -90,6 +88,8 @@ private:
     void convertImage();
 
     std::vector<std::string> m_imageCompositeKeys;
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "image", true};
 };
 
 } // sight::module::data

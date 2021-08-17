@@ -26,9 +26,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -45,7 +42,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
 static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
-static const service::IService::KeyType s_TRANSFORM_INOUT      = "transform";
 static const service::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const service::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
@@ -141,7 +137,7 @@ void SLight::starting()
             this->registerService<module::viz::scene3d::adaptor::SMaterial>(
                 "::sight::module::viz::scene3d::adaptor::SMaterial"
             );
-        materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+        materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
         materialAdaptor->setID(this->getID() + materialAdaptor->getID());
         materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
         materialAdaptor->setRenderService(this->getRenderService());
@@ -214,7 +210,6 @@ void SLight::starting()
 service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
@@ -225,8 +220,8 @@ service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 
 void SLight::updating()
 {
-    const auto lightDiffuseColor  = this->getLockedInOut<data::Color>(s_DIFFUSE_COLOR_INOUT);
-    const auto lightSpecularColor = this->getLockedInOut<data::Color>(s_SPECULAR_COLOR_INOUT);
+    const auto lightDiffuseColor  = m_diffuse.lock();
+    const auto lightSpecularColor = m_specular.lock();
 
     this->getRenderService()->makeCurrent();
 
@@ -282,7 +277,7 @@ void SLight::stopping()
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    const auto lightDiffuseColor = this->getLockedInOut<data::Color>(s_DIFFUSE_COLOR_INOUT);
+    const auto lightDiffuseColor = m_diffuse.lock();
 
     lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 
@@ -294,7 +289,7 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    const auto lightSpecularColor = this->getLockedInOut<data::Color>(s_SPECULAR_COLOR_INOUT);
+    const auto lightSpecularColor = m_specular.lock();
 
     lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 

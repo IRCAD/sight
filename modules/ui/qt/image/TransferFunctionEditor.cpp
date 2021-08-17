@@ -197,7 +197,7 @@ void TransferFunctionEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-void TransferFunctionEditor::swapping(const KeyType& key)
+void TransferFunctionEditor::swapping(std::string_view key)
 {
     if(key == s_CURRENT_TF_INPUT)
     {
@@ -411,12 +411,10 @@ void TransferFunctionEditor::importTF()
 
     data::helper::Composite compositeHelper(poolTF);
 
-    data::TransferFunction::sptr tf         = data::TransferFunction::New();
-    io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-        "::sight::module::io::atoms::SReader"
-    );
+    data::TransferFunction::sptr tf = data::TransferFunction::New();
+    auto reader                     = service::add<io::base::service::IReader>("sight::module::io::atoms::SReader");
 
-    reader->registerInOut(tf, io::base::service::s_DATA_KEY);
+    reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
     reader->start();
     reader->openLocationDialog();
@@ -444,10 +442,10 @@ void TransferFunctionEditor::importTF()
 void TransferFunctionEditor::exportTF()
 {
     io::base::service::IWriter::sptr writer = service::add<io::base::service::IWriter>(
-        "::sight::module::io::atoms::SWriter"
+        "sight::module::io::atoms::SWriter"
     );
 
-    writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
+    writer->setInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
     writer->start();
     writer->openLocationDialog();
@@ -497,7 +495,7 @@ void TransferFunctionEditor::initTransferFunctions()
         io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
             "::sight::module::io::atoms::SReader"
         );
-        reader->registerInOut(tf, io::base::service::s_DATA_KEY);
+        reader->setInOut(tf, io::base::service::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
         core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");

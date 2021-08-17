@@ -177,12 +177,7 @@ void SSliceIndexDicomPullerEditor::starting()
                                                                       "::sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.",
         dicomReader
     );
-    service::OSR::registerService(
-        m_tempSeriesDB,
-        sight::io::base::service::s_DATA_KEY,
-        service::IService::AccessType::INOUT,
-        dicomReader
-    );
+    dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);

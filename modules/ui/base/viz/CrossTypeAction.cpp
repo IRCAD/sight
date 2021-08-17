@@ -103,12 +103,6 @@ void CrossTypeAction::updating()
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void CrossTypeAction::info(std::ostream& _sstream)
 {
 }

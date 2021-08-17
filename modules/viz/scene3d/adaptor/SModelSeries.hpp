@@ -24,6 +24,8 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
+#include <data/ModelSeries.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Material.hpp>
@@ -153,6 +155,9 @@ private:
 
     /// Defines if the visibility tag is present in the configuration.
     bool m_isVisibleTag {false};
+
+    static constexpr std::string_view s_MODEL_INPUT = "model";
+    data::ptr<data::ModelSeries, data::Access::inout> m_model {this, s_MODEL_INPUT, true};
 };
 
 //------------------------------------------------------------------------------

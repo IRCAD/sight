@@ -99,13 +99,13 @@ void SMeshList::starting()
         // Create the transform adaptor.
         const sight::viz::scene3d::IAdaptor::sptr transformAdaptor =
             this->registerService<sight::viz::scene3d::IAdaptor>(
-                "::sight::module::viz::scene3d::adaptor::STransform"
+                "sight::module::viz::scene3d::adaptor::STransform"
             );
 
         transformAdaptor->setLayerID(m_layerID);
         transformAdaptor->setRenderService(this->getRenderService());
 
-        transformAdaptor->registerInOut(transform, "transform", true);
+        transformAdaptor->setInOut(transform, "transform", true);
 
         transformAdaptor->configure(config);
         transformAdaptor->start();
@@ -114,7 +114,7 @@ void SMeshList::starting()
 
         // Create the texture adaptor
         const sight::viz::scene3d::IAdaptor::sptr textureAdaptor =
-            this->registerService<sight::viz::scene3d::IAdaptor>("::sight::module::viz::scene3d::adaptor::STexture");
+            this->registerService<sight::viz::scene3d::IAdaptor>("sight::module::viz::scene3d::adaptor::STexture");
 
         service::IService::ConfigType textureConfig = config;
         textureConfig.add("config.<xmlattr>.textureName", image->getID());
@@ -123,7 +123,7 @@ void SMeshList::starting()
         textureAdaptor->setLayerID(m_layerID);
         textureAdaptor->setRenderService(this->getRenderService());
 
-        textureAdaptor->registerInput(image, "image", true);
+        textureAdaptor->setInput(image, "image", true);
 
         textureAdaptor->configure(textureConfig);
         textureAdaptor->start();
@@ -131,7 +131,7 @@ void SMeshList::starting()
 
         // Creates the mesh adaptor.
         const sight::viz::scene3d::IAdaptor::sptr meshAdaptor =
-            this->registerService<sight::viz::scene3d::IAdaptor>("::sight::module::viz::scene3d::adaptor::SMesh");
+            this->registerService<sight::viz::scene3d::IAdaptor>("sight::module::viz::scene3d::adaptor::SMesh");
 
         service::IService::ConfigType meshConfig = config;
         meshConfig.add("config.<xmlattr>.textureName", image->getID());
@@ -139,7 +139,7 @@ void SMeshList::starting()
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
 
-        meshAdaptor->registerInOut(mesh.lock().get_shared(), "mesh", true);
+        meshAdaptor->setInOut(mesh.lock().get_shared(), "mesh", true);
 
         meshAdaptor->configure(meshConfig);
         meshAdaptor->updateVisibility(false);

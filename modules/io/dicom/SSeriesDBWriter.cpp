@@ -145,7 +145,7 @@ void SSeriesDBWriter::updating()
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-        data::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
         for(const data::Object::sptr& object : vector->getContainer())
         {
@@ -218,7 +218,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    data::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     for(const data::Object::sptr& object : vector->getContainer())
     {

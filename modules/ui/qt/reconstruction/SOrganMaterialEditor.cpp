@@ -51,11 +51,10 @@
 namespace sight::module::ui::qt::reconstruction
 {
 
-static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+const service::IService::KeyType SOrganMaterialEditor::s_RECONSTRUCTION_INOUT = "reconstruction";
 
 SOrganMaterialEditor::SOrganMaterialEditor() noexcept
 {
-    this->registerObject(s_RECONSTRUCTION_INOUT, service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -151,10 +150,13 @@ void SOrganMaterialEditor::stopping()
 
 void SOrganMaterialEditor::onDiffuseColorButton()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    data::Material::sptr material;
+    {
+        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        auto reconstruction = m_rec.lock();
 
-    data::Material::sptr material = reconstruction->getMaterial();
+        material = reconstruction->getMaterial();
+    }
     data::mt::ObjectWriteLock lock(material);
 
     int red   = static_cast<int>(material->diffuse()->red() * 255);
@@ -183,10 +185,13 @@ void SOrganMaterialEditor::onDiffuseColorButton()
 
 void SOrganMaterialEditor::onAmbientColorButton()
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    data::Material::sptr material;
+    {
+        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        auto reconstruction = m_rec.lock();
 
-    data::Material::sptr material = reconstruction->getMaterial();
+        material = reconstruction->getMaterial();
+    }
     data::mt::ObjectWriteLock lock(material);
 
     const int red   = static_cast<int>(material->ambient()->red() * 255.f);
@@ -215,10 +220,13 @@ void SOrganMaterialEditor::onAmbientColorButton()
 
 void SOrganMaterialEditor::onOpacitySlider(int _value)
 {
-    data::Reconstruction::sptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    data::Material::sptr material;
+    {
+        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        auto reconstruction = m_rec.lock();
 
-    data::Material::sptr material = reconstruction->getMaterial();
+        material = reconstruction->getMaterial();
+    }
     data::mt::ObjectWriteLock lock(material);
 
     material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
@@ -233,18 +241,21 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 
 void SOrganMaterialEditor::refreshMaterial()
 {
-    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
-
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
-    container->setEnabled(!reconstruction->getOrganName().empty());
+    data::Material::csptr material;
+    {
+        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        auto reconstruction = m_rec.lock();
 
-    data::Material::csptr material = reconstruction->getMaterial();
+        container->setEnabled(!reconstruction->getOrganName().empty());
+        material = reconstruction->getMaterial();
+    }
+
     data::mt::ObjectReadLock lock(material);
 
     {
@@ -287,8 +298,8 @@ void SOrganMaterialEditor::refreshMaterial()
 
 void SOrganMaterialEditor::materialNotification()
 {
-    data::Reconstruction::csptr reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    auto reconstruction = m_rec.lock();
 
     data::Object::ModifiedSignalType::sptr sig =
         reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(

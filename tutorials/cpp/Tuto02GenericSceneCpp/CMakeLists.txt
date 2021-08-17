@@ -13,11 +13,9 @@ add_dependencies(Tuto02GenericSceneCpp
                  module_io_atoms
 )
 
-target_link_libraries(Tuto02GenericSceneCpp PUBLIC 
-                      data
-                      service
-)
+target_link_libraries(Tuto02GenericSceneCpp PUBLIC data service)
 
+# Set dark theme via module_ui_qt
 moduleParam(module_ui_qt
     PARAM_LIST
         resource
@@ -25,6 +23,6 @@ moduleParam(module_ui_qt
     PARAM_VALUES
         sight::module::ui::qt/flatdark.rcc
         sight::module::ui::qt/flatdark.qss
-) # Allow dark theme via module_ui_qt
+) 
 
 sight_generate_profile(Tuto02GenericSceneCpp)

@@ -86,9 +86,6 @@ protected:
     /// Updates the shader parameter with the input.
     MODULE_VIZ_SCENE3D_API void updating() override;
 
-    /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void swapping() override;
-
     /// Clears resources.
     MODULE_VIZ_SCENE3D_API void stopping() override;
 

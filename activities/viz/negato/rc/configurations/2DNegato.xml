@@ -174,7 +174,7 @@
         </connect>
 
         <connect channel="${PickingChannel}">
-            <signal>pickerInteractor/picked</signal>
+            <signal>pickerInteractorAdp/picked</signal>
         </connect>
 
         <!-- Slide view -->

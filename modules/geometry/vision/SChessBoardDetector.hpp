@@ -24,6 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
@@ -80,7 +81,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::IController);
 
-    /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
+    /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was successful.
     typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;
 
     /// Signal type sent after a successful detection.
@@ -148,6 +149,14 @@ private:
 
     /// Last images on which a chessboard was detected. Null if detection failed.
     std::vector<data::Image::sptr> m_images;
+
+    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+    static constexpr std::string_view s_CALINFO_INOUT   = "calInfo";
+    static constexpr std::string_view s_DETECTION_INOUT = "detection";
+
+    data::ptr_vector<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    data::ptr_vector<data::CalibrationInfo, data::Access::inout> m_calInfo {this, s_CALINFO_INOUT};
+    data::ptr_vector<data::PointList, data::Access::inout> m_detection {this, s_DETECTION_INOUT};
 };
 
 } //namespace sight::module::geometry::vision

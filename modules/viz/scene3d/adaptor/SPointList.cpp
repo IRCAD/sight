@@ -52,9 +52,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const service::IService::KeyType s_POINTLIST_INPUT = "pointList";
-static const service::IService::KeyType s_MESH_INPUT      = "mesh";
-
 static const std::string s_COLOR_CONFIG             = "color";
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
@@ -178,16 +175,14 @@ void SPointList::starting()
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode = this->getTransformNode(rootSceneNode);
 
-    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
-    const auto pointList  = pointListW.lock();
+    const auto pointList = m_pointList.lock();
     if(pointList)
     {
         this->updateMesh(pointList.get_shared());
     }
     else
     {
-        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
-        const auto mesh  = meshW.lock();
+        const auto mesh = m_mesh.lock();
         if(mesh)
         {
             if(!m_customMaterial && mesh->hasPointColors())
@@ -199,7 +194,7 @@ void SPointList::starting()
         }
         else
         {
-            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
         }
     }
 }
@@ -269,7 +264,7 @@ void SPointList::updating()
         }
         else
         {
-            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" << s_POINTLIST_INPUT << "' or '" << s_MESH_INPUT << "' specified.")
         }
     }
 
@@ -471,7 +466,7 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "::sight::module::viz::scene3d::adaptor::SMaterial"
     );
-    materialAdaptor->registerInOut(m_material, "material", true);
+    materialAdaptor->setInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
     materialAdaptor->setRenderService(this->getRenderService());
@@ -483,16 +478,14 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
     }
 
     std::string meshName;
-    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
-    const auto pointList  = pointListW.lock();
+    const auto pointList = m_pointList.lock();
     if(pointList)
     {
         meshName = pointList->getID();
     }
     else
     {
-        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
-        const auto mesh  = meshW.lock();
+        const auto mesh = m_mesh.lock();
         if(mesh)
         {
             meshName = mesh->getID();

@@ -24,12 +24,11 @@
 
 #include "modules/navigation/optics/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/HiResClock.hpp>
+#include <data/Camera.hpp>
+#include <data/Image.hpp>
+#include <data/MarkerMap.hpp>
 
 #include <service/ITracker.hpp>
-#include <service/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 
@@ -54,25 +53,6 @@ namespace sight::module::navigation::optics
  *
  * @code{.xml}
         <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
-            <in key="timeline" uid="..." autoConnect="true"/>
-            <in key="camera" uid="..." />
-            <inout group="tagTL" >
-                <key uid="..." />
-                <key uid="..." />
-                <key uid="..." />
-            </inout>
-            <track>
-                <marker id="42,1,100,54" />
-                <marker id="32,10" />
-                <marker id="52,45" />
-            </track>
-            <debugMarkers>true</debugMarkers>
-            <cornerRefinement>true</cornerRefinement>
-        </service>
-
-        or
-
-        <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." autoConnect="true" />
             <inout group="markerMap">
@@ -91,14 +71,10 @@ namespace sight::module::navigation::optics
         </service>
    @endcode
  * @subsection Input Input
- * - \b timeline [sight::data::FrameTL]: camera used to display video. It is the main timeline used for the tracking.
  * - \b camera [sight::data::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
  * - \b frame [sight::data::Image]: video frame.
- * - \b tagTL [sight::data::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout
- * keys
- * must match the number of \b markers entries in the config below.
  * - \b markerMap [sight::data::MarkerMap]: markers maps list where to extract the tags. The number of keys must match
  * the number of \b markers entries in the config below.
  *
@@ -188,9 +164,9 @@ private:
     /// Handles camera parameters (intrinsic matrix, distorsion coefficients and image size)
     struct Camera
     {
-        ::cv::Mat intrinsic;
-        ::cv::Mat distorsion;
-        ::cv::Size2i size;
+        cv::Mat intrinsic;
+        cv::Mat distorsion;
+        cv::Size2i size;
     };
 
     /// Slot called when a integer value is changed
@@ -215,13 +191,21 @@ private:
     bool m_debugMarkers;
 
     /// aruco detector parameters structure
-    ::cv::Ptr< ::cv::aruco::DetectorParameters> m_detectorParams;
+    cv::Ptr< ::cv::aruco::DetectorParameters> m_detectorParams;
 
     /// Dictionary/Set of markers. It contains the inner codification
-    ::cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
+    cv::Ptr< ::cv::aruco::Dictionary> m_dictionary;
 
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;
+
+    static constexpr std::string_view s_CAMERA_INPUT           = "camera";
+    static constexpr std::string_view s_TAGTL_INOUT_GROUP      = "frame";
+    static constexpr std::string_view s_MARKER_MAP_INOUT_GROUP = "markerMap";
+
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, true};
+    data::ptr<data::Image, data::Access::inout> m_frame {this, s_TAGTL_INOUT_GROUP};
+    data::ptr_vector<data::MarkerMap, data::Access::inout> m_markerMap {this, s_MARKER_MAP_INOUT_GROUP};
 };
 
 } // namespace sight::module::navigation::optics

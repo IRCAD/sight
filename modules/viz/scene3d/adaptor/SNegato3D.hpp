@@ -132,7 +132,7 @@ protected:
      * @brief Notifies that the TF is swapped.
      * @param _key key of the swapped data.
      */
-    MODULE_VIZ_SCENE3D_API void swapping(const KeyType& key) override;
+    MODULE_VIZ_SCENE3D_API void swapping(std::string_view key) override;
 
     /// Stops the service, disconnects connections.
     MODULE_VIZ_SCENE3D_API void stopping() override;
@@ -284,6 +284,12 @@ private:
     /// Defines the signal sent when a voxel is picked using the left mouse button.
     using PickedVoxelSigType = core::com::Signal<void (std::string)>;
     PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
+
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+
+    static constexpr std::string_view s_TF_INOUT = "tf";
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF_INOUT, false, true};
 };
 
 //------------------------------------------------------------------------------

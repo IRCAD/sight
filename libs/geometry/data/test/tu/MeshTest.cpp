@@ -353,7 +353,7 @@ void MeshTest::transformTest()
     matrix = ::glm::translate(matrix, ::glm::dvec3(10., 20., 30.));
     matrix = ::glm::scale(matrix, ::glm::dvec3(2., 2., 2.));
 
-    auto trans = sight::data::Matrix4::New();
+    sight::data::Matrix4 trans;
     geometry::data::setTF3DFromMatrix(trans, matrix);
 
     geometry::data::Mesh::transform(meshOrig, mesh, trans);

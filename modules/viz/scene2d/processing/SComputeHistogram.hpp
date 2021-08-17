@@ -89,9 +89,6 @@ protected:
     /// Computes the histogram and notifies Histogram::s_MODIFIED_SIG.
     MODULE_VIZ_SCENE2D_API void updating() override;
 
-    /// Swaps the service. Calls updating().
-    MODULE_VIZ_SCENE2D_API void swapping() override;
-
     /// Stops the service. Does nothing.
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
@@ -99,6 +96,11 @@ private:
 
     /// Desired bins width used to classified pixel.
     float m_binsWidth;
+
+    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+    static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
+    data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    data::ptr<data::Histogram, data::Access::inout> m_histogram {this, s_HISTOGRAM_INPUT};
 };
 
 } // namespace processing

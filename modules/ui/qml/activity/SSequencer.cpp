@@ -34,8 +34,6 @@
 namespace sight::module::ui::qml::activity
 {
 
-const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
-
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
 
@@ -88,10 +86,12 @@ void SSequencer::stopping()
 
 void SSequencer::updating()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+    {
+        auto seriesDB = m_seriesDB.lock();
+        SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
-    m_currentActivity = this->parseActivities(seriesDB);
+        m_currentActivity = this->parseActivities(*seriesDB);
+    }
 
     if(m_currentActivity >= 0)
     {
@@ -120,17 +120,17 @@ void SSequencer::goTo(int index)
         return;
     }
 
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+    auto seriesDB = m_seriesDB.lock();
+    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(seriesDB, m_currentActivity);
+        this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
     const size_t newIdx = static_cast<size_t>(index);
 
-    data::ActivitySeries::sptr activity = this->getActivity(seriesDB, newIdx, m_slotUpdate);
+    data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
@@ -154,20 +154,20 @@ void SSequencer::goTo(int index)
 
 void SSequencer::checkNext()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT + "' seriesDB", seriesDB);
+    auto seriesDB = m_seriesDB.lock();
+    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(seriesDB, m_currentActivity);
+        this->storeActivityData(*seriesDB, m_currentActivity);
     }
 
     const size_t nextIdx = static_cast<size_t>(m_currentActivity + 1);
     if(nextIdx < m_activityIds.size())
     {
-        data::ActivitySeries::sptr nextActivity = this->getActivity(seriesDB, nextIdx, m_slotUpdate);
+        data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
 
         bool ok = true;
         std::string errorMsg;

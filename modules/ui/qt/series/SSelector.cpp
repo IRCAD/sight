@@ -367,7 +367,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 {
     const auto seriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIES_DB_INOUT);
-    data::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
+    data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Remove duplicated series
     std::set<data::Series::sptr> seriesSet;

@@ -168,6 +168,10 @@ private:
 
     /// @brief The field IDs for the slice index.
     static const std::string* SLICE_INDEX_FIELDID[3];
+
+    /// Image data
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
 };
 
 } // uiImageQml

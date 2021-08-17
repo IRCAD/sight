@@ -352,7 +352,7 @@ void helperTest::toolCalibrationBasic()
         matrix = ::glm::translate(matrix, translation);
 
         auto mat = sight::data::Matrix4::New();
-        geometry::data::setTF3DFromMatrix(mat, matrix);
+        geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
     }
@@ -424,7 +424,7 @@ void helperTest::toolCalibration()
         matrix = ::glm::translate(matrix, translation);
 
         sight::data::Matrix4::sptr mat = sight::data::Matrix4::New();
-        geometry::data::setTF3DFromMatrix(mat, matrix);
+        geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
     }

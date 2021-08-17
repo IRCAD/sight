@@ -45,7 +45,7 @@ With:
         <service uid="modelManager" type="sight::service::SConfigController">
             <appConfig id="ModelSeriesManagerView" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />
-            <parameter replace="WID_PARENT" uid="OrganManagerView" />
+            <parameter replace="WID_PARENT" by="OrganManagerView" />
         </service>
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">

@@ -91,7 +91,7 @@ void SImageCenter::updating()
 
     data::mt::ObjectWriteLock matLock(matrix);
 
-    geometry::data::identity(matrix);
+    geometry::data::identity(*matrix);
 
     //compute the center
     const data::Image::Size size       = image->getSize2();

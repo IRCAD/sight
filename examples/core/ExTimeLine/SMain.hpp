@@ -54,9 +54,6 @@ protected:
     /// Does nothing.
     EXTIMELINE_API void starting() override;
 
-    /// Does nothing.
-    EXTIMELINE_API void swapping() override;
-
     /// Contains one input instruction to block the main thread.
     EXTIMELINE_API void updating() override;
 

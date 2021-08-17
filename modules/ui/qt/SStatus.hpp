@@ -135,9 +135,6 @@ protected:
     /// Does nothing
     void updating() override;
 
-    /// Does nothing
-    void swapping() override;
-
     /// Configures the service
     void configuring() override;
 
