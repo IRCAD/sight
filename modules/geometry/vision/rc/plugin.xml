@@ -16,7 +16,7 @@
          <desc>Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::geometry::vision::SDistortion</service>
          <object key="camera">sight::data::Camera</object>
          <object key="input">sight::data::Image</object>

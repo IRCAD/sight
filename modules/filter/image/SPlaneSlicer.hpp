@@ -26,7 +26,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
@@ -69,11 +69,11 @@ namespace sight::module::filter::image
  *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IFilter);
 
     /// Constructor.
     MODULE_FILTER_IMAGE_API SPlaneSlicer() noexcept;

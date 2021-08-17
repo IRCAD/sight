@@ -27,7 +27,7 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -63,12 +63,12 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b extrudedImage [sight::data::Image]: extruded image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImageExtruder, ::sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SImageExtruder, ::sight::service::IFilter);
 
     /// Initializes the slot.
     MODULE_FILTER_IMAGE_API SImageExtruder();

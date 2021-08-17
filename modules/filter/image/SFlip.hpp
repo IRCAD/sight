@@ -29,7 +29,7 @@
 
 #include <data/Image.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -55,11 +55,11 @@ namespace sight::module::filter::image
  * @subsection Output Output:
  * - \b target [sight::data::Image]: New flipped image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFlip, ::sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SFlip, ::sight::service::IFilter);
 
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;

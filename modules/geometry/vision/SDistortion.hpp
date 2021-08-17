@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 #ifdef OPENCV_CUDA_SUPPORT
 #include <opencv2/cudawarping.hpp>
@@ -75,11 +75,11 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::IOperator
+class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDistortion, sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SDistortion, sight::service::IFilter);
 
     /**
      * @name Slots API

@@ -2,20 +2,20 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SAutomaticRegistration</service>
          <object>sight::data::Image</object>
          <desc>Service computing a rigid transform matching an image to another.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SBitwiseAnd</service>
          <object>sight::data::Image</object>
          <desc>Implements the AND bitwise operator pixel-wise between two images.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SFlip</service>
          <object key="source">sight::data::Image</object>
          <object key="target">sight::data::Image</object>
@@ -24,12 +24,12 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SImageCenter</service>
          <desc>Service computing the center of a 3D image, it outputs the translation going from origin to the center.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SImageExtruder</service>
          <object key="meshes">sight::data::ModelSeries</object>
          <object key="image">sight::data::Image</object>
@@ -39,20 +39,20 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SImagesSubstract</service>
          <desc>Compute the substraction of two images.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SLabelGeometryImage</service>
          <object>sight::data::Image</object>
          <desc>Gets centroids of shapes from a labeled image and adds them as a 'landmark' field to it.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SLabelImageToBinaryImage</service>
          <desc>Service extracting a binary mask from an image with labels.</desc>
     </extension>
@@ -64,33 +64,33 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SMatrixRegressor</service>
          <object>sight::data::Vector</object>
          <desc>Service computing the matrix that best fits a list of matrices.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SPlaneSlicer</service>
          <desc>Operator computing a 2D slice from a 3D image.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SPropagator</service>
          <object>sight::data::Image</object>
          <desc>Service placing seeds and propagating from them in an image.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SResampler</service>
          <object>sight::data::Image</object>
          <desc>Service applying a transform to an image and outputing the resampled image.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::filter::image::SThreshold</service>
          <object key="source">sight::data::Object</object>
          <object key="target">sight::data::Object</object>

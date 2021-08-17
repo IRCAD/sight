@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "service/IOperator.hpp"
+#include "service/IFilter.hpp"
 
 #include <core/com/Signal.hxx>
 
@@ -29,18 +29,18 @@ namespace sight::service
 
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType IOperator::s_COMPUTED_SIG = "computed";
+const core::com::Signals::SignalKeyType IFilter::s_COMPUTED_SIG = "computed";
 
 //-----------------------------------------------------------------------------
 
-IOperator::IOperator()
+IFilter::IFilter()
 {
     m_sigComputed = newSignal<ComputedSignalType>(s_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
-IOperator::~IOperator()
+IFilter::~IFilter()
 {
 }
 

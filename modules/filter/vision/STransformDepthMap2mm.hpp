@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -52,11 +52,11 @@ namespace sight::module::filter::vision
  * @subsection In-Out In-Out
  * - \b scaledDepth [sight::data::Image]: scaled depth map.
  */
-class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public service::IOperator
+class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::IOperator);
+    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::IFilter);
 
     /**
      * @brief STransformDepthMap2mm constructor.

@@ -17,6 +17,7 @@ The library proposes different base classes to implement services. They bring a 
 - **IAppConfigManager**: generic interface meant to define configurations template
 Deprecated, this class is no longer supported, please  use `sight::service::AppConfigManager` instead.
 - **IController**: generic interface meant to define control services
+- **IFilter**: generic interface meant to define filter services
 - **IGenerator**: generic interface meant to define generator services
 - **IGrabber**: generic interface meant to manage video grabber services
 - **IHasServices**: generic interface for objects that need to manage services
@@ -24,7 +25,6 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 - **IRegisterer**: generic interface meant to define register services
 - **IRGBDGrabber**: generic interface meant to define RGBD images grabber services
 - **IRegisterer**: generic interface meant to define services
-- **ISimulator**: generic interface meant to define simulator services
 - **ISynchronizer**: generic interface meant to define services which synchronize objects from timelines
 - **ITracker**: generic interface meant to define tracker services
 - **IXMLParser**: generic interface meant to define services which build objects or associated services from an XML-based description

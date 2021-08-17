@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -52,11 +52,11 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::Image]: New resampled image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SResampler, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SResampler, service::IFilter);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SResampler();

@@ -36,22 +36,22 @@ namespace sight::service
  * @section Signals Signals
  * - \b computed() : Emitted when something was computed.
  */
-class SERVICE_CLASS_API IOperator : public service::IService
+class SERVICE_CLASS_API IFilter : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IOperator, service::IService);
+    SIGHT_DECLARE_SERVICE(IFilter, service::IService);
 
     SERVICE_API static const core::com::Signals::SignalKeyType s_COMPUTED_SIG;
     typedef core::com::Signal<void ()> ComputedSignalType;
 
 protected:
 
-    /// IOperator constructor.
-    SERVICE_API IOperator();
+    /// IFilter constructor.
+    SERVICE_API IFilter();
 
-    /// IOperator destructor.
-    SERVICE_API virtual ~IOperator();
+    /// IFilter destructor.
+    SERVICE_API virtual ~IFilter();
 
     ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
 };

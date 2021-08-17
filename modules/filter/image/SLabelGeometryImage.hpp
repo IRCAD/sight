@@ -26,7 +26,7 @@
 
 #include <data/PointList.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -66,12 +66,12 @@ namespace sight::module::filter::image
  * - \b clusters: Must contains a group a clusters.
  * - \b cluster: Contains a list of size_t labels value.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLabelGeometryImage, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SLabelGeometryImage, service::IFilter);
 
     /// Initializes slots.
     MODULE_FILTER_IMAGE_API SLabelGeometryImage();

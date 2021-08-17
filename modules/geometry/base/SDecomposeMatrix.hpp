@@ -26,7 +26,7 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -54,11 +54,11 @@ namespace sight::module::geometry::base
  * - \b scale [sight::data::Matrix4] (optional): scaling matrix.
  *
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public service::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public sight::service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDecomposeMatrix, ::sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SDecomposeMatrix, sight::service::IFilter);
 
     /**
      * @brief Constructor.
