@@ -1,6 +1,6 @@
 sight_add_target( geometry_vision TYPE LIBRARY PCH OFF )
 
-target_link_libraries(geometry_vision PUBLIC core data geometry_eigen)
+target_link_libraries(geometry_vision PUBLIC core data service geometry_eigen)
 
 target_link_libraries(geometry_vision PUBLIC opencv_calib3d opencv_aruco)
 

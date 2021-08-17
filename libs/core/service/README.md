@@ -16,7 +16,6 @@ The library proposes different base classes to implement services. They bring a 
 - **AppManager**: base class for application using qml
 - **IAppConfigManager**: generic interface meant to define configurations template
 Deprecated, this class is no longer supported, please  use `sight::service::AppConfigManager` instead.
-- **ICalibration**: generic interface meant to define calibration services
 - **IController**: generic interface meant to define control services
 - **IGenerator**: generic interface meant to define generator services
 - **IGrabber**: generic interface meant to manage video grabber services
