@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "modules/geometry/generator/config.hpp"
+#include "modules/filter/mesh//config.hpp"
 
 #include <service/IGenerator.hpp>
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
 
-namespace sight::module::geometry
+namespace sight::module::filter::mesh
 {
 
 namespace generator
@@ -71,7 +71,7 @@ namespace generator
  * @subsection In-Out In-Out:
  * - \b mesh [sight::data::Mesh]: generated mesh.
  */
-class MODULE_GEOMETRY_GENERATOR_CLASS_API SNeedle final : public sight::service::IGenerator
+class MODULE_FILTER_MESH_CLASS_API SNeedle final : public sight::service::IGenerator
 {
 public:
 
@@ -79,24 +79,24 @@ public:
     SIGHT_DECLARE_SERVICE(SNeedle, sight::service::IGenerator);
 
     /// Initializes slots.
-    MODULE_GEOMETRY_GENERATOR_API SNeedle() noexcept;
+    MODULE_FILTER_MESH_API SNeedle() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_GENERATOR_API ~SNeedle() noexcept override;
+    MODULE_FILTER_MESH_API ~SNeedle() noexcept override;
 
 protected:
 
     /// Configures the service's parameters.
-    MODULE_GEOMETRY_GENERATOR_API void configuring() override;
+    MODULE_FILTER_MESH_API void configuring() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_GENERATOR_API void starting() override;
+    MODULE_FILTER_MESH_API void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_GENERATOR_API void stopping() override;
+    MODULE_FILTER_MESH_API void stopping() override;
 
     /// Generate the cylinder.
-    MODULE_GEOMETRY_GENERATOR_API void updating() override;
+    MODULE_FILTER_MESH_API void updating() override;
 
 private:
 
@@ -177,4 +177,4 @@ private:
 
 } // namespace generator
 
-} // namespace sight::module::geometry
+} // namespace sight::module::filter::mesh

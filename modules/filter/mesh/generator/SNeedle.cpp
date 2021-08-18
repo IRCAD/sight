@@ -47,7 +47,7 @@
 #include <vtkTriangleFilter.h>
 #include <vtkUnsignedCharArray.h>
 
-namespace sight::module::geometry
+namespace sight::module::filter::mesh
 {
 
 namespace generator
@@ -356,4 +356,4 @@ void SNeedle::updateHeight(double height)
 
 } // namespace generator
 
-} // namespace sight::module::geometry
+} // namespace sight::module::filter::mesh
