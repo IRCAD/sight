@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,41 @@
  *
  ***********************************************************************/
 
-#include "service/IRGBDGrabber.hpp"
+#pragma once
 
-namespace sight::service
+#include "io/base/config.hpp"
+
+#include <io/base/service/IGrabber.hpp>
+
+namespace sight::io::base::service
 {
 
-const service::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
-
-// ----------------------------------------------------------------------------
-
-IRGBDGrabber::IRGBDGrabber() noexcept
+/**
+ * @brief   This interface defines the RGBD grabber service API.
+ *          Must be implemented for services that grabs RGBD camera frames.
+ */
+class IO_BASE_CLASS_API IRGBDGrabber : public io::base::service::IGrabber
 {
-}
+public:
 
-// ----------------------------------------------------------------------------
+    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber);
 
-IRGBDGrabber::~IRGBDGrabber() noexcept
-{
-}
+    /**
+     * @name Data API
+     * @{
+     */
+    static constexpr std::string_view s_DEPTHTL_INOUT = "depthTL";
+    /** @} */
 
-// ----------------------------------------------------------------------------
+    /// Constructor.
+    IO_BASE_API IRGBDGrabber() noexcept;
 
-} // namespace sight::service
+    /// Destructor.
+    IO_BASE_API virtual ~IRGBDGrabber() noexcept;
+
+protected:
+
+    data::ptr<data::FrameTL, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
+};
+
+} //namespace sight::io::base::service

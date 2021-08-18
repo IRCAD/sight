@@ -26,7 +26,8 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <service/IGrabber.hpp>
+#include <io/base/service/IGrabber.hpp>
+
 #include <service/IHasServices.hpp>
 
 namespace sight::data
@@ -98,12 +99,12 @@ namespace sight::module::io::video
  *  - \b gui
  *      - \b title (optional) : title of the grabber selector window.
  */
-class MODULE_IO_VIDEO_CLASS_API SGrabberProxy : public service::IGrabber,
+class MODULE_IO_VIDEO_CLASS_API SGrabberProxy : public sight::io::base::service::IGrabber,
                                                 public service::IHasServices
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrabberProxy, service::IGrabber);
+    SIGHT_DECLARE_SERVICE(SGrabberProxy, sight::io::base::service::IGrabber);
 
     /// Constructor. Initialize slots and signals
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
@@ -211,7 +212,7 @@ private:
     std::string m_guiTitle {"Please select a video grabber implementation"};
 
     /// Actual grabber service.
-    std::vector<service::IGrabber::sptr> m_services;
+    std::vector<sight::io::base::service::IGrabber::sptr> m_services;
 
     /// Connections with service signals.
     core::com::helper::SigSlotConnection m_connections;
@@ -221,9 +222,6 @@ private:
 
     /// Map that specifies all configuration extensions for a service.
     std::map<std::string, std::vector<std::string> > m_serviceToConfig;
-
-    /// State of the loop mode.
-    bool m_loopVideo {false};
 
     /// Configure if selected services are excluded (true) or included (false).
     bool m_exclude {true};

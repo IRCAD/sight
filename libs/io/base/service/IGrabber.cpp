@@ -20,12 +20,12 @@
  *
  ***********************************************************************/
 
-#include "service/IGrabber.hpp"
+#include "IGrabber.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-namespace sight::service
+namespace sight::io::base::service
 {
 
 const core::com::Signals::SignalKeyType IGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
@@ -45,9 +45,6 @@ const core::com::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPo
 const core::com::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previousImage";
 const core::com::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
 const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
-
-const service::IService::KeyType IGrabber::s_CAMERA_INPUT  = "camera";
-const service::IService::KeyType IGrabber::s_FRAMETL_INOUT = "frameTL";
 
 // ----------------------------------------------------------------------------
 
@@ -145,4 +142,4 @@ void IGrabber::setStartState(bool state)
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::service
+} // namespace sight::io::base::service

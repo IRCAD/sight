@@ -51,6 +51,8 @@ static const service::IService::KeyType s_FRAMETL = "frameTL";
 
 static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
+using sight::io::base::service::IGrabber;
+
 // -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
@@ -225,9 +227,7 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        const auto sig = this->signal<service::IGrabber::CameraStoppedSignalType>(
-            service::IGrabber::s_CAMERA_STOPPED_SIG
-        );
+        const auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);
@@ -276,9 +276,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal<service::IGrabber::CameraStartedSignalType>(
-            service::IGrabber::s_CAMERA_STARTED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStartedSignalType>(IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
     else
@@ -356,9 +354,7 @@ void SFrameGrabber::readDevice(const data::Camera::csptr _camera)
         m_timer->start();
 
         this->setStartState(true);
-        auto sig = this->signal<service::IGrabber::CameraStartedSignalType>(
-            service::IGrabber::s_CAMERA_STARTED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStartedSignalType>(IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
     else
@@ -557,9 +553,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             m_timer->start();
         }
 
-        auto sig = this->signal<service::IGrabber::CameraStartedSignalType>(
-            service::IGrabber::s_CAMERA_STARTED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStartedSignalType>(IGrabber::s_CAMERA_STARTED_SIG);
         sig->asyncEmit();
     }
 }
