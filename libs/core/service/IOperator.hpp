@@ -23,9 +23,8 @@
 #pragma once
 
 #include "service/config.hpp"
-#include "service/IParametersService.hpp"
+#include "service/IService.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
 namespace sight::service
@@ -37,11 +36,11 @@ namespace sight::service
  * @section Signals Signals
  * - \b computed() : Emitted when something was computed.
  */
-class SERVICE_CLASS_API IOperator : public service::IParametersService
+class SERVICE_CLASS_API IOperator : public service::IService
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IOperator, service::IParametersService);
+    SIGHT_DECLARE_SERVICE(IOperator, service::IService);
 
     SERVICE_API static const core::com::Signals::SignalKeyType s_COMPUTED_SIG;
     typedef core::com::Signal<void ()> ComputedSignalType;

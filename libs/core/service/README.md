@@ -22,7 +22,6 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 - **IGrabber**: generic interface meant to manage video grabber services
 - **IHasServices**: generic interface for objects that need to manage services
 - **IOperator**: generic interface meant to define operator services
-- **IParametersService**: generic interface meant to define basic slots to receive parameter values from signals
 - **IRegisterer**: generic interface meant to define register services
 - **IRGBDGrabber**: generic interface meant to define RGBD images grabber services
 - **IRegisterer**: generic interface meant to define services

@@ -16,6 +16,7 @@ This is the core library in _sight_ which defines the various base interface for
 - **IEditor**: defines the generic interface to define a graphical object editor services 
 - **IFrame**: defines the generic interface to define a frame graphical display
 - **IGuiContainer**: defines the generic interface to manage the layouts and the various displayed object container
+- **IHasParameters**: generic interface meant to define basic slots to receive parameter values from signals
 - **IMenu**: defines the generic interface to define a graphical menu
 - **IMenuBar**: defines the generic interface to define a graphical menu bar
 - **IMenuItemCallback**: defines the generic interface to define a graphical menu item callback

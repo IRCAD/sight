@@ -34,6 +34,7 @@
 
 #include <service/IOperator.hpp>
 
+#include <ui/base/IHasParameters.hpp>
 #include <ui/history/ICommand.hpp>
 
 namespace sight::module::filter::image
@@ -81,7 +82,8 @@ namespace sight::module::filter::image
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max' and 'minmax'. 'min' by default.
  * - \b orientation (optional) : The initial slice orientation. 'axial' by default.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IOperator,
+                                                  public ui::base::IHasParameters
 {
 public:
 
