@@ -89,7 +89,7 @@ void SExtractObj::updating()
         }
         catch(sight::data::reflection::exception::NullPointer&)
         {
-            this->setOutput(s_TARGET, nullptr, index);
+            m_target[index] = nullptr;
         }
         catch(sight::data::reflection::exception::ObjectNotFound&)
         {
@@ -103,7 +103,7 @@ void SExtractObj::updating()
         SIGHT_WARN_IF("Object from '" + from + "' not found", !object);
         if(object)
         {
-            this->setOutput(s_TARGET, object, index);
+            m_target[index] = object;
         }
 
         ++index;
@@ -117,7 +117,7 @@ void SExtractObj::stopping()
     // Unregister outputs
     for(size_t i = 0 ; i < m_target.size() ; ++i)
     {
-        this->setOutput(s_TARGET, nullptr, i);
+        m_target[i] = nullptr;
     }
 }
 

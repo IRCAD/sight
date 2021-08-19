@@ -59,9 +59,6 @@ static const core::com::Slots::SlotKeyType s_FORWARD_ADDED_FIELDS_SLOT          
 static const core::com::Slots::SlotKeyType s_FORWARD_CHANGED_FIELDS_SLOT        = "forwardChangedFields";
 static const core::com::Slots::SlotKeyType s_FORWARD_REMOVED_FIELDS_SLOT        = "forwardRemovedFields";
 
-static const service::IService::KeyType s_SOURCE_INPUT = "source";
-static const service::IService::KeyType s_TARGET_INPUT = "target";
-
 SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_availableConnection;
 
 //-----------------------------------------------------------------------------
@@ -130,11 +127,11 @@ void SImageSignalForwarder::configuring()
 
 void SImageSignalForwarder::starting()
 {
-    sight::data::Image::csptr src = this->getInput<sight::data::Image>(s_SOURCE_INPUT);
+    const auto src = m_source.lock();
 
     for(auto signalKey : m_managedSignals)
     {
-        m_connections.connect(src, signalKey, this->getSptr(), m_availableConnection[signalKey]);
+        m_connections.connect(src.get_shared(), signalKey, this->getSptr(), m_availableConnection[signalKey]);
     }
 }
 
@@ -161,8 +158,8 @@ void SImageSignalForwarder::info(std::ostream& _sstream)
 
 void SImageSignalForwarder::forwardModified()
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Object::ModifiedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Object::ModifiedSignalType>(
         sight::data::Object::s_MODIFIED_SIG
     );
     sig->asyncEmit();
@@ -172,8 +169,8 @@ void SImageSignalForwarder::forwardModified()
 
 void SImageSignalForwarder::forwardBufferModified()
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        =
+    const auto image = m_target.lock();
+    auto sig         =
         image->signal<sight::data::Image::BufferModifiedSignalType>(sight::data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 }
@@ -182,8 +179,8 @@ void SImageSignalForwarder::forwardBufferModified()
 
 void SImageSignalForwarder::forwardLandmarkAdded(SPTR(sight::data::Point)point)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::LandmarkAddedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::LandmarkAddedSignalType>(
         sight::data::Image::s_LANDMARK_ADDED_SIG
     );
     sig->asyncEmit(point);
@@ -193,8 +190,8 @@ void SImageSignalForwarder::forwardLandmarkAdded(SPTR(sight::data::Point)point)
 
 void SImageSignalForwarder::forwardLandmarkRemoved(SPTR(sight::data::Point)point)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::LandmarkRemovedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::LandmarkRemovedSignalType>(
         sight::data::Image::s_LANDMARK_REMOVED_SIG
     );
     sig->asyncEmit(point);
@@ -204,8 +201,8 @@ void SImageSignalForwarder::forwardLandmarkRemoved(SPTR(sight::data::Point)point
 
 void SImageSignalForwarder::forwardLandmarkDisplayed(bool display)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::LandmarkDisplayedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::LandmarkDisplayedSignalType>(
         sight::data::Image::s_LANDMARK_DISPLAYED_SIG
     );
     sig->asyncEmit(display);
@@ -215,8 +212,8 @@ void SImageSignalForwarder::forwardLandmarkDisplayed(bool display)
 
 void SImageSignalForwarder::forwardDistanceAdded(SPTR(sight::data::PointList)pointList)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::DistanceAddedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::DistanceAddedSignalType>(
         sight::data::Image::s_DISTANCE_ADDED_SIG
     );
     sig->asyncEmit(pointList);
@@ -226,8 +223,8 @@ void SImageSignalForwarder::forwardDistanceAdded(SPTR(sight::data::PointList)poi
 
 void SImageSignalForwarder::forwardDistanceRemoved(CSPTR(sight::data::PointList)pointList)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::DistanceRemovedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::DistanceRemovedSignalType>(
         sight::data::Image::s_DISTANCE_REMOVED_SIG
     );
     sig->asyncEmit(pointList);
@@ -237,8 +234,8 @@ void SImageSignalForwarder::forwardDistanceRemoved(CSPTR(sight::data::PointList)
 
 void SImageSignalForwarder::forwardDistanceDisplayed(bool display)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::DistanceDisplayedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::DistanceDisplayedSignalType>(
         sight::data::Image::s_DISTANCE_DISPLAYED_SIG
     );
     sig->asyncEmit(display);
@@ -248,8 +245,8 @@ void SImageSignalForwarder::forwardDistanceDisplayed(bool display)
 
 void SImageSignalForwarder::forwardSliceIndexModified(int axial, int frontal, int sagittal)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::SliceIndexModifiedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::SliceIndexModifiedSignalType>(
         sight::data::Image::s_SLICE_INDEX_MODIFIED_SIG
     );
     sig->asyncEmit(axial, frontal, sagittal);
@@ -259,8 +256,8 @@ void SImageSignalForwarder::forwardSliceIndexModified(int axial, int frontal, in
 
 void SImageSignalForwarder::forwardSliceTypeModified(int from, int to)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        =
+    const auto image = m_target.lock();
+    auto sig         =
         image->signal<sight::data::Image::SliceTypeModifiedSignalType>(sight::data::Image::s_SLICE_TYPE_MODIFIED_SIG);
     sig->asyncEmit(from, to);
 }
@@ -269,8 +266,8 @@ void SImageSignalForwarder::forwardSliceTypeModified(int from, int to)
 
 void SImageSignalForwarder::forwardVisibilityModified(bool visibility)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        =
+    const auto image = m_target.lock();
+    auto sig         =
         image->signal<sight::data::Image::VisibilityModifiedSignalType>(sight::data::Image::s_VISIBILITY_MODIFIED_SIG);
     sig->asyncEmit(visibility);
 }
@@ -279,8 +276,8 @@ void SImageSignalForwarder::forwardVisibilityModified(bool visibility)
 
 void SImageSignalForwarder::forwardTransparencyModified()
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Image::TransparencyModifiedSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Image::TransparencyModifiedSignalType>(
         sight::data::Image::s_TRANSPARENCY_MODIFIED_SIG
     );
     sig->asyncEmit();
@@ -290,8 +287,8 @@ void SImageSignalForwarder::forwardTransparencyModified()
 
 void SImageSignalForwarder::forwardAddedFields(sight::data::Object::FieldsContainerType objects)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        = image->signal<sight::data::Object::AddedFieldsSignalType>(
+    const auto image = m_target.lock();
+    auto sig         = image->signal<sight::data::Object::AddedFieldsSignalType>(
         sight::data::Object::s_ADDED_FIELDS_SIG
     );
     sig->asyncEmit(objects);
@@ -304,8 +301,8 @@ void SImageSignalForwarder::forwardChangedFields(
     sight::data::Object::FieldsContainerType oldObjects
 )
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        =
+    const auto image = m_target.lock();
+    auto sig         =
         image->signal<sight::data::Object::ChangedFieldsSignalType>(sight::data::Object::s_CHANGED_FIELDS_SIG);
     sig->asyncEmit(newObjects, oldObjects);
 }
@@ -314,8 +311,8 @@ void SImageSignalForwarder::forwardChangedFields(
 
 void SImageSignalForwarder::forwardRemovedFields(sight::data::Object::FieldsContainerType objects)
 {
-    sight::data::Image::csptr image = this->getInput<sight::data::Image>(s_TARGET_INPUT);
-    auto sig                        =
+    const auto image = m_target.lock();
+    auto sig         =
         image->signal<sight::data::Object::RemovedFieldsSignalType>(sight::data::Object::s_REMOVED_FIELDS_SIG);
     sig->asyncEmit(objects);
 }

@@ -42,13 +42,9 @@ namespace sight::module::data
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
 const core::com::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT = "reportSeries";
 
 const core::com::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "seriesAdded";
-
-static const std::string s_SERIES_DB_INPUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
@@ -130,9 +126,8 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
 
 void SSeriesSignal::updating()
 {
-    const auto seriesDB = this->getInput<sight::data::SeriesDB>(s_SERIES_DB_INPUT);
-    SIGHT_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
-    sight::data::mt::ObjectReadLock lock(seriesDB);
+    const auto seriesDB = m_seriesDB.lock();
+    SIGHT_ASSERT("input '" << s_SERIES_DB_INPUT << "' does not exist.", seriesDB);
 
     this->reportSeries(seriesDB->getContainer());
 }

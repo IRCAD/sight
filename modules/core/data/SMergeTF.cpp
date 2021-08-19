@@ -28,9 +28,6 @@
 namespace sight::module::data
 {
 
-static const service::IService::KeyType s_TF_POOL_INPUT = "tfPool";
-static const service::IService::KeyType s_TF_INOUT      = "tf";
-
 static const core::com::Slots::SlotKeyType s_MERGE_SLOT = "merge";
 
 //------------------------------------------------------------------------------
@@ -78,14 +75,14 @@ void SMergeTF::updating()
 
     // Iterates over each TF to create connections.
     {
-        const auto tfPool = this->getLockedInput<sight::data::Composite>(s_TF_POOL_INPUT);
-        SIGHT_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
+        const auto tfPool = m_tfPool.lock();
+        SIGHT_ASSERT("input '" << s_TF_POOL_INPUT << "' must have at least on TF inside.", tfPool->size() > 0);
 
         for(auto poolElt : *tfPool)
         {
             // Checks if it's a TF.
             auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
-            SIGHT_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
+            SIGHT_ASSERT("inout '" << s_TF_POOL_INPUT << "' must contain only TF.", tf);
 
             m_connections.connect(tf, sight::data::TransferFunction::s_MODIFIED_SIG, this->getSptr(), s_MERGE_SLOT);
             m_connections.connect(
@@ -117,11 +114,11 @@ void SMergeTF::stopping()
 void SMergeTF::merge() const
 {
     // Get the TF pool.
-    const auto tfPool = this->getLockedInput<sight::data::Composite>(s_TF_POOL_INPUT);
-    SIGHT_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
+    const auto tfPool = m_tfPool.lock();
+    SIGHT_ASSERT("input '" << s_TF_POOL_INPUT << "' must have at least on TF inside.", tfPool->size() > 0);
 
     // Clear the output TF.
-    const auto outTF = this->getLockedInOut<sight::data::TransferFunction>(s_TF_INOUT);
+    const auto outTF = m_tf.lock();
     outTF->clear();
 
     // Iterates over each TF to merge them in the output one.
@@ -132,7 +129,7 @@ void SMergeTF::merge() const
     {
         // Checks if the composite element is a TF.
         const auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
-        SIGHT_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" << s_TF_POOL_INPUT << "' must contain only TF.", tf);
         const sight::data::mt::locked_ptr tfLock(tf);
 
         const sight::data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
@@ -238,7 +235,7 @@ const
     {
         // Checks if the composite element is a TF.
         const auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
-        SIGHT_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" << s_TF_POOL_INPUT << "' must contain only TF.", tf);
         const sight::data::mt::locked_ptr tfLock(tf == _already_locked_tf ? nullptr : tf);
 
         // Gets window/level informations to change TF value from window/level space to TF space .

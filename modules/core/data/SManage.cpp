@@ -123,68 +123,65 @@ void SManage::addOrSwap()
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Object::sptr obj = this->getInOut<sight::data::Object>(s_OBJECT_INOUT);
-    SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
+    const auto obj = m_object.lock();
+    SIGHT_ASSERT("Object is missing.", obj);
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Vector::sptr vector       = this->getInOut<sight::data::Vector>(s_VECTOR_INOUT);
-    sight::data::SeriesDB::sptr seriesDB   = this->getInOut<sight::data::SeriesDB>(s_SERIESDB_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
 
-    SIGHT_ASSERT(
-        "Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
-        vector || composite || seriesDB || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::helper::Composite helper(composite);
-        if(composite->find(m_compositeKey) == composite->end())
+        sight::data::helper::Field helper(container.get_shared());
+        helper.addOrSwap(m_fieldName, obj.get_shared());
+        helper.notify();
+    }
+    else
+    {
+        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
+        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
+        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+
+        if(composite)
         {
-            helper.add(m_compositeKey, obj);
+            sight::data::helper::Composite helper(composite);
+            if(composite->find(m_compositeKey) == composite->end())
+            {
+                helper.add(m_compositeKey, obj.get_shared());
+            }
+            else
+            {
+                helper.swap(m_compositeKey, obj.get_shared());
+            }
+
+            helper.notify();
+        }
+        else if(vector)
+        {
+            auto iter = std::find(vector->begin(), vector->end(), obj.get_shared());
+            if(iter == vector->end())
+            {
+                sight::data::helper::Vector helper(vector);
+                helper.add(obj.get_shared());
+                helper.notify();
+            }
+
+            SIGHT_WARN_IF("Object already exists in the Vector, does nothing.", iter != vector->end());
         }
         else
         {
-            helper.swap(m_compositeKey, obj);
+            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
+            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
+
+            auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
+            if(iter == seriesDB->end())
+            {
+                sight::data::helper::SeriesDB helper(*seriesDB);
+                helper.add(series);
+                helper.notify();
+            }
+
+            SIGHT_WARN_IF("Object already exists in the SeriesDB, does nothing.", iter != seriesDB->end());
         }
-
-        helper.notify();
-    }
-    else if(vector)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        auto iter = std::find(vector->begin(), vector->end(), obj);
-        if(iter == vector->end())
-        {
-            sight::data::helper::Vector helper(vector);
-            helper.add(obj);
-            helper.notify();
-        }
-
-        SIGHT_WARN_IF("Object already exists in the Vector, does nothing.", iter != vector->end());
-    }
-    else if(seriesDB)
-    {
-        sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
-        SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
-        SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-
-        auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
-        if(iter == seriesDB->end())
-        {
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.add(series);
-            helper.notify();
-        }
-
-        SIGHT_WARN_IF("Object already exists in the SeriesDB, does nothing.", iter != seriesDB->end());
-    }
-    else if(fieldHolder)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !composite && !seriesDB);
-        sight::data::helper::Field helper(fieldHolder);
-        helper.addOrSwap(m_fieldName, obj);
-        helper.notify();
     }
 }
 
@@ -194,29 +191,27 @@ void SManage::swap()
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Object::sptr obj = this->getInOut<sight::data::Object>(s_OBJECT_INOUT);
-    SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
+    const auto obj = m_object.lock();
+    SIGHT_ASSERT("Object is missing.", obj);
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
+    const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
 
-    SIGHT_ASSERT(
-        "'swap' slot is only managed for 'composite' or 'fieldHolder'",
-        composite || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !fieldHolder);
-        sight::data::helper::Composite helper(composite);
-        helper.swap(m_compositeKey, obj);
+        sight::data::helper::Field helper(container.get_shared());
+        helper.swap(m_fieldName, obj.get_shared());
         helper.notify();
     }
-    else if(fieldHolder)
+    else if(composite)
     {
-        SIGHT_ASSERT("Only one target object is managed", !composite);
-        sight::data::helper::Field helper(fieldHolder);
-        helper.swap(m_fieldName, obj);
+        sight::data::helper::Composite helper(composite);
+        helper.swap(m_compositeKey, obj.get_shared());
         helper.notify();
+    }
+    else
+    {
+        SIGHT_WARN("'swap' slot is only managed for 'composite' or 'fieldHolder'");
     }
 }
 
@@ -226,49 +221,47 @@ void SManage::remove()
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Object::sptr obj = this->getInOut<sight::data::Object>(s_OBJECT_INOUT);
+    const auto obj = m_object.lock();
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Vector::sptr vector       = this->getInOut<sight::data::Vector>(s_VECTOR_INOUT);
-    sight::data::SeriesDB::sptr seriesDB   = this->getInOut<sight::data::SeriesDB>(s_SERIESDB_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
 
-    SIGHT_ASSERT(
-        "Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
-        vector || composite || seriesDB || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::helper::Composite helper(composite);
-        helper.remove(m_compositeKey);
-        helper.notify();
-    }
-    else if(vector)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        sight::data::helper::Vector helper(vector);
-        helper.remove(obj);
-        helper.notify();
-    }
-    else if(seriesDB)
-    {
-        SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
-        SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
-        SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-
-        sight::data::helper::SeriesDB helper(*seriesDB);
-        helper.remove(series);
-        helper.notify();
-    }
-    else if(fieldHolder)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !composite && !seriesDB);
-        sight::data::helper::Field helper(fieldHolder);
+        sight::data::helper::Field helper(container.get_shared());
         helper.remove(m_fieldName);
         helper.notify();
+    }
+    else
+    {
+        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
+        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
+        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+
+        if(composite)
+        {
+            sight::data::helper::Composite helper(composite);
+            helper.remove(m_compositeKey);
+            helper.notify();
+        }
+        else if(vector)
+        {
+            SIGHT_ASSERT("Object is missing.", obj);
+            sight::data::helper::Vector helper(vector);
+            helper.remove(obj.get_shared());
+            helper.notify();
+        }
+        else
+        {
+            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
+
+            SIGHT_ASSERT("Object is missing.", obj);
+            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
+
+            sight::data::helper::SeriesDB helper(*seriesDB);
+            helper.remove(series);
+            helper.notify();
+        }
     }
 }
 
@@ -278,62 +271,13 @@ void SManage::removeIfPresent()
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Object::sptr obj = this->getInOut<sight::data::Object>(s_OBJECT_INOUT);
+    const auto obj = m_object.lock();
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Vector::sptr vector       = this->getInOut<sight::data::Vector>(s_VECTOR_INOUT);
-    sight::data::SeriesDB::sptr seriesDB   = this->getInOut<sight::data::SeriesDB>(s_SERIESDB_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
 
-    SIGHT_ASSERT(
-        "Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
-        vector || composite || seriesDB || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::helper::Composite helper(composite);
-        if(composite->find(m_compositeKey) != composite->end())
-        {
-            helper.remove(m_compositeKey);
-            helper.notify();
-        }
-    }
-    else if(vector)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        auto iter = std::find(vector->begin(), vector->end(), obj);
-        if(iter != vector->end())
-        {
-            sight::data::helper::Vector helper(vector);
-            helper.remove(obj);
-            helper.notify();
-        }
-
-        SIGHT_WARN_IF("Object does not exist in the Vector, does nothing.", iter == vector->end());
-    }
-    else if(seriesDB)
-    {
-        SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
-        SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
-        SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-
-        auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
-        if(iter != seriesDB->end())
-        {
-            sight::data::helper::SeriesDB helper(*seriesDB);
-            helper.remove(series);
-            helper.notify();
-        }
-
-        SIGHT_WARN_IF("Object does not exist in the SeriesDB, does nothing.", iter == seriesDB->end());
-    }
-    else if(fieldHolder)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !composite && !seriesDB);
-        sight::data::helper::Field helper(fieldHolder);
+        sight::data::helper::Field helper(container.get_shared());
         try
         {
             helper.remove(m_fieldName);
@@ -344,6 +288,53 @@ void SManage::removeIfPresent()
             // Silently ignore the exception which means the field was not present
         }
     }
+    else
+    {
+        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
+        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
+        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+
+        if(composite)
+        {
+            sight::data::helper::Composite helper(composite);
+            if(composite->find(m_compositeKey) != composite->end())
+            {
+                helper.remove(m_compositeKey);
+                helper.notify();
+            }
+        }
+        else if(vector)
+        {
+            SIGHT_ASSERT("Object is missing.", obj);
+            auto iter = std::find(vector->begin(), vector->end(), obj.get_shared());
+            if(iter != vector->end())
+            {
+                sight::data::helper::Vector helper(vector);
+                helper.remove(obj.get_shared());
+                helper.notify();
+            }
+
+            SIGHT_WARN_IF("Object does not exist in the Vector, does nothing.", iter == vector->end());
+        }
+        else
+        {
+            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
+
+            SIGHT_ASSERT("Object is missing.", obj);
+            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series", series);
+
+            auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
+            if(iter != seriesDB->end())
+            {
+                sight::data::helper::SeriesDB helper(*seriesDB);
+                helper.remove(series);
+                helper.notify();
+            }
+
+            SIGHT_WARN_IF("Object does not exist in the SeriesDB, does nothing.", iter == seriesDB->end());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -352,41 +343,38 @@ void SManage::clear()
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Vector::sptr vector       = this->getInOut<sight::data::Vector>(s_VECTOR_INOUT);
-    sight::data::SeriesDB::sptr seriesDB   = this->getInOut<sight::data::SeriesDB>(s_SERIESDB_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
 
-    SIGHT_ASSERT(
-        "Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
-        vector || composite || seriesDB || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::helper::Composite helper(composite);
+        sight::data::helper::Field helper(container.get_shared());
         helper.clear();
         helper.notify();
     }
-    else if(vector)
+    else
     {
-        SIGHT_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        sight::data::helper::Vector helper(vector);
-        helper.clear();
-        helper.notify();
-    }
-    else if(seriesDB)
-    {
-        sight::data::helper::SeriesDB helper(*seriesDB);
-        helper.clear();
-        helper.notify();
-    }
-    else if(fieldHolder)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !composite && !seriesDB);
-        sight::data::helper::Field helper(fieldHolder);
-        helper.clear();
-        helper.notify();
+        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
+        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
+        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+        if(composite)
+        {
+            sight::data::helper::Composite helper(composite);
+            helper.clear();
+            helper.notify();
+        }
+        else if(vector)
+        {
+            sight::data::helper::Vector helper(vector);
+            helper.clear();
+            helper.notify();
+        }
+        else
+        {
+            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
+            sight::data::helper::SeriesDB helper(*seriesDB);
+            helper.clear();
+            helper.notify();
+        }
     }
 }
 
@@ -396,52 +384,50 @@ void SManage::internalAdd(bool _copy)
 {
     SIGHT_ASSERT("Service is not started", this->isStarted());
 
-    sight::data::Object::sptr obj = this->getInOut<sight::data::Object>(s_OBJECT_INOUT);
-    SIGHT_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
+    const auto object = m_object.lock();
+    SIGHT_ASSERT("Object is missing.", object);
 
+    auto obj = object.get_shared();
     if(_copy)
     {
         obj = sight::data::Object::copy(obj);
     }
 
-    sight::data::Composite::sptr composite = this->getInOut<sight::data::Composite>(s_COMPOSITE_INOUT);
-    sight::data::Vector::sptr vector       = this->getInOut<sight::data::Vector>(s_VECTOR_INOUT);
-    sight::data::SeriesDB::sptr seriesDB   = this->getInOut<sight::data::SeriesDB>(s_SERIESDB_INOUT);
-    sight::data::Object::sptr fieldHolder  = this->getInOut<sight::data::Object>(s_FIELD_HOLDER_INOUT);
+    const auto container = m_container.lock();
 
-    SIGHT_ASSERT(
-        "Target object is missing, required one of 'composite', 'vector', 'seriesDB', or 'fieldHolder'",
-        vector || composite || seriesDB || fieldHolder
-    );
-    if(composite)
+    if(!m_fieldName.empty())
     {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::helper::Composite helper(composite);
-        helper.add(m_compositeKey, obj);
-        helper.notify();
-    }
-    else if(vector)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        sight::data::helper::Vector helper(vector);
-        helper.add(obj);
-        helper.notify();
-    }
-    else if(seriesDB)
-    {
-        sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
-        SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
-        SIGHT_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-        sight::data::helper::SeriesDB helper(*seriesDB);
-        helper.add(series);
-        helper.notify();
-    }
-    else if(fieldHolder)
-    {
-        SIGHT_ASSERT("Only one target object is managed", !vector && !composite && !seriesDB);
-        sight::data::helper::Field helper(fieldHolder);
+        sight::data::helper::Field helper(container.get_shared());
         helper.add(m_fieldName, obj);
         helper.notify();
+    }
+    else
+    {
+        const auto composite = std::dynamic_pointer_cast<sight::data::Composite>(container.get_shared());
+        const auto vector    = std::dynamic_pointer_cast<sight::data::Vector>(container.get_shared());
+        const auto seriesDB  = std::dynamic_pointer_cast<sight::data::SeriesDB>(container.get_shared());
+
+        if(composite)
+        {
+            sight::data::helper::Composite helper(composite);
+            helper.add(m_compositeKey, obj);
+            helper.notify();
+        }
+        else if(vector)
+        {
+            sight::data::helper::Vector helper(vector);
+            helper.add(obj);
+            helper.notify();
+        }
+        else if(seriesDB)
+        {
+            SIGHT_ASSERT("Source object is assumed to be a SeriesDB", seriesDB);
+            sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
+            SIGHT_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
+            sight::data::helper::SeriesDB helper(*seriesDB);
+            helper.add(series);
+            helper.notify();
+        }
     }
 }
 

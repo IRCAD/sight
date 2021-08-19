@@ -32,7 +32,8 @@ namespace sight::module::data
 {
 
 /**
- * @brief This service manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).
+ * @brief This service manages a contained object (add/swap/remove) into a container object (composite, vector,
+ * seriesDB).
  *
  * It works on different objects:
  * - data::Composite: the object is added/swapped/removed from composite at the given key
@@ -59,7 +60,7 @@ namespace sight::module::data
  * @code{.xml}
    <service type="sight::module::data::SManage">
       <inout key="object" uid="..." />
-      <inout key="composite" uid="..." />
+      <inout key="container" uid="..." />
       <compositeKey>...</compositeKey>
    </service>
    @endcode
@@ -68,7 +69,7 @@ namespace sight::module::data
  * @code{.xml}
    <service type="sight::module::data::SManage">
       <inout key="object" uid="..." />
-      <inout key="vector" uid="..." />
+      <inout key="container" uid="..." />
    </service>
    @endcode
  *
@@ -76,7 +77,7 @@ namespace sight::module::data
  * @code{.xml}
    <service type="sight::module::data::SManage">
       <inout key="object" uid="..." />
-      <inout key="seriesDB" uid="..." />
+      <inout key="container" uid="..." />
    </service>
    @endcode
  *
@@ -84,7 +85,7 @@ namespace sight::module::data
  * @code{.xml}
    <service type="sight::module::data::SManage">
       <inout key="object" uid="..." />
-      <inout key="fieldHolder" uid="..." />
+      <inout key="container" uid="..." />
       <field>...</field>
    </service>
    @endcode
@@ -93,16 +94,12 @@ namespace sight::module::data
  * - \b object [sight::data::Object] (optional): object to add/swap/remove. Not needed when invoking clean slot and
  * remove
  * slots with composites and fields, since the removal is based on the name.
- * - \b composite [sight::data::Composite] (optional): Composite where to add/swap/remove object.
- * - \b vector [sight::data::Vector] (optional): Vector where to add/remove object.
- * - \b seriesDB [sight::data::SeriesDB] (optional): SeriesDB where to add/remove object.
- * - \b fieldHolder [sight::data::Object] (optional): Object where to add/swap/remove object as a field.
+ * - \b container [sight::data::Object]: Composite/Vector/Series where to add/swap/remove object, or where
+ * to add/swap/remove object as a field.
  *
- * <b>Only one of the target (composite, vector or seriesDB) is allowed.</b>
- * For SeriesDB, the object must inherit of Series
  * @subsection Configuration Configuration
- * - \b compositeKey (optional, only if target object in a Composite) : key of the object in the composite
- * - \b field (optional, only if target object in a data::Object) : name of the field
+ * - \b compositeKey (optional, only used if the target object in a Composite) : key of the object in the composite
+ * - \b field (optional) : name of the field
  */
 class MODULE_DATA_CLASS_API SManage : public service::IController
 {
@@ -184,6 +181,9 @@ private:
     std::string m_objectUid;    ///< uid of the object
     std::string m_compositeKey; ///< key of the object to manage in the composite
     std::string m_fieldName;    ///< name of the field to manage in the object
+
+    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_object {this, "object", false, true};
+    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_container {this, "container"};
 };
 
 } // sight::module::data
