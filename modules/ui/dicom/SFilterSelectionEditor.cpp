@@ -78,11 +78,11 @@ void SFilterSelectionEditor::configuring()
 void SFilterSelectionEditor::starting()
 {
     // Get Destination SeriesDB
-    m_destinationSeriesDB = this->getInOut<data::SeriesDB>("target");
-    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
+    const auto destinationSeriesDB = m_destinationSeriesDB.lock();
+    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", destinationSeriesDB);
 
-    data::Vector::csptr dataVector = this->getInput<data::Vector>("selection");
-    SIGHT_ASSERT("Vector object should not be null.", dataVector);
+    const auto selectedDicomSeries = m_selectedDicomSeries.lock();
+    SIGHT_ASSERT("Selected dicom Series vector should not be null.", selectedDicomSeries);
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -412,8 +412,8 @@ void SFilterSelectionEditor::applyFilters()
     typedef std::vector<filter::dicom::IFilter::sptr> FilterContainertype;
 
     // Get selected DicomSeries
-    data::Vector::csptr vector = this->getInput<data::Vector>("selection");
-    SIGHT_ASSERT("Vector object should not be null.", vector);
+    const auto selectedDicomSeries = m_selectedDicomSeries.lock();
+    SIGHT_ASSERT("Selected dicom Series vector  object should not be null.", selectedDicomSeries);
 
     // Display the informations
     sight::ui::base::dialog::MessageDialog messageBox;
@@ -422,11 +422,13 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB
-    data::helper::SeriesDB sDBhelper(*m_destinationSeriesDB);
+    const auto destinationSeriesDB = m_destinationSeriesDB.lock();
+    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", destinationSeriesDB);
+    data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
     sDBhelper.clear();
 
     // Be sure series are selected
-    if(vector->empty())
+    if(selectedDicomSeries->empty())
     {
         messageBox.setMessage("You must select series on which you want to apply your filters.");
     }
@@ -441,14 +443,14 @@ void SFilterSelectionEditor::applyFilters()
         FilterContainertype filterContainer;
 
         // Copy selected DicomSeries
-        for(const data::Object::sptr& obj : vector->getContainer())
+        for(const data::Object::sptr& obj : selectedDicomSeries->getContainer())
         {
-            data::DicomSeries::sptr srcDicomSeries = data::DicomSeries::dynamicCast(obj);
-            SIGHT_ASSERT("The series should be a DicomSeries.", srcDicomSeries);
+            data::DicomSeries::sptr srcDicomSerie = data::DicomSeries::dynamicCast(obj);
+            SIGHT_ASSERT("The series should be a DicomSerie.", srcDicomSerie);
 
-            data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
-            dicomSeries->deepCopy(srcDicomSeries);
-            dicomSeriesContainer.push_back(dicomSeries);
+            data::DicomSeries::sptr destinationDicomSerie = data::DicomSeries::New();
+            destinationDicomSerie->deepCopy(srcDicomSerie);
+            dicomSeriesContainer.push_back(destinationDicomSerie);
         }
 
         // Create filter vector

@@ -26,6 +26,9 @@
 
 #include <core/com/Slot.hpp>
 
+#include <data/DicomSeries.hpp>
+#include <data/Image.hpp>
+
 #include <io/base/service/IReader.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -201,6 +204,11 @@ private:
 
     /// Optional configuration to set to reader implementation
     SPTR(core::runtime::ConfigurationElement) m_readerConfig;
+
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::DicomSeries, data::Access::in> m_dicomSeries {this, "series", true};
+    data::ptr<data::Image, data::Access::out> m_image {this, s_IMAGE, false};
 };
 
 } // namespace sight::module::ui::dicom
