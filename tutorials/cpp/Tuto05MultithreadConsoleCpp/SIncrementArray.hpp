@@ -24,6 +24,8 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
+#include <data/Array.hpp>
+
 #include <service/IController.hpp>
 
 namespace thread
@@ -89,6 +91,8 @@ private:
 
     /// Defines the periode of the timer.
     unsigned int m_periodInMillisec;
+
+    sight::data::ptr<sight::data::Array, sight::data::Access::inout> m_array {this, "array"};
 };
 
 } // namespace Tuto05MultithreadConsoleCpp.

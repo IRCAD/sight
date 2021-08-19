@@ -22,11 +22,6 @@
 
 #include "SShowArray.hpp"
 
-#include <data/Array.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-
-#include <service/macros.hpp>
-
 #include <sstream>
 
 namespace Tuto05MultithreadConsoleCpp
@@ -62,7 +57,7 @@ void SShowArray::starting()
 
 void SShowArray::updating()
 {
-    const auto array = this->getInput<sight::data::Array>(s_ARRAY_INPUT);
+    const auto array = m_array.lock();
 
     const auto dumpLock = array->lock();
 

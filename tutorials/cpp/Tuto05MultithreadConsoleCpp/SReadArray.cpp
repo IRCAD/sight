@@ -24,11 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/Array.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
-#include <service/macros.hpp>
-
 namespace Tuto05MultithreadConsoleCpp
 {
 
@@ -62,7 +57,7 @@ void SReadArray::starting()
 
 void SReadArray::updating()
 {
-    const auto array = this->getInOut<sight::data::Array>(s_ARRAY_INOUT);
+    const auto array = m_array.lock();
 
     // Initialize the array size and type.
     const int arraySize = 10;
