@@ -905,6 +905,18 @@ private:
         size_t index = 0
     );
 
+    /**
+     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
+     * @param key name of the data or the group to register.
+     * @param object pointer to the object to register.
+     * @param index optional index of the key in the case of a member of a group of keys.
+     */
+    void _setOutput(
+        std::string_view key,
+        data::Object::sptr object,
+        size_t index = 0
+    ) override;
+
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(
         std::string_view key,

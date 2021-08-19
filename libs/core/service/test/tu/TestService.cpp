@@ -110,14 +110,14 @@ void TestServiceWithData::updating()
     data::Object::csptr input = lock.get_shared();
 
     data::Object::sptr output = data::Object::copy(input);
-    this->setOutput("output", output);
+    m_output = output;
 }
 
 //------------------------------------------------------------------------------
 
 void TestServiceWithData::stopping()
 {
-    this->setOutput("output", nullptr);
+    m_output = nullptr;
 }
 
 //------------------------------------------------------------------------------

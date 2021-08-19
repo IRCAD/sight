@@ -713,7 +713,7 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
 
     for(const auto& [key, objectCfg] : srvConfig.m_objects)
     {
-        srv->setObjectId(key.first, objectCfg.m_uid);
+        srv->setObjectId(key.first, objectCfg.m_uid, key.second);
 
         data::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 

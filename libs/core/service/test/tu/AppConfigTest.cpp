@@ -1093,7 +1093,7 @@ void AppConfigTest::keyGroupTest()
     m_appConfigMgr = this->launchAppConfigMgr("keyGroupTest");
 
     // Service used to generate data
-    auto genDataSrv = service::ut::TestService::dynamicCast(core::tools::fwID::getObject("SGenerateData"));
+    auto genDataSrv = service::ut::STestOut::dynamicCast(core::tools::fwID::getObject("SGenerateData"));
     CPPUNIT_ASSERT(genDataSrv != nullptr);
 
     auto data1 = std::dynamic_pointer_cast<data::Object>(core::tools::fwID::getObject("data1Id"));
@@ -1253,6 +1253,38 @@ void AppConfigTest::keyGroupTest()
         sigIm5->asyncEmit();
         fwTestWaitMacro(srv2->getIsUpdated(), 2500);
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
+    }
+
+    // Test output data group
+    {
+        core::tools::Object::sptr gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+
+        auto data6 = data::Image::New();
+        genDataSrv->m_outGroup[0] = data6;
+
+        gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gnsrv3 == nullptr);
+
+        auto data7 = data::Image::New();
+        genDataSrv->m_outGroup[1] = data7;
+
+        WAIT_SERVICE_STARTED("TestService3Uid");
+        gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
+        auto srv3 = service::ut::STest1Input1InputGroup::dynamicCast(gnsrv3);
+        CPPUNIT_ASSERT(srv3 != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
+
+        CPPUNIT_ASSERT(data6 == srv3->getLockedInput<data::Object>("dataGroup", 0).get_shared());
+        CPPUNIT_ASSERT(data7 == srv3->getLockedInput<data::Object>("dataGroup", 1).get_shared());
+
+        genDataSrv->m_outGroup[0] = nullptr;
+    }
+    {
+        fwTestWaitMacro(false == core::tools::fwID::exist("TestService3Uid"));
+
+        auto gnsrv3 = core::tools::fwID::getObject("TestService3Uid");
+        CPPUNIT_ASSERT(gnsrv3 == nullptr);
     }
 }
 

@@ -251,11 +251,17 @@
             <object uid="data3Id" type="sight::data::Image" src="deferred" />
             <object uid="data4Id" type="sight::data::Image" />
             <object uid="data5Id" type="sight::data::Image" />
+            <object uid="data6Id" type="sight::data::Image" src="deferred" />
+            <object uid="data7Id" type="sight::data::Image" src="deferred" />
 
             <!-- Service used to generate data -->
             <service uid="SGenerateData" type="sight::service::ut::STestOut">
                 <out key="out2" uid="data2Id" />
                 <out key="out3" uid="data3Id" />
+                <out group="outGroup">
+                    <key uid="data6Id" />
+                    <key uid="data7Id" />
+                </out>
             </service>
 
             <service uid="TestService1Uid" type="sight::service::ut::STest1Input1InputGroup">
@@ -265,6 +271,7 @@
                     <key uid="data3Id" optional="true" />
                 </in>
             </service>
+
             <service uid="TestService2Uid" type="sight::service::ut::STest2InputGroups" >
                 <in group="dataGroup0">
                     <key uid="data1Id" />
@@ -277,6 +284,14 @@
                 </in>
             </service>
 
+            <service uid="TestService3Uid" type="sight::service::ut::STest1Input1InputGroup">
+                <in key="data1" uid="data1Id" autoConnect="true" />
+                <in group="dataGroup" autoConnect="true">
+                    <key uid="data6Id" />
+                    <key uid="data7Id" />
+                </in>
+            </service>
+
             <connect>
                 <signal>data1Id/modified</signal>
                 <slot>TestService2Uid/update</slot>
@@ -286,6 +301,7 @@
             <start uid="SGenerateData" />
             <start uid="TestService1Uid" />
             <start uid="TestService2Uid" />
+            <start uid="TestService3Uid" />
 
         </config>
     </extension>
