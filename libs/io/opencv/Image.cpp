@@ -88,10 +88,10 @@ const ::cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage)
+void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
 {
-    const auto prevImageType = _image->getType();
-    const auto prevImageComp = _image->getNumberOfComponents();
+    const auto prevImageType = _image.getType();
+    const auto prevImageComp = _image.getNumberOfComponents();
 
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;
@@ -123,21 +123,21 @@ void Image::copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage)
         imageSize[2] = _cvImage.size[0];
     }
 
-    const auto prevImageSize = _image->getSize2();
+    const auto prevImageSize = _image.getSize2();
     if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
         // The pixel format is not changed here, we have no way to know the format from a ::cv::Mat
-        _image->setSize2(imageSize);
-        _image->setType(imageType);
-        _image->setNumberOfComponents(imageComp);
-        _image->resize();
+        _image.setSize2(imageSize);
+        _image.setType(imageType);
+        _image.setNumberOfComponents(imageComp);
+        _image.resize();
     }
 
-    const auto dumpLock = _image->lock();
-    SIGHT_ASSERT("Empty image buffer", _image->getAllocatedSizeInBytes() > 0);
+    const auto dumpLock = _image.lock();
+    SIGHT_ASSERT("Empty image buffer", _image.getAllocatedSizeInBytes() > 0);
 
-    auto buffer = _image->begin<std::uint8_t>();
-    std::copy(_cvImage.data, _cvImage.data + _image->getSizeInBytes(), buffer);
+    auto buffer = _image.begin<std::uint8_t>();
+    std::copy(_cvImage.data, _cvImage.data + _image.getSizeInBytes(), buffer);
 }
 
 //------------------------------------------------------------------------------

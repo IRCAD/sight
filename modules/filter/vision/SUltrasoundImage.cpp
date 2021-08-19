@@ -45,10 +45,6 @@ static const std::string s_US_DEPTH            = "us.depth";
 static const std::string s_DEBUG_US_EXTRACTION = "debugUSExtraction";
 static const std::string s_ECHO_SHAPE          = "shape";
 
-const service::IService::KeyType s_ULTRASOUND_IMAGE_INPUT = "ultrasoundImage";
-
-const service::IService::KeyType s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";
-
 const core::com::Slots::SlotKeyType s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT    = "updateIntExtractionParameter";
 const core::com::Slots::SlotKeyType s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT = "updateDoubleExtractionParameter";
 const core::com::Slots::SlotKeyType s_RESET_ECHO_PLANE_SLOT                    = "resetEchoPlane";
@@ -126,8 +122,8 @@ void SUltrasoundImage::stopping()
 void SUltrasoundImage::updating()
 {
     // HACK: Const cast to avoid a useless copy, fix this by overloading the `moveToCv` function to
-    // take a `data::Image::cpstr` and output `const ::cv::Mat`.
-    const auto constImage        = this->getLockedInput<data::Image>(s_ULTRASOUND_IMAGE_INPUT);
+    // take a `data::Image::cpstr` and output `const cv::Mat`.
+    const auto constImage        = m_ultrasoudImage.lock();
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SIGHT_ASSERT("Missing input frame.", inputImage);
 
@@ -137,7 +133,7 @@ void SUltrasoundImage::updating()
         return;
     }
 
-    const ::cv::Mat src = io::opencv::Image::moveToCv(inputImage);
+    const cv::Mat src = io::opencv::Image::moveToCv(inputImage);
 
     m_probeSettings.matrixWidth = 1024;
     m_probeSettings.matrixDepth = 1024;
@@ -167,10 +163,10 @@ void SUltrasoundImage::updating()
         this->signal<IntegerChangedSignalType>(s_INTEGER_CHANGED_SIG)->asyncEmit(m_probeSettings.angle, "angle");
     }
 
-    ::cv::Mat srcGray;
-    ::cv::cvtColor(src, srcGray, ::cv::COLOR_RGB2GRAY);
+    cv::Mat srcGray;
+    cv::cvtColor(src, srcGray, cv::COLOR_RGB2GRAY);
 
-    auto outputImage = this->getLockedInOut<data::Image>(s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT);
+    auto outputImage = m_extractedUltrasoundBeam.lock();
     SIGHT_ASSERT("Missing output frame.", outputImage);
 
     const data::Image::Size outputSize = {{m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
@@ -186,8 +182,8 @@ void SUltrasoundImage::updating()
         outputImage->resize();
     }
 
-    ::cv::Mat remapResult = io::opencv::Image::moveToCv(outputImage.get_shared());
-    ::cv::remap(srcGray, remapResult, m_extractionMap, ::cv::Mat(), ::cv::INTER_LINEAR);
+    cv::Mat remapResult = io::opencv::Image::moveToCv(outputImage.get_shared());
+    cv::remap(srcGray, remapResult, m_extractionMap, cv::Mat(), cv::INTER_LINEAR);
 
     auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
@@ -195,10 +191,10 @@ void SUltrasoundImage::updating()
 
 // -----------------------------------------------------------------------------
 
-cv::Vec2d SUltrasoundImage::computeLineEquation(const ::cv::Vec2d& p1, const ::cv::Vec2d& p2) const
+cv::Vec2d SUltrasoundImage::computeLineEquation(const cv::Vec2d& p1, const cv::Vec2d& p2) const
 {
     double diff = p2[0] - p1[0];
-    ::cv::Vec2d eq;
+    cv::Vec2d eq;
     eq[0] = eq[1] = 0.0;
     if(std::abs(diff) > std::numeric_limits<double>::epsilon())
     {
@@ -227,7 +223,7 @@ cv::Vec2d SUltrasoundImage::computeLineEquation(const ::cv::Vec2d& p1, const ::c
 
 // -----------------------------------------------------------------------------
 
-::cv::Vec2d SUltrasoundImage::computeLinesIntersection(const ::cv::Vec2d& eql1, const ::cv::Vec2d& eql2) const
+cv::Vec2d SUltrasoundImage::computeLinesIntersection(const cv::Vec2d& eql1, const cv::Vec2d& eql2) const
 {
     // { y = a1x + b1
     // { y = a2x + b2
@@ -235,7 +231,7 @@ cv::Vec2d SUltrasoundImage::computeLineEquation(const ::cv::Vec2d& p1, const ::c
     // (a1 - a2)x = b2 - b1
 
     double diff = (eql1[0] - eql2[0]);
-    ::cv::Vec2d inter;
+    cv::Vec2d inter;
     inter[0] = inter[1] = 0.0;
 
     if(std::abs(diff) > std::numeric_limits<double>::epsilon())
@@ -249,7 +245,7 @@ cv::Vec2d SUltrasoundImage::computeLineEquation(const ::cv::Vec2d& p1, const ::c
 
 // -----------------------------------------------------------------------------
 
-std::vector< ::cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
+std::vector<cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
     const cv::Vec2d& eql,
     const cv::Vec2d& center,
     const double R
@@ -262,7 +258,7 @@ std::vector< ::cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
     // x^2 * (1 + a^2) + x * ( 2 * ( a * ( b - y_c ) - x_c ) ) + ( (b - y_c)^2 + x_c^2 - R^2 ) = 0
     // Which is in the form au Ax + By + C = 0, 2nd order polynomial
 
-    std::vector< ::cv::Vec2d> inter;
+    std::vector<cv::Vec2d> inter;
 
     double A = 1.0 + std::pow(eql[0], 2);
     double B = 2.0 * (eql[0] * (eql[1] - center[1]) - center[0]);
@@ -276,11 +272,11 @@ std::vector< ::cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
         double x, y;
         x = (-B - sqrt(delta)) / (2.0 * A);
         y = eql[0] * x + eql[1];
-        inter.push_back(::cv::Vec2d(x, y));
+        inter.push_back(cv::Vec2d(x, y));
 
         x = (-B + sqrt(delta)) / (2.0 * A);
         y = eql[0] * x + eql[1];
-        inter.push_back(::cv::Vec2d(x, y));
+        inter.push_back(cv::Vec2d(x, y));
     }
 
     return inter;
@@ -288,78 +284,78 @@ std::vector< ::cv::Vec2d> SUltrasoundImage::computeLineCircleIntersection(
 
 // -----------------------------------------------------------------------------
 
-void SUltrasoundImage::process(const ::cv::Mat& input)
+void SUltrasoundImage::process(const cv::Mat& input)
 {
     // Process the input image with OpenCV.
-    ::cv::Mat gray, thresh, lowThresh, canny, stats, centroids, labels, binaryConvex;
+    cv::Mat gray, thresh, lowThresh, canny, stats, centroids, labels, binaryConvex;
 
-    ::cv::cvtColor(input, gray, ::cv::COLOR_RGB2GRAY);
+    cv::cvtColor(input, gray, cv::COLOR_RGB2GRAY);
 
-    ::cv::threshold(gray, thresh, m_thresholdMin, 255, ::cv::THRESH_BINARY);
+    cv::threshold(gray, thresh, m_thresholdMin, 255, cv::THRESH_BINARY);
 
-    ::cv::connectedComponentsWithStats(thresh, labels, stats, centroids);
+    cv::connectedComponentsWithStats(thresh, labels, stats, centroids);
 
     int maxPixelsRow(0);
     // Get max label (except 0 which is the entire image) and associated position in the stats table
     // maxPixelsRow == stat table row position == label value in labels image
     for(int i = 1, maxPixelsValue = 0 ; i < stats.rows ; ++i)
     {
-        if(stats.at<int>(i, ::cv::CC_STAT_AREA) > maxPixelsValue)
+        if(stats.at<int>(i, cv::CC_STAT_AREA) > maxPixelsValue)
         {
-            maxPixelsValue = stats.at<int>(i, ::cv::CC_STAT_AREA);
+            maxPixelsValue = stats.at<int>(i, cv::CC_STAT_AREA);
             maxPixelsRow   = i;
         }
     }
 
     // Get object with label = maxPixelRow un labels image.
     // This step extract a binary image with the convex shape
-    ::cv::compare(labels, maxPixelsRow, binaryConvex, ::cv::CMP_EQ);
+    cv::compare(labels, maxPixelsRow, binaryConvex, cv::CMP_EQ);
 
     // 0, 1 to detect the edges of the US plane in the binary image
-    ::cv::Canny(binaryConvex, canny, 0, 1);
+    cv::Canny(binaryConvex, canny, 0, 1);
 
-    std::vector< ::cv::Vec4d> lines;
+    std::vector<cv::Vec4d> lines;
     // 1 is the resolution in pixels; PI/180 = 1 degree is the resolution in radians;
     // 80 is the minimum number of intersections to detect a line;
     // 30 is the minimum number of points that can form a line
     // 10 is the maximum gap between two points to be consider in the same line
     // for more information, check
     // http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/hough_lines/hough_lines.html
-    ::cv::HoughLinesP(canny, lines, 1, CV_PI / 180, 80, 30, 10);
+    cv::HoughLinesP(canny, lines, 1, CV_PI / 180, 80, 30, 10);
 
-    std::vector< ::cv::Vec2d> foundLines;
+    std::vector<cv::Vec2d> foundLines;
 
     // Compute a new threshold to do dilatation and erosion on it
-    ::cv::threshold(gray, lowThresh, 2, 255, ::cv::THRESH_BINARY);
+    cv::threshold(gray, lowThresh, 2, 255, cv::THRESH_BINARY);
     // Construct element type
-    int elementType = ::cv::MORPH_CROSS;
+    int elementType = cv::MORPH_CROSS;
     // Choose element size
     int elementDilateSize(3), elementErodeSize(5);
     // Construct dilatation and erosion elements
-    ::cv::Mat elementDilate = ::cv::getStructuringElement(
+    cv::Mat elementDilate = cv::getStructuringElement(
         elementType,
-        ::cv::Size(2 * elementDilateSize + 1, 2 * elementDilateSize + 1),
-        ::cv::Point(elementDilateSize, elementDilateSize)
+        cv::Size(2 * elementDilateSize + 1, 2 * elementDilateSize + 1),
+        cv::Point(elementDilateSize, elementDilateSize)
     );
-    ::cv::Mat elementErode = ::cv::getStructuringElement(
+    cv::Mat elementErode = cv::getStructuringElement(
         elementType,
-        ::cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
-        ::cv::Point(elementErodeSize, elementErodeSize)
+        cv::Size(2 * elementErodeSize + 1, 2 * elementErodeSize + 1),
+        cv::Point(elementErodeSize, elementErodeSize)
     );
     // Perform dilatation then erosion (closing)
-    ::cv::dilate(lowThresh, lowThresh, elementDilate);
-    ::cv::erode(lowThresh, lowThresh, elementErode);
+    cv::dilate(lowThresh, lowThresh, elementDilate);
+    cv::erode(lowThresh, lowThresh, elementErode);
 
     // Compute final lines
     for(size_t i = 0 ; i < lines.size() ; i++)
     {
-        ::cv::Vec4d l = lines.at(i);
+        cv::Vec4d l = lines.at(i);
 
-        ::cv::Vec2d pt1(l[0], l[1]);
-        ::cv::Vec2d pt2(l[2], l[3]);
+        cv::Vec2d pt1(l[0], l[1]);
+        cv::Vec2d pt2(l[2], l[3]);
 
         /* Compute the associated line equation */
-        const ::cv::Vec2d eq = computeLineEquation(pt1, pt2);
+        const cv::Vec2d eq = computeLineEquation(pt1, pt2);
 
         // Get greyscale value under the two line ends
         uchar pt1Value = lowThresh.at<uchar>(static_cast<int>(pt1[1]), static_cast<int>(pt1[0]));
@@ -371,20 +367,20 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
         {
             if(std::abs(eq[0]) > 0.5 && std::abs(eq[0]) < 10 && pt1Value < 255 && pt2Value < 255)
             {
-                ::cv::line(
+                cv::line(
                     input,
-                    ::cv::Point2d(pt1[0], pt1[1]),
-                    ::cv::Point2d(pt2[0], pt2[1]),
-                    ::cv::Scalar(0, 0, 255, 255),
+                    cv::Point2d(pt1[0], pt1[1]),
+                    cv::Point2d(pt2[0], pt2[1]),
+                    cv::Scalar(0, 0, 255, 255),
                     1,
                     4
                 );
 
-                ::cv::line(
+                cv::line(
                     lowThresh,
-                    ::cv::Point2d(pt1[0], pt1[1]),
-                    ::cv::Point2d(pt2[0], pt2[1]),
-                    ::cv::Scalar(0, 0, 255, 255),
+                    cv::Point2d(pt1[0], pt1[1]),
+                    cv::Point2d(pt2[0], pt2[1]),
+                    cv::Scalar(0, 0, 255, 255),
                     1,
                     4
                 );
@@ -396,11 +392,11 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
         {
             if(std::isinf(eq[1])) // Vertical lines
             {
-                ::cv::line(
+                cv::line(
                     input,
-                    ::cv::Point2d(pt1[0], pt1[1]),
-                    ::cv::Point2d(pt2[0], pt2[1]),
-                    ::cv::Scalar(0, 0, 255, 255),
+                    cv::Point2d(pt1[0], pt1[1]),
+                    cv::Point2d(pt2[0], pt2[1]),
+                    cv::Scalar(0, 0, 255, 255),
                     1,
                     4
                 );
@@ -409,11 +405,11 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
 
             if(std::isinf(eq[0])) // Horizontal lines
             {
-                ::cv::line(
+                cv::line(
                     input,
-                    ::cv::Point2d(pt1[0], pt1[1]),
-                    ::cv::Point2d(pt2[0], pt2[1]),
-                    ::cv::Scalar(255, 0, 0, 255),
+                    cv::Point2d(pt1[0], pt1[1]),
+                    cv::Point2d(pt2[0], pt2[1]),
+                    cv::Scalar(255, 0, 0, 255),
                     1,
                     4
                 );
@@ -424,7 +420,7 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
 
     if(m_debug)
     {
-        ::cv::imshow("Extracted image", input);
+        cv::imshow("Extracted image", input);
     }
 
     // If we did not find any intersection.
@@ -440,7 +436,7 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
     SIGHT_DEBUG("Number of lines found: " << foundLines.size());
     for(size_t i = 0 ; i < foundLines.size() ; i++)
     {
-        ::cv::Vec2f v = foundLines.at(i);
+        cv::Vec2f v = foundLines.at(i);
         SIGHT_DEBUG(" - " << v[0] << " * x + " << v[1]);
     }
 
@@ -471,14 +467,14 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
 // -----------------------------------------------------------------------------
 
 SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularShape(
-    std::vector< ::cv::Vec2d> lines
+    std::vector<cv::Vec2d> lines
 )
 {
     // We initialize a probeSettings structure with the previous parameters.
     ProbeSimulationSettings probeSettings = m_probeSettings;
 
     int nbHorizontalLines(0), nbVerticalLines(0);
-    ::cv::Vec2d meanCenter(0.0, 0.0);
+    cv::Vec2d meanCenter(0.0, 0.0);
     for(size_t i = 0 ; i < lines.size() ; i++)
     {
         if(std::isinf(lines.at(i)[0]))
@@ -500,7 +496,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
     int nbLeftLines(0), nbTopLines(0);
     for(size_t i = 0 ; i < lines.size() ; i++)
     {
-        ::cv::Vec2d currentLine = lines.at(i);
+        cv::Vec2d currentLine = lines.at(i);
 
         // It means that it's a vertical line
         if(std::isinf(currentLine[1]))
@@ -582,22 +578,22 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 // -----------------------------------------------------------------------------
 
 SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
-    ::cv::Mat input,
-    std::vector< ::cv::Vec2d> lines,
-    ::cv::Mat thresh,
-    ::cv::Mat binaryConvex
+    cv::Mat input,
+    std::vector<cv::Vec2d> lines,
+    cv::Mat thresh,
+    cv::Mat binaryConvex
 )
 {
     // We initialize a probeSettings structure with the previous parameters.
     ProbeSimulationSettings probeSettings = m_probeSettings;
 
     // Compute the intersection between the lines found.
-    ::cv::Vec2d ascLine;
-    ::cv::Vec2d descLine;
+    cv::Vec2d ascLine;
+    cv::Vec2d descLine;
 
     int discardCount = 0;
 
-    ::cv::Vec2d meanInter;
+    cv::Vec2d meanInter;
     int nbPoints = 0;
     meanInter[0] = meanInter[1] = 0.0;
 
@@ -612,8 +608,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
                 continue;
             }
 
-            const ::cv::Vec2d line1 = lines.at(i);
-            const ::cv::Vec2d line2 = lines.at(j);
+            const cv::Vec2d line1 = lines.at(i);
+            const cv::Vec2d line2 = lines.at(j);
             // The two lines must have a slope that is of different signs (one positive and one negative)
             // to be candidates for ultrasound center computation.
             if((line1[0] > 0 && line2[0] > 0) || (line1[0] < 0 && line2[0] < 0))
@@ -622,7 +618,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
                 continue;
             }
 
-            const ::cv::Vec2d inter = computeLinesIntersection(line1, line2);
+            const cv::Vec2d inter = computeLinesIntersection(line1, line2);
 
             meanInter[0] += inter[0];
             meanInter[1] += inter[1];
@@ -642,7 +638,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         }
     }
 
-    ::cv::Vec2d center;
+    cv::Vec2d center;
     center[0] = meanInter[0] / static_cast<double>(nbPoints);
     center[1] = meanInter[1] / static_cast<double>(nbPoints);
 
@@ -674,7 +670,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     }
 
     double innerRadius;
-    ::cv::Vec2d interInnerCircle = center;
+    cv::Vec2d interInnerCircle = center;
     interInnerCircle[1] = static_cast<double>(iIn);
 
     probeSettings.direction = {{0.0, 1.0, 0.0}};
@@ -686,7 +682,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
 
     // Compute the intersection between the lines and the inner circle
     // Compute the intersection with the descending line.
-    const std::vector< ::cv::Vec2d> lcInterDesc = computeLineCircleIntersection(descLine, center, innerRadius);
+    const std::vector<cv::Vec2d> lcInterDesc = computeLineCircleIntersection(descLine, center, innerRadius);
 
     if(lcInterDesc.size() != 2)
     {
@@ -710,7 +706,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     }
 
     // Compute the intersection with the ascending line.
-    const std::vector< ::cv::Vec2d> lcInterAsc = computeLineCircleIntersection(ascLine, center, innerRadius);
+    const std::vector<cv::Vec2d> lcInterAsc = computeLineCircleIntersection(ascLine, center, innerRadius);
 
     if(lcInterAsc.size() != 2)
     {
@@ -776,15 +772,15 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         }
     }
 
-    ::cv::Vec2d interOuterCircle = center;
+    cv::Vec2d interOuterCircle = center;
     interOuterCircle[1] = iOut;
 
     double outerRadius = std::abs(interOuterCircle[1] - center[1]);
 
     SIGHT_DEBUG("outerRadius=" << outerRadius);
 
-    const std::vector< ::cv::Vec2d> c1 = computeLineCircleIntersection(ascLine, center, outerRadius);
-    const std::vector< ::cv::Vec2d> c2 = computeLineCircleIntersection(descLine, center, outerRadius);
+    const std::vector<cv::Vec2d> c1 = computeLineCircleIntersection(ascLine, center, outerRadius);
+    const std::vector<cv::Vec2d> c2 = computeLineCircleIntersection(descLine, center, outerRadius);
     // compute start and end angles of the bottom arc of the US image
     int startAngle = static_cast<int>(computeArcAngle(center, c1));
     int endAngle   = static_cast<int>(computeArcAngle(center, c2));
@@ -793,11 +789,11 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     startAngle = 90 - std::abs(startAngle) + 30; // +30 degrees to avoid right text on the US image extraction
     endAngle   = (90 + std::abs(endAngle)) - 10; // -10 degrees to avoid left dot on the US image extraction
 
-    std::vector< ::cv::Point2d> arcPoints;
+    std::vector<cv::Point2d> arcPoints;
     // get points list along an arc equation to check if there is data != 0 under this arc
-    ::cv::ellipse2Poly(
-        ::cv::Point2d(center[0], center[1]),
-        ::cv::Size2d(
+    cv::ellipse2Poly(
+        cv::Point2d(center[0], center[1]),
+        cv::Size2d(
             outerRadius,
             outerRadius
         ),
@@ -813,9 +809,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     while(dataUnderArc)
     {
         outerRadius += 30; // 30: big step to find the bottom pixel of the US image != 0
-        ::cv::ellipse2Poly(
-            ::cv::Point2d(center[0], center[1]),
-            ::cv::Size2d(
+        cv::ellipse2Poly(
+            cv::Point2d(center[0], center[1]),
+            cv::Size2d(
                 outerRadius,
                 outerRadius
             ),
@@ -832,9 +828,9 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     while(!dataUnderArc)
     {
         outerRadius--;
-        ::cv::ellipse2Poly(
-            ::cv::Point2d(center[0], center[1]),
-            ::cv::Size2d(
+        cv::ellipse2Poly(
+            cv::Point2d(center[0], center[1]),
+            cv::Size2d(
                 outerRadius,
                 outerRadius
             ),
@@ -847,43 +843,43 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
         dataUnderArc = isDataUnderArc(thresh, arcPoints);
     }
 
-    ::cv::circle(
+    cv::circle(
         input,
-        ::cv::Point2d(center[0], center[1]),
+        cv::Point2d(center[0], center[1]),
         static_cast<int>(innerRadius),
-        ::cv::Scalar(
+        cv::Scalar(
             0,
             255,
             0,
             255
         ),
         1,
-        ::cv::LINE_AA
+        cv::LINE_AA
     );
 
-    ::cv::ellipse(
+    cv::ellipse(
         input,
-        ::cv::Point2d(center[0], center[1]),
-        ::cv::Size2d(
+        cv::Point2d(center[0], center[1]),
+        cv::Size2d(
             outerRadius,
             outerRadius
         ),
         0.0,
         startAngle,
         endAngle,
-        ::cv::Scalar(255, 255, 0, 255),
+        cv::Scalar(255, 255, 0, 255),
         1,
-        ::cv::LINE_AA
+        cv::LINE_AA
     );
 
     if(m_debug)
     {
-        ::cv::imshow("Extracted image", input);
+        cv::imshow("Extracted image", input);
     }
 
     // Compute the intersection between the lines and the outer circle.
     // Compute the intersection with the descending line.
-    const std::vector< ::cv::Vec2d> lcExterDesc = computeLineCircleIntersection(descLine, center, outerRadius);
+    const std::vector<cv::Vec2d> lcExterDesc = computeLineCircleIntersection(descLine, center, outerRadius);
 
     if(lcExterDesc.size() != 2)
     {
@@ -907,7 +903,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(
     }
 
     // Compute the intersection with the ascending line.
-    const std::vector< ::cv::Vec2d> lcExterAsc = computeLineCircleIntersection(ascLine, center, outerRadius);
+    const std::vector<cv::Vec2d> lcExterAsc = computeLineCircleIntersection(ascLine, center, outerRadius);
 
     if(lcExterAsc.size() != 2)
     {
@@ -994,9 +990,9 @@ void SUltrasoundImage::resetEchoPlane()
 
 // -----------------------------------------------------------------------------
 
-double SUltrasoundImage::computeArcAngle(const ::cv::Vec2d& center, const std::vector< ::cv::Vec2d>& arcPoint) const
+double SUltrasoundImage::computeArcAngle(const cv::Vec2d& center, const std::vector<cv::Vec2d>& arcPoint) const
 {
-    ::cv::Vec2d arcPointMinY = arcPoint[1];
+    cv::Vec2d arcPointMinY = arcPoint[1];
     if(arcPoint[0][1] > arcPoint[1][1])
     {
         arcPointMinY[0] = arcPoint[0][0];
@@ -1010,7 +1006,7 @@ double SUltrasoundImage::computeArcAngle(const ::cv::Vec2d& center, const std::v
 
 // -----------------------------------------------------------------------------
 
-bool SUltrasoundImage::isDataUnderArc(const ::cv::Mat& input, const std::vector< ::cv::Point2d>& points) const
+bool SUltrasoundImage::isDataUnderArc(const cv::Mat& input, const std::vector<cv::Point2d>& points) const
 {
     for(size_t i = 0 ; i < points.size() ; ++i)
     {
@@ -1056,9 +1052,9 @@ void SUltrasoundImage::changeEchoShape(bool echoShape, std::string key)
 
 void SUltrasoundImage::updateBeamExtractionMap()
 {
-    const ::cv::Size mapSize(static_cast<int>(m_probeSettings.matrixWidth),
-                             static_cast<int>(m_probeSettings.matrixDepth));
-    m_extractionMap = ::cv::Mat(mapSize, CV_32FC2);
+    const cv::Size mapSize(static_cast<int>(m_probeSettings.matrixWidth),
+                           static_cast<int>(m_probeSettings.matrixDepth));
+    m_extractionMap = cv::Mat(mapSize, CV_32FC2);
 
     const float halfAngle  = static_cast<float>(m_probeSettings.angle) * 0.5f;
     const float angleBegin = ::glm::radians(90.f - halfAngle);
@@ -1098,7 +1094,7 @@ void SUltrasoundImage::updateBeamExtractionMap()
                                            + static_cast<float>(m_probeSettings.deltaDepth);
             const fwVec3d posReal = currentCenter + distanceToCenter * currentDirection;
 
-            m_extractionMap.at< ::cv::Vec2f>(j, i) = ::cv::Vec2f(
+            m_extractionMap.at<cv::Vec2f>(j, i) = cv::Vec2f(
                 static_cast<float>(posReal[0]),
                 static_cast<float>(posReal[1])
             );

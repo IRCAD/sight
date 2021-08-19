@@ -157,7 +157,7 @@ void SCalibrationInfoReader::updating()
                 if(chessboardPts)
                 {
                     data::Image::sptr calibImg = data::Image::New();
-                    sight::io::opencv::Image::copyFromCv(calibImg, img);
+                    sight::io::opencv::Image::copyFromCv(*calibImg.get(), img);
 
                     calibImg->setSpacing2({{1., 1., 1.}});
                     calibImg->setOrigin2({{0., 0., 0.}});

@@ -64,7 +64,7 @@ public:
      * @brief Copy an OpenCV image into our internal image data.
      * @warning The image's pixelFormat is not changed, openCV image does not give this information.
      */
-    IO_OPENCV_API static void copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage);
+    IO_OPENCV_API static void copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage);
 
     /**
      * @brief Copy an image data into an OpenCV image.

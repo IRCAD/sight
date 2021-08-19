@@ -25,9 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <io/opencv/Image.hpp>
 
 #include <service/macros.hpp>
@@ -37,11 +34,6 @@ namespace sight::module::filter::vision
 
 static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
-
-static const service::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
-static const service::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
-static const service::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
-static const service::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
 // ------------------------------------------------------------------------------
 
@@ -92,42 +84,37 @@ void SDepthImageMasking::updating()
 {
     if(!m_cvDepthMaskImage.empty())
     {
-        const data::Image::csptr videoImage = this->getInput<data::Image>(s_VIDEO_IMAGE_KEY);
-        const data::Image::csptr depthImage = this->getInput<data::Image>(s_DEPTH_IMAGE_KEY);
+        const auto videoImage = m_videoImage.lock();
+        SIGHT_ASSERT("No '" << s_VIDEO_IMAGE_KEY << "' found.", videoImage);
+        const auto depthImage = m_depthImage.lock();
+        SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
 
-        if(videoImage && depthImage)
-        {
-            data::mt::ObjectReadLock lockVideoImage(videoImage);
-            data::mt::ObjectReadLock lockDepthImage(depthImage);
+        const ::cv::Mat cvVideoImage = io::opencv::Image::moveToCv(videoImage.get_shared());
+        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
 
-            const ::cv::Mat cvVideoImage = io::opencv::Image::moveToCv(videoImage);
-            const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage);
+        ::cv::Mat cvMaskedDepth;
+        cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
 
-            ::cv::Mat cvMaskedDepth;
-            cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
+        ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
 
-            ::cv::Mat cvForegroundImage = (cvMaskedDepth < (m_cvDepthMaskImage - m_threshold));
+        ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
+        ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
+        ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
 
-            ::cv::Mat morphElem = ::cv::getStructuringElement(::cv::MORPH_ELLIPSE, ::cv::Size(7, 7));
-            ::cv::dilate(cvForegroundImage, cvForegroundImage, morphElem);
-            ::cv::erode(cvForegroundImage, cvForegroundImage, morphElem);
+        ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
+        cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
 
-            ::cv::Mat cvMaskedVideo = ::cv::Mat::zeros(cvVideoImage.rows, cvVideoImage.cols, cvVideoImage.type());
-            cvVideoImage.copyTo(cvMaskedVideo, cvForegroundImage);
+        auto foregroundImage = m_foregroundImage.lock();
+        SIGHT_ASSERT("No '" << s_FOREGROUND_IMAGE_KEY << "' found.", foregroundImage);
 
-            data::Image::sptr foregroundImage = this->getInOut<data::Image>(s_FOREGROUND_IMAGE_KEY);
+        io::opencv::Image::copyFromCv(*foregroundImage, cvMaskedVideo);
 
-            data::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
+        const auto sig = foregroundImage->signal<data::Image::BufferModifiedSignalType>(
+            data::Image::s_BUFFER_MODIFIED_SIG
+        );
+        sig->asyncEmit();
 
-            io::opencv::Image::copyFromCv(foregroundImage, cvMaskedVideo);
-
-            const auto sig = foregroundImage->signal<data::Image::BufferModifiedSignalType>(
-                data::Image::s_BUFFER_MODIFIED_SIG
-            );
-            sig->asyncEmit();
-
-            m_sigComputed->asyncEmit();
-        }
+        m_sigComputed->asyncEmit();
     }
 }
 
@@ -135,16 +122,16 @@ void SDepthImageMasking::updating()
 
 void SDepthImageMasking::setBackground()
 {
-    const data::Image::csptr maskImage  = this->getInput<data::Image>(s_MASK_IMAGE_KEY);
-    const data::Image::csptr depthImage = this->getInput<data::Image>(s_DEPTH_IMAGE_KEY);
+    const auto maskImage = m_maskImage.lock();
+    SIGHT_ASSERT("No '" << s_MASK_IMAGE_KEY << "' found.", maskImage);
+    const auto depthImage = m_depthImage.lock();
+    SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
+
     if(maskImage && depthImage && (maskImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE)
        && (depthImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE))
     {
-        data::mt::ObjectReadLock lockMaskImage(maskImage);
-        data::mt::ObjectReadLock lockDepthImage(depthImage);
-
-        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage);
-        m_cvMaskImage = io::opencv::Image::moveToCv(maskImage);
+        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
+        m_cvMaskImage = io::opencv::Image::moveToCv(maskImage.get_shared());
         if(m_cvMaskImage.channels() == 4)
         {
             ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);

@@ -24,6 +24,8 @@
 
 #include "modules/filter/vision/config.hpp"
 
+#include <data/FrameTL.hpp>
+
 #include <service/IController.hpp>
 
 #include <opencv2/core.hpp>
@@ -126,6 +128,10 @@ private:
 
     /// Stores last processed frame timestamp.
     core::HiResClock::HiResClockType m_lastTimestamp;
+
+    static constexpr std::string_view s_FRAME_TIMELINE_INPUT = "timeline";
+
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_timeline {this, s_FRAME_TIMELINE_INPUT};
 };
 
 } //namespace sight::module::filter::vision

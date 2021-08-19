@@ -22,8 +22,6 @@
 
 #include "SDistortion.hpp"
 
-#include <data/Camera.hpp>
-
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/Image.hpp>
 
@@ -34,8 +32,6 @@
 #include <core/Profiling.hpp>
 
 #include <data/Array.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -50,11 +46,6 @@ const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeSt
 
 // Private slot
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
-
-const service::IService::KeyType s_CAMERA_INPUT = "camera";
-const service::IService::KeyType s_IMAGE_INPUT  = "input";
-const service::IService::KeyType s_IMAGE_INOUT  = "output";
-const service::IService::KeyType s_MAP_INOUT    = "map";
 
 //------------------------------------------------------------------------------
 SDistortion::SDistortion() noexcept :
@@ -119,10 +110,11 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
-    data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
+    const auto inputImage = m_image.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
+
     if(inputImage && m_calibrationMismatch)
     {
-        const data::mt::ObjectReadLock inputLock(inputImage);
         const auto inputSize = inputImage->getSize2();
         if(inputSize != m_prevImageSize)
         {
@@ -134,8 +126,9 @@ void SDistortion::updating()
 
     if(m_isEnabled)
     {
-        data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-        SIGHT_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
+        const auto camera = m_camera.lock();
+        SIGHT_ASSERT("No '" << s_CAMERA_INPUT << "' found.", camera);
+
         if(camera->getIsCalibrated())
         {
             this->remap();
@@ -148,14 +141,11 @@ void SDistortion::updating()
     else
     {
         // Simple copy of the input image
-        data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
-        data::Image::sptr outputImage = this->getInOut<data::Image>(s_IMAGE_INOUT);
+        auto outputImage = m_output.lock();
+        SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", outputImage);
 
         if(inputImage && outputImage)
         {
-            data::mt::ObjectReadLock inputLock(inputImage);
-            data::mt::ObjectWriteLock outputLock(outputImage);
-
             // Since we shallow copy the input image when no remap is done,
             // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
@@ -167,7 +157,7 @@ void SDistortion::updating()
 
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
-            outputImage->shallowCopy(inputImage);
+            outputImage->shallowCopy(inputImage.get_shared());
 
             if(reallocated)
             {
@@ -194,8 +184,10 @@ void SDistortion::updating()
 
 void SDistortion::remap()
 {
-    data::Image::csptr inputImage = this->getInput<data::Image>(s_IMAGE_INPUT);
-    data::Image::sptr outputImage = this->getInOut<data::Image>(s_IMAGE_INOUT);
+    const auto inputImage = m_image.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
+    auto outputImage = m_output.lock();
+    SIGHT_ASSERT("No '" << s_IMAGE_INOUT << "' found.", outputImage);
 
     if(!inputImage || !outputImage || m_calibrationMismatch)
     {
@@ -208,8 +200,6 @@ void SDistortion::remap()
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
-    data::mt::ObjectReadLock inputLock(inputImage);
-
     const auto inputSize = inputImage->getSize2();
 
     if(inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
@@ -218,8 +208,9 @@ void SDistortion::remap()
         return;
     }
 
-    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("No '" << s_CAMERA_INPUT << "' found.", camera);
+
     if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
     {
         std::stringstream msg;
@@ -249,7 +240,6 @@ void SDistortion::remap()
     }
     if(prevSize != inputSize || realloc)
     {
-        data::mt::ObjectWriteLock outputLock(outputImage);
         data::Image::Size size = {inputSize[0], inputSize[1], 0};
 
         // Since we may have shared the pointer on the input image, we can't use data::Image::allocate
@@ -275,17 +265,15 @@ void SDistortion::remap()
 
     const auto newSize = outputImage->getSize2();
 
-    // Get ::cv::Mat from data::Image
-    auto inImage  = std::const_pointer_cast<data::Image>(inputImage);
-    ::cv::Mat img = io::opencv::Image::moveToCv(inImage);
+    // Get cv::Mat from data::Image
+    cv::Mat img = io::opencv::Image::moveToCv(inputImage.get_shared());
 
-    ::cv::Mat undistortedImage;
+    cv::Mat undistortedImage;
 
 #ifndef OPENCV_CUDA_SUPPORT
-    data::mt::ObjectWriteLock outputLock(outputImage);
-    if(outputImage != inputImage)
+    if(outputImage.get_shared() != inputImage.get_shared())
     {
-        undistortedImage = io::opencv::Image::moveToCv(outputImage);
+        undistortedImage = io::opencv::Image::moveToCv(outputImage.get_shared());
     }
 #endif
 
@@ -293,20 +281,19 @@ void SDistortion::remap()
 #ifdef OPENCV_CUDA_SUPPORT
         FW_PROFILE_AVG("cv::cuda::remap", 5);
 
-        ::cv::cuda::GpuMat image_gpu(img);
-        ::cv::cuda::GpuMat image_gpu_rect(undistortedImage);
-        ::cv::cuda::remap(image_gpu, image_gpu_rect, m_mapx, m_mapy, ::cv::INTER_LINEAR, ::cv::BORDER_CONSTANT);
-        undistortedImage = ::cv::Mat(image_gpu_rect);
+        cv::cuda::GpuMat image_gpu(img);
+        cv::cuda::GpuMat image_gpu_rect(undistortedImage);
+        cv::cuda::remap(image_gpu, image_gpu_rect, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        undistortedImage = cv::Mat(image_gpu_rect);
 
-        data::mt::ObjectWriteLock outputLock(outputImage);
-        io::opencv::Image::copyFromCv(outputImage, undistortedImage);
+        io::opencv::Image::copyFromCv(outputImage.get_shared(), undistortedImage);
 #else
         FW_PROFILE_AVG("cv::remap", 5);
 
-        ::cv::remap(img, undistortedImage, m_mapx, m_mapy, ::cv::INTER_LINEAR, ::cv::BORDER_CONSTANT);
+        cv::remap(img, undistortedImage, m_mapx, m_mapy, cv::INTER_LINEAR, cv::BORDER_CONSTANT);
 
         const auto outDumpLock = outputImage->lock();
-        if(outputImage == inputImage)
+        if(outputImage.get_shared() == inputImage.get_shared())
         {
             // Copy new image.
             // According to OpenCv's doc, if img and undistortedImage have
@@ -355,30 +342,30 @@ void SDistortion::calibrate()
     m_calibrationMismatch = false;
     m_prevImageSize       = {0, 0, 0};
 
-    auto camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_FATAL_IF("Object 'camera' is not found.", !camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("Object 'camera' is not found.", !camera);
 
-    ::cv::Mat intrinsics;
-    ::cv::Mat distCoefs;
-    ::cv::Size size;
+    cv::Mat intrinsics;
+    cv::Mat distCoefs;
+    cv::Size size;
 
-    std::tie(intrinsics, size, distCoefs) = io::opencv::Camera::copyToCv(camera);
+    std::tie(intrinsics, size, distCoefs) = io::opencv::Camera::copyToCv(camera.get_shared());
 
-    std::vector< ::cv::Mat> xyMaps(2);
+    std::vector<cv::Mat> xyMaps(2);
 
     if(m_distort)
     {
-        ::cv::Mat pixel_locations_src      = ::cv::Mat(size, CV_32FC2);
-        ::cv::Mat fractional_locations_dst = ::cv::Mat(size, CV_32FC2);
+        cv::Mat pixel_locations_src      = cv::Mat(size, CV_32FC2);
+        cv::Mat fractional_locations_dst = cv::Mat(size, CV_32FC2);
 
         for(int i = 0 ; i < size.height ; i++)
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                pixel_locations_src.at< ::cv::Point2f>(i, j) = ::cv::Point2f(j, i);
+                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(j, i);
             }
 
-            ::cv::undistortPoints(
+            cv::undistortPoints(
                 pixel_locations_src.row(i),
                 fractional_locations_dst.row(i),
                 intrinsics,
@@ -386,7 +373,7 @@ void SDistortion::calibrate()
             );
         }
 
-        ::cv::Mat pixelLocations = ::cv::Mat(size, CV_32FC2);
+        cv::Mat pixelLocations = cv::Mat(size, CV_32FC2);
 
         // Output from undistortPoints is normalized point coordinates
         const float fx = static_cast<float>(intrinsics.at<double>(0, 0));
@@ -398,20 +385,20 @@ void SDistortion::calibrate()
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                const float x = fractional_locations_dst.at< ::cv::Point2f>(i, j).x * fx + cx;
-                const float y = fractional_locations_dst.at< ::cv::Point2f>(i, j).y * fy + cy;
-                pixelLocations.at< ::cv::Point2f>(i, j) = ::cv::Point2f(x, y);
+                const float x = fractional_locations_dst.at<cv::Point2f>(i, j).x * fx + cx;
+                const float y = fractional_locations_dst.at<cv::Point2f>(i, j).y * fy + cy;
+                pixelLocations.at<cv::Point2f>(i, j) = cv::Point2f(x, y);
             }
         }
 
-        ::cv::split(pixelLocations, xyMaps);
+        cv::split(pixelLocations, xyMaps);
     }
     else
     {
-        ::cv::initUndistortRectifyMap(
+        cv::initUndistortRectifyMap(
             intrinsics,
             distCoefs,
-            ::cv::Mat(),
+            cv::Mat(),
             intrinsics,
             size,
             CV_32FC1,
@@ -420,14 +407,14 @@ void SDistortion::calibrate()
         );
     }
 
-    data::Image::sptr map = this->getInOut<data::Image>(s_MAP_INOUT);
+    auto map = m_map.lock();
+
     if(map)
     {
-        ::cv::Mat cvMap;
-        ::cv::merge(xyMaps, cvMap);
+        cv::Mat cvMap;
+        cv::merge(xyMaps, cvMap);
 
-        data::mt::ObjectWriteLock outputLock(map);
-        io::opencv::Image::copyFromCv(map, cvMap);
+        io::opencv::Image::copyFromCv(*map, cvMap);
 
         auto sigModified = map->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         sigModified->asyncEmit();
@@ -435,8 +422,8 @@ void SDistortion::calibrate()
     else
     {
 #if OPENCV_CUDA_SUPPORT
-        m_mapx = ::cv::cuda::GpuMat(xyMaps[0]);
-        m_mapy = ::cv::cuda::GpuMat(xyMaps[1]);
+        m_mapx = cv::cuda::GpuMat(xyMaps[0]);
+        m_mapy = cv::cuda::GpuMat(xyMaps[1]);
 #else
         m_mapx = xyMaps[0];
         m_mapy = xyMaps[1];

@@ -24,6 +24,9 @@
 
 #include "modules/filter/vision/config.hpp"
 
+#include <data/CameraSeries.hpp>
+#include <data/Image.hpp>
+
 #include <service/IFilter.hpp>
 
 namespace sight::module::filter::vision
@@ -81,6 +84,16 @@ protected:
 
     /// Apply the scale on the depth map
     MODULE_FILTER_VISION_API void updating() override;
+
+private:
+
+    static constexpr std::string_view s_CAMERA_SERIES_INPUT = "cameraSeries";
+    static constexpr std::string_view s_ORIGIN_FRAME_INPUT  = "originDepth";
+    static constexpr std::string_view s_SCALED_FRAME_INOUT  = "scaledDepth";
+
+    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_originDepth {this, s_ORIGIN_FRAME_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_scaledDepth {this, s_SCALED_FRAME_INOUT};
 };
 
 } // namespace sight::module::filter::vision

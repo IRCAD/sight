@@ -26,10 +26,6 @@
 #include <core/com/Slots.hxx>
 #include <core/Profiling.hpp>
 
-#include <data/CameraSeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <filter/vision/Projection.hpp>
 
 #include <geometry/data/Matrix4.hpp>
@@ -79,18 +75,21 @@ void SPointCloudFromDepthMap::configuring()
 
 void SPointCloudFromDepthMap::updating()
 {
-    auto calibration = this->getInput<data::CameraSeries>("calibration");
-    auto depthMap    = this->getInput<data::Image>("depthMap");
-    auto pointCloud  = this->getInOut<data::Mesh>("pointCloud");
+    const auto calibration = m_calibration.lock();
+    const auto depthMap    = m_depthMap.lock();
+    const auto pointCloud  = m_pointCloud.lock();
+
     SIGHT_ASSERT("Missing 'pointCloud' inout", pointCloud);
     SIGHT_ASSERT("Missing 'calibration' input", calibration);
     SIGHT_ASSERT("Missing 'depthMap' input", depthMap);
 
-    auto depthCalibration = calibration->getCamera(0);
+    const auto depthCalibration = calibration->getCamera(0);
 
-    auto rgbMap = this->getInput<data::Image>("rgbMap");
+    const auto rgbMap = m_rgbMap.lock();
+
     data::Camera::csptr colorCalibration;
     data::Matrix4::csptr extrinsicMatrix;
+
     if(rgbMap)
     {
         colorCalibration = calibration->getCamera(1);
@@ -106,7 +105,6 @@ void SPointCloudFromDepthMap::updating()
         const size_t height   = size[1];
         const size_t nbPoints = width * height;
 
-        data::mt::ObjectWriteLock meshLock(pointCloud);
         // allocate mesh
         data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
         if(rgbMap)
@@ -138,10 +136,10 @@ void SPointCloudFromDepthMap::updating()
         this->depthMapToPointCloudRGB(
             depthCalibration,
             colorCalibration,
-            depthMap,
-            rgbMap,
+            depthMap.get_shared(),
+            rgbMap.get_shared(),
             extrinsicMatrix,
-            pointCloud
+            pointCloud.get_shared()
         );
 
         auto sig =
@@ -155,7 +153,7 @@ void SPointCloudFromDepthMap::updating()
     }
     else
     {
-        this->depthMapToPointCloud(depthCalibration, depthMap, pointCloud);
+        this->depthMapToPointCloud(depthCalibration, depthMap.get_shared(), pointCloud.get_shared());
         auto sig =
             pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
@@ -217,8 +215,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const size_t width  = size[0];
     const size_t height = size[1];
 
-    data::mt::ObjectReadLock depthMapLock(depthMap);
-
     const auto depthDumpLock = depthMap->lock();
 
     auto depthItr = depthMap->begin<std::uint16_t>();
@@ -227,8 +223,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                  cy = depthCamera->getCy(),
                  fx = depthCamera->getFx(),
                  fy = depthCamera->getFy();
-
-    data::mt::ObjectWriteLock meshLock(pointCloud);
 
     const auto meshDumpLock = pointCloud->lock();
 
@@ -308,12 +302,8 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    data::mt::ObjectReadLock depthMapLock(depthMap);
-
     const auto depthDumpLock = depthMap->lock();
     auto depthItr            = depthMap->begin<std::uint16_t>();
-
-    data::mt::ObjectReadLock rgbLock(colorMap);
 
     const auto rgbDumpLock = colorMap->lock();
     const auto rgbBegin    = colorMap->begin<data::iterator::RGBA>();
@@ -328,16 +318,14 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                  rgbFx = colorCamera->getFx(),
                  rgbFy = colorCamera->getFy();
 
-    data::mt::ObjectWriteLock meshLock(pointCloud);
-
     const auto meshDumpLock = pointCloud->lock();
 
     auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
 
     const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
-    size_t nbRealPoints     = 0;
-    auto glmExtrinsicMatrix = geometry::data::getMatrixFromTF3D(*extrinsic);
+    unsigned int nbRealPoints = 0;
+    auto glmExtrinsicMatrix   = geometry::data::getMatrixFromTF3D(*extrinsic);
 
     const auto imageSize = height * width;
     for(size_t y = 0 ; y != height ; ++y)
