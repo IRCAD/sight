@@ -79,8 +79,8 @@ void SMatrixSynchronizer::stopping()
 
 void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
-    data::Matrix4::sptr matrix3D   = this->getInOut<data::Matrix4>("matrix");
-    data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>("TL");
+    const auto matrix3D = m_matrix.lock();
+    const auto matrixTL = m_matrixTL.lock();
 
     if(timestamp > m_lastTimestamp)
     {

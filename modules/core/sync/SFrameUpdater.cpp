@@ -85,9 +85,6 @@ service::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
 void SFrameUpdater::starting()
 {
     m_imageInitialized = false;
-
-    m_frameTL = this->getInput<data::FrameTL>("frameTL");
-    m_image   = this->getInOut<data::Image>("frame");
 }
 
 //-----------------------------------------------------------------------------
@@ -114,24 +111,25 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
 {
     if(timestamp > m_lastTimestamp)
     {
+        const auto frameTL = m_frameTL.lock();
+        const auto image   = m_image.lock();
+
         data::Image::Size size;
-        size[0] = m_frameTL->getWidth();
-        size[1] = m_frameTL->getHeight();
+        size[0] = frameTL->getWidth();
+        size[1] = frameTL->getHeight();
         size[2] = 0;
 
         // Check if image dimensions has changed
-        if(size != m_image->getSize2())
+        if(size != image->getSize2())
         {
             m_imageInitialized = false;
         }
 
         if(!m_imageInitialized)
         {
-            data::mt::ObjectWriteLock destLock(m_image);
-
             data::Image::PixelFormat format;
             // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or RGBA
-            switch(m_frameTL->getNumberOfComponents())
+            switch(frameTL->getNumberOfComponents())
             {
                 case 1:
                     format = data::Image::GRAY_SCALE;
@@ -150,18 +148,17 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                     return;
             }
 
-            m_image->resize(size, m_frameTL->getType(), format);
+            image->resize(size, frameTL->getType(), format);
             const data::Image::Origin origin = {0., 0., 0.};
-            m_image->setOrigin2(origin);
+            image->setOrigin2(origin);
             const data::Image::Spacing spacing = {1., 1., 0.};
-            m_image->setSpacing2(spacing);
-            m_image->setWindowWidth(1);
-            m_image->setWindowCenter(0);
+            image->setSpacing2(spacing);
+            image->setWindowWidth(1);
+            image->setWindowCenter(0);
             m_imageInitialized = true;
 
             //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
-            auto sig =
-                m_image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
 
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -178,12 +175,11 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
 
 void SFrameUpdater::updateImage()
 {
-    //Lock image & copy buffer
-    data::mt::ObjectWriteLock destLock(m_image);
-    const auto dumpLock = m_image->lock();
+    const auto frameTL = m_frameTL.lock();
+    const auto image   = m_image.lock();
 
-    const core::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
-    CSPTR(data::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
+    const core::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
+    CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
     SIGHT_WARN_IF("Buffer not found with timestamp " << timestamp, !buffer);
     if(buffer)
@@ -191,13 +187,11 @@ void SFrameUpdater::updateImage()
         m_lastTimestamp = timestamp;
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
-        auto iter                     = m_image->begin<std::uint8_t>();
+        auto iter                     = image->begin<std::uint8_t>();
 
         std::copy(frameBuff, frameBuff + buffer->getSize(), iter);
 
-        //Notify
-        auto sig =
-            m_image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+        auto sig = image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }
