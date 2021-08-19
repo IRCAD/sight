@@ -97,10 +97,11 @@ void SAddPoint::addPoint(const data::Point::sptr _point)
 
 void SAddPoint::removePoint(const data::Point::csptr _point)
 {
-    auto pointList = m_pointList.lock().get_shared();
+    auto pointList = m_pointList.lock();
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
-    const data::Point::sptr pointRes = geometry::data::PointList::removeClosestPoint(pointList, _point, 10);
+    const data::Point::sptr pointRes =
+        geometry::data::PointList::removeClosestPoint(pointList.get_shared(), _point, 10);
 
     if(pointRes != nullptr)
     {

@@ -78,7 +78,7 @@ void SPushSelection::updating()
 
     data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    const auto selectedSeries      = m_selectedSeries.lock();
+    const auto selectedSeries               = m_selectedSeries.lock();
 
     // Save added series in this container in order to display information on the push
     std::vector<data::Series::sptr> addedSeries;

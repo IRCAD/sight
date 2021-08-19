@@ -110,11 +110,11 @@ void SExport::stopping()
 void SExport::updating()
 {
     auto seriesDB = m_seriesDB.lock();
-    auto series   = m_series.lock().get_shared();
+    auto series   = m_series.lock();
 
     std::string description = series->getDescription();
 
-    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
+    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series.get_shared());
     if(activitySeries)
     {
         activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
@@ -150,7 +150,7 @@ void SExport::updating()
         series->setDescription(description);
 
         data::helper::SeriesDB seriesDBHelper(*seriesDB);
-        seriesDBHelper.add(series);
+        seriesDBHelper.add(series.get_shared());
         seriesDBHelper.notify();
         this->setIsExecutable(false);
     }

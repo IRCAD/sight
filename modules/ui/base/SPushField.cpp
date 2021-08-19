@@ -86,7 +86,7 @@ void SPushField::stopping()
 void SPushField::updating()
 {
     const auto objectSrc = m_source.lock();
-    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    SIGHT_ASSERT(s_SOURCE_KEY << " doesn't exist or is not a composite", objectSrc);
 
     data::Object::sptr obj = objectSrc->getField(m_field);
 
