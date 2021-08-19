@@ -22,9 +22,6 @@
 
 #include "modules/viz/scene2d/adaptor/SHistogramCursor.hpp"
 
-#include <data/Histogram.hpp>
-#include <data/Point.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
@@ -38,10 +35,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-static const service::IService::KeyType s_POINT_INPUT     = "point";
-static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
-static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 
 SHistogramCursor::SHistogramCursor() noexcept :
     m_color(Qt::red),
@@ -119,7 +112,8 @@ void SHistogramCursor::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram = m_histogram.lock();
+
     data::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue             = histogram->getMinValue();
     const float histogramBinsWidth            = histogram->getBinsWidth();
@@ -153,7 +147,7 @@ void SHistogramCursor::updating()
         diameterH *= ratio.first;
         diameterV *= ratio.second;
 
-        data::Point::csptr point = this->getInput<data::Point>(s_POINT_INPUT);
+        const auto point = m_point.lock();
 
         const double x = point->getCoord()[0] - diameterH / 2;
         const double y = point->getCoord()[1] - diameterV / 2;

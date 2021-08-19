@@ -449,6 +449,16 @@ private:
 
     /// Stores for each TF id, its unclamped alpha color value map.
     std::map<core::tools::fwID::IDType, data::TransferFunction::TFDataType> m_unclampedTFData;
+
+    static constexpr std::string_view s_VIEWPORT_INPUT   = "viewport";
+    static constexpr std::string_view s_CURRENT_TF_INPUT = "currentTF";
+
+    static constexpr std::string_view s_TF_POOL_INOUT = "tfPool";
+
+    static constexpr std::string_view s_TF_OUTPUT = "tf";
+
+    ::sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_CURRENT_TF_INPUT};
+    ::sight::data::ptr<sight::data::Composite, sight::data::Access::inout> m_tfPool {this, s_TF_POOL_INOUT};
 };
 
 } // namespace adaptor

@@ -24,6 +24,9 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
+#include <data/Histogram.hpp>
+#include <data/Point.hpp>
+
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
@@ -106,6 +109,12 @@ protected:
 
     /// The layer.
     QGraphicsItemGroup* m_layer;
+
+    static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
+    static constexpr std::string_view s_VIEWPORT_INPUT  = "viewport";
+
+    sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
+    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
 };
 
 } // namespace adaptor

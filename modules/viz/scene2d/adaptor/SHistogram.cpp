@@ -22,9 +22,6 @@
 
 #include "modules/viz/scene2d/adaptor/SHistogram.hpp"
 
-#include <data/Histogram.hpp>
-#include <data/Point.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
@@ -38,9 +35,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-static const service::IService::KeyType s_POINT_INOUT     = "point";
-static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float SHistogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
 
@@ -90,7 +84,7 @@ void SHistogram::updating()
 {
     this->stopping();
 
-    data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram                      = m_histogram.lock();
     data::Histogram::fwHistogramValues values = histogram->getValues();
 
     m_layer = new QGraphicsItemGroup();
@@ -148,7 +142,7 @@ void SHistogram::updating()
 
 void SHistogram::updateCurrentPoint(sight::viz::scene2d::data::Event& _event, const data::Point::sptr& point)
 {
-    data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram                      = m_histogram.lock();
     data::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue             = histogram->getMinValue();
     const float histogramBinsWidth            = histogram->getBinsWidth();
@@ -211,10 +205,10 @@ void SHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
         updatePointedPos = true;
     }
 
-    data::Point::sptr point = this->getInOut<data::Point>(s_POINT_INOUT);
+    const auto point = m_point.lock();
     if(point && updatePointedPos)
     {
-        this->updateCurrentPoint(_event, point);
+        this->updateCurrentPoint(_event, point.get_shared());
     }
 }
 

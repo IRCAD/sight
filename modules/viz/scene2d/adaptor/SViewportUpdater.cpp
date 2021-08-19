@@ -24,7 +24,6 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
 namespace sight::module::viz::scene2d
@@ -32,8 +31,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SViewportUpdater::SViewportUpdater() noexcept
 {
@@ -69,9 +66,8 @@ void SViewportUpdater::stopping()
 
 void SViewportUpdater::updating()
 {
-    sight::viz::scene2d::data::Viewport::sptr sceneViewport   = this->getScene2DRender()->getViewport();
-    sight::viz::scene2d::data::Viewport::csptr viewportObject =
-        this->getInput<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INPUT);
+    sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+    auto viewportObject                                     = m_viewport.lock();
 
     Point2DType pairCoord = this->mapAdaptorToScene(
         Point2DType(viewportObject->getX(), viewportObject->getY()),

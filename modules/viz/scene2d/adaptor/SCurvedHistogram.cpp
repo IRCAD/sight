@@ -23,9 +23,6 @@
 #include "modules/viz/scene2d/adaptor/SCurvedHistogram.hpp"
 
 #include <data/Float.hpp>
-#include <data/Histogram.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/Point.hpp>
 
 #include <service/macros.hpp>
 
@@ -43,9 +40,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-static const service::IService::KeyType s_POINT_INOUT     = "point";
-static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float SCurvedHistogram::SCALE            = 1.1f; // vertical scaling factor applied at each mouse scroll
 const float SCurvedHistogram::NB_POINTS_BEZIER = 100.0f;
@@ -255,9 +249,7 @@ void SCurvedHistogram::updating()
 {
     this->stopping();
 
-    const data::Histogram::csptr histogram = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
-
-    data::mt::ObjectReadLock lock(histogram);
+    const auto histogram = m_histogram.lock();
 
     m_layer = new QGraphicsItemGroup();
 
@@ -265,7 +257,7 @@ void SCurvedHistogram::updating()
 
     if(!histogram->getValues().empty())
     {
-        Points controlPoints = this->getControlPoints(histogram);
+        Points controlPoints = this->getControlPoints(histogram.get_shared());
         Points bSplinePoints = this->getBSplinePoints(controlPoints);
 
         this->computePointToPathLengthMapFromBSplinePoints(bSplinePoints);
@@ -289,7 +281,7 @@ void SCurvedHistogram::updating()
 
 void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints)
 {
-    const data::Histogram::csptr histogram = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram = m_histogram.lock();
 
     const bool useBorderColor = (m_borderColor.color() != Qt::transparent);
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
@@ -462,7 +454,7 @@ void SCurvedHistogram::updateCurrentPoint(
     const data::Point::sptr& point
 )
 {
-    const data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram                            = m_histogram.lock();
     const data::Histogram::fwHistogramValues values = histogram->getValues();
 
     const float histogramMinValue  = histogram->getMinValue();
@@ -550,10 +542,11 @@ void SCurvedHistogram::processInteraction(sight::viz::scene2d::data::Event& _eve
         updatePointedPos = true;
     }
 
-    data::Point::sptr point = this->getInOut<data::Point>(s_POINT_INOUT);
+    auto point = m_point.lock();
+
     if(point && updatePointedPos)
     {
-        this->updateCurrentPoint(_event, point);
+        this->updateCurrentPoint(_event, point.get_shared());
     }
 }
 
@@ -562,7 +555,7 @@ void SCurvedHistogram::processInteraction(sight::viz::scene2d::data::Event& _eve
 service::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push("histogram", data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

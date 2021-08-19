@@ -35,8 +35,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
-
 SScaleValues::SScaleValues() noexcept :
     m_min(0.f),
     m_max(0.f),
@@ -233,8 +231,7 @@ void SScaleValues::updating()
 
 void SScaleValues::rescaleValues()
 {
-    sight::viz::scene2d::data::Viewport::csptr viewport =
-        this->getInput<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INPUT);
+    auto viewport = m_viewport.lock();
 
     const double viewportX      = viewport->getX();
     const double viewportWidth  = viewport->getWidth();

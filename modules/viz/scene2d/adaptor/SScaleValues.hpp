@@ -147,6 +147,9 @@ private:
 
     /// Size of the font used for rendering grid values.
     float m_fontSize;
+
+    static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
+    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

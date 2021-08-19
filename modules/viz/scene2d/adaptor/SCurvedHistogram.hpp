@@ -164,6 +164,11 @@ private:
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;
+
+    static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
+
+    sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
+    sight::data::ptr<sight::data::Point, sight::data::Access::inout> m_point {this, "point"};
 };
 
 } // namespace adaptor
