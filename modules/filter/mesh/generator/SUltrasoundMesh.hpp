@@ -28,7 +28,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <service/ISimulator.hpp>
+#include <service/IGenerator.hpp>
 
 #include <boost/multi_array.hpp>
 
@@ -76,7 +76,7 @@ namespace generator
  * - \b angle (optional, default=60) : angle of the US beam.
  * - \b deltaDepth (optional, default=50) : delta depth of the US plane.
  */
-class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::ISimulator
+class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::IGenerator
 {
 public:
 

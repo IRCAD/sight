@@ -22,24 +22,23 @@
 
 #pragma once
 
-#include "service/config.hpp"
-#include <service/IService.hpp>
+#include "ui/base/config.hpp"
+
+#include <core/com/Slots.hpp>
 
 #include <array>
 #include <cstdint>
 
-namespace sight::service
+namespace sight::ui::base
 {
 
 /**
- * @brief   This interface defines a basic slots to receive parameter values from signals.
+ * @brief   This interface defines default slots to receive parameter values from signals.
  *
- * It is designed to be used in conjunction with module::ui::base::editor::SParameters, to help the user to receive
+ * It is designed to be used in conjunction with sight::module::ui::base::editor::SParameters, to help receiving
  * parameters. Instead of redefining all slots, thus you can simply inherit from this interface and override the virtual
  * function you need. Then connect the module::ui::base::editor::SParameters signal(s) with the slot(s) of this
- * interface in
- * the
- * configuration.
+ * interface in the* configuration.
 
  * @section Slots Slots
  * - \b setBoolParameter(bool, std::string) : Receive a boolean parameter along with the identifier.
@@ -53,56 +52,55 @@ namespace sight::service
  * - \b setInt3Parameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
  * - \b setEnumParameter(std::string, std::string) : Receive an enum parameter along with the identifier.
  */
-class SERVICE_CLASS_API IParametersService : public service::IService
+class UI_BASE_CLASS_API IHasParameters
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(IParametersService, service::IService);
-
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
-    SERVICE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
 
 protected:
 
-    /// Constructor. Create all slots.
-    SERVICE_API IParametersService();
+    /// Constructor. Create all default slots.
+    /// @param _slots map of slots of the child class. For services, just pass the protected variable IService::m_slots.
+    UI_BASE_API IHasParameters(sight::core::com::Slots& _slots);
 
     /// Destructor. Do nothing.
-    SERVICE_API virtual ~IParametersService();
+    UI_BASE_API virtual ~IHasParameters();
 
     /// Slot: This method is used to set an boolean parameter.
-    SERVICE_API virtual void setBoolParameter(bool val, std::string key);
+    UI_BASE_API virtual void setBoolParameter(bool val, std::string key);
 
     /// Slot: This method is used to set a color parameter.
-    SERVICE_API virtual void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
+    UI_BASE_API virtual void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
 
     /// Slot: This method is used to set a double parameter.
-    SERVICE_API virtual void setDoubleParameter(double val, std::string key);
+    UI_BASE_API virtual void setDoubleParameter(double val, std::string key);
 
     /// Slot: This method is used to set two double parameters.
-    SERVICE_API virtual void setDouble2Parameter(double val0, double val1, std::string key);
+    UI_BASE_API virtual void setDouble2Parameter(double val0, double val1, std::string key);
 
     /// Slot: This method is used to set three double parameters.
-    SERVICE_API virtual void setDouble3Parameter(double val0, double val1, double val2, std::string key);
+    UI_BASE_API virtual void setDouble3Parameter(double val0, double val1, double val2, std::string key);
 
     /// Slot: This method is used to set an integer parameter.
-    SERVICE_API virtual void setIntParameter(int val, std::string key);
+    UI_BASE_API virtual void setIntParameter(int val, std::string key);
 
     /// Slot: This method is used to set two int parameters.
-    SERVICE_API virtual void setInt2Parameter(int val0, int val1, std::string key);
+    UI_BASE_API virtual void setInt2Parameter(int val0, int val1, std::string key);
 
     /// Slot: This method is used to set three int parameters.
-    SERVICE_API virtual void setInt3Parameter(int val0, int val1, int val2, std::string key);
+    UI_BASE_API virtual void setInt3Parameter(int val0, int val1, int val2, std::string key);
 
     /// Slot: This method is used to set an enum parameter.
-    SERVICE_API virtual void setEnumParameter(std::string val, std::string key);
+    UI_BASE_API virtual void setEnumParameter(std::string val, std::string key);
 };
 
 }

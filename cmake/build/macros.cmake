@@ -762,7 +762,7 @@ function(getPchTarget TARGET TARGET_DIR TYPE PCH OBJECT_LIBRARY)
     else()
         # Default pch
         if( TYPE STREQUAL "MODULE" )
-            set(${TARGET_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
+            set(${TARGET_NAME}_PCH_TARGET pchService PARENT_SCOPE)
         else()
             set(${TARGET_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
         endif()

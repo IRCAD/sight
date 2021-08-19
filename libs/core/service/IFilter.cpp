@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,23 +20,30 @@
  *
  ***********************************************************************/
 
-#include "service/ICalibration.hpp"
+#include "service/IFilter.hpp"
+
+#include <core/com/Signal.hxx>
 
 namespace sight::service
 {
 
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-ICalibration::ICalibration() noexcept
+const core::com::Signals::SignalKeyType IFilter::s_COMPUTED_SIG = "computed";
+
+//-----------------------------------------------------------------------------
+
+IFilter::IFilter()
+{
+    m_sigComputed = newSignal<ComputedSignalType>(s_COMPUTED_SIG);
+}
+
+//-----------------------------------------------------------------------------
+
+IFilter::~IFilter()
 {
 }
 
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-ICalibration::~ICalibration() noexcept
-{
 }
-
-// ----------------------------------------------------------------------------
-
-} // namespace sight::module::geometry::vision

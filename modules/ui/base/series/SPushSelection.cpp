@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "SSeriesDBMerger.hpp"
+#include "SPushSelection.hpp"
 
 #include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
@@ -29,49 +29,49 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::module::ui::dicom
+namespace sight::module::ui::base::series
 {
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::SSeriesDBMerger() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-SSeriesDBMerger::~SSeriesDBMerger() noexcept
+SPushSelection::SPushSelection() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::info(std::ostream& _sstream)
-{
-    _sstream << "SSeriesDBMerger::info";
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesDBMerger::starting()
+SPushSelection::~SPushSelection() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::stopping()
+void SPushSelection::info(std::ostream& _sstream)
+{
+    _sstream << "SPushSelection::info";
+}
+
+//------------------------------------------------------------------------------
+
+void SPushSelection::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::configuring()
+void SPushSelection::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::updating()
+void SPushSelection::configuring()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SPushSelection::updating()
 {
     auto destinationSeriesDB = this->getInOut<data::SeriesDB>("seriesDB");
     SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
@@ -138,4 +138,4 @@ void SSeriesDBMerger::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module::ui::dicom
+} // namespace sight::module::ui::base::series

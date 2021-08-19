@@ -28,7 +28,7 @@
 
 #include <filter/vision/Masker.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -37,7 +37,7 @@ namespace sight::module::filter::vision
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
  * image using an Expectation Maximization algorithm.
  *
- * @see service::IOperator
+ * @see service::IFilter
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
@@ -82,12 +82,12 @@ namespace sight::module::filter::vision
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service::IOperator
+class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IFilter);
 
     /// Initializes the slots and member variables.
     MODULE_FILTER_VISION_API SColourImageMasking() noexcept;

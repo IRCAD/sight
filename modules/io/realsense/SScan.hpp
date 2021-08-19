@@ -27,7 +27,7 @@
 #include <data/FrameTL.hpp>
 #include <data/Mesh.hpp>
 
-#include <service/IRGBDGrabber.hpp>
+#include <io/base/service/IRGBDGrabber.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -180,7 +180,7 @@ class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScan, ::sight::service::IRGBDGrabber);
+    SIGHT_DECLARE_SERVICE(SScan, io::base::service::IRGBDGrabber);
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal<void (double)> DistanceComputedSignalType;

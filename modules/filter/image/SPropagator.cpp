@@ -53,6 +53,7 @@ static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
 //-----------------------------------------------------------------------------
 
 SPropagator::SPropagator() :
+    IHasParameters(m_slots),
     m_value(1),
     m_overwrite(true),
     m_drawing(false)

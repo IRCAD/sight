@@ -29,7 +29,7 @@
 #include <geometry/data/IntrasecTypes.hpp>
 #include <geometry/data/VectorFunctions.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -76,12 +76,12 @@ namespace sight::module::filter::vision
  * - \b debug (optional, default=false) : Debug mode.
  * - \b convex (optional, default=true) : Convex shape of extracted image.
  */
-class MODULE_FILTER_VISION_CLASS_API SUltrasoundImage final : public service::IOperator
+class MODULE_FILTER_VISION_CLASS_API SUltrasoundImage final : public service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SUltrasoundImage, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SUltrasoundImage, service::IFilter);
 
     typedef core::com::Signal<void (int, std::string)> IntegerChangedSignalType;
 

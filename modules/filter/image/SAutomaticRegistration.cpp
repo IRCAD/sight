@@ -48,7 +48,8 @@ static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
-SAutomaticRegistration::SAutomaticRegistration()
+SAutomaticRegistration::SAutomaticRegistration() :
+    IHasParameters(m_slots)
 {
 }
 

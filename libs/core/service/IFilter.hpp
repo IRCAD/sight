@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2017-2021 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,40 @@
  *
  ***********************************************************************/
 
-#include "service/IOperator.hpp"
+#pragma once
 
-#include <core/com/Signal.hxx>
+#include "service/config.hpp"
+#include "service/IService.hpp"
+
+#include <core/com/Signals.hpp>
 
 namespace sight::service
 {
 
-//-----------------------------------------------------------------------------
+/**
+ * @brief   This interface defines operator service API.
 
-const core::com::Signals::SignalKeyType IOperator::s_COMPUTED_SIG = "computed";
-
-//-----------------------------------------------------------------------------
-
-IOperator::IOperator()
+ * @section Signals Signals
+ * - \b computed() : Emitted when something was computed.
+ */
+class SERVICE_CLASS_API IFilter : public service::IService
 {
-    m_sigComputed = newSignal<ComputedSignalType>(s_COMPUTED_SIG);
-}
+public:
 
-//-----------------------------------------------------------------------------
+    SIGHT_DECLARE_SERVICE(IFilter, service::IService);
 
-IOperator::~IOperator()
-{
-}
+    SERVICE_API static const core::com::Signals::SignalKeyType s_COMPUTED_SIG;
+    typedef core::com::Signal<void ()> ComputedSignalType;
 
-//-----------------------------------------------------------------------------
+protected:
+
+    /// IFilter constructor.
+    SERVICE_API IFilter();
+
+    /// IFilter destructor.
+    SERVICE_API virtual ~IFilter();
+
+    ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
+};
 
 }

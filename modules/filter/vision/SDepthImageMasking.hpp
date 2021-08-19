@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::module::filter::vision
  * @brief   Service that learns a background depth image in a mask to perform a depth difference and output a foregroud
  * image.
  *
- * @see service::IOperator
+ * @see service::IFilter
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to learn the background depth image.
@@ -66,11 +66,11 @@ namespace sight::module::filter::vision
  * - \b foregroundImage [sight::data::Image] : Image containing the foreground pixels and background pixels are
  * transparent.
  */
-class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::IOperator
+class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::IFilter);
 
     /// Initializes slots
     MODULE_FILTER_VISION_CLASS_API SDepthImageMasking() noexcept;

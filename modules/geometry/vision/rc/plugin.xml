@@ -16,7 +16,7 @@
          <desc>Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::IOperator</type>
+         <type>sight::service::IFilter</type>
          <service>sight::module::geometry::vision::SDistortion</service>
          <object key="camera">sight::data::Camera</object>
          <object key="input">sight::data::Image</object>
@@ -34,14 +34,14 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::ICalibration</type>
+         <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::SOpenCVExtrinsic</service>
          <object>sight::data::CameraSeries</object>
          <desc>SOpenCVExtrinsic service that computes extrinsic calibration with openCV.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::ICalibration</type>
+         <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::SOpenCVIntrinsic</service>
          <object>sight::data::Camera</object>
          <desc>SOpenCVIntrinsic service that computes intrinsic calibration with openCV.</desc>
@@ -78,7 +78,7 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::ICalibration</type>
+         <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::charuco::SOpenCVExtrinsic</service>
          <object key="calibrationInfo1">sight::data::CalibrationInfo</object>
          <object key="calibrationInfo2">sight::data::CalibrationInfo</object>
@@ -87,7 +87,7 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::service::ICalibration</type>
+         <type>sight::geometry::vision::ICalibration</type>
          <service>sight::module::geometry::vision::charuco::SOpenCVIntrinsic</service>
          <object key="calibrationInfo">sight::data::CalibrationInfo</object>
          <object key="camera">sight::data::Camera</object>

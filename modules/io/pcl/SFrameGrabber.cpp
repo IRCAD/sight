@@ -44,6 +44,8 @@ namespace sight::module::io::pcl
 
 static const service::IService::KeyType s_FRAMETL = "frameTL";
 
+using sight::io::base::service::IGrabber;
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -178,9 +180,7 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        auto sig = this->signal<service::IGrabber::CameraStoppedSignalType>(
-            service::IGrabber::s_CAMERA_STOPPED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,40 +20,23 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "ICalibration.hpp"
 
-#include "service/config.hpp"
-#include <service/IGrabber.hpp>
-
-namespace sight::service
+namespace sight::geometry::vision
 {
 
-/**
- * @brief   This interface defines the RGBD grabber service API.
- *          Must be implemented for services that grabs RGBD camera frames.
- */
-class SERVICE_CLASS_API IRGBDGrabber : public service::IGrabber
+// ----------------------------------------------------------------------------
+
+ICalibration::ICalibration() noexcept
 {
-public:
+}
 
-    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber);
+// ----------------------------------------------------------------------------
 
-    /**
-     * @name Data API
-     * @{
-     */
-    SERVICE_API static const service::IService::KeyType s_DEPTHTL_INOUT;
-    /** @} */
+ICalibration::~ICalibration() noexcept
+{
+}
 
-    /// Constructor.
-    SERVICE_API IRGBDGrabber() noexcept;
+// ----------------------------------------------------------------------------
 
-    /// Destructor.
-    SERVICE_API virtual ~IRGBDGrabber() noexcept;
-
-protected:
-
-    data::ptr<data::FrameTL, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
-};
-
-} //namespace sight::service
+} // namespace sight::module::geometry::vision

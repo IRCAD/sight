@@ -54,6 +54,8 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
+using sight::io::base::service::IGrabber;
+
 //-----------------------------------------------------------------------------
 
 SGrabberProxy::SGrabberProxy() noexcept
@@ -171,13 +173,13 @@ void SGrabberProxy::startCamera()
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
             auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
-                "::sight::data::FrameTL",
-                "::sight::service::IRGBDGrabber"
+                "sight::data::FrameTL",
+                "sight::io::base::service::IRGBDGrabber"
             );
 
             auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
-                "::sight::data::FrameTL",
-                "::sight::service::IGrabber"
+                "sight::data::FrameTL",
+                "sight::io::base::IGrabber"
             );
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
@@ -413,7 +415,7 @@ void SGrabberProxy::startCamera()
             size_t srvCount = 0;
             for(auto& srv : m_services)
             {
-                srv = this->registerService<service::IGrabber>(m_grabberImpl);
+                srv = this->registerService<IGrabber>(m_grabberImpl);
 
                 auto cameraInput = m_camera.lock();
                 auto camera      = data::Camera::dynamicConstCast(cameraInput.get_shared());
@@ -478,36 +480,11 @@ void SGrabberProxy::startCamera()
                 srv->setWorker(m_associatedWorker);
                 srv->start();
 
-                m_connections.connect(
-                    srv,
-                    service::IGrabber::s_POSITION_MODIFIED_SIG,
-                    this->getSptr(),
-                    s_MODIFY_POSITION
-                );
-                m_connections.connect(
-                    srv,
-                    service::IGrabber::s_DURATION_MODIFIED_SIG,
-                    this->getSptr(),
-                    s_MODIFY_DURATION
-                );
-                m_connections.connect(
-                    srv,
-                    service::IGrabber::s_CAMERA_STARTED_SIG,
-                    this->getSptr(),
-                    s_FWD_START_CAMERA_SLOT
-                );
-                m_connections.connect(
-                    srv,
-                    service::IGrabber::s_CAMERA_STOPPED_SIG,
-                    this->getSptr(),
-                    s_FWD_STOP_CAMERA_SLOT
-                );
-                m_connections.connect(
-                    srv,
-                    service::IGrabber::s_FRAME_PRESENTED_SIG,
-                    this->getSptr(),
-                    s_FWD_PRESENT_FRAME_SLOT
-                );
+                m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), s_MODIFY_POSITION);
+                m_connections.connect(srv, IGrabber::s_DURATION_MODIFIED_SIG, this->getSptr(), s_MODIFY_DURATION);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), s_FWD_START_CAMERA_SLOT);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
+                m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
 
                 ++srvCount;
             }

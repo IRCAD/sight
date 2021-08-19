@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -48,12 +48,12 @@ namespace sight::module::filter::image
  * @subsection Output Output
  * - \b outputImage [sight::data::Image]: result of operation 'AND' between input image and mask
  */
-class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IFilter);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SBitwiseAnd();

@@ -1,4 +1,4 @@
-sight_add_target( filter_image TYPE LIBRARY PCH pchServicesOmp )
+sight_add_target( filter_image TYPE LIBRARY PCH pchServiceOmp )
 
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)
 target_link_libraries(filter_image PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT)

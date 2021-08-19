@@ -24,7 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <service/ICalibration.hpp>
+#include <geometry/vision/ICalibration.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -58,14 +58,14 @@ namespace sight::module::geometry::vision::charuco
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVIntrinsic : public service::ICalibration
+class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVIntrinsic : public sight::geometry::vision::ICalibration
 {
 public:
 
     /// Double changed signal type
     typedef core::com::Signal<void (double)> ErrorComputedSignalType;
 
-    SIGHT_DECLARE_SERVICE(SOpenCVIntrinsic, sight::service::ICalibration);
+    SIGHT_DECLARE_SERVICE(SOpenCVIntrinsic, sight::geometry::vision::ICalibration);
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SOpenCVIntrinsic() noexcept;

@@ -27,7 +27,9 @@
 #include <filter/image/AutomaticRegistration.hpp>
 #include <filter/image/Metric.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
+
+#include <ui/base/IHasParameters.hpp>
 
 namespace sight::module::filter::image
 {
@@ -74,11 +76,12 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::IFilter,
+                                                             public ui::base::IHasParameters
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IOperator);
+    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IFilter);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SAutomaticRegistration();

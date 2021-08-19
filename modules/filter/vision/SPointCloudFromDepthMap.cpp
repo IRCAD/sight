@@ -46,7 +46,7 @@ const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE =
 //------------------------------------------------------------------------------
 
 SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept :
-    service::IOperator()
+    service::IFilter()
 {
     newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }

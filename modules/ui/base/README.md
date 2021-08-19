@@ -62,6 +62,8 @@ and are, therefore, contained in sub-folders according to their specificity.
 * **SExport**: allows to export the series specified in config to the SeriesDB.
   
 * **SExportWithSeriesDB**: allows to export the current series using a temporary seriesDB.
+
+* **SPushSelection**: action that pushes selected series into a `sight::data::SeriesDB`.
   
 ### video
 * **SImagePicker**: listens to a picking interaction and fills the clicked point list.

@@ -27,7 +27,7 @@
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IOperator.hpp>
+#include <service/IFilter.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -60,12 +60,12 @@ namespace sight::module::geometry::base
  * - \b append (optional, default=false): does the service append points in the pointlist on update (true) or clear it
  * (false)?
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight::service::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight::service::IFilter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPointListFromMatrices, sight::service::IOperator);
+    SIGHT_DECLARE_SERVICE(SPointListFromMatrices, sight::service::IFilter);
 
     /// Initializes a member variable
     MODULE_GEOMETRY_BASE_API SPointListFromMatrices();

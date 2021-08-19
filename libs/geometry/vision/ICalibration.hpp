@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,25 +20,29 @@
  *
  ***********************************************************************/
 
-#include "service/IRGBDGrabber.hpp"
+#pragma once
 
-namespace sight::service
+#include "geometry/vision/config.hpp"
+
+#include <service/IService.hpp>
+
+namespace sight::geometry::vision
 {
 
-const service::IService::KeyType IRGBDGrabber::s_DEPTHTL_INOUT = "depthTL";
-
-// ----------------------------------------------------------------------------
-
-IRGBDGrabber::IRGBDGrabber() noexcept
+/**
+ * @brief   ICalibration is an interface API for calibration services.
+ */
+class GEOMETRY_VISION_CLASS_API ICalibration : public service::IService
 {
-}
+public:
 
-// ----------------------------------------------------------------------------
+    SIGHT_DECLARE_SERVICE(ICalibration, service::IService);
 
-IRGBDGrabber::~IRGBDGrabber() noexcept
-{
-}
+    /// Constructor.
+    GEOMETRY_VISION_API ICalibration() noexcept;
 
-// ----------------------------------------------------------------------------
+    /// Destructor.
+    GEOMETRY_VISION_API virtual ~ICalibration() noexcept;
+};
 
-} // namespace sight::service
+} // namespace sight::geometry::vision

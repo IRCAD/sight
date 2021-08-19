@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,31 +20,23 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "IRGBDGrabber.hpp"
 
-#include "service/config.hpp"
-#include <service/IService.hpp>
-
-namespace sight::service
+namespace sight::io::base::service
 {
 
-/**
- * @brief   This interface defines simulator service API.
- *          Must be implemented for services that simulate.
- */
-class SERVICE_CLASS_API ISimulator : public service::IService
+// ----------------------------------------------------------------------------
+
+IRGBDGrabber::IRGBDGrabber() noexcept
 {
-public:
-
-    SIGHT_DECLARE_SERVICE(ISimulator, service::IService);
-
-protected:
-
-    /// ISimulator constructor. Do nothing.
-    SERVICE_API ISimulator();
-
-    /// ISimulator destructor. Do nothing.
-    SERVICE_API virtual ~ISimulator();
-};
-
 }
+
+// ----------------------------------------------------------------------------
+
+IRGBDGrabber::~IRGBDGrabber() noexcept
+{
+}
+
+// ----------------------------------------------------------------------------
+
+} // namespace sight::io::base::service

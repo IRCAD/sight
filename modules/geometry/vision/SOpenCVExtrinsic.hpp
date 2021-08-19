@@ -24,7 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <service/ICalibration.hpp>
+#include <geometry/vision/ICalibration.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -59,11 +59,11 @@ namespace sight::module::geometry::vision
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public service::ICalibration
+class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public sight::geometry::vision::ICalibration
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, service::ICalibration);
+    SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, sight::geometry::vision::ICalibration);
 
     /// Double changed signal type
     typedef core::com::Signal<void (double)> ErrorComputedSignalType;

@@ -22,26 +22,39 @@
 
 #pragma once
 
-#include "service/config.hpp"
-#include <service/IService.hpp>
+#include "io/base/config.hpp"
 
-namespace sight::service
+#include <io/base/service/IGrabber.hpp>
+
+namespace sight::io::base::service
 {
 
 /**
- * @brief   ICalibration is an interface API for calibration services.
+ * @brief   This interface defines the RGBD grabber service API.
+ *          Must be implemented for services that grabs RGBD camera frames.
  */
-class SERVICE_CLASS_API ICalibration : public service::IService
+class IO_BASE_CLASS_API IRGBDGrabber : public io::base::service::IGrabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(ICalibration, service::IService);
+    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber);
+
+    /**
+     * @name Data API
+     * @{
+     */
+    static constexpr std::string_view s_DEPTHTL_INOUT = "depthTL";
+    /** @} */
 
     /// Constructor.
-    SERVICE_API ICalibration() noexcept;
+    IO_BASE_API IRGBDGrabber() noexcept;
 
     /// Destructor.
-    SERVICE_API virtual ~ICalibration() noexcept;
+    IO_BASE_API virtual ~IRGBDGrabber() noexcept;
+
+protected:
+
+    data::ptr<data::FrameTL, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
 };
 
-} // namespace sight::service
+} //namespace sight::io::base::service
