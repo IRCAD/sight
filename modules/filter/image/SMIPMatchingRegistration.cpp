@@ -25,12 +25,6 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/Image.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectReadToWriteLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
 
@@ -77,31 +71,24 @@ void SMIPMatchingRegistration::configuring()
 
 void SMIPMatchingRegistration::updating()
 {
-    auto fixed     = this->getInput<data::Image>("fixed");
-    auto moving    = this->getInput<data::Image>("moving");
-    auto transform = this->getInOut<data::Matrix4>("transform");
+    const auto fixed  = m_target.lock();
+    const auto moving = m_source.lock();
+    auto transform    = m_transform.lock();
+
     SIGHT_ASSERT("Missing required input 'fixed'", fixed);
     SIGHT_ASSERT("Missing required input 'moving'", moving);
     SIGHT_ASSERT("Missing required inout 'transform'", transform);
 
     sight::filter::image::RegistrationDispatch::Parameters params;
-    params.fixed     = fixed;
-    params.moving    = moving;
-    params.transform = transform;
+    params.fixed     = fixed.get_shared();
+    params.moving    = moving.get_shared();
+    params.transform = transform.get_shared();
 
-    {
-        data::mt::ObjectReadLock movingLock(moving);
-        data::mt::ObjectReadLock fixedLock(fixed);
-        data::mt::ObjectWriteLock transformLock(transform);
-        core::tools::Type type = moving->getType();
-        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch>
-        ::invoke(type, params);
-    }
+    core::tools::Type type = moving->getType();
+    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch>
+    ::invoke(type, params);
 
-    transform->signal<data::Matrix4::ModifiedSignalType>(
-        data::Matrix4::s_MODIFIED_SIG
-    )
-    ->asyncEmit();
+    transform->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG)->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

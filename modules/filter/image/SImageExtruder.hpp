@@ -24,6 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 
@@ -107,6 +108,14 @@ private:
 
     /// Extrudes one mesh from the image.
     void extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const;
+
+    static constexpr std::string_view s_MESHES_INPUT = "meshes";
+    static constexpr std::string_view s_IMAGE_INPUT  = "image";
+    static constexpr std::string_view s_IMAGE_INOUT  = "extrudedImage";
+
+    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_extrudedImage {this, s_IMAGE_INOUT};
 };
 
 } // namespace sight::module::filter::image.

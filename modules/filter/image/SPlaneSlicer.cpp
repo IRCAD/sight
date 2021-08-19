@@ -28,7 +28,6 @@
 
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
 #include <data/Point.hpp>
 
 #include <io/vtk/vtk.hpp>
@@ -42,11 +41,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN  = "image";
-static const service::IService::KeyType s_EXTENT_IN = "imageExtent";
-static const service::IService::KeyType s_AXES_IN   = "axes";
-static const service::IService::KeyType s_SLICE_OUT = "slice";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
@@ -92,17 +86,20 @@ void SPlaneSlicer::updating()
     this->setReslicerExtent();
     this->setReslicerAxes();
 
-    auto image                           = this->getInput<data::Image>(s_IMAGE_IN);
+    const auto image = m_image.lock();
+    SIGHT_ASSERT("Cannot find " << s_IMAGE_IN, image);
+
     vtkSmartPointer<vtkImageData> vtkimg = vtkSmartPointer<vtkImageData>::New();
 
-    io::vtk::toVTKImage(image, vtkimg.Get());
+    io::vtk::toVTKImage(image.get_shared(), vtkimg.Get());
 
     m_reslicer->SetInputData(vtkimg);
     m_reslicer->Update();
 
-    auto slice = this->getInOut<data::Image>(s_SLICE_OUT);
+    auto slice = m_slice.lock();
+    SIGHT_ASSERT("Cannot find " << s_SLICE_INOUT, slice);
 
-    io::vtk::fromVTKImage(m_reslicer->GetOutput(), slice);
+    io::vtk::fromVTKImage(m_reslicer->GetOutput(), slice.get_shared());
 
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
@@ -167,9 +164,9 @@ service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 
 void SPlaneSlicer::setReslicerExtent()
 {
-    data::Image::csptr extentImg = this->getInput<data::Image>(s_EXTENT_IN);
+    const auto extentImg = m_extent.lock();
 
-    SIGHT_ASSERT("No extentImg.", extentImg);
+    SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extentImg);
 
     const auto& size    = extentImg->getSize2();
     const auto& origin  = extentImg->getOrigin2();
@@ -212,11 +209,11 @@ void SPlaneSlicer::setReslicerExtent()
 
 void SPlaneSlicer::setReslicerAxes()
 {
-    data::Matrix4::csptr axes = this->getInput<data::Matrix4>(s_AXES_IN);
+    const auto axes = m_axes.lock();
 
-    SIGHT_ASSERT("No axes found.", axes);
+    SIGHT_ASSERT("No " << s_AXES_IN << " found.", axes);
 
-    vtkSmartPointer<vtkMatrix4x4> axesMatrix = io::vtk::toVTKMatrix(axes);
+    vtkSmartPointer<vtkMatrix4x4> axesMatrix = io::vtk::toVTKMatrix(axes.get_shared());
 
     this->applySliceTranslation(axesMatrix);
 
@@ -260,7 +257,8 @@ void SPlaneSlicer::setReslicerAxes()
 
 void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const
 {
-    auto image = this->getInput<data::Image>(s_EXTENT_IN);
+    const auto image = m_extent.lock();
+    SIGHT_ASSERT("Cannot find " << s_EXTENT_IN, image);
 
     data::Object::sptr index;
     switch(m_orientation)
@@ -314,11 +312,11 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 
 void SPlaneSlicer::updateDefaultValue()
 {
-    data::Image::csptr image = this->getInput<data::Image>(s_IMAGE_IN);
-    SIGHT_ASSERT("No 'image' found.", image);
+    const auto image = m_image.lock();
+    SIGHT_ASSERT("No " << s_IMAGE_IN << " found.", image);
 
     double min, max;
-    data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+    data::fieldHelper::MedicalImageHelpers::getMinMax(image.get_shared(), min, max);
 
     m_reslicer->SetBackgroundLevel(min);
 }

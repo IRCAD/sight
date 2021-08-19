@@ -26,6 +26,7 @@
 
 #include <core/base.hpp>
 
+#include <data/Image.hpp>
 #include <data/tools/PickingInfo.hpp>
 
 #include <filter/image/ImageDiff.hpp>
@@ -186,6 +187,12 @@ private:
 
     /// Set to 'true' if we currently drawing in the image.
     bool m_drawing;
+
+    static constexpr std::string_view s_IMAGE_IN    = "imageIn";
+    static constexpr std::string_view s_IMAGE_INOUT = "imageOut";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_imageIn {this, s_IMAGE_IN};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_imageOut {this, s_IMAGE_INOUT};
 };
 
 } // namespace sight::module::filter::image.

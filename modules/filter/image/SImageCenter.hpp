@@ -24,6 +24,9 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
+
 #include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
@@ -85,6 +88,14 @@ protected:
      * - Update service when the transform matrix is modified.
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+
+private:
+
+    static constexpr std::string_view s_IMAGE_IN        = "image";
+    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_transform {this, s_TRANSFORM_INOUT};
 };
 
 } // namespace sight::module::filter::image

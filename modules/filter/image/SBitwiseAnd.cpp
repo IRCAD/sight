@@ -28,8 +28,6 @@
 #include <core/tools/IntegerTypes.hpp>
 
 #include <data/helper/ImageGetter.hpp>
-#include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -41,11 +39,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN = "image";
-static const service::IService::KeyType s_MASK_IN  = "mask";
-
-static const service::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
 
 struct AndImageFilterParameters
 {
@@ -149,10 +142,10 @@ void SBitwiseAnd::starting()
 
 void SBitwiseAnd::updating()
 {
-    const auto image = this->getLockedInput<data::Image>(s_IMAGE_IN);
+    const auto image = m_image.lock();
     SIGHT_ASSERT("image does not exist.", image);
 
-    const auto mask = this->getLockedInput<data::Image>(s_MASK_IN);
+    const auto mask = m_mask.lock();
     SIGHT_ASSERT("mask does not exist.", mask);
 
     data::helper::ImageGetter imageHelper(image.get_shared());

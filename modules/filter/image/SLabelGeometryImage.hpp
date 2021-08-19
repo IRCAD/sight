@@ -24,6 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
 #include <data/PointList.hpp>
 
 #include <service/IFilter.hpp>
@@ -104,6 +105,9 @@ private:
 
     std::vector<std::vector<size_t> > m_lPointListLabels;
     std::vector<data::PointList::sptr> m_lPointListCentroids;
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "image"};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::out> m_pointList {this, "pointList"};
 };
 
 } // namespace sight::module::filter::image

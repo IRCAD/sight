@@ -32,7 +32,6 @@
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/Image.hpp>
-#include <data/Image.hpp>
 #include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
@@ -99,7 +98,7 @@ void SLabelGeometryImage::starting()
 
 void SLabelGeometryImage::updating()
 {
-    const auto image = this->getLockedInOut<data::Image>("image");
+    const auto image = m_image.lock();
 
     data::helper::Image imageHelper(image.get_shared());
     if(!imageHelper.getBuffer())

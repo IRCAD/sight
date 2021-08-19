@@ -26,6 +26,10 @@
 
 #include <core/base.hpp>
 
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
+
 #include <filter/image/MatrixRegressor.hpp>
 
 #include <service/IFilter.hpp>
@@ -95,6 +99,16 @@ protected:
      * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+
+private:
+
+    static constexpr std::string_view s_MATRIX_LIST_IN       = "matrixList";
+    static constexpr std::string_view s_POINT_LIST_IN        = "pointList";
+    static constexpr std::string_view s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
+
+    sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_matrixList {this, s_MATRIX_LIST_IN};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pointList {this, s_POINT_LIST_IN};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_optimalMatrix {this, s_OPTIMAL_MATRIX_INOUT};
 };
 
 } // namespace sight::module::filter::image.

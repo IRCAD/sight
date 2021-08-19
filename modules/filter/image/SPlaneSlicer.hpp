@@ -25,6 +25,8 @@
 #include "modules/filter/image/config.hpp"
 
 #include <data/helper/MedicalImage.hpp>
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IFilter.hpp>
 
@@ -122,6 +124,16 @@ private:
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
+
+    static constexpr std::string_view s_IMAGE_IN    = "image";
+    static constexpr std::string_view s_EXTENT_IN   = "imageExtent";
+    static constexpr std::string_view s_AXES_IN     = "axes";
+    static constexpr std::string_view s_SLICE_INOUT = "slice";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_extent {this, s_EXTENT_IN};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_axes {this, s_AXES_IN};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_slice {this, s_SLICE_INOUT};
 };
 
 } //namespace sight::module::filter::image

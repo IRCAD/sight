@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Vector.hpp>
 
@@ -41,9 +40,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
-static const service::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
 
 typedef std::function<std::uint8_t(const std::uint8_t&)> FunctionType;
 
@@ -112,11 +108,11 @@ void SLabelImageToBinaryImage::updating()
 {
     typedef typename ::itk::Image<std::uint8_t, 3> ImageType;
 
-    const auto labelImage = this->getLockedInput<data::Image>(s_LABEL_IMAGE_INPUT);
-    SIGHT_ASSERT("No 'labelImage' input.", labelImage);
+    const auto labelImage = m_labelImage.lock();
+    SIGHT_ASSERT("No " << s_LABEL_IMAGE_INPUT << " input.", labelImage);
 
-    const auto maskImage = this->getLockedInOut<data::Image>(s_BINARY_MASK_INOUT);
-    SIGHT_ASSERT("No 'maskImage' inout.", maskImage);
+    const auto maskImage = m_binaryMask.lock();
+    SIGHT_ASSERT("No " << s_BINARY_MASK_INOUT << " inout.", maskImage);
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",

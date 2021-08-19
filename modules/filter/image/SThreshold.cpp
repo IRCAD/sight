@@ -26,6 +26,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
+#include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
 namespace sight::module::filter::image

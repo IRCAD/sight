@@ -24,6 +24,9 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
+
 #include <service/IRegisterer.hpp>
 
 namespace sight::module::filter::image
@@ -45,15 +48,12 @@ namespace sight::module::filter::image
        <in key="source" uid="..." />
        <in key="target" uid="..." />
        <in key="transform" uid="..." />
-       <inout key="flipTransform" uid="..." />
    </service>
  * @endcode
  *
  * @subsection Input Input
  * - \b source [sight::data::Image]: Input image that will be aligned to the target.
  * - \b target [sight::data::Image]: Input image to which the source will be aligned.
- * - \b flipTransform [sight::data::Matrix4]: temporary hack allowing to flip the image according to the
- *   flipping applied in the RegistrationActivity.
  *
  * @subsection In-Out In-Out
  * - \b transform [sight::data::Matrix4]: initial registration. The computed registration will be
@@ -110,6 +110,10 @@ protected:
     MODULE_FILTER_IMAGE_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
 private:
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_source {this, "fixed"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_target {this, "moving"};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_transform {this, "transform"};
 };
 
 } // namespace sight::module::filter::image

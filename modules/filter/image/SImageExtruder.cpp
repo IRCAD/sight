@@ -25,18 +25,12 @@
 #include <core/com/Slots.hxx>
 
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <filter/image/ImageExtruder.hpp>
 
 namespace sight::module::filter::image
 {
-
-static const std::string s_MESHES_INPUT = "meshes";
-static const std::string s_IMAGE_INPUT  = "image";
-
-static const std::string s_IMAGE_INOUT = "extrudedImage";
 
 static const core::com::Slots::SlotKeyType s_ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
 
@@ -84,13 +78,13 @@ service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 
 void SImageExtruder::updating()
 {
-    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
+    const auto image = m_image.lock();
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
         {
-            const auto imageOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+            const auto imageOut = m_extrudedImage.lock();
             SIGHT_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
@@ -99,7 +93,7 @@ void SImageExtruder::updating()
             sig->asyncEmit();
         }
 
-        const auto meshes = this->getLockedInput<data::ModelSeries>(s_MESHES_INPUT);
+        const auto meshes = m_meshes.lock();
 
         data::ModelSeries::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
 
@@ -117,7 +111,7 @@ void SImageExtruder::stopping()
 
 void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const
 {
-    const auto imageOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto imageOut = m_extrudedImage.lock();
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
     {
