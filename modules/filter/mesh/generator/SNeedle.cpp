@@ -26,7 +26,6 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Color.hpp>
-#include <data/Mesh.hpp>
 #include <data/tools/Color.hpp>
 
 #include <geometry/data/Mesh.hpp>
@@ -178,8 +177,9 @@ void SNeedle::updating()
         vtkMesh = triangleFilter->GetOutput();
     }
 
-    auto mesh = this->getInOut<sight::data::Mesh>("mesh");
-    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+    auto mesh = m_mesh.lock();
+    SIGHT_ASSERT("No 'mesh' found.", mesh);
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh.get_shared());
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);

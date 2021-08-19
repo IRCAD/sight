@@ -57,8 +57,6 @@ static const std::string s_WIDTH_CONFIG        = "width";
 static const std::string s_ANGLE_CONFIG        = "angle";
 static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
-static const service::IService::KeyType s_MESH_INOUT = "mesh";
-
 // -----------------------------------------------------------------------------
 
 SUltrasoundMesh::SUltrasoundMesh() noexcept
@@ -97,7 +95,7 @@ void SUltrasoundMesh::starting()
     const long y = static_cast<long>(m_resolutionY);
     m_meshPositionArray.resize(::boost::extents[x][y][3]);
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     // Create mesh and notify
     this->updateMeshPosition();
@@ -114,7 +112,7 @@ void SUltrasoundMesh::stopping()
 
 void SUltrasoundMesh::updating()
 {
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     this->updateMeshPosition();
     this->updateQuadMesh(mesh.get_shared());

@@ -27,9 +27,6 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <data/Image.hpp>
-#include <data/Mesh.hpp>
-
 #include <io/vtk/helper/Mesh.hpp>
 #include <io/vtk/vtk.hpp>
 
@@ -102,16 +99,16 @@ void SMeshCreation::configuring()
 void SMeshCreation::updating()
 {
     /// Retrieve objects
-    auto pImage = this->getInput<data::Image>("image");
+    const auto pImage = m_image.lock();
     SIGHT_ASSERT("'image' key not found", pImage);
-    auto pMesh = this->getInOut<data::Mesh>("mesh");
+    auto pMesh = m_mesh.lock();
     SIGHT_ASSERT("'mesh' key not found", pMesh);
 
     ///VTK Mesher
 
     // vtk img
     vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(pImage, vtkImage);
+    io::vtk::toVTKImage(pImage.get_shared(), vtkImage);
 
     // contour filter
     vtkSmartPointer<vtkDiscreteMarchingCubes> contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
@@ -149,12 +146,12 @@ void SMeshCreation::updating()
         decimate->SetSplitAngle(120);
         decimate->Update();
         polyData = decimate->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh.get_shared());
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh);
+        io::vtk::helper::Mesh::fromVTKMesh(polyData, pMesh.get_shared());
     }
 
     /// Notification
