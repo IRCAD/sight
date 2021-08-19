@@ -79,6 +79,7 @@ protected:
 private:
 
     data::ObjectLock m_objLock;
+    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_target {this, "target"};
 };
 
 } // sight::module::memory
