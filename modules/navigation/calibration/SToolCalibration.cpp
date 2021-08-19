@@ -22,10 +22,6 @@
 
 #include "SToolCalibration.hpp"
 
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/Vector.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <service/macros.hpp>
@@ -75,10 +71,10 @@ void SToolCalibration::starting()
 
 void SToolCalibration::stopping()
 {
-    this->setOutput(s_MATRIX_CALIBRATION_OUTPUT, nullptr);
+    m_matrixCalibration = nullptr;
     if(m_hasOutputCenter)
     {
-        this->setOutput(s_MATRIX_CENTER_OUTPUT, nullptr);
+        m_matrixCenter = nullptr;
     }
 }
 
@@ -92,20 +88,19 @@ void SToolCalibration::updating()
 
 void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    data::Vector::csptr matricesVector = this->getInput<data::Vector>(s_MATRICES_VECTOR_INPUT);
-
-    data::mt::ObjectReadLock lock(matricesVector);
+    const auto matricesVector = m_matricesVector.lock();
 
     data::Matrix4::sptr calibrationMatrix = data::Matrix4::New();
-    this->setOutput(s_MATRIX_CALIBRATION_OUTPUT, calibrationMatrix);
+
+    m_matrixCalibration = calibrationMatrix;
 
     data::Matrix4::sptr centerMatrixNoRot = data::Matrix4::New();
 
-    geometry::vision::helper::calibratePointingTool(matricesVector, calibrationMatrix, centerMatrixNoRot);
+    geometry::vision::helper::calibratePointingTool(matricesVector.get_shared(), calibrationMatrix, centerMatrixNoRot);
 
     if(m_hasOutputCenter)
     {
-        this->setOutput(s_MATRIX_CENTER_OUTPUT, centerMatrixNoRot);
+        m_matrixCalibration = centerMatrixNoRot;
     }
 }
 
