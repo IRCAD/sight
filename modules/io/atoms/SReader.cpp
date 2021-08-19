@@ -486,13 +486,6 @@ void SReader::notificationOfUpdate()
 
 //-----------------------------------------------------------------------------
 
-void SReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//-----------------------------------------------------------------------------
-
 void SReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

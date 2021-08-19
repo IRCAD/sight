@@ -95,13 +95,6 @@ public:
     /// Destructor. Does nothing
     MODULE_IO_MATRIX_API virtual ~SMatricesReader() noexcept;
 
-    /**
-     * @brief Display a location dialog allowing to select the video file to save
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_MATRIX_API void configureWithIHM() override;
-
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 

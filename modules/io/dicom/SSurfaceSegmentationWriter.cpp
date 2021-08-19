@@ -61,13 +61,6 @@ SSurfaceSegmentationWriter::~SSurfaceSegmentationWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-void SSurfaceSegmentationWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SSurfaceSegmentationWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

@@ -429,7 +429,7 @@ void SScan::startCamera()
 
     SIGHT_ASSERT(
         "Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
-        + "' or '" + s_CAMERA_INPUT + "' is present.",
+        + "' or '" << s_CAMERA_INPUT << "' is present.",
         camera
     );
 
@@ -587,8 +587,8 @@ void SScan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal<service::IGrabber::CameraStartedSignalType>(
-        service::IGrabber::s_CAMERA_STARTED_SIG
+    auto sigStarted = this->signal<IGrabber::CameraStartedSignalType>(
+        IGrabber::s_CAMERA_STARTED_SIG
     );
     sigStarted->asyncEmit();
 }
@@ -625,8 +625,8 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<service::IGrabber::CameraStoppedSignalType>(
-            service::IGrabber::s_CAMERA_STOPPED_SIG
+        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(
+            IGrabber::s_CAMERA_STOPPED_SIG
         );
         sig->asyncEmit();
     }

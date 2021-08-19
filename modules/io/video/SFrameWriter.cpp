@@ -101,13 +101,6 @@ void SFrameWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SFrameWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

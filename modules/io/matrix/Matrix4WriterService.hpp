@@ -64,16 +64,6 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_MATRIX_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the matrix path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
      */
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 

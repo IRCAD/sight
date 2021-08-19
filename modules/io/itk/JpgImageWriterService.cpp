@@ -68,13 +68,6 @@ void JpgImageWriterService::configuring()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void JpgImageWriterService::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

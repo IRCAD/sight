@@ -75,13 +75,6 @@ sight::io::base::service::IOPathType SImageSeriesReader::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageSeriesReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

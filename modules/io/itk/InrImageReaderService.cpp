@@ -72,13 +72,6 @@ void InrImageReaderService::configuring()
 
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void InrImageReaderService::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

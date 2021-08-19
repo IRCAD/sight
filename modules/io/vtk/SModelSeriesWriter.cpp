@@ -73,13 +73,6 @@ sight::io::base::service::IOPathType SModelSeriesWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

@@ -90,13 +90,6 @@ void SMatrixWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMatrixWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

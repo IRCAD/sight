@@ -55,13 +55,6 @@ public:
 
 protected:
 
-    /**
-     * @brief configure the service using a GUI.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VISION_API void configureWithIHM() override;
-
     /// configure the service using a GUI.
     MODULE_IO_VISION_API void openLocationDialog() override;
 

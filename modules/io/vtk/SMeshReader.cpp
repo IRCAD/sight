@@ -67,13 +67,6 @@ SMeshReader::SMeshReader() noexcept
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMeshReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

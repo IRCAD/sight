@@ -74,13 +74,6 @@ public:
      */
     MODULE_IO_DICOM_API ~SSurfaceSegmentationWriter() noexcept override;
 
-    /**
-     * @brief Propose a directory selection where to save the DICOM files.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_DICOM_API void configureWithIHM() override;
-
     /// Propose a directory selection where to save the DICOM files.
     MODULE_IO_DICOM_API void openLocationDialog() override;
 

@@ -74,13 +74,6 @@ sight::io::base::service::IOPathType SModelSeriesReader::getIOPathType() const
     return sight::io::base::service::FILES;
 }
 
-//------------------------------------------------------------------------------
-
-void SModelSeriesReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
 //-----------------------------------------------------------------------------
 
 void SModelSeriesReader::openLocationDialog()

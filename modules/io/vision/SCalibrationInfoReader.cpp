@@ -69,13 +69,6 @@ sight::io::base::service::IOPathType SCalibrationInfoReader::getIOPathType() con
 
 //------------------------------------------------------------------------------
 
-void SCalibrationInfoReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SCalibrationInfoReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

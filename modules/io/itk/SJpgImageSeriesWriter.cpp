@@ -70,13 +70,6 @@ void SJpgImageSeriesWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SJpgImageSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

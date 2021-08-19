@@ -595,13 +595,6 @@ sight::io::base::service::IOPathType SWriter::getIOPathType() const
 
 //-----------------------------------------------------------------------------
 
-void SWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//-----------------------------------------------------------------------------
-
 void SWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

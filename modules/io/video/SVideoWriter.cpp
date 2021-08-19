@@ -87,13 +87,6 @@ void SVideoWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SVideoWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

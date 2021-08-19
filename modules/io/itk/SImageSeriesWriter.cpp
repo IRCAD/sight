@@ -72,13 +72,6 @@ void SImageSeriesWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

@@ -69,13 +69,6 @@ void InrImageWriterService::configuring()
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void InrImageWriterService::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

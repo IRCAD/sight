@@ -110,13 +110,6 @@ void SDicomSeriesDBReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SDicomSeriesDBReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

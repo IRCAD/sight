@@ -61,13 +61,6 @@ SSeriesDBWriter::~SSeriesDBWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesDBWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

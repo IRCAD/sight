@@ -68,13 +68,6 @@ sight::io::base::service::IOPathType SImageWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

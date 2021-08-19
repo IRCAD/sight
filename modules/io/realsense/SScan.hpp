@@ -176,11 +176,11 @@ namespace sight::module::io::realsense
  * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
-class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
+class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::base::service::IRGBDGrabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScan, io::base::service::IRGBDGrabber);
+    SIGHT_DECLARE_SERVICE(SScan, sight::io::base::service::IRGBDGrabber);
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal<void (double)> DistanceComputedSignalType;

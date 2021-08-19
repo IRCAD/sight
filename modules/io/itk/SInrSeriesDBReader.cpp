@@ -80,13 +80,6 @@ void SInrSeriesDBReader::configuring()
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SInrSeriesDBReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

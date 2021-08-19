@@ -126,13 +126,6 @@ void SMatricesReader::starting()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMatricesReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

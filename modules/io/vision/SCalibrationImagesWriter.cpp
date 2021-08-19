@@ -64,13 +64,6 @@ sight::io::base::service::IOPathType SCalibrationImagesWriter::getIOPathType() c
 
 //------------------------------------------------------------------------------
 
-void SCalibrationImagesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SCalibrationImagesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

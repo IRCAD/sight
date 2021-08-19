@@ -119,13 +119,6 @@ public:
     {
     }
 
-    /**
-     * @brief Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ATOMS_API void configureWithIHM() override;
-
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
     MODULE_IO_ATOMS_API void openLocationDialog() override;
 

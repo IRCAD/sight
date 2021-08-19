@@ -78,13 +78,6 @@ sight::io::base::service::IOPathType SSeriesDBReader::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesDBReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

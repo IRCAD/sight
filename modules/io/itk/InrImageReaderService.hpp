@@ -88,13 +88,6 @@ protected:
     /// Override
     MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
 
-    /**
-     * @brief Configure using GUI.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ITK_API void configureWithIHM() override;
-
     /// Configure using GUI.
     MODULE_IO_ITK_API void openLocationDialog() override;
 

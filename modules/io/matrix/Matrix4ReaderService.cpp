@@ -82,13 +82,6 @@ void Matrix4ReaderService::configuring()
     sight::io::base::service::IReader::configuring();
 }
 
-//------------------------------------------------------------------------------
-
-void Matrix4ReaderService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
 //-----------------------------------------------------------------------------
 
 void Matrix4ReaderService::openLocationDialog()
@@ -124,18 +117,21 @@ void Matrix4ReaderService::stopping()
 
 void Matrix4ReaderService::updating()
 {
+    m_readFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        data::Matrix4::sptr matrix =
-            this->getInOut<data::Matrix4>(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
+        const auto locked = m_data.lock();
+        auto matrix       = std::dynamic_pointer_cast<data::Matrix4>(locked.get_shared());
+        SIGHT_ASSERT("The object is not a '" + data::Matrix4::classname() + "'.", matrix);
 
-        sight::io::base::reader::Matrix4Reader::sptr reader =
-            sight::io::base::reader::Matrix4Reader::New();
+        auto reader = sight::io::base::reader::Matrix4Reader::New();
         reader->setObject(matrix);
         reader->setFile(this->getFile());
         reader->read();
+
+        m_readFailed = false;
 
         // Notify reading
         auto sig = matrix->signal<data::Object::ModifiedSignalType>(
@@ -145,10 +141,6 @@ void Matrix4ReaderService::updating()
             core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
-    }
-    else
-    {
-        m_readFailed = true;
     }
 }
 

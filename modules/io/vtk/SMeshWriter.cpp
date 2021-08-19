@@ -66,13 +66,6 @@ sight::io::base::service::IOPathType SMeshWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMeshWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

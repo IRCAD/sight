@@ -88,13 +88,6 @@ public:
 
     /**
      * @brief Configure the image path.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VTK_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the image path.
      */
     MODULE_IO_VTK_API void openLocationDialog() override;
 

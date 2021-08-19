@@ -64,13 +64,6 @@ SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SDicomSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();

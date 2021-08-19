@@ -81,13 +81,6 @@ public:
      */
     MODULE_IO_DICOM_API ~SDicomSeriesWriter() noexcept override;
 
-    /**
-     * @brief Propose select a directory where to save the DICOM files.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_DICOM_API void configureWithIHM() override;
-
     /// Propose select a directory where to save the DICOM files.
     MODULE_IO_DICOM_API void openLocationDialog() override;
 

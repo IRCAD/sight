@@ -86,13 +86,6 @@ void SPdfWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SPdfWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -123,7 +116,7 @@ void SPdfWriter::updating()
 {
     if(!this->hasLocationDefined())
     {
-        configureWithIHM();
+        openLocationDialog();
     }
 
     if(this->hasLocationDefined())

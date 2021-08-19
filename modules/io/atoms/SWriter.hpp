@@ -103,13 +103,6 @@ public:
     {
     }
 
-    /**
-     * @brief Propose to create a medical data file
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ATOMS_API void configureWithIHM() override;
-
     /// Propose to create a medical data file
     MODULE_IO_ATOMS_API void openLocationDialog() override;
 
