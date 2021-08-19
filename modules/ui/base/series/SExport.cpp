@@ -50,8 +50,6 @@ namespace series
 const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExport::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
-const static std::string s_SERIESDB_INOUT = "seriesDB";
-
 //------------------------------------------------------------------------------
 
 SExport::SExport()
@@ -71,8 +69,8 @@ SExport::~SExport() noexcept
 service::IService::KeyConnectionsMap SExport::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT);
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT);
+    connections.push(s_SERIESDB, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT);
+    connections.push(s_SERIESDB, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT);
 
     return connections;
 }
@@ -89,7 +87,7 @@ void SExport::configuring()
 void SExport::starting()
 {
     this->actionServiceStarting();
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
+    auto seriesDB = m_seriesDB.lock();
 
     for(data::Series::sptr series : seriesDB->getContainer())
     {
@@ -111,8 +109,8 @@ void SExport::stopping()
 
 void SExport::updating()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-    data::Series::sptr series     = this->getSeries();
+    auto seriesDB = m_seriesDB.lock();
+    auto series   = m_series.lock().get_shared();
 
     std::string description = series->getDescription();
 
@@ -170,8 +168,8 @@ void SExport::info(std::ostream& _sstream)
 
 data::Series::sptr SExport::getSeries()
 {
-    data::Series::sptr series = this->getInOut<data::Series>("series");
-    return series;
+    auto series = m_series.lock();
+    return series.get_shared();
 }
 
 //------------------------------------------------------------------------------

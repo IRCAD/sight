@@ -25,6 +25,7 @@
 #include "modules/ui/base/config.hpp"
 
 #include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
 
 #include <ui/base/IAction.hpp>
 
@@ -78,6 +79,11 @@ protected:
 
     /// Override
     MODULE_UI_BASE_API void info(std::ostream& _sstream) override;
+
+private:
+
+    data::ptr<data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    data::ptr<data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
 };
 
 } // namespace sight::module::ui::base::series

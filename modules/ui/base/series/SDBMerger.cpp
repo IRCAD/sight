@@ -46,8 +46,6 @@ namespace series
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
-static const service::IService::KeyType s_SERIES_INOUT = "seriesDB";
-
 //------------------------------------------------------------------------------
 
 SDBMerger::SDBMerger() noexcept :
@@ -90,8 +88,8 @@ void SDBMerger::updating()
 {
     sight::ui::base::LockAction lock(this->getSptr());
 
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIES_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
+    auto seriesDB = m_seriesDB.lock();
+    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not correctly set.", seriesDB);
 
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();

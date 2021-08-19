@@ -125,6 +125,10 @@ private:
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
     SPTR(ForwardJobSlotType) m_slotForwardJob;
+
+    static constexpr std::string_view s_SERIESDB = "seriesDB";
+
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
 };
 
 } // namespace series

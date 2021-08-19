@@ -83,8 +83,7 @@ void SPreferences::load()
         const std::filesystem::path folderPath = m_prefFile.parent_path();
         const std::filesystem::path filename   = m_prefFile.filename();
 
-        auto data = this->getLockedInOut<data::Object>(sight::ui::base::preferences::s_PREFERENCES_KEY);
-
+        auto data = m_preferences.lock();
         // Read atom
         io::zip::IReadArchive::sptr readArchive = io::zip::ReadDirArchive::New(folderPath.string());
 

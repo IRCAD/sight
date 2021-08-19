@@ -24,6 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
+#include <ui/base/preferences/helper.hpp>
 #include <ui/base/preferences/IPreferences.hpp>
 
 #include <filesystem>
@@ -85,7 +86,7 @@ private:
     /// saves preferences
     void save();
 
-    data::ptr<data::Object, data::Access::in> m_preferences {this, "preferences"};
+    data::ptr<data::Object, data::Access::inout> m_preferences {this, sight::ui::base::preferences::s_PREFERENCES_KEY};
 };
 
 } // namespace sight::module::ui::base

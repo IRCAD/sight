@@ -183,10 +183,7 @@ protected:
     /// Destination SeriesDB ID
     std::string m_destinationSeriesDBID;
 
-    /// Destination SeriesDB
     data::ptr<data::SeriesDB, sight::data::Access::inout> m_destinationSeriesDB {this, "target"};
-
-    /// Selected dataSeries vector
     data::ptr<data::Vector, sight::data::Access::in> m_selectedDicomSeries {this, "selection"};
 };
 
