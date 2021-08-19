@@ -25,8 +25,7 @@
 #include "modules/core/data/IWrapperSrv.hpp"
 #include "modules/data/config.hpp"
 
-#include <data/Point.hpp>
-#include <data/PointList.hpp>
+#include <data/Image.hpp>
 
 #include <service/IService.hpp>
 

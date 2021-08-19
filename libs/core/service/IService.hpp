@@ -911,7 +911,7 @@ private:
      * @param object pointer to the object to register.
      * @param index optional index of the key in the case of a member of a group of keys.
      */
-    void _setOutput(
+    SERVICE_API void _setOutput(
         std::string_view key,
         data::Object::sptr object,
         size_t index = 0
