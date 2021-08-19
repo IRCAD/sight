@@ -139,10 +139,19 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
     bool ok = true;
 
     // Retrieve dataStruct associated with this service
-    const auto meshlockedPtr = this->getLockedInOut<data::Mesh>(sight::io::base::service::s_DATA_KEY);
+    const auto locked = m_data.lock();
+    const auto mesh   = std::dynamic_pointer_cast<data::Mesh>(locked.get_shared());
+
+    SIGHT_ASSERT(
+        "The object is not a '"
+        + data::Mesh::classname()
+        + "' or '"
+        + sight::io::base::service::s_DATA_KEY
+        + "' is not correctly set.",
+        mesh
+    );
 
     // Test extension to provide the reader
-
     sight::io::base::reader::IObjectReader::sptr meshReader;
 
     if(vtkFile.extension() == ".vtk")
@@ -177,7 +186,7 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
 
     m_sigJobCreated->emit(meshReader->getJob());
 
-    meshReader->setObject(meshlockedPtr.get_shared());
+    meshReader->setObject(mesh);
 
     try
     {

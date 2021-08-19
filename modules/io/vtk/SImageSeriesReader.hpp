@@ -130,9 +130,6 @@ private:
     std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
-
-    /// Input image
-    data::ptr<data::ImageSeries, data::Access::inout> m_imageSeries {this, sight::io::base::service::s_DATA_KEY};
 };
 
 } // namespace sight::module::io::vtk

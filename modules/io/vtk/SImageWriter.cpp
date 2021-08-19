@@ -162,7 +162,7 @@ bool SImageWriter::saveImage(
     {
         // Get image information
         std::string type = image->getType().string();
-        int noc          = image->getNumberOfComponents();
+        std::size_t noc  = image->getNumberOfComponents();
 
         // Check type.
         // All extension handles uint8, and ".png" also handles uint16.
@@ -202,6 +202,7 @@ bool SImageWriter::saveImage(
         );
     }
 
+    data::mt::locked_ptr<const data::Image> locked(image);
     myWriter->setObject(image);
 
     sigJobCreated->emit(myWriter->getJob());

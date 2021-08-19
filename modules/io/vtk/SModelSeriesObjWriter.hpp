@@ -139,12 +139,6 @@ protected:
 private:
 
     /**
-     * @brief the m_bServiceIsConfigured value is \b true
-     * if the image path is known.
-     */
-    bool m_bServiceIsConfigured;
-
-    /**
      * @brief Mesh path.
      */
     std::filesystem::path m_fsMeshPath;

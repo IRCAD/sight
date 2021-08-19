@@ -123,10 +123,18 @@ void Matrix4ReaderService::updating()
     {
         // Retrieve object
         const auto locked = m_data.lock();
-        auto matrix       = std::dynamic_pointer_cast<data::Matrix4>(locked.get_shared());
-        SIGHT_ASSERT("The object is not a '" + data::Matrix4::classname() + "'.", matrix);
+        const auto matrix = std::dynamic_pointer_cast<data::Matrix4>(locked.get_shared());
 
-        auto reader = sight::io::base::reader::Matrix4Reader::New();
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::Matrix4::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            matrix
+        );
+
+        const auto reader = sight::io::base::reader::Matrix4Reader::New();
         reader->setObject(matrix);
         reader->setFile(this->getFile());
         reader->read();
@@ -134,7 +142,7 @@ void Matrix4ReaderService::updating()
         m_readFailed = false;
 
         // Notify reading
-        auto sig = matrix->signal<data::Object::ModifiedSignalType>(
+        const auto sig = matrix->signal<data::Object::ModifiedSignalType>(
             data::Object::s_MODIFIED_SIG
         );
         {

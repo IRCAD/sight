@@ -114,10 +114,18 @@ void Matrix4WriterService::updating()
     {
         // Retrieve object
         const auto locked = m_data.lock();
-        auto matrix       = std::dynamic_pointer_cast<const data::Matrix4>(locked.get_shared());
-        SIGHT_ASSERT("The object is not a '" + data::Matrix4::classname() + "'.", matrix);
+        const auto matrix = std::dynamic_pointer_cast<const data::Matrix4>(locked.get_shared());
 
-        auto writer = sight::io::base::writer::Matrix4Writer::New();
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::Matrix4::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            matrix
+        );
+
+        const auto writer = sight::io::base::writer::Matrix4Writer::New();
         writer->setObject(matrix);
         writer->setFile(this->getFile());
         writer->write();

@@ -175,19 +175,29 @@ void SImageSeriesReader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto imageSeries = m_imageSeries.lock();
+        const auto locked      = m_data.lock();
+        const auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::ImageSeries::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            imageSeries
+        );
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {
-            data::mt::locked_ptr<data::Image> image(data::Image::New());
+            auto image = data::Image::New();
 
             if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
             {
-                imageSeries->setImage(image.get_shared());
-                initSeries(imageSeries.get_shared());
+                imageSeries->setImage(image);
+                initSeries(imageSeries);
 
                 auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
@@ -198,8 +208,10 @@ void SImageSeriesReader::updating()
         }
         catch(core::tools::Failed& e)
         {
+            cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);
         }
+
         cursor.setDefaultCursor();
     }
 }
