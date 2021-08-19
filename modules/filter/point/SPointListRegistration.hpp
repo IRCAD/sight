@@ -26,6 +26,9 @@
 
 #include <core/com/Slot.hpp>
 
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
+
 #include <service/IRegisterer.hpp>
 
 namespace sight::module::filter::point
@@ -125,6 +128,10 @@ private:
 
     ///Registration Mode
     RegistrationModeType m_registrationMode;
+
+    sight::data::ptr<sight::data::PointList, sight::data::Access::inout> m_registeredPL {this, "registeredPL"};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::inout> m_referencePL {this, "referencePL"};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_output {this, "output"};
 };
 
 } // namespace sight::module::filter::point
