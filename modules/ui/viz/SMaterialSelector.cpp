@@ -52,8 +52,6 @@ namespace sight::module::ui::viz
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
-static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
-
 static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 
 //------------------------------------------------------------------------------
@@ -144,9 +142,9 @@ void SMaterialSelector::updating()
 
 void SMaterialSelector::updateMaterial()
 {
-    data::Reconstruction::sptr reconst = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    data::Material::sptr material      = reconst->getMaterial();
-    data::Object::sptr fieldObj        = material->getField("ogreMaterial");
+    const auto reconst            = m_reconstruction.lock();
+    data::Material::sptr material = reconst->getMaterial();
+    data::Object::sptr fieldObj   = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
     {
         data::String::sptr field = data::String::dynamicCast(fieldObj);
@@ -158,9 +156,9 @@ void SMaterialSelector::updateMaterial()
 
 void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
-    data::Reconstruction::sptr reconst = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    data::Material::sptr material      = reconst->getMaterial();
-    data::String::sptr string          = data::String::New();
+    const auto reconst            = m_reconstruction.lock();
+    data::Material::sptr material = reconst->getMaterial();
+    data::String::sptr string     = data::String::New();
     string->setValue(text.toStdString());
 
     data::helper::Field helper(material);

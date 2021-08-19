@@ -105,9 +105,7 @@ private:
     /// SLOT: Clear the point list.
     void clearPoints();
 
-    /**
-     * @}
-     */
+    data::ptr<data::PointList, data::Access::inout> m_pointList {this, "pointList"};
 };
 
 } // uiVisuOgre

@@ -43,8 +43,6 @@
 namespace sight::module::ui::viz
 {
 
-static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
-
 //------------------------------------------------------------------------------
 SShaderParameterEditor::SShaderParameterEditor() noexcept
 {
@@ -60,8 +58,8 @@ SShaderParameterEditor::~SShaderParameterEditor() noexcept
 
 void SShaderParameterEditor::starting()
 {
-    data::Reconstruction::sptr rec = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    data::Material::sptr material  = rec->getMaterial();
+    const auto rec                = m_reconstruction.lock();
+    data::Material::sptr material = rec->getMaterial();
     m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
     this->create();
@@ -127,7 +125,7 @@ void SShaderParameterEditor::clear()
 void SShaderParameterEditor::updateGuiInfo()
 {
     /// Getting all Material adaptors
-    auto reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
+    const auto reconstruction = m_reconstruction.lock();
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
         "::sight::module::viz::scene3d::adaptor::SMaterial"

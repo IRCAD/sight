@@ -27,6 +27,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 
+#include <data/Reconstruction.hpp>
 #include <data/String.hpp>
 
 #include <service/IService.hpp>
@@ -109,6 +110,8 @@ private:
     core::com::helper::SigSlotConnection m_connections;
 
     QVBoxLayout* m_sizer;
+
+    data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // uiVisuOgre
