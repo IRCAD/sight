@@ -39,8 +39,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-static const service::IService::KeyType s_VIEWPORT_INOUT = "viewport";
-
 static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
@@ -114,11 +112,14 @@ void SViewportRangeSelector::starting()
         }
     }
 
-    const sight::viz::scene2d::data::Viewport::sptr viewport =
-        this->getInOut<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INOUT);
+    int height = 0;
+    {
+        auto viewport = m_viewport.lock();
+        height = viewport->getHeight();
+    }
 
     Point2DType pair = this->mapAdaptorToScene(
-        Point2DType(m_initialX, viewport->getHeight()),
+        Point2DType(m_initialX, height),
         m_xAxis,
         m_yAxis
     );
@@ -144,10 +145,13 @@ void SViewportRangeSelector::starting()
     updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height());
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
+        auto viewport = m_viewport.lock();
+        sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        {
+            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -327,8 +331,7 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
             // Update object
             this->updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height());
 
-            sight::viz::scene2d::data::Viewport::sptr viewport =
-                this->getInOut<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INOUT);
+            auto viewport = m_viewport.lock();
 
             data::Object::ModifiedSignalType::sptr sig =
                 viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
@@ -344,8 +347,7 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
 
 void SViewportRangeSelector::updateViewportFromShutter(double _x, double _y, double _width, double _height)
 {
-    sight::viz::scene2d::data::Viewport::sptr viewport =
-        this->getInOut<sight::viz::scene2d::data::Viewport>(s_VIEWPORT_INOUT);
+    auto viewport = m_viewport.lock();
 
     const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType(_x, _y), m_xAxis, m_yAxis);
     viewport->setX(fromSceneCoord.first);

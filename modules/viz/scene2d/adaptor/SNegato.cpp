@@ -52,9 +52,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-static const service::IService::KeyType s_TF_INOUT    = "tf";
-
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
@@ -141,9 +138,7 @@ void SNegato::updateBufferFromImage(QImage* qimg)
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    data::Image::csptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    const data::mt::ObjectReadLock imLock(image);
-    const auto dumpLock          = image->lock();
+    auto image                   = m_image.lock();
     const data::Image::Size size = image->getSize2();
     const short* imgBuff         = static_cast<const short*>(image->getBuffer());
     const size_t imageZOffset    = size[0] * size[1];
@@ -245,16 +240,22 @@ QRgb SNegato::getQImageVal(
 
 QImage* SNegato::createQImage()
 {
-    data::Image::sptr img = this->getInOut<data::Image>(s_IMAGE_INOUT);
+    data::Image::Size size;
+    data::Image::Spacing spacing;
+    data::Image::Origin origin;
 
-    if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(img))
     {
-        return nullptr;
-    }
+        auto img = m_image.lock();
 
-    const data::Image::Size size       = img->getSize2();
-    const data::Image::Spacing spacing = img->getSpacing2();
-    const data::Image::Origin origin   = img->getOrigin2();
+        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared()))
+        {
+            return nullptr;
+        }
+
+        size    = img->getSize2();
+        spacing = img->getSpacing2();
+        origin  = img->getOrigin2();
+    }
 
     double qImageSpacing[2];
     double qImageOrigin[2];
@@ -317,12 +318,12 @@ QImage* SNegato::createQImage()
 
 void SNegato::starting()
 {
-    data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
+    auto tf = m_tf.lock();
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    m_helperImg.updateImageInfos(image);
+    auto image = m_image.lock();
+    m_helperImg.updateImageInfos(image.get_shared());
 
-    m_helperTF.setOrCreateTF(tf, image);
+    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
@@ -354,11 +355,13 @@ void SNegato::swapping(std::string_view key)
 {
     if(key == s_TF_INOUT)
     {
-        data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-        SIGHT_ASSERT("Missing image", image);
+        {
+            auto image = m_image.lock();
+            SIGHT_ASSERT("Missing image", image);
 
-        data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-        m_helperTF.setOrCreateTF(tf, image);
+            auto tf = m_tf.lock();
+            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        }
 
         this->updating();
     }
@@ -371,8 +374,10 @@ void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
     const int indexes[] = {sagittal, frontal, axial};
     m_helperImg.setSliceIndex(indexes);
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    m_helperImg.updateImageInfos(image);
+    {
+        auto image = m_image.lock();
+        m_helperImg.updateImageInfos(image.get_shared());
+    }
     this->updateBufferFromImage(m_qimg);
 }
 
@@ -549,8 +554,6 @@ void SNegato::changeImageMinMaxFromCoord(
     sight::viz::scene2d::data::Coord& newCoord
 )
 {
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
     data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     data::mt::ObjectWriteLock tfLock(tf);
 

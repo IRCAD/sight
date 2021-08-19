@@ -44,9 +44,6 @@ namespace sight::module::viz::scene2d
 namespace adaptor
 {
 
-static const service::IService::KeyType s_TF_INOUT       = "tf";
-static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
-
 static const std::string s_POLYGON_COLOR_CONFIG = "lineColor";
 static const std::string s_POINT_COLOR_CONFIG   = "pointColor";
 static const std::string s_POINT_SIZE_CONFIG    = "pointSize";
@@ -118,7 +115,7 @@ service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() con
 void STransferFunction::updating()
 {
     {
-        const auto tf = this->getLockedInOut<data::TransferFunction>(s_TF_INOUT);
+        const auto tf = m_tf.lock();
 
         if(m_unclampedTFData.first != tf->getID())
         {
@@ -173,9 +170,8 @@ void STransferFunction::createTFPoints()
     const double pointHeight = (viewportHeight * pointSize) / sceneHeight;
 
     // Get the TF.
-    const data::TransferFunction::csptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
-    const data::mt::ObjectReadLock tfLock(tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     // Gets window/level informations to change TF value from TF space to window/level space.
     const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
@@ -257,9 +253,8 @@ void STransferFunction::createTFPolygon()
     double xEnd   = lastTFPoint.first.first;
 
     // Get the TF.
-    const data::TransferFunction::csptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
-    const data::mt::ObjectReadLock tfLock(tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     if(tf->getIsClamped())
     {
@@ -653,9 +648,8 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
     size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
-    const data::mt::ObjectWriteLock tfLock(tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
     if(tf->getWindow() < 0)
@@ -755,39 +749,35 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair<Point2DType,
         SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
         size_t pointIndex = pointIt - m_TFPoints.begin();
 
+        const auto tf = m_tf.lock();
+        SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
-
+        // If the window is negative, the TF point list is reversed compared to the TF data.
+        if(tf->getWindow() < 0)
         {
-            // If the window is negative, the TF point list is reversed compared to the TF data.
-            const data::mt::ObjectReadLock tfLock(tf);
-            if(tf->getWindow() < 0)
-            {
-                pointIndex = m_TFPoints.size() - 1 - pointIndex;
-            }
-
-            // Retrieves the TF point.
-            data::TransferFunction::TFDataType tfData = tf->getTFData();
-            auto tfDataIt                             = tfData.begin();
-            for(unsigned i = 0 ; i < pointIndex ; ++i)
-            {
-                tfDataIt++;
-            }
-
-            // Removes the TF point.
-            data::TransferFunction::TFValueType tfValue = tfDataIt->first;
-
-            // Removes the old TF point.
-            tf->eraseTFValue(tfValue);
-
-            // Adds the new one with the new color.
-            data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
-                                                    newColor.green() / 255.,
-                                                    newColor.blue() / 255.,
-                                                    newColor.alpha() / 255.);
-            tf->addTFColor(tfValue, tfColor);
+            pointIndex = m_TFPoints.size() - 1 - pointIndex;
         }
+
+        // Retrieves the TF point.
+        data::TransferFunction::TFDataType tfData = tf->getTFData();
+        auto tfDataIt                             = tfData.begin();
+        for(unsigned i = 0 ; i < pointIndex ; ++i)
+        {
+            tfDataIt++;
+        }
+
+        // Removes the TF point.
+        data::TransferFunction::TFValueType tfValue = tfDataIt->first;
+
+        // Removes the old TF point.
+        tf->eraseTFValue(tfValue);
+
+        // Adds the new one with the new color.
+        data::TransferFunction::TFColor tfColor(newColor.red() / 255.,
+                                                newColor.green() / 255.,
+                                                newColor.blue() / 255.,
+                                                newColor.alpha() / 255.);
+        tf->addTFColor(tfValue, tfColor);
 
         // Sends the modification signal.
         const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
@@ -823,12 +813,11 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair<Point2DType, QGra
     size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     {
         // If the window is negative, the TF point list is reversed compared to the TF data.
-        const data::mt::ObjectReadLock tfLock(tf);
         const double window = tf->getWindow();
         if(window <= 0)
         {
@@ -912,81 +901,78 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
     }
 
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
+
+    data::TransferFunction::TFColor newColor;
+
+    // The new coord becomes the new first TF point, get the current first color in the list.
+    if(newCoord.getX() < m_TFPoints.front().first.first)
     {
-        const data::mt::ObjectWriteLock tfLock(tf);
+        const QColor firstColor = m_TFPoints.front().second->brush().color();
+        newColor = data::TransferFunction::TFColor(
+            firstColor.red() / 255.,
+            firstColor.green() / 255.,
+            firstColor.blue() / 255.,
+            -newCoord.getY()
+        );
+    }
+    // The new coord becomes the new last TF point, get the current last color in the list.
+    else if(newCoord.getX() > m_TFPoints.back().first.first)
+    {
+        const QColor firstColor = m_TFPoints.back().second->brush().color();
+        newColor = data::TransferFunction::TFColor(
+            firstColor.red() / 255.,
+            firstColor.green() / 255.,
+            firstColor.blue() / 255.,
+            -newCoord.getY()
+        );
+    }
+    // Gets an interpolate color since the new point is between two ohers.
+    else
+    {
+        newColor   = tf->getInterpolatedColor(newCoord.getX());
+        newColor.a = -newCoord.getY();
+    }
 
-        data::TransferFunction::TFColor newColor;
+    // Gets window/level informations to change TF value from TF space to window/level space.
+    const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
+    const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
+    const data::TransferFunction::TFValueType window           = tf->getWindow();
+    const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
 
-        // The new coord becomes the new first TF point, get the current first color in the list.
-        if(newCoord.getX() < m_TFPoints.front().first.first)
-        {
-            const QColor firstColor = m_TFPoints.front().second->brush().color();
-            newColor = data::TransferFunction::TFColor(
-                firstColor.red() / 255.,
-                firstColor.green() / 255.,
-                firstColor.blue() / 255.,
-                -newCoord.getY()
-            );
-        }
-        // The new coord becomes the new last TF point, get the current last color in the list.
-        else if(newCoord.getX() > m_TFPoints.back().first.first)
-        {
-            const QColor firstColor = m_TFPoints.back().second->brush().color();
-            newColor = data::TransferFunction::TFColor(
-                firstColor.red() / 255.,
-                firstColor.green() / 255.,
-                firstColor.blue() / 255.,
-                -newCoord.getY()
-            );
-        }
-        // Gets an interpolate color since the new point is between two ohers.
-        else
-        {
-            newColor   = tf->getInterpolatedColor(newCoord.getX());
-            newColor.a = -newCoord.getY();
-        }
+    // Computes TF value from window/level space to TF space.
+    data::TransferFunction::TFValueType tfValue = newCoord.getX();
+    tfValue = (tfValue - minWL) / window;
+    tfValue = (tfValue * width) + minMaxValues.first;
 
-        // Gets window/level informations to change TF value from TF space to window/level space.
-        const data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
-        const data::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
-        const data::TransferFunction::TFValueType window           = tf->getWindow();
-        const data::TransferFunction::TFValueType width            = minMaxValues.second - minMaxValues.first;
+    // Adds the new TF point.
+    tf->addTFColor(tfValue, newColor);
 
-        // Computes TF value from window/level space to TF space.
-        data::TransferFunction::TFValueType tfValue = newCoord.getX();
-        tfValue = (tfValue - minWL) / window;
-        tfValue = (tfValue * width) + minMaxValues.first;
+    // Update unclamped data.
+    m_unclampedTFData.second[tfValue] = newColor;
 
-        // Adds the new TF point.
-        tf->addTFColor(tfValue, newColor);
+    // Gets new window/level min max value in the window/level space.
+    double min = m_TFPoints.begin()->first.first;
+    double max = m_TFPoints.rbegin()->first.first;
 
-        // Update unclamped data.
-        m_unclampedTFData.second[tfValue] = newColor;
+    if(newCoord.getX() > max)
+    {
+        max = newCoord.getX();
+    }
+    else if(newCoord.getX() < min)
+    {
+        min = newCoord.getX();
+    }
 
-        // Gets new window/level min max value in the window/level space.
-        double min = m_TFPoints.begin()->first.first;
-        double max = m_TFPoints.rbegin()->first.first;
-
-        if(newCoord.getX() > max)
-        {
-            max = newCoord.getX();
-        }
-        else if(newCoord.getX() < min)
-        {
-            min = newCoord.getX();
-        }
-
-        // Updates the window/level.
-        if(window > 0)
-        {
-            tf->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
-        }
-        else
-        {
-            tf->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
-        }
+    // Updates the window/level.
+    if(window > 0)
+    {
+        tf->setWLMinMax(data::TransferFunction::TFValuePairType(min, max));
+    }
+    else
+    {
+        tf->setWLMinMax(data::TransferFunction::TFValuePairType(max, min));
     }
 
     // Sends the signal.
@@ -1019,12 +1005,15 @@ void STransferFunction::midButtonClickEvent(sight::viz::scene2d::data::Event& _e
         sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+        const auto tf = m_tf.lock();
+        SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF =
-            std::make_pair(tf, sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY()));
+            std::make_pair(
+                tf.get_shared(),
+                sight::viz::scene2d::data::Coord(windowLevelCoord.getX(), _event.getCoord().getY())
+            );
 
         _event.setAccepted(true);
     }
@@ -1048,7 +1037,6 @@ void STransferFunction::mouseMoveOnTFEvent(const sight::viz::scene2d::data::Even
     // Updates the TF.
     const data::TransferFunction::sptr tf = m_capturedTF.first;
     {
-        const data::mt::ObjectWriteLock tfLock(tf);
         tf->setWindow(tf->getWindow() - windowDelta);
         tf->setLevel(tf->getLevel() + levelDelta);
 
@@ -1091,8 +1079,8 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
     if(items.indexOf(m_TFPolygon) >= 0)
     {
         // Get the TF.
-        const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+        const auto tf = m_tf.lock();
+        SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
         // Creates the menu.
         QMenu* const contextMenu = new QMenu();
@@ -1172,7 +1160,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
             }
 
             // Updates the TF.
-            const auto tf = this->getLockedInOut<data::TransferFunction>(s_TF_INOUT);
+            const auto tf = m_tf.lock();
             tf->setTFData(tfData);
 
             // Sends the signal.
@@ -1197,14 +1185,11 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
 void STransferFunction::clampTF(bool _clamp)
 {
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     // Set the clamp status.
-    {
-        const data::mt::ObjectWriteLock tfLock(tf);
-        tf->setIsClamped(_clamp);
-    }
+    tf->setIsClamped(_clamp);
 
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
@@ -1226,14 +1211,11 @@ void STransferFunction::clampTF(bool _clamp)
 void STransferFunction::toggleLinearTF(bool _linear)
 {
     // Get the TF.
-    const data::TransferFunction::sptr tf = this->getInOut<data::TransferFunction>(s_TF_INOUT);
-    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    const auto tf = m_tf.lock();
+    SIGHT_ASSERT("inout '" + std::string(s_TF_INOUT) + "' does not exist.", tf);
 
     // Set the interpolation mode.
-    {
-        const data::mt::ObjectWriteLock tfLock(tf);
-        tf->setInterpolationMode(_linear ? data::TransferFunction::LINEAR : data::TransferFunction::NEAREST);
-    }
+    tf->setInterpolationMode(_linear ? data::TransferFunction::LINEAR : data::TransferFunction::NEAREST);
 
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
