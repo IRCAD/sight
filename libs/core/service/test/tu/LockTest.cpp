@@ -215,20 +215,20 @@ void LockTest::testScopedLock()
 
     // Test basic scoped lock from service direct locker
     {
-        auto sharedInput = lockedService->getLockedInput<data::Integer>(service::ut::LockedService::s_INPUT);
-        CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
+        auto sharedInput = lockedService->getWeakInput<data::Integer>(service::ut::LockedService::s_INPUT);
+        CPPUNIT_ASSERT(sharedInput.lock() == input);
     }
 
     {
-        auto sharedInOut = lockedService->getLockedInOut<data::Integer>(service::ut::LockedService::s_INOUT);
-        CPPUNIT_ASSERT_EQUAL(inout, sharedInOut.get_shared());
+        auto sharedInOut = lockedService->getWeakInOut<data::Integer>(service::ut::LockedService::s_INOUT);
+        CPPUNIT_ASSERT(sharedInOut.lock() == inout);
     }
 
     {
-        auto sharedOutput = lockedService->getLockedOutput<data::Integer>(
+        auto sharedOutput = lockedService->getWeakOutput<data::Integer>(
             service::ut::LockedService::s_OUTPUT
         );
-        CPPUNIT_ASSERT_EQUAL(output, sharedOutput.get_shared());
+        CPPUNIT_ASSERT(sharedOutput.lock() == output);
     }
 
     // cleanup
@@ -250,8 +250,8 @@ void LockTest::testDumpLock()
     lockedService->setInput(image, service::ut::LockedService::s_INPUT);
 
     {
-        auto sharedInput = lockedService->getLockedInput<data::Image>(service::ut::LockedService::s_INPUT);
-        CPPUNIT_ASSERT(image == sharedInput.get_shared());
+        auto sharedInput = lockedService->getWeakInput<data::Image>(service::ut::LockedService::s_INPUT).lock();
+        CPPUNIT_ASSERT(sharedInput == image);
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->getBuffer());
     }
@@ -282,7 +282,7 @@ void LockTest::testDumpLock()
     lockedService->setInput(mesh, service::ut::LockedService::s_INPUT);
 
     {
-        auto sharedInput = lockedService->getLockedInput<data::Mesh>(service::ut::LockedService::s_INPUT);
+        auto sharedInput = lockedService->getWeakInput<data::Mesh>(service::ut::LockedService::s_INPUT).lock();
 
         mesh->reserve(3, 1, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS);
 
@@ -296,7 +296,7 @@ void LockTest::testDumpLock()
         ids[1] = mesh->pushPoint(B);
         ids[2] = mesh->pushPoint(C);
 
-        CPPUNIT_ASSERT(mesh == sharedInput.get_shared());
+        CPPUNIT_ASSERT(sharedInput == mesh);
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(A));
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(B));

@@ -149,19 +149,19 @@ void ServiceTest::testServiceCreationWithMultipleData()
     CPPUNIT_ASSERT(nullptr == srv->getObject(dataKey3, data::Access::in));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj1, srv->getLockedInOut<data::Integer>(dataKey1).get_shared());
+    CPPUNIT_ASSERT(srv->getWeakInOut<data::Integer>(dataKey1).lock() == obj1);
 
     srv->setObject(obj2, dataKey2, 0, data::Access::inout, false, false);
     CPPUNIT_ASSERT(obj2 == srv->getObject(dataKey2, data::Access::inout));
 
     // Test getting the service object
-    CPPUNIT_ASSERT_EQUAL(obj2, srv->getLockedInOut<data::Integer>(dataKey2).get_shared());
+    CPPUNIT_ASSERT(srv->getWeakInOut<data::Integer>(dataKey2).lock() == obj2);
 
     srv->setInput(obj3, dataKey3);
     CPPUNIT_ASSERT(obj3 == srv->getObject(dataKey3, data::Access::in));
 
     // Test getting the service object
-    CPPUNIT_ASSERT(obj3 == srv->getLockedInput<data::Integer>(dataKey3).get_shared());
+    CPPUNIT_ASSERT(srv->getWeakInput<data::Integer>(dataKey3).lock() == obj3);
 
     // Test unregistering the objects
     srv->setInOut(nullptr, dataKey1);
@@ -205,7 +205,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     CPPUNIT_ASSERT(obj == srv->getObject(dataKey, data::Access::inout));
 
     // Test getting the service its object
-    CPPUNIT_ASSERT_EQUAL(obj, srv->getLockedInOut<data::Integer>(dataKey).get_shared());
+    CPPUNIT_ASSERT(srv->getWeakInOut<data::Integer>(dataKey).lock() == obj);
 
     srv->setInOut(nullptr, dataKey);
     CPPUNIT_ASSERT(nullptr == srv->getObject(dataKey, data::Access::inout));
@@ -252,7 +252,7 @@ void ServiceTest::testServiceCreationWithUUID()
     // Test getting the service its object
     service::IService::sptr service2bis = service::get(myUUID2);
     CPPUNIT_ASSERT(service2bis);
-    CPPUNIT_ASSERT_EQUAL(obj, service2bis->getLockedInOut<data::Integer>(dataKey).get_shared());
+    CPPUNIT_ASSERT(service2bis->getWeakInOut<data::Integer>(dataKey).lock() == obj);
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2bis->getID());
     CPPUNIT_ASSERT(!core::tools::fwID::exist(myUUID3));
     CPPUNIT_ASSERT_EQUAL(nbServices, service::OSR::getServices("sight::service::ut::TestService").size());
@@ -618,9 +618,7 @@ void ServiceTest::testWithInAndOut()
 
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger->value());
 
-    data::Integer::csptr outInteger2 = service->getLockedOutput<data::Integer>(
-        service::ut::TestServiceWithData::s_OUTPUT
-    ).get_shared();
+    auto outInteger2 = service->getWeakOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT).lock();
     CPPUNIT_ASSERT(outInteger2);
 
     CPPUNIT_ASSERT_EQUAL(obj[0]->value(), outInteger2->value());

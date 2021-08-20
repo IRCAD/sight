@@ -22,16 +22,11 @@
 
 #include "SlotsSignalsStuff.hpp"
 
-#include <core/com/Connection.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/registry/macros.hpp>
 
-#include <service/extension/Factory.hpp>
 #include <service/macros.hpp>
 
 namespace sight::service
@@ -52,8 +47,6 @@ SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::S
 SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SReader2Test, service::ut::Buffer);
 SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test);
 SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SShow2Test, service::ut::Buffer);
-
-const service::IService::KeyType IBasicTest::s_BUFFER_INOUT = "buffer";
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -99,7 +92,7 @@ void SBasicTest::updating()
 
 void SReaderTest::updating()
 {
-    Buffer::sptr buff = this->getInOut<Buffer>(s_BUFFER_INOUT);
+    auto buff = m_buffer.lock();
 
     // Emit object Modified
     data::Object::ModifiedSignalType::sptr sig;
@@ -130,9 +123,8 @@ SShowTest::SShowTest() :
 
 void SShowTest::updating()
 {
-    Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
     std::this_thread::sleep_for(m_receiveRetarder);
-    data::mt::ObjectWriteLock lock(buffer);
+    const auto buffer = m_buffer.lock();
     ++m_receiveCount;
 }
 
@@ -194,11 +186,11 @@ SShow2Test::SShow2Test() :
 
 void SShow2Test::updating()
 {
-    Buffer::sptr buff = this->getInOut<Buffer>(s_BUFFER_INOUT);
+    const auto buffer = m_buffer.lock();
 
     // Emit object Modified
     data::Object::ModifiedSignalType::sptr sig;
-    sig = buff->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    sig = buffer->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_BUFFER_SLOT)));
         sig->asyncEmit();
@@ -210,9 +202,8 @@ void SShow2Test::updating()
 void SShow2Test::updateBuffer()
 {
     {
-        Buffer::sptr buffer = this->getInOut<Buffer>(s_BUFFER_INOUT);
         std::this_thread::sleep_for(m_receiveRetarder);
-        data::mt::ObjectWriteLock lock(buffer);
+        const auto buffer = m_buffer.lock();
         ++m_receiveCount;
     }
 

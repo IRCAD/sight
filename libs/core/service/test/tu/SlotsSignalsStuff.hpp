@@ -85,11 +85,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(IBasicTest, service::IService);
 
-    static const KeyType s_BUFFER_INOUT;
+    static constexpr std::string_view s_BUFFER_INOUT = "buffer";
 
-private:
+protected:
 
-    data::ptr<Buffer, data::Access::inout> m_inout {this, s_BUFFER_INOUT, true};
+    data::ptr<Buffer, data::Access::inout> m_buffer {this, s_BUFFER_INOUT, true};
 };
 
 class SBasicTest : public IBasicTest,
