@@ -132,9 +132,6 @@ protected:
 
 private:
 
-    /// This value is \b true if the path image is known.
-    bool m_bServiceIsConfigured;
-
     /// Image path, location of image on filesystem.
     std::filesystem::path m_fsImgPath;
 

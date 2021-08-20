@@ -47,8 +47,6 @@
 namespace sight::module::io::video
 {
 
-static const service::IService::KeyType s_FRAMETL = "frameTL";
-
 static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
 using sight::io::base::service::IGrabber;
@@ -133,7 +131,7 @@ void SFrameGrabber::startCamera()
         this->stopCamera();
     }
 
-    data::Camera::csptr camera = this->getInput<data::Camera>("camera");
+    const auto camera = m_camera.lock();
 
     if(camera->getCameraSource() == data::Camera::FILE)
     {
@@ -163,11 +161,11 @@ void SFrameGrabber::startCamera()
     }
     else if(camera->getCameraSource() == data::Camera::DEVICE)
     {
-        this->readDevice(camera);
+        this->readDevice(*camera);
     }
     else if(camera->getCameraSource() == data::Camera::STREAM)
     {
-        this->readStream(camera);
+        this->readStream(*camera);
     }
     else
     {
@@ -224,8 +222,8 @@ void SFrameGrabber::stopCamera()
         const auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
-        data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-        this->clearTimeline(frameTL);
+        const auto frameTL = m_frame.lock();
+        this->clearTimeline(*frameTL);
 
         const auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
@@ -240,8 +238,6 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readVideo(const std::filesystem::path& file)
 {
-    data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-
     core::mt::ScopedLock lock(m_mutex);
 
     m_videoCapture.open(file.string());
@@ -292,12 +288,12 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readDevice(const data::Camera::csptr _camera)
+void SFrameGrabber::readDevice(const data::Camera& _camera)
 {
     core::mt::ScopedLock lock(m_mutex);
 
-    const std::string device = _camera->getCameraID();
-    const int index          = _camera->getIndex();
+    const std::string device = _camera.getCameraID();
+    const int index          = _camera.getIndex();
 
 #ifdef __linux__
     // On linux the V4L backend can read from device id (/dev/video...)
@@ -338,10 +334,10 @@ void SFrameGrabber::readDevice(const data::Camera::csptr _camera)
     if(m_videoCapture.isOpened())
     {
         m_timer = m_worker->createTimer();
-        float fps = _camera->getMaximumFrameRate();
+        float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera->getHeight();
-        const size_t width  = _camera->getWidth();
+        const size_t height = _camera.getHeight();
+        const size_t width  = _camera.getWidth();
 
         m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
         m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
@@ -370,19 +366,19 @@ void SFrameGrabber::readDevice(const data::Camera::csptr _camera)
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::readStream(const data::Camera::csptr _camera)
+void SFrameGrabber::readStream(const data::Camera& _camera)
 {
     core::mt::ScopedLock lock(m_mutex);
 
-    m_videoCapture.open(_camera->getStreamUrl());
+    m_videoCapture.open(_camera.getStreamUrl());
 
     if(m_videoCapture.isOpened())
     {
         m_timer = m_worker->createTimer();
-        float fps = _camera->getMaximumFrameRate();
+        float fps = _camera.getMaximumFrameRate();
         fps = fps <= 0.f ? 30.f : fps;
-        const size_t height = _camera->getHeight();
-        const size_t width  = _camera->getWidth();
+        const size_t height = _camera.getHeight();
+        const size_t width  = _camera.getWidth();
 
         m_videoCapture.set(::cv::CAP_PROP_FPS, static_cast<int>(fps));
         m_videoCapture.set(::cv::CAP_PROP_FRAME_WIDTH, static_cast<double>(width));
@@ -401,7 +397,7 @@ void SFrameGrabber::readStream(const data::Camera::csptr _camera)
     {
         sight::ui::base::dialog::MessageDialog::show(
             "Grabber",
-            "This stream:" + _camera->getStreamUrl() + " cannot be opened."
+            "This stream:" + _camera.getStreamUrl() + " cannot be opened."
         );
 
         this->setStartState(false);
@@ -412,8 +408,6 @@ void SFrameGrabber::readStream(const data::Camera::csptr _camera)
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-
     core::mt::ScopedLock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
@@ -470,22 +464,45 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         {
             const size_t w = static_cast<size_t>(width);
             const size_t h = static_cast<size_t>(height);
+
+            auto frameTL = m_frame.lock();
+
             switch(type)
             {
                 case CV_8UC1:
-                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 1);
+                    frameTL->initPoolSize(
+                        w,
+                        h,
+                        core::tools::Type::s_UINT8,
+                        sight::data::FrameTL::PixelFormat::GRAY_SCALE
+                    );
                     break;
 
                 case CV_8UC3:
-                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 3);
+                    frameTL->initPoolSize(
+                        w,
+                        h,
+                        core::tools::Type::s_UINT8,
+                        sight::data::FrameTL::PixelFormat::RGB
+                    );
                     break;
 
                 case CV_8UC4:
-                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT8, 4);
+                    frameTL->initPoolSize(
+                        w,
+                        h,
+                        core::tools::Type::s_UINT8,
+                        sight::data::FrameTL::PixelFormat::RGBA
+                    );
                     break;
 
                 case CV_16UC1:
-                    frameTL->initPoolSize(w, h, core::tools::Type::s_UINT16, 1);
+                    frameTL->initPoolSize(
+                        w,
+                        h,
+                        core::tools::Type::s_UINT16,
+                        sight::data::FrameTL::PixelFormat::GRAY_SCALE
+                    );
                     break;
 
                 default:
@@ -566,15 +583,15 @@ void SFrameGrabber::grabVideo()
 
     if(m_videoCapture.isOpened())
     {
-        data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-
-        const auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>
-                                   (std::chrono::system_clock::now().time_since_epoch()).count();
+        const double timestamp = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>
+                                                         (std::chrono::system_clock::now().time_since_epoch()).count());
 
         const bool isGrabbed = m_videoCapture.grab();
 
         if(isGrabbed)
         {
+            auto frameTL = m_frame.lock();
+
             ::cv::Mat image;
             m_videoCapture.retrieve(image);
 
@@ -598,19 +615,39 @@ void SFrameGrabber::grabVideo()
                 switch(image.type())
                 {
                     case CV_8UC1:
-                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 1);
+                        frameTL->initPoolSize(
+                            width,
+                            height,
+                            core::tools::Type::s_UINT8,
+                            sight::data::FrameTL::PixelFormat::GRAY_SCALE
+                        );
                         break;
 
                     case CV_8UC3:
-                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 3);
+                        frameTL->initPoolSize(
+                            width,
+                            height,
+                            core::tools::Type::s_UINT8,
+                            sight::data::FrameTL::PixelFormat::RGB
+                        );
                         break;
 
                     case CV_8UC4:
-                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT8, 4);
+                        frameTL->initPoolSize(
+                            width,
+                            height,
+                            core::tools::Type::s_UINT8,
+                            sight::data::FrameTL::PixelFormat::RGBA
+                        );
                         break;
 
                     case CV_16UC1:
-                        frameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
+                        frameTL->initPoolSize(
+                            width,
+                            height,
+                            core::tools::Type::s_UINT16,
+                            sight::data::FrameTL::PixelFormat::GRAY_SCALE
+                        );
                         break;
 
                     default:
@@ -683,7 +720,7 @@ void SFrameGrabber::grabImage()
     // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
     if(!m_isPaused && m_imageCount < m_imageToRead.size())
     {
-        data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
+        const auto frameTL = m_frame.lock();
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
@@ -827,13 +864,14 @@ void SFrameGrabber::nextImage()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift = static_cast<long>(m_stepChanged - m_step);
+        const long shift             = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
+        const long shiftedImageCount = static_cast<long>(m_imageCount) + shift;
 
-        if(m_imageCount + shift < m_imageToRead.size())
+        if(shiftedImageCount < static_cast<long>(m_imageToRead.size()))
         {
             // Update image position index
-            m_imageCount += shift;
-            m_step        = m_stepChanged;
+            m_imageCount = static_cast<std::size_t>(shiftedImageCount);
+            m_step       = m_stepChanged;
 
             m_timer->stop();
             m_timer->start();
@@ -857,13 +895,13 @@ void SFrameGrabber::previousImage()
         if(m_imageCount - m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift = static_cast<long>(m_stepChanged - m_step);
+            const long shift             = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
+            const long shiftedimageCount = static_cast<long>(m_imageCount) - shift;
 
             // Update image position index
-            m_imageCount = m_imageCount - (2 * m_step) - shift; // m_imageCount is pointing to next image,so -1 =
-                                                                // present
-                                                                // image
-            m_step = m_stepChanged;
+            // m_imageCount is pointing to next image, so -1 = present image
+            m_imageCount = static_cast<std::size_t>(shiftedimageCount) - (2 * m_step);
+            m_step       = m_stepChanged;
 
             m_timer->stop();
             m_timer->start();

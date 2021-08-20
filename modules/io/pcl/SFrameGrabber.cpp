@@ -42,8 +42,6 @@
 namespace sight::module::io::pcl
 {
 
-static const service::IService::KeyType s_FRAMETL = "frameTL";
-
 using sight::io::base::service::IGrabber;
 
 //------------------------------------------------------------------------------
@@ -177,8 +175,8 @@ void SFrameGrabber::stopCamera()
         auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
-        data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-        this->clearTimeline(frameTL);
+        const auto frameTL = m_frame.lock();
+        this->clearTimeline(*frameTL);
 
         auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
@@ -193,7 +191,7 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
+    const auto frameTL = m_frame.lock();
 
     core::mt::ScopedLock lock(m_mutex);
 
@@ -226,7 +224,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width != 0 && height != 0)
         {
-            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, 3);
+            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
         {
@@ -263,7 +261,7 @@ void SFrameGrabber::grabImage()
 
     if(m_imageCount < m_imageToRead.size())
     {
-        auto frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
+        const auto frameTL = m_frame.lock();
 
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
