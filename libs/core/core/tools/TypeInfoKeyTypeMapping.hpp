@@ -47,36 +47,36 @@ namespace sight::core::tools
 // FIX UNSIGNED
 template<>
 CORE_API
-bool isMapping<unsigned char>(const std::type_info& key);
+bool isMapping<std::uint8_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<unsigned short>(const std::type_info& key);
+bool isMapping<std::uint16_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<unsigned int>(const std::type_info& key);
+bool isMapping<std::uint32_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<unsigned long>(const std::type_info& key);
+bool isMapping<std::uint64_t>(const std::type_info& key);
 
 // FIXED PRECISION SIGNED
 template<>
 CORE_API
-bool isMapping<signed char>(const std::type_info& key);
+bool isMapping<std::int8_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<signed short>(const std::type_info& key);
+bool isMapping<std::int16_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<signed int>(const std::type_info& key);
+bool isMapping<std::int32_t>(const std::type_info& key);
 
 template<>
 CORE_API
-bool isMapping<signed long>(const std::type_info& key);
+bool isMapping<std::int64_t>(const std::type_info& key);
 
 // FLOATING PRECISION
 template<>

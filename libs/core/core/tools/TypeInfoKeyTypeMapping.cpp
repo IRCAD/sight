@@ -40,64 +40,64 @@ bool isMappingTypeInfoCommon(const std::type_info& key)
 
 // FIX UNSIGNED
 template<>
-bool isMapping<unsigned char>(const std::type_info& key)
+bool isMapping<std::uint8_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<unsigned char>(key);
+    return isMappingTypeInfoCommon<std::uint8_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<unsigned short>(const std::type_info& key)
+bool isMapping<std::uint16_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<unsigned short>(key);
+    return isMappingTypeInfoCommon<std::uint16_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<unsigned int>(const std::type_info& key)
+bool isMapping<std::uint32_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<unsigned int>(key);
+    return isMappingTypeInfoCommon<std::uint32_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<unsigned long>(const std::type_info& key)
+bool isMapping<std::uint64_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<unsigned long>(key);
+    return isMappingTypeInfoCommon<std::uint64_t>(key);
 }
 
 // FIXED PRECISION SIGNED
 template<>
-bool isMapping<signed char>(const std::type_info& key)
+bool isMapping<std::int8_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<signed char>(key);
+    return isMappingTypeInfoCommon<std::int8_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<signed short>(const std::type_info& key)
+bool isMapping<std::int16_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<signed short>(key);
+    return isMappingTypeInfoCommon<std::int16_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<signed int>(const std::type_info& key)
+bool isMapping<std::int32_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<signed int>(key);
+    return isMappingTypeInfoCommon<std::int32_t>(key);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-bool isMapping<signed long>(const std::type_info& key)
+bool isMapping<std::int64_t>(const std::type_info& key)
 {
-    return isMappingTypeInfoCommon<signed long>(key);
+    return isMappingTypeInfoCommon<std::int64_t>(key);
 }
 
 // FLOATING PRECISION

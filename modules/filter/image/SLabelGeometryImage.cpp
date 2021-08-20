@@ -23,11 +23,9 @@
 #include "modules/filter/image/SLabelGeometryImage.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
 #include <core/com/Slots.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
-#include <core/tools/IntrinsicTypes.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
@@ -35,8 +33,6 @@
 #include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
-
-#include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 

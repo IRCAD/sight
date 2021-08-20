@@ -30,7 +30,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/memory/IBuffered.hpp>
-#include <core/tools/DynamicType.hpp>
 #include <core/tools/Type.hpp>
 
 #include <boost/shared_array.hpp>
@@ -655,13 +654,6 @@ public:
     [[deprecated("it will be removed in sight 22.0, use resize() instead")]]
     DATA_API size_t allocate(const SizeType& size, const core::tools::Type& type, size_t numberOfComponents = 1);
     /// @}
-
-    /**
-     * @brief get a DynamicType for retrocompatibility
-     * @deprecated Use getType()
-     */
-    [[deprecated("it will be removed in sight 22.0, use getType()")]]
-    DATA_API core::tools::DynamicType getPixelType() const;
 
     /**
      * @brief set data array

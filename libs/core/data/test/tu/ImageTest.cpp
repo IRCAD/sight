@@ -283,48 +283,6 @@ void ImageTest::testReallocation()
 
 //------------------------------------------------------------------------------
 
-void ImageTest::testPixelType()
-{
-    // old API begin --------------------------
-    data::Image::sptr img1 = data::Image::New();
-    core::tools::DynamicType DT1;
-
-    img1->setType(core::tools::Type::create("int8"));
-    DT1.setType<signed char>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("int16"));
-    DT1.setType<signed short>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("int32"));
-    DT1.setType<signed int>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("uint8"));
-    DT1.setType<unsigned char>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("uint16"));
-    DT1.setType<unsigned short>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("uint32"));
-    DT1.setType<unsigned int>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("float"));
-    DT1.setType<float>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-
-    img1->setType(core::tools::Type::create("double"));
-    DT1.setType<double>();
-    CPPUNIT_ASSERT(DT1 == img1->getPixelType());
-    // old API end --------------------------
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTest::testSetGetPixel()
 {
     data::Image::sptr img = data::Image::New();

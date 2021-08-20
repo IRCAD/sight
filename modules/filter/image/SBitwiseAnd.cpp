@@ -24,14 +24,12 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 #include <core/tools/IntegerTypes.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/ImageGetter.hpp>
 
 #include <io/itk/itk.hpp>
-
-#include <service/macros.hpp>
 
 #include <itkAndImageFilter.h>
 #include <itkCastImageFilter.h>
@@ -109,7 +107,7 @@ struct AndImageFilterCaller
     template<class PIXELTYPE>
     void operator()(AndImageFilterParameters& params)
     {
-        const core::tools::DynamicType maskType = params.mask->getPixelType();
+        const auto maskType = params.mask->getType();
         core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
     }
 };
@@ -158,7 +156,7 @@ void SBitwiseAnd::updating()
     params.mask        = mask.get_shared();
     params.outputImage = outputImage;
 
-    core::tools::DynamicType type = image->getPixelType();
+    const auto type = image->getType();
     core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilterCaller>::invoke(type, params);
 
     this->setOutput(s_OUTPUTIMAGE_OUT, outputImage);

@@ -47,7 +47,7 @@ struct EndTypeListAction
     {
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
     template<class KeyType>
     static void invoke(const KeyType& keytype)
     {
@@ -56,7 +56,7 @@ struct EndTypeListAction
         throw std::invalid_argument(msg);
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
     template<class KeyType, class Parameter>
     static void invoke(const KeyType& keytype, const Parameter& param)
     {
@@ -66,7 +66,7 @@ struct EndTypeListAction
         throw std::invalid_argument(msg);
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
+    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
     template<class BaseClass, class KeyType>
     static BaseClass* instanciate(const KeyType& keytype)
     {
@@ -78,7 +78,7 @@ struct EndTypeListAction
 };
 
 /**
- * @brief   Create an automatic template instancier exple Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
+ * @brief   Create an automatic template instantiater example Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
  *
  * Will instanciante class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method
  * according to parameter of invoke static method. ie FUNCTOR().operator<int>();
@@ -94,13 +94,13 @@ struct Dispatcher
     public:
 
         /**
-         * @brief Instanciate and invoke all functors
+         * @brief Instantiate and invoke all functors
          */
         static void invoke()
         {
             namespace mpl = boost::mpl;
 
-            // create the functor then excute it
+            // create the functor then execute it
             FUNCTOR f;
 #ifdef _WIN32
             f.operator()<Head>();
@@ -147,8 +147,8 @@ struct Dispatcher
             }
         }
 
-        // NOTE gcc seems unable to explicit call of static template fonction member :/
-        // all arguments needs to be present specicied template seems ignored
+        // NOTE gcc seems unable to explicit call of static template function member :/
+        // all arguments needs to be present specified template seems ignored
 
         /**
          * @brief Invoke only the specified Type only with a fixed parameter
