@@ -24,6 +24,7 @@
 
 #include "modules/geometry/base/config.hpp"
 
+#include <data/Landmarks.hpp>
 #include <data/Matrix4.hpp>
 
 #include <service/IService.hpp>
@@ -108,9 +109,6 @@ private:
     /// SLOT: updates removed point.
     void removePoint();
 
-    /// Transform to apply to Landmark.
-    data::Matrix4::csptr m_transform;
-
     /// Label containing the landmark group name.
     std::string m_label {""};
 
@@ -119,6 +117,12 @@ private:
 
     /// Bool showing if a landmark is selected.
     bool m_landmarkSelected {false};
+
+    static constexpr std::string_view s_TRANSFORM_INPUT = "matrix";
+    static constexpr std::string_view s_LANDMARK_INOUT  = "landmark";
+
+    data::ptr<sight::data::Matrix4, data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
+    data::ptr<sight::data::Landmarks, data::Access::inout> m_landmarks {this, s_LANDMARK_INOUT};
 };
 
 } // namespace sight::module::geometry::base
