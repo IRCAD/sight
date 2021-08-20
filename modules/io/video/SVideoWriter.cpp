@@ -290,7 +290,8 @@ void SVideoWriter::startRecord()
 
     if(this->hasLocationDefined())
     {
-        auto frameTL = this->getLockedInput<data::FrameTL>(sight::io::base::service::s_DATA_KEY);
+        const auto data    = m_data.lock();
+        const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(data.get_shared());
 
         if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {

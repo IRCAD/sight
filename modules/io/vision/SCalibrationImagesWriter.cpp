@@ -110,8 +110,8 @@ void SCalibrationImagesWriter::updating()
 {
     if(!m_fileExtension.empty() && this->hasLocationDefined())
     {
-        data::CalibrationInfo::csptr calibInfo =
-            this->getInput<data::CalibrationInfo>(sight::io::base::service::s_DATA_KEY);
+        const auto data      = m_data.lock();
+        const auto calibInfo = std::dynamic_pointer_cast<const data::CalibrationInfo>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info input.", calibInfo);
 
         sight::ui::base::Cursor cursor;

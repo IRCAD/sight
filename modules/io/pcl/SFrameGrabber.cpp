@@ -102,7 +102,7 @@ void SFrameGrabber::startCamera()
         this->stopCamera();
     }
 
-    data::Camera::csptr camera = this->getInput<data::Camera>("camera");
+    const auto camera = m_camera.lock();
 
     if(camera->getCameraSource() == data::Camera::FILE)
     {
@@ -305,8 +305,7 @@ void SFrameGrabber::grabImage()
 
             frameTL->pushObject(bufferOut);
 
-            auto sig =
-                frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
+            auto sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
             m_imageCount++;

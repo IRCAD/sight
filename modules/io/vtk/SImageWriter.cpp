@@ -242,8 +242,8 @@ void SImageWriter::updating()
 {
     if(this->hasLocationDefined())
     {
-        // Retrieve dataStruct associated with this service
-        const auto pImage = this->getLockedInput<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto data   = m_data.lock();
+        const auto pImage = std::dynamic_pointer_cast<const data::Image>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
 
         sight::ui::base::Cursor cursor;
@@ -251,7 +251,7 @@ void SImageWriter::updating()
 
         try
         {
-            this->saveImage(this->getFile(), pImage.get_shared(), m_sigJobCreated);
+            this->saveImage(this->getFile(), pImage, m_sigJobCreated);
         }
         catch(core::tools::Failed& e)
         {

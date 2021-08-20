@@ -240,7 +240,7 @@ void SGrabberProxy::startCamera()
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getLockedInOut<data::Object>(key);
+                        const auto obj = this->getWeakInOut<data::Object>(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
@@ -446,7 +446,7 @@ void SGrabberProxy::startCamera()
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getLockedInOut<data::FrameTL>(key);
+                    auto frameTL = this->getWeakInOut<data::FrameTL>(key).lock();
                     if(frameTL)
                     {
                         if(m_services.size() > 1)

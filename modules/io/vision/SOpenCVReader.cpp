@@ -118,7 +118,8 @@ void SOpenCVReader::stopping()
 
 void SOpenCVReader::updating()
 {
-    data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>(sight::io::base::service::s_DATA_KEY);
+    const auto data      = m_data.lock();
+    const auto camSeries = std::dynamic_pointer_cast<data::CameraSeries>(data.get_shared());
 
     bool use_dialog = false;
 

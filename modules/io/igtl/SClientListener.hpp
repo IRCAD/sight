@@ -50,7 +50,7 @@ namespace sight::module::io::igtl
  * @endcode
  * @subsection In-Out In-Out:
  * - \b object [sight::data::Object]:
- *   - if associated object is a timeline (data::MatrixT or data::FrameTL):
+ *   - if associated object is a timeline (data::MatrixTL or data::FrameTL):
  *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
@@ -112,6 +112,8 @@ private:
 
     /// Vector of device name used
     std::vector<std::string> m_deviceNames;
+
+    data::ptr_vector<data::Object, sight::data::Access::inout> m_objects {this, "objects"};
 };
 
 } // namespace sight::module::io::igtl

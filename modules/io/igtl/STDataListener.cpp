@@ -27,7 +27,6 @@
 
 #include <data/Composite.hpp>
 #include <data/Matrix4.hpp>
-#include <data/MatrixTL.hpp>
 
 #include <service/macros.hpp>
 
@@ -41,8 +40,6 @@
 
 namespace sight::module::io::igtl
 {
-
-static const std::string s_TIMELINE_KEY = "timeline";
 
 //-----------------------------------------------------------------------------
 
@@ -180,7 +177,7 @@ void STDataListener::runClient()
 
 void STDataListener::starting()
 {
-    data::MatrixTL::sptr matTL = this->getInOut<data::MatrixTL>(s_TIMELINE_KEY);
+    const auto matTL = m_timeline.lock();
     matTL->setMaximumSize(10);
     matTL->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
 
@@ -200,7 +197,7 @@ void STDataListener::stopping()
 
 void STDataListener::manageTimeline(const data::Composite::sptr& obj, double timestamp)
 {
-    data::MatrixTL::sptr matTL = this->getInOut<data::MatrixTL>(s_TIMELINE_KEY);
+    const auto matTL = m_timeline.lock();
     SPTR(data::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
