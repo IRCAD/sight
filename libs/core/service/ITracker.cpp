@@ -40,9 +40,6 @@ const core::com::Slots::SlotKeyType ITracker::s_TRACK_SLOT          = "track";
 const core::com::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracking";
 const core::com::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTracking";
 
-const service::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
-const service::IService::KeyType ITracker::s_FRAME_INOUT    = "frame";
-
 //-----------------------------------------------------------------------------
 
 ITracker::ITracker() :
@@ -86,9 +83,9 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
     if(m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
     {
-        data::BufferTL::csptr timeline = this->getInput<data::BufferTL>(s_TIMELINE_INPUT);
+        const auto timeline = m_timeline.lock();
         SIGHT_WARN_IF(
-            "the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
+            "the object '" << s_TIMELINE_INPUT << "' is not defined, the 'drop' mode cannot be managed.",
             !timeline
         );
         if(timeline)

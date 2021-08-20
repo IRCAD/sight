@@ -27,6 +27,8 @@
 
 #include <core/HiResClock.hpp>
 
+#include <data/FrameTL.hpp>
+
 namespace sight::service
 {
 
@@ -60,8 +62,8 @@ public:
     SERVICE_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;
     SERVICE_API static const core::com::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
-    SERVICE_API static const service::IService::KeyType s_TIMELINE_INPUT;
-    SERVICE_API static const service::IService::KeyType s_FRAME_INOUT;
+    SERVICE_API static constexpr std::string_view s_TIMELINE_INPUT = "timeline";
+    SERVICE_API static constexpr std::string_view s_FRAME_INOUT    = "frame";
 
     /// Defines the auto-connection between the timeline and the 'track' slot
     SERVICE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -122,6 +124,8 @@ protected:
 
     /// If false, the trackMethod does nothing
     bool m_isTracking;
+
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
 };
 
 } // arServices
