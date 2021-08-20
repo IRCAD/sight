@@ -76,9 +76,9 @@ void HelperTest::toSight()
             0.4
         );
 
-    const data::Camera::sptr cam = navigation::openvslam::Helper::toSight(oVSlamCam);
+    const auto cam = navigation::openvslam::Helper::toSight(oVSlamCam);
 
-    compareCam(cam, oVSlamCam, true);
+    compareCam(*cam.get(), oVSlamCam, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,17 +86,17 @@ void HelperTest::toSight()
 void HelperTest::fromSight()
 {
     //Create a dummy data::Camera;
-    data::Camera::sptr cam = data::Camera::New();
+    data::Camera cam;
 
-    cam->setCameraID("Dummy Test Camera");
-    cam->setWidth(1920);
-    cam->setWidth(1080);
-    cam->setFx(400);
-    cam->setFy(401);
-    cam->setCx(200);
-    cam->setCy(201);
-    cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
-    cam->setMaximumFrameRate(60.0);
+    cam.setCameraID("Dummy Test Camera");
+    cam.setWidth(1920);
+    cam.setWidth(1080);
+    cam.setFx(400);
+    cam.setFy(401);
+    cam.setCx(200);
+    cam.setCy(201);
+    cam.setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
+    cam.setMaximumFrameRate(60.0);
 
     const auto oVSlamCam = navigation::openvslam::Helper::fromSight(cam);
 
@@ -109,17 +109,17 @@ void HelperTest::fromSight()
 void HelperTest::createConfig()
 {
     //Create a dummy data::Camera;
-    data::Camera::sptr cam = data::Camera::New();
+    data::Camera cam;
 
-    cam->setCameraID("Dummy Test Camera");
-    cam->setWidth(1920);
-    cam->setWidth(1080);
-    cam->setFx(400);
-    cam->setFy(401);
-    cam->setCx(200);
-    cam->setCy(201);
-    cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
-    cam->setMaximumFrameRate(60.0);
+    cam.setCameraID("Dummy Test Camera");
+    cam.setWidth(1920);
+    cam.setWidth(1080);
+    cam.setFx(400);
+    cam.setFy(401);
+    cam.setCx(200);
+    cam.setCy(201);
+    cam.setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
+    cam.setMaximumFrameRate(60.0);
 
     navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
@@ -149,17 +149,17 @@ void HelperTest::createConfig()
 void HelperTest::writeReadConfig()
 {
     //Create a dummy data::Camera;
-    data::Camera::sptr cam = data::Camera::New();
+    data::Camera cam;
 
-    cam->setCameraID("Dummy Test Camera");
-    cam->setWidth(1920);
-    cam->setWidth(1080);
-    cam->setFx(400);
-    cam->setFy(401);
-    cam->setCx(200);
-    cam->setCy(201);
-    cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
-    cam->setMaximumFrameRate(60.0);
+    cam.setCameraID("Dummy Test Camera");
+    cam.setWidth(1920);
+    cam.setWidth(1080);
+    cam.setFx(400);
+    cam.setFy(401);
+    cam.setCx(200);
+    cam.setCy(201);
+    cam.setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
+    cam.setMaximumFrameRate(60.0);
 
     navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
@@ -232,22 +232,22 @@ void HelperTest::writeReadConfig()
 //-----------------------------------------------------------------------------
 
 void HelperTest::compareCam(
-    const data::Camera::csptr _sightCam,
+    const data::Camera& _sightCam,
     const ::openvslam::camera::perspective& _ovsCam,
     bool _sightExpected
 )
 {
     if(_sightExpected)
     {
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getCameraID(), _ovsCam.name_);
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getWidth(), static_cast<size_t>(_ovsCam.cols_));
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getHeight(), static_cast<size_t>(_ovsCam.rows_));
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getFx(), _ovsCam.fx_);
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getFy(), _ovsCam.fy_);
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getCx(), _ovsCam.cx_);
-        CPPUNIT_ASSERT_EQUAL(_sightCam->getCy(), _ovsCam.cy_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getCameraID(), _ovsCam.name_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getWidth(), static_cast<size_t>(_ovsCam.cols_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getHeight(), static_cast<size_t>(_ovsCam.rows_));
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getFx(), _ovsCam.fx_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getFy(), _ovsCam.fy_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getCx(), _ovsCam.cx_);
+        CPPUNIT_ASSERT_EQUAL(_sightCam.getCy(), _ovsCam.cy_);
 
-        const auto dist = _sightCam->getDistortionCoefficient();
+        const auto dist = _sightCam.getDistortionCoefficient();
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], _ovsCam.k1_, 10e-8);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], _ovsCam.k2_, 10e-8);
@@ -257,15 +257,15 @@ void HelperTest::compareCam(
     }
     else
     {
-        CPPUNIT_ASSERT_EQUAL(_ovsCam.name_, _sightCam->getCameraID());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.cols_), _sightCam->getWidth());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.rows_), _sightCam->getHeight());
-        CPPUNIT_ASSERT_EQUAL(_ovsCam.fx_, _sightCam->getFx());
-        CPPUNIT_ASSERT_EQUAL(_ovsCam.fy_, _sightCam->getFy());
-        CPPUNIT_ASSERT_EQUAL(_ovsCam.cx_, _sightCam->getCx());
-        CPPUNIT_ASSERT_EQUAL(_ovsCam.cy_, _sightCam->getCy());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.name_, _sightCam.getCameraID());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.cols_), _sightCam.getWidth());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(_ovsCam.rows_), _sightCam.getHeight());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.fx_, _sightCam.getFx());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.fy_, _sightCam.getFy());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.cx_, _sightCam.getCx());
+        CPPUNIT_ASSERT_EQUAL(_ovsCam.cy_, _sightCam.getCy());
 
-        const auto dist = _sightCam->getDistortionCoefficient();
+        const auto dist = _sightCam.getDistortionCoefficient();
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.k1_, dist[0], 10e-8);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(_ovsCam.k2_, dist[1], 10e-8);

@@ -15,6 +15,7 @@ sdkdir="@Sight_LIBRARY_DIR@"
 extdir="@Sight_EXTRA_LIBRARY_DIR@"
 moduledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
 moduleopt="@SIGHT_EXTRA_MODULES@"
+sightdepslibs="@SIGHT_EXTERNAL_LIBRARIES_LIB_PATH@"
 
 # compute LD_LIBRARY_PATH
 if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
@@ -27,6 +28,10 @@ fi
 
 if [ ! -z "${extdir}" -a "${extdir}" != " " ]; then
     LD_LIBRARY_PATH=${extdir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+fi
+
+if [ ! -z "${sightdepslibs}" -a "${sightdepslibs}" != " " ]; then
+    LD_LIBRARY_PATH=${sightdepslibs}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 fi
 
 # export LD_LIBRARY_PATH

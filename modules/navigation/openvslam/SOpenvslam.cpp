@@ -245,7 +245,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     {
         const auto camera = m_camera.lock();
         const auto config = sight::navigation::openvslam::Helper::createMonocularConfig(
-            camera.get_shared(),
+            *camera,
             m_orbParameters,
             m_initializerParameters
         );
@@ -918,6 +918,8 @@ void SOpenvslam::updatePointCloud()
         auto sigMesh = poincloud->signal<data::Object::ModifiedSignalType>
                            (data::Object::s_MODIFIED_SIG);
         sigMesh->asyncEmit();
+
+        std::cout << "updatePointCloud..." << __LINE__ << std::endl;
     }
 }
 

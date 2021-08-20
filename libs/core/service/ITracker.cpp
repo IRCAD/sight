@@ -83,22 +83,24 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
     if(m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
     {
-        const auto timeline = m_timeline.lock();
-        SIGHT_WARN_IF(
-            "the object '" << s_TIMELINE_INPUT << "' is not defined, the 'drop' mode cannot be managed.",
-            !timeline
-        );
-        if(timeline)
         {
-            if(m_dropObj)
+            const auto timeline = m_timeline.lock();
+            SIGHT_WARN_IF(
+                "the object '" << s_TIMELINE_INPUT << "' is not defined, the 'drop' mode cannot be managed.",
+                !timeline
+            );
+            if(timeline)
             {
-                timestamp = timeline->getNewerTimestamp();
-            }
+                if(m_dropObj)
+                {
+                    timestamp = timeline->getNewerTimestamp();
+                }
 
-            if(timeline->getClosestObject(timestamp) == nullptr)
-            {
-                SIGHT_WARN("[" + this->getClassname() + "] No buffer found for the timeline.");
-                return;
+                if(timeline->getClosestObject(timestamp) == nullptr)
+                {
+                    SIGHT_WARN("[" + this->getClassname() + "] No buffer found for the timeline.");
+                    return;
+                }
             }
         }
 

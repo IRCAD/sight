@@ -43,6 +43,25 @@ const core::com::Signals::SignalKeyType Camera::s_ID_MODIFIED_SIG          = "id
 
 //------------------------------------------------------------------------------
 
+Camera::Camera() :
+    m_width(0),
+    m_height(0),
+    m_skew(0.),
+    m_isCalibrated(false),
+    m_maxFrameRate(30.f),
+    m_pixelFormat(INVALID),
+    m_cameraSource(UNKNOWN),
+    m_scale(1.)
+{
+    m_intrinsic.fill(0.);
+    m_distortionCoefficient.fill(0.);
+
+    newSignal<IntrinsicCalibratedSignalType>(s_INTRINSIC_CALIBRATED_SIG);
+    newSignal<IdModifiedSignalType>(s_ID_MODIFIED_SIG);
+}
+
+//------------------------------------------------------------------------------
+
 Camera::Camera(data::Object::Key) :
     m_width(0),
     m_height(0),
