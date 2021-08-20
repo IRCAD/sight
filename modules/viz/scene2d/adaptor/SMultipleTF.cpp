@@ -1755,7 +1755,7 @@ void SMultipleTF::removeCurrenTF()
         SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", tf);
         m_currentTF = tf;
         // This action will call swapping method but m_currentTF is set, nothing will be done. The scene is draw after.
-        this->setOutput(s_TF_OUTPUT, tf);
+        m_tfOut = tf;
 
         // Sends the signal.
         auto sig = tfPool->signal<data::Composite::RemovedObjectsSignalType>(
