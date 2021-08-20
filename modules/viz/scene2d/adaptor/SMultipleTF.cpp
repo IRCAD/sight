@@ -136,7 +136,7 @@ void SMultipleTF::starting()
             SIGHT_ASSERT("inout '" + std::string(s_TF_POOL_INOUT) + "' must contain only TF.", poolTF);
             m_currentTF = poolTF;
             // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-            this->setOutput(s_TF_OUTPUT, poolTF);
+            m_tfOut = poolTF;
         }
     }
 
@@ -820,7 +820,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
             {
                 this->setCurrentTF(matchingSubTF[0]);
                 // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-                this->setOutput(s_TF_OUTPUT, matchingSubTF[0]->m_tf);
+                m_tfOut = matchingSubTF[0]->m_tf;
             }
         }
         // Finds the closets one.
@@ -939,7 +939,7 @@ void SMultipleTF::leftButtonCLickEvent(const sight::viz::scene2d::data::Event& _
             {
                 this->setCurrentTF(newCurrentSubTF);
                 // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-                this->setOutput(s_TF_OUTPUT, newCurrentSubTF->m_tf);
+                m_tfOut = newCurrentSubTF->m_tf;
             }
         }
     }
@@ -967,7 +967,7 @@ void SMultipleTF::leftButtonClickOnPointEvent(
     {
         this->setCurrentTF(_subTF);
         // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-        this->setOutput(s_TF_OUTPUT, _subTF->m_tf);
+        m_tfOut = _subTF->m_tf;
     }
 }
 
@@ -1925,7 +1925,7 @@ void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
     // Updates the current TF.
     this->setCurrentTF(newSubTF);
     // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
-    this->setOutput(s_TF_OUTPUT, _tf);
+    m_tfOut = _tf;
 }
 
 //-----------------------------------------------------------------------------
