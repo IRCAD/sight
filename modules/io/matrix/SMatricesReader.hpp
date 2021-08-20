@@ -173,6 +173,9 @@ private:
     unsigned long m_step;
     /// Step value updated in setStep() slot used to compute a shift value when calling readPrevious()/readNext() slots
     unsigned long m_stepChanged;
+
+    static constexpr std::string_view s_MATRIXTL = "matrixTL";
+    sight::data::ptr<sight::data::MatrixTL, sight::data::Access::inout> m_matrixTL {this, s_MATRIXTL};
 };
 
 } // ioTimeline

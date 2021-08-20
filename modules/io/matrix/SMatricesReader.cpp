@@ -45,8 +45,6 @@
 namespace sight::module::io::matrix
 {
 
-static const service::IService::KeyType s_MATRIXTL = "matrixTL";
-
 static const core::com::Slots::SlotKeyType s_START_READING = "startReading";
 static const core::com::Slots::SlotKeyType s_STOP_READING  = "stopReading";
 static const core::com::Slots::SlotKeyType s_PAUSE         = "pause";
@@ -179,11 +177,12 @@ void SMatricesReader::readPrevious()
         if(m_tsMatricesCount - m_step >= m_stepChanged)
         {
             // Compute difference between a possible step change in setStep() slot and the current step value
-            const long shift = static_cast<long>(m_stepChanged - m_step);
+            const long shift   = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
+            const long shifted = static_cast<long>(m_tsMatricesCount) - shift;
 
-            m_tsMatricesCount = m_tsMatricesCount - (2 * m_step) - shift; // m_tsMatricesCount is pointing to previous
-                                                                          // matrix,so -1 = present matrix
-            m_step = m_stepChanged;
+            // m_tsMatricesCount is pointing to previous matrix,so -1 = present matrix
+            m_tsMatricesCount = static_cast<std::size_t>(shifted) - (2 * m_step);
+            m_step            = m_stepChanged;
 
             m_timer->stop();
             m_timer->start();
@@ -205,13 +204,14 @@ void SMatricesReader::readNext()
     if(m_oneShot)
     {
         // Compute difference between a possible step change in setStep() slot and the current step value
-        const long shift = static_cast<long>(m_stepChanged - m_step);
+        const long shift   = static_cast<long>(m_stepChanged) - static_cast<long>(m_step);
+        const long shifted = static_cast<long>(m_tsMatricesCount) + shift;
 
-        if(m_tsMatricesCount + shift < m_tsMatrices.size())
+        if(shifted < static_cast<long>(m_tsMatrices.size()))
         {
             // Update matrix position index
-            m_tsMatricesCount += shift;
-            m_step             = m_stepChanged;
+            m_tsMatricesCount = static_cast<std::size_t>(shifted);
+            m_step            = m_stepChanged;
 
             m_timer->stop();
             m_timer->start();
@@ -285,7 +285,7 @@ void SMatricesReader::startReading()
 
                 const unsigned int nbOfMatrices = static_cast<unsigned int>((nbOfElements - 1) / 16);
 
-                data::MatrixTL::sptr matrixTL = this->getInOut<data::MatrixTL>(s_MATRIXTL);
+                const auto matrixTL = m_matrixTL.lock();
                 matrixTL->initPoolSize(nbOfMatrices);
 
                 TimeStampedMatrices currentTsMat;
@@ -396,7 +396,7 @@ void SMatricesReader::stopReading()
     m_tsMatricesCount = 0;
 
     //clear the timeline
-    auto matrixTL = this->getLockedInOut<data::MatrixTL>(s_MATRIXTL);
+    const auto matrixTL = m_matrixTL.lock();
     matrixTL->clearTimeline();
 
     auto sig = matrixTL->signal<data::TimeLine::ObjectClearedSignalType>(data::TimeLine::s_CLEARED_SIG);
@@ -419,8 +419,8 @@ void SMatricesReader::readMatrices()
 {
     if(m_tsMatricesCount < m_tsMatrices.size())
     {
-        const auto tStart             = core::HiResClock::getTimeInMilliSec();
-        data::MatrixTL::sptr matrixTL = this->getInOut<data::MatrixTL>(s_MATRIXTL);
+        const auto tStart   = core::HiResClock::getTimeInMilliSec();
+        const auto matrixTL = m_matrixTL.lock();
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
 
