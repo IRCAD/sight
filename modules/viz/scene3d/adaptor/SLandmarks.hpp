@@ -391,6 +391,12 @@ private:
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
     std::uint32_t m_landmarksQueryFlag {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
+    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+
+    sight::data::ptr<sight::data::Landmarks, sight::data::Access::in> m_landmarks {this, s_LANDMARKS_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

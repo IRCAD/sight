@@ -162,6 +162,9 @@ private:
 
     /// Defines the signal sent on picking events.
     core::com::Signal<void(data::tools::PickingInfo)>::sptr m_pickedSig;
+
+    static constexpr std::string_view s_IMAGE_INPUT = "image";
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

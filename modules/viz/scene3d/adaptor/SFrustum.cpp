@@ -27,9 +27,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-#include <data/Material.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
@@ -43,7 +40,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_CAMERA_INPUT = "camera";
 static const std::string s_NEAR_CONFIG  = "near";
 static const std::string s_FAR_CONFIG   = "far";
 static const std::string s_COLOR_CONFIG = "color";
@@ -106,7 +102,7 @@ void SFrustum::starting()
     materialAdaptor->update();
 
     // Create camera
-    m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
+    m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
     m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
     m_ogreCamera->setVisible(m_isVisible);
 
@@ -173,7 +169,7 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const auto camera = this->getLockedInput<data::Camera>(s_CAMERA_INPUT);
+    const auto camera = m_camera.lock();
 
     if(camera->getIsCalibrated())
     {
@@ -187,7 +183,7 @@ void SFrustum::setOgreCamFromData()
     }
     else
     {
-        SIGHT_WARN("The camera '" + s_CAMERA_INPUT + "' is not calibrated");
+        SIGHT_WARN("The camera '" + std::string(s_CAMERA_INPUT) + "' is not calibrated");
     }
 }
 

@@ -34,8 +34,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const service::IService::KeyType s_OBJECT_INPUT = "object";
-
 static const core::com::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
 
 static const std::string s_TEXT_CONFIG        = "text";
@@ -213,8 +211,7 @@ void SText::updateText()
 {
     std::string textString = m_textString;
 
-    const auto objW = this->getWeakInput<data::Object>(s_OBJECT_INPUT);
-    const auto obj  = objW.lock();
+    const auto obj = m_object.lock();
 
     if(obj)
     {
