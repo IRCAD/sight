@@ -317,7 +317,7 @@ void SQueryEditor::queryStudyDate()
 
 void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>("seriesDB");
+    const auto seriesDB = m_seriesDB.lock();
     data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Delete old series from the SeriesDB

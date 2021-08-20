@@ -285,9 +285,7 @@ void SQueryEditor::executeQuery()
     // Initialize connection.
     try
     {
-        const auto pacsConfiguration = this->getLockedInput<const sight::io::dimse::data::PacsConfiguration>(
-            s_PACS_INPUT
-        );
+        const auto pacsConfiguration = m_config.lock();
 
         seriesEnquirer->initialize(
             pacsConfiguration->getLocalApplicationTitle(),
@@ -544,7 +542,7 @@ void SQueryEditor::executeQuery()
 
 void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
 {
-    const auto seriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIESDB_INOUT);
+    const auto seriesDB = m_seriesDB.lock();
 
     data::helper::SeriesDB seriesDBHelper(*seriesDB);
 

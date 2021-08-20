@@ -24,6 +24,8 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
+#include <data/DicomSeries.hpp>
+
 #include <io/http/ClientQt.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -120,10 +122,10 @@ private:
      * @brief Read the selected image
      * @param[in] selectedSliceIndex Selected slice of the image that must be read
      */
-    void readImage(size_t selectedSliceIndex);
+    void readImage(sight::data::DicomSeries& dicomSeries, size_t selectedSliceIndex);
 
     /// Pull the selected slice from the Pacs
-    void pullInstance();
+    void pullInstance(sight::data::DicomSeries& dicomSeries);
 
     /**
      * @brief Displays a dialog box with the error message
@@ -181,6 +183,8 @@ private:
 
     /// Server port
     int m_serverPort {4242};
+
+    sight::data::ptr<sight::data::DicomSeries, sight::data::Access::inout> m_series {this, "series"};
 };
 
 } // namespace sight::module::io::dicomweb

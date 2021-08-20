@@ -26,11 +26,9 @@
 #include <core/tools/System.hpp>
 
 #include <data/fieldHelper/Image.hpp>
-#include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 
-#include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
@@ -46,11 +44,6 @@ namespace sight::module::io::dimse
 static const std::string s_DELAY_CONFIG        = "delay";
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
-
-static const service::IService::KeyType s_DICOMSERIES_INOUT = "series";
-static const service::IService::KeyType s_IMAGE_INOUT       = "image";
-
-static const service::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
 //------------------------------------------------------------------------------
 
@@ -100,7 +93,7 @@ void SSliceIndexDicomEditor::starting()
         core::runtime::ConfigurationElement::csptr readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig,
-                "::io::base::service::IReader"
+                "sight::io::base::service::IReader"
             );
 
         SIGHT_ASSERT(
@@ -168,7 +161,7 @@ service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections(
 void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
-    const auto dicomSeries   = this->getLockedInOut<const data::DicomSeries>(s_DICOMSERIES_INOUT);
+    const auto dicomSeries   = m_series.lock();
     const size_t sliceNumber = dicomSeries->getNumberOfInstances();
 
     if(sliceNumber > 0)
@@ -228,7 +221,7 @@ void SSliceIndexDicomEditor::setSliderInformation(unsigned _value)
 void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
-    const auto dicomSeries          = this->getLockedInOut<data::DicomSeries>(s_DICOMSERIES_INOUT);
+    const auto dicomSeries          = m_series.lock();
     const size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable  = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
@@ -250,7 +243,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     bool success = false;
 
     // Retrieve informations.
-    const auto pacsConfig = this->getLockedInput<const sight::io::dimse::data::PacsConfiguration>(s_PACS_INPUT);
+    const auto pacsConfig = m_config.lock();
 
     auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -272,7 +265,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         this->notify(NotificationType::FAILURE, "Unable to connect to PACS");
     }
 
-    const auto dicomSeries = this->getLockedInOut<data::DicomSeries>(s_DICOMSERIES_INOUT);
+    const auto dicomSeries = m_series.lock();
 
     // Get selected slice.
     try
@@ -386,7 +379,7 @@ void SSliceIndexDicomEditor::readSlice(
             data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
         const data::Image::sptr newImage = imageSeries->getImage();
 
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
         image->deepCopy(newImage);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);

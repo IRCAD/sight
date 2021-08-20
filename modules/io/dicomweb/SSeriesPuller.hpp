@@ -25,6 +25,7 @@
 #include "modules/io/dicomweb/config.hpp"
 
 #include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/http/ClientQt.hpp>
@@ -56,7 +57,7 @@ namespace sight::module::io::dicomweb
         <service type="sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode
@@ -65,7 +66,7 @@ namespace sight::module::io::dicomweb
  * @subsection In-Out In-Out:
  * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
- * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
+ * - \b readerConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.
  */
@@ -137,9 +138,6 @@ private:
     /// Temporary SeriesDB
     data::SeriesDB::sptr m_tempSeriesDB;
 
-    /// Destination SeriesDB
-    data::SeriesDB::sptr m_destinationSeriesDB;
-
     /// Local Series
     InstanceUIDContainerType m_localSeries;
 
@@ -169,6 +167,9 @@ private:
 
     /// DICOM Folder path
     std::filesystem::path m_path;
+
+    sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
 };
 
 } // namespace sight::module::io::dicomweb

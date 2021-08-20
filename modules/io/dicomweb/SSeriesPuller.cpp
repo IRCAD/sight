@@ -22,23 +22,19 @@
 
 #include "SSeriesPuller.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/helper/SeriesDB.hpp>
-#include <data/Vector.hpp>
 
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
 #include <io/http/Request.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
-#include <service/extension/Factory.hpp>
-#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
@@ -77,7 +73,7 @@ void SSeriesPuller::configuring()
     SIGHT_ASSERT("It should be a \"dicomReader\" in the module::io::dicomweb::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
-    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("readerConfig");
 
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
@@ -100,17 +96,11 @@ void SSeriesPuller::configuring()
 
 void SSeriesPuller::starting()
 {
-    // Get Destination SeriesDB
-    m_destinationSeriesDB = this->getInOut<data::SeriesDB>("seriesDB");
-    SIGHT_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
-
     // Create temporary SeriesDB
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
-    m_dicomReader =
-        sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    m_dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
     SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader
@@ -123,7 +113,7 @@ void SSeriesPuller::starting()
         core::runtime::ConfigurationElement::csptr readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
                 m_dicomReaderSrvConfig,
-                "::io::base::service::IReader"
+                "sight::io::base::service::IReader"
             );
 
         SIGHT_ASSERT(
@@ -146,7 +136,7 @@ void SSeriesPuller::stopping()
 {
     // Stop reader service
     m_dicomReader->stop();
-    service::OSR::unregisterService(m_dicomReader);
+    service::remove(m_dicomReader);
 }
 
 //------------------------------------------------------------------------------
@@ -165,8 +155,6 @@ void SSeriesPuller::updating()
         m_serverPort = std::stoi(port);
     }
 
-    data::Vector::csptr selectedSeries = this->getInput<data::Vector>("selectedSeries");
-
     if(m_isPulling)
     {
         // Display a message to inform the user that the service is already pulling data.
@@ -180,19 +168,23 @@ void SSeriesPuller::updating()
         messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
-    else if(selectedSeries->empty())
-    {
-        // Display a message to inform the user that there is no series selected.
-        sight::ui::base::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Pulling Series");
-        messageBox.setMessage("Unable to pull series, there is no series selected. ");
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
-        messageBox.show();
-    }
     else
     {
-        this->pullSeries();
+        const auto selectedSeries = m_selectedSeries.lock();
+        if(selectedSeries->empty())
+        {
+            // Display a message to inform the user that there is no series selected.
+            sight::ui::base::dialog::MessageDialog messageBox;
+            messageBox.setTitle("Pulling Series");
+            messageBox.setMessage("Unable to pull series, there is no series selected. ");
+            messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+            messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+            messageBox.show();
+        }
+        else
+        {
+            this->pullSeries();
+        }
     }
 }
 
@@ -213,7 +205,7 @@ void SSeriesPuller::pullSeries()
         m_seriesIndex   = 0;
         m_instanceCount = 0;
 
-        data::Vector::csptr selectedSeries = this->getInput<data::Vector>("selectedSeries");
+        const auto selectedSeries = m_selectedSeries.lock();
 
         // Find which selected series must be pulled
         DicomSeriesContainerType pullSeriesVector;
@@ -356,9 +348,11 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 {
+    const auto destinationSeriesDB = m_seriesDB.lock();
+
     // Read only series that are not in the SeriesDB
     const InstanceUIDContainerType& alreadyLoadedSeries =
-        sight::io::http::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
+        sight::io::http::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
     // Create temporary series helper
     data::helper::SeriesDB tempSDBhelper(*m_tempSeriesDB);
@@ -387,7 +381,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             m_dicomReader->update();
 
             // Merge series
-            data::helper::SeriesDB sDBhelper(*m_destinationSeriesDB);
+            data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }

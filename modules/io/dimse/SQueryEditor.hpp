@@ -168,6 +168,11 @@ private Q_SLOTS:
      * @param _enable value used as a boolean.
      */
     void enableBirthDateEdit(int _enable);
+
+private:
+
+    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB"};
 };
 
 } // namespace sight::module::io::dimse.

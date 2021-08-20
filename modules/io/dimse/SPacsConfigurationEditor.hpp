@@ -181,6 +181,10 @@ private Q_SLOTS:
      * @param _value the move application port.
      */
     void onMovePortChanged(int _value);
+
+private:
+
+    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::inout> m_config {this, "config"};
 };
 
 } // namespace sight::module::io::dimse.

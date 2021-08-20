@@ -50,8 +50,7 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesWriter::SDicomSeriesWriter() noexcept :
-    m_cancelled(false)
+SDicomSeriesWriter::SDicomSeriesWriter() noexcept
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
@@ -113,8 +112,9 @@ void SDicomSeriesWriter::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::DicomSeries::csptr series =
-            this->getInput<data::DicomSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto data   = m_data.lock();
+        const auto series = std::dynamic_pointer_cast<const data::DicomSeries>(data.get_shared());
+
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {

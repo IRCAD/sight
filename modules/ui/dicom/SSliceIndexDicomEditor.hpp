@@ -87,9 +87,9 @@ namespace sight::module::ui::dicom
            <in key="series" uid="..." />
            <out key="image" uid="..." />
            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500">
-               <dicomReaderConfig> <!-- optional -->
+               <readerConfig> <!-- optional -->
                    <!-- here goes the configuration for the dicom reader implementation -->
-               </dicomReaderConfig>
+               </readerConfig>
            </config>
        </service>
    @endcode
@@ -99,7 +99,7 @@ namespace sight::module::ui::dicom
  * - \b image [sight::data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
  * - \b dicomReader Reader type to use.
- * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
+ * - \b readerConfig Optional configuration for the DICOM Reader.
  */
 class MODULE_UI_DICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
                                                          public sight::ui::base::IEditor

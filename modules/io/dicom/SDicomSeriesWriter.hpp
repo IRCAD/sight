@@ -111,9 +111,6 @@ private:
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
-
-    /// Cancel information for jobs
-    bool m_cancelled;
 };
 
 } // namespace sight::module::io::dicom

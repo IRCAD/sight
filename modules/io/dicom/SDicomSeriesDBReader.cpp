@@ -28,21 +28,15 @@
 #include <core/tools/System.hpp>
 
 #include <data/helper/SeriesDB.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/LoggerDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-
-#include <string>
-#include <vector>
 
 namespace sight::module::io::dicom
 {
@@ -271,21 +265,17 @@ void SDicomSeriesDBReader::updating()
         if(seriesDB->size() > 0 && !m_cancelled)
         {
             // Retrieve dataStruct associated with this service
-            data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
+            const auto data               = m_data.lock();
+            const auto associatedSeriesDB = std::dynamic_pointer_cast<data::SeriesDB>(data.get_shared());
             SIGHT_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
             data::helper::SeriesDB sDBhelper(*associatedSeriesDB);
-            data::mt::ObjectWriteLock lock(associatedSeriesDB);
             sDBhelper.clear();
 
             // Notify removal.
             sDBhelper.notify();
-            {
-                data::mt::ObjectWriteLock lock(seriesDB);
-                associatedSeriesDB->shallowCopy(seriesDB);
-            }
+            associatedSeriesDB->shallowCopy(seriesDB);
 
             data::SeriesDB::ContainerType addedSeries = associatedSeriesDB->getContainer();
 

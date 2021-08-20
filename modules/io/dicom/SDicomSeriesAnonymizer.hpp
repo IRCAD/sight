@@ -24,6 +24,9 @@
 
 #include "modules/io/dicom/config.hpp"
 
+#include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
+
 #include <service/IController.hpp>
 
 namespace sight::core::jobs
@@ -93,13 +96,16 @@ protected:
     MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
 
     /// Override
-    MODULE_IO_DICOM_API void anonymize();
+    MODULE_IO_DICOM_API void anonymize(sight::data::Vector& _vector);
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
 
     /// Cancel information for jobs
     bool m_cancelled;
+
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::Vector, sight::data::Access::inout> m_selectedSeries {this, "selectedSeries"};
 };
 
 } // namespace sight::module::io::dicom

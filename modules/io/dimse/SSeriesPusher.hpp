@@ -24,15 +24,12 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/thread/Worker.hpp>
+#include <data/Vector.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
 #include <service/IController.hpp>
-
-#include <vector>
 
 namespace sight::data
 {
@@ -165,9 +162,6 @@ protected:
     /// Series enquirer
     sight::io::dimse::SeriesEnquirer::sptr m_seriesEnquirer;
 
-    /// Pacs Configuration object
-    sight::io::dimse::data::PacsConfiguration::csptr m_pacsConfiguration;
-
     /// Push Worker
     core::thread::Worker::sptr m_pushSeriesWorker;
 
@@ -176,6 +170,9 @@ protected:
 
     /// Total number of instances that must be uploaded
     long unsigned int m_instanceCount;
+
+    sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
+    sight::data::ptr<sight::io::dimse::data::PacsConfiguration, sight::data::Access::in> m_config {this, "pacsConfig"};
 };
 
 } // namespace sight::module::io::dimse

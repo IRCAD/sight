@@ -46,8 +46,6 @@ static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
 
 static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
-static const service::IService::KeyType s_CONFIG_INOUT = "config";
-
 //------------------------------------------------------------------------------
 
 SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
@@ -83,9 +81,7 @@ void SPacsConfigurationEditor::starting()
     // Create the worker.
     m_requestWorker = core::thread::Worker::New();
 
-    const auto pacsConfiguration = this->getLockedInOut<const sight::io::dimse::data::PacsConfiguration>(
-        s_CONFIG_INOUT
-    );
+    const auto pacsConfiguration = m_config.lock();
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -271,8 +267,7 @@ void SPacsConfigurationEditor::pingPACS()
     m_requestWorker->post(
         [&]
         {
-            const auto pacsConfiguration =
-                this->getLockedInOut<const sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+            const auto pacsConfiguration = m_config.lock();
 
             auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -339,7 +334,7 @@ void SPacsConfigurationEditor::modifiedNotify(sight::io::dimse::data::PacsConfig
 
 void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setLocalApplicationTitle(m_SCUAppEntityTitleEdit->text().toStdString());
 
@@ -350,7 +345,7 @@ void SPacsConfigurationEditor::onSCUAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPHostNameChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setPacsHostName(m_SCPHostNameEdit->text().toStdString());
 
@@ -361,7 +356,7 @@ void SPacsConfigurationEditor::onSCPHostNameChanged()
 
 void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setPacsApplicationTitle(m_SCPAppEntityTitleEdit->text().toStdString());
 
@@ -372,7 +367,7 @@ void SPacsConfigurationEditor::onSCPAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onSCPPortChanged(int value)
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setPacsApplicationPort(static_cast<unsigned short>(value));
 
@@ -383,7 +378,7 @@ void SPacsConfigurationEditor::onSCPPortChanged(int value)
 
 void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setMoveApplicationTitle(m_moveAppEntityTitleEdit->text().toStdString());
 
@@ -394,7 +389,7 @@ void SPacsConfigurationEditor::onMoveAppEntityTitleChanged()
 
 void SPacsConfigurationEditor::onMovePortChanged(int _value)
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setMoveApplicationPort(static_cast<unsigned short>(_value));
 
@@ -405,7 +400,7 @@ void SPacsConfigurationEditor::onMovePortChanged(int _value)
 
 void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 {
-    const auto pacsConfiguration = this->getLockedInOut<sight::io::dimse::data::PacsConfiguration>(s_CONFIG_INOUT);
+    const auto pacsConfiguration = m_config.lock();
 
     pacsConfiguration->setRetrieveMethod(
         (_index

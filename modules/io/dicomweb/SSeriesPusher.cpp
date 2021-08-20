@@ -109,7 +109,7 @@ void SSeriesPusher::updating()
         m_serverPort = std::stoi(port);
     }
 
-    data::Vector::csptr selectedSeries = this->getInput<data::Vector>(s_SERIES_IN);
+    const auto selectedSeries = m_selectedSeries.lock();
 
     if(m_isPushing)
     {
@@ -147,10 +147,10 @@ void SSeriesPusher::pushSeries()
 {
     m_isPushing = true;
 
-    data::Vector::csptr seriesVector = this->getInput<data::Vector>(s_SERIES_IN);
+    const auto seriesVector = m_selectedSeries.lock();
 
-    const std::vector<data::DicomSeries::sptr> dataVector =
-        seriesVector->getDataContainer<data::DicomSeries>();
+    const std::vector<data::DicomSeries::sptr> dataVector = seriesVector->getDataContainer<data::DicomSeries>();
+
     // Connect to PACS
     const size_t seriesVectorSize = seriesVector->size();
     size_t nbSeriesSuccess        = 0;

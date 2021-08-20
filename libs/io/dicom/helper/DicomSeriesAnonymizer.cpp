@@ -68,7 +68,6 @@ void DicomSeriesAnonymizer::anonymize(
 {
     auto writerObserver     = m_writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
-    auto readerObserver     = m_reader->getJob();
 
     // Set up observer cancel callback
     m_job->addSimpleCancelHook(
@@ -76,12 +75,10 @@ void DicomSeriesAnonymizer::anonymize(
             {
                 writerObserver->cancel();
                 anonymizerObserver->cancel();
-                readerObserver->cancel();
             });
 
     m_job->add(writerObserver);
     m_job->add(anonymizerObserver, 10);
-    m_job->add(readerObserver);
 
     const auto future = m_job->run();
 
@@ -107,19 +104,17 @@ void DicomSeriesAnonymizer::anonymize(
         return;
     }
 
+    // Wait for the aggregator to finish and catch exceptions
+    future.get();
+
+    // FIXME: At the beginning, this task was a third job
+    // However, this reader also uses an aggregator - we discovered that an aggregator of aggregator exits
+    // immediately, thus its state is FINISHED when we try to start the task...
     // Read anonymized series
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     m_reader->setObject(seriesDB);
     m_reader->setFolder(destPath);
     m_reader->readDicomSeries();
-
-    if(m_job->cancelRequested())
-    {
-        return;
-    }
-
-    // Wait for the aggregator to finish and catch exceptions
-    future.get();
 
     // Update DicomSeries
     data::DicomSeries::sptr anonymizedSeries =

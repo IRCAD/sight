@@ -95,7 +95,7 @@ void SSliceIndexDicomEditor::configuring()
     );
 
     // Reader configuration
-    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("readerConfig");
     m_readerConfig =
         (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
 

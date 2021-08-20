@@ -22,8 +22,6 @@
 
 #include "SDicomSeriesConverter.hpp"
 
-#include <core/com/HasSignals.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
@@ -31,8 +29,6 @@
 #include <data/helper/SeriesDB.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/LoggerDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -86,11 +82,11 @@ void SDicomSeriesConverter::configuring()
 void SDicomSeriesConverter::updating()
 {
     // Get Destination SeriesDB
-    data::SeriesDB::sptr destinationSeriesDB = this->getInOut<data::SeriesDB>("target");
+    const auto destinationSeriesDB = m_target.lock();
     SIGHT_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
 
-    data::SeriesDB::csptr dicomSeriesDB = this->getInput<data::SeriesDB>("source");
-    data::SeriesDB::sptr dummy          = data::SeriesDB::New();
+    const auto dicomSeriesDB   = m_source.lock();
+    data::SeriesDB::sptr dummy = data::SeriesDB::New();
 
     if(dicomSeriesDB->empty())
     {
@@ -110,7 +106,7 @@ void SDicomSeriesConverter::updating()
 
         try
         {
-            reader->readFromDicomSeriesDB(dicomSeriesDB, this->getSptr());
+            reader->readFromDicomSeriesDB(dicomSeriesDB.get_shared(), this->getSptr());
 
             core::log::Logger::sptr logger = reader->getLogger();
             logger->sort();

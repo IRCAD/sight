@@ -337,8 +337,8 @@ void SSeriesDBReader::updating()
         if(!localSeriesDB->empty())
         {
             // Retrieve dataStruct associated with this service
-            auto data                     = m_data.lock();
-            data::SeriesDB::sptr seriesDB = std::dynamic_pointer_cast<data::SeriesDB>(data.get_shared());
+            const auto data     = m_data.lock();
+            const auto seriesDB = std::dynamic_pointer_cast<data::SeriesDB>(data.get_shared());
 
             // Clear SeriesDB and add new series
             data::helper::SeriesDB sDBhelper(*seriesDB);

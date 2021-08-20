@@ -134,7 +134,8 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::Vector::csptr vector = this->getInput<data::Vector>(sight::io::base::service::s_DATA_KEY);
+        const auto data   = m_data.lock();
+        const auto vector = std::dynamic_pointer_cast<const data::Vector>(data.get_shared());
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -207,7 +208,8 @@ sight::io::base::service::IOPathType SSeriesDBWriter::getIOPathType() const
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    data::Vector::csptr vector = this->getInput<data::Vector>(sight::io::base::service::s_DATA_KEY);
+    const auto data   = m_data.lock();
+    const auto vector = std::dynamic_pointer_cast<const data::Vector>(data.get_shared());
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();

@@ -29,7 +29,6 @@
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
-#include <data/Vector.hpp>
 
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
@@ -99,10 +98,6 @@ void SSeriesPusher::starting()
 
     // Worker
     m_pushSeriesWorker = core::thread::Worker::New();
-
-    // Get pacs configuration
-    m_pacsConfiguration = this->getInput<sight::io::dimse::data::PacsConfiguration>("pacsConfig");
-    SIGHT_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +112,7 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    data::Vector::csptr selectedSeries = this->getInput<data::Vector>("selectedSeries");
+    const auto selectedSeries = m_selectedSeries.lock();
 
     if(m_isPushing)
     {
@@ -144,13 +139,15 @@ void SSeriesPusher::updating()
     }
     else
     {
+        const auto pacsConfiguration = m_config.lock();
+
         // Initialize enquirer
         m_seriesEnquirer->initialize(
-            m_pacsConfiguration->getLocalApplicationTitle(),
-            m_pacsConfiguration->getPacsHostName(),
-            m_pacsConfiguration->getPacsApplicationPort(),
-            m_pacsConfiguration->getPacsApplicationTitle(),
-            m_pacsConfiguration->getMoveApplicationTitle(),
+            pacsConfiguration->getLocalApplicationTitle(),
+            pacsConfiguration->getPacsHostName(),
+            pacsConfiguration->getPacsApplicationPort(),
+            pacsConfiguration->getPacsApplicationTitle(),
+            pacsConfiguration->getMoveApplicationTitle(),
             m_slotProgressCallback
         );
 
@@ -173,7 +170,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     // Return true if the push operation must be performed
     bool result = true;
 
-    data::Vector::csptr seriesVector = this->getInput<data::Vector>("selectedSeries");
+    const auto seriesVector = m_selectedSeries.lock();
 
     // Catch any errors
     try
@@ -236,11 +233,13 @@ bool SSeriesPusher::checkSeriesOnPACS()
     }
     catch(sight::io::dimse::exceptions::Base& exception)
     {
+        const auto pacsConfiguration = m_config.lock();
+
         ::std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
-        << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-        << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-        << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
+        << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
+        << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
+        << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->asyncRun(ss.str(), true);
         SIGHT_WARN(exception.what());
         result = false;
@@ -256,7 +255,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
 
 void SSeriesPusher::pushSeries()
 {
-    data::Vector::csptr seriesVector = this->getInput<data::Vector>("selectedSeries");
+    const auto seriesVector = m_selectedSeries.lock();
 
     // Catch any errors
     try
@@ -312,11 +311,13 @@ void SSeriesPusher::pushSeries()
     }
     catch(sight::io::dimse::exceptions::Base& exception)
     {
+        const auto pacsConfiguration = m_config.lock();
+
         ::std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
-        << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-        << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-        << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
+        << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
+        << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
+        << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->asyncRun(ss.str(), true);
         SIGHT_WARN(exception.what());
     }

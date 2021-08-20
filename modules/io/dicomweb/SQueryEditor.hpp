@@ -144,6 +144,8 @@ private:
 
     /// Server port
     int m_serverPort {4242};
+
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
 };
 
 } // namespace sight::module::io::dicomweb

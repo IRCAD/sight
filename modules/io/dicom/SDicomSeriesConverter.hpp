@@ -99,6 +99,11 @@ protected:
 
     /// Signal emitted when a job is created
     SPTR(JobCreatedSignal) m_sigJobCreated;
+
+private:
+
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_target {this, "target"};
 };
 
 } // namespace sight::module::io::dicom

@@ -134,7 +134,8 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr model = this->getInput<data::ModelSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto data  = m_data.lock();
+        const auto model = std::dynamic_pointer_cast<const data::ModelSeries>(data.get_shared());
 
         if(!model->getDicomReference())
         {

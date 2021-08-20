@@ -26,8 +26,10 @@
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
 
 #include <io/base/service/IReader.hpp>
+#include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesRetriever.hpp>
 
 #include <service/IController.hpp>
@@ -52,7 +54,7 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesDB" uid="..." />
-        <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+        <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
     </service>
    @endcode
  *
@@ -65,7 +67,7 @@ namespace sight::module::io::dimse
  *
  * @subsection Configuration Configuration:
  * - \b dicomReader (mandatory, string): reader type to use.
- * - \b dicomReaderConfig (optional, string, default=""): configuration for the DICOM Reader.
+ * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
 class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::IController,
                                                       public service::IHasServices
@@ -173,6 +175,12 @@ private:
 
     /// Stores a map of DICOM series being pulled.
     std::map<std::string, data::DicomSeries::wptr> m_pullingDicomSeriesMap;
+
+    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::Vector, data::Access::in> m_selectedSeries {this, "selectedSeries"};
+
+    static constexpr std::string_view s_SERIES_DB_INOUT = "seriesDB";
+    data::ptr<sight::data::SeriesDB, data::Access::inout> m_destSeriesDB {this, s_SERIES_DB_INOUT};
 };
 
 } // namespace sight::module::io::dimse.
