@@ -151,38 +151,31 @@ void InrImageReaderService::updating()
 {
     if(this->hasLocationDefined())
     {
-        data::Image::sptr image = this->getInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto data  = m_data.lock();
+        const auto image = std::dynamic_pointer_cast<data::Image>(data.get_shared());
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+
+        sight::ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         if(this->createImage(this->getFile(), image))
         {
-            sight::ui::base::Cursor cursor;
-            cursor.setCursor(ui::base::ICursor::BUSY);
-            notificationOfDBUpdate();
-            cursor.setDefaultCursor();
+            auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            {
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
+            }
         }
         else
         {
             m_readFailed = true;
         }
+
+        cursor.setDefaultCursor();
     }
     else
     {
         m_readFailed = true;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void InrImageReaderService::notificationOfDBUpdate()
-{
-    data::Image::sptr image = this->getInOut<data::Image>(sight::io::base::service::s_DATA_KEY);
-    SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
-
-    auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
     }
 }
 

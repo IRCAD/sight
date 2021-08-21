@@ -96,8 +96,6 @@ protected:
 
 private:
 
-    void notificationOfDBUpdate();
-
     bool createImage(const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg);
 };
 

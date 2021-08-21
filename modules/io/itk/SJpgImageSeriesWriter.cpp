@@ -139,9 +139,8 @@ void SJpgImageSeriesWriter::updating()
 {
     if(this->hasLocationDefined())
     {
-        // Retrieve dataStruct associated with this service
-        data::ImageSeries::csptr imageSeries =
-            this->getInput<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto data        = m_data.lock();
+        const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SIGHT_ASSERT("Image from image series is not instanced", imageSeries->getImage());
