@@ -188,9 +188,12 @@ void SFrameMatrixSynchronizer::synchronize()
     // Then we get the one with the newest timestamp and the other ones are not considered.
     for(size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
-        const auto tl = m_frameTLs[i].lock();
-        SIGHT_ASSERT("Frame TL does not exist", tl);
-        core::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
+        core::HiResClock::HiResClockType tlTimestamp;
+        {
+            const auto tl = m_frameTLs[i].lock();
+            SIGHT_ASSERT("Frame TL does not exist", tl);
+            tlTimestamp = tl->getNewerTimestamp();
+        }
         if(tlTimestamp > 0)
         {
             // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)

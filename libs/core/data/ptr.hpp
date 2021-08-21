@@ -242,6 +242,13 @@ public:
         return *this;
     }
 
+    /// This method is only available if it is an output
+    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    void reset()
+    {
+        m_holder->_setOutput(m_key, nullptr, 0);
+    }
+
 private:
 
     /// Only the owner of the pointer can update the content of the pointer
@@ -252,7 +259,8 @@ private:
     {
         if(_obj == nullptr)
         {
-            this->reset();
+            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+            data::mt::weak_ptr<target_t>::reset();
         }
         else
         {

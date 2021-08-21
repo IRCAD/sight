@@ -23,26 +23,17 @@
 #include "SOpenCVExtrinsic.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-#include <core/tools/Object.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 #include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Matrix.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -115,15 +106,17 @@ void SOpenCVExtrinsic::stopping()
 
 void SOpenCVExtrinsic::updating()
 {
-    data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>("cameraSeries");
+    {
+        const auto camSeries = m_cameraSeries.lock();
 
-    SIGHT_ASSERT(
-        "camera index must be > 0 and < camSeries->getNumberOfCameras()",
-        m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
-    );
+        SIGHT_ASSERT(
+            "camera index must be > 0 and < camSeries->getNumberOfCameras()",
+            m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
+        );
+    }
 
-    data::CalibrationInfo::csptr calInfo1 = this->getInput<data::CalibrationInfo>("calibrationInfo1");
-    data::CalibrationInfo::csptr calInfo2 = this->getInput<data::CalibrationInfo>("calibrationInfo2");
+    const auto calInfo1 = m_calibrationInfo1.lock();
+    const auto calInfo2 = m_calibrationInfo2.lock();
 
     SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
     SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
@@ -156,9 +149,6 @@ void SOpenCVExtrinsic::updating()
         std::vector<size_t> degeneratedImagesCam1, degeneratedImagesCam2;
 
         {
-            const data::mt::ObjectReadLock calInfo1Lock(calInfo1);
-            const data::mt::ObjectReadLock calInfo2Lock(calInfo2);
-
             data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
@@ -235,12 +225,10 @@ void SOpenCVExtrinsic::updating()
         data::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
-            const data::mt::ObjectReadLock camSeriesLock(camSeries);
+            const auto camSeries = m_cameraSeries.lock();
+
             data::Camera::sptr cam1 = camSeries->getCamera(0);
             data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
-
-            data::mt::ObjectReadLock cam1Lock(cam1);
-            data::mt::ObjectReadLock cam2Lock(cam2);
 
             cameraMatrix1.at<double>(0, 0) = cam1->getFx();
             cameraMatrix1.at<double>(1, 1) = cam1->getFy();
@@ -467,16 +455,16 @@ void SOpenCVExtrinsic::updating()
         io::opencv::Matrix::copyFromCv(cv4x4, matrix);
 
         {
-            data::mt::ObjectWriteLock camSeriesLock(camSeries);
+            const auto camSeries = m_cameraSeries.lock();
             camSeries->setExtrinsicMatrix(m_camIndex, matrix);
+
+            data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
+            sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>(
+                data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
+            );
+
+            sig->asyncEmit();
         }
-
-        data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
-        sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>(
-            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
-        );
-
-        sig->asyncEmit();
     }
 }
 

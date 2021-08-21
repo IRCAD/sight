@@ -150,8 +150,6 @@ void SDistortion::updating()
             // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
             {
-                const auto inDumpLock  = inputImage->lock();
-                const auto outDumpLock = outputImage->lock();
                 reallocated = inputImage->getBuffer() != outputImage->getBuffer();
             }
 
@@ -230,12 +228,10 @@ void SDistortion::remap()
     }
 
     const auto prevSize = outputImage->getSize2();
-    const auto dumpLock = inputImage->lock();
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
     {
-        const auto outDumpLock = outputImage->lock();
         realloc = inputImage->getBuffer() == outputImage->getBuffer();
     }
     if(prevSize != inputSize || realloc)
@@ -343,7 +339,7 @@ void SDistortion::calibrate()
     m_prevImageSize       = {0, 0, 0};
 
     const auto camera = m_camera.lock();
-    SIGHT_ASSERT("Object 'camera' is not found.", !camera);
+    SIGHT_ASSERT("Object 'camera' is not found.", camera);
 
     cv::Mat intrinsics;
     cv::Mat distCoefs;

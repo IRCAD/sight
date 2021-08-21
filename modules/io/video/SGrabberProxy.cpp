@@ -179,7 +179,7 @@ void SGrabberProxy::startCamera()
 
             auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType(
                 "sight::data::FrameTL",
-                "sight::io::base::IGrabber"
+                "sight::io::base::service::IGrabber"
             );
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
@@ -214,7 +214,7 @@ void SGrabberProxy::startCamera()
 
             for(const auto& srvImpl : grabbersImpl)
             {
-                if(srvImpl != "::sight::module::io::video::SGrabberProxy")
+                if(srvImpl != "sight::module::io::video::SGrabberProxy")
                 {
                     SIGHT_DEBUG("Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);

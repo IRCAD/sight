@@ -233,7 +233,7 @@ private:
 
     data::ptr_vector<data::FrameTL, data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
     data::ptr_vector<data::CalibrationInfo, data::Access::inout> m_calInfo {this, s_CALIBRATION_INOUT};
-    data::ptr_vector<data::PointList, data::Access::inout> m_detection {this, s_DETECTION_INOUT};
+    data::ptr_vector<data::FrameTL, data::Access::inout> m_detection {this, s_DETECTION_INOUT};
 };
 
 } //namespace sight::module::geometry::vision::charuco

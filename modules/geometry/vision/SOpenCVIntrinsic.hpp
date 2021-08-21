@@ -24,6 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
+#include <data/Camera.hpp>
+#include <data/Vector.hpp>
+
 #include <geometry/vision/ICalibration.hpp>
 
 namespace sight::module::geometry::vision
@@ -106,6 +110,10 @@ private:
 
     /// Size of the chessboard'square used for calibration
     float m_squareSize;
+
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo {this, "calibrationInfo"};
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, "camera"};
+    data::ptr<data::Vector, data::Access::inout> m_poseVector {this, "poseVector"};
 };
 
 } // namespace sight::module::geometry::vision

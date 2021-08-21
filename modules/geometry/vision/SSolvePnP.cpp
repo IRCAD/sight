@@ -24,12 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/Camera.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/PointList.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Camera.hpp>
@@ -38,22 +32,11 @@
 namespace sight::module::geometry::vision
 {
 
-const service::IService::KeyType s_CALIBRATION_INPUT = "calibration";
-const service::IService::KeyType s_POINTLIST2D_INPUT = "pointList2d";
-const service::IService::KeyType s_POINTLIST3D_INPUT = "pointList3d";
-const service::IService::KeyType s_MATRIX_INOUT      = "matrix";
-
-//-----------------------------------------------------------------------------
-
-SSolvePnP::SSolvePnP() noexcept
-{
-}
-
 //-----------------------------------------------------------------------------
 
 void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 {
-    const auto camera = this->getLockedInput<data::Camera>(s_CALIBRATION_INPUT);
+    const auto camera = m_calibration.lock();
 
     if(!camera->getIsCalibrated())
     {
@@ -68,19 +51,15 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
     std::vector< ::cv::Point2f> points2d;
     std::vector< ::cv::Point3f> points3d;
 
-    const auto fwPoints2d = this->getLockedInput<data::PointList>(s_POINTLIST2D_INPUT);
+    const auto fwPoints2d = m_pointList2d.lock();
+    const auto fwPoints3d = m_pointList3d.lock();
 
-    const auto fwPoints3d = this->getLockedInput<data::PointList>(s_POINTLIST3D_INPUT);
-
-    auto fwMatrix = this->getLockedInOut<data::Matrix4>(s_MATRIX_INOUT);
+    auto fwMatrix = m_matrix.lock();
 
     //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
     {
-        SIGHT_ERROR(
-            "'" + s_POINTLIST2D_INPUT + "' and '"
-            + s_POINTLIST3D_INPUT + "' should have the same number of points"
-        );
+        SIGHT_ERROR("The 2d and 3d point lists should have the same number of points");
 
         return;
     }
@@ -132,8 +111,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 
     fwMatrix->deepCopy(matrix);
 
-    const auto sig = fwMatrix->signal<data::Matrix4::ModifiedSignalType>
-                         (data::Matrix4::s_MODIFIED_SIG);
+    const auto sig = fwMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

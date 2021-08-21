@@ -135,7 +135,7 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
         // Grab timeline objects
         for(size_t i = 0 ; i < numTimeline ; ++i)
         {
-            auto frameTL = this->getInput<data::FrameTL>(s_TIMELINE_INPUT, i);
+            auto frameTL = m_timeline[i].lock();
             lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
         }
 
@@ -143,22 +143,22 @@ void SCharucoBoardDetector::checkPoints(core::HiResClock::HiResClockType timesta
 
         for(size_t i = 0 ; i < numTimeline ; ++i)
         {
-            auto tl = this->getInput<data::FrameTL>(s_TIMELINE_INPUT, i);
+            auto tl = m_timeline[i].lock();
 
             data::PointList::sptr charucoBoardPoints;
             if(detection)
             {
-                auto tlDetection = this->getInOut<data::FrameTL>(s_DETECTION_INOUT, i);
+                auto tlDetection = m_detection[i].lock();
                 if(!tlDetection->isAllocated())
                 {
                     tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), core::tools::Type::s_UINT8, 4);
                 }
 
-                charucoBoardPoints = this->detectCharucoBoard(tl, lastTimestamp, tlDetection);
+                charucoBoardPoints = this->detectCharucoBoard(tl.get_shared(), lastTimestamp, tlDetection.get_shared());
             }
             else
             {
-                charucoBoardPoints = this->detectCharucoBoard(tl, lastTimestamp);
+                charucoBoardPoints = this->detectCharucoBoard(tl.get_shared(), lastTimestamp);
             }
 
             if((!charucoBoardPoints) || ((charucoBoardPoints->getPoints().size()) < 4))
