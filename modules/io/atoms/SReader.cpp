@@ -70,7 +70,6 @@ const SReader::FileExtension2NameType SReader::s_EXTENSIONS = {{".xml", "XML"},
 //-----------------------------------------------------------------------------
 
 SReader::SReader() :
-    m_outputMode(false),
     m_uuidPolicy("Change"),
     m_useAtomsPatcher(false),
     m_context("Undefined"),
@@ -95,10 +94,6 @@ void SReader::starting()
 
 void SReader::stopping()
 {
-    if(m_outputMode)
-    {
-        this->setOutput(sight::io::base::service::s_DATA_KEY, nullptr);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -195,28 +190,16 @@ void SReader::configuring()
         );
         m_useAtomsPatcher = true;
     }
-
-    const std::string output = config.get<std::string>("out.<xmlattr>.key", "");
-    if(output == sight::io::base::service::s_DATA_KEY)
-    {
-        m_outputMode = true;
-    }
-
-    SIGHT_ASSERT("'Reuse' policy is only available when data is set as 'out'", m_outputMode || "Reuse" != m_uuidPolicy);
 }
 
 //-----------------------------------------------------------------------------
 
 void SReader::updating()
 {
+    m_readFailed = true;
+
     if(this->hasLocationDefined())
     {
-        data::Object::sptr data = this->getInOut<data::Object>(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT(
-            "The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
-            m_outputMode || data
-        );
-
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
@@ -307,7 +290,6 @@ void SReader::updating()
                 {
                     if(runningJob.cancelRequested())
                     {
-                        m_readFailed = true;
                         return;
                     }
 
@@ -394,23 +376,20 @@ void SReader::updating()
 
             if(jobs->getState() == core::jobs::IJob::CANCELED)
             {
-                m_readFailed = true;
                 return;
             }
 
             SIGHT_THROW_IF("Unable to load '" << filePath << "' : invalid data.", !newData);
 
-            if(m_outputMode)
-            {
-                this->setOutput(sight::io::base::service::s_DATA_KEY, newData);
-            }
-            else
-            {
-                if(!data)
-                {
-                    m_readFailed = true;
-                }
+            auto data = m_data.lock();
 
+            SIGHT_ASSERT(
+                "The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+                data
+            );
+
+            if(data)
+            {
                 SIGHT_ASSERT("'" + sight::io::base::service::s_DATA_KEY + "' key is not defined", data);
 
                 SIGHT_THROW_IF(
@@ -425,19 +404,24 @@ void SReader::updating()
                 // So in the case of reading an Array we swap buffers.
                 if(newData->getClassname() == data::Array::classname())
                 {
-                    data::Array::dynamicCast(data)->swap(data::Array::dynamicCast(newData));
+                    data::Array::dynamicCast(data.get_shared())->swap(data::Array::dynamicCast(newData));
                 }
                 else
                 {
                     data->shallowCopy(newData);
                 }
 
-                this->notificationOfUpdate();
+                m_readFailed = false;
+
+                auto sig = data->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                {
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
         }
         catch(std::exception& e)
         {
-            m_readFailed = true;
             SIGHT_ERROR(e.what());
             sight::ui::base::dialog::MessageDialog::show(
                 "Atoms reader failed",
@@ -447,7 +431,6 @@ void SReader::updating()
         }
         catch(...)
         {
-            m_readFailed = true;
             sight::ui::base::dialog::MessageDialog::show(
                 "Atoms reader failed",
                 "Aborting operation.",
@@ -457,10 +440,6 @@ void SReader::updating()
 
         cursor.setDefaultCursor();
     }
-    else
-    {
-        m_readFailed = true;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -468,20 +447,6 @@ void SReader::updating()
 sight::io::base::service::IOPathType SReader::getIOPathType() const
 {
     return sight::io::base::service::FILE;
-}
-
-//------------------------------------------------------------------------------
-
-void SReader::notificationOfUpdate()
-{
-    data::Object::sptr object = this->getInOut<data::Object>(sight::io::base::service::s_DATA_KEY);
-    SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", object);
-
-    auto sig = object->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -191,8 +191,6 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    const auto frameTL = m_frame.lock();
-
     core::mt::ScopedLock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
@@ -224,6 +222,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width != 0 && height != 0)
         {
+            const auto frameTL = m_frame.lock();
             frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
@@ -261,8 +260,6 @@ void SFrameGrabber::grabImage()
 
     if(m_imageCount < m_imageToRead.size())
     {
-        const auto frameTL = m_frame.lock();
-
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const std::string imageName = imagePath.filename().string();
@@ -288,6 +285,7 @@ void SFrameGrabber::grabImage()
         const size_t width  = static_cast<size_t>(inputCloud.width);
         const size_t height = static_cast<size_t>(inputCloud.height);
 
+        const auto frameTL = m_frame.lock();
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
             auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);

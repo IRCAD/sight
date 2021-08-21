@@ -334,9 +334,6 @@ void SWriter::updating()
         return;
     }
 
-    data::Object::csptr obj = this->getInput<data::Object>(sight::io::base::service::s_DATA_KEY);
-    SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
-
     sight::ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);
 
@@ -397,6 +394,20 @@ void SWriter::updating()
     {
         extension = "." + m_customExts[extension];
     }
+
+    // Must be unlocked since we use a RecursiveLock later;
+    const auto obj =
+        [&]
+        {
+            const auto data = m_data.lock();
+
+            SIGHT_ASSERT(
+                "The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+                data
+            );
+
+            return data.get_shared();
+        }();
 
     // Mutex data lock
     data::reflection::visitor::RecursiveLock recursiveLock(obj);

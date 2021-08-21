@@ -78,7 +78,7 @@ namespace sight::module::io::atoms
  * @subsection In-Out In-Out
  * - \b data [sight::data::Object]: object to read. If an 'out' data is set it will be ignored.
  * @subsection Output Output
- * - \b data [sight::data::Object]: object to read.
+ * - \b outdata [sight::data::Object]: object to read.
  * @subsection Configuration Configuration
  * - \b uuidPolicy(optional, default ChangePolicy): defines the policy for atoms conversion. 'ChangePolicy' changes the
  *      object uuid only if it already exists in the application. 'StrictPolicy' keeps the object uuid and throws an
@@ -148,12 +148,6 @@ protected:
     MODULE_IO_ATOMS_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
-
-    /// Notify modification on associated object if reading succeeded
-    void notificationOfUpdate();
-
-    /// true if the data is set as 'out'
-    bool m_outputMode;
 
     /// fwAtomsConversion uuid policy
     std::string m_uuidPolicy;

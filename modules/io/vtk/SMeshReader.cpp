@@ -254,10 +254,11 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    const auto meshLockedPtr = this->getLockedInOut<data::Mesh>(sight::io::base::service::s_DATA_KEY);
+    const auto locked = m_data.lock();
+    const auto mesh   = std::dynamic_pointer_cast<data::Mesh>(locked.get_shared());
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = meshLockedPtr.get_shared()->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
