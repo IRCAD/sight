@@ -82,7 +82,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
 
     /// Getting associated object infos
     const auto shaderObj =
-        _adaptor->getWeakInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
+        _adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
 
     const auto& objType = shaderObj->getClassname();
 

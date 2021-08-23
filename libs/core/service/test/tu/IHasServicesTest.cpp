@@ -158,7 +158,7 @@ struct TestIHasServices : public service::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(refService1.lock()->getWeakInOut<data::Boolean>("data1").lock() == data1);
+            CPPUNIT_ASSERT(refService1.lock()->getInOut<data::Boolean>("data1").lock() == data1);
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -188,7 +188,7 @@ struct TestIHasServices : public service::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
-            CPPUNIT_ASSERT(refService1.lock()->getWeakInput<data::Boolean>("data1").lock() == data1);
+            CPPUNIT_ASSERT(refService1.lock()->getInput<data::Boolean>("data1").lock() == data1);
 
             // The destructor of service::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering

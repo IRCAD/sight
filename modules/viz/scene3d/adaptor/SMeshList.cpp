@@ -213,7 +213,7 @@ void SMeshList::add()
         const sight::viz::scene3d::IAdaptor::sptr textureAdp = instance.m_texture;
         {
             // set current image
-            const auto image = textureAdp->getWeakInput<data::Image>("image").lock();
+            const auto image = textureAdp->getInput<data::Image>("image").lock();
 
             const auto textureInput = m_texture.lock();
 
@@ -281,7 +281,7 @@ void SMeshList::add()
         const sight::viz::scene3d::IAdaptor::sptr transformAdp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->getWeakInOut<data::Matrix4>("transform").lock();
+            const auto transform = transformAdp->getInOut<data::Matrix4>("transform").lock();
 
             const auto transformInOut = m_transform.lock();
             transform->deepCopy(transformInOut.get_shared());

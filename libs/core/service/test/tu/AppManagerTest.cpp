@@ -495,17 +495,14 @@ void AppManagerTest::managerWithOutputCreationTest()
     fwTestWaitMacro(service2->isStarted()); // wait until service1 generate its output to start service2
     CPPUNIT_ASSERT_EQUAL(true, service2->isStarted());
 
-    auto integer2 = service1->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT);
+    auto integer2 = service1->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT).lock();
     CPPUNIT_ASSERT(integer2);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer2->value());
-    CPPUNIT_ASSERT(
-        nullptr
-        == service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT)
-    );
+    CPPUNIT_ASSERT(service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT).lock() == nullptr);
 
     service3->update().wait();
 
-    auto integer3 = service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT);
+    auto integer3 = service3->getOutput<data::Integer>(service::ut::TestServiceWithData::s_OUTPUT).lock();
 
     CPPUNIT_ASSERT(integer3);
     CPPUNIT_ASSERT_EQUAL(integer1->getValue(), integer3->getValue());

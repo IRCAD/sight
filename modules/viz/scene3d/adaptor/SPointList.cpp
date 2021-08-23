@@ -534,7 +534,7 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getWeakInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
+    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
             != m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();

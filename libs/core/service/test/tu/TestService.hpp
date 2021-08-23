@@ -235,7 +235,7 @@ public:
     void swapping(std::string_view key) final
     {
         m_swappedObjectKey = key;
-        m_swappedObject    = this->getWeakInput<data::Object>(key).lock().get_shared();
+        m_swappedObject    = this->getInput<data::Object>(key).lock().get_shared();
     }
 
     //-------------------------------------------------------------------------

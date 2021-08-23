@@ -114,7 +114,7 @@ void SReconstruction::updating()
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = meshAdaptor->getWeakInOut<sight::data::Mesh>("mesh").lock();
+        auto mesh = meshAdaptor->getInOut<sight::data::Mesh>("mesh").lock();
         if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction

@@ -102,7 +102,7 @@ void AppManager::onOpenModel()
     meshReader->configure();
     meshReader->start();
     meshReader->update();
-    auto mesh = meshReader->getWeakOutput<data::Mesh>("data").lock();
+    auto mesh = meshReader->getOutput<data::Mesh>("data").lock();
     this->addObject(mesh.get_shared(), s_MESH_ID);
 
     // Associates the mesh with the one declared in 'ui.qml'.
