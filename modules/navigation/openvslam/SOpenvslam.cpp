@@ -749,7 +749,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
                 s_windowName = this->getID() + " Openvslam internal frame";
                 cv::namedWindow(s_windowName);
                 cv::imshow(s_windowName, im);
-                cv::waitKey(1);
+                //cv::waitKey(1); // FIXME: Linux cannot call cv::waitKey() if this isn't on UI thread.
             }
         }
         catch(std::exception& e)
@@ -840,13 +840,14 @@ void SOpenvslam::updatePointCloud()
 {
     // Do not update the pointcloud if localization mode is enabled (no points will be added to openvslam's map),
     // or if tracker is paused.
-    auto poincloud = m_pointCloud.lock();
-    if(!m_isPaused && poincloud)
+    auto pointcloud = m_pointCloud.lock();
+
+    if(!m_isPaused && pointcloud.get_shared())
     {
         float scale = 1.f;
         {
             const auto s = m_scale.lock();
-            if(s->value() > 0)
+            if(s && s->value() > 0)
             {
                 scale = scale / s->value();
             }
@@ -866,9 +867,9 @@ void SOpenvslam::updatePointCloud()
 
         m_numberOfLandmarks = nblandmarks;
 
-        poincloud->clear();
+        pointcloud->clear();
 
-        const auto dumplLock = poincloud->lock();
+        const auto dumplLock = pointcloud->lock();
 
         unsigned int i = 0;
         if(m_localMap)
@@ -882,12 +883,12 @@ void SOpenvslam::updatePointCloud()
 
                 const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                poincloud->pushPoint(
+                pointcloud->pushPoint(
                     static_cast<float>(pos_w(0)) * scale,
                     static_cast<float>(pos_w(1)) * scale,
                     static_cast<float>(pos_w(2)) * scale
                 );
-                poincloud->pushCell(i);
+                pointcloud->pushCell(i);
                 ++i;
             }
         }
@@ -902,24 +903,22 @@ void SOpenvslam::updatePointCloud()
 
                 const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                poincloud->pushPoint(
+                pointcloud->pushPoint(
                     static_cast<float>(pos_w(0)) * scale,
                     static_cast<float>(pos_w(1)) * scale,
                     static_cast<float>(pos_w(2)) * scale
                 );
 
-                poincloud->pushCell(i);
+                pointcloud->pushCell(i);
                 ++i;
             }
         }
 
         m_sigTrackingInitialized->asyncEmit();
         m_sigTracked->asyncEmit();
-        auto sigMesh = poincloud->signal<data::Object::ModifiedSignalType>
+        auto sigMesh = pointcloud->signal<data::Object::ModifiedSignalType>
                            (data::Object::s_MODIFIED_SIG);
         sigMesh->asyncEmit();
-
-        std::cout << "updatePointCloud..." << __LINE__ << std::endl;
     }
 }
 
