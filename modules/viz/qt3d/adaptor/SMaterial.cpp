@@ -37,8 +37,6 @@ namespace sight::module::viz::qt3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_MATERIAL_INOUT = "material";
-
 static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 
 //-----------------------------------------------------------------------------
@@ -95,12 +93,12 @@ service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 void SMaterial::updating()
 {
     // Reads the material from the input as sight data.
-    data::Material::sptr material = this->getInOut<sight::data::Material>(s_MATERIAL_INOUT);
+    auto material = m_materialInOut.lock();
 
     m_material->updatePolygonMode(material->getRepresentationMode());
     m_material->updateOptionsMode(material->getOptionsMode());
     m_material->updateShadingMode(material->getShadingMode());
-    m_material->updateRGBAMode(material);
+    m_material->updateRGBAMode(material.get_shared());
 }
 
 //-----------------------------------------------------------------------------
