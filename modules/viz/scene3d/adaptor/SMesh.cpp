@@ -180,7 +180,7 @@ void SMesh::starting()
             "SMaterial adaptor managing material'" + m_materialName + "' is not found",
             result != mtlAdaptors.end()
         );
-        m_material = m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared();
+        m_material = m_materialAdaptor->getWeakInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock().get_shared();
     }
 
     const auto mesh = m_mesh.lock();
@@ -430,8 +430,7 @@ void SMesh::updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh)
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         }
     }
-    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
-            != m_material)
+    else if(m_materialAdaptor->getWeakInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -464,8 +463,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
-            != m_material)
+    else if(m_materialAdaptor->getWeakInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }

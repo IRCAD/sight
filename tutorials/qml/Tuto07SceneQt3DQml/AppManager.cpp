@@ -102,14 +102,14 @@ void AppManager::onOpenModel()
     meshReader->configure();
     meshReader->start();
     meshReader->update();
-    auto mesh = meshReader->getLockedOutput<data::Mesh>("data").get_shared();
-    this->addObject(mesh, s_MESH_ID);
+    auto mesh = meshReader->getWeakOutput<data::Mesh>("data").lock();
+    this->addObject(mesh.get_shared(), s_MESH_ID);
 
     // Associates the mesh with the one declared in 'ui.qml'.
     if(mesh)
     {
         m_mesh->setScene(m_scene);
-        m_mesh->setMesh(mesh);
+        m_mesh->setMesh(mesh.get_shared());
         m_mesh->centerCameraOnMesh();
     }
 
