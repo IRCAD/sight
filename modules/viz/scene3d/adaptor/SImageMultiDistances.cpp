@@ -44,8 +44,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-
 static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
 static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const core::com::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
@@ -312,7 +310,7 @@ void SImageMultiDistances::addDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     const data::Vector::sptr distanceField = image->getField<data::Vector>(
         data::fieldHelper::Image::m_imageDistancesId
@@ -355,7 +353,7 @@ void SImageMultiDistances::removeDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     const data::Vector::csptr distanceField =
         image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
@@ -392,7 +390,7 @@ void SImageMultiDistances::updateVisibilityFromField()
 {
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     const bool visibility = image->getField(
         data::fieldHelper::Image::m_distanceVisibility,

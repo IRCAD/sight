@@ -183,8 +183,7 @@ void SMesh::starting()
         m_material = m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared();
     }
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
-
+    const auto mesh = m_mesh.lock();
     this->updateMesh(mesh.get_shared());
 }
 
@@ -210,7 +209,7 @@ void SMesh::updating()
         return;
     }
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -452,7 +451,7 @@ void SMesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            const auto mesh      = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+            const auto mesh      = m_mesh.lock();
             std::string meshName = mesh->getID();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
@@ -484,7 +483,7 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     m_meshGeometry->updateVertices(mesh.get_shared());
 
@@ -519,7 +518,7 @@ void SMesh::modifyPointColors()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -548,7 +547,7 @@ void SMesh::modifyTexCoords()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     m_meshGeometry->updateTexCoords(mesh.get_shared());
 

@@ -280,6 +280,9 @@ private:
 
     /// Stores all generatesd distances.
     DistanceMap m_distances;
+
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

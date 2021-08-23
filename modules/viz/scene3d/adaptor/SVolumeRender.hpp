@@ -448,6 +448,14 @@ private:
 
     /// Enables whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera {true};
+
+    static constexpr std::string_view s_IMAGE_INOUT           = "image";
+    static constexpr std::string_view s_VOLUME_TF_INOUT       = "tf";
+    static constexpr std::string_view s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_VOLUME_TF_INOUT};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix {this, s_CLIPPING_MATRIX_INOUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

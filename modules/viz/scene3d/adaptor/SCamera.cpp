@@ -233,7 +233,7 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
-    const auto transform = this->getLockedInOut<data::Matrix4>(s_TRANSFORM_INOUT);
+    const auto transform = m_transform.lock();
 
     // Received input line and column data from Sight transformation matrix
     for(size_t lt = 0 ; lt < 4 ; lt++)
