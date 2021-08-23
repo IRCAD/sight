@@ -29,7 +29,6 @@
 #include <core/com/Slots.hxx>
 
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -46,8 +45,6 @@ namespace sight::module::ui::qt::image
 {
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
-
-static const service::IService::KeyType s_IMAGE_INPUT = "image";
 
 ImageInfo::ImageInfo() noexcept
 {
@@ -98,9 +95,9 @@ void ImageInfo::configuring()
 
 void ImageInfo::updating()
 {
-    data::Image::csptr image = this->getInput<data::Image>(s_IMAGE_INPUT);
-    SIGHT_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const auto image = m_image.lock();
+    SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     m_valueText->setEnabled(imageIsValid);
 }
 
@@ -110,10 +107,10 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
 {
     if(info.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
-        data::Image::csptr image = this->getInput<data::Image>(s_IMAGE_INPUT);
-        SIGHT_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
+        const auto image = m_image.lock();
+        SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
 
-        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
         m_valueText->setEnabled(imageIsValid);
         if(imageIsValid)
         {
@@ -176,8 +173,8 @@ service::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

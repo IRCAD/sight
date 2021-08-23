@@ -24,6 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QLabel>
@@ -104,6 +107,12 @@ private:
     QPointer<QLabel> m_cxLabel;   ///< Label for cx value
     QPointer<QLabel> m_cyLabel;   ///< Label for cy value
     QPointer<QLabel> m_fyLabel;   ///< Label for fy value
+
+    static constexpr std::string_view s_CAMERA = "camera";
+    static constexpr std::string_view s_MATRIX = "matrix";
+
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA, true};
+    data::ptr<data::Matrix4, data::Access::inout> m_matrix {this, s_MATRIX, true};
 };
 
 } // uiCalibration

@@ -28,9 +28,6 @@
 
 #include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectReadToWriteLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -67,11 +64,6 @@ static const std::string s_IMPORT_ICON_CONFIG       = "importIcon";
 static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
-
-static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
-static const service::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
-
-static const service::IService::KeyType s_TF_OUTPUT = "tf";
 
 static const std::string s_CONTEXT_TF = "TF";
 static const std::string s_VERSION_TF = "V1";
@@ -247,9 +239,9 @@ void STransferFunction::starting()
 service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_TF_POOL_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_POOL, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -265,16 +257,9 @@ void STransferFunction::updating()
 
 void STransferFunction::swapping(std::string_view _key)
 {
-    // Avoid swapping if it's the same TF.
-    if(_key == s_CURRENT_TF_INPUT)
+    if(_key == s_CURRENT_TF)
     {
-        const auto tfW = this->getWeakInput<const data::TransferFunction>(_key);
-        const auto tf  = tfW.lock();
-
-        if(tf && tf.get_shared() != m_selectedTF)
-        {
-            this->updateTransferFunctionPreset();
-        }
+        this->updateTransferFunctionPreset();
     }
 }
 
@@ -313,7 +298,7 @@ void STransferFunction::deleteTF()
 
     if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
-        const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+        const auto poolTF = m_tfPool.lock();
 
         if(poolTF->size() > 1)
         {
@@ -375,7 +360,7 @@ void STransferFunction::newTF()
             pNewTransferFunction = data::Object::copy(m_selectedTF);
             pNewTransferFunction->setName(newName);
             {
-                const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+                const auto poolTF = m_tfPool.lock();
                 data::helper::Composite compositeHelper(poolTF.get_shared());
                 compositeHelper.add(newName, pNewTransferFunction);
                 compositeHelper.notify();
@@ -410,7 +395,7 @@ void STransferFunction::reinitializeTFPool()
     if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         {
-            const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+            const auto poolTF = m_tfPool.lock();
             data::helper::Composite compositeHelper(poolTF.get_shared());
             compositeHelper.clear();
             compositeHelper.notify();
@@ -440,7 +425,7 @@ void STransferFunction::renameTF()
         if(!this->hasTransferFunctionName(newName))
         {
             {
-                const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+                const auto poolTF = m_tfPool.lock();
 
                 const data::TransferFunction::sptr pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
                 {
@@ -499,7 +484,7 @@ void STransferFunction::importTF()
             tf->setName(this->createTransferFunctionName(tf->getName()));
         }
 
-        const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+        const auto poolTF = m_tfPool.lock();
 
         data::helper::Composite compositeHelper(poolTF.get_shared());
         compositeHelper.add(tf->getName(), tf);
@@ -541,7 +526,7 @@ void STransferFunction::initTransferFunctions()
 {
     {
         // Get transfer function composite (pool TF)
-        const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+        const auto poolTF = m_tfPool.lock();
 
         data::helper::Composite compositeHelper(poolTF.get_shared());
 
@@ -624,7 +609,7 @@ void STransferFunction::updateTransferFunctionPreset()
     // Manage TF preset
     m_transferFunctionPreset->clear();
     {
-        const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+        const auto poolTF = m_tfPool.lock();
         for(data::Composite::value_type elt : *poolTF)
         {
             m_transferFunctionPreset->addItem(elt.first.c_str());
@@ -632,9 +617,8 @@ void STransferFunction::updateTransferFunctionPreset()
     }
 
     std::string currentTFName = defaultTFName;
-    const auto tfW            = this->getWeakInput<data::TransferFunction>(s_CURRENT_TF_INPUT);
     {
-        const auto tf = tfW.lock();
+        const auto tf = m_currentTf.lock();
         if(tf)
         {
             currentTFName = tf->getName();
@@ -664,7 +648,7 @@ bool STransferFunction::hasTransferFunctionName(
     }
     else
     {
-        const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+        const auto poolTF = m_tfPool.lock();
         return poolTF->find(_name) != poolTF->end();
     }
 }
@@ -697,13 +681,13 @@ void STransferFunction::updateTransferFunction()
 
     SIGHT_ASSERT("TF '" + newSelectedTFKey + "' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
-    const auto poolTF = this->getLockedInOut<data::Composite>(s_TF_POOL_INOUT);
+    const auto poolTF = m_tfPool.lock();
 
     const data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 
     if(newSelectedTF && m_selectedTF != newSelectedTF)
     {
-        this->setOutput(s_TF_OUTPUT, newSelectedTF);
+        this->setOutput(s_NEW_SELECTED_TF, newSelectedTF);
         m_selectedTF = data::TransferFunction::dynamicCast(newSelectedTF);
     }
 }

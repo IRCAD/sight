@@ -166,6 +166,14 @@ private:
 
     /// Paths of the tf files to load.
     PathContainerType m_paths;
+
+    static constexpr std::string_view s_CURRENT_TF      = "currentTF";
+    static constexpr std::string_view s_TF_POOL         = "tfPool";
+    static constexpr std::string_view s_NEW_SELECTED_TF = "tf";
+
+    data::ptr<data::TransferFunction, data::Access::in> m_currentTf {this, s_CURRENT_TF};
+    data::ptr<data::Composite, data::Access::inout> m_tfPool {this, s_TF_POOL};
+    data::ptr<data::TransferFunction, data::Access::out> m_newSelectedTf {this, s_NEW_SELECTED_TF};
 };
 
 } // namespace sight::module

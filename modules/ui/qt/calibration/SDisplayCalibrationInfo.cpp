@@ -27,7 +27,6 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <data/CalibrationInfo.hpp>
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
@@ -45,9 +44,6 @@ static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage"
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
-
-static const std::string s_CALIBRATION_INFO_1 = "calInfo1";
-static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
 
 //------------------------------------------------------------------------------
 
@@ -112,10 +108,10 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
     if(!m_configMgr)
     {
         // Grab images from our composite data
-        data::CalibrationInfo::csptr calInfo1 = this->getInput<data::CalibrationInfo>(s_CALIBRATION_INFO_1);
-        SIGHT_ASSERT("Object " + s_CALIBRATION_INFO_1 + " is not a CalibrationInfo !", calInfo1);
+        const auto calInfo1 = m_calibrationInfo1.lock();
+        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
-        data::CalibrationInfo::csptr calInfo2 = this->getInput<data::CalibrationInfo>(s_CALIBRATION_INFO_2);
+        const auto calInfo2 = m_calibrationInfo2.lock();
 
         std::string strConfig = "displayImageConfig";
 

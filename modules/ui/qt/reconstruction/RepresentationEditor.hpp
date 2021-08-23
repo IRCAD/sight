@@ -117,7 +117,8 @@ private:
 
     data::Material::sptr m_material;
 
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, "reconstruction", true};
+    static constexpr std::string_view s_RECONSTRUCTION = "reconstruction";
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
 };
 
 } // uiReconstructionQt

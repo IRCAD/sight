@@ -29,7 +29,6 @@
 
 #include <data/Boolean.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -44,8 +43,6 @@
 
 namespace sight::module::ui::qt::image
 {
-
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 ImageTransparency::ImageTransparency() noexcept
 {
@@ -128,10 +125,10 @@ void ImageTransparency::configuring()
 
 void ImageTransparency::updating()
 {
-    data::Image::sptr img = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    const auto img = m_image.lock();
+    SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", img);
 
-    bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+    bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if(imageIsValid)
@@ -181,8 +178,8 @@ void ImageTransparency::info(std::ostream& _sstream)
 
 void ImageTransparency::onModifyTransparency(int value)
 {
-    data::Image::sptr img = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    const auto img = m_image.lock();
+    SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", img);
 
     img->setField("TRANSPARENCY", data::Integer::New(value));
 
@@ -216,8 +213,8 @@ void ImageTransparency::onModifyVisibility(int value)
 
 void ImageTransparency::notifyVisibility(bool isVisible)
 {
-    data::Image::sptr img = this->getInOut<data::Image>(s_IMAGE_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    const auto img = m_image.lock();
+    SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", img);
 
     img->setField("VISIBILITY", data::Boolean::New(isVisible));
 
@@ -234,10 +231,10 @@ service::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() con
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

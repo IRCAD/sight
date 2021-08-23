@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/String.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QPointer>
@@ -113,6 +115,9 @@ private:
 
     /// Stores the static text to be displayed.
     QPointer<QLabel> m_labelStaticText;
+
+    static constexpr std::string_view s_STRING_INPUT = "string";
+    data::ptr<data::String, sight::data::Access::in> m_string {this, s_STRING_INPUT, true};
 };
 
 } // namespace sight::module::ui::qt

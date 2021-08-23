@@ -29,8 +29,6 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/helper/Vector.hpp>
-#include <data/Image.hpp>
-#include <data/Vector.hpp>
 
 #include <service/macros.hpp>
 
@@ -46,8 +44,6 @@ namespace sight::module::ui::qt::calibration
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
-
-const service::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 SImagesSelector::SImagesSelector() noexcept :
@@ -75,8 +71,8 @@ void SImagesSelector::configuring()
 
 void SImagesSelector::starting()
 {
-    m_frameTL = this->getInput<data::FrameTL>("frameTL");
-    SIGHT_ASSERT("Frame timeline is not found.", m_frameTL);
+    const auto frameTL = m_frameTL.lock();
+    SIGHT_ASSERT("Frame timeline is not found.", frameTL);
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -118,7 +114,7 @@ void SImagesSelector::stopping()
 
 void SImagesSelector::updating()
 {
-    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
+    const auto vector = m_selected_image.lock();
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
@@ -146,10 +142,10 @@ void SImagesSelector::remove()
 
     if(idx >= 0)
     {
-        data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
-        data::Object::sptr obj    = vector->getContainer()[idx];
+        const auto vector      = m_selected_image.lock();
+        data::Object::sptr obj = vector->getContainer()[idx];
 
-        data::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector.get_shared());
         vectorHelper.remove(obj);
         vectorHelper.notify();
 
@@ -161,9 +157,9 @@ void SImagesSelector::remove()
 
 void SImagesSelector::reset()
 {
-    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
+    const auto vector = m_selected_image.lock();
 
-    data::helper::Vector vectorHelper(vector);
+    data::helper::Vector vectorHelper(vector.get_shared());
     vectorHelper.clear();
     vectorHelper.notify();
 
@@ -175,7 +171,8 @@ void SImagesSelector::reset()
 
 void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 {
-    CSPTR(data::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
+    const auto frameTL = m_frameTL.lock();
+    CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
     if(!buffer)
     {
@@ -186,14 +183,14 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     data::Image::sptr image = data::Image::New();
 
     data::Image::Size size;
-    size[0] = m_frameTL->getWidth();
-    size[1] = m_frameTL->getHeight();
+    size[0] = frameTL->getWidth();
+    size[1] = frameTL->getHeight();
     size[2] = 1;
 
     data::Image::PixelFormat format;
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
-    switch(m_frameTL->getNumberOfComponents())
+    switch(frameTL->getNumberOfComponents())
     {
         case 1:
             format = data::Image::GRAY_SCALE;
@@ -211,7 +208,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
             format = data::Image::UNDEFINED;
     }
 
-    image->resize(size, m_frameTL->getType(), format);
+    image->resize(size, frameTL->getType(), format);
     const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin2(origin);
     const data::Image::Spacing spacing = {1., 1., 1.};
@@ -225,9 +222,9 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     std::uint8_t* imgBuffer       = static_cast<std::uint8_t*>(image->getBuffer());
     std::copy(frameBuff, frameBuff + buffer->getSize(), imgBuffer);
 
-    data::Vector::sptr vector = this->getInOut<data::Vector>(s_SELECTION_INOUT);
+    const auto vector = m_selected_image.lock();
 
-    sight::data::helper::Vector vectorHelper(vector);
+    sight::data::helper::Vector vectorHelper(vector.get_shared());
     vectorHelper.add(image);
     vectorHelper.notify();
 

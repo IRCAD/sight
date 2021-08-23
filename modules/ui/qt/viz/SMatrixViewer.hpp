@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Matrix4.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
@@ -103,6 +105,10 @@ private:
     std::string m_title; ///< Title of the matrix that will be displayed
 
     QVector<QPointer<QLabel> > m_matrixLabels; ///< Labels for matrix's elements
+
+    static constexpr std::string_view s_MATRIX = "matrix";
+
+    data::ptr<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX, true};
 };
 
 } //namespace viz

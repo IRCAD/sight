@@ -28,6 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/Camera.hpp>
+
 #include <service/IService.hpp>
 
 #include <QObject>
@@ -116,6 +118,9 @@ private:
     std::array<double, 12> m_calibration;
 
     SUpdateIntrinsicDialog* m_dialog;
+
+    static constexpr std::string_view s_CAMERA = "camera";
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA};
 };
 
 } // namespace sight::module::ui::qt::calibration

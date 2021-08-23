@@ -27,17 +27,12 @@
 #include <data/reflection/getObject.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/Vector.hpp>
 
 #include <service/extension/AppConfig.hpp>
 #include <service/macros.hpp>
 
 namespace sight::module::ui::qt::series
 {
-
-//------------------------------------------------------------------------------
-
-static const service::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -81,8 +76,8 @@ void SViewer::stopping()
 
 void SViewer::updating()
 {
-    data::Vector::csptr vector = this->getInput<data::Vector>(s_SERIES_INPUT);
-    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not defined.", vector);
+    const auto vector = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not defined.", vector);
 
     if(m_configTemplateManager)
     {
@@ -195,8 +190,8 @@ service::IService::KeyConnectionsMap SViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES_INPUT, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIES_INPUT, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

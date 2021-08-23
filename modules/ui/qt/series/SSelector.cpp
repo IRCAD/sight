@@ -68,9 +68,6 @@ static const std::string s_ICON_CONFIG              = "icon";
 static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
 static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
 
-static const service::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
-static const service::IService::KeyType s_SELECTION_INOUT = "selection";
-
 //------------------------------------------------------------------------------
 
 SSelector::SSelector()
@@ -292,8 +289,8 @@ void SSelector::starting()
 service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INOUT,data::SeriesDB::s_ADDED_SERIES_SIG,s_ADD_SERIES_SLOT);
-    connections.push(s_SERIES_DB_INOUT,data::SeriesDB::s_REMOVED_SERIES_SIG,s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_DB,data::SeriesDB::s_ADDED_SERIES_SIG,s_ADD_SERIES_SLOT);
+    connections.push(s_SERIES_DB,data::SeriesDB::s_REMOVED_SERIES_SIG,s_REMOVE_SERIES_SLOT);
 
     return connections;
 }
@@ -302,7 +299,7 @@ service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 
 void SSelector::updating()
 {
-    const auto seriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIES_DB_INOUT);
+    const auto seriesDB = m_seriesDB.lock();
 
     m_selectorWidget->clear();
 
@@ -326,7 +323,7 @@ void SSelector::onSelectedSeries(
     QVector<data::Series::sptr> _deselection
 )
 {
-    const auto selectionVector = this->getLockedInOut<data::Vector>(s_SELECTION_INOUT);
+    const auto selectionVector = m_selection.lock();
     data::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for(data::Series::sptr series : _deselection)
@@ -349,7 +346,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(_index);
 
-    const auto selectionVector = this->getLockedInOut<data::Vector>(s_SELECTION_INOUT);
+    const auto selectionVector = m_selection.lock();
 
     if(m_selectorWidget->getItemType(_index) == SelectorModel::SERIES)
     {
@@ -366,7 +363,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 {
-    const auto seriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIES_DB_INOUT);
+    const auto seriesDB = m_seriesDB.lock();
     data::helper::SeriesDB seriesDBHelper(*seriesDB);
 
     // Remove duplicated series

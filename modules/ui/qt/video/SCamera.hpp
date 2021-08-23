@@ -28,6 +28,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -156,6 +157,12 @@ private:
 
     /// Label of the selector.
     std::string m_label {"Video source: "};
+
+    static constexpr std::string_view s_CAMERA        = "camera";
+    static constexpr std::string_view s_CAMERA_SERIES = "cameraSeries";
+
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, s_CAMERA, true};
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES, true};
 };
 
 } // video

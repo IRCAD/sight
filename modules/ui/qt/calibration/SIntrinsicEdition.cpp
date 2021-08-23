@@ -35,8 +35,6 @@
 namespace sight::module::ui::qt::calibration
 {
 
-static const service::IService::KeyType s_CAMERA_INOUT = "camera";
-
 // -------------------------------------------------------------------------
 
 SIntrinsicEdition::SIntrinsicEdition()
@@ -77,8 +75,8 @@ void SIntrinsicEdition::onNewCalibration(std::array<double, 12>& cal)
 
 void SIntrinsicEdition::updateCalibration()
 {
-    data::Camera::sptr camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
 
     camera->setWidth(m_calibration[0]);
     camera->setHeight(m_calibration[1]);
@@ -119,8 +117,8 @@ void SIntrinsicEdition::configuring()
 
 void SIntrinsicEdition::readCalibration()
 {
-    data::Camera::sptr camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
-    SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("The inout key '" << s_CAMERA << "' is not correctly set.", camera);
 
     m_calibration[0] = camera->getWidth();
     m_calibration[1] = camera->getHeight();

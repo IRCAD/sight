@@ -27,6 +27,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/helper/TransferFunction.hpp>
+#include <data/Image.hpp>
 #include <data/Integer.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -190,6 +191,12 @@ private:
     data::TransferFunction::sptr m_previousTF;
 
     data::helper::TransferFunction m_helperTF;
+
+    static constexpr std::string_view s_TF    = "tf";
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF};
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE};
 };
 
 } // uiImageQt

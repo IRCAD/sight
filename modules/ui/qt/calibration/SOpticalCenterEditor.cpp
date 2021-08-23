@@ -22,11 +22,6 @@
 
 #include "modules/ui/qt/calibration/SOpticalCenterEditor.hpp"
 
-#include <data/Camera.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -38,9 +33,6 @@
 
 namespace sight::module::ui::qt::calibration
 {
-
-static const service::IService::KeyType s_CAMERA_INPUT = "camera";
-static const service::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -120,12 +112,12 @@ void SOpticalCenterEditor::stopping()
 
 void SOpticalCenterEditor::updating()
 {
-    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
     SIGHT_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
 
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
-    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
+    const auto matrix = m_matrix.lock();
+    SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
     if(matrix->getCoefficient(3, 3) == 1.)
@@ -165,9 +157,9 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -176,13 +168,10 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 
 void SOpticalCenterEditor::onCxSliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
-    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
-
-    data::mt::ObjectReadLock lockCam(camera);
-    data::mt::ObjectWriteLock lockMat(matrix);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
+    const auto matrix = m_matrix.lock();
+    SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
     matrix->setCoefficient(0, 2, value - camera->getCx());
 
@@ -199,13 +188,10 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
 void SOpticalCenterEditor::onCySliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
-    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
-
-    data::mt::ObjectReadLock lockCam(camera);
-    data::mt::ObjectWriteLock lockMat(matrix);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
+    const auto matrix = m_matrix.lock();
+    SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
     matrix->setCoefficient(1, 2, value - camera->getCy());
 
@@ -222,13 +208,10 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
 void SOpticalCenterEditor::onFySliderChanged(int value)
 {
-    data::Camera::csptr camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::Matrix4::sptr matrix = this->getInOut<data::Matrix4>(s_MATRIX_INOUT);
-    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
-
-    data::mt::ObjectReadLock lockCam(camera);
-    data::mt::ObjectWriteLock lockMat(matrix);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
+    const auto matrix = m_matrix.lock();
+    SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
     matrix->setCoefficient(1, 1, value - camera->getFy());
 

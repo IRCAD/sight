@@ -30,9 +30,6 @@
 #include <core/location/SingleFolder.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <data/CameraSeries.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
 
 #include <service/macros.hpp>
@@ -65,9 +62,6 @@ static const core::com::Signals::SignalKeyType s_CONFIGURED_STREAM_SIG  = "confi
 static const core::com::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT = "configureDevice";
 static const core::com::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureFile";
 static const core::com::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
-
-static const service::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
-static const service::IService::KeyType s_CAMERA_INOUT        = "camera";
 
 static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
@@ -141,11 +135,9 @@ void SCamera::starting()
     ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
+    auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const data::mt::ObjectWriteLock lock(cameraSeries);
-
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         if(numCameras == 0)
         {
@@ -336,11 +328,11 @@ void SCamera::onChooseFile()
                 );
             }
 
-            data::mt::ObjectWriteLock lock(camera);
-            camera->setCameraSource(data::Camera::FILE);
-            camera->setVideoFile(videoPath.string());
-            lock.unlock();
-
+            {
+                data::mt::locked_ptr<data::Camera> lock(camera);
+                camera->setCameraSource(data::Camera::FILE);
+                camera->setVideoFile(videoPath.string());
+            }
             const data::Camera::ModifiedSignalType::sptr sig =
                 camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
             sig->asyncEmit();
@@ -367,11 +359,11 @@ void SCamera::onChooseStream()
         const std::string streamSource = inputDialog.getInput();
         if(!streamSource.empty())
         {
-            data::mt::ObjectWriteLock lock(camera);
-            camera->setCameraSource(data::Camera::STREAM);
-            camera->setStreamUrl(streamSource);
-            lock.unlock();
-
+            {
+                data::mt::locked_ptr<data::Camera> lock(camera);
+                camera->setCameraSource(data::Camera::STREAM);
+                camera->setStreamUrl(streamSource);
+            }
             const data::Camera::ModifiedSignalType::sptr sig =
                 camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
             sig->asyncEmit();
@@ -400,9 +392,11 @@ void SCamera::onChooseDevice()
             return;
         }
 
-        data::mt::ObjectWriteLock lock(camera);
-        const bool isSelected = camDialog.getSelectedCamera(camera);
-        lock.unlock();
+        bool isSelected = false;
+        {
+            data::mt::locked_ptr<data::Camera> lock(camera);
+            isSelected = camDialog.getSelectedCamera(camera);
+        }
 
         if(isSelected)
         {
@@ -423,10 +417,9 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
     std::vector<data::Camera::sptr> cameras;
 
-    auto cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
+    const auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const data::mt::ObjectReadLock lock(cameraSeries);
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         for(size_t i = 0 ; i < numCameras ; ++i)
         {
@@ -435,9 +428,9 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
     }
     else
     {
-        const auto camera = this->getInOut<data::Camera>(s_CAMERA_INOUT);
-        SIGHT_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
-        cameras.push_back(camera);
+        const auto camera = m_camera.lock();
+        SIGHT_ASSERT("'" << s_CAMERA << "' does not exist.", camera);
+        cameras.push_back(camera.get_shared());
     }
 
     return cameras;

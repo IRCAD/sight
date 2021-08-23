@@ -180,6 +180,12 @@ private:
 
     /// Defines the path of the remove serie button icon.
     std::filesystem::path m_removeSerieIcon;
+
+    static constexpr std::string_view s_SERIES_DB = "seriesDB";
+    static constexpr std::string_view s_SELECTION = "selection";
+
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIES_DB, true};
+    data::ptr<data::Vector, data::Access::inout> m_selection {this, s_SELECTION};
 };
 
 } // namespace series.

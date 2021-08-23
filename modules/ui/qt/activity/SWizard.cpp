@@ -69,8 +69,6 @@ const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_CREATED_SIG    = "ac
 const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
 const core::com::Signals::SignalKeyType SWizard::s_CANCELED_SIG            = "canceled";
 
-static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
-
 using sight::activity::extension::ActivityInfo;
 using sight::activity::extension::Activity;
 
@@ -305,8 +303,8 @@ void SWizard::createActivity(std::string activityID)
             (*data)[req.name] = data::factory::New(req.type);
         }
 
-        data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-        SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
+        const auto seriesDB = m_seriesDB.lock();
+        SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not defined.", seriesDB);
 
         data::helper::SeriesDB helper(*seriesDB);
         helper.add(m_actSeries);
@@ -501,8 +499,8 @@ void SWizard::onBuildActivity()
                     }
 
                     m_actSeries->setDescription(description);
-                    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(s_SERIESDB_INOUT);
-                    SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
+                    const auto seriesDB = m_seriesDB.lock();
+                    SIGHT_ASSERT("The inout key '" << s_SERIESDB << "' is not defined.", seriesDB);
 
                     data::helper::SeriesDB helper(*seriesDB);
                     helper.add(m_actSeries);

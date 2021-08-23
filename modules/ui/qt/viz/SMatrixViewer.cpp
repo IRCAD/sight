@@ -22,8 +22,6 @@
 
 #include "SMatrixViewer.hpp"
 
-#include <data/Matrix4.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -40,8 +38,6 @@ namespace sight::module::ui::qt
 
 namespace viz
 {
-
-static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
 
 // ------------------------------------------------------------------------------
 
@@ -116,7 +112,7 @@ void SMatrixViewer::updating()
 
 void SMatrixViewer::updateFromMatrix()
 {
-    auto matrix = this->getInput<data::Matrix4>(s_MATRIX_INPUT);
+    const auto matrix = m_matrix.lock();
     for(unsigned int i = 0 ; i < 4 ; ++i)
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
@@ -144,7 +140,7 @@ void SMatrixViewer::clearLabels()
 service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

@@ -214,6 +214,9 @@ private:
     ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activitySeries is created
     ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activitySeries is updated
     CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
+
+    static constexpr std::string_view s_SERIESDB = "seriesDB";
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB, true};
 };
 
 } // editor

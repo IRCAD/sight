@@ -89,11 +89,11 @@ void SCameraConfigLauncher::starting()
 {
     this->create();
 
-    m_cameraSeries = this->getInOut<data::CameraSeries>("cameraSeries");
-    SIGHT_ASSERT("Missing cameraSeries.", m_cameraSeries);
+    const auto cameraSeries = m_cameraSeries.lock();
+    SIGHT_ASSERT("Missing cameraSeries.", cameraSeries);
 
-    m_activitySeries = this->getInOut<data::ActivitySeries>("activitySeries");
-    SIGHT_ASSERT("Missing activitySeries.", m_activitySeries);
+    const auto activitySeries = m_activitySeries.lock();
+    SIGHT_ASSERT("Missing activitySeries.", activitySeries);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
@@ -138,7 +138,7 @@ void SCameraConfigLauncher::starting()
 
     qtContainer->setLayout(layout);
 
-    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
+    const size_t nbCam = cameraSeries->getNumberOfCameras();
 
     if(nbCam == 0)
     {
@@ -189,9 +189,10 @@ void SCameraConfigLauncher::updating()
 
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
+    const auto cameraSeries = m_cameraSeries.lock();
     SIGHT_ASSERT(
         "Bad index: " << index,
-        index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras()
+        index >= 0 && static_cast<size_t>(index) < cameraSeries->getNumberOfCameras()
     );
 
     if(index == 0)
@@ -316,7 +317,8 @@ void SCameraConfigLauncher::onImportClicked()
                 const auto selectedStd    = selected.toStdString();
                 const auto selectedCamera = map[selectedStd];
                 const auto camIdx         = m_cameraComboBox->currentIndex();
-                auto camera               = m_cameraSeries->getCamera(camIdx);
+                const auto cameraSeries   = m_cameraSeries.lock();
+                auto camera               = cameraSeries->getCamera(camIdx);
                 camera->deepCopy(selectedCamera);
                 camera->signal<data::Camera::IntrinsicCalibratedSignalType>(
                     data::Camera::s_INTRINSIC_CALIBRATED_SIG
@@ -336,20 +338,22 @@ void SCameraConfigLauncher::onRemoveClicked()
     {
         m_cameraComboBox->blockSignals(true);
 
+        const auto cameraSeries = m_cameraSeries.lock();
         // Remove camera
-        data::Camera::sptr camera = m_cameraSeries->getCamera(index);
-        m_cameraSeries->removeCamera(camera);
+        data::Camera::sptr camera = cameraSeries->getCamera(index);
+        cameraSeries->removeCamera(camera);
         data::CameraSeries::RemovedCameraSignalType::sptr sig;
-        sig = m_cameraSeries->signal<data::CameraSeries::RemovedCameraSignalType>(
+        sig = cameraSeries->signal<data::CameraSeries::RemovedCameraSignalType>(
             data::CameraSeries::s_REMOVED_CAMERA_SIG
         );
         sig->asyncEmit(camera);
 
         // Remove calibrationInfo
         std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
-        m_activitySeries->getData()->getContainer().erase(calibrationInfoKey);
+        const auto activitySeries      = m_activitySeries.lock();
+        activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
-        const size_t nbCam = m_cameraSeries->getNumberOfCameras();
+        const size_t nbCam = cameraSeries->getNumberOfCameras();
         if(nbCam == 1)
         {
             m_extrinsicButton->setEnabled(false);
@@ -378,8 +382,9 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    SIGHT_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
+    const auto cameraSeries = m_cameraSeries.lock();
+    const size_t index      = static_cast<size_t>(m_cameraComboBox->currentIndex());
+    SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->getNumberOfCameras());
     if(checked)
     {
         this->startExtrinsicConfig(index);
@@ -396,10 +401,13 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 {
     service::FieldAdaptorType replaceMap;
 
-    data::Camera::sptr camera = m_cameraSeries->getCamera(index);
+    const auto cameraSeries   = m_cameraSeries.lock();
+    data::Camera::sptr camera = cameraSeries->getCamera(index);
 
-    std::string calibrationInfoKey        = "calibrationInfo_" + std::to_string(index);
-    data::Composite::sptr data            = m_activitySeries->getData();
+    std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
+
+    const auto activitySeries             = m_activitySeries.lock();
+    data::Composite::sptr data            = activitySeries->getData();
     data::CalibrationInfo::sptr calibInfo =
         data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
 
@@ -417,8 +425,10 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 {
     const size_t cameraIdx = std::max(index, size_t(1));
 
-    data::Camera::sptr camera1 = m_cameraSeries->getCamera(0);
-    data::Camera::sptr camera2 = m_cameraSeries->getCamera(cameraIdx);
+    const auto cameraSeries = m_cameraSeries.lock();
+
+    data::Camera::sptr camera1 = cameraSeries->getCamera(0);
+    data::Camera::sptr camera2 = cameraSeries->getCamera(cameraIdx);
 
     // Check if the two cameras are calibrated
     if(camera1->getIsCalibrated() && camera2->getIsCalibrated())
@@ -427,7 +437,8 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         std::string calibrationInfo1Key = "calibrationInfoExtr0_" + ::boost::lexical_cast<std::string>(cameraIdx);
         std::string calibrationInfo2Key = "calibrationInfoExtr1_" + ::boost::lexical_cast<std::string>(cameraIdx);
 
-        data::Composite::sptr data = m_activitySeries->getData();
+        const auto activitySeries  = m_activitySeries.lock();
+        data::Composite::sptr data = activitySeries->getData();
         data::CalibrationInfo::sptr calibInfo1;
         data::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity series if it exists or create it.
@@ -468,19 +479,22 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 
 void SCameraConfigLauncher::addCamera()
 {
-    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
+    const auto cameraSeries = m_cameraSeries.lock();
+    const size_t nbCam      = cameraSeries->getNumberOfCameras();
 
     data::Camera::sptr camera = data::Camera::New();
 
     // Add the CalibrationInfo in activitySeries to be saved in activity
     std::string calibrationInfoKey        = "calibrationInfo_" + std::to_string(nbCam);
     data::CalibrationInfo::sptr calibInfo = data::CalibrationInfo::New();
-    m_activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
+
+    const auto activitySeries = m_activitySeries.lock();
+    activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
 
     // Add the camera
-    m_cameraSeries->addCamera(camera);
+    cameraSeries->addCamera(camera);
     data::CameraSeries::AddedCameraSignalType::sptr sig;
-    sig = m_cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
+    sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
         data::CameraSeries::s_ADDED_CAMERA_SIG
     );
     sig->asyncEmit(camera);

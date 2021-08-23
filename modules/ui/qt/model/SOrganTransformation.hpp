@@ -24,7 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Composite.hpp>
 #include <data/Matrix4.hpp>
+#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -130,6 +132,11 @@ private:
     //variables for the functionalities of saving & loading
     SaveMappingType m_saveListing;
     unsigned int m_saveCount;
+
+    static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
+    static constexpr std::string_view s_COMPOSITE    = "composite";
+    data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries", true};
+    data::ptr<data::Composite, data::Access::inout> m_composite {this, "composite", true};
 };
 
 } // namespace model

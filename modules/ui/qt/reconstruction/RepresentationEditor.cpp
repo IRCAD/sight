@@ -43,10 +43,6 @@ namespace sight::module::ui::qt::reconstruction
 
 //------------------------------------------------------------------------------
 
-static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
-
-//------------------------------------------------------------------------------
-
 RepresentationEditor::RepresentationEditor() noexcept
 {
 }
@@ -183,7 +179,7 @@ void RepresentationEditor::updating()
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
     m_material = reconstruction->getMaterial();
     container->setEnabled(!reconstruction->getOrganName().empty());
@@ -352,7 +348,7 @@ void RepresentationEditor::onShowNormals(int state)
 
     this->notifyMaterial();
 
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
     // In VTK backend the normals is handled by the mesh and not by the material
@@ -366,7 +362,7 @@ void RepresentationEditor::onShowNormals(int state)
 
 void RepresentationEditor::notifyMaterial()
 {
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
     data::Object::ModifiedSignalType::sptr sig;
@@ -381,7 +377,7 @@ void RepresentationEditor::notifyMaterial()
 service::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

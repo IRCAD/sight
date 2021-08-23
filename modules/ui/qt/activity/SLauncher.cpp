@@ -75,8 +75,6 @@ const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "
 const core::com::Slots::SlotKeyType SLauncher::s_UPDATE_STATE_SLOT           = "updateState";
 const core::com::Signals::SignalKeyType SLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
-static const service::IService::KeyType s_SERIES_INPUT = "series";
-
 using sight::activity::extension::Activity;
 using sight::activity::extension::ActivityInfo;
 using sight::activity::ActivityMsg;
@@ -298,13 +296,13 @@ SLauncher::ActivityInfoContainer SLauncher::getEnabledActivities(const ActivityI
 
 void SLauncher::updating()
 {
-    data::Vector::csptr selection = this->getInput<data::Vector>(s_SERIES_INPUT);
-    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    const auto selection = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
-    const bool launchAS = this->launchAS(selection);
+    const bool launchAS = this->launchAS(selection.get_shared());
     if(!launchAS)
     {
-        ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
+        ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection.get_shared());
         infos = this->getEnabledActivities(infos);
 
         if(!infos.empty())
@@ -339,8 +337,8 @@ void SLauncher::updating()
 
 void SLauncher::updateState()
 {
-    data::Vector::csptr selection = this->getInput<data::Vector>(s_SERIES_INPUT);
-    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    const auto selection = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
     bool isExecutable = false;
 
@@ -377,7 +375,7 @@ void SLauncher::updateState()
     else
     {
         ActivityInfo::DataCountType dataCount;
-        dataCount = Activity::getDefault()->getDataCount(selection);
+        dataCount = Activity::getDefault()->getDataCount(selection.get_shared());
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
             data::Object::sptr obj = selection->front();
@@ -387,7 +385,7 @@ void SLauncher::updateState()
             }
         }
 
-        ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
+        ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection.get_shared());
         infos = this->getEnabledActivities(infos);
 
         isExecutable |= !infos.empty();
@@ -489,8 +487,8 @@ void SLauncher::sendConfig(const ActivityInfo& info)
         module->start();
     }
 
-    data::Vector::csptr selection = this->getInput<data::Vector>(s_SERIES_INPUT);
-    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    const auto selection = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
     IValidator::ValidationType validation;
     validation.first = true;
@@ -500,7 +498,7 @@ void SLauncher::sendConfig(const ActivityInfo& info)
         IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
         SIGHT_ASSERT(validatorImpl << " instantiation failed", validator);
 
-        IValidator::ValidationType valid = validator->validate(info, selection);
+        IValidator::ValidationType valid = validator->validate(info, selection.get_shared());
         validation.first &= valid.first;
         if(!valid.first)
         {
@@ -518,7 +516,7 @@ void SLauncher::sendConfig(const ActivityInfo& info)
     }
     else
     {
-        this->buildActivity(info, selection);
+        this->buildActivity(info, selection.get_shared());
     }
 }
 
@@ -634,9 +632,9 @@ void SLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
 
 SLauncher::ParametersType SLauncher::translateParameters(const ParametersType& parameters)
 {
-    ParametersType transParams     = parameters;
-    data::Object::csptr workingObj = this->getInput<data::Object>(s_SERIES_INPUT);
-    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", workingObj);
+    ParametersType transParams = parameters;
+    const auto workingObj      = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", workingObj);
 
     for(ParametersType::value_type& param : transParams)
     {
@@ -648,7 +646,7 @@ SLauncher::ParametersType SLauncher::translateParameters(const ParametersType& p
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            data::Object::sptr obj = data::reflection::getObject(workingObj, parameterToReplace);
+            data::Object::sptr obj = data::reflection::getObject(workingObj.get_shared(), parameterToReplace);
             SIGHT_ASSERT("Invalid seshat path : '" << param.by << "'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
@@ -673,8 +671,8 @@ service::IService::KeyConnectionsMap SLauncher::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES_INPUT, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
-    connections.push(s_SERIES_INPUT, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
 
     return connections;
 }

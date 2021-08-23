@@ -24,6 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
 #include <data/List.hpp>
 #include <data/PointList.hpp>
 
@@ -150,6 +151,11 @@ private:
      * @brief Calibration point list.
      */
     QPointer<QListWidget> m_capturesListWidget;
+
+    static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
+    static constexpr std::string_view s_CALIBRATION_INFO_2 = "calInfo2";
+    data::ptr<data::CalibrationInfo, data::Access::inout> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, true};
+    data::ptr<data::CalibrationInfo, data::Access::inout> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

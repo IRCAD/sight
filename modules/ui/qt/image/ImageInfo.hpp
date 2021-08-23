@@ -26,6 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
@@ -102,6 +103,10 @@ private:
 
     /// Label to display the pixel value
     QPointer<QLineEdit> m_valueText;
+
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE, true};
 };
 
 } // uiImageQt

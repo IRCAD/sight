@@ -24,8 +24,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -127,7 +125,7 @@ void SCameraInformationEditor::stopping()
 
 void SCameraInformationEditor::updateInformations()
 {
-    data::Camera::csptr camera = this->getInput<data::Camera>("camera");
+    const auto camera = m_camera.lock();
     std::stringstream out;
 
     m_description->setText(QString::fromStdString(camera->getDescription()));
@@ -240,8 +238,8 @@ service::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnection
 {
     KeyConnectionsMap connections;
 
-    connections.push("camera", data::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push("camera", data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
 
     return connections;
 }

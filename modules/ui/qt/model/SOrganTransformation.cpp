@@ -26,12 +26,10 @@
 #include <core/com/Slot.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
 #include <data/helper/Field.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <geometry/data/Matrix4.hpp>
@@ -57,9 +55,6 @@ namespace sight::module::ui::qt
 
 namespace model
 {
-
-static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-static const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
 
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
@@ -169,7 +164,7 @@ void SOrganTransformation::refresh()
     m_reconstructionMap.clear();
     m_reconstructionListBox->clear();
 
-    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    const auto series = m_modelSeries.lock();
 
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
@@ -180,7 +175,7 @@ void SOrganTransformation::refresh()
 
     if(hasReconstructions)
     {
-        data::Composite::sptr pComposite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
+        const auto pComposite = m_composite.lock();
 
         for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
@@ -217,14 +212,14 @@ void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTran
 
 void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
-    data::Composite::sptr pComposite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
-    if(pComposite != nullptr)
+    const auto pComposite = m_composite.lock();
+    if(pComposite)
     {
         ::std::string item_name                    = currentItem->text().toStdString();
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
-        data::helper::Composite aCompositeHelper(pComposite);
+        data::helper::Composite aCompositeHelper(pComposite.get_shared());
         if((currentItem->checkState()) == Qt::Checked)
         {
             if(pComposite->find(item_name) == pComposite->end())
@@ -252,7 +247,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 
 void SOrganTransformation::onResetClick()
 {
-    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    const auto series = m_modelSeries.lock();
 
     //search the corresponding triangular mesh
     for(data::Reconstruction::sptr rec : series->getReconstructionDB())
@@ -275,7 +270,7 @@ void SOrganTransformation::onSaveClick()
 {
     InnerMatMappingType matMap;
 
-    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    const auto series = m_modelSeries.lock();
 
     if(!series->getReconstructionDB().empty())
     {
@@ -308,7 +303,7 @@ void SOrganTransformation::onLoadClick()
     {
         InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
-        data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+        const auto series = m_modelSeries.lock();
 
         //search the corresponding triangular mesh
         for(data::Reconstruction::sptr rec : series->getReconstructionDB())
@@ -332,18 +327,18 @@ void SOrganTransformation::onLoadClick()
 
 void SOrganTransformation::onSelectAllChanged(int state)
 {
-    data::Composite::sptr composite = this->getInOut<data::Composite>(s_COMPOSITE_INOUT);
-    data::helper::Composite compositeHelper(composite);
+    const auto pComposite = m_composite.lock();
+    data::helper::Composite compositeHelper(pComposite.get_shared());
 
     if(state == Qt::Checked)
     {
         m_reconstructionListBox->setEnabled(false);
 
-        data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+        const auto series = m_modelSeries.lock();
 
         for(data::Reconstruction::sptr rec : series->getReconstructionDB())
         {
-            if(composite->find(rec->getOrganName()) == composite->end())
+            if(pComposite->find(rec->getOrganName()) == pComposite->end())
             {
                 compositeHelper.add(rec->getOrganName(), rec->getMesh());
             }
@@ -372,7 +367,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
 void SOrganTransformation::addMeshTransform()
 {
-    data::ModelSeries::sptr series = this->getInOut<data::ModelSeries>(s_MODEL_SERIES_INOUT);
+    const auto series = m_modelSeries.lock();
 
     for(const data::Reconstruction::sptr& rec : series->getReconstructionDB())
     {
@@ -392,13 +387,13 @@ void SOrganTransformation::addMeshTransform()
 service::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, data::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE, data::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -230,6 +230,7 @@ private:
     typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
 
+    static constexpr std::string_view s_MODEL_SERIES = "modelSeries";
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries", true};
 };
 

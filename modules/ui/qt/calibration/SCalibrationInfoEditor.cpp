@@ -27,9 +27,6 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/CalibrationInfo.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -46,9 +43,6 @@ const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT       
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
 
-static const std::string s_CALIBRATION_INFO_1 = "calInfo1";
-static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
-
 // ----------------------------------------------------------------------------
 
 SCalibrationInfoEditor::SCalibrationInfoEditor() noexcept
@@ -62,18 +56,16 @@ SCalibrationInfoEditor::SCalibrationInfoEditor() noexcept
 
 void SCalibrationInfoEditor::updating()
 {
-    data::CalibrationInfo::sptr calInfo1 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_1);
-    SIGHT_ASSERT("Object " + s_CALIBRATION_INFO_1 + " is not a CalibrationInfo !", calInfo1);
-    data::mt::ObjectReadLock calib1Lock(calInfo1);
+    const auto calInfo1 = m_calibrationInfo1.lock();
+    SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
     data::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
 
     m_capturesListWidget->clear();
 
-    data::CalibrationInfo::sptr calInfo2 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_2);
+    const auto calInfo2 = m_calibrationInfo2.lock();
     if(calInfo2)
     {
-        data::mt::ObjectReadLock calib2Lock(calInfo2);
         data::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
 
         size_t captureIdx = 0;
@@ -189,10 +181,10 @@ void SCalibrationInfoEditor::remove()
     {
         const size_t idx = static_cast<size_t>(row);
 
-        data::CalibrationInfo::sptr calInfo1 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_1);
-        SIGHT_ASSERT("Object " + s_CALIBRATION_INFO_1 + " is not a CalibrationInfo !", calInfo1);
+        const auto calInfo1 = m_calibrationInfo1.lock();
+        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
-        data::CalibrationInfo::sptr calInfo2 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_2);
+        const auto calInfo2 = m_calibrationInfo2.lock();
 
         calInfo1->removeRecord(idx);
 
@@ -227,10 +219,10 @@ void SCalibrationInfoEditor::remove()
 
 void SCalibrationInfoEditor::reset()
 {
-    data::CalibrationInfo::sptr calInfo1 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_1);
-    SIGHT_ASSERT("Object " + s_CALIBRATION_INFO_1 + " is not a CalibrationInfo !", calInfo1);
+    const auto calInfo1 = m_calibrationInfo1.lock();
+    SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
-    data::CalibrationInfo::sptr calInfo2 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_2);
+    const auto calInfo2 = m_calibrationInfo2.lock();
 
     calInfo1->resetRecords();
 
@@ -271,8 +263,8 @@ void SCalibrationInfoEditor::getSelection()
     {
         const size_t idx = static_cast<size_t>(row);
 
-        data::CalibrationInfo::sptr calInfo1 = this->getInOut<data::CalibrationInfo>(s_CALIBRATION_INFO_1);
-        SIGHT_ASSERT("Object " + s_CALIBRATION_INFO_1 + " is not a CalibrationInfo !", calInfo1);
+        const auto calInfo1 = m_calibrationInfo1.lock();
+        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
         //Notify
         {

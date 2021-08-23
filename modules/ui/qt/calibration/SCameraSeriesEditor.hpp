@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "data/CameraSeries.hpp"
+
 #include "modules/ui/qt/config.hpp"
 
 #include <ui/base/IEditor.hpp>
@@ -125,6 +127,9 @@ protected:
 
     /// Index of the camera in cameraSeries used to display extrinsic matrix.
     size_t m_camIndex;
+
+    static constexpr std::string_view s_CAMERASERIES = "cameraSeries";
+    data::ptr<data::CameraSeries, data::Access::in> m_cameraSeries {this, s_CAMERASERIES, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

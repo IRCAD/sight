@@ -24,8 +24,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/String.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -36,8 +34,6 @@
 
 namespace sight::module::ui::qt
 {
-
-static const service::IService::KeyType s_STRING_INPUT = "string";
 
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
@@ -109,12 +105,11 @@ void STextStatus::starting()
     qtContainer->setLayout(layout);
 
     // Get input data.
-    const auto stringInput     = this->getWeakInput<const data::String>(s_STRING_INPUT);
-    const auto stringInputLock = stringInput.lock();
+    const auto stringInput = m_string.lock();
 
-    if(stringInputLock)
+    if(stringInput)
     {
-        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
+        m_labelValue->setText(QString::fromStdString(stringInput->value()));
     }
 }
 
@@ -133,12 +128,11 @@ service::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 void STextStatus::updating()
 {
     // Get input data.
-    const auto stringInput     = this->getWeakInput<const data::String>(s_STRING_INPUT);
-    const auto stringInputLock = stringInput.lock();
+    const auto stringInput = m_string.lock();
 
-    if(stringInputLock)
+    if(stringInput)
     {
-        m_labelValue->setText(QString::fromStdString(stringInputLock->value()));
+        m_labelValue->setText(QString::fromStdString(stringInput->value()));
     }
 }
 
