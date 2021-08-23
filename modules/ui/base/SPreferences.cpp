@@ -114,7 +114,7 @@ void SPreferences::save()
 
     data::Object::sptr obj;
     {
-        obj = this->getLockedInOut<data::Object>(sight::ui::base::preferences::s_PREFERENCES_KEY).get_shared();
+        obj = m_preferences.lock().get_shared();
     }
 
     // Lock recursively all objects referenced in the root object

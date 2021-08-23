@@ -81,8 +81,8 @@ service::IService::ConfigType ParameterEditor::createConfig(
     service::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
-    const data::Object::csptr shaderObj =
-        _adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
+    const auto shaderObj =
+        _adaptor->getWeakInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
 
     const auto& objType = shaderObj->getClassname();
 
@@ -99,7 +99,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
-        auto colorValue = data::Color::dynamicCast(shaderObj);
+        auto colorValue = data::Color::dynamicCast(shaderObj.get_shared());
 
         int r = static_cast<unsigned char>(colorValue->red() * 255);
         int g = static_cast<unsigned char>(colorValue->green() * 255);
@@ -122,7 +122,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue           = data::Float::dynamicCast(shaderObj);
+        auto floatValue           = data::Float::dynamicCast(shaderObj.get_shared());
         const double defaultValue = static_cast<double>(floatValue->value());
         const auto minmax         = getRange(defaultValue);
         const double min          = minmax.first;
@@ -139,7 +139,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
-        auto intValue          = data::Integer::dynamicCast(shaderObj);
+        auto intValue          = data::Integer::dynamicCast(shaderObj.get_shared());
         const int defaultValue = intValue->value();
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
@@ -154,7 +154,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     }
     else if(objType == "sight::data::Array")
     {
-        auto arrayObject         = data::Array::dynamicCast(shaderObj);
+        auto arrayObject         = data::Array::dynamicCast(shaderObj.get_shared());
         const auto numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
         {

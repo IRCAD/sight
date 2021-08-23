@@ -233,10 +233,10 @@ void SWizard::stopping()
 
 void SWizard::updating()
 {
-    auto as = this->getInOut<data::ActivitySeries>("activitySeries");
+    auto as = m_activitySeries.lock();
     if(as)
     {
-        this->updateActivity(as);
+        this->updateActivity(as.get_shared());
     }
 
     SIGHT_DEBUG_IF("activity series is not defined, it cannot be updated", !as);

@@ -75,6 +75,7 @@ namespace activity
  * @code{.xml}
    <service impl="::sight::module::ui::qt::activity::SWizard">
      <inout key="seriesDB" uid="..." />
+     <inout key="activitySeries" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
      <activitySeries>seriesUid</activitySeries>
@@ -88,6 +89,8 @@ namespace activity
    @endcode
  * @subsection In-Out In-Out
  * - \b seriesDB [sight::data::SeriesDB]: seriesDB to store the create activity series
+ * - \b seriesDB [sight::data::ActivitySeries] (optional): uid of the activity series to update. It is only used when
+ * the update() method is called.
  * @subsection Configuration Configuration
  * - \b ioSelectorConfig : configuration for the SSelector service used to import data in this editor.
  * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SSelector service used to
@@ -95,8 +98,6 @@ namespace activity
  * - \b icons : defines the icons displayed for a type of data
  *    - \b type : type of data
  *    - \b icon : path of the icon to display
- * - \b activitySeries (optional) : uid of the activity series to update. It is only used when the update() method is
- *      called.
  * - \b confirm (optional, true by default): if true, the editor proposes a confirmation dialog when the activity is
  *   updated.
  * - \b cancel (optional, true by default): if true, the editor proposes a cancel button. On cancel click, the editor is
@@ -216,7 +217,8 @@ private:
     CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
 
     static constexpr std::string_view s_SERIESDB = "seriesDB";
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB, true};
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
+    data::ptr<data::ActivitySeries, data::Access::inout> m_activitySeries {this, "activitySeries"};
 };
 
 } // editor

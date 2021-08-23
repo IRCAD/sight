@@ -215,7 +215,10 @@ data::Composite::sptr getPreferences()
 
     if(prefService)
     {
-        prefs = prefService->getInOut<data::Composite>(s_PREFERENCES_KEY);
+        // FIXME: This is wrong but normally harmless in most use cases
+        // This should disappear anyway when we stop using a composite for preferences
+        // See https://git.ircad.fr/sight/sight/-/issues/53
+        prefs = prefService->getWeakInOut<data::Composite>(s_PREFERENCES_KEY).lock().get_shared();
     }
 
     SIGHT_DEBUG_IF("The preferences are not found", !prefs);

@@ -22,33 +22,11 @@
 
 #include "SProducer.hpp"
 
-#include "MessageTL.hpp"
-
 #include <core/com/Signal.hxx>
 #include <core/thread/Timer.hpp>
 
-#include <service/macros.hpp>
-
-#include <functional>
-
 namespace ExTimeLine
 {
-
-//------------------------------------------------------------------------------
-
-SProducer::SProducer() noexcept :
-    m_senderId(0),
-    m_period(0),
-    m_msgCount(0),
-    m_timelineSize(0)
-{
-}
-
-//------------------------------------------------------------------------------
-
-SProducer::~SProducer() noexcept
-{
-}
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +53,7 @@ void SProducer::starting()
     // Init timeline pool
     if(m_timelineSize)
     {
-        const auto timeline = this->getLockedInOut< ::ExTimeLine::MessageTL>("timeline");
+        const auto timeline = m_timeline.lock();
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
@@ -99,7 +77,7 @@ void SProducer::stopping()
 
 void SProducer::updating()
 {
-    ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL>("timeline");
+    const auto timeline = m_timeline.lock();
 
     const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
     SPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);

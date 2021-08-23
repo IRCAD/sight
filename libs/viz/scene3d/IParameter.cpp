@@ -59,8 +59,6 @@ const core::com::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "
 const core::com::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
 const core::com::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
-const std::string IParameter::s_PARAMETER_INOUT = "parameter";
-
 //------------------------------------------------------------------------------
 
 IParameter::IParameter() noexcept :

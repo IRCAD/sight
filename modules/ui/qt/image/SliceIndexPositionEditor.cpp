@@ -247,7 +247,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type)
     // Update Type Choice
     m_sliceSelectorPanel->setTypeSelection(static_cast<int>(type));
 
-    data::Image::sptr image = this->getInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
     SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     this->updateSliceIndexFromImg();

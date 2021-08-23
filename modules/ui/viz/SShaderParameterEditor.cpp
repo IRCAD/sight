@@ -143,7 +143,7 @@ void SShaderParameterEditor::updateGuiInfo()
     sight::viz::scene3d::IAdaptor::sptr matService;
     for(auto srv : srvVec)
     {
-        if(srv->getInOut<data::Object>("material")->getID() == reconstruction->getMaterial()->getID())
+        if(srv->getWeakInOut<data::Object>("material").lock()->getID() == reconstruction->getMaterial()->getID())
         {
             matService = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
             break;
@@ -161,8 +161,8 @@ void SShaderParameterEditor::updateGuiInfo()
         if(paramSrv->getClassname() == "sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             /// Filter object types
-            const data::Object::csptr shaderObj =
-                paramSrv->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
+            const auto shaderObj =
+                paramSrv->getWeakInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
             const ObjectClassnameType objType = shaderObj->getClassname();
 
             if(objType == "sight::data::Boolean" || objType == "sight::data::Float"

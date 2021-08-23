@@ -297,7 +297,7 @@ void SColourImageMasking::setBackground()
     m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
 
     // Initialize the mask timeline
-    auto videoMaskTL = this->getLockedInOut<data::FrameTL>(s_VIDEO_MASK_TL_KEY);
+    const auto videoMaskTL = m_videoMaskTL.lock();
     videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), core::tools::Type::s_UINT8, 4);
 }
 

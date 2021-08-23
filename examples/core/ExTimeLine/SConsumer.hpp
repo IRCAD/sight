@@ -24,6 +24,8 @@
 
 #include "ExTimeLine/config.hpp"
 
+#include "MessageTL.hpp"
+
 #include <service/IService.hpp>
 
 namespace thread
@@ -97,6 +99,8 @@ private:
 
     /// A message will be read every m_uiPeriod milliseconds.
     unsigned int m_period;
+
+    sight::data::ptr<ExTimeLine::MessageTL, sight::data::Access::in> m_timeline {this, "timeline"};
 };
 
 } // namespace ExTimeLine

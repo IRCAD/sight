@@ -24,6 +24,8 @@
 
 #include "ExTimeLine/config.hpp"
 
+#include "MessageTL.hpp"
+
 #include <core/thread/Timer.hpp>
 
 #include <service/IService.hpp>
@@ -45,7 +47,7 @@ namespace ExTimeLine
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b timeline [::ExTimeLine::MessageTL]: timeline where to put messages.
+ * - \b timeline [ExTimeLine::MessageTL]: timeline where to put messages.
  * @subsection Configuration Configuration:
  * - \b message : message to be sent.
  * - \b id : id of the sender.
@@ -58,8 +60,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SProducer, sight::service::IService);
 
-    EXTIMELINE_API SProducer() noexcept;
-    EXTIMELINE_API virtual ~SProducer() noexcept;
+    EXTIMELINE_API SProducer() noexcept          = default;
+    EXTIMELINE_API virtual ~SProducer() noexcept = default;
 
 protected:
 
@@ -84,16 +86,18 @@ private:
     std::string m_message;
 
     /// Id of the sender
-    unsigned int m_senderId;
+    unsigned int m_senderId {0};
 
     /// A message will be sent every m_uiPeriod milliseconds.
-    unsigned int m_period;
+    unsigned int m_period {0};
 
     /// Current message count
-    unsigned int m_msgCount;
+    unsigned int m_msgCount {0};
 
     /// Timeline size
-    unsigned int m_timelineSize;
+    unsigned int m_timelineSize {0};
+
+    sight::data::ptr<ExTimeLine::MessageTL, sight::data::Access::inout> m_timeline {this, "timeline"};
 };
 
 } // namespace ExTimeLine

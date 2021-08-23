@@ -22,8 +22,6 @@
 
 #include "SConsumer.hpp"
 
-#include "MessageTL.hpp"
-
 #include <core/com/Slots.hxx>
 #include <core/thread/Timer.hpp>
 
@@ -86,7 +84,7 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL>("timeline");
+    const auto timeline = m_timeline.lock();
 
     const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
     const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
@@ -104,7 +102,7 @@ void SConsumer::updating()
 
 void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
 {
-    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL>("timeline");
+    const auto timeline = m_timeline.lock();
 
     const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
