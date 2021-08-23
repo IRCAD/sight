@@ -239,6 +239,8 @@ public:
     ptr& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
     {
         m_holder->_setOutput(m_key, _obj, 0);
+        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+        data::mt::weak_ptr<target_t>::operator=(_obj);
         return *this;
     }
 
@@ -247,6 +249,8 @@ public:
     void reset()
     {
         m_holder->_setOutput(m_key, nullptr, 0);
+        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+        data::mt::weak_ptr<target_t>::reset();
     }
 
 private:
