@@ -1,14 +1,13 @@
 <plugin id="sight::module::ui::qml" library="true" >
     <requirement id="sight::module::ui::base"/>
-    <requirement id="sight::module::ui::qt"/>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::qml::IQmlEditor</type>
          <service>sight::module::ui::qml::activity::SSequencer</service>
          <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::qml::IQmlEditor</type>
          <service>sight::module::ui::qml::activity::SView</service>
          <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>

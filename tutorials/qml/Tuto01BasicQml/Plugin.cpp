@@ -26,10 +26,10 @@
 
 #include <ui/qml/QmlEngine.hpp>
 
-namespace sight::Tuto01BasicQml
+namespace Tuto01BasicQml
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::Tuto01BasicQml::Plugin");
+SIGHT_REGISTER_PLUGIN("Tuto01BasicQml::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -54,10 +54,10 @@ void Plugin::start()
 void Plugin::initialize()
 {
     // get the qml engine
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
+    auto engine = sight::ui::qml::QmlEngine::getDefault();
 
     // get the path of the qml ui file
-    auto path = core::runtime::getModuleResourceFilePath("Tuto01BasicQml", "ui.qml");
+    auto path = sight::core::runtime::getModuleResourceFilePath("Tuto01BasicQml", "ui.qml");
 
     // load the qml ui
     engine->loadMainComponent(path);
@@ -77,4 +77,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::Tuto01BasicQml
+} // namespace Tuto01BasicQml

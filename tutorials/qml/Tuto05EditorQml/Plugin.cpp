@@ -34,7 +34,7 @@ using namespace sight;
 namespace Tuto05EditorQml
 {
 
-SIGHT_REGISTER_PLUGIN("::Tuto05EditorQml::Plugin");
+SIGHT_REGISTER_PLUGIN("Tuto05EditorQml::Plugin");
 
 //------------------------------------------------------------------------------
 

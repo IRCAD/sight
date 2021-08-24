@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::Tuto01BasicQml
+namespace Tuto01BasicQml
 {
 
 /**
@@ -53,4 +53,4 @@ public:
     TUTO01BASICQML_API void uninitialize() noexcept;
 };
 
-} // namespace sight::Tuto01BasicQml
+} // namespace Tuto01BasicQml
