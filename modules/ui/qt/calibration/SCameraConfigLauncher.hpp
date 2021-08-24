@@ -94,7 +94,7 @@ public:
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SCameraConfigLauncher() noexcept;
+    MODULE_UI_QT_API ~SCameraConfigLauncher() noexcept override;
 
 protected:
 

@@ -341,7 +341,7 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
     {
         if(elt.first == "ogreMaterial")
         {
-            this->unregisterServices("::sight::module::viz::scene3d::adaptor::SShaderParameter");
+            this->unregisterServices("sight::module::viz::scene3d::adaptor::SShaderParameter");
             {
                 const auto material = m_materialData.lock();
 
@@ -433,7 +433,7 @@ void SMaterial::removeTextureAdaptor()
     m_materialFw->setDiffuseTexture(::Ogre::TexturePtr());
 
     m_textureConnection.disconnect();
-    this->unregisterServices("::sight::module::viz::scene3d::adaptor::STexture");
+    this->unregisterServices("sight::module::viz::scene3d::adaptor::STexture");
     m_texAdaptor.reset();
 
     // Update the shaders

@@ -227,8 +227,8 @@ private:
     /// Contains the export TF button.
     QPushButton* m_exportButton {nullptr};
 
-//    /// Contains the current selected TF pool.
-//    data::Composite::sptr m_currentTFPool {nullptr};
+    /// Contains the current selected TF pool.
+    data::Composite::wptr m_selectedTFPool;
 
     /// Defines the path of the delete button icon.
     std::filesystem::path m_deleteIcon;

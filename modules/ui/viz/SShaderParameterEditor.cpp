@@ -24,14 +24,10 @@
 
 #include <viz/scene3d/IAdaptor.hpp>
 
-#include <data/Boolean.hpp>
-#include <data/Float.hpp>
-#include <data/Integer.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
@@ -58,9 +54,11 @@ SShaderParameterEditor::~SShaderParameterEditor() noexcept
 
 void SShaderParameterEditor::starting()
 {
-    const auto rec                = m_reconstruction.lock();
-    data::Material::sptr material = rec->getMaterial();
-    m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    {
+        const auto rec                = m_reconstruction.lock();
+        data::Material::sptr material = rec->getMaterial();
+        m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    }
 
     this->create();
 
@@ -128,7 +126,7 @@ void SShaderParameterEditor::updateGuiInfo()
     const auto reconstruction = m_reconstruction.lock();
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "::sight::module::viz::scene3d::adaptor::SMaterial"
+        "sight::module::viz::scene3d::adaptor::SMaterial"
     );
 
     /// Stop if no Material adaptors have been find

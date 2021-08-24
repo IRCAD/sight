@@ -256,7 +256,12 @@ void SMultipleTF::swapping(std::string_view _key)
     // Avoid swapping if it's the same TF.
     if(_key == s_CURRENT_TF_POOL)
     {
-        this->updatePoolsPreset();
+        const auto tfPool = m_currentTfPool.lock();
+
+        if(tfPool && tfPool.get_shared() != m_selectedTFPool.lock())
+        {
+            this->updatePoolsPreset();
+        }
     }
 }
 
@@ -509,17 +514,15 @@ void SMultipleTF::setCurrentPool()
 {
     const std::string newSelectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
 
-    const auto tfPools       = m_tfPools.lock();
-    const auto currentTfPool = m_currentTfPool.lock();
-    auto scurrentTfPool      = currentTfPool.get_shared();
+    const auto tfPools = m_tfPools.lock();
 
     const data::Object::sptr newSelectedObject    = (*tfPools)[newSelectedTFPoolKey];
     const data::Composite::sptr newSelectedTFPool = data::Composite::dynamicCast(newSelectedObject);
     SIGHT_ASSERT("inout '" << s_TF_POOLS << "' must contain only Composite.", newSelectedTFPool);
 
-    if(newSelectedTFPool && newSelectedTFPool != scurrentTfPool)
+    if(newSelectedTFPool && newSelectedTFPool != m_selectedTFPool.lock())
     {
-        scurrentTfPool = newSelectedTFPool;
+        m_selectedTFPool = newSelectedTFPool;
         this->setOutput(s_NEW_SELECTED_POOL, newSelectedTFPool);
     }
 }

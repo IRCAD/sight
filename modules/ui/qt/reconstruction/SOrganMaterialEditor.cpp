@@ -269,41 +269,44 @@ void SOrganMaterialEditor::refreshMaterial()
         material = reconstruction->getMaterial();
     }
 
-    data::mt::locked_ptr<const data::Material> lock(material);
-
+    int alpha;
     {
-        const QColor materialDiffuseColor = QColor(
-            static_cast<int>(material->diffuse()->red() * 255.f),
-            static_cast<int>(material->diffuse()->green() * 255.f),
-            static_cast<int>(material->diffuse()->blue() * 255.f),
-            static_cast<int>(material->diffuse()->alpha() * 255.f)
-        );
+        data::mt::locked_ptr<const data::Material> lock(material);
 
-        const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-        QPixmap pix(iconSize, iconSize);
-        pix.fill(materialDiffuseColor);
-        m_diffuseColourButton->setIcon(QIcon(pix));
+        {
+            const QColor materialDiffuseColor = QColor(
+                static_cast<int>(material->diffuse()->red() * 255.f),
+                static_cast<int>(material->diffuse()->green() * 255.f),
+                static_cast<int>(material->diffuse()->blue() * 255.f),
+                static_cast<int>(material->diffuse()->alpha() * 255.f)
+            );
+
+            const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(iconSize, iconSize);
+            pix.fill(materialDiffuseColor);
+            m_diffuseColourButton->setIcon(QIcon(pix));
+        }
+
+        {
+            const QColor materialAmbientColor = QColor(
+                static_cast<int>(material->ambient()->red() * 255.f),
+                static_cast<int>(material->ambient()->green() * 255.f),
+                static_cast<int>(material->ambient()->blue() * 255.f),
+                static_cast<int>(material->ambient()->alpha() * 255.f)
+            );
+
+            const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(iconSize, iconSize);
+            pix.fill(materialAmbientColor);
+            m_ambientColourButton->setIcon(QIcon(pix));
+        }
+
+        alpha = static_cast<int>(material->diffuse()->alpha() * 100.f);
     }
 
-    {
-        const QColor materialAmbientColor = QColor(
-            static_cast<int>(material->ambient()->red() * 255.f),
-            static_cast<int>(material->ambient()->green() * 255.f),
-            static_cast<int>(material->ambient()->blue() * 255.f),
-            static_cast<int>(material->ambient()->alpha() * 255.f)
-        );
-
-        const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-        QPixmap pix(iconSize, iconSize);
-        pix.fill(materialAmbientColor);
-        m_ambientColourButton->setIcon(QIcon(pix));
-    }
-
-    const int a = static_cast<int>(material->diffuse()->alpha() * 100.f);
-
-    m_opacitySlider->setValue(a);
+    m_opacitySlider->setValue(alpha);
     std::stringstream ss;
-    ss << a << "%";
+    ss << alpha << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
 }
 

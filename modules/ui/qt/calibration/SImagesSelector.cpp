@@ -29,8 +29,7 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/helper/Vector.hpp>
-
-#include <service/macros.hpp>
+#include <data/Image.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 

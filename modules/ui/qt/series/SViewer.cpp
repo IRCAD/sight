@@ -76,15 +76,14 @@ void SViewer::stopping()
 
 void SViewer::updating()
 {
-    const auto vector = m_series.lock();
-    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not defined.", vector);
-
     if(m_configTemplateManager)
     {
         m_configTemplateManager->stopAndDestroy();
         m_configTemplateManager.reset();
     }
 
+    const auto vector = m_series.lock();
+    SIGHT_ASSERT("The input key '" << s_SERIES << "' is not defined.", vector);
     if(vector->size() == 1)
     {
         data::Object::sptr obj            = vector->front();
