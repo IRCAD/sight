@@ -29,7 +29,17 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/registry/macros.hpp>
 #include <ui/qt/App.hpp>
+#include <ui/qt/dialog/InputDialog.hpp>
+#include <ui/qt/dialog/LocationDialog.hpp>
+#include <ui/qt/dialog/LoggerDialog.hpp>
+#include <ui/qt/dialog/MessageDialog.hpp>
+#include <ui/qt/dialog/MultiSelectorDialog.hpp>
+#include <ui/qt/dialog/NotificationDialog.hpp>
+#include <ui/qt/dialog/ProgressDialog.hpp>
+#include <ui/qt/dialog/PulseProgressDialog.hpp>
+#include <ui/qt/dialog/SelectorDialog.hpp>
 #include <ui/qt/WorkerQt.hpp>
 
 #include <QFile>
@@ -40,12 +50,25 @@
 
 #include <functional>
 
+// Register all dialog implementation when we do use qt
+namespace idialog = sight::ui::base::dialog;
+
+fwGuiRegisterMacro(sight::ui::qt::dialog::InputDialog, idialog::IInputDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::LocationDialog, idialog::ILocationDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::LoggerDialog, idialog::ILoggerDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::MessageDialog, idialog::IMessageDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::MultiSelectorDialog, idialog::IMultiSelectorDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::NotificationDialog, idialog::INotificationDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::ProgressDialog, idialog::IProgressDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::PulseProgressDialog, idialog::IPulseProgressDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::dialog::SelectorDialog, idialog::ISelectorDialog::REGISTRY_KEY);
+
 namespace sight::module::ui::qt
 {
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::qt::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -65,10 +88,10 @@ void Plugin::start()
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback =
         [](int& argc, char** argv)
         {
-            return QSharedPointer<QApplication>(new ::sight::ui::qt::App(argc, argv, true));
+            return QSharedPointer<QApplication>(new sight::ui::qt::App(argc, argv, true));
         };
 
-    m_workerQt = ::sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    m_workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
     core::thread::ActiveWorkers::setDefaultWorker(m_workerQt);
 

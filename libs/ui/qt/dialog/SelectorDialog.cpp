@@ -34,8 +34,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::SelectorDialog, ::sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

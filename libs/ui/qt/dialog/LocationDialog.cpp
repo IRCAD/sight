@@ -38,8 +38,6 @@
 #include <filesystem>
 #include <functional>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::LocationDialog, ::sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

@@ -93,23 +93,25 @@ void AppManager::setScene(viz::qt3d::core::GenericScene* _scene)
 
 void AppManager::onOpenModel()
 {
+    const auto mesh = sight::data::Mesh::New();
     // Reads a mesh.
-    const auto meshReader = service::add("::sight::module::ui::base::io::SSelector");
+    const auto meshReader = service::add("sight::module::ui::base::io::SSelector");
     service::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
-    meshReaderConfig.put("type.<xmlattr>.class", "::sight::data::Mesh");
+    meshReaderConfig.put("type.<xmlattr>.class", "sight::data::Mesh");
     meshReader->setConfiguration(meshReaderConfig);
     meshReader->configure();
+    meshReader->setInOut(mesh, "data");
     meshReader->start();
     meshReader->update();
-    auto mesh = meshReader->getOutput<data::Mesh>("data").lock();
-    this->addObject(mesh.get_shared(), s_MESH_ID);
+    this->addObject(mesh, s_MESH_ID);
 
     // Associates the mesh with the one declared in 'ui.qml'.
     if(mesh)
     {
         m_mesh->setScene(m_scene);
-        m_mesh->setMesh(mesh.get_shared());
+        sight::data::mt::locked_ptr<data::Mesh> lockedMesh(mesh);
+        m_mesh->setMesh(mesh);
         m_mesh->centerCameraOnMesh();
     }
 

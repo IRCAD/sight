@@ -29,8 +29,6 @@
 #include <QPushButton>
 #include <QVector>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

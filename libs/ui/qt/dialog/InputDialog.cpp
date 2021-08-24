@@ -28,8 +28,6 @@
 #include <QInputDialog>
 #include <QObject>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

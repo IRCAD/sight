@@ -1,7 +1,5 @@
 sight_add_target( module_viz_qt3d TYPE MODULE START ON WARNINGS_AS_ERRORS ON )
 
-add_dependencies(module_viz_qt3d module_ui_qt)
-
 add_definitions("-DQT_NO_KEYWORDS")
 
 if(UNIX)

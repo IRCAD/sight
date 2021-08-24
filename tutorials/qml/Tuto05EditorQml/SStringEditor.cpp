@@ -65,9 +65,12 @@ void SStringEditor::stopping()
 
 void SStringEditor::updating()
 {
-    auto sstr = m_string.lock();
-    SIGHT_ASSERT("'" << s_STRING_INOUT << "' data must be set as 'inout'", sstr);
-    const std::string value = sstr->value();
+    std::string value;
+    {
+        auto sstr = m_string.lock();
+        SIGHT_ASSERT("'" << s_STRING_INOUT << "' data must be set as 'inout'", sstr);
+        value = sstr->value();
+    }
 
     Q_EMIT edited(QString::fromStdString(value));
 }

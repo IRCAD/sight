@@ -2,8 +2,8 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.12
-import uiReconstructionQml 1.0
-import styleQml 1.0
+import sight.reconstruction 1.0
+import sight.style 1.0
 
 Item {
     id: organMaterialEditor

@@ -1,8 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
-import uiMedDataQml 1.0
-import styleQml 1.0
+import sight.medData 1.0
+import sight.style 1.0
 
 Item {
     id: modelList

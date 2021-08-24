@@ -37,7 +37,7 @@ using namespace sight;
 namespace Tuto07SceneQt3DQml
 {
 
-SIGHT_REGISTER_PLUGIN("::Tuto07SceneQt3DQml::Plugin");
+SIGHT_REGISTER_PLUGIN("Tuto07SceneQt3DQml::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ void Plugin::start()
     appManager->create();
 
     // Adds services to the app manager. Those services are only used to register QML types.
-    appManager->addService("::sight::viz::qt3d::SRender", "genericScene", true, false);
-    appManager->addService("::sight::module::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
-    appManager->addService("::sight::module::viz::qt3d::adaptor::SMaterial", "materialAdaptor", true, false);
+    appManager->addService("sight::viz::qt3d::SRender", "genericScene", true, false);
+    appManager->addService("sight::module::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
+    appManager->addService("sight::module::viz::qt3d::adaptor::SMaterial", "materialAdaptor", true, false);
 }
 
 //------------------------------------------------------------------------------

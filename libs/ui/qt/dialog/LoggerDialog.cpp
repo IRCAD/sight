@@ -39,8 +39,6 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

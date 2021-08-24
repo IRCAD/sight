@@ -44,8 +44,8 @@ static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 SMaterial::SMaterial() noexcept
 {
     // Allows using Material as QML type when using SMaterial service in QML applications.
-    qmlRegisterType<sight::viz::qt3d::data::Material>("sight::viz::qt3d", 1, 0, "Material");
-    qRegisterMetaType<sight::viz::qt3d::data::Material*>("sight::viz::qt3d::Material*");
+    qmlRegisterType<sight::viz::qt3d::data::Material>("sight.viz.qt3d", 1, 0, "Material");
+    qRegisterMetaType<sight::viz::qt3d::data::Material*>("sight.viz.qt3d.Material*");
 }
 
 //-----------------------------------------------------------------------------

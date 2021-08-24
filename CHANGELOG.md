@@ -1863,7 +1863,7 @@ Added several patches to build sight on Debian-med
 Create a Qml sample to launch activities: `ExActivitiesQml`
 
 * Create base class for activity launcher and sequencer service to share the code between qml and qt services.
-* Move qml style from `guiQml` to `styleQml` bundles, it is required because some bundles require it and we don't want to start guiQml bundle before them.
+* Move qml style from `guiQml` to `style` bundles, it is required because some bundles require it and we don't want to start guiQml bundle before them.
 * Improve `AppManager` to manage input parameters and to generate unique identifier
 * Create an Qml object `ActivityLauncher` to help launching activities in a Qml application
 

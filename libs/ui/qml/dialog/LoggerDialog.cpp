@@ -85,7 +85,7 @@ bool LoggerDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/LoggerDialog.qml");
+        core::runtime::getLibraryResourceFilePath("ui_qml/dialog/LoggerDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("loggerModel", &model);
 

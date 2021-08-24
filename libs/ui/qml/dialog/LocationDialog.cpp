@@ -68,7 +68,7 @@ core::location::ILocation::sptr LocationDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml/dialog/LocationDialog.qml"
+        "ui_qml/dialog/LocationDialog.qml"
     );
 
     // set the context for the new component
