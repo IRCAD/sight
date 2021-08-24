@@ -164,14 +164,12 @@ void SliceIndexPositionEditor::configuring()
 
 void SliceIndexPositionEditor::updating()
 {
-    {
-        const auto image = m_image.lock();
+    const auto image = m_image.lock();
 
-        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
-        m_sliceSelectorPanel->setEnable(imageIsValid);
-        m_helper.updateImageInfos(image.get_shared());
-    }
-    this->updateSliceIndexFromImg();
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+    m_sliceSelectorPanel->setEnable(imageIsValid);
+    m_helper.updateImageInfos(image.get_shared());
+    this->updateSliceIndexFromImg(*image);
 }
 
 //-----------------------------------------------------------------------------
@@ -181,16 +179,15 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     const int indexes[] = {sagittal, frontal, axial};
     m_helper.setSliceIndex(indexes);
 
-    {
-        const auto image = m_image.lock();
+    const auto image = m_image.lock();
 
-        data::Integer::sptr indexesPtr[3];
-        m_helper.getSliceIndex(indexesPtr);
-        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
-        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
-        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
-    }
-    this->updateSliceIndexFromImg();
+    data::Integer::sptr indexesPtr[3];
+    m_helper.getSliceIndex(indexesPtr);
+    image->setField(data::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
+    image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
+    image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
+
+    this->updateSliceIndexFromImg(*image);
 }
 
 //-----------------------------------------------------------------------------
@@ -217,22 +214,20 @@ void SliceIndexPositionEditor::info(std::ostream&)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::updateSliceIndexFromImg()
+void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _image)
 {
-    const auto image = m_image.lock();
-
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(_image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
-        SIGHT_ASSERT("Field " << fieldID << " is missing", image->getField(fieldID));
-        const int index = static_cast<int>(image->getField<data::Integer>(fieldID)->value());
+        SIGHT_ASSERT("Field " << fieldID << " is missing", _image.getField(fieldID));
+        const int index = static_cast<int>(_image.getField<data::Integer>(fieldID)->value());
 
         // Update QSlider
         int max = 0;
-        if(image->getNumberOfDimensions() > m_helper.getOrientation())
+        if(_image.getNumberOfDimensions() > m_helper.getOrientation())
         {
-            max = static_cast<int>(image->getSize2()[m_helper.getOrientation()] - 1);
+            max = static_cast<int>(_image.getSize2()[m_helper.getOrientation()] - 1);
         }
 
         m_sliceSelectorPanel->setSliceRange(0, max);
@@ -250,7 +245,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type)
     const auto image = m_image.lock();
     SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    this->updateSliceIndexFromImg();
+    this->updateSliceIndexFromImg(*image);
 }
 
 //------------------------------------------------------------------------------
@@ -303,8 +298,8 @@ void SliceIndexPositionEditor::sliceTypeNotification(int _type)
             core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
             sig->asyncEmit(oldType, _type);
         }
+        this->updateSliceIndexFromImg(*image);
     }
-    this->updateSliceIndexFromImg();
 }
 
 //------------------------------------------------------------------------------

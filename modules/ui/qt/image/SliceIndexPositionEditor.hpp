@@ -115,7 +115,7 @@ protected:
     MODULE_UI_QT_API void info(std::ostream& _sstream) override;
 
     /// Update the editor slider from the image slice index.
-    MODULE_UI_QT_API void updateSliceIndexFromImg();
+    MODULE_UI_QT_API void updateSliceIndexFromImg(sight::data::Image& _image);
 
     /// Update the editor slice type choice from the image slice type.
     MODULE_UI_QT_API void updateSliceTypeFromImg(Orientation type);
