@@ -111,58 +111,61 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
 {
     if(timestamp > m_lastTimestamp)
     {
-        const auto frameTL = m_frameTL.lock();
-        const auto image   = m_image.lock();
-
-        data::Image::Size size;
-        size[0] = frameTL->getWidth();
-        size[1] = frameTL->getHeight();
-        size[2] = 0;
-
-        // Check if image dimensions has changed
-        if(size != image->getSize2())
         {
-            m_imageInitialized = false;
-        }
+            const auto frameTL = m_frameTL.lock();
+            const auto image   = m_image.lock();
 
-        if(!m_imageInitialized)
-        {
-            data::Image::PixelFormat format;
-            // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or RGBA
-            switch(frameTL->getNumberOfComponents())
+            data::Image::Size size;
+            size[0] = frameTL->getWidth();
+            size[1] = frameTL->getHeight();
+            size[2] = 0;
+
+            // Check if image dimensions has changed
+            if(size != image->getSize2())
             {
-                case 1:
-                    format = data::Image::GRAY_SCALE;
-                    break;
-
-                case 3:
-                    format = data::Image::RGB;
-                    break;
-
-                case 4:
-                    format = data::Image::RGBA;
-                    break;
-
-                default:
-                    SIGHT_ERROR("Number of compenent not managed")
-                    return;
+                m_imageInitialized = false;
             }
 
-            image->resize(size, frameTL->getType(), format);
-            const data::Image::Origin origin = {0., 0., 0.};
-            image->setOrigin2(origin);
-            const data::Image::Spacing spacing = {1., 1., 0.};
-            image->setSpacing2(spacing);
-            image->setWindowWidth(1);
-            image->setWindowCenter(0);
-            m_imageInitialized = true;
-
-            //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
-            auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-
+            if(!m_imageInitialized)
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                sig->asyncEmit();
+                data::Image::PixelFormat format;
+                // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or
+                // RGBA
+                switch(frameTL->getNumberOfComponents())
+                {
+                    case 1:
+                        format = data::Image::GRAY_SCALE;
+                        break;
+
+                    case 3:
+                        format = data::Image::RGB;
+                        break;
+
+                    case 4:
+                        format = data::Image::RGBA;
+                        break;
+
+                    default:
+                        SIGHT_ERROR("Number of compenent not managed")
+                        return;
+                }
+
+                image->resize(size, frameTL->getType(), format);
+                const data::Image::Origin origin = {0., 0., 0.};
+                image->setOrigin2(origin);
+                const data::Image::Spacing spacing = {1., 1., 0.};
+                image->setSpacing2(spacing);
+                image->setWindowWidth(1);
+                image->setWindowCenter(0);
+                m_imageInitialized = true;
+
+                //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
+                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+
+                {
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
         }
 

@@ -71,7 +71,6 @@ void SMeshList::starting()
     this->initialize();
 
     // Get the inputs.
-    const auto mesh           = m_mesh.lock();
     const auto transformInOut = m_transform.lock();
     const auto imageInput     = m_texture.lock();
 
@@ -133,7 +132,10 @@ void SMeshList::starting()
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
 
-        meshAdaptor->setInOut(mesh.get_shared(), "mesh", true);
+        {
+            const auto mesh = m_mesh.lock();
+            meshAdaptor->setInOut(mesh.get_shared(), "mesh", true);
+        }
 
         meshAdaptor->configure(meshConfig);
         meshAdaptor->updateVisibility(false);
