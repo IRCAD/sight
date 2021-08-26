@@ -5,7 +5,6 @@
 fragment_program CelShadingDepthPeeling/Blend_FP glsl
 {
         source CelShadingDepthPeelingBlend_FP.glsl
-        attach DepthPeelingCommon_FP
         default_params
         {
                 param_named u_bufferColor int 0

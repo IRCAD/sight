@@ -1,6 +1,11 @@
-#version 330
-
 #ifdef HYBRID
+
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "DepthPeelingCommon_FP.inc.glsl"
+
 uniform sampler2D u_frontDepthBuffer;
 #endif
 
@@ -8,18 +13,9 @@ uniform sampler2D u_occlusionDepthBuffer;
 
 uniform vec4 u_viewport;
 
-uniform vec4 u_diffuse;
-
 out vec4 FragColor;
 
-// Extern functions
-float getFragmentAlpha();
-
-#ifdef HYBRID
-float unpackFloatFromVec4(vec4 value);
-#endif
-
-void main()
+void process()
 {
     vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 

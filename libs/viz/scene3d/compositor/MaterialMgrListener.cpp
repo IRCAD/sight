@@ -145,9 +145,13 @@ MaterialMgrListener::~MaterialMgrListener()
             }
 
             // replace fragment program and build it if needed
-            auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/peel");
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            const auto fpName       = pass->getFragmentProgramName();
+            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
+            auto newName            = viz::scene3d::helper::Shading::setTechniqueInProgramName(
+                fpName,
+                algoName + "/peel"
+            );
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
             auto numTexUnit                    = pass->getNumTextureUnitStates();
@@ -177,7 +181,10 @@ MaterialMgrListener::~MaterialMgrListener()
             auto params = pass->getFragmentProgramParameters();
             params->setNamedConstant("u_nearestDepthBuffer", numTexUnit);
             params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+            if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
+            {
+                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+            }
         }
     }
     else if(_schemeName == "WeightedBlended/occlusionMap"
@@ -189,10 +196,11 @@ MaterialMgrListener::~MaterialMgrListener()
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
-            auto fpName  = pass->getFragmentProgramName();
-            auto newName =
+            const auto fpName       = pass->getFragmentProgramName();
+            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
+            auto newName            =
                 viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/occlusionMap");
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
             pass->setCullingMode(::Ogre::CULL_NONE);
@@ -209,9 +217,13 @@ MaterialMgrListener::~MaterialMgrListener()
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
-            auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/weightBlend");
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            const auto fpName       = pass->getFragmentProgramName();
+            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
+            auto newName            = viz::scene3d::helper::Shading::setTechniqueInProgramName(
+                fpName,
+                algoName + "/weightBlend"
+            );
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
@@ -254,12 +266,13 @@ MaterialMgrListener::~MaterialMgrListener()
         for(const auto pass : passes)
         {
             // replace fragment program and build it if needed
-            auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(
+            const auto fpName       = pass->getFragmentProgramName();
+            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
+            auto newName            = viz::scene3d::helper::Shading::setTechniqueInProgramName(
                 fpName,
                 algoName + "/transmittanceBlend"
             );
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
@@ -288,7 +301,11 @@ MaterialMgrListener::~MaterialMgrListener()
 
             params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
             params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+
+            if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
+            {
+                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+            }
         }
     }
     else if(::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false))
@@ -321,9 +338,13 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setSceneBlendingOperation(::Ogre::SBO_MAX);
 
             // replace fragment program and build it if needed
-            auto fpName  = pass->getFragmentProgramName();
-            auto newName = viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/peel");
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            const auto fpName       = pass->getFragmentProgramName();
+            const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
+            auto newName            = viz::scene3d::helper::Shading::setTechniqueInProgramName(
+                fpName,
+                algoName + "/peel"
+            );
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
             pass->setFragmentProgram(newName);
 
             std::string inputBuffer;
@@ -358,7 +379,11 @@ MaterialMgrListener::~MaterialMgrListener()
             params->setNamedConstant("u_forwardColorBuffer", numTexUnit + 2);
             params->setNamedConstant("u_forwardAlphasBuffer", numTexUnit + 3);
             params->setNamedAutoConstant("u_viewport", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
-            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+
+            if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
+            {
+                params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+            }
         }
     }
     else
@@ -375,48 +400,41 @@ MaterialMgrListener::~MaterialMgrListener()
     const std::string& _name,
     const std::string& _algoName,
     const std::string& _algoPassName,
-    const std::string& _baseName
+    const std::string& _baseName,
+    const std::string& _sourceName
 )
 {
     // Determine shader source file and parameters
-    std::string sourceFileName;
     viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
 
     // Set specific shader according to the algo and the pass
     if(_algoName == "DepthPeeling")
     {
-        sourceFileName = "DepthPeelingPeel_FP.glsl";
-        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+        parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
     }
     else if(_algoName == "DualDepthPeeling")
     {
-        sourceFileName = "DualDepthPeelingPeel_FP.glsl";
-        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+        parameters.push_back({"preprocessor_defines", "DUAL_DEPTH_PEELING=1"});
     }
     else if(_algoName == "HybridTransparency")
     {
         if(_algoPassName == "peel" || _algoPassName == "peelInit")
         {
-            sourceFileName = "DepthPeelingPeel_FP.glsl";
-            parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+            parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
         }
         else
         {
             if(_algoPassName == "transmittanceBlend")
             {
-                sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
-                parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
-                parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
+                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT_TRANSMIT=1"});
             }
             else if(_algoPassName == "occlusionMap")
             {
-                sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
+                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT_OCCLUSION=1"});
             }
             else
             {
-                sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
-                parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
-                parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
+                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT=1"});
             }
         }
     }
@@ -424,21 +442,20 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         if(_algoPassName == "transmittanceBlend")
         {
-            sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
+            parameters.push_back({"preprocessor_defines", "WBOIT_TRANSMIT=1"});
         }
         else if(_algoPassName == "occlusionMap")
         {
-            sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
+            parameters.push_back({"preprocessor_defines", "WBOIT_OCCLUSION=1"});
         }
         else
         {
-            sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
+            parameters.push_back({"preprocessor_defines", "WBOIT=1"});
         }
     }
     else if(_algoName == "CelShadingDepthPeeling")
     {
-        sourceFileName = "CelShadingDepthPeelingPeel_FP.glsl";
-        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+        parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
     }
     else
     {
@@ -447,7 +464,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
     return viz::scene3d::helper::Shading::createProgramFrom(
         _name,
-        sourceFileName,
+        _sourceName,
         parameters,
         ::Ogre::GPT_FRAGMENT_PROGRAM,
         _baseName

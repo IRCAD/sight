@@ -1,5 +1,11 @@
 #version 330
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "TransferFunction.inc.glsl"
+
 uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
@@ -10,10 +16,6 @@ uniform int u_slice;
 uniform sampler3D u_image;
 
 out float o_brickMax;
-
-//-----------------------------------------------------------------------------
-
-vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
 
 //-----------------------------------------------------------------------------
 

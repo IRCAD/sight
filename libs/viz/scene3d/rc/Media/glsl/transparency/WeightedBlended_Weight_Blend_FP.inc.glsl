@@ -1,7 +1,12 @@
-#version 330
-
 // Uniforms
 #ifdef HYBRID
+
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "DepthPeelingCommon_FP.inc.glsl"
+
 uniform sampler2D u_frontDepthBuffer;
 #endif
 uniform sampler2D u_occlusionDepthBuffer;
@@ -9,17 +14,13 @@ uniform vec4 u_viewport;
 uniform float u_near;
 uniform float u_far;
 
-// Extern functions
-vec4 getFragmentColor();
-float unpackFloatFromVec4(vec4 value);
-
 out vec4 FragColor;
 
 float linearizeDepth(in float depth) {
     return (2.0*u_near) / (u_far+u_near - depth *(u_far-u_near));
 }
 
-void main()
+void process()
 {
     vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 #ifdef HYBRID

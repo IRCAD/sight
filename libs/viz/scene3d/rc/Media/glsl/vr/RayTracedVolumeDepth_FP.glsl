@@ -1,5 +1,13 @@
 #version 330
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "RayUtils.inc.glsl"
+#include "SpatialTransforms.inc.glsl"
+#include "TransferFunction.inc.glsl"
+
 #define MAX_ITERATIONS 8192
 
 uniform sampler3D u_s3Image;
@@ -27,12 +35,7 @@ out vec4 f_f4FragCol;
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
-vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
-vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
 vec4 packFloatToVec4(float value);
-float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir,
-                                    in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
 
 //-----------------------------------------------------------------------------
 

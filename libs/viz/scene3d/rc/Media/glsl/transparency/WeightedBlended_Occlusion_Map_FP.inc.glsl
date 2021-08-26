@@ -1,10 +1,6 @@
-#version 330
-
 out vec4 FragColor;
 
-float getFragmentAlpha();
-
-void main()
+void process()
 {
     if(getFragmentAlpha() != 1.)
     {

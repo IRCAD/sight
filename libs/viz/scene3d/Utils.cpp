@@ -57,7 +57,7 @@
 namespace sight::viz::scene3d
 {
 
-static std::set<std::string> s_moduleWithResourcesNames;
+static std::list<std::string> s_moduleWithResourcesNames;
 
 ::Ogre::OverlaySystem* Utils::s_overlaySystem                                 = nullptr;
 viz::scene3d::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
@@ -136,7 +136,10 @@ void Utils::loadResources()
 void Utils::addResourcesPath(const std::string& moduleName)
 {
     SIGHT_ASSERT("Empty resource path", !moduleName.empty());
-    s_moduleWithResourcesNames.insert(moduleName);
+
+    // Pushing front is just because we "assume" that Sight resources path is going to be added last...
+    // and doing so we ensure it is going to be loaded first.
+    s_moduleWithResourcesNames.push_front(moduleName);
 }
 
 //------------------------------------------------------------------------------

@@ -13,7 +13,6 @@ vertex_program VolumeBricksGrid_VP glsl
 fragment_program VolumeBricksGrid_FP glsl
 {
     source VolumeBricks_FP.glsl
-    attach TransferFunction_FP
 
     default_params
     {

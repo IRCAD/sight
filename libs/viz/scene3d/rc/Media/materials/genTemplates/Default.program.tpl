@@ -5,31 +5,17 @@
 //
 //---------------------------------------------------------------------------
 
-
-vertex_program Lighting_VP glsl
-{
-    source Lighting.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program Lighting_FP glsl
-{
-    source Lighting.glsl
-}
-
 //-----------------------------------------------------------------------------
 // Vertex shader materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
+{% for shading, defines, shadersVP, params in configsVP %}
 
 //---------------------------------------------------------------------------
 
 vertex_program Default/{{ shading }}_VP glsl
 {
     source RenderScene_VP.glsl
-    {% if shadersVP %}attach {{ shadersVP }}{% endif %}
 
     {% if defines %}preprocessor_defines {{ defines }}{% endif %}
 
@@ -47,34 +33,17 @@ vertex_program Default/{{ shading }}_VP glsl
 {% endfor %}
 
 //-----------------------------------------------------------------------------
-// Common color materials
-//-----------------------------------------------------------------------------
-
-{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
-
-//---------------------------------------------------------------------------
-
-fragment_program MaterialColor/{{ shading }}_FP glsl
-{
-    source MaterialColor_FP.glsl
-    {% if defines %}preprocessor_defines {{ defines }}{% endif %}
-
-}
-{% endfor %}
-
-//-----------------------------------------------------------------------------
 // Default technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
+{% for shading, defines, shadersVP, params in configsFP %}
 
 //-----------------------------------------------------------------------------
 
 fragment_program Default/{{ shading }}_FP glsl
 {
     source Main_FP.glsl
-    attach MaterialColor/{{ shading }}_FP
-    {% if shadersFP %}attach {{ shadersFP }}{% endif %}
+    {% if defines %}preprocessor_defines {{ defines }}{% endif %}
 
     default_params
     {
@@ -89,14 +58,13 @@ fragment_program Default/{{ shading }}_FP glsl
 // Cell shading + depth peeling technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
+{% for shading, defines, shadersVP, params in configsVP %}
 
 //---------------------------------------------------------------------------
 
 vertex_program CelShadingDepthPeeling/{{ shading }}_VP glsl
 {
     source RenderScene_VP.glsl
-    {% if shadersVP %}attach {{ shadersVP }}{% endif %}
 
     preprocessor_defines CEL_SHADING=1{% if defines %},{{ defines }}{% endif %}
 

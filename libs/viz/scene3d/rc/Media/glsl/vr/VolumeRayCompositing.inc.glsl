@@ -1,15 +1,10 @@
-#version 330
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
 
-#extension GL_GOOGLE_include_directive : enable // Needed for glslangValidator to handle include directives.
-
-#include "VolumeRay.glsl.struct"
-
-//-----------------------------------------------------------------------------
-
-void vrayAdvance(inout VolumeRay _vray);
-bool vrayTerminated(in VolumeRay _vray);
-vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _vray_Ms);
-vec3 computeLighting(in vec3 _f3SampleColor, in vec3 _f3SamplePos_Ms, in sampler3D _s3Image);
+#include "VolumeRay.inc.glsl"
+#include "VolumeSampling.inc.glsl"
+#include "VolumeLighting.inc.glsl"
 
 //-----------------------------------------------------------------------------
 

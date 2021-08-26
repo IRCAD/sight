@@ -1,16 +1,9 @@
-#version 410
-
 uniform vec4 u_diffuse;
 
 // Uniforms
 #ifdef DIFFUSE_TEX
 uniform int u_useTextureAlpha;
 #endif // DIFFUSE_TEX
-
-// Extern functions
-#ifdef PIXEL_LIT
-vec4 lighting(vec3 _normal, vec3 _position);
-#endif // PIXEL_LIT
 
 // Input semantics
 layout(location = 0) in vec3 v_f3Normal_Ws;

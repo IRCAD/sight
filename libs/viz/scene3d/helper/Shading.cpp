@@ -653,10 +653,6 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
 
     newProgram->setParameter("preprocessor_defines", preprocessorDefines);
 
-    // Grab previous attached shaders and add them to the new program
-    ::Ogre::String attachedShaders = srcProgram->getParameter("attach");
-    newProgram->setParameter("attach", attachedShaders);
-
     // Copy parameters from the source program
     const ::Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
     const ::Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();

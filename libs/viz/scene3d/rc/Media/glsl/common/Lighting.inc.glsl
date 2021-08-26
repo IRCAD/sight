@@ -1,4 +1,3 @@
-#version 330
 #define MAX_LIGHTS 10
 
 uniform vec3 u_f3CameraPos;

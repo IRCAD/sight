@@ -1,13 +1,16 @@
-#version 330
+
+#version 410
+
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
 
 #ifdef TF
 
+#include "TransferFunction.inc.glsl"
+
 uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
-
-// Defined in TransferFunction.glsl
-vec4 sampleTransferFunction_uint16(int _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
-vec4 sampleTransferFunction_float(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
 
 #   ifdef TF_INTEGER
 
@@ -62,4 +65,11 @@ float getFragmentAlpha()
 #endif // TF
 
     return color.a;
+}
+
+#include "Transparency.inc.glsl"
+
+void main(void)
+{
+    processFragment();
 }

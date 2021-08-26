@@ -164,13 +164,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    m_fragmentShaderAttachements.push_back("SpatialTransforms_FP");
-    m_fragmentShaderAttachements.push_back("Lighting_FP");
-    m_fragmentShaderAttachements.push_back("VolumeNormals_FP");
-    m_fragmentShaderAttachements.push_back("RayUtils_FP");
-    m_fragmentShaderAttachements.push_back("VolumeRayCompositing_FP");
-    m_fragmentShaderAttachements.push_back("VolumeRay_FP");
-
     auto* exitDepthListener = new compositor::listener::RayExitDepthListener();
     ::Ogre::MaterialManager::getSingleton().addListener(exitDepthListener);
 
@@ -611,35 +604,6 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
             gpm.createProgram(fpName, RESOURCE_GROUP, "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
         fsp->setSourceFile(_sourceFile);
 
-        for(const std::string& attachement : m_fragmentShaderAttachements)
-        {
-            fsp->setParameter("attach", attachement);
-        }
-
-        if(fpPPDefines.find(s_PREINTEGRATION_DEFINE) == std::string::npos)
-        {
-            fsp->setParameter("attach", "VolumeTransferFunctionSampling_FP");
-        }
-        else
-        {
-            fsp->setParameter("attach", "VolumePreIntegratedSampling_FP");
-        }
-
-        std::string lightingShaderName = "Volume";
-        if(m_colorBleeding)
-        {
-            lightingShaderName += "ColorBleeding";
-        }
-
-        if(m_ambientOcclusion || m_shadows)
-        {
-            lightingShaderName += "Advanced";
-        }
-
-        lightingShaderName += "Lighting_FP";
-
-        fsp->setParameter("attach", lightingShaderName);
-
         if(fpPPDefines.size() > 0)
         {
             fsp->setParameter("preprocessor_defines", fpPPDefines);
@@ -719,13 +683,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
             ::Ogre::GPT_FRAGMENT_PROGRAM
         );
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
-        fsp->setParameter("attach", "TransferFunction_FP");
         fsp->setParameter("attach", "DepthPeelingCommon_FP");
-
-        for(const std::string& attachement : m_fragmentShaderAttachements)
-        {
-            fsp->setParameter("attach", attachement);
-        }
 
         if(fpPPDefines.size() > 0)
         {
@@ -754,7 +712,6 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
         fpParams->setNamedAutoConstant("u_viewportSize", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_SIZE);
         fpParams->setNamedAutoConstant("u_clippingNearDis", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
         fpParams->setNamedAutoConstant("u_clippingFarDis", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-        fpParams->setNamedAutoConstant("u_f3CameraPos", ::Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fpParams->setNamedAutoConstant(
             "u_invWorldViewProj",
             ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX

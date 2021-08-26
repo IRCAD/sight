@@ -1,5 +1,9 @@
 #version 410
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
 // Uniforms
 uniform vec4 u_diffuse;
 uniform vec3 u_cameraPos;
@@ -44,4 +48,11 @@ vec4 getFragmentColor()
 float getFragmentAlpha()
 {
     return u_diffuse.a;
+}
+
+#include "Transparency.inc.glsl"
+
+void main(void)
+{
+    processFragment();
 }

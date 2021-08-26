@@ -1,14 +1,17 @@
 #version 410
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#ifdef PIXEL_LIT
+#include "Lighting.inc.glsl"
+#endif // PIXEL_LIT
+
 // Uniforms
 #ifdef DIFFUSE_TEX
 uniform int u_useTextureAlpha;
 #endif // DIFFUSE_TEX
-
-// Extern functions
-#ifdef PIXEL_LIT
-vec4 lighting(vec3 _normal, vec3 _position);
-#endif // PIXEL_LIT
 
 // Input semantics
 layout(location = 0) in vec3 v_f3Normal_Ws;
@@ -62,4 +65,11 @@ vec4 getFragmentColor()
 
     vec4 finalColor = mix(u_fogColor, colorOut, fogFactor);
     return finalColor;
+}
+
+#include "Transparency.inc.glsl"
+
+void main(void)
+{
+    processFragment();
 }

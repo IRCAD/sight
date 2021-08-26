@@ -1,23 +1,18 @@
-#version 410
+
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "DepthPeelingCommon_FP.inc.glsl"
 
 // Uniforms
 uniform sampler2D u_nearestDepthBuffer;
 uniform vec4 u_viewport;
-uniform vec4 u_diffuse;
-
-// Input semantics
-layout(location = 0) in vec3 v_f3Normal_Ws;
 
 // Output render targets
 layout(location = 0) out vec4 frontColor;
 layout(location = 1) out vec4 frontDepth;
 layout(location = 2) out vec4 bufferNormal;
-
-// Extern functions
-vec4 getFragmentColor();
-vec4 packFloatToVec4(float value);
-float unpackFloatFromVec4(vec4 value);
-vec3 packNormal(vec3 normal);
 
 vec3 computeCelShading(vec3 color)
 {
@@ -29,7 +24,7 @@ vec3 computeCelShading(vec3 color)
 /** Peel shader :
   * Only write fragment ahead from next peel
   **/
-void main()
+void process()
 {
     vec2 texCoord = gl_FragCoord.xy * u_viewport.zw;
 

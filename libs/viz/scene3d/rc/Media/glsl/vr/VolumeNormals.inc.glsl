@@ -1,5 +1,3 @@
-#version 330
-
 vec3 gradientNormal(vec3 _f3Pos_Ms, sampler3D _s3Image)
 {
     ivec3 imgDimensions = textureSize(_s3Image, 0);

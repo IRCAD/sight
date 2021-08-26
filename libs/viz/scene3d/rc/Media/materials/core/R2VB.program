@@ -166,7 +166,6 @@ geometry_program R2VB/Triangles_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1
-    
     default_params
     {
     }
@@ -179,7 +178,6 @@ geometry_program R2VB/Triangles+VT_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1
-    
     default_params
     {
     }
@@ -192,7 +190,6 @@ geometry_program R2VB/Triangles+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1
-    
     default_params
     {
     }
@@ -205,7 +202,6 @@ geometry_program R2VB/Triangles+VT+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
-    
     default_params
     {
     }
@@ -218,7 +214,6 @@ geometry_program R2VB/Triangles+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,PER_PRIMITIVE_COLOR=1
-    
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -232,7 +227,6 @@ geometry_program R2VB/Triangles+VT+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
-    
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -246,7 +240,6 @@ geometry_program R2VB/Triangles+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -260,7 +253,6 @@ geometry_program R2VB/Triangles+VT+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -274,7 +266,6 @@ geometry_program R2VB/Quad_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -287,7 +278,6 @@ geometry_program R2VB/Quad+VT_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,VERTEX_COLOR=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -300,7 +290,6 @@ geometry_program R2VB/Quad+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,DIFFUSE_TEX=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -313,7 +302,6 @@ geometry_program R2VB/Quad+VT+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -326,7 +314,6 @@ geometry_program R2VB/Quad+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -340,7 +327,6 @@ geometry_program R2VB/Quad+VT+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -354,7 +340,6 @@ geometry_program R2VB/Quad+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -368,7 +353,6 @@ geometry_program R2VB/Quad+VT+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines QUAD=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -382,7 +366,6 @@ geometry_program R2VB/Tetra_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -395,7 +378,6 @@ geometry_program R2VB/Tetra+VT_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,VERTEX_COLOR=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -408,7 +390,6 @@ geometry_program R2VB/Tetra+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,DIFFUSE_TEX=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -421,7 +402,6 @@ geometry_program R2VB/Tetra+VT+DfsTex_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
-    uses_adjacency_information true
     default_params
     {
     }
@@ -434,7 +414,6 @@ geometry_program R2VB/Tetra+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -448,7 +427,6 @@ geometry_program R2VB/Tetra+VT+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -462,7 +440,6 @@ geometry_program R2VB/Tetra+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0
@@ -476,7 +453,6 @@ geometry_program R2VB/Tetra+VT+DfsTex+PPColor_GP glsl
     source RenderScene_GP.glsl
 
     preprocessor_defines TETRA=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-    uses_adjacency_information true
     default_params
     {
         param_named u_colorPrimitiveTexture int 0

@@ -1,5 +1,3 @@
-#version 150
-
 //-----------------------------------------------------------------------------
 
 // Ray - box intersection. Returns the intersection point along the ray.

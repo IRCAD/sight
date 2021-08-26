@@ -1,5 +1,3 @@
-#version 330
-
 vec3 hue2rgb(float H)
 {
     float R = abs(H * 6. - 3.) - 1.;

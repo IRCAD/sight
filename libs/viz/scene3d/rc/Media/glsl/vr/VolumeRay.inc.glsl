@@ -1,6 +1,6 @@
-#version 330
-
-#extension GL_GOOGLE_include_directive : enable // Needed for glslangValidator to handle include directives.
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
 
 #include "VolumeRay.glsl.struct"
 

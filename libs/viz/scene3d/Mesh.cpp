@@ -375,14 +375,14 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                         if(hasPrimitiveColor)
                         {
                             // Use r2vb pipeline for per-primitive color
-                            m_subMeshes[i] = m_r2vbMesh->createSubMesh(name);
+                            m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
+                            m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
                         }
                         else
                         {
-                            m_subMeshes[i] = m_ogreMesh->createSubMesh(name);
+                            m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
+                            m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
                         }
-
-                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
                     }
                     else if(cellType == data::Mesh::CellType::EDGE)
                     {
@@ -398,7 +398,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                     {
                         // Use r2vb pipeline to generate quads or tetrahedrons
                         m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
-                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
+                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST_ADJ;
                     }
 
                     m_subMeshes[i]->useSharedVertices     = true;

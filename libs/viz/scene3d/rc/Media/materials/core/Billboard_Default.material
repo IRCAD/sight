@@ -115,20 +115,11 @@ geometry_program Default/Billboard_FixedSize_Depth_GP glsl
     }
 }
 
-
-//---------------------------------------------------------------------------
-
-fragment_program Billboard_FP glsl
-{
-    source Billboard_Default_FP.glsl
-}
-
 //---------------------------------------------------------------------------
 
 fragment_program Default/Billboard_FP glsl
 {
-    source Main_FP.glsl
-    attach Billboard_FP
+    source Billboard_Default_FP.glsl
     default_params
     {
         param_named u_texture int 0

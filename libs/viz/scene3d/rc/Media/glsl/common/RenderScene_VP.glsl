@@ -1,5 +1,14 @@
 #version 410
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+// Extern functions
+#if defined(FLAT) || (!defined(AMBIENT) && !defined(PIXEL_LIT))
+#include "Lighting.inc.glsl"
+#endif // PIXEL_LIT
+
 uniform mat4 u_worldViewProj;
 uniform mat4 u_world;
 uniform mat4 u_normalMatrix;

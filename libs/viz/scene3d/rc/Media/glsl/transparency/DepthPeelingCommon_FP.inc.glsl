@@ -1,5 +1,3 @@
-#version 150
-
 vec3 packNormal(vec3 normal)
 {
     return normal.xyz + 1.0 * 0.5;

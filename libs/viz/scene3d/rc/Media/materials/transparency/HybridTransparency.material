@@ -5,7 +5,6 @@
 fragment_program HybridTransparency_blend_FP glsl
 {
     source DepthPeelingBlend_FP.glsl
-    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_fragData0 int 0

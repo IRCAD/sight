@@ -1,8 +1,8 @@
-#version 330
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
 
-#extension GL_GOOGLE_include_directive : enable // Needed for glslangValidator to handle include directives.
-
-#include "VolumeRay.glsl.struct"
+#include "TransferFunction.inc.glsl"
 
 #ifdef PREINTEGRATION
 uniform sampler2D u_s2PreintegratedTFTexture;
@@ -14,9 +14,6 @@ uniform vec2 u_f2TFWindow;
 uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
 
-//-----------------------------------------------------------------------------
-
-vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
 
 //-----------------------------------------------------------------------------
 
