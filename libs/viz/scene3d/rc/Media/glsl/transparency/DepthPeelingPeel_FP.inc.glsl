@@ -5,7 +5,7 @@
 #include "DepthPeelingCommon_FP.inc.glsl"
 
 // Uniforms
-uniform sampler2D u_nearestDepthBuffer;
+layout(binding=2) uniform sampler2D u_nearestDepthBuffer;
 uniform vec4 u_viewport;
 
 // Output render targets

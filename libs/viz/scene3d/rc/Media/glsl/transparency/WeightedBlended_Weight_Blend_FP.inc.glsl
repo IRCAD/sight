@@ -7,9 +7,9 @@
 
 #include "DepthPeelingCommon_FP.inc.glsl"
 
-uniform sampler2D u_frontDepthBuffer;
+layout(binding=2) uniform sampler2D u_frontDepthBuffer;
 #endif
-uniform sampler2D u_occlusionDepthBuffer;
+layout(binding=3) uniform sampler2D u_occlusionDepthBuffer;
 uniform vec4 u_viewport;
 uniform float u_near;
 uniform float u_far;

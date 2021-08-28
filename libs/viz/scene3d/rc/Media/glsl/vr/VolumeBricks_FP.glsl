@@ -1,4 +1,4 @@
-#version 330
+#version 420
 
 #ifdef GLSL_LANG_VALIDATOR
 #extension GL_GOOGLE_include_directive : enable
@@ -6,14 +6,14 @@
 
 #include "TransferFunction.inc.glsl"
 
-uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
 uniform ivec3 u_brickSize;
 
 uniform int u_slice;
 
-uniform sampler3D u_image;
+layout(binding=0) uniform sampler3D u_image;
+layout(binding=1) uniform sampler1D u_s1TFTexture;
 
 out float o_brickMax;
 

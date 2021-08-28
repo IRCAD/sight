@@ -1,4 +1,4 @@
-#version 330
+#version 420
 
 #ifdef GLSL_LANG_VALIDATOR
 #extension GL_GOOGLE_include_directive : enable
@@ -6,8 +6,8 @@
 
 #include "TransferFunction.inc.glsl"
 
-uniform sampler3D u_texture;
-uniform sampler1D u_s1TFTexture;
+layout(binding=0) uniform sampler3D u_texture;
+layout(binding=1) uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
 uniform float u_slice;
