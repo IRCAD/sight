@@ -110,98 +110,105 @@ void WindowLevel::configuring()
 
 void WindowLevel::starting()
 {
-    const auto image = m_image.lock();
-    SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
+    {
+        const auto image = m_image.lock();
+        SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
 
-    this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer()
-    );
+        this->create();
+        auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+            this->getContainer()
+        );
 
-    QGridLayout* const layout = new QGridLayout();
+        QGridLayout* const layout = new QGridLayout();
 
-    m_valueTextMin = new QLineEdit();
-    QDoubleValidator* const minValidator = new QDoubleValidator(m_valueTextMin);
-    m_valueTextMin->setValidator(minValidator);
+        m_valueTextMin = new QLineEdit();
+        QDoubleValidator* const minValidator = new QDoubleValidator(m_valueTextMin);
+        m_valueTextMin->setValidator(minValidator);
 
-    m_valueTextMax = new QLineEdit();
-    QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
-    m_valueTextMax->setValidator(maxValidator);
+        m_valueTextMax = new QLineEdit();
+        QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
+        m_valueTextMax->setValidator(maxValidator);
 
-    m_rangeSlider = new sight::ui::qt::widget::QRangeSlider();
+        m_rangeSlider = new sight::ui::qt::widget::QRangeSlider();
 
-    m_toggleTFButton = new QToolButton();
-    QIcon ico;
-    std::string squareIcon(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "square.png").string());
-    std::string rampIcon(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ramp.png").string());
-    ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
-    ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
-    m_toggleTFButton->setIcon(ico);
-    m_toggleTFButton->setCheckable(true);
-    m_toggleTFButton->setToolTip("Function style");
+        m_toggleTFButton = new QToolButton();
+        QIcon ico;
+        std::string squareIcon(core::runtime::getModuleResourceFilePath(
+                                   "sight::module::ui::qt",
+                                   "square.png"
+        ).string());
+        std::string rampIcon(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ramp.png").string());
+        ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
+        ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
+        m_toggleTFButton->setIcon(ico);
+        m_toggleTFButton->setCheckable(true);
+        m_toggleTFButton->setToolTip("Function style");
 
-    m_toggleAutoButton = new QToolButton();
-    QIcon icon;
-    std::string windo(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
-    icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
-    std::string nowindo(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "nowindowing.svg").string());
-    icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
-    m_toggleAutoButton->setIcon(icon);
-    m_toggleAutoButton->setToolTip("Automatic Windowing");
-    m_toggleAutoButton->setCheckable(true);
-    m_toggleAutoButton->setChecked(m_autoWindowing);
+        m_toggleAutoButton = new QToolButton();
+        QIcon icon;
+        std::string windo(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
+        icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
+        std::string nowindo(core::runtime::getModuleResourceFilePath(
+                                "sight::module::ui::qt",
+                                "nowindowing.svg"
+        ).string());
+        icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
+        m_toggleAutoButton->setIcon(icon);
+        m_toggleAutoButton->setToolTip("Automatic Windowing");
+        m_toggleAutoButton->setCheckable(true);
+        m_toggleAutoButton->setChecked(m_autoWindowing);
 
-    m_dynamicRangeSelection = new QToolButton();
-    m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
+        m_dynamicRangeSelection = new QToolButton();
+        m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
 
-    m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-    QAction* const action1 = m_dynamicRangeMenu->addAction("-1024; 1023");
-    QAction* const action2 = m_dynamicRangeMenu->addAction("-100; 300");
-    QAction* const action3 = m_dynamicRangeMenu->addAction("Fit W/L");
-    QAction* const action4 = m_dynamicRangeMenu->addAction("Fit Data"); // TODO
-    //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
-    m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
+        m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
+        QAction* const action1 = m_dynamicRangeMenu->addAction("-1024; 1023");
+        QAction* const action2 = m_dynamicRangeMenu->addAction("-100; 300");
+        QAction* const action3 = m_dynamicRangeMenu->addAction("Fit W/L");
+        QAction* const action4 = m_dynamicRangeMenu->addAction("Fit Data"); // TODO
+        //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
+        m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
 
-    action1->setData(QVariant(1));
-    action2->setData(QVariant(2));
-    action3->setData(QVariant(3));
-    action4->setData(QVariant(4));
-    //action5->setData(QVariant(5));
+        action1->setData(QVariant(1));
+        action2->setData(QVariant(2));
+        action3->setData(QVariant(3));
+        action4->setData(QVariant(4));
+        //action5->setData(QVariant(5));
 
-    layout->addWidget(m_rangeSlider, 0, 0, 1, -1);
-    layout->addWidget(m_valueTextMin, 1, 0);
-    layout->addWidget(m_toggleTFButton, 1, 1);
-    layout->addWidget(m_toggleAutoButton, 1, 2);
-    layout->addWidget(m_dynamicRangeSelection, 1, 3);
-    layout->addWidget(m_valueTextMax, 1, 4);
+        layout->addWidget(m_rangeSlider, 0, 0, 1, -1);
+        layout->addWidget(m_valueTextMin, 1, 0);
+        layout->addWidget(m_toggleTFButton, 1, 1);
+        layout->addWidget(m_toggleAutoButton, 1, 2);
+        layout->addWidget(m_dynamicRangeSelection, 1, 3);
+        layout->addWidget(m_valueTextMax, 1, 4);
 
-    qtContainer->setLayout(layout);
+        qtContainer->setLayout(layout);
 
-    m_dynamicRangeSignalMapper = new QSignalMapper(this);
+        m_dynamicRangeSignalMapper = new QSignalMapper(this);
 
-    // Set the visibility after the layout is created so it doesn't open its own window.
-    m_toggleTFButton->setVisible(m_enableSquareTF);
+        // Set the visibility after the layout is created so it doesn't open its own window.
+        m_toggleTFButton->setVisible(m_enableSquareTF);
 
-    QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
-    QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
-    QObject::connect(
-        m_rangeSlider,
-        SIGNAL(sliderRangeEdited(double,double)),
-        this,
-        SLOT(onWindowLevelWidgetChanged(double,double))
-    );
-    QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
-    QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
-    QObject::connect(
-        m_dynamicRangeSelection,
-        &::QToolButton::triggered,
-        this,
-        &WindowLevel::onDynamicRangeSelectionChanged
-    );
+        QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+        QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+        QObject::connect(
+            m_rangeSlider,
+            SIGNAL(sliderRangeEdited(double,double)),
+            this,
+            SLOT(onWindowLevelWidgetChanged(double,double))
+        );
+        QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
+        QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
+        QObject::connect(
+            m_dynamicRangeSelection,
+            &::QToolButton::triggered,
+            this,
+            &WindowLevel::onDynamicRangeSelectionChanged
+        );
 
-    const auto tf = m_tf.lock();
-    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
+        const auto tf = m_tf.lock();
+        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+    }
     this->updating();
 }
 

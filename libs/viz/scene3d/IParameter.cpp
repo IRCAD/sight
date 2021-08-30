@@ -413,12 +413,12 @@ void IParameter::setBoolParameter(bool value, std::string name)
     if(name == m_paramName)
     {
         m_dirty = true;
-
-        auto paramObject = m_parameter.lock();
-        auto boolObject  = std::dynamic_pointer_cast<data::Boolean>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Boolean", boolObject);
-        boolObject->setValue(value);
-
+        {
+            auto paramObject = m_parameter.lock();
+            auto boolObject  = std::dynamic_pointer_cast<data::Boolean>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Boolean", boolObject);
+            boolObject->setValue(value);
+        }
         this->updating();
     }
 }
@@ -431,11 +431,12 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto colorObject = std::dynamic_pointer_cast<data::Color>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Color", colorObject);
-        colorObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
-
+        {
+            auto paramObject = m_parameter.lock();
+            auto colorObject = std::dynamic_pointer_cast<data::Color>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Color", colorObject);
+            colorObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
+        }
         this->updating();
     }
 }
@@ -448,11 +449,12 @@ void IParameter::setIntParameter(int value, std::string name)
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto intObject   = std::dynamic_pointer_cast<data::Integer>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Integer", intObject);
-        intObject->setValue(value);
-
+        {
+            auto paramObject = m_parameter.lock();
+            auto intObject   = std::dynamic_pointer_cast<data::Integer>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Integer", intObject);
+            intObject->setValue(value);
+        }
         this->updating();
     }
 }
@@ -465,19 +467,20 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
-
-        if(arrayObject->empty())
         {
-            arrayObject->resize({2}, core::tools::Type::s_INT32);
+            auto paramObject = m_parameter.lock();
+            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+
+            if(arrayObject->empty())
+            {
+                arrayObject->resize({2}, core::tools::Type::s_INT32);
+            }
+
+            const auto dumpLock = arrayObject->lock();
+            arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
+            arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
         }
-
-        const auto dumpLock = arrayObject->lock();
-        arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
-        arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
-
         this->updating();
     }
 }
@@ -490,19 +493,21 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
-
-        if(arrayObject->empty())
         {
-            arrayObject->resize({3}, core::tools::Type::s_INT32);
-        }
+            auto paramObject = m_parameter.lock();
+            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
 
-        const auto dumpLock = arrayObject->lock();
-        arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
-        arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
-        arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(value3);
+            if(arrayObject->empty())
+            {
+                arrayObject->resize({3}, core::tools::Type::s_INT32);
+            }
+
+            const auto dumpLock = arrayObject->lock();
+            arrayObject->at<std::uint32_t>(0) = static_cast<std::uint32_t>(value1);
+            arrayObject->at<std::uint32_t>(1) = static_cast<std::uint32_t>(value2);
+            arrayObject->at<std::uint32_t>(2) = static_cast<std::uint32_t>(value3);
+        }
 
         this->updating();
     }
@@ -516,10 +521,12 @@ void IParameter::setDoubleParameter(double value, std::string name)
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto floatObject = std::dynamic_pointer_cast<data::Float>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Float", floatObject);
-        floatObject->setValue(static_cast<float>(value));
+        {
+            auto paramObject = m_parameter.lock();
+            auto floatObject = std::dynamic_pointer_cast<data::Float>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Float", floatObject);
+            floatObject->setValue(static_cast<float>(value));
+        }
 
         this->updating();
     }
@@ -533,26 +540,28 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
-        if(arrayObject->empty())
         {
-            core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-            arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
-        }
+            auto paramObject = m_parameter.lock();
+            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+            if(arrayObject->empty())
+            {
+                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
+                arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
+            }
 
-        const auto dumpLock = arrayObject->lock();
+            const auto dumpLock = arrayObject->lock();
 
-        if(arrayObject->getType() == core::tools::Type::s_FLOAT)
-        {
-            arrayObject->at<float>(0) = static_cast<float>(value1);
-            arrayObject->at<float>(1) = static_cast<float>(value2);
-        }
-        else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
-        {
-            arrayObject->at<double>(0) = value1;
-            arrayObject->at<double>(1) = value2;
+            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            {
+                arrayObject->at<float>(0) = static_cast<float>(value1);
+                arrayObject->at<float>(1) = static_cast<float>(value2);
+            }
+            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            {
+                arrayObject->at<double>(0) = value1;
+                arrayObject->at<double>(1) = value2;
+            }
         }
 
         this->updating();
@@ -567,29 +576,31 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
     {
         m_dirty = true;
 
-        auto paramObject = m_parameter.lock();
-        auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-        SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
-
-        if(arrayObject->empty())
         {
-            core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-            arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
-        }
+            auto paramObject = m_parameter.lock();
+            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
 
-        const auto dumpLock = arrayObject->lock();
+            if(arrayObject->empty())
+            {
+                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
+                arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
+            }
 
-        if(arrayObject->getType() == core::tools::Type::s_FLOAT)
-        {
-            arrayObject->at<float>(0) = static_cast<float>(value1);
-            arrayObject->at<float>(1) = static_cast<float>(value2);
-            arrayObject->at<float>(2) = static_cast<float>(value3);
-        }
-        else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
-        {
-            arrayObject->at<double>(0) = value1;
-            arrayObject->at<double>(1) = value2;
-            arrayObject->at<double>(2) = value3;
+            const auto dumpLock = arrayObject->lock();
+
+            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            {
+                arrayObject->at<float>(0) = static_cast<float>(value1);
+                arrayObject->at<float>(1) = static_cast<float>(value2);
+                arrayObject->at<float>(2) = static_cast<float>(value3);
+            }
+            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            {
+                arrayObject->at<double>(0) = value1;
+                arrayObject->at<double>(1) = value2;
+                arrayObject->at<double>(2) = value3;
+            }
         }
 
         this->updating();
