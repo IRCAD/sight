@@ -151,7 +151,7 @@ void SScan::configuring()
         this->updateAlignment(alignTo);
     }
 
-    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::io::realSense"));
+    static const auto s_modulePath = core::runtime::getModuleResourcePath("sight::module::io::realsense");
 
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
@@ -377,21 +377,16 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     }
 
     //Only create the pointer one time.
-    if(m_pointCloud == nullptr)
-    {
-        m_pointCloud = data::Mesh::New();
-    }
 
-    // Re-init the pointcloud.
-    SIGHT_ASSERT("Cannot create pointcloud output", m_pointCloud);
+    auto pointcloud     = data::Mesh::New();
+    const auto dumpLock = pointcloud->lock();
+
     const data::Mesh::Size nbPoints = depthStreamW * depthStreamH;
 
-    data::mt::locked_ptr<data::Mesh> meshLock(m_pointCloud);
-
     // Allocate mesh.
-    m_pointCloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
+    pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
 
-    auto itr = m_pointCloud->begin<data::iterator::CellIterator>();
+    auto itr = pointcloud->begin<data::iterator::CellIterator>();
 
     // to display the mesh, we need to create cells with one point.
     for(data::Mesh::Size i = 0 ; i < nbPoints ; ++i, ++itr)
@@ -402,9 +397,11 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         itr->pointIdx[0]   = i;
     }
 
-    m_pointCloud->setNumberOfPoints(nbPoints);
-    m_pointCloud->setNumberOfCells(nbPoints);
-    m_pointCloud->setCellDataSize(nbPoints);
+    pointcloud->setNumberOfPoints(nbPoints);
+    pointcloud->setNumberOfCells(nbPoints);
+    pointcloud->setCellDataSize(nbPoints);
+
+    m_pointCloudOutput = pointcloud;
 }
 
 //-----------------------------------------------------------------------------
@@ -1278,7 +1275,9 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 
 void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture)
 {
-    if(m_pointCloud)
+    auto pointcloud = m_pointCloudOutput.lock();
+
+    if(pointcloud)
     {
         // Get Width and Height coordinates of texture
         const int textureW = _texture.get_width();  // Frame width in pixels
@@ -1296,7 +1295,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
 
-        const auto pointBegin = m_pointCloud->begin<data::iterator::PointIterator>();
+        const auto pointBegin = pointcloud->begin<data::iterator::PointIterator>();
         auto points           = pointBegin->point;
         auto colors           = pointBegin->rgba;
 
@@ -1337,17 +1336,11 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             colors[i].a = 255;
         }
 
-        // Now that we have correct data in the point cloud, we can allow other to read us
-        if(!m_grabbingStarted.exchange(true))
-        {
-            m_pointCloudOutput = m_pointCloud;
-        }
-
-        const auto sigVertex = m_pointCloud->signal<data::Mesh::VertexModifiedSignalType>
+        const auto sigVertex = pointcloud->signal<data::Mesh::VertexModifiedSignalType>
                                    (data::Mesh::s_VERTEX_MODIFIED_SIG);
         sigVertex->asyncEmit();
 
-        const auto sigcolor = m_pointCloud->signal<data::Mesh::PointColorsModifiedSignalType>
+        const auto sigcolor = pointcloud->signal<data::Mesh::PointColorsModifiedSignalType>
                                   (data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sigcolor->asyncEmit();
     }

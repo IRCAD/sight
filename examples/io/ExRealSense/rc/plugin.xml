@@ -476,7 +476,7 @@
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
-                <createCameraNumber>2</createCameraNumber>
+                <createCameraNumber>1</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
