@@ -71,7 +71,7 @@ void Plugin::initialize()
     {
         m_readerSrv->setInOut(m_image, "data");
         service::IService::ConfigType config;
-        config.put("file", "../../data/patient1.vtk");
+        config.put("resource", "Tuto02DataServiceBasic/img-test.vtk");
         m_readerSrv->setConfiguration(config);
         m_readerSrv->configure();
     }

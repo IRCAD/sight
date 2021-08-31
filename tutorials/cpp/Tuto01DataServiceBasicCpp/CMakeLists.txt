@@ -6,6 +6,7 @@ add_dependencies(Tuto01DataServiceBasicCpp
                  module_service
                  module_viz_sample
                  module_io_vtk
+                 Tuto02DataServiceBasic # Needed for the sample image loaded at start
 )
 
 target_link_libraries(Tuto01DataServiceBasicCpp PUBLIC 
