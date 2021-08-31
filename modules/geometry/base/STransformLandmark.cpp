@@ -25,12 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Exception.hpp>
-#include <data/Landmarks.hpp>
-
 #include <geometry/data/Matrix4.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -39,15 +34,11 @@ namespace sight::module::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const service::IService::KeyType s_LANDMARK_INOUT                   = "landmark";
-const service::IService::KeyType s_TRANSFORM_INPUT                  = "matrix";
 static const core::com::Signals::SignalKeyType LANDMARK_UPDATED_SIG = "landmarkUpdated";
 
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
 const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
 const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
-
-// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 
@@ -69,8 +60,6 @@ STransformLandmark::~STransformLandmark() noexcept
 
 void STransformLandmark::starting()
 {
-    const auto transformLocked = this->getLockedInput<data::Matrix4>(s_TRANSFORM_INPUT);
-    m_transform = transformLocked.get_shared();
 }
 
 // -----------------------------------------------------------------------------
@@ -97,11 +86,12 @@ void STransformLandmark::updating()
 {
     if(m_landmarkSelected)
     {
-        const auto landmark = this->getLockedInOut<data::Landmarks>(s_LANDMARK_INOUT);
+        const auto landmark  = m_landmarks.lock();
+        const auto transform = m_transform.lock();
         try
         {
             data::Landmarks::PointType& point = landmark->getPoint(m_label, m_index);
-            data::Matrix4::TMCoefArray array  = m_transform->getCoefficients();
+            data::Matrix4::TMCoefArray array  = transform->getCoefficients();
             point[0] = array[3];
             point[1] = array[7];
             point[2] = array[11];
@@ -147,7 +137,7 @@ void STransformLandmark::updateSelectedPoint(std::string name, size_t index)
 void STransformLandmark::updatePoint(std::string name)
 {
     m_landmarkSelected = true;
-    const auto landmark = this->getLockedInOut<data::Landmarks>(s_LANDMARK_INOUT);
+    const auto landmark = m_landmarks.lock();
     const size_t size   = landmark->getGroup(name).m_points.size();
     m_index = size - 1;
     this->update();

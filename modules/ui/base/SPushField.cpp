@@ -39,9 +39,6 @@ namespace sight::module::ui::base
 
 static const core::com::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
 
-static const std::string s_SOURCE_KEY      = "source";
-static const std::string s_DESTINATION_KEY = "destination";
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -88,8 +85,8 @@ void SPushField::stopping()
 
 void SPushField::updating()
 {
-    data::Object::sptr objectSrc = this->getInOut<data::Object>(s_SOURCE_KEY);
-    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    const auto objectSrc = m_source.lock();
+    SIGHT_ASSERT(s_SOURCE_KEY << " doesn't exist or is not a composite", objectSrc);
 
     data::Object::sptr obj = objectSrc->getField(m_field);
 
@@ -104,8 +101,8 @@ void SPushField::updating()
 
 void SPushField::updateObjects()
 {
-    data::Object::sptr objectSrc = this->getInOut<data::Object>(s_SOURCE_KEY);
-    SIGHT_ASSERT(s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    const auto objectSrc = m_source.lock();
+    SIGHT_ASSERT(s_SOURCE_KEY << " doesn't exist or is not a composite", objectSrc);
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 

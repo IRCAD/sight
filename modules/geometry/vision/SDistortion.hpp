@@ -139,12 +139,22 @@ private:
     data::Image::Size m_prevImageSize {0, 0, 0};
 
 #if OPENCV_CUDA_SUPPORT
-    ::cv::cuda::GpuMat m_mapx;
-    ::cv::cuda::GpuMat m_mapy;
+    cv::cuda::GpuMat m_mapx;
+    cv::cuda::GpuMat m_mapy;
 #else
-    ::cv::Mat m_mapx;
-    ::cv::Mat m_mapy;
+    cv::Mat m_mapx;
+    cv::Mat m_mapy;
 #endif // OPENCV_CUDA_SUPPORT
+
+    static constexpr std::string_view s_CAMERA_INPUT = "camera";
+    static constexpr std::string_view s_IMAGE_INPUT  = "input";
+    static constexpr std::string_view s_IMAGE_INOUT  = "output";
+    static constexpr std::string_view s_MAP_INOUT    = "map";
+
+    sight::data::ptr<sight::data::Camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_output {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_map {this, s_MAP_INOUT};
 };
 
 } // videoCalibration

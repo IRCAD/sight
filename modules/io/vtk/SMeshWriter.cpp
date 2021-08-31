@@ -66,13 +66,6 @@ sight::io::base::service::IOPathType SMeshWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMeshWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -141,10 +134,22 @@ typename WRITER::sptr configureWriter(const std::filesystem::path& _file)
 
 void SMeshWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto meshlockedPtr = this->getLockedInput<const data::Mesh>(sight::io::base::service::s_DATA_KEY);
+        const auto locked = m_data.lock();
+        const auto mesh   = std::dynamic_pointer_cast<const data::Mesh>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::Mesh::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            mesh
+        );
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -199,11 +204,12 @@ void SMeshWriter::updating()
 
         m_sigJobCreated->emit(meshWriter->getJob());
 
-        meshWriter->setObject(meshlockedPtr.get_shared());
+        meshWriter->setObject(mesh);
 
         try
         {
             meshWriter->write();
+            m_writeFailed = false;
         }
         catch(core::tools::Failed& e)
         {
@@ -243,10 +249,6 @@ void SMeshWriter::updating()
         }
 
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
     }
 }
 

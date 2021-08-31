@@ -24,6 +24,8 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IFilter.hpp>
 
 #include <boost/optional.hpp>
@@ -102,7 +104,13 @@ protected:
 
 private:
 
-    ::boost::optional<std::string> m_labelSetFieldName;
+    boost::optional<std::string> m_labelSetFieldName;
+
+    static constexpr std::string_view s_LABEL_IMAGE_INPUT = "labelImage";
+    static constexpr std::string_view s_BINARY_MASK_INOUT = "binaryMask";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_labelImage {this, s_LABEL_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_binaryMask {this, s_BINARY_MASK_INOUT};
 };
 
 } // namespace sight::module::filter::image.

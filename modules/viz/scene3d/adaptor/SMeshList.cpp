@@ -24,17 +24,11 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/Mesh.hpp>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
 static const core::com::Slots::SlotKeyType s_CLEAR_SLOT = "clear";
-
-static const std::string s_TEXTURE_INPUT   = "texture";
-static const std::string s_TRANSFORM_INPUT = "transform";
-static const std::string s_MESH_INOUT      = "mesh";
 
 static const std::string s_CAPACITY_CONFIG      = "capacity";
 static const std::string s_DROPPING_CONFIG      = "drop";
@@ -77,9 +71,8 @@ void SMeshList::starting()
     this->initialize();
 
     // Get the inputs.
-    const auto mesh           = this->getWeakInOut<data::Mesh>(s_MESH_INOUT);
-    const auto transformInOut = this->getLockedInput<data::Matrix4>(s_TRANSFORM_INPUT);
-    const auto imageInput     = this->getLockedInput<data::Image>(s_TEXTURE_INPUT);
+    const auto transformInOut = m_transform.lock();
+    const auto imageInput     = m_texture.lock();
 
     // initialise N meshes adaptor
     for(size_t i = 0 ; i < m_capacity ; ++i)
@@ -93,7 +86,7 @@ void SMeshList::starting()
         const std::string transformID = this->getID() + transform->getID();
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", m_layerID);
-        config.add("config.<xmlattr>." + s_TRANSFORM_INPUT, transformID);
+        config.add("config.<xmlattr>." + std::string(s_TRANSFORM_INPUT), transformID);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
@@ -139,7 +132,10 @@ void SMeshList::starting()
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
 
-        meshAdaptor->setInOut(mesh.lock().get_shared(), "mesh", true);
+        {
+            const auto mesh = m_mesh.lock();
+            meshAdaptor->setInOut(mesh.get_shared(), "mesh", true);
+        }
 
         meshAdaptor->configure(meshConfig);
         meshAdaptor->updateVisibility(false);
@@ -219,9 +215,9 @@ void SMeshList::add()
         const sight::viz::scene3d::IAdaptor::sptr textureAdp = instance.m_texture;
         {
             // set current image
-            const auto image = textureAdp->getLockedInput<data::Image>("image");
+            const auto image = textureAdp->getInput<data::Image>("image").lock();
 
-            const auto textureInput = this->getLockedInput<data::Image>(s_TEXTURE_INPUT);
+            const auto textureInput = m_texture.lock();
 
             if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
                && (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE
@@ -287,9 +283,9 @@ void SMeshList::add()
         const sight::viz::scene3d::IAdaptor::sptr transformAdp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->getLockedInOut<data::Matrix4>("transform");
+            const auto transform = transformAdp->getInOut<data::Matrix4>("transform").lock();
 
-            const auto transformInOut = this->getLockedInput<data::Matrix4>(s_TRANSFORM_INPUT);
+            const auto transformInOut = m_transform.lock();
             transform->deepCopy(transformInOut.get_shared());
         }
         transformAdp->update();

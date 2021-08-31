@@ -24,14 +24,10 @@
 
 #include <viz/scene3d/IAdaptor.hpp>
 
-#include <data/Boolean.hpp>
-#include <data/Float.hpp>
-#include <data/Integer.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
@@ -42,8 +38,6 @@
 
 namespace sight::module::ui::viz
 {
-
-static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 SShaderParameterEditor::SShaderParameterEditor() noexcept
@@ -60,9 +54,11 @@ SShaderParameterEditor::~SShaderParameterEditor() noexcept
 
 void SShaderParameterEditor::starting()
 {
-    data::Reconstruction::sptr rec = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
-    data::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    {
+        const auto rec                = m_reconstruction.lock();
+        data::Material::sptr material = rec->getMaterial();
+        m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    }
 
     this->create();
 
@@ -127,10 +123,10 @@ void SShaderParameterEditor::clear()
 void SShaderParameterEditor::updateGuiInfo()
 {
     /// Getting all Material adaptors
-    auto reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
+    const auto reconstruction = m_reconstruction.lock();
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "::sight::module::viz::scene3d::adaptor::SMaterial"
+        "sight::module::viz::scene3d::adaptor::SMaterial"
     );
 
     /// Stop if no Material adaptors have been find
@@ -145,7 +141,7 @@ void SShaderParameterEditor::updateGuiInfo()
     sight::viz::scene3d::IAdaptor::sptr matService;
     for(auto srv : srvVec)
     {
-        if(srv->getInOut<data::Object>("material")->getID() == reconstruction->getMaterial()->getID())
+        if(srv->getInOut<data::Object>("material").lock()->getID() == reconstruction->getMaterial()->getID())
         {
             matService = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
             break;
@@ -163,8 +159,8 @@ void SShaderParameterEditor::updateGuiInfo()
         if(paramSrv->getClassname() == "sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             /// Filter object types
-            const data::Object::csptr shaderObj =
-                paramSrv->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
+            const auto shaderObj =
+                paramSrv->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
             const ObjectClassnameType objType = shaderObj->getClassname();
 
             if(objType == "sight::data::Boolean" || objType == "sight::data::Float"

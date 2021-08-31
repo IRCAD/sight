@@ -120,16 +120,6 @@ protected:
      *
      * This method is used to set the file path of the PDF to write.
      *
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_DOCUMENT_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the image path.
-     *
-     * This method is used to set the file path of the PDF to write.
-     *
      */
     MODULE_IO_DOCUMENT_API void openLocationDialog() override;
 

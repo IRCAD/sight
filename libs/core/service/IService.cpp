@@ -155,6 +155,15 @@ data::Object::csptr IService::getObject(std::string_view _key, data::Access _acc
 
 void IService::setOutput(std::string_view key, data::Object::sptr object, size_t index)
 {
+    this->_setOutput(key, object, index);
+
+    this->setPtrObject<data::Access::out>(key, object, index);
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::_setOutput(std::string_view key, data::Object::sptr object, size_t index)
+{
     auto keyPair = std::make_pair(std::string(key), index);
     if(m_outputsMap.find(keyPair) != m_outputsMap.end())
     {
@@ -170,8 +179,6 @@ void IService::setOutput(std::string_view key, data::Object::sptr object, size_t
         m_outputsMap[keyPair] = object;
         service::OSR::registerServiceOutput(object, key, this->getSptr(), index);
     }
-
-    this->setPtrObject<data::Access::out>(key, object, index);
 }
 
 //------------------------------------------------------------------------------
@@ -251,23 +258,23 @@ void IService::setInOut(
 
 void IService::_setInOut(
     data::Object::sptr obj,
-    std::string_view _key,
+    std::string_view key,
     size_t index
 )
 {
-    auto key = std::make_pair(std::string(_key), index);
+    auto keyPair = std::make_pair(std::string(key), index);
     if(obj == nullptr)
     {
-        this->setObjectId(_key, std::string());
-        m_inOutsMap.erase(key);
+        this->setObjectId(key, "", index);
+        m_inOutsMap.erase(keyPair);
     }
     else
     {
-        this->setObjectId(_key, obj->getID());
-        m_inOutsMap[key] = obj; // For compatibility
+        this->setObjectId(key, obj->getID(), index);
+        m_inOutsMap[keyPair] = obj; // For compatibility
     }
 
-    this->setPtrObject<data::Access::inout>(_key, obj, index);
+    this->setPtrObject<data::Access::inout>(key, obj, index);
 }
 
 //------------------------------------------------------------------------------

@@ -39,9 +39,6 @@ static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCam
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
 static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-static const service::IService::KeyType s_TF_INOUT    = "tf";
-
 static const std::string s_PRIORITY_CONFIG              = "priority";
 static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 static const std::string s_ORIENTATION_CONFIG           = "orientation";
@@ -126,10 +123,8 @@ void SNegato2DCamera::swapping(std::string_view _key)
 {
     if(_key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 }
@@ -278,10 +273,8 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-    const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-    const auto tf  = tfW.lock();
+    const auto image = m_image.lock();
+    const auto tf    = m_tf.lock();
     m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
     const auto layer           = this->getLayer();

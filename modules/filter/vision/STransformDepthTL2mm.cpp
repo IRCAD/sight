@@ -25,19 +25,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/CameraSeries.hpp>
-#include <data/FrameTL.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::filter::vision
 {
 
 static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
-
-static const service::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
-static const service::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
-static const service::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
 //------------------------------------------------------------------------------
 
@@ -77,13 +70,14 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 {
     if(timestamp > m_lastTimestamp)
     {
-        data::FrameTL::csptr originFrameTL = this->getInput<data::FrameTL>(s_ORIGIN_FRAME_TL_INPUT);
-        SIGHT_ASSERT("missing '" + s_ORIGIN_FRAME_TL_INPUT + "' timeline", originFrameTL);
-        data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>(s_CAMERA_SERIES_INPUT);
-        SIGHT_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
-        data::Camera::csptr depthCamera   = cameraSeries->getCamera(0);
-        data::FrameTL::sptr scaledFrameTL = this->getInOut<data::FrameTL>(s_SCALED_FRAME_TL_INOUT);
-        SIGHT_ASSERT("missing '" + s_SCALED_FRAME_TL_INOUT + "' timeline", scaledFrameTL);
+        const auto originFrameTL = m_originFrameTL.lock();
+        SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_TL_INPUT << "' timeline", originFrameTL);
+        const auto cameraSeries = m_cameraSeries.lock();
+        SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
+        data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+
+        auto scaledFrameTL = m_scaledDepthTL.lock();
+        SIGHT_ASSERT("missing '" << s_SCALED_FRAME_TL_INOUT << "' timeline", scaledFrameTL);
 
         const double scale = depthCamera->getScale();
 

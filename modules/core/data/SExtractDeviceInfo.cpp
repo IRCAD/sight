@@ -91,7 +91,7 @@ void SExtractDeviceInfo::starting()
 
 void SExtractDeviceInfo::updating()
 {
-    auto camera = this->getInOut<sight::data::Camera>("camera");
+    auto camera = m_camera.lock();
     SIGHT_ASSERT("Camera 'camera' not found.", camera);
 
     std::string device;

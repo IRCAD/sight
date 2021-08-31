@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/FrameTL.hpp>
-
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
 
@@ -44,10 +42,6 @@ const core::com::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoise
 const core::com::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
 const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
-
-const service::IService::KeyType s_MASK_KEY          = "mask";
-const service::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
-const service::IService::KeyType s_VIDEO_MASK_TL_KEY = "videoMaskTL";
 
 // ------------------------------------------------------------------------------
 
@@ -168,9 +162,9 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        const auto mask    = this->getLockedInput<data::Image>(s_MASK_KEY);
-        const auto videoTL = this->getLockedInput<data::FrameTL>(s_VIDEO_TL_KEY);
-        auto videoMaskTL   = this->getLockedInOut<data::FrameTL>(s_VIDEO_MASK_TL_KEY);
+        const auto mask    = m_mask.lock();
+        const auto videoTL = m_videoTL.lock();
+        auto videoMaskTL   = m_videoMaskTL.lock();
 
         // Sanity checks
         SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
@@ -255,8 +249,8 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    const auto mask    = this->getLockedInput<data::Image>(s_MASK_KEY);
-    const auto videoTL = this->getLockedInput<data::FrameTL>(s_VIDEO_TL_KEY);
+    const auto mask    = m_mask.lock();
+    const auto videoTL = m_videoTL.lock();
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
@@ -303,7 +297,7 @@ void SColourImageMasking::setBackground()
     m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
 
     // Initialize the mask timeline
-    auto videoMaskTL = this->getLockedInOut<data::FrameTL>(s_VIDEO_MASK_TL_KEY);
+    const auto videoMaskTL = m_videoMaskTL.lock();
     videoMaskTL->initPoolSize(videoTL->getWidth(), videoTL->getHeight(), core::tools::Type::s_UINT8, 4);
 }
 
@@ -311,7 +305,7 @@ void SColourImageMasking::setBackground()
 
 void SColourImageMasking::setForeground()
 {
-    const auto videoTL = this->getLockedInput<data::FrameTL>(s_VIDEO_TL_KEY);
+    const auto videoTL = m_videoTL.lock();
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
@@ -389,7 +383,7 @@ void SColourImageMasking::setForegroundComponents(int fgComponents)
 
 void SColourImageMasking::clearMaskTL()
 {
-    auto videoMaskTL = this->getLockedInOut<data::FrameTL>(s_VIDEO_MASK_TL_KEY);
+    auto videoMaskTL = m_videoMaskTL.lock();
     videoMaskTL->clearTimeline();
     auto sigTLCleared = videoMaskTL->signal<data::FrameTL::ObjectClearedSignalType>(
         data::FrameTL::s_CLEARED_SIG

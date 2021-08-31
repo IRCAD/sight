@@ -24,11 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/Mesh.hpp>
-
 #include <geometry/data/Mesh.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -63,7 +59,7 @@ void SMeshModifier::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_functor = config.get<std::string>(s_FUNCTOR_CONFIG);
-    OSIGHT_ASSERT(
+    SIGHT_ASSERT(
         "Wrong functor name",
         m_functor == "ShakeMeshPoint"
         || m_functor == "ColorizeMeshPoints"
@@ -88,7 +84,7 @@ void SMeshModifier::starting()
 
 void SMeshModifier::updating()
 {
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     try
     {

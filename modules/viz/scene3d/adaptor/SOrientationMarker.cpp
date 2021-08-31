@@ -37,8 +37,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_MATRIX_INOUT = "matrix";
-
 //-----------------------------------------------------------------------------
 
 SOrientationMarker::SOrientationMarker() noexcept
@@ -125,7 +123,7 @@ void SOrientationMarker::updateCameraMatrix()
     // Copy orientation matrix to Ogre.
     ::Ogre::Matrix3 ogreMatrix;
     {
-        const auto transform = this->getLockedInput<data::Matrix4>(s_MATRIX_INOUT);
+        const auto transform = m_matrix.lock();
 
         // Fill the ogreMatrix.
         for(size_t lt = 0 ; lt < 3 ; lt++)
@@ -146,7 +144,7 @@ void SOrientationMarker::updateCameraMatrix()
 
     const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
 
-    // Reset the camera position & orientation, since s_MATRIX_INOUT is a global transform.
+    // Reset the camera position & orientation, since s_MATRIX_IN is a global transform.
     transformNode->setPosition(0, 0, 0);
     // Reverse X axis.
     transformNode->setOrientation(rotateX);
@@ -182,7 +180,7 @@ void SOrientationMarker::setVisible(bool _visible)
 service::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

@@ -171,9 +171,6 @@ protected:
     /// Name of the material
     std::string m_currentMtlName;
 
-    /// List of file names to attach to the fragment shader for compiling.
-    std::vector<std::string> m_fragmentShaderAttachements;
-
     /// Compositor used to compute volume ray entry/exit points.
     RayEntryCompositor::uptr m_rayEntryCompositor {nullptr};
 

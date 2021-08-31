@@ -114,12 +114,6 @@ private:
      */
     service::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Frame timeline
-    data::FrameTL::csptr m_frameTL;
-
-    /// Image
-    data::Image::sptr m_image;
-
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp;
 
@@ -127,6 +121,9 @@ private:
     core::HiResTimer m_hiRestimer;
 
     bool m_imageInitialized;
+
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_frameTL {this, "frameTL"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, "frame"};
 };
 
 } //namespace sight::module::sync

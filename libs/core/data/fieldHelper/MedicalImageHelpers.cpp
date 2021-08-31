@@ -59,17 +59,24 @@ bool MedicalImageHelpers::checkLandmarks(data::Image::sptr _pImg)
 
 bool MedicalImageHelpers::checkImageValidity(data::Image::csptr _pImg)
 {
+    return _pImg ? checkImageValidity(*_pImg) : false;
+}
+
+//------------------------------------------------------------------------------
+
+bool MedicalImageHelpers::checkImageValidity(const data::Image& _image)
+{
     // Test if the image is allocated
-    bool dataImageIsAllocated = (_pImg != data::Image::sptr());
+    bool dataImageIsAllocated = (_image.getAllocatedSizeInBytes() > 0);
 
     if(dataImageIsAllocated)
     {
-        size_t nbDim = _pImg->getNumberOfDimensions();
+        size_t nbDim = _image.getNumberOfDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
         for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
         {
-            dataImageIsAllocated = dataImageIsAllocated && (_pImg->getSize2()[k] >= 1);
+            dataImageIsAllocated = dataImageIsAllocated && (_image.getSize2()[k] >= 1);
         }
     }
 

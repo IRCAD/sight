@@ -60,10 +60,6 @@ static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setInt
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
-static const service::IService::KeyType s_IMAGE_INOUT           = "image";
-static const service::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
-static const service::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
-
 static const std::string s_AUTORESET_CAMERA_CONFIG      = "autoresetcamera";
 static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
 static const std::string s_DYNAMIC_CONFIG               = "dynamic";
@@ -170,10 +166,8 @@ void SVolumeRender::starting()
     m_gpuVolumeTF = std::make_shared<sight::viz::scene3d::TransferFunction>();
 
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 
@@ -230,7 +224,7 @@ void SVolumeRender::starting()
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
         isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
     if(isValid)
@@ -257,10 +251,8 @@ void SVolumeRender::swapping(std::string_view _key)
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-            const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
-            const auto tf  = tfW.lock();
+            const auto image = m_image.lock();
+            const auto tf    = m_tf.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
         }
         this->updateVolumeTF();
@@ -353,10 +345,8 @@ void SVolumeRender::newImage()
 
         renderService->makeCurrent();
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-            const auto tfW = this->getWeakInOut<data::TransferFunction>(s_VOLUME_TF_INOUT);
-            const auto tf  = tfW.lock();
+            const auto image = m_image.lock();
+            const auto tf    = m_tf.lock();
             m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
             sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
@@ -375,7 +365,7 @@ void SVolumeRender::bufferImage()
     {
         auto bufferingFn = [this]()
                            {
-                               const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+                               const auto image = m_image.lock();
 
                                sight::viz::scene3d::Utils::convertImageForNegato(
                                    m_bufferingTexture.get(),
@@ -399,7 +389,7 @@ void SVolumeRender::bufferImage()
     {
         this->getRenderService()->makeCurrent();
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+            const auto image = m_image.lock();
             sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
         }
         this->updateImage();
@@ -410,7 +400,7 @@ void SVolumeRender::bufferImage()
 
 void SVolumeRender::updateImage()
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     this->getRenderService()->makeCurrent();
 
@@ -544,7 +534,7 @@ void SVolumeRender::updateSatSizeRatio(int _sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+            const auto image = m_image.lock();
 
             const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
             const data::mt::locked_ptr lock(volumeTF);
@@ -639,7 +629,7 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 
     if(m_preIntegratedRendering)
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
 
         const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
         const data::mt::locked_ptr lock(volumeTF);
@@ -795,8 +785,7 @@ void SVolumeRender::createWidget()
 
     ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
 
-    const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    const auto clippingMatrix  = wClippingMatrix.lock();
+    const auto clippingMatrix = m_clippingMatrix.lock();
     if(clippingMatrix)
     {
         ogreClippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
@@ -854,7 +843,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
 
     bool isValid = false;
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+        const auto image = m_image.lock();
         isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
 
@@ -915,7 +904,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
 
         if(m_preIntegratedRendering)
         {
-            const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+            const auto image = m_image.lock();
 
             const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
             const data::mt::locked_ptr lock(volumeTF);
@@ -935,8 +924,7 @@ void SVolumeRender::updateClippingBox()
         bool matrixSet = false;
         ::Ogre::Matrix4 clippingMx;
         {
-            const auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-            const auto clippingMatrix  = wClippingMatrix.lock();
+            const auto clippingMatrix = m_clippingMatrix.lock();
             if(clippingMatrix)
             {
                 clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
@@ -958,8 +946,7 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    auto wClippingMatrix = this->getWeakInOut<data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-    auto clippingMatrix  = wClippingMatrix.lock();
+    auto clippingMatrix = m_clippingMatrix.lock();
     if(clippingMatrix)
     {
         sight::viz::scene3d::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());

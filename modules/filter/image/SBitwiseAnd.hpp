@@ -24,6 +24,8 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
@@ -72,8 +74,14 @@ protected:
     /// Does nothing.
     MODULE_FILTER_IMAGE_API void stopping() override;
 
-    /// Computes centroids.
+    /// Performs bitwise operation between mask and image.
     MODULE_FILTER_IMAGE_API void updating() override;
+
+    static constexpr std::string_view s_OUTPUTIMAGE_OUT = "outputImage";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_mask {this, "mask"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::out> m_outputImage {this, s_OUTPUTIMAGE_OUT};
 };
 
 } // namespace sight::module::filter::image.

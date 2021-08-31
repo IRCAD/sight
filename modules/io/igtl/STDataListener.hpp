@@ -25,14 +25,11 @@
 #include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/INetworkListener.hpp"
 
-#include <data/Object.hpp>
+#include <data/MatrixTL.hpp>
 
 #include <io/igtl/Client.hpp>
 
 #include <cstdint>
-#include <future>
-#include <map>
-#include <string>
 
 namespace sight::data
 {
@@ -122,6 +119,8 @@ private:
     std::vector<core::runtime::ConfigurationElement::sptr> m_deviceNamesConfig;
 
     MatrixNameIndexType m_matrixNameIndex;
+
+    data::ptr<data::MatrixTL, sight::data::Access::inout> m_timeline {this, "timeline"};
 };
 
 } // namespace sight::module::io::igtl

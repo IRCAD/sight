@@ -1,8 +1,12 @@
 #version 330
 
-#extension GL_GOOGLE_include_directive : enable // Needed for glslangValidator to handle include directives.
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
 
-#include "VolumeRay.glsl.struct"
+#include "RayUtils.inc.glsl"
+#include "SpatialTransforms.inc.glsl"
+#include "VolumeRayCompositing.inc.glsl"
 
 uniform sampler3D u_s3Image;
 
@@ -24,16 +28,6 @@ uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 out vec4 f_f4FragCol;
-
-//-----------------------------------------------------------------------------
-
-vec3 fragCoordsToNDC(in vec3 _f3FragPos_Ss);
-vec3 ndcToFragCoord(in vec3 _f3FragPos_Ns);
-vec4 ndcToSpecificSpacePosition(in vec3 _f3FragPos_Ns, in mat4 _m4Inverse);
-float rayAxisAlignedBoxIntersection(in vec3 _f3RayPos, in vec3 _f3RayDir, in vec3 _f3AxisAlignedBoxMin, in vec3 _f3AxisAlignedBoxMax);
-void advanceUntilOpaque(inout VolumeRay _vray_Ms, in sampler3D _s3Image);
-vec4 compositeAlongRay(inout VolumeRay _vray_Ms, in sampler3D _s3Image);
-
 
 //-----------------------------------------------------------------------------
 

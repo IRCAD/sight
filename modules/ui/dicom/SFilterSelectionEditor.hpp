@@ -24,7 +24,10 @@
 
 #include "modules/ui/dicom/config.hpp"
 
+#include <core/base.hpp>
+
 #include <data/SeriesDB.hpp>
+#include <data/Vector.hpp>
 
 #include <filter/dicom/IFilter.hpp>
 
@@ -180,8 +183,8 @@ protected:
     /// Destination SeriesDB ID
     std::string m_destinationSeriesDBID;
 
-    /// Destination SeriesDB
-    data::SeriesDB::sptr m_destinationSeriesDB;
+    data::ptr<data::SeriesDB, sight::data::Access::inout> m_destinationSeriesDB {this, "target"};
+    data::ptr<data::Vector, sight::data::Access::in> m_selectedDicomSeries {this, "selection"};
 };
 
 } // namespace sight::module::ui::dicom

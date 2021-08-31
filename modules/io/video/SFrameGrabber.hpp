@@ -163,10 +163,10 @@ private:
     void readVideo(const std::filesystem::path& file);
 
     /// Initializes the usb device reader, start the timer.
-    void readDevice(const CSPTR(data::Camera)_cam);
+    void readDevice(const data::Camera& _cam);
 
     /// Initializes the ffmpeg based stream grabber, start the timer.
-    void readStream(const CSPTR(data::Camera)_cam);
+    void readStream(const data::Camera& _cam);
 
     /// Initializes the image reader, start the timer.
     void readImages(const std::filesystem::path& folder, const std::string& extension);

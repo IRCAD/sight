@@ -56,10 +56,10 @@ static const std::string s_ADAPTOR_CONFIG          = "adaptor";
 SRender::SRender()
 {
     // Allow using GenericScene and FrameGraph as QML types when using SRender service in QML applications.
-    qmlRegisterType<sight::viz::qt3d::core::GenericScene>("sight::viz::qt3d::core", 1, 0, "GenericScene");
-    qmlRegisterType<sight::viz::qt3d::core::FrameGraph>("sight::viz::qt3d::core", 1, 0, "FrameGraph");
-    qRegisterMetaType<sight::viz::qt3d::core::GenericScene*>("sight::viz::qt3d::core::GenericScene*");
-    qRegisterMetaType<sight::viz::qt3d::core::FrameGraph*>("sight::viz::qt3d::FrameGraph*");
+    qmlRegisterType<sight::viz::qt3d::core::GenericScene>("sight.viz.qt3d", 1, 0, "GenericScene");
+    qmlRegisterType<sight::viz::qt3d::core::FrameGraph>("sight.viz.qt3d", 1, 0, "FrameGraph");
+    qRegisterMetaType<sight::viz::qt3d::core::GenericScene*>("sight.viz.qt3d.GenericScene*");
+    qRegisterMetaType<sight::viz::qt3d::core::FrameGraph*>("sight.viz.qt3d.FrameGraph*");
 }
 
 //-----------------------------------------------------------------------------

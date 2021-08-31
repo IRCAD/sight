@@ -35,10 +35,6 @@
 namespace sight::module::data
 {
 
-const service::IService::KeyType s_SOURCE_INPUT  = "source";
-const service::IService::KeyType s_TARGET_INOUT  = "target";
-const service::IService::KeyType s_TARGET_OUTPUT = "target";
-
 //-----------------------------------------------------------------------------
 
 SCopy::SCopy() :
@@ -124,7 +120,7 @@ void SCopy::updating()
 void SCopy::stopping()
 {
     // Unregister output
-    this->setOutput(s_TARGET_OUTPUT, nullptr);
+    m_outTarget = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,8 +130,7 @@ void SCopy::copy()
     // Check if we use inout or output.
     bool create = false;
     {
-        const auto target     = this->getWeakInOut<sight::data::Object>(s_TARGET_INOUT);
-        const auto targetLock = target.lock();
+        const auto targetLock = m_target.lock();
         if(!targetLock)
         {
             create = true;
@@ -143,7 +138,7 @@ void SCopy::copy()
     }
 
     // Extract the object.
-    const auto sourceObject = this->getLockedInput<sight::data::Object>(s_SOURCE_INPUT);
+    const auto sourceObject = m_source.lock();
 
     sight::data::Object::csptr source;
     if(m_hasExtractTag)
@@ -186,12 +181,12 @@ void SCopy::copy()
                 {
                     // Set the data as output.
                     sight::data::Object::sptr target = sight::data::Object::copy(source);
-                    this->setOutput(s_TARGET_OUTPUT, target);
+                    m_outTarget = target;
                 }
                 else
                 {
                     // Copy the object to the inout.
-                    const auto target = this->getLockedInOut<sight::data::Object>(s_TARGET_INOUT);
+                    const auto target = m_target.lock();
                     target->deepCopy(source);
 
                     auto sig = target->signal<sight::data::Object::ModifiedSignalType>(
@@ -206,9 +201,6 @@ void SCopy::copy()
 
         if(source != sourceObject.get_shared())
         {
-            // Lock the source before copy, but only if not already locked
-            sight::data::mt::locked_ptr sourceLock(source);
-
             setOutputData();
         }
         else

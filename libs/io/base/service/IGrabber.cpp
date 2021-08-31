@@ -110,23 +110,23 @@ void IGrabber::setStep(int /*step*/, std::string /*key*/)
 
 // ----------------------------------------------------------------------------
 
-void IGrabber::clearTimeline(data::FrameTL::sptr const& _tl)
+void IGrabber::clearTimeline(data::FrameTL& _tl)
 {
-    if(_tl->isAllocated())
+    if(_tl.isAllocated())
     {
         // Clear the timeline: send a black frame
-        const core::HiResClock::HiResClockType timestamp = _tl->getNewerTimestamp() + 1;
+        const core::HiResClock::HiResClockType timestamp = _tl.getNewerTimestamp() + 1;
 
-        SPTR(data::FrameTL::BufferType) buffer = _tl->createBuffer(timestamp);
+        SPTR(data::FrameTL::BufferType) buffer = _tl.createBuffer(timestamp);
         auto destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        std::fill(destBuffer, destBuffer + _tl->getWidth() * _tl->getHeight() * _tl->getNumberOfComponents(), 0);
+        std::fill(destBuffer, destBuffer + _tl.getWidth() * _tl.getHeight() * _tl.getNumberOfComponents(), 0);
 
         // push buffer and notify
-        _tl->clearTimeline();
-        _tl->pushObject(buffer);
+        _tl.clearTimeline();
+        _tl.pushObject(buffer);
 
-        auto sigTL = _tl->signal<data::TimeLine::ObjectPushedSignalType>(
+        auto sigTL = _tl.signal<data::TimeLine::ObjectPushedSignalType>(
             data::TimeLine::s_OBJECT_PUSHED_SIG
         );
         sigTL->asyncEmit(timestamp);

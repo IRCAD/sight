@@ -22,9 +22,6 @@
 
 #include "modules/viz/scene2d/adaptor/SHistogramValue.hpp"
 
-#include <data/Histogram.hpp>
-#include <data/Point.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
@@ -38,10 +35,6 @@ namespace sight::module::viz::scene2d
 
 namespace adaptor
 {
-
-static const service::IService::KeyType s_POINT_INPUT     = "point";
-static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
-static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 
 static const std::string s_COLOR_CONFIG     = "color";
 static const std::string s_FONT_SIZE_CONFIG = "fontSize";
@@ -120,7 +113,7 @@ void SHistogramValue::updating()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    const data::Histogram::csptr histogram          = this->getInput<data::Histogram>(s_HISTOGRAM_INPUT);
+    const auto histogram                            = m_histogram.lock();
     const data::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue                   = histogram->getMinValue();
     const float histogramBinsWidth                  = histogram->getBinsWidth();
@@ -166,7 +159,7 @@ void SHistogramValue::updating()
         QTransform transform;
         transform.scale(scaleX, scaleY);
 
-        const data::Point::csptr point = this->getInput<data::Point>(s_POINT_INPUT);
+        const auto point = m_point.lock();
 
         m_text->setTransform(transform);
         m_text->setPos(point->getCoord()[0] + diameterH * 2, point->getCoord()[1] - diameterV * 2);

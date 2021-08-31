@@ -60,7 +60,7 @@ public:
 
     /// Comparision of camera, set _sightExpected to true if the expected values are sight camera, false otherwise.
     void compareCam(
-        const data::Camera::csptr _sightCam,
+        const data::Camera& _sightCam,
         const ::openvslam::camera::perspective& _ovsCam,
         bool _sightExpected = true
     );

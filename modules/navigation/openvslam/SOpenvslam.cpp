@@ -83,14 +83,6 @@ static const core::com::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "
 
 static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
-static const service::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
-static const service::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
-static const service::IService::KeyType s_TIMELINE2_INPUT       = "timeline2";
-static const service::IService::KeyType s_CAMERA_INPUT          = "camera";
-static const service::IService::KeyType s_SCALE_INPUT           = "scale";
-
-static const service::IService::KeyType s_POINTCLOUD_OUTPUT = "pointCloud";
-
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";
 static std::string s_windowName;
@@ -181,26 +173,26 @@ void SOpenvslam::configuring()
 void SOpenvslam::starting()
 {
     // input parameters
-    m_frameTL = this->getInput<data::FrameTL>(s_TIMELINE_INPUT);
-    SIGHT_ASSERT("The input " + s_TIMELINE_INPUT + " is not valid.", m_frameTL);
+    const auto frameTL = m_timeline.lock();
+    SIGHT_ASSERT("The input " << s_TIMELINE_INPUT << " is not valid.", frameTL);
 
-    m_camera = this->getInput<data::Camera>(s_CAMERA_INPUT);
-    SIGHT_ASSERT("The input " + s_CAMERA_INPUT + " is not valid.", m_camera);
+    const auto camera = m_camera.lock();
+    SIGHT_ASSERT("The input " << s_CAMERA_INPUT << " is not valid.", camera);
 
-    m_cameraMatrixTL = this->getInOut<data::MatrixTL>(s_CAMERA_MATRIXTL_INOUT);
-    const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
-    if(m_cameraMatrixTL)
+    auto cameraMatrixTL = m_cameraMatrixTL.lock();
+
+    if(cameraMatrixTL)
     {
-        m_cameraMatrixTL->initPoolSize(50);
+        cameraMatrixTL->initPoolSize(50);
     }
 
-    m_pointCloud = data::Mesh::New();
-    this->setOutput(s_POINTCLOUD_OUTPUT, m_pointCloud);
+    auto pointcloud = data::Mesh::New();
+    m_pointCloud = pointcloud;
 
     if(m_trackingMode != TrackingMode::MONO)
     {
-        m_frameTL2 = this->getInput<data::FrameTL>(s_TIMELINE2_INPUT);
-        SIGHT_ASSERT("The input " + s_TIMELINE2_INPUT + " is not valid.", m_frameTL2);
+        const auto frameTL2 = m_timeline2.lock();
+        SIGHT_ASSERT("The input " << s_TIMELINE2_INPUT << " is not valid.", frameTL2);
     }
 }
 
@@ -209,12 +201,12 @@ void SOpenvslam::starting()
 void SOpenvslam::stopping()
 {
     this->stopTracking();
-    this->setOutput(s_POINTCLOUD_OUTPUT, nullptr);
+    m_pointCloud = nullptr;
 
     if(m_showFeatures)
     {
         // Ensure that opencv windows is closed.
-        ::cv::destroyWindow(s_windowName);
+        cv::destroyWindow(s_windowName);
     }
 }
 
@@ -251,9 +243,9 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
 
     if(m_slamSystem == nullptr)
     {
-        const data::mt::ObjectReadLock cameraLock(m_camera);
+        const auto camera = m_camera.lock();
         const auto config = sight::navigation::openvslam::Helper::createMonocularConfig(
-            m_camera,
+            *camera,
             m_orbParameters,
             m_initializerParameters
         );
@@ -657,11 +649,11 @@ void SOpenvslam::resetPointCloud()
         m_timer->stop();
     }
 
-    const data::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
+    auto pointcloud = m_pointCloud.lock();
 
     // Clear Sight mesh
-    m_pointCloud->clear();
-    auto sigMesh = m_pointCloud->signal<data::Object::ModifiedSignalType>
+    pointcloud->clear();
+    auto sigMesh = pointcloud->signal<data::Object::ModifiedSignalType>
                        (data::Object::s_MODIFIED_SIG);
     sigMesh->asyncEmit();
 
@@ -686,28 +678,37 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
     const std::unique_lock<std::mutex> lock(m_slamLock);
     if(m_slamSystem && !m_isPaused)
     {
-        data::mt::ObjectReadLock frameTLLock(m_frameTL);
-        const auto bufferFrame = m_frameTL->getClosestBuffer(timestamp);
-        if(bufferFrame == nullptr)
+        // Use a lambda expression to scope the lock of timeline and preserve constness of imgLeft.
+        const cv::Mat imgLeft = [&]() -> const cv::Mat
+                                {
+                                    const auto frameTL     = m_timeline.lock();
+                                    const auto bufferFrame = frameTL->getClosestBuffer(timestamp);
+                                    if(bufferFrame == nullptr)
+                                    {
+                                        // return empty image.
+                                        return cv::Mat();
+                                    }
+
+                                    const std::uint8_t* frameData = &bufferFrame->getElement(0);
+
+                                    // this is the main image
+                                    return io::opencv::FrameTL::moveToCv(frameTL.get_shared(), frameData);
+                                }();
+
+        if(imgLeft.empty())
         {
             return;
         }
 
-        const std::uint8_t* frameData = &bufferFrame->getElement(0);
-
-        // this is the main image
-        const ::cv::Mat imgLeft = io::opencv::FrameTL::moveToCv(m_frameTL, frameData);
-
-        frameTLLock.unlock();
-
         //TODO: downscale image if necessary (scaling issue needs to be resolved.).
 
-        const ::cv::Mat imgDepth; // this is the depth image (only if DEPTH)
+        const cv::Mat imgDepth; // this is the depth image (only if DEPTH)
 
         if(m_trackingMode != TrackingMode::MONO)
         {
-            data::mt::ObjectReadLock frameTL2Lock(m_frameTL2);
-            const auto bufferFrame2 = m_frameTL2->getClosestBuffer(timestamp);
+            const auto frameTL2     = m_timeline2.lock();
+            const auto bufferFrame2 = frameTL2->getClosestBuffer(timestamp);
+
             if(bufferFrame2 == nullptr)
             {
                 return;
@@ -715,9 +716,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
             const std::uint8_t* frameData2 = &bufferFrame2->getElement(0);
 
-            ::cv::Mat imgRight = io::opencv::FrameTL::moveToCv(m_frameTL2, frameData2);
-
-            frameTL2Lock.unlock();
+            cv::Mat imgRight = io::opencv::FrameTL::moveToCv(frameTL2.get_shared(), frameData2);
 
             // the two frames need to have same size
             if(imgLeft.cols != imgRight.cols || imgLeft.rows != imgRight.rows)
@@ -732,7 +731,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             }
         } // STEREO/DEPTH
 
-        ::Eigen::Matrix4d pos;
+        Eigen::Matrix4d pos;
         try
         {
             // The position returned by feed_* function shouldn't be used.
@@ -748,9 +747,9 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             {
                 const auto im = m_ovsFramePublisher->draw_frame();
                 s_windowName = this->getID() + " Openvslam internal frame";
-                ::cv::namedWindow(s_windowName);
-                ::cv::imshow(s_windowName, im);
-                ::cv::waitKey(1);
+                cv::namedWindow(s_windowName);
+                cv::imshow(s_windowName, im);
+                //cv::waitKey(1); // FIXME: Linux cannot call cv::waitKey() if this isn't on UI thread.
             }
         }
         catch(std::exception& e)
@@ -759,14 +758,14 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             return;
         }
 
-        const data::Float::csptr floatObj = this->getInput<data::Float>(s_SCALE_INPUT);
+        const auto floatObj = m_scale.lock();
+        float scale         = 1.0f;
         if(floatObj)
         {
             // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D Scene.
-            const data::mt::ObjectReadLock floatLock(floatObj);
             if(floatObj->value() > 0)
             {
-                m_scale = m_scale / floatObj->value();
+                scale = scale / floatObj->value();
             }
         }
 
@@ -775,8 +774,9 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
         if(!pos.isZero())
         {
+            auto cameraMatrixTL = m_cameraMatrixTL.lock();
             // fill in the camera position matrix
-            if(m_cameraMatrixTL)
+            if(cameraMatrixTL)
             {
                 const auto inv = pos.inverse();
 
@@ -790,17 +790,16 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
                     }
                 }
 
-                matrix[3]  *= m_scale;
-                matrix[7]  *= m_scale;
-                matrix[11] *= m_scale;
+                matrix[3]  *= scale;
+                matrix[7]  *= scale;
+                matrix[11] *= scale;
 
-                const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
-                SPTR(data::MatrixTL::BufferType) data = m_cameraMatrixTL->createBuffer(timestamp);
+                SPTR(data::MatrixTL::BufferType) data = cameraMatrixTL->createBuffer(timestamp);
                 data->setElement(matrix, 0);
-                m_cameraMatrixTL->pushObject(data);
+                cameraMatrixTL->pushObject(data);
 
                 data::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = m_cameraMatrixTL->signal<data::TimeLine::ObjectPushedSignalType>(
+                sig = cameraMatrixTL->signal<data::TimeLine::ObjectPushedSignalType>(
                     data::TimeLine::s_OBJECT_PUSHED_SIG
                 );
 
@@ -841,8 +840,19 @@ void SOpenvslam::updatePointCloud()
 {
     // Do not update the pointcloud if localization mode is enabled (no points will be added to openvslam's map),
     // or if tracker is paused.
-    if(m_pointCloud && !m_isPaused)
+    auto pointcloud = m_pointCloud.lock();
+
+    if(!m_isPaused && pointcloud.get_shared())
     {
+        float scale = 1.f;
+        {
+            const auto s = m_scale.lock();
+            if(s && s->value() > 0)
+            {
+                scale = scale / s->value();
+            }
+        }
+
         std::vector< ::openvslam::data::landmark*> landmarks;
         std::set< ::openvslam::data::landmark*> local_landmarks;
 
@@ -857,10 +867,9 @@ void SOpenvslam::updatePointCloud()
 
         m_numberOfLandmarks = nblandmarks;
 
-        const data::mt::ObjectWriteLock pointCloudLock(m_pointCloud);
-        m_pointCloud->clear();
+        pointcloud->clear();
 
-        const auto dumplLock = m_pointCloud->lock();
+        const auto dumplLock = pointcloud->lock();
 
         unsigned int i = 0;
         if(m_localMap)
@@ -874,12 +883,12 @@ void SOpenvslam::updatePointCloud()
 
                 const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                m_pointCloud->pushPoint(
-                    static_cast<float>(pos_w(0)) * m_scale,
-                    static_cast<float>(pos_w(1)) * m_scale,
-                    static_cast<float>(pos_w(2)) * m_scale
+                pointcloud->pushPoint(
+                    static_cast<float>(pos_w(0)) * scale,
+                    static_cast<float>(pos_w(1)) * scale,
+                    static_cast<float>(pos_w(2)) * scale
                 );
-                m_pointCloud->pushCell(i);
+                pointcloud->pushCell(i);
                 ++i;
             }
         }
@@ -894,20 +903,20 @@ void SOpenvslam::updatePointCloud()
 
                 const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
-                m_pointCloud->pushPoint(
-                    static_cast<float>(pos_w(0)) * m_scale,
-                    static_cast<float>(pos_w(1)) * m_scale,
-                    static_cast<float>(pos_w(2)) * m_scale
+                pointcloud->pushPoint(
+                    static_cast<float>(pos_w(0)) * scale,
+                    static_cast<float>(pos_w(1)) * scale,
+                    static_cast<float>(pos_w(2)) * scale
                 );
 
-                m_pointCloud->pushCell(i);
+                pointcloud->pushCell(i);
                 ++i;
             }
         }
 
         m_sigTrackingInitialized->asyncEmit();
         m_sigTracked->asyncEmit();
-        auto sigMesh = m_pointCloud->signal<data::Object::ModifiedSignalType>
+        auto sigMesh = pointcloud->signal<data::Object::ModifiedSignalType>
                            (data::Object::s_MODIFIED_SIG);
         sigMesh->asyncEmit();
     }

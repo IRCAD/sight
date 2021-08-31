@@ -180,11 +180,10 @@ void SMesh::starting()
             "SMaterial adaptor managing material'" + m_materialName + "' is not found",
             result != mtlAdaptors.end()
         );
-        m_material = m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared();
+        m_material = m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock().get_shared();
     }
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
-
+    const auto mesh = m_mesh.lock();
     this->updateMesh(mesh.get_shared());
 }
 
@@ -210,7 +209,7 @@ void SMesh::updating()
         return;
     }
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -431,8 +430,7 @@ void SMesh::updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh)
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         }
     }
-    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
-            != m_material)
+    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -452,7 +450,7 @@ void SMesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            const auto mesh      = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+            const auto mesh      = m_mesh.lock();
             std::string meshName = mesh->getID();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
@@ -465,8 +463,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
-            != m_material)
+    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -484,7 +481,7 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     m_meshGeometry->updateVertices(mesh.get_shared());
 
@@ -519,7 +516,7 @@ void SMesh::modifyPointColors()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
@@ -548,7 +545,7 @@ void SMesh::modifyTexCoords()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    const auto mesh = this->getLockedInOut<data::Mesh>(s_MESH_INOUT);
+    const auto mesh = m_mesh.lock();
 
     m_meshGeometry->updateTexCoords(mesh.get_shared());
 

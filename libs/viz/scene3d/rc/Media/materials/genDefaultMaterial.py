@@ -44,11 +44,9 @@ def generatePermutations(baseConfig, *configs):
 
             # Concatenate attached shaders
             currentPermutation += [config[2] + currentConfig[2]]
-            currentPermutation += [config[3] + currentConfig[3]]
-            currentPermutation += [config[4] + currentConfig[4]]
 
             # Concatenate params
-            paramsDict = appendDict(config[5], currentConfig[5])
+            paramsDict = appendDict(config[3], currentConfig[3])
 
             currentPermutation.append(paramsDict)
 
@@ -100,34 +98,34 @@ diffuseColorParams = ['// Diffuse color',
 ## Per primitive color
 ppColorParams = ['param_named u_colorPrimitiveTexture int 0']
 
-## 'Name', '#Define', 'Attached vp', 'Attached fp', 'useAdjacency [0|1]', {parameters dict}
-cfgAmbient = ['Ambient', 'AMBIENT=1', '', '', '', { 'renderSceneVP' : ambientParams } ]
+## 'Name', '#Define', 'Attached vp', {parameters dict}
+cfgAmbient = ['Ambient', 'AMBIENT=1', '', { 'renderSceneVP' : ambientParams } ]
 
-cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', '', {  'renderSceneVP' : lightingParams } ]
+cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', {  'renderSceneVP' : lightingParams } ]
 
-cfgGouraud = ['Gouraud', '', 'Lighting_VP', '', '', { 'renderSceneVP' : lightingParams } ]
+cfgGouraud = ['Gouraud', '', 'Lighting_VP', { 'renderSceneVP' : lightingParams } ]
 
-cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', 'Lighting_FP', '', { 'defaultFP' : lightingParams,
+cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', { 'defaultFP' : lightingParams,
                                                                    'depthPeelingFP' : lightingParams,
                                                                    'dualDepthPeelingFP' : lightingParams,
                                                                    'HT_weight_blendFP' : lightingParams,
                                                                    'weighted_blendFP' : lightingParams } ]
 
-cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', '', { } ]
+cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', { } ]
 
-cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { } ]
+cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', { } ]
 
-cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'defaultFP' : texParams + texAlphaParams,
+cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', { 'defaultFP' : texParams + texAlphaParams,
                                                           'depthPeelingFP' : texParams + texAlphaParams,
                                                           'dualDepthPeelingFP' : texParams + texAlphaParams,
                                                           'HT_weight_blendFP' : texParams + texAlphaParams,
                                                           'weighted_blendFP' : texParams + texAlphaParams } ]
 
-cfgTriangles = ['Triangles', 'TRIANGLES=1', '', '', '', { 'renderSceneGP' : [], } ]
-cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { } ]
-cfgTetra = ['Tetra', 'TETRA=1', '', '', '1', { } ]
+cfgTriangles = ['Triangles', 'TRIANGLES=1', '', { 'renderSceneGP' : [], } ]
+cfgQuad = ['Quad', 'QUAD=1', '', { } ]
+cfgTetra = ['Tetra', 'TETRA=1', '', { } ]
 
-cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', '', '', { 'renderSceneGP' : ppColorParams} ]
+cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', { 'renderSceneGP' : ppColorParams} ]
 
 ## Configurations for vertex programs
 ## Basis are the different lighting techniques, and optional are vertex color and diffuse texture

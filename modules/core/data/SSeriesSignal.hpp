@@ -134,6 +134,9 @@ private:
 
     /// Signal emitted when the added series correspond to the configured type.
     SeriesAddedSignalType::sptr m_sigSeriesAdded;
+
+    static constexpr std::string_view s_SERIES_DB_INPUT = "seriesDB";
+    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_seriesDB {this, s_SERIES_DB_INPUT};
 };
 
 } // gui

@@ -24,6 +24,8 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
+#include <data/Array.hpp>
+
 #include <service/IController.hpp>
 
 namespace Tuto05MultithreadConsoleCpp
@@ -68,6 +70,10 @@ protected:
 
     /// Does nothing.
     void stopping() override;
+
+private:
+
+    sight::data::ptr<sight::data::Array, sight::data::Access::inout> m_array {this, "array"};
 };
 
 } // namespace Tuto05MultithreadConsoleCpp.

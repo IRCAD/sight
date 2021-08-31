@@ -24,6 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
+
 #include <service/IRegisterer.hpp>
 
 #include <opencv2/core.hpp>
@@ -38,7 +42,7 @@ namespace sight::module::geometry::vision
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b computeRegistration(core::HiResClock::HiResClockType): compute the registration using ::cv::solvePnP.
+ * - \b computeRegistration(core::HiResClock::HiResClockType): compute the registration using cv::solvePnP.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -69,12 +73,10 @@ public:
     SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::IRegisterer);
 
     /// Constructor.
-    MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept;
+    MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept = default;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API virtual ~SSolvePnP() noexcept
-    {
-    }
+    MODULE_GEOMETRY_VISION_API ~SSolvePnP() noexcept override = default;
 
     /**
      * @brief computeRegistration: compute the camera pose from 'pointList2d' and corresponding 'pointList3d'.
@@ -102,19 +104,24 @@ private:
     struct Camera
     {
         /// Size of the calibration images (width, height)
-        ::cv::Size imageSize;
+        cv::Size imageSize;
         /// Intrisic parameters 3x3 matrix:
         /**  | fx, 0,  cx |
          *   | 0,  fy, cy |
          *   | 0,  0,   1 |
          **/
-        ::cv::Mat intrinsicMat;
+        cv::Mat intrinsicMat;
         /// Distorsion coefficients 5x1 matrix: | k1, k2, p1, p2, k3 |
-        ::cv::Mat distCoef;
+        cv::Mat distCoef;
     };
 
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
+
+    data::ptr<data::Camera, data::Access::in> m_calibration {this, "calibration"};
+    data::ptr<data::PointList, data::Access::in> m_pointList2d {this, "pointList2d"};
+    data::ptr<data::PointList, data::Access::in> m_pointList3d {this, "pointList3d"};
+    data::ptr<data::Matrix4, data::Access::inout> m_matrix {this, "matrix"};
 };
 
 } // namespace sight::module::geometry::vision

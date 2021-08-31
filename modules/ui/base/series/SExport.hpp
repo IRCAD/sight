@@ -123,6 +123,11 @@ private:
     /// fwID of the series to add in SeriesDB
     /// @deprecated appXml
     std::string m_seriesId;
+
+    static constexpr std::string_view s_SERIESDB = "seriesDB";
+
+    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
+    data::ptr<data::Series, data::Access::inout> m_series {this, "series"};
 };
 
 } // namespace series

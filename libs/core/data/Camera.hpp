@@ -99,6 +99,11 @@ public:
         USER = 1000
     } PixelFormat;
 
+    /// Default constructor.
+    DATA_API Camera();
+
+    DATA_API Camera(const data::Camera& _cam);
+
     /**
      * @brief Constructor
      * @param key Private construction key

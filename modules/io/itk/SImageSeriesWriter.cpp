@@ -72,13 +72,6 @@ void SImageSeriesWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -127,9 +120,8 @@ void SImageSeriesWriter::updating()
 {
     if(this->hasLocationDefined())
     {
-        // Retrieve dataStruct associated with this service
-
-        data::ImageSeries::csptr iseries = this->getInput<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto data    = m_data.lock();
+        const auto iseries = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();

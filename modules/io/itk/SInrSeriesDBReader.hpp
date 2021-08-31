@@ -100,15 +100,6 @@ protected:
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ITK_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the inr files path.
-     *
-     * This method is used to find the inr files path using a files selector.
      */
     MODULE_IO_ITK_API void openLocationDialog() override;
 

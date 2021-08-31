@@ -42,8 +42,6 @@
 namespace sight::module::io::pcl
 {
 
-static const service::IService::KeyType s_FRAMETL = "frameTL";
-
 using sight::io::base::service::IGrabber;
 
 //------------------------------------------------------------------------------
@@ -104,7 +102,7 @@ void SFrameGrabber::startCamera()
         this->stopCamera();
     }
 
-    data::Camera::csptr camera = this->getInput<data::Camera>("camera");
+    const auto camera = m_camera.lock();
 
     if(camera->getCameraSource() == data::Camera::FILE)
     {
@@ -177,8 +175,8 @@ void SFrameGrabber::stopCamera()
         auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
         sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
 
-        data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-        this->clearTimeline(frameTL);
+        const auto frameTL = m_frame.lock();
+        this->clearTimeline(*frameTL);
 
         auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
@@ -193,8 +191,6 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    data::FrameTL::sptr frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-
     core::mt::ScopedLock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
@@ -226,7 +222,8 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         if(width != 0 && height != 0)
         {
-            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, 3);
+            const auto frameTL = m_frame.lock();
+            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
         {
@@ -263,8 +260,6 @@ void SFrameGrabber::grabImage()
 
     if(m_imageCount < m_imageToRead.size())
     {
-        auto frameTL = this->getInOut<data::FrameTL>(s_FRAMETL);
-
         const std::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const std::string imageName = imagePath.filename().string();
@@ -290,6 +285,7 @@ void SFrameGrabber::grabImage()
         const size_t width  = static_cast<size_t>(inputCloud.width);
         const size_t height = static_cast<size_t>(inputCloud.height);
 
+        const auto frameTL = m_frame.lock();
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
             auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
@@ -309,8 +305,7 @@ void SFrameGrabber::grabImage()
 
             frameTL->pushObject(bufferOut);
 
-            auto sig =
-                frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
+            auto sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
             m_imageCount++;

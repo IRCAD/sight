@@ -73,12 +73,12 @@ void SPushSelection::configuring()
 
 void SPushSelection::updating()
 {
-    auto destinationSeriesDB = this->getInOut<data::SeriesDB>("seriesDB");
+    auto destinationSeriesDB = m_seriesDB.lock();
     SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
     data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    data::Vector::csptr selectedSeries      = this->getInput<data::Vector>("selectedSeries");
+    const auto selectedSeries               = m_selectedSeries.lock();
 
     // Save added series in this container in order to display information on the push
     std::vector<data::Series::sptr> addedSeries;

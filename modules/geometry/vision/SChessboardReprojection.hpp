@@ -24,7 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <data/MarkerMap.hpp>
+#include <data/Camera.hpp>
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
 
 #include <service/IController.hpp>
 
@@ -60,7 +63,7 @@ namespace sight::module::geometry::vision
    @endcode
  *
  * @subsection Input Input
- * - \b tranform [sight::data::Matrix4] (mandatory): transform between the chessboard and the camera.
+ * - \b transform [sight::data::Matrix4] (mandatory): transform between the chessboard and the camera.
  * - \b camera [sight::data::Camera] (mandatory): camera filming the chessboard.
  * - \b detectedChessboard [sight::data::PointList] (mandatory): detected chessboard corners.
  *
@@ -152,10 +155,21 @@ private:
     bool m_hasOutputChessboard {false};
 
     /// Chessboard model.
-    std::vector< ::cv::Point3f> m_chessboardModel;
+    std::vector<cv::Point3f> m_chessboardModel;
 
     /// Signal sent when the reprojection error is computed.
     ErrorComputedSignalType::sptr m_errorComputedSig;
+
+    static constexpr std::string_view s_TRANSFORM_INPUT           = "transform";
+    static constexpr std::string_view s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
+    static constexpr std::string_view s_CAMERA_INPUT              = "camera";
+    static constexpr std::string_view s_CHESSBOARD_MODEL_OUTPUT   = "chessboardModel";
+
+    data::ptr<data::Matrix4, data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::PointList, data::Access::in> m_detectedChessboard {this, s_DETECTED_CHESSBOARD_INPUT};
+    data::ptr<data::Image, data::Access::inout> m_videoImage {this, "videoImage"};
+    data::ptr<data::PointList, data::Access::out> m_chessboardModelOut {this, s_CHESSBOARD_MODEL_OUTPUT};
 };
 
 } //namespace sight::module::geometry::vision

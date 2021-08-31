@@ -68,13 +68,6 @@ void JpgImageWriterService::configuring()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void JpgImageWriterService::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -158,8 +151,8 @@ void JpgImageWriterService::updating()
 {
     if(this->hasLocationDefined())
     {
-        // Retrieve dataStruct associated with this service
-        data::Image::csptr image = this->getInput<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto data  = m_data.lock();
+        const auto image = std::dynamic_pointer_cast<const data::Image>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::base::Cursor cursor;

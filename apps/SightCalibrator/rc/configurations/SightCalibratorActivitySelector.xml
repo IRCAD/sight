@@ -67,7 +67,7 @@
         </service>
 
         <service uid="activitySeriesCleanerSrv" type="sight::module::data::SManage">
-            <inout key="seriesDB" uid="${LOADING_SERIESDB}" />
+            <inout key="container" uid="${LOADING_SERIESDB}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

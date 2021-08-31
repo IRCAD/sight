@@ -29,11 +29,9 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/DicomSeries.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/helper/Composite.hpp>
 #include <data/helper/SeriesDB.hpp>
-#include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
@@ -97,7 +95,7 @@ void SSliceIndexDicomEditor::configuring()
     );
 
     // Reader configuration
-    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("readerConfig");
     m_readerConfig =
         (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
 
@@ -121,7 +119,7 @@ void SSliceIndexDicomEditor::starting()
 
     QHBoxLayout* layout = new QHBoxLayout();
 
-    data::DicomSeries::csptr dicomSeries = this->getInput<data::DicomSeries>("series");
+    const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -234,7 +232,7 @@ void SSliceIndexDicomEditor::changeSliceIndex(int value)
 void SSliceIndexDicomEditor::triggerNewSlice()
 {
     // DicomSeries
-    data::DicomSeries::csptr dicomSeries = this->getInput<data::DicomSeries>("series");
+    const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
@@ -257,17 +255,17 @@ void SSliceIndexDicomEditor::triggerNewSlice()
 void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 {
     // DicomSeries
-    data::DicomSeries::csptr dicomSeries = this->getInput<data::DicomSeries>("series");
+    const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
-    auto isModalitySupported = [](const data::Series::csptr& series)
+    auto isModalitySupported = [](const data::Series& series)
                                {
-                                   return series->getModality() == "CT"
-                                          || series->getModality() == "MR"
-                                          || series->getModality() == "XA";
+                                   return series.getModality() == "CT"
+                                          || series.getModality() == "MR"
+                                          || series.getModality() == "XA";
                                };
 
-    if(!isModalitySupported(dicomSeries))
+    if(!isModalitySupported(*dicomSeries))
     {
         return;
     }
@@ -321,7 +319,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     if(m_tempSeriesDB->getContainer().size() > 0)
     {
         auto series = *(m_tempSeriesDB->getContainer().begin());
-        if(isModalitySupported(series))
+        if(isModalitySupported(*series))
         {
             imageSeries = data::ImageSeries::dynamicCast(series);
         }
@@ -338,7 +336,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
         newImage->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
 
-        this->setOutput("image", newImage);
+        this->setOutput(s_IMAGE, newImage);
     }
 
     std::error_code ec;

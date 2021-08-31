@@ -65,13 +65,6 @@ sight::io::base::service::IOPathType SModelSeriesObjWriter::getIOPathType() cons
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesObjWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeriesObjWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -146,12 +139,22 @@ void SModelSeriesObjWriter::info(std::ostream& _sstream)
 
 void SModelSeriesObjWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr modelSeries =
-            this->getInput<data::ModelSeries>(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", modelSeries);
+        const auto locked      = m_data.lock();
+        const auto modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::ModelSeries::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            modelSeries
+        );
 
         auto writer = sight::io::vtk::ModelSeriesObjWriter::New();
         writer->setObject(modelSeries);
@@ -164,10 +167,11 @@ void SModelSeriesObjWriter::updating()
         {
             m_sigJobCreated->emit(writer->getJob());
             writer->write();
+
+            m_writeFailed = false;
         }
         catch(const std::exception& e)
         {
-            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
@@ -180,7 +184,6 @@ void SModelSeriesObjWriter::updating()
         }
         catch(...)
         {
-            m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during saving.";
 
@@ -193,10 +196,6 @@ void SModelSeriesObjWriter::updating()
         }
 
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
     }
 }
 

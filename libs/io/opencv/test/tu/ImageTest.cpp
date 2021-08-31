@@ -193,7 +193,7 @@ static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numCha
     const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     data::Image::sptr image = data::Image::New();
-    io::opencv::Image::copyFromCv(image, cvImage);
+    io::opencv::Image::copyFromCv(*image.get(), cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
     const auto dumpLock = image->lock();

@@ -90,6 +90,8 @@ private:
 
     QPointer<QPushButton> m_loadButton;
     QPointer<QPushButton> m_deleteButton;
+
+    data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // uiVisuOgre

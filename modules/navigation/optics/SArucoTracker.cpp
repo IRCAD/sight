@@ -207,7 +207,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         {
             SIGHT_ERROR(
                 "Invalid number of components ( " + std::to_string(nbOfComponents) + " ) for : '"
-                + s_FRAME_INOUT + "' (accepted values are 1, 3 or 4). "
+                << s_FRAME_INOUT << "' (accepted values are 1, 3 or 4). "
             );
 
             return;

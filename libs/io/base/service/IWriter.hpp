@@ -67,18 +67,8 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    IO_BASE_API virtual void configureWithIHM() = 0;
-
-    /**
-     * @brief Configure the image path (by default does nothing).
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    IO_BASE_API virtual void openLocationDialog();
+    IO_BASE_API virtual void openLocationDialog() = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -214,12 +204,9 @@ protected:
     bool m_writeFailed {false};
 
     /// Generic input data
-    data::ptr<data::Object, data::Access::in> m_data {this, "data"};
+    data::ptr<data::Object, data::Access::in> m_data {this, sight::io::base::service::s_DATA_KEY};
 
 private:
-
-    /// Slot: temporary slot to display a deprecated message when calling 'configureWithIHM', remove this in sight 22.0.
-    void deprecateConfigureWithIHM();
 
     /// Value to store file or folder paths
     io::base::service::LocationsType m_locations;

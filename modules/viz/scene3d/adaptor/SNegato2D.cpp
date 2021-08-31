@@ -47,9 +47,6 @@ const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-static const service::IService::KeyType s_TF_INOUT    = "tf";
-
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
 static const std::string s_FILTERING_CONFIG   = "filtering";
 static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
@@ -123,10 +120,8 @@ void SNegato2D::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
     }
 
@@ -190,10 +185,8 @@ void SNegato2D::swapping(std::string_view _key)
 {
     if(_key == s_TF_INOUT)
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         this->updateTF();
@@ -216,10 +209,8 @@ void SNegato2D::newImage()
     int frontalIdx  = 0;
     int sagittalIdx = 0;
     {
-        const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-
-        const auto tfW = this->getWeakInOut<data::TransferFunction>(s_TF_INOUT);
-        const auto tf  = tfW.lock();
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
@@ -270,7 +261,7 @@ void SNegato2D::newImage()
 
 void SNegato2D::changeSliceType(int _from, int _to)
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
@@ -302,7 +293,7 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     this->getRenderService()->makeCurrent();
 

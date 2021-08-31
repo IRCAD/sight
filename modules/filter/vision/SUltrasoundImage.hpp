@@ -260,6 +260,13 @@ private:
 
     /// Map used to extract the ultrasound beam from the video.
     ::cv::Mat m_extractionMap {1, 1, CV_32FC2};
+
+    static constexpr std::string_view s_ULTRASOUND_IMAGE_INPUT           = "ultrasoundImage";
+    static constexpr std::string_view s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_ultrasoudImage {this, s_ULTRASOUND_IMAGE_INPUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout>
+    m_extractedUltrasoundBeam {this, s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT};
 };
 
 } // namespace sight::module::filter::vision.

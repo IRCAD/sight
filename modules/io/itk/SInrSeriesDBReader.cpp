@@ -32,7 +32,6 @@
 #include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
@@ -76,13 +75,6 @@ sight::io::base::service::IOPathType SInrSeriesDBReader::getIOPathType() const
 void SInrSeriesDBReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
-}
-
-//------------------------------------------------------------------------------
-
-void SInrSeriesDBReader::configureWithIHM()
-{
-    this->openLocationDialog();
 }
 
 //------------------------------------------------------------------------------
@@ -163,7 +155,8 @@ void SInrSeriesDBReader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
+        const auto data     = m_data.lock();
+        const auto seriesDB = std::dynamic_pointer_cast<data::SeriesDB>(data.get_shared());
         SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
@@ -190,8 +183,6 @@ void SInrSeriesDBReader::updating()
         }
 
         data::helper::SeriesDB sDBhelper(*seriesDB);
-
-        data::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
         sDBhelper.notify();
 

@@ -28,7 +28,7 @@ namespace sight::ui::base
 namespace dialog
 {
 
-const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY = "::ui::base::dialog::SelectorDialog";
+const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY = "sight::ui::base::dialog::SelectorDialog";
 
 ISelectorDialog::ISelectorDialog()
 {

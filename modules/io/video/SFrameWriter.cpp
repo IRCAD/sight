@@ -101,13 +101,6 @@ void SFrameWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SFrameWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -160,7 +153,9 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::FrameTL::csptr frameTL = this->getInput<data::FrameTL>(sight::io::base::service::s_DATA_KEY);
+        // Retrieve dataStruct associated with this service
+        const auto locked  = m_data.lock();
+        const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(locked.get_shared());
 
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
@@ -171,7 +166,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
         core::com::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
 
         // Get the buffer of the copied timeline
-        CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        const auto buffer = frameTL->getClosestBuffer(timestamp);
 
         if(buffer)
         {
@@ -220,7 +215,18 @@ void SFrameWriter::startRecord()
 
     if(this->hasLocationDefined())
     {
-        data::FrameTL::csptr frameTL = this->getInput<data::FrameTL>(sight::io::base::service::s_DATA_KEY);
+        // Retrieve dataStruct associated with this service
+        const auto locked  = m_data.lock();
+        const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::FrameTL::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            frameTL
+        );
 
         if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {

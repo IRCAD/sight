@@ -65,7 +65,8 @@ private:
         const std::string& _name,
         const std::string& _algoName,
         const std::string& _algoPassName,
-        const std::string& _baseName
+        const std::string& _baseName,
+        const std::string& _sourceName
     );
 };
 

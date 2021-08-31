@@ -416,43 +416,13 @@ public:
     SERVICE_API const OutputMapType& getOutputs() const;
 
     /**
-     * @brief Return the input object at the given key. Asserts if the data is not of the right type.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline CSPTR(DATATYPE) getInput(std::string_view key, size_t index = 0) const;
-
-    /**
-     * @brief Return the inout object at the given key. Asserts if the data is not of the right type.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getInOut(std::string_view key, size_t index = 0) const;
-
-    /**
-     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     */
-    template<class DATATYPE>
-    [[deprecated("it will be removed in sight 21.0, use getWeakXXX() or getLockedXXX()")]]
-    inline SPTR(DATATYPE) getOutput(std::string_view key, size_t index = 0) const;
-
-    /**
      * @brief Return a weak data pointer of the input object at the given key and index.
      * @param key key of data to retrieve.
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::weak_ptr<CONST_DATATYPE> getWeakInput(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<CONST_DATATYPE> getInput(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the in/out object at the given key and index.
@@ -461,7 +431,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakInOut(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<DATATYPE> getInOut(std::string_view key, size_t index = 0) const;
 
     /**
      * @brief Return a weak data pointer of the out object at the given key and index.
@@ -470,37 +440,7 @@ public:
      * @return weak data pointer in the right type, expired pointer if not found.
      */
     template<class DATATYPE>
-    inline data::mt::weak_ptr<DATATYPE> getWeakOutput(std::string_view key, size_t index = 0) const;
-
-    /**
-     * @brief Return a locked data pointer of the input object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE, typename CONST_DATATYPE = std::add_const_t<DATATYPE> >
-    inline data::mt::locked_ptr<CONST_DATATYPE> getLockedInput(std::string_view key, size_t index = 0) const;
-
-    /**
-     * @brief Return a locked data pointer of the in/out object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> getLockedInOut(std::string_view key, size_t index = 0) const;
-
-    /**
-     * @brief Return a locked data pointer of the out object at the given key and index.
-     * @param key key of data to retrieve.
-     * @param index of the data to retrieve.
-     * @return locked data pointer in the right type.
-     * @throw data::Exception if the data object is not found.
-     */
-    template<class DATATYPE>
-    inline data::mt::locked_ptr<DATATYPE> getLockedOutput(std::string_view key, size_t index = 0) const;
+    inline data::mt::weak_ptr<DATATYPE> getOutput(std::string_view key, size_t index = 0) const;
     //@}
 
     /**
@@ -904,6 +844,18 @@ private:
         std::string_view key,
         size_t index = 0
     );
+
+    /**
+     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
+     * @param key name of the data or the group to register.
+     * @param object pointer to the object to register.
+     * @param index optional index of the key in the case of a member of a group of keys.
+     */
+    SERVICE_API void _setOutput(
+        std::string_view key,
+        data::Object::sptr object,
+        size_t index = 0
+    ) override;
 
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(

@@ -31,11 +31,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/Type.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
-#include <data/FrameTL.hpp>
 #include <data/Matrix4.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <service/macros.hpp>
 
@@ -52,10 +48,6 @@ namespace sight::module::io::realsense
 {
 
 namespace fwClock = core::HiResClock;
-
-const service::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
-const service::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
-const service::IService::KeyType s_DISTANCE_OUTPUT     = "distance";
 
 static const std::string s_FPS           = "fps";
 static const std::string s_COLOR_FRAME_H = "colorH";
@@ -122,9 +114,6 @@ SScan::~SScan() noexcept
 
 void SScan::starting()
 {
-    m_depthTimeline = this->getInOut<data::FrameTL>(s_DEPTHTL_INOUT);
-    m_colorTimeline = this->getInOut<data::FrameTL>(s_FRAMETL_INOUT);
-
     m_grabbingStarted = false;
 }
 
@@ -162,7 +151,7 @@ void SScan::configuring()
         this->updateAlignment(alignTo);
     }
 
-    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::io::realSense"));
+    static const auto s_modulePath = core::runtime::getModuleResourcePath("sight::module::io::realsense");
 
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
@@ -249,149 +238,158 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     SIGHT_DEBUG("Actual mode : \n" + str.str());
 
-    const size_t depthStreamW = static_cast<size_t>(depthStream.width());
-    const size_t depthStreamH = static_cast<size_t>(depthStream.height());
-    const size_t colorStreamW = static_cast<size_t>(colorStream.width());
-    const size_t colorStreamH = static_cast<size_t>(colorStream.height());
+    const data::Mesh::Size depthStreamW = static_cast<data::Mesh::Size>(depthStream.width());
+    const data::Mesh::Size depthStreamH = static_cast<data::Mesh::Size>(depthStream.height());
+    const data::Mesh::Size colorStreamW = static_cast<data::Mesh::Size>(colorStream.width());
+    const data::Mesh::Size colorStreamH = static_cast<data::Mesh::Size>(colorStream.height());
 
-    m_colorTimeline = this->getInOut<data::FrameTL>(s_FRAMETL_INOUT);
-    m_colorTimeline->initPoolSize(colorStreamW, colorStreamH, core::tools::Type::s_UINT8, 4);
-    m_colorTimeline->setMaximumSize(50);
-
-    if(m_depthTimeline)
     {
-        m_depthTimeline->initPoolSize(depthStreamW, depthStreamH, core::tools::Type::s_UINT16, 1);
-        m_depthTimeline->setMaximumSize(50);
+        const auto colorTimeline = m_frame.lock();
+        colorTimeline->initPoolSize(
+            colorStreamW,
+            colorStreamH,
+            core::tools::Type::s_UINT8,
+            data::FrameTL::PixelFormat::RGBA
+        );
+        colorTimeline->setMaximumSize(50);
     }
 
-    // Get camera information.
-    data::CameraSeries::sptr cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
-
-    if(cameraSeries)
     {
-        data::mt::ObjectWriteLock cameraSeriesLock(cameraSeries);
-
-        data::Camera::sptr colorCamera;
-        data::Camera::sptr depthCamera;
-
-        // check if there is camera
-        if(cameraSeries->getNumberOfCameras() == 0)
+        const auto depthTimeline = m_depth.lock();
+        if(depthTimeline)
         {
-            depthCamera = data::Camera::New();
-            colorCamera = data::Camera::New();
-
-            cameraSeries->addCamera(depthCamera);
-            cameraSeries->addCamera(colorCamera);
-            auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                data::CameraSeries::s_ADDED_CAMERA_SIG
+            depthTimeline->initPoolSize(
+                depthStreamW,
+                depthStreamH,
+                core::tools::Type::s_UINT16,
+                data::FrameTL::PixelFormat::GRAY_SCALE
             );
-            sig->asyncEmit(depthCamera);
-            sig->asyncEmit(colorCamera);
+            depthTimeline->setMaximumSize(50);
         }
-        else if(cameraSeries->getNumberOfCameras() == 1) // missing one camera
+    }
+
+    {
+// Get camera information.
+        const auto cameraSeries = m_cameraSeries.lock();
+
+        if(cameraSeries)
         {
-            depthCamera = cameraSeries->getCamera(0);
-            colorCamera = data::Camera::New();
-            cameraSeries->addCamera(colorCamera);
+            data::Camera::sptr colorCamera;
+            data::Camera::sptr depthCamera;
 
-            auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                data::CameraSeries::s_ADDED_CAMERA_SIG
-            );
-            sig->asyncEmit(colorCamera);
-        }
-        else
-        {
-            depthCamera = cameraSeries->getCamera(0);
-            colorCamera = cameraSeries->getCamera(1);
-        }
-
-        if(!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
-        {
-            // copy device calibration into the camera series
-            data::Matrix4::sptr matrix = data::Matrix4::New();
-
-            const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
-            const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
-            const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
-
-            // Construct an explicit camera name: Intel RealSense D415(839112062452)
-            const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "("
-                                           + std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)) + ")";
-
-            depthCamera->setDescription(cameraName + " Depth");
-            depthCamera->setWidth(depthStreamW);
-            depthCamera->setHeight(depthStreamH);
-            depthCamera->setFx(static_cast<double>(depthIntrinsics.fx));
-            depthCamera->setFy(static_cast<double>(depthIntrinsics.fy));
-            depthCamera->setCx(static_cast<double>(depthIntrinsics.ppx));
-            depthCamera->setCy(static_cast<double>(depthIntrinsics.ppy));
-
-            depthCamera->setDistortionCoefficient(
-                static_cast<double>(depthIntrinsics.coeffs[0]),
-                static_cast<double>(depthIntrinsics.coeffs[1]),
-                static_cast<double>(depthIntrinsics.coeffs[2]),
-                static_cast<double>(depthIntrinsics.coeffs[3]),
-                static_cast<double>(depthIntrinsics.coeffs[4])
-            );
-            depthCamera->setIsCalibrated(true);
-
-            colorCamera->setDescription(cameraName + "Color");
-            colorCamera->setWidth(colorStreamW);
-            colorCamera->setHeight(colorStreamH);
-            colorCamera->setFx(static_cast<double>(colorIntrinsics.fx));
-            colorCamera->setFy(static_cast<double>(colorIntrinsics.fy));
-            colorCamera->setCx(static_cast<double>(colorIntrinsics.ppx));
-            colorCamera->setCy(static_cast<double>(colorIntrinsics.ppy));
-            colorCamera->setDistortionCoefficient(
-                static_cast<double>(colorIntrinsics.coeffs[0]),
-                static_cast<double>(colorIntrinsics.coeffs[1]),
-                static_cast<double>(colorIntrinsics.coeffs[2]),
-                static_cast<double>(colorIntrinsics.coeffs[3]),
-                static_cast<double>(colorIntrinsics.coeffs[4])
-            );
-            colorCamera->setIsCalibrated(true);
-
-            size_t index = 0;
-            for(size_t i = 0 ; i < 3 ; ++i)
+            // check if there is camera
+            if(cameraSeries->getNumberOfCameras() == 0)
             {
-                matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
-                for(size_t j = 0 ; j < 3 ; ++j)
-                {
-                    matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
-                    ++index;
-                }
+                depthCamera = data::Camera::New();
+                colorCamera = data::Camera::New();
+
+                cameraSeries->addCamera(depthCamera);
+                cameraSeries->addCamera(colorCamera);
+                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
+                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                );
+                sig->asyncEmit(depthCamera);
+                sig->asyncEmit(colorCamera);
+            }
+            else if(cameraSeries->getNumberOfCameras() == 1) // missing one camera
+            {
+                depthCamera = cameraSeries->getCamera(0);
+                colorCamera = data::Camera::New();
+                cameraSeries->addCamera(colorCamera);
+
+                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
+                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                );
+                sig->asyncEmit(colorCamera);
+            }
+            else
+            {
+                depthCamera = cameraSeries->getCamera(0);
+                colorCamera = cameraSeries->getCamera(1);
             }
 
-            cameraSeries->setExtrinsicMatrix(1, matrix);
+            if(!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
+            {
+                // copy device calibration into the camera series
+                data::Matrix4::sptr matrix = data::Matrix4::New();
 
-            auto sig = cameraSeries->signal<data::CameraSeries::ModifiedSignalType>(
-                data::CameraSeries::s_MODIFIED_SIG
-            );
-            sig->asyncEmit();
+                const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
+                const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
+                const rs2_extrinsics extrinsic       = depthStream.get_extrinsics_to(colorStream);
+
+                // Construct an explicit camera name: Intel RealSense D415(839112062452)
+                const std::string cameraName = std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_NAME)) + "("
+                                               + std::string(m_currentDevice.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER))
+                                               + ")";
+
+                depthCamera->setDescription(cameraName + " Depth");
+                depthCamera->setWidth(depthStreamW);
+                depthCamera->setHeight(depthStreamH);
+                depthCamera->setFx(static_cast<double>(depthIntrinsics.fx));
+                depthCamera->setFy(static_cast<double>(depthIntrinsics.fy));
+                depthCamera->setCx(static_cast<double>(depthIntrinsics.ppx));
+                depthCamera->setCy(static_cast<double>(depthIntrinsics.ppy));
+
+                depthCamera->setDistortionCoefficient(
+                    static_cast<double>(depthIntrinsics.coeffs[0]),
+                    static_cast<double>(depthIntrinsics.coeffs[1]),
+                    static_cast<double>(depthIntrinsics.coeffs[2]),
+                    static_cast<double>(depthIntrinsics.coeffs[3]),
+                    static_cast<double>(depthIntrinsics.coeffs[4])
+                );
+                depthCamera->setIsCalibrated(true);
+
+                colorCamera->setDescription(cameraName + "Color");
+                colorCamera->setWidth(colorStreamW);
+                colorCamera->setHeight(colorStreamH);
+                colorCamera->setFx(static_cast<double>(colorIntrinsics.fx));
+                colorCamera->setFy(static_cast<double>(colorIntrinsics.fy));
+                colorCamera->setCx(static_cast<double>(colorIntrinsics.ppx));
+                colorCamera->setCy(static_cast<double>(colorIntrinsics.ppy));
+                colorCamera->setDistortionCoefficient(
+                    static_cast<double>(colorIntrinsics.coeffs[0]),
+                    static_cast<double>(colorIntrinsics.coeffs[1]),
+                    static_cast<double>(colorIntrinsics.coeffs[2]),
+                    static_cast<double>(colorIntrinsics.coeffs[3]),
+                    static_cast<double>(colorIntrinsics.coeffs[4])
+                );
+                colorCamera->setIsCalibrated(true);
+
+                size_t index = 0;
+                for(size_t i = 0 ; i < 3 ; ++i)
+                {
+                    matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
+                    for(size_t j = 0 ; j < 3 ; ++j)
+                    {
+                        matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
+                        ++index;
+                    }
+                }
+
+                cameraSeries->setExtrinsicMatrix(1, matrix);
+
+                auto sig = cameraSeries->signal<data::CameraSeries::ModifiedSignalType>(
+                    data::CameraSeries::s_MODIFIED_SIG
+                );
+                sig->asyncEmit();
+            }
         }
     }
 
     //Only create the pointer one time.
-    if(m_pointcloud == nullptr)
-    {
-        m_pointcloud = data::Mesh::New();
-    }
 
-    // Re-init the pointcloud.
-    SIGHT_ASSERT("Cannot create pointcloud output", m_pointcloud);
-    const size_t nbPoints = depthStreamW * depthStreamH;
+    auto pointcloud     = data::Mesh::New();
+    const auto dumpLock = pointcloud->lock();
 
-    data::mt::ObjectWriteLock meshLock(m_pointcloud);
+    const data::Mesh::Size nbPoints = depthStreamW * depthStreamH;
 
     // Allocate mesh.
-    m_pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
+    pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
 
-    const auto dumpLock = m_pointcloud->lock();
-
-    auto itr = m_pointcloud->begin<data::iterator::CellIterator>();
+    auto itr = pointcloud->begin<data::iterator::CellIterator>();
 
     // to display the mesh, we need to create cells with one point.
-    for(size_t i = 0 ; i < nbPoints ; ++i, ++itr)
+    for(data::Mesh::Size i = 0 ; i < nbPoints ; ++i, ++itr)
     {
         *itr->type         = data::Mesh::CellType::POINT;
         *itr->offset       = i;
@@ -399,9 +397,11 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         itr->pointIdx[0]   = i;
     }
 
-    m_pointcloud->setNumberOfPoints(nbPoints);
-    m_pointcloud->setNumberOfCells(nbPoints);
-    m_pointcloud->setCellDataSize(nbPoints);
+    pointcloud->setNumberOfPoints(nbPoints);
+    pointcloud->setNumberOfCells(nbPoints);
+    pointcloud->setCellDataSize(nbPoints);
+
+    m_pointCloudOutput = pointcloud;
 }
 
 //-----------------------------------------------------------------------------
@@ -414,49 +414,61 @@ void SScan::startCamera()
         return;
     }
 
-    data::CameraSeries::sptr cameraSeries = this->getInOut<data::CameraSeries>(s_CAMERA_SERIES_INOUT);
-    data::Camera::csptr camera;
-    if(cameraSeries)
     {
-        // Extract the first camera (source should be the same).
-        camera = cameraSeries->getCamera(0);
-    }
-    else // No cameraSeries (called by SGrabberProxy for ex.).
-    {
-        const auto obj = this->getInput<data::Object>(s_CAMERA_INPUT);
-        camera = data::Camera::dynamicConstCast(obj);
-    }
+        const auto cameraSeries = m_cameraSeries.lock();
 
-    SIGHT_ASSERT(
-        "Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
-        + "' or '" + s_CAMERA_INPUT + "' is present.",
-        camera
-    );
+        const auto setPlaybackMode =
+            [&](data::Camera::csptr camera)
+            {
+                if(camera->getCameraSource() == data::Camera::FILE)
+                {
+                    m_playbackMode     = true;
+                    m_playbackFileName = camera->getVideoFile().string();
+                    this->signal<FilePlayedSignalType>(s_FILE_PLAYED_SIG)->asyncEmit();
+                }
+                else if(camera->getCameraSource() == data::Camera::STREAM)
+                {
+                    this->popMessageDialog(
+                        "RealSense grabber cannot open STREAM type, please select DEVICE or FILE."
+                    );
+                    return;
+                }
+                // CameraSource is unknow or DEVICE we open a device. This allows to work
+                // without camera selector.
+                else
+                {
+                    m_playbackMode = false;
 
-    //const auto camera = cameraSeries->getCamera(0);
-    if(camera->getCameraSource() == data::Camera::FILE)
-    {
-        m_playbackMode     = true;
-        m_playbackFileName = camera->getVideoFile().string();
-        this->signal<FilePlayedSignalType>(s_FILE_PLAYED_SIG)->asyncEmit();
-    }
-    else if(camera->getCameraSource() == data::Camera::STREAM)
-    {
-        this->popMessageDialog("RealSense grabber cannot open STREAM type, please select DEVICE or FILE.");
-        return;
-    }
-    // CameraSource is unknow or DEVICE we open a device. This allows to work without camera selector.
-    else
-    {
-        m_playbackMode = false;
+                    // Test if previous device was kept (changing presets cases).
+                    if(m_deviceID.empty())
+                    {
+                        m_deviceID = this->selectDevice();
+                    }
 
-        // Test if previous device was kept (changing presets cases).
-        if(m_deviceID.empty())
+                    this->signal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG)->asyncEmit();
+                }
+            };
+
+        if(cameraSeries)
         {
-            m_deviceID = this->selectDevice();
+            // Extract the first camera (source should be the same).
+            data::mt::locked_ptr<data::Camera> locked(cameraSeries->getCamera(0));
+            setPlaybackMode(locked.get_shared());
         }
+        else // No cameraSeries (called by SGrabberProxy for ex.).
+        {
+            const auto locked = m_camera.lock();
+            setPlaybackMode(locked.get_shared());
 
-        this->signal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG)->asyncEmit();
+            SIGHT_ASSERT(
+                "Camera should not be null, check if  '"
+                << s_CAMERA_SERIES_INOUT
+                << "' or '"
+                << s_CAMERA_INPUT
+                << "' is present.",
+                locked
+            );
+        }
     }
 
     ::rs2::config cfg;
@@ -587,8 +599,8 @@ void SScan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal<service::IGrabber::CameraStartedSignalType>(
-        service::IGrabber::s_CAMERA_STARTED_SIG
+    auto sigStarted = this->signal<IGrabber::CameraStartedSignalType>(
+        IGrabber::s_CAMERA_STARTED_SIG
     );
     sigStarted->asyncEmit();
 }
@@ -625,8 +637,8 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<service::IGrabber::CameraStoppedSignalType>(
-            service::IGrabber::s_CAMERA_STOPPED_SIG
+        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(
+            IGrabber::s_CAMERA_STOPPED_SIG
         );
         sig->asyncEmit();
     }
@@ -1104,7 +1116,7 @@ void SScan::grab()
                 this->onPointCloud(points, mapframe);
             }
 
-            if(m_depthTimeline)
+            if(m_depth.lock().get_shared())
             {
                 this->onCameraImageDepth(reinterpret_cast<const std::uint16_t*>(depth.get_data()));
             }
@@ -1207,19 +1219,22 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
     const fwClock::HiResClockType timestamp(fwClock::getTimeInMilliSec());
-
-    SPTR(data::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
-
-    uint8_t* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
-
-    memcpy(destColorBuffer, _buffer, colorBuffer->getSize());
-
-    // Push buffer to timeline and notify
-    m_colorTimeline->pushObject(colorBuffer);
     data::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = m_colorTimeline->signal<data::TimeLine::ObjectPushedSignalType>(
-        data::TimeLine::s_OBJECT_PUSHED_SIG
-    );
+
+    {
+        const auto colorTimeline = m_frame.lock();
+        const auto colorBuffer   = colorTimeline->createBuffer(timestamp);
+
+        uint8_t* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
+
+        memcpy(destColorBuffer, _buffer, colorBuffer->getSize());
+
+        // Push buffer to timeline and notify
+        colorTimeline->pushObject(colorBuffer);
+
+        sig = colorTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
+    }
+
     sig->asyncEmit(timestamp);
 }
 
@@ -1229,27 +1244,30 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
     // Filling the depth image buffer in the timeline
     const fwClock::HiResClockType timestamp(fwClock::getTimeInMilliSec());
+    data::TimeLine::ObjectPushedSignalType::sptr sig;
 
-    SPTR(data::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
-
-    const auto width  = m_depthTimeline->getWidth();
-    const auto height = m_depthTimeline->getHeight();
-
-    std::uint16_t* depthBuffer = reinterpret_cast<std::uint16_t*>(depthTL->addElement(0));
-    const auto sizeBuffer      = width * height;
-
-    // Re-map depth frame in mm.
-    for(size_t i = 0 ; i < sizeBuffer ; ++i)
     {
-        *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
+        const auto depthTimeline = m_depth.lock();
+        const auto depthTL       = depthTimeline->createBuffer(timestamp);
+
+        const auto width  = depthTimeline->getWidth();
+        const auto height = depthTimeline->getHeight();
+
+        std::uint16_t* depthBuffer = reinterpret_cast<std::uint16_t*>(depthTL->addElement(0));
+        const auto sizeBuffer      = width * height;
+
+        // Re-map depth frame in mm.
+        for(size_t i = 0 ; i < sizeBuffer ; ++i)
+        {
+            *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
+        }
+
+        // Push buffer to timeline and notify
+        depthTimeline->pushObject(depthTL);
+
+        sig = depthTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
     }
 
-    // Push buffer to timeline and notify
-    m_depthTimeline->pushObject(depthTL);
-    data::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = m_depthTimeline->signal<data::TimeLine::ObjectPushedSignalType>(
-        data::TimeLine::s_OBJECT_PUSHED_SIG
-    );
     sig->asyncEmit(timestamp);
 }
 
@@ -1257,12 +1275,10 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 
 void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _texture)
 {
-    if(m_pointcloud)
+    auto pointcloud = m_pointCloudOutput.lock();
+
+    if(pointcloud)
     {
-        data::mt::ObjectWriteLock lockTFM(m_pointcloud);
-
-        const auto dumpLock = m_pointcloud->lock();
-
         // Get Width and Height coordinates of texture
         const int textureW = _texture.get_width();  // Frame width in pixels
         const int textureH = _texture.get_height(); // Frame height in pixels
@@ -1279,7 +1295,7 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
 
-        const auto pointBegin = m_pointcloud->begin<data::iterator::PointIterator>();
+        const auto pointBegin = pointcloud->begin<data::iterator::PointIterator>();
         auto points           = pointBegin->point;
         auto colors           = pointBegin->rgba;
 
@@ -1320,17 +1336,11 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             colors[i].a = 255;
         }
 
-        // Now that we have correct data in the point cloud, we can allow other to read us
-        if(!m_grabbingStarted.exchange(true))
-        {
-            this->setOutput(s_POINTCLOUD_OUTPUT, m_pointcloud);
-        }
-
-        const auto sigVertex = m_pointcloud->signal<data::Mesh::VertexModifiedSignalType>
+        const auto sigVertex = pointcloud->signal<data::Mesh::VertexModifiedSignalType>
                                    (data::Mesh::s_VERTEX_MODIFIED_SIG);
         sigVertex->asyncEmit();
 
-        const auto sigcolor = m_pointcloud->signal<data::Mesh::PointColorsModifiedSignalType>
+        const auto sigcolor = pointcloud->signal<data::Mesh::PointColorsModifiedSignalType>
                                   (data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sigcolor->asyncEmit();
     }

@@ -24,16 +24,12 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 #include <core/tools/IntegerTypes.hpp>
+#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/ImageGetter.hpp>
-#include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 
 #include <io/itk/itk.hpp>
-
-#include <service/macros.hpp>
 
 #include <itkAndImageFilter.h>
 #include <itkCastImageFilter.h>
@@ -41,11 +37,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN = "image";
-static const service::IService::KeyType s_MASK_IN  = "mask";
-
-static const service::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
 
 struct AndImageFilterParameters
 {
@@ -116,7 +107,7 @@ struct AndImageFilterCaller
     template<class PIXELTYPE>
     void operator()(AndImageFilterParameters& params)
     {
-        const core::tools::DynamicType maskType = params.mask->getPixelType();
+        const auto maskType = params.mask->getType();
         core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
     }
 };
@@ -149,10 +140,10 @@ void SBitwiseAnd::starting()
 
 void SBitwiseAnd::updating()
 {
-    const auto image = this->getLockedInput<data::Image>(s_IMAGE_IN);
+    const auto image = m_image.lock();
     SIGHT_ASSERT("image does not exist.", image);
 
-    const auto mask = this->getLockedInput<data::Image>(s_MASK_IN);
+    const auto mask = m_mask.lock();
     SIGHT_ASSERT("mask does not exist.", mask);
 
     data::helper::ImageGetter imageHelper(image.get_shared());
@@ -165,7 +156,7 @@ void SBitwiseAnd::updating()
     params.mask        = mask.get_shared();
     params.outputImage = outputImage;
 
-    core::tools::DynamicType type = image->getPixelType();
+    const auto type = image->getType();
     core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilterCaller>::invoke(type, params);
 
     this->setOutput(s_OUTPUTIMAGE_OUT, outputImage);

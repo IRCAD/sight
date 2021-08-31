@@ -42,8 +42,6 @@ namespace sight::module::ui::base::metrics
 
 static const core::com::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-
 //------------------------------------------------------------------------------
 
 SRemoveDistance::SRemoveDistance() noexcept
@@ -75,7 +73,7 @@ void SRemoveDistance::starting()
 
 void SRemoveDistance::updating()
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     data::Vector::sptr vectDist =
         image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
@@ -209,7 +207,7 @@ void SRemoveDistance::notifyDeleteDistance(
 
 void SRemoveDistance::removeLastDistance()
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     const data::Vector::sptr vectDist =
         image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);

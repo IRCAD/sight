@@ -26,6 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/Image.hpp>
 #include <data/Point.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -119,6 +120,10 @@ private:
     QPointer<QCheckBox> m_valueCheckBox;
     QPointer<QAction> m_action;
     std::string m_shortcut;
+
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE, true};
 };
 
 } // uiImageQt

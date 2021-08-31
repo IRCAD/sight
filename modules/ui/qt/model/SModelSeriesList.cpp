@@ -149,8 +149,6 @@ static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
 
-static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-
 //------------------------------------------------------------------------------
 
 SModelSeriesList::SModelSeriesList() noexcept
@@ -288,9 +286,9 @@ service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() cons
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

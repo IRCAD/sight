@@ -24,6 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
+#include <data/Camera.hpp>
+#include <data/Vector.hpp>
+
 #include <geometry/vision/ICalibration.hpp>
 
 #include <opencv2/aruco.hpp>
@@ -129,6 +133,10 @@ private:
 
     /// Chessboard-aruco board
     ::cv::Ptr< ::cv::aruco::CharucoBoard> m_board;
+
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo {this, "calibrationInfo"};
+    data::ptr<data::Camera, data::Access::inout> m_camera {this, "camera"};
+    data::ptr<data::Vector, data::Access::inout> m_poseVector {this, "poseVector"};
 };
 
 } // namespace sight::module::geometry::vision::charuco

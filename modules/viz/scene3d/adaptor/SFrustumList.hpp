@@ -25,6 +25,9 @@
 #include "modules/viz/scene3d/adaptor/SFrustum.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
+#include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
 
@@ -144,6 +147,11 @@ private:
 
     /// Contains the scene node where all frustums are attached.
     ::Ogre::SceneNode* m_sceneNode {nullptr};
+
+    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
+
+    sight::data::ptr<sight::data::Camera, sight::data::Access::in> m_camera {this, "camera"};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

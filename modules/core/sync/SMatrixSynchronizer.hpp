@@ -24,10 +24,6 @@
 
 #include "modules/sync/config.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
 #include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 
@@ -68,14 +64,16 @@ protected:
      *
      * @code{.xml}
        <service type="sight::module::sync::SMatrixSynchronizer">
-            <inout>Matrix</inout>
-            <in>MatrixTL</in>
+            <in key="matrix" uid="..." />
+            <inout key="TL" uid="..." />
        </service>
      * @endcode
      *
-     * @subsection In-Out In-Out
-     * - \b TL [sight::data::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
+     * @subsection Input Input
+     * - \b TL [sight::data::MatrixTL]: timeline containing the matrices.
      *
+     * @subsection In-Out In-Out
+     * - \b TL [sight::data::Matrix4]: output matrix.
      */
 
     MODULE_SYNC_API void configuring() override;
@@ -100,6 +98,9 @@ private:
 
     /// This function fills the Matrix4 with the current buffer content of the MatrixTL
     void updateMatrix(core::HiResClock::HiResClockType timestamp);
+
+    sight::data::ptr<sight::data::MatrixTL, sight::data::Access::in> m_matrixTL {this, "matrixTL"};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_matrix {this, "matrix"};
 };
 
 } //namespace sight::module::sync

@@ -115,6 +115,8 @@ private:
 
     /// Removes the last added distance.
     void removeLastDistance();
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
 };
 
 } // namespace sight::module::ui::base::metrics

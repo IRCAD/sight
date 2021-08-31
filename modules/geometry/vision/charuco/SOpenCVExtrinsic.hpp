@@ -24,6 +24,9 @@
 
 #include "modules/geometry/vision/config.hpp"
 
+#include <data/CalibrationInfo.hpp>
+#include <data/CameraSeries.hpp>
+
 #include <geometry/vision/ICalibration.hpp>
 
 #include <opencv2/core.hpp>
@@ -148,6 +151,10 @@ private:
 
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
     size_t m_camIndex;
+
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, "cameraSeries"};
 };
 
 } // namespace sight::module::geometry::vision::charuco

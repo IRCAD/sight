@@ -27,15 +27,12 @@
 #include <data/Boolean.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::module::ui::base::metrics
 {
-
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +64,7 @@ void SAddDistance::starting()
 
 void SAddDistance::updating()
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {

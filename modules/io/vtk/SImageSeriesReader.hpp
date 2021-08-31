@@ -81,13 +81,6 @@ public:
 
     /**
      * @brief Configure the image path.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VTK_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the image path.
      */
     MODULE_IO_VTK_API void openLocationDialog() override;
 
@@ -137,9 +130,6 @@ private:
     std::filesystem::path m_fsImgPath;
 
     SPTR(JobCreatedSignalType) m_sigJobCreated;
-
-    /// Input image
-    data::ptr<data::ImageSeries, data::Access::inout> m_imageSeries {this, sight::io::base::service::s_DATA_KEY};
 };
 
 } // namespace sight::module::io::vtk

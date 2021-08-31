@@ -58,13 +58,13 @@
             <out key="image" uid="image" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader">
-                <dicomReaderConfig>
+                <readerConfig>
                     <config>
                         <showLogDialog>false</showLogDialog>
                         <enableBufferRotation>false</enableBufferRotation>
                         <dicomdirSupport>never</dicomdirSupport>
                     </config>
-                </dicomReaderConfig>
+                </readerConfig>
             </config>
         </service>
 

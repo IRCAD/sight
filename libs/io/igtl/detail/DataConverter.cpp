@@ -71,7 +71,6 @@ DataConverter::~DataConverter()
     {
         if(converter->getFwDataObjectType() == classname)
         {
-            core::mt::ReadLock lock(src->getMutex());
             return converter->fromFwDataObject(src);
         }
     }

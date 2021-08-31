@@ -25,7 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/CameraSeries.hpp>
 #include <data/helper/Array.hpp>
 #include <data/helper/ArrayGetter.hpp>
 #include <data/Image.hpp>
@@ -36,10 +35,6 @@
 
 namespace sight::module::filter::vision
 {
-
-static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-static const service::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
-static const service::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
 //------------------------------------------------------------------------------
 
@@ -75,16 +70,15 @@ void STransformDepthMap2mm::configuring()
 
 void STransformDepthMap2mm::updating()
 {
-    data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>(s_CAMERA_SERIES_INPUT);
-    SIGHT_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
+    const auto cameraSeries = m_cameraSeries.lock();
+    SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
+
     data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
 
     const double scale = depthCamera->getScale();
 
-    auto originFrame = this->getInput<data::Image>(s_ORIGIN_FRAME_INPUT);
-    SIGHT_ASSERT("missing '" + s_ORIGIN_FRAME_INPUT + "' image", originFrame);
-
-    data::mt::ObjectReadLock originLock(originFrame);
+    auto originFrame = m_originDepth.lock();
+    SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", originFrame);
 
     const auto type = originFrame->getType();
     if(type != core::tools::Type::s_UINT16)
@@ -95,10 +89,8 @@ void STransformDepthMap2mm::updating()
 
     const auto size = originFrame->getSize2();
 
-    auto scaledFrame = this->getInOut<data::Image>(s_SCALED_FRAME_INOUT);
-    SIGHT_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
-
-    data::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
+    auto scaledFrame = m_scaledDepth.lock();
+    SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaledFrame);
 
     if(size != scaledFrame->getSize2())
     {

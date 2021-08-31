@@ -25,6 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/Matrix4.hpp>
+#include <data/Mesh.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 
@@ -148,6 +149,12 @@ private:
 
     /// Generates alpha value for the texture if the image contains only 1 or 3 channels. It may be slower.
     bool m_generateAlpha {false};
+
+    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_texture {this, "texture"};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT};
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor

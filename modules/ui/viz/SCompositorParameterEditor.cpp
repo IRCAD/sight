@@ -122,8 +122,8 @@ void SCompositorParameterEditor::updateCompositor(
             if(adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 /// Filter object types
-                const data::Object::csptr shaderObj =
-                    adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
+                const auto shaderObj =
+                    adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
                 const auto& objType = shaderObj->getClassname();
 
                 if(objType == "sight::data::Boolean" || objType == "sight::data::Float"

@@ -192,6 +192,12 @@ private:
 
     using SliceIndexChangedSignalType = core::com::Signal<void ()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
+
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    static constexpr std::string_view s_TF_INOUT    = "tf";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
 };
 
 //------------------------------------------------------------------------------

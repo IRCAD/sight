@@ -161,7 +161,7 @@
 
         <service uid="manageVector" type="sight::module::data::SManage">
            <inout key="object" uid="trackerMatrix0" />
-           <inout key="vector" uid="matricesVector" />
+           <inout key="container" uid="matricesVector" />
         </service>
 
         <service uid="calibrationMatrixWriter" type="sight::module::ui::base::io::SSelector" >

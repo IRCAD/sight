@@ -36,10 +36,6 @@ namespace updater
 const core::com::Slots::SlotKeyType SObjFromSlot::s_ADD_SLOT    = "add";
 const core::com::Slots::SlotKeyType SObjFromSlot::s_REMOVE_SLOT = "remove";
 
-static const std::string s_OBJECT = "object";
-
-//-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 
 SObjFromSlot::SObjFromSlot() noexcept
@@ -88,14 +84,14 @@ void SObjFromSlot::info(std::ostream&)
 
 void SObjFromSlot::add(sight::data::Object::sptr obj)
 {
-    this->setOutput(s_OBJECT, obj);
+    m_object = obj;
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::remove()
 {
-    this->setOutput(s_OBJECT, nullptr);
+    m_object = nullptr;
 }
 
 //-----------------------------------------------------------------------------

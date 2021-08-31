@@ -87,13 +87,6 @@ void SVideoWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SVideoWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -178,7 +171,19 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        auto frameTL = this->getLockedInput<data::FrameTL>(sight::io::base::service::s_DATA_KEY);
+        // Retrieve dataStruct associated with this service
+        const auto locked  = m_data.lock();
+        const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::FrameTL::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            frameTL
+        );
+
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
@@ -195,7 +200,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
             if(m_timestamps.size() >= 5)
             {
                 // computes number of fps
-                const double fps = 1000 * m_timestamps.size()
+                const double fps = 1000 * static_cast<double>(m_timestamps.size())
                                    / (m_timestamps.back() - m_timestamps.front());
                 const int width                     = static_cast<int>(frameTL->getWidth());
                 const int height                    = static_cast<int>(frameTL->getHeight());
@@ -285,7 +290,8 @@ void SVideoWriter::startRecord()
 
     if(this->hasLocationDefined())
     {
-        auto frameTL = this->getLockedInput<data::FrameTL>(sight::io::base::service::s_DATA_KEY);
+        const auto data    = m_data.lock();
+        const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(data.get_shared());
 
         if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {

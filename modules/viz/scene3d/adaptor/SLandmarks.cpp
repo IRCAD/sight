@@ -35,9 +35,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_LANDMARKS_INPUT = "landmarks";
-static const std::string s_IMAGE_INPUT     = "image";
-
 static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
 static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
 static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
@@ -224,7 +221,7 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 void SLandmarks::updating()
 {
     // Get landmarks.
-    const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks = m_landmarks.lock();
 
     // Delete all groups.
     for(const std::string& groupName : landmarks->getGroupNames())
@@ -262,14 +259,14 @@ void SLandmarks::stopping()
     data::Landmarks::GroupNameContainer groupNames;
     {
         // Get landmarks.
-        const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+        const auto landmarks = m_landmarks.lock();
         groupNames = landmarks->getGroupNames();
-    }
 
-    // Delete all groups.
-    for(const std::string& groupName : groupNames)
-    {
-        this->removeGroup(groupName);
+        // Delete all groups.
+        for(const std::string& groupName : groupNames)
+        {
+            this->removeGroup(groupName);
+        }
     }
 
     // Unregister the material adaptor.
@@ -331,7 +328,7 @@ void SLandmarks::modifyGroup(std::string _groupName)
     this->removeGroup(_groupName);
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks = m_landmarks.lock();
 
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -358,7 +355,7 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto landmarks                    = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks                    = m_landmarks.lock();
     const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
 
     for(auto objectIt = m_manualObjects.begin() ; objectIt != m_manualObjects.end() ; ++objectIt)
@@ -383,7 +380,7 @@ void SLandmarks::addPoint(std::string _groupName)
     this->getRenderService()->makeCurrent();
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks = m_landmarks.lock();
 
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -454,7 +451,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     // Make the context as current
     this->getRenderService()->makeCurrent();
 
-    const auto landmarks = this->getLockedInOut<const data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks = m_landmarks.lock();
     insertMyPoint(_groupName, _index, landmarks.get_shared());
 }
 
@@ -530,7 +527,7 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
     m_manualObjects.push_back(std::make_shared<Landmark>(node, object, _groupName, _index, text));
 
     // Hide landmarks if an image is given to the service.
-    const auto imageLock = this->getWeakInput<data::Image>(s_IMAGE_INPUT).lock();
+    const auto imageLock = m_image.lock();
     this->hideMyLandmark(m_manualObjects.back(), (imageLock.operator bool()), _landmarks);
 
     // Request the rendering.
@@ -676,9 +673,7 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getWeakInput<data::Image>(s_IMAGE_INPUT);
-
-    const auto imageLock = image.lock();
+    const auto imageLock = m_image.lock();
 
     if(imageLock)
     {
@@ -709,9 +704,7 @@ void SLandmarks::hideLandmarks()
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto image = this->getWeakInput<data::Image>(s_IMAGE_INPUT);
-
-    const auto imageLock = image.lock();
+    const auto imageLock = m_image.lock();
 
     // Hide landmarks only if there is an image.
     if(imageLock)
@@ -731,11 +724,8 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     this->getRenderService()->makeCurrent();
 
     // Get image.
-    const auto image = this->getWeakInput<data::Image>(s_IMAGE_INPUT);
-
-    const auto imageLock = image.lock();
-
-    const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto imageLock = m_image.lock();
+    const auto landmarks = m_landmarks.lock();
     hideMyLandmark(_landmark, (imageLock.operator bool()), landmarks.get_shared());
 }
 
@@ -787,7 +777,7 @@ void SLandmarks::hideMyLandmark(
 
 void SLandmarks::setVisible(bool _visible)
 {
-    const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+    const auto landmarks = m_landmarks.lock();
     for(std::shared_ptr<Landmark> landmark : m_manualObjects)
     {
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(landmark->m_groupName);
@@ -863,7 +853,7 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
                 {
                     if(landmark->m_object == object)
                     {
-                        const auto landmarks = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
+                        const auto landmarks = m_landmarks.lock();
 
                         m_pickedData = landmark;
                         landmark->m_node->setScale(scale, scale, scale);
@@ -886,8 +876,8 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
             if(pickedPos.has_value())
             {
                 // Update the data, the autoconnection will call modifyPoint.
-                const auto landmarks              = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
-                data::Landmarks::PointType& point = landmarks->getPoint(
+                auto landmarks                   = m_landmarks.lock();
+                data::Landmarks::PointType point = landmarks->getPoint(
                     m_pickedData->m_groupName,
                     m_pickedData->m_index
                 );
@@ -958,8 +948,8 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
         m_pickedData->m_object->setQueryFlags(m_landmarksQueryFlag);
 
         // Update the data, the autoconnection will call modifyPoint.
-        const auto landmarks              = this->getLockedInOut<data::Landmarks>(s_LANDMARKS_INPUT);
-        data::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
+        auto landmarks                   = m_landmarks.lock();
+        data::Landmarks::PointType point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
         point[0] = newPos[0];
         point[1] = newPos[1];
         point[2] = newPos[2];

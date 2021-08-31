@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Vector.hpp>
+
 #include <service/IAppConfigManager.hpp>
 #include <service/IController.hpp>
 
@@ -137,6 +139,10 @@ private:
 
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
+
+    static constexpr std::string_view s_SERIES = "series";
+
+    data::ptr<data::Vector, data::Access::in> m_series {this, s_SERIES, true};
 };
 
 } // namespace sight::module::ui::qt::series

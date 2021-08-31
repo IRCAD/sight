@@ -228,7 +228,7 @@ private:
     QPushButton* m_exportButton {nullptr};
 
     /// Contains the current selected TF pool.
-    data::Composite::sptr m_currentTFPool {nullptr};
+    data::Composite::wptr m_selectedTFPool;
 
     /// Defines the path of the delete button icon.
     std::filesystem::path m_deleteIcon;
@@ -256,6 +256,14 @@ private:
 
     /// Defines icons height.
     unsigned int m_iconHeight {16};
+
+    static constexpr std::string_view s_CURRENT_TF_POOL   = "currentTFPool";
+    static constexpr std::string_view s_TF_POOLS          = "tfPools";
+    static constexpr std::string_view s_NEW_SELECTED_POOL = "tfPool";
+
+    data::ptr<data::Composite, data::Access::in> m_currentTfPool {this, s_CURRENT_TF_POOL};
+    data::ptr<data::Composite, data::Access::inout> m_tfPools {this, s_TF_POOLS};
+    data::ptr<data::Composite, data::Access::out> m_newSelectedPool {this, s_NEW_SELECTED_POOL};
 };
 
 } // namespace sight::module::ui::qt::image.

@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::ui::base::video
@@ -35,10 +33,6 @@ namespace sight::module::ui::base::video
 //-----------------------------------------------------------------------------
 
 const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
-
-const service::IService::KeyType s_POINTLIST_INOUT       = "pointList";
-const service::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
-const service::IService::KeyType s_CAMERA_INOUT          = "camera";
 
 SImagePicker::SImagePicker() noexcept
 {
@@ -121,12 +115,12 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint)
 {
     // Set z to 0 as it is an image.
 
-    auto pointList      = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
-    auto pixelPointList = this->getLockedInOut<data::PointList>(s_PIXEL_POINTLIST_INOUT);
+    auto pointList      = m_pointList.lock();
+    auto pixelPointList = m_pixelPointList.lock();
 
     data::Point::sptr point = data::Point::New(currentPoint[0], currentPoint[1], 0.);
 
-    const auto camera = this->getLockedInput<data::Camera>(s_CAMERA_INOUT);
+    const auto camera = m_camera.lock();
 
     data::Point::sptr pixel;
 
@@ -189,8 +183,8 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint)
 
 void SImagePicker::removeLastPoint()
 {
-    auto pointList      = this->getLockedInOut<data::PointList>(s_POINTLIST_INOUT);
-    auto pixelPointList = this->getLockedInOut<data::PointList>(s_PIXEL_POINTLIST_INOUT);
+    auto pointList      = m_pointList.lock();
+    auto pixelPointList = m_pixelPointList.lock();
     data::Point::sptr point;
 
     if(!pointList->getPoints().empty() && !pixelPointList->getPoints().empty())

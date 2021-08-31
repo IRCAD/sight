@@ -74,13 +74,6 @@ sight::io::base::service::IOPathType SModelSeriesReader::getIOPathType() const
     return sight::io::base::service::FILES;
 }
 
-//------------------------------------------------------------------------------
-
-void SModelSeriesReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
 //-----------------------------------------------------------------------------
 
 void SModelSeriesReader::openLocationDialog()
@@ -151,10 +144,17 @@ void SModelSeriesReader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInOut<data::ModelSeries>(
-            sight::io::base::service::s_DATA_KEY
+        const auto locked      = m_data.lock();
+        const auto modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::ModelSeries::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            modelSeries
         );
-        const auto modelSeries = modelSeriesLockedPtr.get_shared();
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -163,7 +163,7 @@ void SModelSeriesReader::updating()
         data::ModelSeries::ReconstructionVectorType addedRecs;
         for(const auto& file : this->getFiles())
         {
-            data::Mesh::sptr mesh = data::Mesh::New();
+            auto mesh = data::Mesh::New();
             this->loadMesh(file, mesh);
 
             data::Reconstruction::sptr rec = data::Reconstruction::New();

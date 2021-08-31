@@ -7,7 +7,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.4
 import QtQuick.Scene3D 2.12
 
-import fwRenderQt3D 1.0 as Sight
+import sight.viz.qt3d 1.0 as Sight
 import tutosceneqt3d 1.0
 
 ApplicationWindow {

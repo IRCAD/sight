@@ -24,7 +24,12 @@
 
 #include "modules/filter/vision/config.hpp"
 
+#include <data/CameraSeries.hpp>
+#include <data/FrameTL.hpp>
+
 #include <service/IFilter.hpp>
+
+#include <string_view>
 
 namespace sight::module::filter::vision
 {
@@ -96,6 +101,14 @@ private:
 
     /// timestamp of the last process
     core::HiResClock::HiResClockType m_lastTimestamp;
+
+    static constexpr std::string_view s_CAMERA_SERIES_INPUT   = "cameraSeries";
+    static constexpr std::string_view s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
+    static constexpr std::string_view s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
+
+    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_cameraSeries {this, s_CAMERA_SERIES_INPUT};
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_originFrameTL {this, s_ORIGIN_FRAME_TL_INPUT};
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::inout> m_scaledDepthTL {this, s_SCALED_FRAME_TL_INOUT};
 };
 
 } // namespace sight::module::filter::vision

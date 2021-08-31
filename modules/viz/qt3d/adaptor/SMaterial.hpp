@@ -105,6 +105,9 @@ private:
 
     /// Specifies adaptor's name.
     std::string m_materialName;
+
+    static constexpr std::string_view s_MATERIAL_INOUT = "material";
+    sight::data::ptr<sight::data::Material, sight::data::Access::inout> m_materialInOut {this, s_MATERIAL_INOUT};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor

@@ -7,11 +7,10 @@
          <object key="frameTL">sight::data::FrameTL</object>
          <object key="cameraSeries">sight::data::CameraSeries</object>
          <object key="pointcloud">sight::data::Mesh</object>
-         <object key="distance">sight::data::Float</object>
          <desc>RealSense Camera Grabber</desc>
          <tags>FILE, DEVICE</tags>
     </extension>
-    
+
        <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
     <extension implements="::sight::service::extension::Config">
         <id>InfraredRealsenseGrabberConfig</id>

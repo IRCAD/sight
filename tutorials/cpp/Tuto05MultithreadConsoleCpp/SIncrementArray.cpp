@@ -27,9 +27,6 @@
 #include <core/thread/Timer.hpp>
 
 #include <data/Array.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
-#include <service/macros.hpp>
 
 #include <functional>
 
@@ -73,10 +70,8 @@ void SIncrementArray::starting()
 
 void SIncrementArray::updating()
 {
-    const auto array = this->getInOut<sight::data::Array>(s_ARRAY_INOUT);
+    const auto array = m_array.lock();
     SIGHT_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1);
-
-    const auto dumpLock = array->lock();
 
     auto itr       = array->begin<unsigned int>();
     const auto end = array->end<unsigned int>();

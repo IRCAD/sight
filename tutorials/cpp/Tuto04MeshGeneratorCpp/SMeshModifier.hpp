@@ -24,6 +24,8 @@
 
 #include "AlgoMeshDeformation.hpp"
 
+#include <data/Mesh.hpp>
+
 #include <ui/base/IAction.hpp>
 
 namespace Tuto04MeshGeneratorCpp
@@ -87,7 +89,9 @@ private:
     std::string m_functor;
 
     /// Defines the algorithm used to animate a deformation on the mesh.
-    ::Tuto04MeshGeneratorCpp::AlgoMeshDeformation m_animator;
+    Tuto04MeshGeneratorCpp::AlgoMeshDeformation m_animator;
+
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace Tuto04MeshGeneratorCpp.

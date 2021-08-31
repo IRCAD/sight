@@ -25,8 +25,7 @@
 #include "modules/core/data/IWrapperSrv.hpp"
 #include "modules/data/config.hpp"
 
-#include <data/Point.hpp>
-#include <data/PointList.hpp>
+#include <data/Image.hpp>
 
 #include <service/IService.hpp>
 
@@ -129,6 +128,9 @@ private:
 
     typedef std::map<std::string, std::string> AvailableConnectionMapType;
     static AvailableConnectionMapType m_availableConnection; ///< store the available connection from source image.
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_target {this, "target"};
 };
 
 } // wrapper

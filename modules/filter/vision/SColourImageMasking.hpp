@@ -24,6 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
+#include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 
 #include <filter/vision/Masker.hpp>
@@ -161,6 +162,14 @@ private:
 
     /// Number of foreground components.
     int m_foregroundComponents;
+
+    static constexpr std::string_view s_MASK_KEY          = "mask";
+    static constexpr std::string_view s_VIDEO_TL_KEY      = "videoTL";
+    static constexpr std::string_view s_VIDEO_MASK_TL_KEY = "videoMaskTL";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_mask {this, s_MASK_KEY};
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_videoTL {this, s_VIDEO_TL_KEY};
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::inout> m_videoMaskTL {this, s_VIDEO_MASK_TL_KEY};
 };
 
 } // namespace sight::module::filter::vision.

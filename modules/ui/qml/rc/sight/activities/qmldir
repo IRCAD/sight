@@ -1,0 +1,4 @@
+module sight.activities
+Activity 1.0 Activity.qml
+ActivityLauncher 1.0 ActivityLauncher.qml
+ActivitySequencer 1.0 ActivitySequencer.qml

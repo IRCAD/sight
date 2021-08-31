@@ -378,7 +378,7 @@
 
             <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
 
-            <service uid="openvslamInitSrvStatus" type="sight::module::ui::base::editor::SStatus" >
+            <service uid="openvslamInitSrvStatus" type="sight::module::ui::qt::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -390,7 +390,7 @@
                 <orange>Initializing...</orange>
             </service>
 
-            <service uid="openvslamTrackingStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+            <service uid="openvslamTrackingStatusSrv" type="sight::module::ui::qt::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -402,7 +402,7 @@
                 <orange>relocalization</orange>
             </service>
 
-            <service uid="openvslamVocStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+            <service uid="openvslamVocStatusSrv" type="sight::module::ui::qt::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>

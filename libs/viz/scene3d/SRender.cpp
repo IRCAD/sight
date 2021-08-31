@@ -60,10 +60,6 @@ const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
-static const service::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
-
-//-----------------------------------------------------------------------------
-
 const core::com::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 const core::com::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fullscreenSet";
 
@@ -121,7 +117,7 @@ void SRender::configuring()
         const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
-        SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT + "' is accepted.", m_offScreen);
+        SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" << s_OFFSCREEN_INOUT << "' is accepted.", m_offScreen);
 
         m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
         m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
@@ -463,7 +459,7 @@ void SRender::requestRender()
     {
         FW_PROFILE("Offscreen rendering");
 
-        const auto image = this->getLockedInOut<data::Image>(s_OFFSCREEN_INOUT);
+        const auto image = m_offScreenImage.lock();
         {
             this->makeCurrent();
             ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();

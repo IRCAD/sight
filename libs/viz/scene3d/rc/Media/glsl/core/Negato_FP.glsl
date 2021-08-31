@@ -1,7 +1,13 @@
-#version 330
+#version 420
 
-uniform sampler3D u_texture;
-uniform sampler1D u_s1TFTexture;
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "TransferFunction.inc.glsl"
+
+layout(binding=0) uniform sampler3D u_texture;
+layout(binding=1) uniform sampler1D u_s1TFTexture;
 uniform vec2 u_f2TFWindow;
 
 uniform float u_slice;
@@ -11,10 +17,6 @@ uniform vec4 u_diffuse;
 uniform int u_enableAlpha; //bool
 
 in vec2 uv;
-
-//-----------------------------------------------------------------------------
-
-vec4 sampleTransferFunction(float _fIntensity, in sampler1D _s1Sampler, in vec2 _f2Window);
 
 //-----------------------------------------------------------------------------
 
@@ -42,8 +44,17 @@ vec4 getFragmentColor()
     return vec4( windowedColor.rgb, alpha );
 }
 
+//-----------------------------------------------------------------------------
+
 // Compute alpha channel
 float getFragmentAlpha()
 {
     return u_diffuse.a;
+}
+
+#include "Transparency.inc.glsl"
+
+void main(void)
+{
+    processFragment();
 }

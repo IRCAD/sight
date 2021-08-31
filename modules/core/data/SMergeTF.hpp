@@ -108,6 +108,12 @@ private:
 
     /// Handles all connections between this service and all TF.
     core::com::helper::SigSlotConnection m_connections;
+
+    static constexpr std::string_view s_TF_POOL_INPUT = "tfPool";
+    static constexpr std::string_view s_TF_INOUT      = "tf";
+
+    sight::data::ptr<sight::data::Composite, sight::data::Access::in> m_tfPool {this, s_TF_POOL_INPUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
 };
 
 } // namespace sight::module::data.

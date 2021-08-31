@@ -68,6 +68,16 @@ public:
     DATA_API static bool checkImageValidity(data::Image::csptr _pImg);
 
     /**
+     * @brief       Check if the image is valid.
+     *
+     * The image size must be > 1 for each dimension.
+     *
+     * @param[in]   _pImg   image checked.
+     * @return      true if the image is valid.
+     */
+    DATA_API static bool checkImageValidity(const data::Image& _image);
+
+    /**
      * @brief       Check if the image has slice index fields.
      *
      * If the image hasn't frontal, axial and sagittal slice index fields, they are added.

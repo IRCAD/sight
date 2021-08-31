@@ -26,9 +26,6 @@
 
 #include <core/spyLog.hpp>
 
-// Service associated data
-#include <data/Image.hpp>
-
 #include <data/fieldHelper/Image.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -67,9 +64,9 @@ void SImagesSubstract::updating()
 {
     core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
 
-    data::Image::csptr image1     = this->getInput<data::Image>("image1");
-    data::Image::csptr image2     = this->getInput<data::Image>("image2");
-    data::Image::sptr imageResult = this->getInOut<data::Image>("result");
+    const auto image1 = m_image1.lock();
+    const auto image2 = m_image2.lock();
+    auto imageResult  = m_result.lock();
 
     // Test if the both images have the same type and it is signed short.
     const bool isSameType = (image1->getType() == image2->getType() && image1->getType() == REQUESTED_TYPE);
@@ -82,10 +79,10 @@ void SImagesSubstract::updating()
         {
             typedef itk::Image<std::int16_t, 3> ImageType;
 
-            ImageType::Pointer itkImage1 = io::itk::itkImageFactory<ImageType>(image1);
+            ImageType::Pointer itkImage1 = io::itk::itkImageFactory<ImageType>(image1.get_shared());
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
-            ImageType::Pointer itkImage2 = io::itk::itkImageFactory<ImageType>(image2);
+            ImageType::Pointer itkImage2 = io::itk::itkImageFactory<ImageType>(image2.get_shared());
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
@@ -101,7 +98,7 @@ void SImagesSubstract::updating()
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            io::itk::dataImageFactory<ImageType>(output, imageResult, true);
+            io::itk::dataImageFactory<ImageType>(output, imageResult.get_shared(), true);
 
             auto sig = imageResult->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();

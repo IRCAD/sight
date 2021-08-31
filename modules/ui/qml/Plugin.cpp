@@ -56,7 +56,7 @@ namespace sight::module::ui::qml
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::qml::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::qml::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ void Plugin::start()
 {
     qmlRegisterType<sight::ui::qml::IQmlAppManager>("sight::ui::qml", 1, 0, "IQmlAppManager");
 
-    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
+    auto profile = core::runtime::getCurrentProfile();
     SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
@@ -82,15 +82,13 @@ void Plugin::start()
         };
 
     m_workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
-    QQuickStyle::setStyle("Material");
 
     core::thread::ActiveWorkers::setDefaultWorker(m_workerQt);
     auto engine = sight::ui::qml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
-    auto path = core::runtime::getModuleResourcePath("qml");
+    const auto path = core::runtime::getModuleResourcePath("sight::module::ui::qml");
     engine->importModulePath(path);
-    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 
     qmlRegisterType<model::SModelSeriesList>("model", 1, 0, "SModelSeriesList");
     qmlRegisterType<model::OrganListModel>("model", 1, 0, "OrganListModel");
@@ -101,9 +99,13 @@ void Plugin::start()
     qmlRegisterType<activity::SSequencer>("activitiesQml", 1, 0, "SSequencer");
     qmlRegisterType<activity::ActivityLauncherManager>("activitiesQml", 1, 0, "ActivityLauncherManager");
 
+    QQuickStyle::setStyle("Material");
+
     QStringList iconPath = QIcon::themeSearchPaths();
     iconPath.append(QString::fromStdString(path.string()));
     QIcon::setThemeSearchPaths(iconPath);
+
+    profile->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------

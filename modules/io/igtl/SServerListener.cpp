@@ -34,8 +34,6 @@
 namespace sight::module::io::igtl
 {
 
-const service::IService::KeyType s_OBJECTS_GROUP = "objects";
-
 //-----------------------------------------------------------------------------
 
 SServerListener::SServerListener()
@@ -58,13 +56,7 @@ void SServerListener::configuring()
     m_portConfig = config.get("port", "4242");
 
     const ConfigType configInOut = config.get_child("inout");
-
-    SIGHT_ASSERT(
-        "configured group must be '" + s_OBJECTS_GROUP + "'",
-        configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP
-    );
-
-    const auto keyCfg = configInOut.equal_range("key");
+    const auto keyCfg            = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
         const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
@@ -150,8 +142,7 @@ void SServerListener::receiveObject()
                     if(iter != m_deviceNames.end())
                     {
                         const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        data::Object::sptr obj        =
-                            this->getInOut<data::Object>(s_OBJECTS_GROUP, indexReceiveObject);
+                        const auto obj                = m_objects[indexReceiveObject].lock();
 
                         obj->shallowCopy(receiveObject);
 

@@ -75,7 +75,30 @@ struct access_typed_traits<DATATYPE, data::Access::out>
 };
 
 template<data::Access access>
+struct assignable_traits;
+
+template<>
+struct assignable_traits<data::Access::in>
+{
+    static constexpr bool value = false;
+};
+
+template<>
+struct assignable_traits<data::Access::inout>
+{
+    static constexpr bool value = false;
+};
+
+template<>
+struct assignable_traits<data::Access::out>
+{
+    static constexpr bool value = true;
+};
+
+template<data::Access access>
 using access_traits = access_typed_traits<sight::data::Object, access>;
+
+class IHasData;
 
 /**
  * @brief Interface class for ptr and ptr_vector.
@@ -86,10 +109,21 @@ class base_ptr
 {
 public:
 
+    base_ptr(IHasData* _holder, std::string_view _key) :
+        m_holder(_holder),
+        m_key(_key)
+    {
+    }
+
     virtual ~base_ptr() = default;
 
     /// Assignment operator
     DATA_API virtual void set(const sight::data::Object::sptr& _obj, size_t _index = 0) = 0;
+
+protected:
+
+    IHasData* m_holder;
+    std::string_view m_key;
 };
 
 /**
@@ -137,7 +171,7 @@ public:
      * @param[in] _maxNbObject maximum number of object to register (they are defined as optional
      *
      * @note This method will register maxNbObject in the group named (<key>#0, <key>#1, ... <key>#<maxNbObject>). The
-     * first Nth objects (minNbObject) are required, the other are optional.
+     * first Nth objects (minNbObject) are required, the _other are optional.
      */
     DATA_API virtual void _registerObjectGroup(
         std::string_view _key,
@@ -152,6 +186,8 @@ public:
     {
         m_dataContainer[_key] = _data;
     }
+
+    DATA_API virtual void _setOutput(std::string_view key, data::Object::sptr object, size_t index = 0) = 0;
 
 protected:
 
@@ -184,7 +220,8 @@ public:
         std::string_view _key,
         bool _autoConnect = false,
         bool _optional    = access_typed_traits<DATATYPE, ACCESS>::optional
-    ) noexcept
+    ) noexcept :
+        base_ptr(_holder, _key)
     {
         _holder->_registerObject(_key, ACCESS, 0, _autoConnect, _optional);
         _holder->_registerPtr(_key, this);
@@ -197,6 +234,25 @@ public:
     ptr& operator=(const ptr&) = delete;
     ptr& operator=(ptr&&)      = delete;
 
+    /// This method is only available if it is an output
+    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    ptr& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
+    {
+        m_holder->_setOutput(m_key, _obj, 0);
+        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+        data::mt::weak_ptr<target_t>::operator=(_obj);
+        return *this;
+    }
+
+    /// This method is only available if it is an output
+    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    void reset()
+    {
+        m_holder->_setOutput(m_key, nullptr, 0);
+        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+        data::mt::weak_ptr<target_t>::reset();
+    }
+
 private:
 
     /// Only the owner of the pointer can update the content of the pointer
@@ -207,7 +263,8 @@ private:
     {
         if(_obj == nullptr)
         {
-            this->reset();
+            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+            data::mt::weak_ptr<target_t>::reset();
         }
         else
         {
@@ -233,7 +290,79 @@ class ptr_vector final : public base_ptr
 {
 public:
 
-    using ptr_t           = data::mt::weak_ptr<typename access_typed_traits<DATATYPE, ACCESS>::object>;
+    class ptr_t final : public data::mt::weak_ptr<typename access_typed_traits<DATATYPE,
+                                                                               ACCESS>::object>
+    {
+    friend class ptr_vector;
+
+    public:
+
+        ptr_t(
+            IHasData* _holder,
+            std::string_view _key,
+            size_t _index
+        ) noexcept :
+            m_holder(_holder),
+            m_key(_key),
+            m_index(_index)
+        {
+        }
+
+        ptr_t() = default;
+        ptr_t(const ptr_t& _other) :
+            m_holder(_other.m_holder),
+            m_key(_other.m_key),
+            m_index(_other.m_index)
+        {
+        }
+
+        ptr_t(ptr_t&& _other) :
+            m_holder(_other.m_holder),
+            m_key(_other.m_key),
+            m_index(_other.m_index)
+        {
+        }
+
+        //------------------------------------------------------------------------------
+
+        ptr_t& operator=(const ptr_t& _other)
+        {
+            m_holder = _other.m_holder;
+            m_key    = _other.m_key;
+            m_index  = _other.m_index;
+        }
+
+        //------------------------------------------------------------------------------
+
+        ptr_t& operator=(ptr_t&& _other)
+        {
+            m_holder = _other.m_holder;
+            m_key    = _other.m_key;
+            m_index  = _other.m_index;
+        }
+
+        /// This method is only available if it is an output
+        template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+        ptr_t& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
+        {
+            m_holder->_setOutput(m_key, _obj, m_index);
+            return *this;
+        }
+
+    private:
+
+        /// Pointer assignment
+        void set(typename access_typed_traits<DATATYPE, ACCESS>::value _obj)
+        {
+            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+            data::mt::weak_ptr<target_t>::operator=(_obj);
+        }
+
+        IHasData* m_holder;
+        std::string_view m_key;
+        size_t m_index;
+    };
+
     using container_ptr_t = std::map<size_t, ptr_t>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
@@ -242,7 +371,8 @@ public:
         std::string_view _key,
         bool _autoConnect               = false,
         const std::uint8_t _minNbObject = 0
-    ) noexcept
+    ) noexcept :
+        base_ptr(_holder, _key)
     {
         _holder->_registerObjectGroup(_key, ACCESS, _minNbObject, _autoConnect);
         _holder->_registerPtr(_key, this);
@@ -256,8 +386,15 @@ public:
     ptr_vector& operator=(ptr_vector&&)      = delete;
 
     /// Accessor for individual weak pointers
+    /// This method is only available if it is an output
     ptr_t& operator[](const size_t _index)
     {
+        if(m_ptrs.find(_index) == m_ptrs.end())
+        {
+            // Initializes members
+            m_ptrs.emplace(std::make_pair(_index, ptr_t(m_holder, m_key, _index)));
+        }
+
         return m_ptrs[_index];
     }
 
@@ -323,7 +460,12 @@ private:
                 typedObj
             );
 
-            m_ptrs[_index] = typedObj;
+            if(m_ptrs.find(_index) == m_ptrs.end())
+            {
+                m_ptrs.emplace(std::make_pair(_index, ptr_t(m_holder, m_key, _index)));
+            }
+
+            m_ptrs[_index].set(typedObj);
         }
     }
 

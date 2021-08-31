@@ -24,6 +24,8 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IFilter.hpp>
 
 namespace sight::module::filter::image
@@ -69,6 +71,12 @@ protected:
 
     /// Overrides
     MODULE_FILTER_IMAGE_API void updating() override;
+
+private:
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image1 {this, "image1"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image2 {this, "image2"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_result {this, "result"};
 };
 
 } // namespace sight::module::filter::image

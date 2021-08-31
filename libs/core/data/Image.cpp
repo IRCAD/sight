@@ -26,8 +26,6 @@
 #include "data/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/tools/DynamicType.hpp>
-#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 
 #include <numeric>
 
@@ -683,43 +681,6 @@ void Image::setSize(const SizeType& size)
             m_size[i] = 0;
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-core::tools::DynamicType Image::getPixelType() const
-{
-    typedef std::map<std::string, core::tools::DynamicType> DynamicTypeMapType;
-
-    static DynamicTypeMapType dynamicTypeMap = {
-        {core::tools::Type().string(), core::tools::DynamicType()},
-        {"uint8", core::tools::makeDynamicType<std::string>("unsigned char")},
-        {"uint16", core::tools::makeDynamicType<std::string>("unsigned short")},
-        {"uint32", core::tools::makeDynamicType<std::string>("unsigned int")},
-        {"int8", core::tools::makeDynamicType<std::string>("signed char")},
-        {"int16", core::tools::makeDynamicType<std::string>("signed short")},
-        {"int32", core::tools::makeDynamicType<std::string>("signed int")},
-        {"float", core::tools::makeDynamicType<std::string>("float")},
-        {"double", core::tools::makeDynamicType<std::string>("double")},
-
-//special case for dynamic type : 64bits integers was not managed by dynamic type.
-#if (INT_MAX < LONG_MAX)
-        {
-            "uint64", core::tools::makeDynamicType<std::string>("unsigned long")
-        },
-        {"int64", core::tools::makeDynamicType<std::string>("signed long")},
-#else
-        {
-            "uint32", core::tools::makeDynamicType<std::string>("unsigned long")
-        },
-        {"int32", core::tools::makeDynamicType<std::string>("signed long")},
-        {"uint64", core::tools::DynamicType()},
-        {"int64", core::tools::DynamicType()},
-#endif
-    };
-
-    core::tools::DynamicType dtype = dynamicTypeMap[getType().string()];
-    return dtype;
 }
 
 //------------------------------------------------------------------------------

@@ -52,8 +52,8 @@ static const std::string s_MATERIAL_NAME_CONFIG    = "materialName";
 SMesh::SMesh() noexcept
 {
     // Allow using Mesh as QML type when using SMesh service in QML applications.
-    qmlRegisterType<sight::viz::qt3d::data::Mesh>("sight::viz::qt3d", 1, 0, "Mesh");
-    qRegisterMetaType<sight::viz::qt3d::data::Mesh*>("sight::viz::qt3d::data::Mesh*");
+    qmlRegisterType<sight::viz::qt3d::data::Mesh>("sight.viz.qt3d", 1, 0, "Mesh");
+    qRegisterMetaType<sight::viz::qt3d::data::Mesh*>("sight.viz.qt3d.Mesh*");
 }
 
 //-----------------------------------------------------------------------------

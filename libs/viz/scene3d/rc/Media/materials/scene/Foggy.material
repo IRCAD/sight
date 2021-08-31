@@ -2,19 +2,10 @@
 
 //-----------------------------------------------------------------------------
 
-fragment_program Foggy_FP glsl
+fragment_program Default/Foggy_FP glsl
 {
     source Foggy_FP.glsl
     preprocessor_defines PIXEL_LIT=1
-}
-
-//-----------------------------------------------------------------------------
-
-fragment_program Default/Foggy_FP glsl
-{
-    source Main_FP.glsl
-    attach Foggy_FP
-    attach Lighting_FP
     default_params
     {
         param_named u_fogParams float2 100. 1000.

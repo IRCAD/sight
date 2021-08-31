@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
@@ -152,6 +152,11 @@ private:
     std::uint16_t m_minDepth = 0;
     /// Max value of depth used to build pointcloud.
     std::uint16_t m_maxDepth = UINT16_MAX;
+
+    sight::data::ptr<sight::data::CameraSeries, sight::data::Access::in> m_calibration {this, "calibration"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_depthMap {this, "depthMap"};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_rgbMap {this, "rgbMap"};
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_pointCloud {this, "pointCloud"};
 };
 
 } // namespace sight::module::filter::vision

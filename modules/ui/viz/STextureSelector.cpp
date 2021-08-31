@@ -46,8 +46,6 @@
 namespace sight::module::ui::viz
 {
 
-static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
-
 //------------------------------------------------------------------------------
 
 STextureSelector::STextureSelector() noexcept
@@ -115,7 +113,7 @@ void STextureSelector::updating()
 
 void STextureSelector::onLoadButton()
 {
-    auto reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
+    const auto reconstruction = m_reconstruction.lock();
     SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
@@ -158,7 +156,7 @@ void STextureSelector::onLoadButton()
 
 void STextureSelector::onDeleteButton()
 {
-    auto reconstruction = this->getInOut<data::Reconstruction>(s_RECONSTRUCTION_INOUT);
+    const auto reconstruction = m_reconstruction.lock();
     SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();

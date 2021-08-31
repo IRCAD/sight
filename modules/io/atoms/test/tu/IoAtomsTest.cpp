@@ -116,26 +116,6 @@ SPTR(T) read(const service::IService::ConfigType& srvCfg, const std::string& rea
     return readObj;
 }
 
-template<typename T>
-SPTR(T) readOut(const service::IService::ConfigType& srvCfg, const std::string& reader)
-{
-    service::IService::ConfigType config(srvCfg);
-    config.add("out.<xmlattr>.key", sight::io::base::service::s_DATA_KEY);
-
-    service::IService::sptr readerSrv = service::add(reader);
-    CPPUNIT_ASSERT(readerSrv);
-
-    readerSrv->setConfiguration(config);
-    readerSrv->configure();
-    readerSrv->start().wait();
-    readerSrv->update().wait();
-    typename T::sptr readObj = readerSrv->getOutput<T>(sight::io::base::service::s_DATA_KEY);
-    readerSrv->stop().wait();
-    service::OSR::unregisterService(readerSrv);
-
-    return readObj;
-}
-
 //------------------------------------------------------------------------------
 
 template<typename T>
@@ -198,29 +178,10 @@ void atomTest(const std::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 
-    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
-
-    {
-        data::reflection::visitor::CompareObjects visitor;
-        visitor.compare(readSeriesDB, seriesDB);
-        compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
-    }
-
     // 'Change' UUID policy
     srvCfg.add("uuidPolicy", "Change");
 
     readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
-
-    {
-        data::reflection::visitor::CompareObjects visitor;
-        visitor.compare(readSeriesDB, seriesDB);
-        compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
-    }
-
-    // Output with 'Change' UUID policy
-    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -239,22 +200,6 @@ void atomTest(const std::filesystem::path& filePath)
         // We can only check that loaded data is empty.
         CPPUNIT_ASSERT_MESSAGE("Written data should not be empty", !seriesDB->empty());
         CPPUNIT_ASSERT_MESSAGE("Loaded data should be empty", readSeriesDB->empty());
-    }
-
-    // Output with 'Reuse' UUID policy
-    srvCfg.put("uuidPolicy", "Reuse");
-
-    readSeriesDB = readOut<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
-
-    {
-        CPPUNIT_ASSERT_MESSAGE("Failed to retrieve output SeriesDB", readSeriesDB);
-
-        CPPUNIT_ASSERT_MESSAGE("Data have not the same pointer", seriesDB == readSeriesDB);
-
-        data::reflection::visitor::CompareObjects visitor;
-        visitor.compare(seriesDB, readSeriesDB);
-        compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty());
     }
 }
 

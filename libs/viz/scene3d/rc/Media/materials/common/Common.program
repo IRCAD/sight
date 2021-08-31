@@ -1,9 +1,4 @@
 
-fragment_program ColorFormats_FP glsl
-{
-    source ColorFormats.glsl
-}
-
 //-----------------------------------------------------------------------------
 
 vertex_program Edge_VP glsl
@@ -90,15 +85,3 @@ fragment_program RenderQuad_FP glsl
 }
 
 //---------------------------------------------------------------------------
-
-fragment_program SpatialTransforms_FP glsl
-{
-    source SpatialTransforms.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program TransferFunction_FP glsl
-{
-    source TransferFunction.glsl
-}

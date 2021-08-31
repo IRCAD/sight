@@ -38,8 +38,6 @@ const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
 
 static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
-static const std::string s_IMAGE_INPUT = "image";
-
 static const std::string s_PRIORITY_CONFIG              = "priority";
 static const std::string s_ORIENTATION_CONFIG           = "orientation";
 static const std::string s_MODE_CONFIG                  = "mode";
@@ -170,7 +168,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
         const ::Ogre::Ray vpRay = camera->getCameraToViewportRay(vpPos.x, vpPos.y);
 
         // Get image information.
-        const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
+        const auto image = m_image.lock();
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
 
         const std::pair<bool, ::Ogre::Vector3> result =

@@ -27,6 +27,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/Camera.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QComboBox>
@@ -182,6 +184,9 @@ protected:
      * @brief Camera skew.
      */
     QLabel* m_skew;
+
+    static constexpr std::string_view s_CAMERA = "camera";
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA, true};
 };
 
 } // namespace uiCameraSelectorQt

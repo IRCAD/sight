@@ -2,17 +2,9 @@
 
 //-----------------------------------------------------------------------------
 
-fragment_program OrenNayar_FP glsl
-{
-    source OrenNayar_FP.glsl
-}
-
-//-----------------------------------------------------------------------------
-
 fragment_program Default/OrenNayar_FP glsl
 {
-    source Main_FP.glsl
-    attach OrenNayar_FP
+    source OrenNayar_FP.glsl
     default_params
     {
         param_named_auto u_cameraPos camera_position

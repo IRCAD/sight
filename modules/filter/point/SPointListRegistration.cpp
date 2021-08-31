@@ -113,9 +113,10 @@ void SPointListRegistration::stopping()
 
 void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    data::PointList::sptr registeredPL = this->getInOut<data::PointList>("registeredPL");
-    data::PointList::sptr referencePL  = this->getInOut<data::PointList>("referencePL");
-    data::Matrix4::sptr matrix         = this->getInOut<data::Matrix4>("output");
+    const auto registeredPL = m_registeredPL.lock();
+    SIGHT_ASSERT("No 'registeredPL' found", registeredPL);
+    const auto referencePL = m_referencePL.lock();
+    SIGHT_ASSERT("No 'referencePL' found", referencePL);
 
     if(registeredPL->getPoints().size() >= 3
        && registeredPL->getPoints().size() == referencePL->getPoints().size())
@@ -191,6 +192,10 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
         vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
         m->Invert();
+
+        auto matrix = m_output.lock();
+        SIGHT_ASSERT("No 'output' found", matrix);
+
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)

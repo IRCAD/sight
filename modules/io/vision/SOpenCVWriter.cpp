@@ -55,13 +55,6 @@ void SOpenCVWriter::configuring()
     sight::io::base::service::IWriter::configuring();
 }
 
-// ----------------------------------------------------------------------------
-
-void SOpenCVWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
 //----------------------------------------------------------------------------
 
 void SOpenCVWriter::openLocationDialog()

@@ -29,16 +29,7 @@
 #include "viz/scene3d/picker/IPicker.hpp"
 #include "viz/scene3d/Utils.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-
-#include <data/Composite.hpp>
-
-#include <service/helper/Config.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <data/Image.hpp>
 
 #include <viz/base/IRender.hpp>
 
@@ -303,6 +294,9 @@ private:
     /// Defines if the scene will be rendered upside down.
     /// @warning the scene must be rendered off-screen.
     bool m_flip {false};
+
+    static constexpr std::string_view s_OFFSCREEN_INOUT = "offScreen";
+    data::ptr<data::Image, data::Access::inout> m_offScreenImage {this, s_OFFSCREEN_INOUT, false, true};
 };
 
 //-----------------------------------------------------------------------------

@@ -235,7 +235,7 @@ public:
     void swapping(std::string_view key) final
     {
         m_swappedObjectKey = key;
-        m_swappedObject    = this->getInput<data::Object>(key);
+        m_swappedObject    = this->getInput<data::Object>(key).lock().get_shared();
     }
 
     //-------------------------------------------------------------------------
@@ -477,13 +477,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(STestOut, service::ut::ISTest);
 
-private:
-
     data::ptr<data::Object, data::Access::out> m_out {this, "out"};
     data::ptr<data::Object, data::Access::out> m_out2 {this, "out2"};
     data::ptr<data::Object, data::Access::out> m_out3 {this, "out3"};
     data::ptr<data::Object, data::Access::out> m_out4 {this, "out4"};
     data::ptr<data::Object, data::Access::out> m_out5 {this, "out5"};
+    data::ptr_vector<data::Object, data::Access::out> m_outGroup {this, "outGroup"};
 };
 
 class TestServiceWithData : public service::IService

@@ -73,13 +73,6 @@ void Matrix4WriterService::configuring()
     sight::io::base::service::IWriter::configuring();
 }
 
-//------------------------------------------------------------------------------
-
-void Matrix4WriterService::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
 //-----------------------------------------------------------------------------
 
 void Matrix4WriterService::openLocationDialog()
@@ -115,21 +108,28 @@ void Matrix4WriterService::stopping()
 
 void Matrix4WriterService::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        data::Matrix4::csptr matrix =
-            this->getInput<data::Matrix4>(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
+        const auto locked = m_data.lock();
+        const auto matrix = std::dynamic_pointer_cast<const data::Matrix4>(locked.get_shared());
 
-        auto writer = sight::io::base::writer::Matrix4Writer::New();
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::Matrix4::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            matrix
+        );
+
+        const auto writer = sight::io::base::writer::Matrix4Writer::New();
         writer->setObject(matrix);
         writer->setFile(this->getFile());
         writer->write();
-    }
-    else
-    {
-        m_writeFailed = true;
+        m_writeFailed = false;
     }
 }
 

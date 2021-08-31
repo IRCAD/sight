@@ -24,6 +24,7 @@
 
 #include <core/LazyInstantiator.hpp>
 #include <core/runtime/Runtime.hpp>
+#include <core/spyLog.hpp>
 
 #include <QDir>
 #include <QQmlComponent>
@@ -84,6 +85,16 @@ void QmlEngine::loadMainComponent(const std::filesystem::path& file)
 QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPointer<QQmlContext>& context)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    if(component.status() == QQmlComponent::Status::Error)
+    {
+        const auto err = component.errors();
+        for(const auto& e : err)
+        {
+            SIGHT_ERROR(e.toString().toStdString());
+        }
+    }
+
+    SIGHT_ASSERT("Component is not ready", component.status() == QQmlComponent::Status::Ready);
     return component.create(context.get());
 }
 
@@ -92,6 +103,16 @@ QObject* QmlEngine::createComponent(const std::filesystem::path& file, QSharedPo
 QObject* QmlEngine::createComponent(const std::filesystem::path& file)
 {
     QQmlComponent component(m_engine, QUrl::fromLocalFile(QString::fromStdString(file.string())));
+    if(component.status() == QQmlComponent::Status::Error)
+    {
+        const auto err = component.errors();
+        for(const auto& e : err)
+        {
+            SIGHT_ERROR(e.toString().toStdString());
+        }
+    }
+
+    SIGHT_ASSERT("Component is not ready", component.status() == QQmlComponent::Status::Ready);
     return component.create(m_engine->rootContext());
 }
 

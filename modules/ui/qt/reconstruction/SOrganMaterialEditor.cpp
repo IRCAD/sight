@@ -28,8 +28,6 @@
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
 #include <service/IService.hpp>
@@ -51,8 +49,6 @@
 namespace sight::module::ui::qt::reconstruction
 {
 
-const service::IService::KeyType SOrganMaterialEditor::s_RECONSTRUCTION_INOUT = "reconstruction";
-
 SOrganMaterialEditor::SOrganMaterialEditor() noexcept
 {
 }
@@ -68,7 +64,7 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
 service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
@@ -152,31 +148,39 @@ void SOrganMaterialEditor::onDiffuseColorButton()
 {
     data::Material::sptr material;
     {
-        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
         auto reconstruction = m_rec.lock();
 
         material = reconstruction->getMaterial();
     }
-    data::mt::ObjectWriteLock lock(material);
 
-    int red   = static_cast<int>(material->diffuse()->red() * 255);
-    int green = static_cast<int>(material->diffuse()->green() * 255);
-    int blue  = static_cast<int>(material->diffuse()->blue() * 255);
-
-    // Create Color choice dialog.
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SIGHT_ASSERT("container not instanced", container);
-
-    const QColor oldColor(red, green, blue);
-    const QColor color = QColorDialog::getColor(oldColor, container);
-    if(color.isValid())
+    bool needrefresh = false;
     {
-        material->diffuse()->red()   = static_cast<float>(color.redF());
-        material->diffuse()->green() = static_cast<float>(color.greenF());
-        material->diffuse()->blue()  = static_cast<float>(color.blueF());
-        this->materialNotification();
-        lock.unlock();
+        data::mt::locked_ptr<data::Material> lock(material);
+
+        int red   = static_cast<int>(material->diffuse()->red() * 255);
+        int green = static_cast<int>(material->diffuse()->green() * 255);
+        int blue  = static_cast<int>(material->diffuse()->blue() * 255);
+
+        // Create Color choice dialog.
+        auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        QWidget* const container = qtContainer->getQtContainer();
+        SIGHT_ASSERT("container not instanced", container);
+
+        const QColor oldColor(red, green, blue);
+        const QColor color = QColorDialog::getColor(oldColor, container);
+        if(color.isValid())
+        {
+            material->diffuse()->red()   = static_cast<float>(color.redF());
+            material->diffuse()->green() = static_cast<float>(color.greenF());
+            material->diffuse()->blue()  = static_cast<float>(color.blueF());
+            this->materialNotification();
+            needrefresh = true;
+        }
+    }
+
+    if(needrefresh)
+    {
         refreshMaterial();
     }
 }
@@ -187,31 +191,39 @@ void SOrganMaterialEditor::onAmbientColorButton()
 {
     data::Material::sptr material;
     {
-        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
         auto reconstruction = m_rec.lock();
 
         material = reconstruction->getMaterial();
     }
-    data::mt::ObjectWriteLock lock(material);
 
-    const int red   = static_cast<int>(material->ambient()->red() * 255.f);
-    const int green = static_cast<int>(material->ambient()->green() * 255.f);
-    const int blue  = static_cast<int>(material->ambient()->blue() * 255.f);
-
-    // Create Color choice dialog.
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SIGHT_ASSERT("container not instanced", container);
-
-    const QColor oldColor(red, green, blue);
-    const QColor color = QColorDialog::getColor(oldColor, container);
-    if(color.isValid())
+    bool needrefresh = false;
     {
-        material->ambient()->red()   = static_cast<float>(color.redF());
-        material->ambient()->green() = static_cast<float>(color.greenF());
-        material->ambient()->blue()  = static_cast<float>(color.blueF());
-        this->materialNotification();
-        lock.unlock();
+        data::mt::locked_ptr<data::Material> lock(material);
+
+        const int red   = static_cast<int>(material->ambient()->red() * 255.f);
+        const int green = static_cast<int>(material->ambient()->green() * 255.f);
+        const int blue  = static_cast<int>(material->ambient()->blue() * 255.f);
+
+        // Create Color choice dialog.
+        auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        QWidget* const container = qtContainer->getQtContainer();
+        SIGHT_ASSERT("container not instanced", container);
+
+        const QColor oldColor(red, green, blue);
+        const QColor color = QColorDialog::getColor(oldColor, container);
+        if(color.isValid())
+        {
+            material->ambient()->red()   = static_cast<float>(color.redF());
+            material->ambient()->green() = static_cast<float>(color.greenF());
+            material->ambient()->blue()  = static_cast<float>(color.blueF());
+            this->materialNotification();
+            needrefresh = true;
+        }
+    }
+
+    if(needrefresh)
+    {
         refreshMaterial();
     }
 }
@@ -222,12 +234,13 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 {
     data::Material::sptr material;
     {
-        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
         auto reconstruction = m_rec.lock();
 
         material = reconstruction->getMaterial();
     }
-    data::mt::ObjectWriteLock lock(material);
+
+    data::mt::locked_ptr<data::Material> lock(material);
 
     material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
     std::stringstream ss;
@@ -249,48 +262,51 @@ void SOrganMaterialEditor::refreshMaterial()
 
     data::Material::csptr material;
     {
-        SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+        SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
         auto reconstruction = m_rec.lock();
 
         container->setEnabled(!reconstruction->getOrganName().empty());
         material = reconstruction->getMaterial();
     }
 
-    data::mt::ObjectReadLock lock(material);
-
+    int alpha;
     {
-        const QColor materialDiffuseColor = QColor(
-            static_cast<int>(material->diffuse()->red() * 255.f),
-            static_cast<int>(material->diffuse()->green() * 255.f),
-            static_cast<int>(material->diffuse()->blue() * 255.f),
-            static_cast<int>(material->diffuse()->alpha() * 255.f)
-        );
+        data::mt::locked_ptr<const data::Material> lock(material);
 
-        const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-        QPixmap pix(iconSize, iconSize);
-        pix.fill(materialDiffuseColor);
-        m_diffuseColourButton->setIcon(QIcon(pix));
+        {
+            const QColor materialDiffuseColor = QColor(
+                static_cast<int>(material->diffuse()->red() * 255.f),
+                static_cast<int>(material->diffuse()->green() * 255.f),
+                static_cast<int>(material->diffuse()->blue() * 255.f),
+                static_cast<int>(material->diffuse()->alpha() * 255.f)
+            );
+
+            const int iconSize = m_diffuseColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(iconSize, iconSize);
+            pix.fill(materialDiffuseColor);
+            m_diffuseColourButton->setIcon(QIcon(pix));
+        }
+
+        {
+            const QColor materialAmbientColor = QColor(
+                static_cast<int>(material->ambient()->red() * 255.f),
+                static_cast<int>(material->ambient()->green() * 255.f),
+                static_cast<int>(material->ambient()->blue() * 255.f),
+                static_cast<int>(material->ambient()->alpha() * 255.f)
+            );
+
+            const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
+            QPixmap pix(iconSize, iconSize);
+            pix.fill(materialAmbientColor);
+            m_ambientColourButton->setIcon(QIcon(pix));
+        }
+
+        alpha = static_cast<int>(material->diffuse()->alpha() * 100.f);
     }
 
-    {
-        const QColor materialAmbientColor = QColor(
-            static_cast<int>(material->ambient()->red() * 255.f),
-            static_cast<int>(material->ambient()->green() * 255.f),
-            static_cast<int>(material->ambient()->blue() * 255.f),
-            static_cast<int>(material->ambient()->alpha() * 255.f)
-        );
-
-        const int iconSize = m_ambientColourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
-        QPixmap pix(iconSize, iconSize);
-        pix.fill(materialAmbientColor);
-        m_ambientColourButton->setIcon(QIcon(pix));
-    }
-
-    const int a = static_cast<int>(material->diffuse()->alpha() * 100.f);
-    lock.unlock();
-    m_opacitySlider->setValue(a);
+    m_opacitySlider->setValue(alpha);
     std::stringstream ss;
-    ss << a << "%";
+    ss << alpha << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
 }
 
@@ -298,7 +314,7 @@ void SOrganMaterialEditor::refreshMaterial()
 
 void SOrganMaterialEditor::materialNotification()
 {
-    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", !m_rec.expired());
+    SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
     data::Object::ModifiedSignalType::sptr sig =

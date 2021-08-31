@@ -129,7 +129,7 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml/dialog/MessageDialog.qml"
+        "ui_qml/dialog/MessageDialog.qml"
     );
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));

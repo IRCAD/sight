@@ -1,14 +1,8 @@
-fragment_program DepthPeelingCommon_FP glsl
-{
-    source DepthPeelingCommon_FP.glsl
-}
-
 //---------------------------------------------------------------------------
 
 fragment_program DepthPeeling/depthMap_FP glsl
 {
     source DepthPeelingDepthMap_FP.glsl
-    attach DepthPeelingCommon_FP
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
@@ -17,7 +11,20 @@ fragment_program DepthPeeling/depthMap_FP glsl
 
 //-----------------------------------------------------------------------------
 
-geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
+geometry_program DepthPeeling/depthMap/VerticesNormals_GP glsl
+{
+    source Normals_GP.glsl
+    preprocessor_defines POINT=1,DEPTH=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_sceneSize float 10.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program DepthPeeling/depthMap/CellsNormals_GP glsl
 {
     source Normals_GP.glsl
     preprocessor_defines CELL=1,DEPTH=1
@@ -33,7 +40,6 @@ geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
 fragment_program ClearDepth_FP glsl
 {
     source ClearDepth.glsl
-    attach DepthPeelingCommon_FP
 }
 
 //---------------------------------------------------------------------------
@@ -52,7 +58,6 @@ fragment_program DepthPeeling/Blend_FP glsl
 fragment_program DepthPeeling/Final_FP glsl
 {
     source DepthPeelingFinal_FP.glsl
-    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_fragData0 int 0

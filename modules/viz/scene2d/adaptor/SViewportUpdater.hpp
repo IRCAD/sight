@@ -24,6 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
+#include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
 namespace sight::module::viz::scene2d
@@ -75,6 +76,12 @@ protected:
 
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
     MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
+
+private:
+
+    static constexpr std::string_view s_VIEWPORT_INPUT = "viewport";
+
+    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::in> m_viewport {this, s_VIEWPORT_INPUT};
 };
 
 } // namespace adaptor

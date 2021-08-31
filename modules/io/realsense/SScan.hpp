@@ -24,7 +24,8 @@
 
 #include "modules/io/realsense/config.hpp"
 
-#include <data/FrameTL.hpp>
+#include <data/Camera.hpp>
+#include <data/CameraSeries.hpp>
 #include <data/Mesh.hpp>
 
 #include <io/base/service/IRGBDGrabber.hpp>
@@ -120,7 +121,6 @@ namespace sight::module::io::realsense
  *
  * @subsection Output Output
  * - \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
- * - \b distance [sight::data::Float]: distance (in mm) at center pixel. (optional)
  *
  * @subsection Configuration Configuration
  * - \b fps: desired framerate (value can be [6-15-25-30-60-90]), note that fps is correlated to resolution (default
@@ -176,11 +176,11 @@ namespace sight::module::io::realsense
  * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
-class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
+class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::base::service::IRGBDGrabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScan, io::base::service::IRGBDGrabber);
+    SIGHT_DECLARE_SERVICE(SScan, sight::io::base::service::IRGBDGrabber);
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal<void (double)> DistanceComputedSignalType;
@@ -415,10 +415,6 @@ private:
     std::string m_depthKey; ///< Depth frame key.
     std::string m_colorKey; ///< Color frame key.
 
-    /// Timelines
-    data::FrameTL::sptr m_depthTimeline; ///< Depth timeline.
-    data::FrameTL::sptr m_colorTimeline; ///< Color timeline.
-
     /// Grabber thread
     std::thread m_thread;
 
@@ -427,9 +423,6 @@ private:
 
     /// Handle on which frame the pointcloud is mapped.
     PointcloudColormapEnumType m_pointcloudColorMap = PointcloudColormap::COLOR;
-
-    /// Pointer to the (optional) data::Mesh output.
-    data::Mesh::sptr m_pointcloud = nullptr;
 
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
     CameraSettings m_cameraSettings;
@@ -475,6 +468,15 @@ private:
 
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
+
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, false, true};
+
+    static constexpr std::string_view s_CAMERA_SERIES_INOUT = "cameraSeries";
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES_INOUT, false, true};
+
+    static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
+    data::ptr<data::Mesh, data::Access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};
+    data::Mesh::sptr m_pointCloud;
 };
 
 } //namespace sight::module::io::realsense

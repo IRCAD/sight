@@ -69,13 +69,6 @@ sight::io::base::service::IOPathType SCalibrationInfoReader::getIOPathType() con
 
 //------------------------------------------------------------------------------
 
-void SCalibrationInfoReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SCalibrationInfoReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -129,8 +122,8 @@ void SCalibrationInfoReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        data::CalibrationInfo::sptr calibInfo =
-            this->getInOut<data::CalibrationInfo>(sight::io::base::service::s_DATA_KEY);
+        const auto data      = m_data.lock();
+        const auto calibInfo = std::dynamic_pointer_cast<data::CalibrationInfo>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
@@ -164,7 +157,7 @@ void SCalibrationInfoReader::updating()
                 if(chessboardPts)
                 {
                     data::Image::sptr calibImg = data::Image::New();
-                    sight::io::opencv::Image::copyFromCv(calibImg, img);
+                    sight::io::opencv::Image::copyFromCv(*calibImg.get(), img);
 
                     calibImg->setSpacing2({{1., 1., 1.}});
                     calibImg->setOrigin2({{0., 0., 0.}});

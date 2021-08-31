@@ -58,13 +58,13 @@ namespace sight::module::data
            <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
-           <out key="target" uid="..." />
+           <out key="outTarget" uid="..." />
            <mode>copyOnStart</mode>
        </service>
 
        <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." />
-           <out key="target" uid="..." />
+           <out key="outTarget" uid="..." />
            <mode>copyOnStart</mode>
        </service>
    @endcode
@@ -129,6 +129,10 @@ private:
 
     /// Determines when the data is copied (start or update)
     ModeType m_mode;
+
+    sight::data::ptr<sight::data::Object, sight::data::Access::in> m_source {this, "source"};
+    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_target {this, "target", false, true};
+    sight::data::ptr<sight::data::Object, sight::data::Access::out> m_outTarget {this, "outTarget", false};
 };
 
 } // namespace sight::module::data.

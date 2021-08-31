@@ -29,6 +29,7 @@
 #include <core/HiResClock.hpp>
 
 #include <data/FrameTL.hpp>
+#include <data/Vector.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -117,9 +118,6 @@ protected:
 
 private:
 
-    /// Frame timeline used to extract images
-    data::FrameTL::csptr m_frameTL;
-
     /// Index of the last acquisition.
     int m_captureIdx;
 
@@ -128,6 +126,9 @@ private:
 
     /// Calibration point list.
     QPointer<QListWidget> m_capturesListWidget;
+
+    data::ptr<data::FrameTL, data::Access::in> m_frameTL {this, "frameTL"};
+    data::ptr<data::Vector, data::Access::inout> m_selected_image {this, "selection"};
 };
 
 } // uiCalibration

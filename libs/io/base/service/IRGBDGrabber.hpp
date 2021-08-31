@@ -47,10 +47,10 @@ public:
     /** @} */
 
     /// Constructor.
-    IO_BASE_API IRGBDGrabber() noexcept;
+    IO_BASE_API IRGBDGrabber() noexcept = default;
 
     /// Destructor.
-    IO_BASE_API virtual ~IRGBDGrabber() noexcept;
+    IO_BASE_API virtual ~IRGBDGrabber() noexcept = default;
 
 protected:
 

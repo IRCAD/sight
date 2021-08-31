@@ -248,16 +248,14 @@ void SPointList::updating()
 
     this->destroyLabel();
 
-    const auto pointListW = this->getWeakInput<data::PointList>(s_POINTLIST_INPUT);
-    const auto pointList  = pointListW.lock();
+    const auto pointList = m_pointList.lock();
     if(pointList)
     {
         this->updateMesh(pointList.get_shared());
     }
     else
     {
-        const auto meshW = this->getWeakInput<data::Mesh>(s_MESH_INPUT);
-        const auto mesh  = meshW.lock();
+        const auto mesh = m_mesh.lock();
         if(mesh)
         {
             this->updateMesh(mesh.get_shared());
@@ -536,7 +534,7 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getLockedInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).get_shared()
+    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
             != m_material)
     {
         auto materialFw = m_materialAdaptor->getMaterialFw();

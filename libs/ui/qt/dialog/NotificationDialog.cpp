@@ -30,11 +30,6 @@
 #include <QBoxLayout>
 #include <QTimer>
 
-fwGuiRegisterMacro(
-    ::sight::ui::qt::dialog::NotificationDialog,
-    ::sight::ui::base::dialog::INotificationDialog::REGISTRY_KEY
-)
-
 namespace sight::ui::qt
 {
 

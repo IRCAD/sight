@@ -163,7 +163,7 @@ protected:
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    IO_BASE_API static void clearTimeline(SPTR(data::FrameTL) const&);
+    IO_BASE_API static void clearTimeline(data::FrameTL& tl);
 
     /**
      * @brief sets the current start state of the grabber.

@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <geometry/data/PointList.hpp>
 
 #include <glm/geometric.hpp>
@@ -38,8 +36,6 @@ namespace sight::module::ui::viz
 
 const core::com::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
 const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
-
-const std::string s_POINTLIST_KEY = "pointList";
 
 //------------------------------------------------------------------------------
 
@@ -85,13 +81,10 @@ void SAddPoint::updating()
 
 void SAddPoint::addPoint(const data::Point::sptr _point)
 {
-    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
+    auto pointList = m_pointList.lock();
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
-    {
-        data::mt::ObjectWriteLock lock(pointList);
-        pointList->pushBack(_point);
-    }
+    pointList->pushBack(_point);
 
     auto sig = pointList->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
     {
@@ -104,12 +97,11 @@ void SAddPoint::addPoint(const data::Point::sptr _point)
 
 void SAddPoint::removePoint(const data::Point::csptr _point)
 {
-    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
+    auto pointList = m_pointList.lock();
     SIGHT_ASSERT("Missing data::PointList data", pointList);
 
-    data::mt::ObjectWriteLock lock(pointList);
-
-    const data::Point::sptr pointRes = geometry::data::PointList::removeClosestPoint(pointList, _point, 10);
+    const data::Point::sptr pointRes =
+        geometry::data::PointList::removeClosestPoint(pointList.get_shared(), _point, 10);
 
     if(pointRes != nullptr)
     {
@@ -148,10 +140,8 @@ void SAddPoint::pick(data::tools::PickingInfo _info)
 
 void SAddPoint::clearPoints()
 {
-    auto pointList = this->getInOut<data::PointList>(s_POINTLIST_KEY);
+    auto pointList = m_pointList.lock();
     SIGHT_ASSERT("Missing data::PointList data", pointList);
-
-    data::mt::ObjectWriteLock lock(pointList);
 
     pointList->clear();
     const auto& sig = pointList->signal<data::PointList::ModifiedSignalType>(

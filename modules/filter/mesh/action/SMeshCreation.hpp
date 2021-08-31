@@ -24,6 +24,9 @@
 
 #include "modules/filter/mesh/config.hpp"
 
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
+
 #include <ui/base/IAction.hpp>
 
 namespace sight::module::filter::mesh
@@ -83,6 +86,9 @@ protected:
 private:
 
     unsigned int m_reduction;
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace action

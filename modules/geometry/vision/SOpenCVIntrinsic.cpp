@@ -24,22 +24,8 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-#include <core/tools/Object.hpp>
-
-#include <data/CalibrationInfo.hpp>
-#include <data/Camera.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-#include <data/PointList.hpp>
-#include <data/Vector.hpp>
 
 #include <io/opencv/Matrix.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -109,9 +95,7 @@ void SOpenCVIntrinsic::stopping()
 
 void SOpenCVIntrinsic::updating()
 {
-    data::CalibrationInfo::csptr calInfo = this->getInput<data::CalibrationInfo>("calibrationInfo");
-    data::Camera::sptr cam               = this->getInOut<data::Camera>("camera");
-    data::Vector::sptr poseCamera        = this->getInOut<data::Vector>("poseVector");
+    const auto calInfo = m_calibrationInfo.lock();
 
     SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SIGHT_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
@@ -137,26 +121,23 @@ void SOpenCVIntrinsic::updating()
 
         std::vector<std::vector< ::cv::Point2f> > imagePoints;
 
+        for(data::PointList::sptr capture : calInfo->getPointListContainer())
         {
-            data::mt::ObjectReadLock calInfoLock(calInfo);
-            for(data::PointList::sptr capture : calInfo->getPointListContainer())
+            std::vector< ::cv::Point2f> dst;
+
+            for(data::Point::csptr point : capture->getPoints())
             {
-                std::vector< ::cv::Point2f> dst;
-
-                for(data::Point::csptr point : capture->getPoints())
-                {
-                    SIGHT_ASSERT("point is null", point);
-                    dst.push_back(
-                        ::cv::Point2f(
-                            static_cast<float>(point->getCoord()[0]),
-                            static_cast<float>(point->getCoord()[1])
-                        )
-                    );
-                }
-
-                imagePoints.push_back(dst);
-                objectPoints.push_back(points);
+                SIGHT_ASSERT("point is null", point);
+                dst.push_back(
+                    ::cv::Point2f(
+                        static_cast<float>(point->getCoord()[0]),
+                        static_cast<float>(point->getCoord()[1])
+                    )
+                );
             }
+
+            imagePoints.push_back(dst);
+            objectPoints.push_back(points);
         }
 
         data::Image::sptr img = calInfo->getImageContainer().front();
@@ -171,6 +152,7 @@ void SOpenCVIntrinsic::updating()
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
+        const auto poseCamera = m_poseVector.lock();
         if(poseCamera)
         {
             poseCamera->getContainer().clear();
@@ -191,7 +173,7 @@ void SOpenCVIntrinsic::updating()
 
         SIGHT_DEBUG("Calibration error :" << err);
 
-        data::mt::ObjectWriteLock camLock(cam);
+        const auto cam = m_camera.lock();
 
         cam->setCx(cameraMatrix.at<double>(0, 2));
         cam->setCy(cameraMatrix.at<double>(1, 2));

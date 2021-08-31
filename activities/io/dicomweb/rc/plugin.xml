@@ -24,7 +24,7 @@
         <id>DicomWebReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
-            <config filterType="sight::filter::dicom::custom::DefaultDicomFilter" />
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
 

@@ -24,8 +24,9 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
-#include <core/com/Slot.hpp>
 #include <core/memory/BufferObject.hpp>
+
+#include <data/Vector.hpp>
 
 #include <io/http/ClientQt.hpp>
 
@@ -124,6 +125,8 @@ private:
 
     /// Server port
     int m_serverPort {4242};
+
+    sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
 };
 
 } // namespace sight::module::io::dicomweb

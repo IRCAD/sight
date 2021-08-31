@@ -55,7 +55,7 @@ public:
 
     ///@}
 
-    VIZ_SCENE3D_API static const std::string s_PARAMETER_INOUT;
+    VIZ_SCENE3D_API static constexpr std::string_view s_PARAMETER_INOUT = "parameter";
 
     /// Constructor.
     VIZ_SCENE3D_API IParameter() noexcept;

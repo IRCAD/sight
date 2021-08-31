@@ -94,7 +94,7 @@ public:
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SCameraConfigLauncher() noexcept;
+    MODULE_UI_QT_API ~SCameraConfigLauncher() noexcept override;
 
 protected:
 
@@ -136,8 +136,8 @@ private:
     service::helper::ConfigLauncher m_intrinsicLauncher;
     service::helper::ConfigLauncher m_extrinsicLauncher;
 
-    data::CameraSeries::sptr m_cameraSeries;
-    data::ActivitySeries::sptr m_activitySeries;
+    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, "cameraSeries"};
+    data::ptr<data::ActivitySeries, data::Access::inout> m_activitySeries {this, "activitySeries"};
 };
 
 } // namespace sight::module::ui::qt::calibration

@@ -28,9 +28,11 @@
 #include <core/thread/Worker.hpp>
 
 #include <data/DicomSeries.hpp>
+#include <data/Image.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/base/service/IReader.hpp>
+#include <io/dimse/data/PacsConfiguration.hpp>
 
 #include <service/IHasServices.hpp>
 
@@ -54,7 +56,7 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />
-        <config delay="500" dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+        <config delay="500" dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
     </service>
    @endcode
  *
@@ -68,7 +70,7 @@ namespace sight::module::io::dimse
  * @subsection Configuration Configuration:
  * - \b delay (optional, unsigned, default=500): delay to wait between each slice move.
  * - \b dicomReader (mandatory, string): reader type to use.
- * - \b dicomReaderConfig (optional, string, default=""): configuration for the DICOM Reader.
+ * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
 class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
@@ -165,6 +167,12 @@ private:
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB;
+
+    data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
+    data::ptr<sight::data::Image, data::Access::inout> m_image {this, "image"};
+
+    static constexpr std::string_view s_DICOMSERIES_INOUT = "series";
+    data::ptr<sight::data::DicomSeries, data::Access::inout> m_series {this, s_DICOMSERIES_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

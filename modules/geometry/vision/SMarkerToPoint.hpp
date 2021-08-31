@@ -24,13 +24,10 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <data/MatrixTL.hpp>
+#include <data/PointList.hpp>
 
 #include <service/IController.hpp>
-
-#include <string>
-#include <vector>
 
 namespace sight::module::geometry::vision
 {
@@ -63,10 +60,6 @@ class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public service::IControl
 public:
 
     SIGHT_DECLARE_SERVICE(SMarkerToPoint, service::IController);
-
-    /// Data xml keys
-    static const service::IService::KeyType s_MATRIXTL_INPUT;
-    static const service::IService::KeyType s_POINTLIST_INOUT;
 
     /**
      * @name Slots API
@@ -102,6 +95,9 @@ protected:
 
     /// Slot called to clear the pointlist
     MODULE_GEOMETRY_VISION_API void clear();
+
+    data::ptr<data::MatrixTL, data::Access::in> m_matrixTL {this, "matrixTL"};
+    data::ptr<data::PointList, data::Access::inout> m_pointList {this, "pointList"};
 };
 
 } //namespace sight::module::geometry::vision

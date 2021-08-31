@@ -26,6 +26,8 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <data/Image.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
@@ -117,6 +119,8 @@ private:
     QPointer<QPushButton> m_distButton;
 
     DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
 };
 
 } // uiMeasurementQt

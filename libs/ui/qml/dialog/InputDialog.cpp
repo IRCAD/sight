@@ -79,7 +79,7 @@ std::string InputDialog::getInput()
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/InputDialog.qml");
+        core::runtime::getLibraryResourceFilePath("ui_qml/dialog/InputDialog.qml");
 
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));

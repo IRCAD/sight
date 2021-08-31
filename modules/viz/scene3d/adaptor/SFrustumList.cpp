@@ -24,9 +24,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/Camera.hpp>
-#include <data/Matrix4.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
@@ -41,12 +38,10 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
 static const core::com::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
 
-static const std::string s_CAMERA_INPUT    = "camera";
-static const std::string s_NEAR_CONFIG     = "near";
-static const std::string s_FAR_CONFIG      = "far";
-static const std::string s_COLOR_CONFIG    = "color";
-static const std::string s_TRANSFORM_INPUT = "transform";
-static const std::string s_NB_MAX_CONFIG   = "nbMax";
+static const std::string s_NEAR_CONFIG   = "near";
+static const std::string s_FAR_CONFIG    = "far";
+static const std::string s_COLOR_CONFIG  = "color";
+static const std::string s_NB_MAX_CONFIG = "nbMax";
 
 //-----------------------------------------------------------------------------
 
@@ -156,7 +151,7 @@ void SFrustumList::setVisible(bool _visible)
 void SFrustumList::addFrustum()
 {
     //Get camera parameters
-    const auto cameraData = this->getLockedInput<data::Camera>(s_CAMERA_INPUT);
+    const auto cameraData = m_camera.lock();
 
     ::Ogre::Camera* ogreCamera =
         this->getSceneManager()->createCamera(
@@ -190,7 +185,7 @@ void SFrustumList::addFrustum()
     // Set position
     ::Ogre::Affine3 ogreMat;
     {
-        const auto transform = this->getLockedInput<data::Matrix4>(s_TRANSFORM_INPUT);
+        const auto transform = m_transform.lock();
 
         for(size_t lt = 0 ; lt < 4 ; lt++)
         {

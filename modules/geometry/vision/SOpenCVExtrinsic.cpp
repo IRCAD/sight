@@ -53,11 +53,6 @@ namespace sight::module::geometry::vision
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
-static const service::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
-static const service::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
-static const service::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
-static const service::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
-
 // ----------------------------------------------------------------------------
 
 SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
@@ -123,15 +118,8 @@ void SOpenCVExtrinsic::stopping()
 
 void SOpenCVExtrinsic::updating()
 {
-    data::CameraSeries::sptr camSeries = this->getInOut<data::CameraSeries>(s_CAMERASERIES_INOUT);
-
-    SIGHT_ASSERT(
-        "camera index must be > 0 and < camSeries->getNumberOfCameras()",
-        m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
-    );
-
-    data::CalibrationInfo::csptr calInfo1 = this->getInput<data::CalibrationInfo>(s_CALIBINFO1_INPUT);
-    data::CalibrationInfo::csptr calInfo2 = this->getInput<data::CalibrationInfo>(s_CALIBINFO2_INPUT);
+    const auto calInfo1 = m_calibrationInfo1.lock();
+    const auto calInfo2 = m_calibrationInfo2.lock();
 
     SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
     SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
@@ -159,9 +147,6 @@ void SOpenCVExtrinsic::updating()
         std::vector<std::vector< ::cv::Point2f> > imagePoints1;
         std::vector<std::vector< ::cv::Point2f> > imagePoints2;
         {
-            data::mt::ObjectReadLock calInfo1Lock(calInfo1);
-            data::mt::ObjectReadLock calInfo2Lock(calInfo2);
-
             data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
@@ -218,10 +203,16 @@ void SOpenCVExtrinsic::updating()
         ::cv::Mat essentialMatrix;
         ::cv::Mat fundamentalMatrix;
 
+        const auto camSeries = m_cameraSeries.lock();
+
+        SIGHT_ASSERT(
+            "camera index must be > 0 and < camSeries->getNumberOfCameras()",
+            m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
+        );
+
         data::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
-            data::mt::ObjectReadLock camSeriesLock(camSeries);
             data::Camera::sptr cam1 = camSeries->getCamera(0);
             data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
 
@@ -274,7 +265,6 @@ void SOpenCVExtrinsic::updating()
         io::opencv::Matrix::copyFromCv(cv4x4, matrix);
 
         {
-            data::mt::ObjectWriteLock camSeriesLock(camSeries);
             camSeries->setExtrinsicMatrix(m_camIndex, matrix);
         }
 
@@ -286,7 +276,7 @@ void SOpenCVExtrinsic::updating()
         sig->asyncEmit();
 
         // Export matrix if needed.
-        this->setOutput(s_MATRIX_OUTPUT, matrix);
+        m_matrix = matrix;
     }
 }
 

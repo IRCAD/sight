@@ -28,6 +28,7 @@
 #include <core/HiResClock.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/Camera.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/tools/PickingInfo.hpp>
@@ -47,6 +48,7 @@ namespace sight::module::ui::base::video
    <service uid="..." type="sight::module::ui::base::video::SImagePicker" >
         <inout key="pointList" uid="..." />
         <inout key="pixelPointList" uid="..." />
+        <in key="camera" uid="..." />
         <config videoReference="center" />
    </service>
    @endcode
@@ -129,6 +131,10 @@ private:
 
     /// Manages video coordinate system
     VideoReferenceType m_videoRef {VideoReferenceType::CENTER};
+
+    data::ptr<data::PointList, sight::data::Access::inout> m_pointList {this, "pointList"};
+    data::ptr<data::PointList, sight::data::Access::inout> m_pixelPointList {this, "pixelPointList"};
+    data::ptr<data::Camera, sight::data::Access::in> m_camera {this, "camera"};
 };
 
 } //namespace sight::module::ui::base::video

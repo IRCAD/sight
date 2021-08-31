@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Controls.Material 2.12
 import QtQuick.Window 2.12
 
-import styleQml 1.0
+import sight.style 1.0
 
 Window {
     id: window

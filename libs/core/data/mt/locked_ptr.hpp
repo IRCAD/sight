@@ -145,6 +145,42 @@ public:
         return m_data.operator bool();
     }
 
+    /// Allows to compare pointer address
+    inline bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
+    {
+        return this->get() == data.get();
+    }
+
+    /// Allows to compare pointer address
+    inline bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
+    {
+        return this->get() != data.get();
+    }
+
+    /// Allows to compare pointer address
+    inline bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
+    {
+        return this->get() == data.get();
+    }
+
+    /// Allows to compare pointer address
+    inline bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
+    {
+        return this->get() != data.get();
+    }
+
+    /// Allows to compare pointer address
+    inline bool operator==(const DATATYPE* data) const noexcept
+    {
+        return this->get() == data;
+    }
+
+    /// Allows to compare pointer address
+    inline bool operator!=(const DATATYPE* data) const noexcept
+    {
+        return this->get() != data;
+    }
+
 private:
 
     /// Data to guard

@@ -82,7 +82,7 @@ void SPushObject::updating()
     data::Object::sptr obj = compositeSrc->at<data::Object>(m_srcKey);
 
     SIGHT_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
-    if(getOutput<sight::data::Object>(s_DESTINATION_KEY))
+    if(m_target.lock())
     {
         this->setOutput(s_DESTINATION_KEY, nullptr);
     }

@@ -90,13 +90,6 @@ void SMatrixWriter::starting()
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SMatrixWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -150,7 +143,17 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>(sight::io::base::service::s_DATA_KEY);
+        const auto locked   = m_data.lock();
+        const auto matrixTL = std::dynamic_pointer_cast<const data::MatrixTL>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::MatrixTL::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            matrixTL
+        );
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 

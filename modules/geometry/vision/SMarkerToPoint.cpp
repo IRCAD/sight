@@ -22,28 +22,19 @@
 
 #include "SMarkerToPoint.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
 #include <core/com/Slots.hxx>
 
 #include <data/Matrix4.hpp>
-#include <data/MatrixTL.hpp>
-#include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
-#include <data/PointList.hpp>
 
 #include <service/IService.hpp>
-#include <service/macros.hpp>
 
 namespace sight::module::geometry::vision
 {
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
-
-const service::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
-const service::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
 
 // ----------------------------------------------------------------------------
 
@@ -87,8 +78,7 @@ void SMarkerToPoint::stopping()
 
 void SMarkerToPoint::addPoint()
 {
-    data::MatrixTL::csptr matrixTL = this->getInput<data::MatrixTL>(s_MATRIXTL_INPUT);
-    data::PointList::sptr pl       = this->getInOut<data::PointList>(s_POINTLIST_INOUT);
+    const auto matrixTL = m_matrixTL.lock();
 
     data::Matrix4::sptr matrix3D = data::Matrix4::New();
 
@@ -119,6 +109,7 @@ void SMarkerToPoint::addPoint()
         matrix3D->getCoefficient(2, 3)
     );
 
+    const auto pl = m_pointList.lock();
     pl->pushBack(p);
     auto sig = pl->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
     {
@@ -131,9 +122,7 @@ void SMarkerToPoint::addPoint()
 
 void SMarkerToPoint::clear()
 {
-    data::PointList::sptr pl = this->getInOut<data::PointList>(s_POINTLIST_INOUT);
-
-    data::mt::ObjectReadLock lock(pl);
+    const auto pl = m_pointList.lock();
 
     if(pl && !pl->getPoints().empty())
     {

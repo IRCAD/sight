@@ -120,8 +120,8 @@ void SExtractMeshByType::updating()
                 {
                     sight::data::Mesh::sptr obj = element->getMesh();
 
-                    this->setOutput(s_TARGET, obj, index);
-                    found = true;
+                    m_target[index] = obj;
+                    found           = true;
                     ++index;
 
                     break;
@@ -143,7 +143,7 @@ void SExtractMeshByType::stopping()
     // Unregister outputs
     for(size_t i = 0 ; i < m_target.size() ; ++i)
     {
-        setOutput(s_TARGET, nullptr, i);
+        m_target[i] = nullptr;
     }
 }
 

@@ -63,13 +63,6 @@ public:
     /// Destructor.
     MODULE_IO_VISION_API ~SCalibrationInfoReader() noexcept override;
 
-    /**
-     * @brief Configures the folder path.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VISION_API void configureWithIHM() override;
-
     /// Configures the folder path.
     MODULE_IO_VISION_API void openLocationDialog() override;
 

@@ -108,11 +108,16 @@ public:
 
         typedef typename ::boost::conditional<std::is_const<T>::value, const void*, void*>::type BufferType;
 
-        /**
-         * @brief Build an empty lock.
-         */
+        /// Build an empty lock.
         LockBase()
         {
+        }
+
+        /// Ensure the unlock is done before the release of the shared ptr
+        ~LockBase()
+        {
+            m_count.reset();
+            m_bufferObject.reset();
         }
 
         /**
@@ -141,9 +146,7 @@ public:
          */
         typename LockBase<T>::BufferType getBuffer() const
         {
-            SPTR(T) bufferObject = m_bufferObject.lock();
-            BufferType buffer = bufferObject->m_buffer;
-            return buffer;
+            return m_bufferObject->m_buffer;
         }
 
         /**
@@ -158,7 +161,10 @@ public:
     protected:
 
         BufferObject::CounterType m_count;
-        WPTR(T) m_bufferObject;
+        // Using a shared_ptr allows to keep the buffer alive until the lock is destroyed,
+        // otherwise we would raise the lock count assert in the destruction of the buffer,
+        // in BufferManager::::unregisterBufferImpl()
+        SPTR(T) m_bufferObject;
     };
 
     /**

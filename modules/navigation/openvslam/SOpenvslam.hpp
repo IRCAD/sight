@@ -113,6 +113,7 @@ namespace sight::module::navigation::openvslam
             <in key="camera" uid="..." />
             <in key="timeline" uid="..." autoConnect="true" />
             <in key="timeline2" uid="..." />
+            <in key="scale" uid="..." />
             <inout key="cameraMatrixTL" uid="..." />
             <out key="pointCloud" uid="..." />
             <mode>MONO</mode>
@@ -124,6 +125,8 @@ namespace sight::module::navigation::openvslam
  * - \b timeline2 [sight::data::FrameTL](optional): Only needed if STEREO/DEPTH mode is enabled !
  * if STEREO: frameTL2 will represent frame from the second camera.
  * if DEPTH: frameTL2 will represent frame from depth sensor.
+ * - \b scale [sight::data::Float](optional): scale to apply to each positions (and pointcloud), each position will be
+ * multiplied by 1/scale
  *
  * @subsection In-Out In-Out:
  * - \b cameraMatrixTL [sight::data::MatrixTL](optional): timeLine of  matrix representing the movement of the 3D
@@ -284,21 +287,6 @@ private:
 
 private:
 
-    /// Transformation matrix representing the movement of the 3D camera and thus of the real camera.
-    data::MatrixTL::sptr m_cameraMatrixTL;
-
-    /// Timeline of frames of the video on which openvslam will work.
-    data::FrameTL::csptr m_frameTL;
-
-    /// Timeline of frames of the second video (STEREO/DEPTH mode), unused in MONO mode.
-    data::FrameTL::csptr m_frameTL2;
-
-    /// Virtual scene camera.
-    data::Camera::csptr m_camera;
-
-    /// Mesh that represent MapPoints.
-    data::Mesh::sptr m_pointCloud;
-
     /// ORB Parameters structure
     sight::navigation::openvslam::OrbParams m_orbParameters;
 
@@ -338,9 +326,6 @@ private:
     ///Calls asynchronously updatePointCloud each 1sec.
     core::thread::Timer::sptr m_timer;
 
-    /// Matrix and points scale
-    std::atomic<float> m_scale {1.0f};
-
     /// Worker for pointcloud update
     core::thread::Worker::sptr m_pointcloudWorker;
 
@@ -360,6 +345,21 @@ private:
 
     /// Stores the current number of landmarks in the map. (Only used in updatePointCloud thread).
     unsigned int m_numberOfLandmarks {0};
+
+    static constexpr std::string_view s_VIDEOPOINTS_INPUT     = "videoPoint";
+    static constexpr std::string_view s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
+    static constexpr std::string_view s_TIMELINE2_INPUT       = "timeline2";
+    static constexpr std::string_view s_CAMERA_INPUT          = "camera";
+    static constexpr std::string_view s_SCALE_INPUT           = "scale";
+    static constexpr std::string_view s_POINTCLOUD_OUTPUT     = "pointCloud";
+
+    sight::data::ptr<sight::data::Camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_timeline2 {this, s_TIMELINE2_INPUT, false, true};
+    sight::data::ptr<sight::data::MatrixTL, sight::data::Access::inout> m_cameraMatrixTL {this, s_CAMERA_MATRIXTL_INOUT,
+                                                                                          false, true
+    };
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::out> m_pointCloud {this, s_POINTCLOUD_OUTPUT, false, true};
+    sight::data::ptr<sight::data::Float, sight::data::Access::in> m_scale {this, s_SCALE_INPUT, false, true};
 };
 
 } // openvslamTracker

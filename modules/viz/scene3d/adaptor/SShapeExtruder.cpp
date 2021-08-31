@@ -38,8 +38,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_EXTRUDED_MESHES_INOUT = "extrudedMeshes";
-
 static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
 static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
 
@@ -294,7 +292,7 @@ void SShapeExtruder::enableTool(bool _enable)
 void SShapeExtruder::deleteLastMesh()
 {
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut<data::ModelSeries>(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = m_extrudedMeshes.lock();
 
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
@@ -784,7 +782,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     }
 
     // Get the reconstruction list.
-    const auto extrudedMeshes = this->getLockedInOut<data::ModelSeries>(s_EXTRUDED_MESHES_INOUT);
+    const auto extrudedMeshes = m_extrudedMeshes.lock();
 
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 

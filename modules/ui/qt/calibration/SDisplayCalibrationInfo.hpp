@@ -28,6 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/CalibrationInfo.hpp>
+
 #include <service/AppConfigManager.hpp>
 #include <service/IController.hpp>
 
@@ -110,6 +112,11 @@ private:
     service::IAppConfigManager::sptr m_configMgr;
 
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
+
+    static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
+    static constexpr std::string_view s_CALIBRATION_INFO_2 = "calInfo2";
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, s_CALIBRATION_INFO_1, true};
+    data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, true};
 };
 
 } // uiCalibration

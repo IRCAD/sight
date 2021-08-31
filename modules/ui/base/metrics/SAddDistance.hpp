@@ -26,6 +26,8 @@
 
 #include <core/macros.hpp>
 
+#include <data/Image.hpp>
+
 #include <ui/base/IAction.hpp>
 
 namespace sight::module::ui::base::metrics
@@ -70,6 +72,10 @@ protected:
 
     /// Stops the action.
     MODULE_UI_BASE_API void stopping() override;
+
+private:
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
 };
 
 } // namespace sight::module::ui::base::metrics

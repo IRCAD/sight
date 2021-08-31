@@ -28,11 +28,15 @@ namespace sight::core::tools
 {
 
 typedef ::boost::mpl::vector<
-        signed char, unsigned char,
-        signed short, unsigned short,
-        signed int, unsigned int
+        std::int8_t,
+        std::uint8_t,
+        std::int16_t,
+        std::uint16_t,
+        std::int32_t,
+        std::uint32_t
 #ifndef DEBUG
-        , signed long, unsigned long
+        , std::int64_t,
+        std::uint64_t
 #endif
 >::type IntegerTypes;
 

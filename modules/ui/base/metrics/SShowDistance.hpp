@@ -84,6 +84,10 @@ private:
 
     /// SLOT: shows or hides distance from the image field.
     void showDistance(bool);
+
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE};
 };
 
 } // namespace sight::module::ui::base::metrics

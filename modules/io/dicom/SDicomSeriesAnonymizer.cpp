@@ -28,17 +28,11 @@
 
 #include <data/DicomSeries.hpp>
 #include <data/helper/SeriesDB.hpp>
-#include <data/SeriesDB.hpp>
-#include <data/Vector.hpp>
 
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-
-#include <vector>
 
 namespace sight::module::io::dicom
 {
@@ -81,7 +75,7 @@ void SDicomSeriesAnonymizer::stopping()
 
 void SDicomSeriesAnonymizer::updating()
 {
-    data::Vector::sptr vector = this->getInOut<data::Vector>("selectedSeries");
+    const auto vector = m_selectedSeries.lock();
 
     sight::ui::base::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
@@ -99,7 +93,7 @@ void SDicomSeriesAnonymizer::updating()
         {
             sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
-            this->anonymize();
+            this->anonymize(*vector);
             cursor.setDefaultCursor();
         }
     }
@@ -122,10 +116,9 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::anonymize()
+void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut<data::SeriesDB>("seriesDB");
-    data::Vector::sptr vector     = this->getInOut<data::Vector>("selectedSeries");
+    const auto seriesDB = m_seriesDB.lock();
 
     data::helper::SeriesDB sDBhelper(*seriesDB);
 
@@ -134,7 +127,7 @@ void SDicomSeriesAnonymizer::anonymize()
 
     std::vector<data::DicomSeries::sptr> anonymizedDicomSeriesVector;
 
-    for(const auto& value : vector->getContainer())
+    for(const auto& value : _vector.getContainer())
     {
         data::DicomSeries::sptr dicomSeries           = data::DicomSeries::dynamicCast(value);
         data::DicomSeries::sptr anonymizedDicomSeries = data::DicomSeries::New();
@@ -150,7 +143,7 @@ void SDicomSeriesAnonymizer::anonymize()
 
     if(!m_cancelled)
     {
-        for(const auto& value : vector->getContainer())
+        for(const auto& value : _vector.getContainer())
         {
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(value);
             sDBhelper.remove(dicomSeries);

@@ -26,10 +26,6 @@
 #include <core/com/Signal.hxx>
 
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
-#include <data/Matrix4.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
@@ -39,9 +35,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN        = "image";
-static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -71,12 +64,11 @@ void SImageCenter::starting()
 
 void SImageCenter::updating()
 {
-    data::Image::csptr image = this->getInput<data::Image>(s_IMAGE_IN);
-    data::mt::ObjectReadLock imLock(image);
+    const auto image = m_image.lock();
 
-    SIGHT_ASSERT("Missing image '" + s_IMAGE_IN + "'", image);
+    SIGHT_ASSERT("Missing image '" << s_IMAGE_IN << "'", image);
 
-    const bool imageValidity = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageValidity = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
 
     if(!imageValidity)
     {
@@ -84,12 +76,9 @@ void SImageCenter::updating()
         return;
     }
 
-    data::Matrix4::sptr matrix =
-        this->getInOut<data::Matrix4>(s_TRANSFORM_INOUT);
+    auto matrix = m_transform.lock();
 
-    SIGHT_ASSERT("Missing matrix '" + s_TRANSFORM_INOUT + "'", matrix);
-
-    data::mt::ObjectWriteLock matLock(matrix);
+    SIGHT_ASSERT("Missing matrix '" << s_TRANSFORM_INOUT << "'", matrix);
 
     geometry::data::identity(*matrix);
 

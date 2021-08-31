@@ -28,7 +28,6 @@
 #include <core/thread/Worker.hpp>
 #include <core/tools/Object.hpp>
 
-#include <data/CameraSeries.hpp>
 #include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
@@ -107,7 +106,7 @@ void SCameraSeriesEditor::stopping()
 
 void SCameraSeriesEditor::updateInformations()
 {
-    data::CameraSeries::csptr cameraSeries = this->getInput<data::CameraSeries>("cameraSeries");
+    const auto cameraSeries = m_cameraSeries.lock();
 
     //IS CALIBRATED
     data::Matrix4::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
@@ -149,9 +148,9 @@ void SCameraSeriesEditor::clearLabels()
 service::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push("cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push("cameraSeries", data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push("cameraSeries", data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERASERIES, data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERASERIES, data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERASERIES, data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
     return connections;
 }
 

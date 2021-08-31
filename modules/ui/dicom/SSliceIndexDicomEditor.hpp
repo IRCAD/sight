@@ -26,6 +26,9 @@
 
 #include <core/com/Slot.hpp>
 
+#include <data/DicomSeries.hpp>
+#include <data/Image.hpp>
+
 #include <io/base/service/IReader.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -84,9 +87,9 @@ namespace sight::module::ui::dicom
            <in key="series" uid="..." />
            <out key="image" uid="..." />
            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500">
-               <dicomReaderConfig> <!-- optional -->
+               <readerConfig> <!-- optional -->
                    <!-- here goes the configuration for the dicom reader implementation -->
-               </dicomReaderConfig>
+               </readerConfig>
            </config>
        </service>
    @endcode
@@ -96,7 +99,7 @@ namespace sight::module::ui::dicom
  * - \b image [sight::data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
  * - \b dicomReader Reader type to use.
- * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
+ * - \b readerConfig Optional configuration for the DICOM Reader.
  */
 class MODULE_UI_DICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
                                                          public sight::ui::base::IEditor
@@ -201,6 +204,11 @@ private:
 
     /// Optional configuration to set to reader implementation
     SPTR(core::runtime::ConfigurationElement) m_readerConfig;
+
+    static constexpr std::string_view s_IMAGE = "image";
+
+    data::ptr<data::DicomSeries, data::Access::in> m_dicomSeries {this, "series", true};
+    data::ptr<data::Image, data::Access::out> m_image {this, s_IMAGE, false};
 };
 
 } // namespace sight::module::ui::dicom

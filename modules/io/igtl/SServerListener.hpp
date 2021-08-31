@@ -101,6 +101,8 @@ private:
 
     /// Vector of device name if the group configuration exists.
     std::vector<std::string> m_deviceNames;
+
+    data::ptr_vector<data::Object, sight::data::Access::inout> m_objects {this, "objects"};
 };
 
 } // namespace sight::module::io::igtl

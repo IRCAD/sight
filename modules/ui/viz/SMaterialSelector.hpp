@@ -116,6 +116,8 @@ private:
 
     QPointer<QComboBox> m_materialBox;
     QPointer<QPushButton> m_reloadButton;
+
+    data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
 } // uiVisuOgre

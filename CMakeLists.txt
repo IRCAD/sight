@@ -135,6 +135,8 @@ if(UNIX)
         list(APPEND CMAKE_PREFIX_PATH ${SIGHT_EXTERNAL_LIBRARIES})
         list(APPEND CMAKE_MODULE_PATH ${SIGHT_EXTERNAL_LIBRARIES}/lib/cmake/)
         list(APPEND CMAKE_FIND_ROOT_PATH ${SIGHT_EXTERNAL_LIBRARIES})
+        # To be added into LD_LIBRARY_PATH in our "launch" scripts.
+        set(SIGHT_EXTERNAL_LIBRARIES_LIB_PATH ${SIGHT_EXTERNAL_LIBRARIES}/lib/)
     endif()
 endif()
 

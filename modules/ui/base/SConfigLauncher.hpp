@@ -59,14 +59,10 @@ namespace sight::module::ui::base
  * @code{.xml}
         <service type="sight::service::SConfigController" >
             <appConfig id="IdOfConfig" />
-            <inout key="object" uid="..." />
             <parameter replace="channel" by="changeValueChannel"  />
             <parameter replace="service" by="serviceUid" />
         </service>
    @endcode
- * @subsection In-Out In-Out:
- * - \b object [sight::data::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
- * identifies the object whose uid is passed as value of the parameter.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.

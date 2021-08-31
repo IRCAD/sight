@@ -24,6 +24,8 @@
 
 #include "modules/filter/mesh//config.hpp"
 
+#include <data/Mesh.hpp>
+
 #include <service/IGenerator.hpp>
 
 #include <vtkAlgorithmOutput.h>
@@ -173,6 +175,8 @@ private:
      * \return vtkSmartPointer on a vtkPolyData that handles the geometry of the torus.
      */
     vtkSmartPointer<vtkPolyData> generateTorus(double _center, const unsigned char _rgba[4]);
+
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
 } // namespace generator

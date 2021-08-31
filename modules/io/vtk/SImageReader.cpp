@@ -73,13 +73,6 @@ sight::io::base::service::IOPathType SImageReader::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SImageReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -158,10 +151,21 @@ void SImageReader::info(std::ostream& _sstream)
 
 void SImageReader::updating()
 {
+    m_readFailed = true;
+
     if(this->hasLocationDefined())
     {
-        const auto image = m_data.dynamicPointerCast<data::Image>().lock();
-        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+        const auto locked = m_data.lock();
+        const auto image  = std::dynamic_pointer_cast<data::Image>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::Image::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            image
+        );
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
@@ -173,20 +177,18 @@ void SImageReader::updating()
             // Notify other image services that a new image has been loaded.
             if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
             {
+                m_readFailed = false;
+
                 auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
-            else
-            {
-                m_readFailed = true;
-            }
         }
         catch(core::tools::Failed& e)
         {
-            m_readFailed = true;
+            cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);
         }
 
@@ -208,7 +210,7 @@ typename READER::sptr configureReader(const std::filesystem::path& imgFile)
 
 bool SImageReader::loadImage(
     const std::filesystem::path& imgFile,
-    const data::mt::locked_ptr<data::Image>& img,
+    std::shared_ptr<data::Image> img,
     const SPTR(JobCreatedSignalType)& sigJobCreated
 )
 {
@@ -267,7 +269,7 @@ bool SImageReader::loadImage(
     }
 
     // Set the image (already created, but empty) that will be modified
-    imageReader->setObject(img.get_shared());
+    imageReader->setObject(img);
 
     sigJobCreated->emit(imageReader->getJob());
 

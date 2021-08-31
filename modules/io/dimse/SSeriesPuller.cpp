@@ -28,15 +28,12 @@
 
 #include <data/helper/SeriesDB.hpp>
 
-#include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
 #include <service/extension/Config.hpp>
-#include <service/macros.hpp>
 
-#include <filesystem>
 #include <sstream>
 
 namespace sight::module::io::dimse
@@ -50,11 +47,6 @@ static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries"
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
-
-static const service::IService::KeyType s_PACS_INPUT     = "pacsConfig";
-static const service::IService::KeyType s_SELECTED_INPUT = "selectedSeries";
-
-static const service::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
 
 SSeriesPuller::SSeriesPuller() noexcept
 {
@@ -128,7 +120,7 @@ void SSeriesPuller::starting()
 
 void SSeriesPuller::updating()
 {
-    const auto selectedSeries = this->getLockedInput<const data::Vector>(s_SELECTED_INPUT);
+    const auto selectedSeries = m_selectedSeries.lock();
 
     if(selectedSeries->empty())
     {
@@ -166,7 +158,7 @@ void SSeriesPuller::pullSeries()
     m_instanceCount = 0;
 
     // Retrieve data.
-    const auto selectedSeries = this->getLockedInput<const data::Vector>(s_SELECTED_INPUT);
+    const auto selectedSeries = m_selectedSeries.lock();
     const auto localEnd       = m_localSeries.end();
 
     // Find which selected series must be pulled.
@@ -201,7 +193,7 @@ void SSeriesPuller::pullSeries()
         m_sigProgressStarted->asyncEmit(m_progressbarId);
 
         // Retrieve informations.
-        const auto pacsConfig = this->getLockedInput<const sight::io::dimse::data::PacsConfiguration>(s_PACS_INPUT);
+        const auto pacsConfig = m_config.lock();
 
         auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
 
@@ -310,7 +302,7 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 {
-    const auto destinationSeriesDB = this->getLockedInOut<data::SeriesDB>(s_SERIES_DB_INOUT);
+    const auto destinationSeriesDB = m_destSeriesDB.lock();
 
     // Read only series that are not in the series DB.
     std::vector<std::string> alreadyLoadedSeries =

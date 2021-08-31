@@ -5,7 +5,6 @@
 fragment_program DualDepthPeeling/Blend_FP glsl
 {
     source DualDepthPeelingBlend_FP.glsl
-    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_backColorRGBuffer int 0
@@ -20,7 +19,6 @@ fragment_program DualDepthPeeling/Blend_FP glsl
 fragment_program DualDepthPeeling/Final_FP glsl
 {
     source DualDepthPeelingFinal_FP.glsl
-    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_backColorBuffer int 0

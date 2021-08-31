@@ -65,13 +65,6 @@ sight::io::base::service::IOPathType SSeriesDBReader::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesDBReader::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -143,6 +136,8 @@ void SSeriesDBReader::loadSeriesDB(
     const data::SeriesDB::sptr& seriesDB
 )
 {
+    m_readFailed = true;
+
     auto reader = sight::io::vtk::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(vtkFiles);
@@ -156,7 +151,6 @@ void SSeriesDBReader::loadSeriesDB(
     }
     catch(const std::exception& e)
     {
-        m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
@@ -168,7 +162,6 @@ void SSeriesDBReader::loadSeriesDB(
     }
     catch(...)
     {
-        m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading. ";
         sight::ui::base::dialog::MessageDialog::show(
@@ -183,40 +176,47 @@ void SSeriesDBReader::loadSeriesDB(
 
 void SSeriesDBReader::updating()
 {
+    m_readFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        auto lockedSeriesDB = this->getLockedInOut<data::SeriesDB>(sight::io::base::service::s_DATA_KEY);
+        const auto locked   = m_data.lock();
+        const auto seriesDB = std::dynamic_pointer_cast<data::SeriesDB>(locked.get_shared());
 
-        data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::SeriesDB::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            seriesDB
+        );
+
+        auto localSeriesDB = data::SeriesDB::New();
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        data::helper::SeriesDB sdbHelper(*lockedSeriesDB);
-        sdbHelper.clear();
-
-        // Notify removal.
-        sdbHelper.notify();
-
+        if(!m_readFailed)
         {
-            lockedSeriesDB->shallowCopy(localSeriesDB);
+            data::helper::SeriesDB sdbHelper(*seriesDB);
+            sdbHelper.clear();
+
+            // Notify removal.
+            sdbHelper.notify();
+            seriesDB->shallowCopy(localSeriesDB);
+
+            auto sig = seriesDB->signal<data::SeriesDB::AddedSeriesSignalType>(
+                data::SeriesDB::s_ADDED_SERIES_SIG
+            );
+
+            sig->asyncEmit(seriesDB->getContainer());
         }
 
-        data::SeriesDB::ContainerType addedSeries = lockedSeriesDB->getContainer();
-
-        auto sig = lockedSeriesDB->signal<data::SeriesDB::AddedSeriesSignalType>(
-            data::SeriesDB::s_ADDED_SERIES_SIG
-        );
-        sig->asyncEmit(addedSeries);
-
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_readFailed = true;
     }
 }
 

@@ -68,13 +68,6 @@ sight::io::base::service::IOPathType SImageWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -169,7 +162,7 @@ bool SImageWriter::saveImage(
     {
         // Get image information
         std::string type = image->getType().string();
-        int noc          = image->getNumberOfComponents();
+        std::size_t noc  = image->getNumberOfComponents();
 
         // Check type.
         // All extension handles uint8, and ".png" also handles uint16.
@@ -209,6 +202,7 @@ bool SImageWriter::saveImage(
         );
     }
 
+    data::mt::locked_ptr<const data::Image> locked(image);
     myWriter->setObject(image);
 
     sigJobCreated->emit(myWriter->getJob());
@@ -248,8 +242,8 @@ void SImageWriter::updating()
 {
     if(this->hasLocationDefined())
     {
-        // Retrieve dataStruct associated with this service
-        const auto pImage = this->getLockedInput<data::Image>(sight::io::base::service::s_DATA_KEY);
+        const auto data   = m_data.lock();
+        const auto pImage = std::dynamic_pointer_cast<const data::Image>(data.get_shared());
         SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
 
         sight::ui::base::Cursor cursor;
@@ -257,7 +251,7 @@ void SImageWriter::updating()
 
         try
         {
-            this->saveImage(this->getFile(), pImage.get_shared(), m_sigJobCreated);
+            this->saveImage(this->getFile(), pImage, m_sigJobCreated);
         }
         catch(core::tools::Failed& e)
         {

@@ -86,15 +86,6 @@ public:
      * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VTK_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the image path with a dialogBox.
-     *
-     * This method is used to find the file path using a file selector.
      */
     MODULE_IO_VTK_API void openLocationDialog() override;
 
@@ -111,7 +102,7 @@ public:
      */
     MODULE_IO_VTK_API static bool loadImage(
         const std::filesystem::path& vtkFile,
-        const data::mt::locked_ptr<data::Image>& img,
+        std::shared_ptr<data::Image> img,
         const SPTR(JobCreatedSignalType)& sigJobCreated
     );
 
@@ -140,9 +131,6 @@ protected:
     MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
 
 private:
-
-    /// This value is \b true if the path image is known.
-    bool m_bServiceIsConfigured;
 
     /// Image path, location of image on filesystem.
     std::filesystem::path m_fsImgPath;

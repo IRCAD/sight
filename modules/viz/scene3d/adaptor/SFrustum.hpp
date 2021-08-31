@@ -25,6 +25,7 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
+#include <data/Camera.hpp>
 #include <data/Material.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
@@ -127,6 +128,9 @@ private:
 
     /// Defines the color of frustum.
     std::string m_color {"#FF0000"};
+
+    static constexpr std::string_view s_CAMERA_INPUT = "camera";
+    sight::data::ptr<sight::data::Camera, sight::data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

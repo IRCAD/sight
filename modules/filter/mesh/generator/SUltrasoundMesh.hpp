@@ -156,7 +156,11 @@ private:
     bool m_shape {false};
 
     /// Stores mesh positions.
-    ::boost::multi_array<float, 3> m_meshPositionArray;
+    boost::multi_array<float, 3> m_meshPositionArray;
+
+    static constexpr std::string_view s_MESH_INOUT = "mesh";
+
+    sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, s_MESH_INOUT};
 };
 
 } // namespace generator.

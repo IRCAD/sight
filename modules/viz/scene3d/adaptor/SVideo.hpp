@@ -25,6 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/PointList.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
@@ -225,6 +226,14 @@ private:
 
     /// Defines the font size in points.
     std::string m_fontSize {""};
+
+    static constexpr std::string_view s_IMAGE_INPUT = "image";
+    static constexpr std::string_view s_TF_INPUT    = "tf";
+    static constexpr std::string_view s_PL_INPUT    = "pointList";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, s_TF_INPUT};
+    sight::data::ptr<sight::data::PointList, sight::data::Access::in> m_pl {this, s_PL_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

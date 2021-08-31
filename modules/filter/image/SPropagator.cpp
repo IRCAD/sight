@@ -47,9 +47,6 @@ static const core::com::Slots::SlotKeyType s_DRAW_SLOT            = "draw";
 static const core::com::Slots::SlotKeyType s_SET_ORIENTATION_SLOT = "setOrientation";
 static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawing";
 
-static const service::IService::KeyType s_IMAGE_IN    = "imageIn";
-static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
-
 //-----------------------------------------------------------------------------
 
 SPropagator::SPropagator() :
@@ -124,24 +121,28 @@ void SPropagator::configuring()
 
 void SPropagator::starting()
 {
-    const auto imgInLock     = this->getLockedInput<data::Image>(s_IMAGE_IN);
-    const auto imgOutLock    = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-    data::Image::csptr imgIn = imgInLock.get_shared();
-    data::Image::sptr imgOut = imgOutLock.get_shared();
+    const auto imgInLock = m_imageIn.lock();
+    SIGHT_ASSERT("No " << s_IMAGE_IN << " found.", imgInLock);
+    const auto imgOutLock = m_imageOut.lock();
+    SIGHT_ASSERT("No " << s_IMAGE_INOUT << " found.", imgOutLock);
 
-    SIGHT_ASSERT("'imageIn' does not exist", imgIn);
-    SIGHT_ASSERT("'imageOut' does not exist", imgOut);
+    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgInLock.get_shared())
+                   && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOutLock.get_shared());
 
-    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn)
-                   && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
-
-    SIGHT_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
-    SIGHT_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
+    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize2() != imgOutLock->getSize2());
+    SIGHT_WARN_IF(
+        "Input and output image must have the same spacing.",
+        imgInLock->getSpacing2() != imgOutLock->getSpacing2()
+    );
 
     if(isValid)
     {
-        m_propagator = std::make_unique<sight::filter::image::MinMaxPropagation>(imgIn, imgOut, nullptr);
-        m_lineDrawer = std::make_unique<sight::filter::image::LineDrawer>(imgOut, nullptr);
+        m_propagator = std::make_unique<sight::filter::image::MinMaxPropagation>(
+            imgInLock.get_shared(),
+            imgOutLock.get_shared(),
+            nullptr
+        );
+        m_lineDrawer = std::make_unique<sight::filter::image::LineDrawer>(imgOutLock.get_shared(), nullptr);
     }
 }
 
@@ -248,16 +249,13 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 {
     SIGHT_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
 
-    const auto imgInLock    = this->getLockedInput<data::Image>(s_IMAGE_IN);
-    const auto imgOutLock   = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
-    data::Image::sptr image = imgOutLock.get_shared();
-
-    SIGHT_ASSERT("'image' does not exist", image);
+    const auto imgOutLock = m_imageOut.lock();
+    SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOutLock);
 
     SPTR(data::Image::BufferType) val =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imgOutLock.get_shared(), m_value);
 
-    const data::Image::Spacing imgSpacing = image->getSpacing2();
+    const data::Image::Spacing imgSpacing = imgOutLock->getSpacing2();
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
@@ -314,7 +312,10 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
         if(m_diff.getNumberOfElements() > 0)
         {
-            ui::history::ImageDiffCommand::sptr diffCommand(new ui::history::ImageDiffCommand(image, m_diff));
+            ui::history::ImageDiffCommand::sptr diffCommand(new ui::history::ImageDiffCommand(
+                                                                imgOutLock.get_shared(),
+                                                                m_diff
+            ));
             m_sigDrawn->asyncEmit(diffCommand);
             m_diff.clear();
         }
@@ -326,7 +327,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
     if(imgBufferModified)
     {
-        auto sig = image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+        auto sig = imgOutLock->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
         core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
@@ -350,7 +351,8 @@ bool SPropagator::appendDiff(const sight::filter::image::ImageDiff& diff)
 
 sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSeeds() const
 {
-    const auto imgOut = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto imgOut = m_imageOut.lock();
+    SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOut);
 
     const data::Image::Size& imgSize = imgOut->getSize2();
 

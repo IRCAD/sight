@@ -109,6 +109,8 @@ private:
     typedef core::runtime::ConfigurationElementContainer::Container CfgContainer;
 
     DeviceConfigType m_devicesConfig;
+
+    sight::data::ptr<sight::data::Camera, sight::data::Access::inout> m_camera {this, "camera"};
 };
 
 } // namespace sight::module::data

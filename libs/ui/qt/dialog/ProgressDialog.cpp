@@ -30,8 +30,6 @@
 
 #include <QPaintEvent>
 
-fwGuiRegisterMacro(::sight::ui::qt::dialog::ProgressDialog, ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY);
-
 namespace sight::ui::qt
 {
 

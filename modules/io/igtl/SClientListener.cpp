@@ -141,8 +141,7 @@ void SClientListener::runClient()
                 if(iter != m_deviceNames.end())
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    data::Object::sptr obj        =
-                        this->getInOut<data::Object>(s_OBJECTS_GROUP, indexReceiveObject);
+                    const auto obj                = m_objects[indexReceiveObject].lock();
 
                     const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
@@ -213,8 +212,10 @@ void SClientListener::stopping()
 void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
-    data::MatrixTL::sptr matTL                 = this->getInOut<data::MatrixTL>(s_OBJECTS_GROUP, index);
-    data::FrameTL::sptr frameTL                = this->getInOut<data::FrameTL>(s_OBJECTS_GROUP, index);
+
+    const auto data    = m_objects[index].lock();
+    const auto matTL   = std::dynamic_pointer_cast<data::MatrixTL>(data.get_shared());
+    const auto frameTL = std::dynamic_pointer_cast<data::FrameTL>(data.get_shared());
 
     //MatrixTL
     if(matTL)

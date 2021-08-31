@@ -31,7 +31,6 @@
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
 #include <data/fieldHelper/Image.hpp>
-#include <data/Image.hpp>
 #include <data/String.hpp>
 
 #include <service/IService.hpp>
@@ -117,7 +116,7 @@ void Distance::updating()
 
 void Distance::onDistanceButton()
 {
-    data::Image::sptr image = this->getInOut<data::Image>("image");
+    const auto image = m_image.lock();
     SIGHT_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown

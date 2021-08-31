@@ -25,21 +25,12 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <filter/image/Resampler.hpp>
 
 #include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_IMAGE_IN    = "imageIn";
-static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
-
-static const service::IService::KeyType s_TARGET_IN    = "target";
-static const service::IService::KeyType s_TRANSFORM_IN = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -69,26 +60,21 @@ void SResampler::starting()
 
 void SResampler::updating()
 {
-    data::Image::csptr inImg = this->getInput<data::Image>(s_IMAGE_IN);
+    const auto inImg     = m_imageIn.lock();
+    auto outImg          = m_imageOut.lock();
+    const auto target    = m_targetIn.lock();
+    const auto transform = m_transformIn.lock();
 
-    data::mt::ObjectReadLock inImLock(inImg);
+    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", inImg);
+    SIGHT_ASSERT("No '" << s_IMAGE_IN << "' found !", outImg);
+    SIGHT_ASSERT("No '" << s_TRANSFORM_IN << "' found !", transform);
 
-    data::Image::sptr outImg = this->getInOut<data::Image>(s_IMAGE_INOUT);
-
-    data::mt::ObjectWriteLock outImLock(outImg);
-
-    data::Image::csptr target = this->getInput<data::Image>(s_TARGET_IN);
-
-    data::mt::ObjectReadLock targetLock(target);
-
-    data::Matrix4::csptr transform =
-        this->getInput<data::Matrix4>(s_TRANSFORM_IN);
-
-    SIGHT_ASSERT("No 'imageIn' found !", inImg);
-    SIGHT_ASSERT("No 'imageOut' found !", outImg);
-    SIGHT_ASSERT("No 'transform' found !", transform);
-
-    sight::filter::image::Resampler::resample(inImg, outImg, transform, target);
+    sight::filter::image::Resampler::resample(
+        inImg.get_shared(),
+        outImg.get_shared(),
+        transform.get_shared(),
+        target.get_shared()
+    );
 
     m_sigComputed->asyncEmit();
 

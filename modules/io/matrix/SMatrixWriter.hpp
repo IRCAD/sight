@@ -75,13 +75,6 @@ public:
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     MODULE_IO_MATRIX_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /**
-     * @brief Display a location dialog allowing to select the video file to save
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_MATRIX_API void configureWithIHM() override;
-
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 

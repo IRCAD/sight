@@ -32,11 +32,6 @@
 #include <QtConcurrent>
 #include <QtCore>
 
-fwGuiRegisterMacro(
-    ::sight::ui::qt::dialog::PulseProgressDialog,
-    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
-);
-
 namespace sight::ui::qt
 {
 

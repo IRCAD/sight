@@ -24,8 +24,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/TransferFunction.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
@@ -52,10 +50,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT     = "updateTF";
 static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT     = "updatePL";
 static const core::com::Slots::SlotKeyType s_SET_FILTERING_SLOT = "setFiltering";
 static const core::com::Slots::SlotKeyType s_SCALE_SLOT         = "scale";
-
-static const service::IService::KeyType s_IMAGE_INPUT = "image";
-static const service::IService::KeyType s_TF_INPUT    = "tf";
-static const service::IService::KeyType s_PL_INPUT    = "pointList";
 
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
@@ -123,9 +117,9 @@ void SVideo::starting()
 {
     this->initialize();
 
-    const auto plW = this->getWeakInput<data::PointList>(s_PL_INPUT);
+    const auto plW = m_pl.lock();
 
-    if(plW.lock())
+    if(plW)
     {
         m_pointList = data::PointList::New();
 
@@ -227,7 +221,7 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     // Getting Sight Image
-    const auto imageSight = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
+    const auto imageSight = m_image.lock();
 
     auto type = imageSight->getType();
 
@@ -247,9 +241,8 @@ void SVideo::updating()
             m_texture = Ogre::dynamic_pointer_cast<Ogre::Texture>(texture);
         }
 
-        auto& mtlMgr   = Ogre::MaterialManager::getSingleton();
-        const auto tfW = this->getWeakInput<data::TransferFunction>(s_TF_INPUT);
-        const auto tf  = tfW.lock();
+        auto& mtlMgr  = Ogre::MaterialManager::getSingleton();
+        const auto tf = m_tf.lock();
 
         Ogre::MaterialPtr defaultMat;
         if(tf)
@@ -417,8 +410,7 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const auto tfW = this->getWeakInput<data::TransferFunction>(s_TF_INPUT);
-    const auto tf  = tfW.lock();
+    const auto tf = m_tf.lock();
 
     m_gpuTF->updateTexture(tf.get_shared());
 
@@ -432,9 +424,8 @@ void SVideo::updateTF()
 
 void SVideo::updatePL()
 {
-    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
-
-    const auto pl = this->getLockedInput<data::PointList>(s_PL_INPUT);
+    const auto image = m_image.lock();
+    const auto pl    = m_pl.lock();
 
     const data::PointList::PointListContainer& inPoints = pl->getPoints();
 

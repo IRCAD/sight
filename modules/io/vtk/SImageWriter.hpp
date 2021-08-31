@@ -91,16 +91,6 @@ public:
      *
      * This method is used to find
      * the file path  using a file selector.
-     * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
-     */
-    [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VTK_API void configureWithIHM() override;
-
-    /**
-     * @brief Configure the image path.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
      */
     MODULE_IO_VTK_API void openLocationDialog() override;
 
@@ -162,12 +152,6 @@ protected:
     MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
 
 private:
-
-    /**
-     * @brief the m_bServiceIsConfigured value is \b true
-     * if the image path is known.
-     */
-    bool m_bServiceIsConfigured;
 
     /**
      * @brief Image path.

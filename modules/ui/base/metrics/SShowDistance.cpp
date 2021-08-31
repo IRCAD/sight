@@ -41,8 +41,6 @@ namespace sight::module::ui::base::metrics
 
 static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
-static const service::IService::KeyType s_IMAGE_INOUT = "image";
-
 //------------------------------------------------------------------------------
 
 SShowDistance::SShowDistance() noexcept
@@ -74,7 +72,7 @@ void SShowDistance::starting()
 
 void SShowDistance::updating()
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
@@ -119,7 +117,7 @@ void SShowDistance::stopping()
 service::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT);
 
     return connections;
 }
@@ -128,7 +126,7 @@ service::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 
 void SShowDistance::showDistance(bool)
 {
-    const auto image = this->getLockedInOut<data::Image>(s_IMAGE_INOUT);
+    const auto image = m_image.lock();
 
     data::Boolean::sptr SShowDistances =
         image->getField<data::Boolean>(

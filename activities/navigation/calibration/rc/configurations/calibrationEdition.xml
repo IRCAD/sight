@@ -167,7 +167,7 @@
 
         <service uid="copyCameraSeriesSrv" type="sight::module::data::SCopy">
             <in key="source" uid="${cameraSeries}" />
-            <out key="target" uid="newCameraSeries" />
+            <out key="outTarget" uid="newCameraSeries" />
         </service>
 
         <service uid="extractCamerasSrv" type="sight::module::data::SExtractObj">

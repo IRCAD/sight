@@ -29,18 +29,18 @@ namespace sight::navigation::openvslam
 
 //-----------------------------------------------------------------------------
 
-::openvslam::camera::perspective Helper::fromSight(const data::Camera::csptr _sightCam)
+::openvslam::camera::perspective Helper::fromSight(const data::Camera& _sightCam)
 {
-    const auto name = _sightCam->getCameraID();
-    const auto dist = _sightCam->getDistortionCoefficient();
+    const auto name = _sightCam.getCameraID();
+    const auto dist = _sightCam.getDistortionCoefficient();
 
     // Handle only Monocular-RGB camera for now.
     const ::openvslam::camera::setup_type_t cameraType = ::openvslam::camera::setup_type_t::Monocular;
     const ::openvslam::camera::color_order_t colorType = ::openvslam::camera::color_order_t::RGB;
 
-    const unsigned int cols = static_cast<unsigned int>(_sightCam->getWidth());
-    const unsigned int rows = static_cast<unsigned int>(_sightCam->getHeight());
-    const double fps        = static_cast<double>(_sightCam->getMaximumFrameRate());
+    const unsigned int cols = static_cast<unsigned int>(_sightCam.getWidth());
+    const unsigned int rows = static_cast<unsigned int>(_sightCam.getHeight());
+    const double fps        = static_cast<double>(_sightCam.getMaximumFrameRate());
 
     // Create a perspective camera (equirectangular and fisheye needs additional information).
     const ::openvslam::camera::perspective oVSlamCamera =
@@ -51,10 +51,10 @@ namespace sight::navigation::openvslam
             cols,
             rows,
             fps,
-            _sightCam->getFx(),
-            _sightCam->getFy(),
-            _sightCam->getCx(),
-            _sightCam->getCy(),
+            _sightCam.getFx(),
+            _sightCam.getFy(),
+            _sightCam.getCx(),
+            _sightCam.getCy(),
             dist[0],
             dist[1],
             dist[2],
@@ -98,34 +98,34 @@ data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSla
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
-    const data::Camera::csptr _sightCam,
+    const data::Camera& _sightCam,
     const OrbParams& _orbParams,
     const InitParams& _initParams
 )
 {
     //Create a YAML node for other parameters.
     ::YAML::Node node;
-    node["Camera.name"] = _sightCam->getCameraID();
+    node["Camera.name"] = _sightCam.getCameraID();
     // Only Monocular
     node["Camera.setup"] = "monocular";
     // In sight only handles perspective modeles.
     node["Camera.model"] = "perspective";
-    node["Camera.fx"]    = _sightCam->getFx();
-    node["Camera.fy"]    = _sightCam->getFy();
-    node["Camera.cx"]    = _sightCam->getCx();
-    node["Camera.cy"]    = _sightCam->getCy();
+    node["Camera.fx"]    = _sightCam.getFx();
+    node["Camera.fy"]    = _sightCam.getFy();
+    node["Camera.cx"]    = _sightCam.getCx();
+    node["Camera.cy"]    = _sightCam.getCy();
 
-    node["Camera.k1"] = _sightCam->getDistortionCoefficient()[0];
-    node["Camera.k2"] = _sightCam->getDistortionCoefficient()[1];
-    node["Camera.p1"] = _sightCam->getDistortionCoefficient()[2];
-    node["Camera.p2"] = _sightCam->getDistortionCoefficient()[3];
-    node["Camera.k3"] = _sightCam->getDistortionCoefficient()[4];
+    node["Camera.k1"] = _sightCam.getDistortionCoefficient()[0];
+    node["Camera.k2"] = _sightCam.getDistortionCoefficient()[1];
+    node["Camera.p1"] = _sightCam.getDistortionCoefficient()[2];
+    node["Camera.p2"] = _sightCam.getDistortionCoefficient()[3];
+    node["Camera.k3"] = _sightCam.getDistortionCoefficient()[4];
 
-    node["Camera.fps"]  = _sightCam->getMaximumFrameRate();
-    node["Camera.cols"] = _sightCam->getWidth();
-    node["Camera.rows"] = _sightCam->getHeight();
+    node["Camera.fps"]  = _sightCam.getMaximumFrameRate();
+    node["Camera.cols"] = _sightCam.getWidth();
+    node["Camera.rows"] = _sightCam.getHeight();
     // Values can be RGB, BGR or GRAY.
-    //TODO: maybe use _sightCam->getPixelFormatName() and translate result to RGB-BGR or GRAY.
+    //TODO: maybe use _sightCam.getPixelFormatName() and translate result to RGB-BGR or GRAY.
     node["Camera.color_order"] = "RGB";
 
     // Features (ORB):

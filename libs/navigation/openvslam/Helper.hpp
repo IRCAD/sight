@@ -42,10 +42,10 @@ public:
 
     /**
      * @brief converts sight camera data to ::openvslam::camera::perspective.
-     * @param _sightCam pointer to a sight camera.
+     * @param _sightCam: sight camera reference.
      * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
-    static ::openvslam::camera::perspective fromSight(const data::Camera::csptr _sightCam);
+    static ::openvslam::camera::perspective fromSight(const data::Camera& _sightCam);
 
     /**
      * @brief converts openvslam  perpective camera to sight camera
@@ -63,7 +63,7 @@ public:
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
     static std::shared_ptr< ::openvslam::config> createMonocularConfig(
-        const data::Camera::csptr _sightCam,
+        const data::Camera& _sightCam,
         const navigation::openvslam::OrbParams& _orbParams
         = navigation::openvslam::OrbParams(),
         const navigation::openvslam::InitParams& _initParams

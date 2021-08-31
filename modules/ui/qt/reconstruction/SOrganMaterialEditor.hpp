@@ -104,8 +104,8 @@ private:
     QPointer<QSlider> m_opacitySlider;
     QPointer<QLabel> m_transparencyValue;
 
-    static const service::IService::KeyType s_RECONSTRUCTION_INOUT;
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION_INOUT, true};
+    static constexpr std::string_view s_RECONSTRUCTION = "reconstruction";
+    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
 
 private Q_SLOTS:
 

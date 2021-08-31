@@ -1,5 +1,11 @@
 #version 330
 
+#ifdef GLSL_LANG_VALIDATOR
+#extension GL_GOOGLE_include_directive : enable
+#endif // GLSL_LANG_VALIDATOR
+
+#include "DepthPeelingCommon_FP.inc.glsl"
+
 in vec2 uv;
 uniform sampler2D u_bufferColor;
 uniform sampler2D u_bufferDepth;
@@ -26,11 +32,6 @@ ivec2 offs[9] = ivec2[](
 float linearizeDepth(in float depth) {
     return (2.0*u_near) / (u_far+u_near - depth *(u_far-u_near));
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-
-vec3 unpackNormal(vec3 packedNormal);
-float unpackFloatFromVec4(vec4 value);
 
 //---------------------------------------------------------------------------------------------------------------------
 

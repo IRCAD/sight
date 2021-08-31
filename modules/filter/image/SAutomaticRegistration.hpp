@@ -24,6 +24,9 @@
 
 #include "modules/filter/image/config.hpp"
 
+#include <data/Image.hpp>
+#include <data/Matrix4.hpp>
+
 #include <filter/image/AutomaticRegistration.hpp>
 #include <filter/image/Metric.hpp>
 
@@ -146,6 +149,14 @@ private:
 
     /// Percentage of samples used for registration.
     sight::filter::image::AutomaticRegistration::RealType m_samplingPercentage;
+
+    static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
+    static constexpr std::string_view s_TARGET_IN       = "target";
+    static constexpr std::string_view s_REFERENCE_IN    = "reference";
+
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_transform {this, s_TRANSFORM_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_target {this, s_TARGET_IN};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_reference {this, s_REFERENCE_IN};
 };
 
 } // namespace sight::module::filter::image

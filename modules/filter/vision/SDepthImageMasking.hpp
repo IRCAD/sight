@@ -24,6 +24,8 @@
 
 #include "modules/filter/vision/config.hpp"
 
+#include <data/Image.hpp>
+
 #include <service/IFilter.hpp>
 
 #include <opencv2/opencv.hpp>
@@ -113,6 +115,16 @@ private:
 
     /// Threshold value to manage a tolerance when performing the depth difference because of noise in such images.
     int m_threshold {10};
+
+    static constexpr std::string_view s_MASK_IMAGE_KEY       = "maskImage";
+    static constexpr std::string_view s_VIDEO_IMAGE_KEY      = "videoImage";
+    static constexpr std::string_view s_DEPTH_IMAGE_KEY      = "depthImage";
+    static constexpr std::string_view s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_maskImage {this, s_MASK_IMAGE_KEY};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_videoImage {this, s_VIDEO_IMAGE_KEY};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_depthImage {this, s_DEPTH_IMAGE_KEY};
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_foregroundImage {this, s_FOREGROUND_IMAGE_KEY};
 };
 
 } // namespace sight::module::filter::vision

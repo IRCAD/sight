@@ -272,6 +272,10 @@ private:
 
     /// Defines quick association between series type (a classname) and an activity id used by launchSeries method
     QuickLaunchType m_quickLaunch;
+
+    static constexpr std::string_view s_SERIES = "series";
+
+    data::ptr<data::Vector, sight::data::Access::in> m_series {this, s_SERIES};
 };
 
 } //action

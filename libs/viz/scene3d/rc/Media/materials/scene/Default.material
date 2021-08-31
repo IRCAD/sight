@@ -15,11 +15,11 @@ material Default
             cull_hardware none
             cull_software none
 
-            vertex_program_ref Default/PixelLit_VP
+            vertex_program_ref Default/Ambient_VP
             {
             }
 
-            fragment_program_ref Default/PixelLit_FP
+            fragment_program_ref Default/Ambient_FP
             {
             }
 

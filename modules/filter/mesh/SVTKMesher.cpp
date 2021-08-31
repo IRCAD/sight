@@ -72,7 +72,7 @@ void SVTKMesher::starting()
 
 void SVTKMesher::stopping()
 {
-    this->setOutput(s_MODELSERIES_OUT, nullptr);
+    m_model = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +163,7 @@ void SVTKMesher::updating()
     modelSeries->setReconstructionDB(recs);
     modelSeries->setDicomReference(imageSeries->getDicomReference());
 
-    this->setOutput(s_MODELSERIES_OUT, modelSeries);
+    m_model = modelSeries;
 }
 
 //-----------------------------------------------------------------------------

@@ -73,13 +73,6 @@ sight::io::base::service::IOPathType SModelSeriesWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -258,18 +251,27 @@ void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const
 
 void SModelSeriesWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr =
-            this->getLockedInput<const data::ModelSeries>(sight::io::base::service::s_DATA_KEY);
+        const auto locked      = m_data.lock();
+        const auto modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::ModelSeries::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            modelSeries
+        );
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
-        const auto modelSeries                                  = modelSeriesLockedPtr.get_shared();
-        const data::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
-        for(const data::Reconstruction::csptr& rec : recs)
+        for(const auto& rec : modelSeries->getReconstructionDB())
         {
             SIGHT_ASSERT("Reconstruction from model series is not instanced", rec);
             data::Mesh::sptr mesh = rec->getMesh();
@@ -281,10 +283,10 @@ void SModelSeriesWriter::updating()
             try
             {
                 this->writeMesh(filename, mesh);
+                m_writeFailed = false;
             }
             catch(const std::exception& e)
             {
-                m_writeFailed = true;
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();
 
@@ -296,7 +298,6 @@ void SModelSeriesWriter::updating()
             }
             catch(...)
             {
-                m_writeFailed = true;
                 sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Warning during saving",
@@ -306,10 +307,6 @@ void SModelSeriesWriter::updating()
         }
 
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
     }
 }
 

@@ -96,9 +96,13 @@ protected:
 
     /// Adds the object from the composite with the key given by config.
     void remove();
-    /**
-     * @}
-     */
+/**
+ * @}
+ */
+
+private:
+
+    sight::data::ptr<sight::data::Object, sight::data::Access::out> m_object {this, "object"};
 };
 
 } // updater

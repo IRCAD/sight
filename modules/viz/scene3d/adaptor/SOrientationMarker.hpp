@@ -107,6 +107,9 @@ private:
 
     /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
     float m_markerDepth = -32.f;
+
+    static constexpr std::string_view s_MATRIX_IN = "matrix";
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

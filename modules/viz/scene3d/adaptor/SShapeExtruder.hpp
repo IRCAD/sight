@@ -349,6 +349,8 @@ private:
 
     /// Contains the signal sent when interactions are finished.
     core::com::Signal<void()>::sptr m_toolDisabledSig;
+
+    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::inout> m_extrudedMeshes {this, "extrudedMeshes"};
 };
 
 //------------------------------------------------------------------------------

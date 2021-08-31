@@ -1,8 +1,8 @@
 sight_add_target( Tuto07SceneQt3DQml TYPE APP START ON )
 
 
-find_package(Qt5 QUIET COMPONENTS Core Qml REQUIRED)
-target_link_libraries(Tuto07SceneQt3DQml PUBLIC Qt5::Core Qt5::Qml)
+find_package(Qt5 QUIET COMPONENTS Core Qml Quick REQUIRED)
+target_link_libraries(Tuto07SceneQt3DQml PUBLIC Qt5::Core Qt5::Quick Qt5::Qml)
 set_target_properties(Tuto07SceneQt3DQml PROPERTIES AUTOMOC TRUE)
 
 add_dependencies(Tuto07SceneQt3DQml 

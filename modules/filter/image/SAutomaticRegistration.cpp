@@ -25,9 +25,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
 #include <filter/image/AutomaticRegistration.hpp>
 
 #include <service/macros.hpp>
@@ -40,11 +37,6 @@
 
 namespace sight::module::filter::image
 {
-
-static const service::IService::KeyType s_TARGET_IN    = "target";
-static const service::IService::KeyType s_REFERENCE_IN = "reference";
-
-static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -122,20 +114,14 @@ void SAutomaticRegistration::updating()
 {
     using sight::filter::image::AutomaticRegistration;
 
-    data::Image::csptr target    = this->getInput<data::Image>(s_TARGET_IN);
-    data::Image::csptr reference = this->getInput<data::Image>(s_REFERENCE_IN);
+    const auto target    = m_target.lock();
+    const auto reference = m_reference.lock();
 
-    data::mt::ObjectReadLock targetLock(target);
-    data::mt::ObjectReadLock refLock(reference);
+    auto transform = m_transform.lock();
 
-    data::Matrix4::sptr transform =
-        this->getInOut<data::Matrix4>(s_TRANSFORM_INOUT);
-
-    data::mt::ObjectWriteLock trfLock(transform);
-
-    SIGHT_ASSERT("No 'target' found !", target);
-    SIGHT_ASSERT("No 'reference' found !", reference);
-    SIGHT_ASSERT("No 'transform' found !", transform);
+    SIGHT_ASSERT("No " << s_TARGET_IN << " found !", target);
+    SIGHT_ASSERT("No " << s_REFERENCE_IN << " found !", reference);
+    SIGHT_ASSERT("No " << s_TRANSFORM_INOUT << " found !", transform);
 
     // Create a copy of m_multiResolutionParameters without empty values
     AutomaticRegistration::MultiResolutionParametersType
@@ -207,7 +193,7 @@ void SAutomaticRegistration::updating()
             dialog(progress, msg);
             dialog.setMessage(msg);
 
-            registrator.getCurrentMatrix(transform);
+            registrator.getCurrentMatrix(transform.get_shared());
 
             if(m_log)
             {
@@ -254,9 +240,9 @@ void SAutomaticRegistration::updating()
     try
     {
         registrator.registerImage(
-            target,
-            reference,
-            transform,
+            target.get_shared(),
+            reference.get_shared(),
+            transform.get_shared(),
             m_metric,
             multiResolutionParameters,
             m_samplingPercentage,

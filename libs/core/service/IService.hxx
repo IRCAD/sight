@@ -29,148 +29,53 @@ namespace sight::service
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE>
-inline CSPTR(DATATYPE) IService::getInput(std::string_view key, size_t index) const
-{
-    CSPTR(DATATYPE) input;
-    if(auto iterator = m_inputsMap.find({std::string(key), index}); iterator != m_inputsMap.end())
-    {
-        input = std::dynamic_pointer_cast<const DATATYPE>(iterator->second.getShared());
-        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
-    }
-
-    return input;
-}
-
-//------------------------------------------------------------------------------
-
-template<class DATATYPE>
-inline SPTR(DATATYPE) IService::getInOut(std::string_view key, size_t index) const
-{
-    SPTR(DATATYPE) inout;
-    if(auto iterator = m_inOutsMap.find({std::string(key), index}); iterator != m_inOutsMap.end())
-    {
-        inout = std::dynamic_pointer_cast<DATATYPE>(iterator->second.getShared());
-        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
-    }
-
-    return inout;
-}
-//------------------------------------------------------------------------------
-
-template<class DATATYPE>
-inline SPTR(DATATYPE) IService::getOutput(std::string_view key, size_t index) const
-{
-    SPTR(DATATYPE) output;
-    if(auto iterator = m_outputsMap.find({std::string(key), index}); iterator != m_outputsMap.end())
-    {
-        output = std::dynamic_pointer_cast<DATATYPE>(iterator->second.get_shared());
-        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
-    }
-
-    return output;
-}
-
-//------------------------------------------------------------------------------
-
 template<class DATATYPE, typename CONST_DATATYPE>
-inline data::mt::weak_ptr<CONST_DATATYPE> IService::getWeakInput(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<CONST_DATATYPE> IService::getInput(std::string_view key, size_t index) const
 {
     data::mt::weak_ptr<CONST_DATATYPE> input;
-    input = this->getInput<CONST_DATATYPE>(key, index);
+
+    if(auto iterator = m_inputsMap.find({std::string(key), index}); iterator != m_inputsMap.end())
+    {
+        auto shared_input = std::dynamic_pointer_cast<const DATATYPE>(iterator->second.getShared());
+        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", shared_input);
+        input = shared_input;
+    }
+
     return input;
 }
 
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline data::mt::weak_ptr<DATATYPE> IService::getWeakInOut(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<DATATYPE> IService::getInOut(std::string_view key, size_t index) const
 {
     data::mt::weak_ptr<DATATYPE> inout;
-    inout = this->getInOut<DATATYPE>(key, index);
+
+    if(auto iterator = m_inOutsMap.find({std::string(key), index}); iterator != m_inOutsMap.end())
+    {
+        auto shared_inout = std::dynamic_pointer_cast<DATATYPE>(iterator->second.getShared());
+        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", shared_inout);
+        inout = shared_inout;
+    }
+
     return inout;
 }
 
 //------------------------------------------------------------------------------
 
 template<class DATATYPE>
-inline data::mt::weak_ptr<DATATYPE> IService::getWeakOutput(std::string_view key, size_t index) const
+inline data::mt::weak_ptr<DATATYPE> IService::getOutput(std::string_view key, size_t index) const
 {
     data::mt::weak_ptr<DATATYPE> out;
-    out = this->getOutput<DATATYPE>(key, index);
+
+    if(auto iterator = m_outputsMap.find({std::string(key), index}); iterator != m_outputsMap.end())
+    {
+        auto shared_out = std::dynamic_pointer_cast<DATATYPE>(iterator->second.get_shared());
+        SIGHT_ASSERT("Dynamic cast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", shared_out);
+        out = shared_out;
+    }
+
     return out;
-}
-
-//------------------------------------------------------------------------------
-
-template<class DATATYPE, typename CONST_DATATYPE>
-inline data::mt::locked_ptr<CONST_DATATYPE> IService::getLockedInput(
-    std::string_view key,
-    size_t index
-) const
-{
-    auto lockedInput = this->getWeakInput<DATATYPE>(key, index).lock();
-
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Service with ID '"
-            + this->getID()
-            + "' cannot acquire a locked input with '"
-            + std::string(key)
-            + "'["
-            + std::to_string(index)
-            + "]."
-        ),
-        !lockedInput
-    );
-
-    return lockedInput;
-}
-
-//------------------------------------------------------------------------------
-
-template<class DATATYPE>
-inline data::mt::locked_ptr<DATATYPE> IService::getLockedInOut(std::string_view key, size_t index) const
-{
-    auto lockedInOut = this->getWeakInOut<DATATYPE>(key, index).lock();
-
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Service with ID '"
-            + this->getID()
-            + "' cannot acquire a locked inout with '"
-            + std::string(key)
-            + "'["
-            + std::to_string(index)
-            + "]."
-        ),
-        !lockedInOut
-    );
-
-    return lockedInOut;
-}
-
-//------------------------------------------------------------------------------
-
-template<class DATATYPE>
-inline data::mt::locked_ptr<DATATYPE> IService::getLockedOutput(std::string_view key, size_t index) const
-{
-    auto lockedOutput = this->getWeakOutput<DATATYPE>(key, index).lock();
-
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Service with ID '"
-            + this->getID()
-            + "' cannot acquire a locked output with '"
-            + std::string(key)
-            + "'["
-            + std::to_string(index)
-            + "]."
-        ),
-        !lockedOutput
-    );
-
-    return lockedOutput;
 }
 
 //------------------------------------------------------------------------------

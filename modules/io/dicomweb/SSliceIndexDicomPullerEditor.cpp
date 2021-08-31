@@ -22,11 +22,7 @@
 
 #include "SSliceIndexDicomPullerEditor.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
@@ -34,7 +30,6 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/DicomSeries.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/helper/Composite.hpp>
 #include <data/helper/SeriesDB.hpp>
@@ -46,8 +41,7 @@
 #include <io/base/service/IReader.hpp>
 #include <io/http/exceptions/Base.hpp>
 
-#include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -102,7 +96,7 @@ void SSliceIndexDicomPullerEditor::configuring()
     );
 
     // Reader configuration
-    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("readerConfig");
     m_readerConfig =
         (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
 
@@ -139,7 +133,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     QHBoxLayout* layout = new QHBoxLayout();
 
-    data::DicomSeries::csptr dicomSeries = this->getInOut<data::DicomSeries>("series");
+    const auto dicomSeries = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -168,13 +162,10 @@ void SSliceIndexDicomPullerEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
-
-    sight::io::base::service::IReader::sptr dicomReader;
-    dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    auto dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
     SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-                                                                      "::sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.",
+                                                                      "sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.",
         dicomReader
     );
     dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
@@ -223,7 +214,7 @@ void SSliceIndexDicomPullerEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        service::OSR::unregisterService(m_dicomReader.lock());
+        service::remove(m_dicomReader.lock());
     }
 
     this->destroy();
@@ -265,7 +256,7 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int)
 void SSliceIndexDicomPullerEditor::triggerNewSlice()
 {
     // DicomSeries
-    data::DicomSeries::csptr dicomSeries = this->getInOut<data::DicomSeries>("series");
+    const auto dicomSeries = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
@@ -273,22 +264,20 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
                                       + dicomSeries->getFirstInstanceNumber();
     if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
-        this->pullInstance();
+        this->pullInstance(*dicomSeries);
     }
     else
     {
-        this->readImage(selectedSliceIndex);
+        this->readImage(*dicomSeries, selectedSliceIndex);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
+void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeries, size_t selectedSliceIndex)
 {
     // DicomSeries
-    data::DicomSeries::csptr dicomSeries = this->getInOut<data::DicomSeries>("series");
-    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-    if(dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR" && dicomSeries->getModality() != "XA")
+    if(dicomSeries.getModality() != "CT" && dicomSeries.getModality() != "MR" && dicomSeries.getModality() != "XA")
     {
         return;
     }
@@ -300,7 +289,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     SIGHT_INFO("Create " + tmpPath.string());
     std::filesystem::create_directories(tmpPath);
 
-    const auto& binaries = dicomSeries->getDicomContainer();
+    const auto& binaries = dicomSeries.getDicomContainer();
     auto iter            = binaries.find(selectedSliceIndex);
     SIGHT_ASSERT("Index '" << selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
 
@@ -313,7 +302,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
     SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-    fs.write(buffer, size);
+    fs.write(buffer, static_cast<std::streamsize>(size));
     fs.close();
 
     // Read image
@@ -361,7 +350,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::pullInstance()
+void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomSeries)
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
@@ -394,15 +383,11 @@ void SSliceIndexDicomPullerEditor::pullInstance()
     // Catch any errors
     try
     {
-        // DicomSeries
-        data::DicomSeries::sptr dicomSeries = this->getInOut<data::DicomSeries>("series");
-        SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-
         // Get selected slice
         size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value())
-                                    + dicomSeries->getFirstInstanceNumber();
+                                    + dicomSeries.getFirstInstanceNumber();
 
-        std::string seriesInstanceUID = dicomSeries->getInstanceUID();
+        std::string seriesInstanceUID = dicomSeries.getInstanceUID();
 
         // Find Series according to SeriesInstanceUID
         QJsonObject query;
@@ -470,8 +455,8 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         }
 
         // Add path and trigger reading
-        dicomSeries->addDicomPath(selectedSliceIndex, instancePath);
-        this->readImage(selectedSliceIndex);
+        dicomSeries.addDicomPath(selectedSliceIndex, instancePath);
+        this->readImage(dicomSeries, selectedSliceIndex);
     }
     catch(sight::io::http::exceptions::Base& exception)
     {

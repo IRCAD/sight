@@ -33,8 +33,8 @@
 #include <QGuiApplication>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::SelectorDialog,
-    ::sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::SelectorDialog,
+    sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml
@@ -79,9 +79,7 @@ std::string SelectorDialog::show()
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     // get the path of the qml ui file in the 'rc' directory
-    const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml/dialog/SelectorDialog.qml"
-    );
+    const auto dialogPath = core::runtime::getLibraryResourceFilePath("ui_qml/dialog/SelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("selectorModel", &model);
     // set the context for the new component

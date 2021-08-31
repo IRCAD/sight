@@ -71,13 +71,6 @@ sight::io::base::service::IOPathType SImageSeriesWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::configureWithIHM()
-{
-    this->openLocationDialog();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageSeriesWriter::openLocationDialog()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
@@ -133,12 +126,22 @@ void SImageSeriesWriter::info(std::ostream& _sstream)
 
 void SImageSeriesWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
-        data::ImageSeries::csptr imageSeries =
-            this->getInput<data::ImageSeries>(sight::io::base::service::s_DATA_KEY);
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        const auto locked      = m_data.lock();
+        const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(locked.get_shared());
+
+        SIGHT_ASSERT(
+            "The object is not a '"
+            + data::ImageSeries::classname()
+            + "' or '"
+            + sight::io::base::service::s_DATA_KEY
+            + "' is not correctly set.",
+            imageSeries
+        );
 
         SIGHT_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());
 
@@ -148,17 +151,15 @@ void SImageSeriesWriter::updating()
         try
         {
             SImageWriter::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
+            m_writeFailed = false;
         }
         catch(core::tools::Failed& e)
         {
-            m_writeFailed = true;
+            cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);
         }
+
         cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
     }
 }
 
