@@ -117,7 +117,7 @@ void SMatrixViewer::updateFromMatrix()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
+            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j), 0, 'f', 2));
         }
     }
 }

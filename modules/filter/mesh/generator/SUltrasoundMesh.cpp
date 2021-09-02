@@ -50,12 +50,13 @@ static const char* s_SHAPE       = "shape";
 static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT  = "setIntParameter";
 static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
-static const std::string s_RESOLUTION_X_CONFIG = "resolutionX";
-static const std::string s_RESOLUTION_Y_CONFIG = "resolutionY";
-static const std::string s_DEPTH_CONFIG        = "depth";
-static const std::string s_WIDTH_CONFIG        = "width";
-static const std::string s_ANGLE_CONFIG        = "angle";
-static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
+static const std::string s_RESOLUTION_X_CONFIG    = "resolutionX";
+static const std::string s_RESOLUTION_Y_CONFIG    = "resolutionY";
+static const std::string s_DEPTH_CONFIG           = "depth";
+static const std::string s_WIDTH_CONFIG           = "width";
+static const std::string s_ANGLE_CONFIG           = "angle";
+static const std::string s_DELTA_DEPTH_CONFIG     = "deltaDepth";
+static const std::string s_IS_CONVEX_SHAPE_CONFIG = "isConvexShape";
 
 // -----------------------------------------------------------------------------
 
@@ -84,6 +85,7 @@ void SUltrasoundMesh::configuring()
     m_width       = config.get<int>(s_WIDTH_CONFIG, m_width);
     m_angle       = config.get<int>(s_ANGLE_CONFIG, m_angle);
     m_deltaDepth  = config.get<int>(s_DELTA_DEPTH_CONFIG, m_deltaDepth);
+    m_shape       = config.get<bool>(s_IS_CONVEX_SHAPE_CONFIG, m_shape);
 }
 
 // -----------------------------------------------------------------------------
