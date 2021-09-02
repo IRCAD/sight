@@ -2,6 +2,7 @@
 # Do not change the indentation of the activate list
 macro(profile_setup PROJECT)
     set(UNIQUE "false")
+    set(NAME "${PROJECT}")
 
     #Set the check-single-instance
     get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
