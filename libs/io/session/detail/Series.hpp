@@ -178,7 +178,8 @@ inline static data::Series::sptr deserialize(
 
     for(const auto& nameTree : tree.get_child(s_PerformingPhysiciansNames))
     {
-        const auto& name = core::crypto::from_base64(nameTree.second.get_value<std::string>());
+        const auto& raw  = core::crypto::from_base64(nameTree.second.get_value<std::string>());
+        const auto& name = password.empty() ? raw : core::crypto::decrypt(raw, password + s_PerformingPhysiciansName);
         names.push_back(name);
     }
 

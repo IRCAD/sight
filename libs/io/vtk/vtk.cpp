@@ -111,82 +111,45 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {core::tools::Type::create("int8"), VTK_CHAR
-    },
-    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR
-    },
-
-    {core::tools::Type::create("int16"), VTK_SHORT
-    },
-    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT
-    },
-
-    {core::tools::Type::create("int32"), VTK_INT
-    },
-    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT
-    },
-
-    {core::tools::Type::create("float"), VTK_FLOAT
-    },
-    {core::tools::Type::create("double"), VTK_DOUBLE
-    },
-
-#if (INT_MAX < LONG_MAX)
-    {
-        core::tools::Type::create("int64"), VTK_LONG
-    },
-    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG
-    }
-#endif
+    {core::tools::Type::create("int8"), VTK_CHAR},
+    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR},
+    {core::tools::Type::create("int16"), VTK_SHORT},
+    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT},
+    {core::tools::Type::create("int32"), VTK_INT},
+    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT},
+    {core::tools::Type::create("int64"), VTK_LONG_LONG},
+    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG_LONG},
+    {core::tools::Type::create("float"), VTK_FLOAT},
+    {core::tools::Type::create("double"), VTK_DOUBLE}
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")
-    },
-    {VTK_CHAR, core::tools::Type::create("int8")
-    },
-    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")
-    },
-
-    {VTK_SHORT, core::tools::Type::create("int16")
-    },
-    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")
-    },
-
-    {VTK_INT, core::tools::Type::create("int32")
-    },
-    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")
-    },
-
-    {VTK_FLOAT, core::tools::Type::create("float")
-    },
-    {VTK_DOUBLE, core::tools::Type::create("double")
-    },
+    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")},
+    {VTK_CHAR, core::tools::Type::create("int8")},
+    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")},
+    {VTK_SHORT, core::tools::Type::create("int16")},
+    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")},
+    {VTK_INT, core::tools::Type::create("int32")},
+    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
+    {VTK_FLOAT, core::tools::Type::create("float")},
+    {VTK_DOUBLE, core::tools::Type::create("double")},
+    {VTK___INT64, core::tools::Type::create("int64")},
+    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")},
+    {VTK_LONG_LONG, core::tools::Type::create("int64")},
+    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
 
 #if (INT_MAX < LONG_MAX)
     {
         VTK_LONG, core::tools::Type::create("int64")
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")
-    },
-
-    {VTK___INT64, core::tools::Type::create("int64")
-    },
-    {VTK_LONG_LONG, core::tools::Type::create("int64")
-    },
-
-    {VTK_UNSIGNED___INT64, core::tools::Type::create("uint64")
-    },
-    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")
-    },
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")}
 #else
     {
         VTK_LONG, core::tools::Type::create("int32")
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")
-    },
+    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")}
 #endif
 };
 

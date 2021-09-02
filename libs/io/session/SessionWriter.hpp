@@ -56,7 +56,7 @@ public:
     /// Write the file
     IO_SESSION_API void write() override;
 
-    /// Defines extension supported by this writer ".sight"
+    /// Defines extension supported by this writer ".zip"
     IO_SESSION_API std::string extension() override;
 
     /// Sets the password

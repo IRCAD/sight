@@ -56,7 +56,7 @@ public:
     /// Read the session from archive.
     IO_SESSION_API void read() override;
 
-    /// Defines extension supported by this reader ".sight"
+    /// Defines extension supported by this reader ".zip"
     IO_SESSION_API std::string extension() override;
 
     /// Sets the password

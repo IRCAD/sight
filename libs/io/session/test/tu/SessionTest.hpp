@@ -35,6 +35,7 @@ class SessionTest : public CPPUNIT_NS::TestFixture
 public:
 
     CPPUNIT_TEST_SUITE(SessionTest);
+
     CPPUNIT_TEST(booleanTest);
     CPPUNIT_TEST(integerTest);
     CPPUNIT_TEST(floatTest);
@@ -44,6 +45,7 @@ public:
     CPPUNIT_TEST(equipmentTest);
     CPPUNIT_TEST(patientTest);
     CPPUNIT_TEST(studyTest);
+    CPPUNIT_TEST(seriesTest);
     CPPUNIT_TEST(activitySeriesTest);
     CPPUNIT_TEST(arrayTest);
     CPPUNIT_TEST(imageTest);
@@ -74,13 +76,13 @@ public:
     CPPUNIT_TEST(resectionTest);
     CPPUNIT_TEST(resectionDBTest);
     CPPUNIT_TEST(roiTraitsTest);
-    CPPUNIT_TEST(seriesTest);
     CPPUNIT_TEST(seriesDBTest);
     CPPUNIT_TEST(tagTest);
     CPPUNIT_TEST(transferFunctionTest);
     CPPUNIT_TEST(dicomSeriesTest);
     CPPUNIT_TEST(imageSeriesTest);
     CPPUNIT_TEST(modelSeriesTest);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -99,6 +101,7 @@ public:
     void equipmentTest();
     void patientTest();
     void studyTest();
+    void seriesTest();
     void activitySeriesTest();
     void arrayTest();
     void imageTest();
@@ -129,7 +132,6 @@ public:
     void resectionTest();
     void resectionDBTest();
     void roiTraitsTest();
-    void seriesTest();
     void seriesDBTest();
     void tagTest();
     void transferFunctionTest();
