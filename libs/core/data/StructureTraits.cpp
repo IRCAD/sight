@@ -50,19 +50,55 @@ StructureTraits::~StructureTraits()
 
 //------------------------------------------------------------------------------
 
-void StructureTraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void StructureTraits::shallowCopy(const data::Object::csptr& _source)
 {
-    StructureTraits::csptr other = StructureTraits::dynamicConstCast(source);
+    StructureTraits::csptr other = StructureTraits::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(source, cache);
 
-    SIGHT_FATAL("Not implemented.");
+    this->fieldShallowCopy(other);
+
+    m_type               = other->m_type;
+    m_categories         = other->m_categories;
+    m_color              = other->m_color;
+    m_class              = other->m_class;
+    m_nativeExp          = other->m_nativeExp;
+    m_nativeGeometricExp = other->m_nativeGeometricExp;
+    m_attachmentType     = other->m_attachmentType;
+    m_anatomicRegion     = other->m_anatomicRegion;
+    m_propertyCategory   = other->m_propertyCategory;
+    m_propertyType       = other->m_propertyType;
+}
+
+//------------------------------------------------------------------------------
+
+void StructureTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+{
+    StructureTraits::csptr other = StructureTraits::dynamicConstCast(_source);
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+
+    this->fieldDeepCopy(other, cache);
+    m_type               = other->m_type;
+    m_categories         = other->m_categories;
+    m_color              = data::Object::copy(other->m_color, cache);
+    m_class              = other->m_class;
+    m_nativeExp          = other->m_nativeExp;
+    m_nativeGeometricExp = other->m_nativeGeometricExp;
+    m_attachmentType     = other->m_attachmentType;
+    m_anatomicRegion     = other->m_anatomicRegion;
+    m_propertyCategory   = other->m_propertyCategory;
+    m_propertyType       = other->m_propertyType;
 }
 
 } // namespace sight::data

@@ -52,17 +52,14 @@ protected:
     /// Destructor
     IO_ZIP_API virtual ~Archive() = default;
 
-    /// Retrieves an archive from cache
-    static Archive::sptr cache_find(const std::filesystem::path& archivePath);
+    /// Locks an archive
+    static void lock(const std::filesystem::path& archivePath);
 
-    /// Stores an archive from cache
-    static void cache_store(const std::filesystem::path& archivePath, const Archive::sptr& archive);
+    /// Unlocks an archive
+    static void unlock(const std::filesystem::path& archivePath);
 
-    /// Removes an archive from cache
-    static void cache_clean(const std::filesystem::path& archivePath);
-
-    /// Returns true if contained in the cache (even if expired)
-    static bool cache_contains(const std::filesystem::path& archivePath);
+    /// Returns true if the archive is locked
+    static bool is_locked(const std::filesystem::path& archivePath);
 };
 
 } // namespace sight::io::session

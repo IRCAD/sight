@@ -44,11 +44,6 @@ public:
     typedef std::map<std::array<float, 3>, data::Mesh::PointId> PointsMapType;
 
     /**
-     * @brief Initialize 'rand' seed
-     */
-    UTESTDATA_API static void initRand();
-
-    /**
      * @brief Generate a mesh.
      * @param mesh mesh to generate
      */

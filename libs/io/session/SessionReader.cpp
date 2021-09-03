@@ -61,12 +61,6 @@ public:
         m_object = session.deserialize(m_SessionReader->getFile(), m_password->getPassword());
     }
 
-    /// Defines extension supported by this reader ".sight"
-    inline std::string extension()
-    {
-        return ".sight";
-    }
-
     /// Sets the password
     /// @param password the new password
     inline void setPassword(const core::crypto::secure_string& password)
@@ -86,7 +80,7 @@ private:
     const std::unique_ptr<PasswordKeeper> m_password;
 };
 
-SessionReader::SessionReader(base::reader::IObjectReader::Key key) :
+SessionReader::SessionReader(base::reader::IObjectReader::Key) :
     m_pimpl(std::make_unique<SessionReaderImpl>(this))
 {
 }
@@ -108,7 +102,7 @@ void SessionReader::read()
 
 std::string SessionReader::extension()
 {
-    return m_pimpl->extension();
+    return ".zip";
 }
 
 //------------------------------------------------------------------------------

@@ -91,7 +91,6 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
         return;
     }
 
-    utestData::generator::Image::initRand();
     data::ImageSeries::sptr imgSeries;
     imgSeries = utestData::generator::SeriesDB::createImageSeries();
 

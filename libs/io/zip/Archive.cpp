@@ -21,97 +21,53 @@
 
 #include "Archive.hpp"
 
-#include <map>
 #include <mutex>
+#include <set>
 
 namespace sight::io::zip
 {
 
 // Global static map of opened archive
-static std::map<std::filesystem::path, Archive::wptr> s_archives_cache;
-static std::mutex s_archives_cache_mutex;
+static std::set<std::filesystem::path> s_archives;
+static std::mutex s_archives_mutex;
 
 //------------------------------------------------------------------------------
 
-Archive::sptr Archive::cache_find(const std::filesystem::path& archivePath)
+void Archive::lock(const std::filesystem::path& archivePath)
 {
-    Archive::sptr archive;
-
     // Normalize path
-    const std::filesystem::path normalized_path = archivePath.lexically_normal();
+    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
 
-    // Lock the global archives cache
-    std::lock_guard lock(s_archives_cache_mutex);
-
-    // Search into the cache
-    auto found = s_archives_cache.find(normalized_path);
-    if(found != s_archives_cache.end())
-    {
-        // Use the found instance
-        archive = found->second.lock();
-    }
-
-    return archive;
+    // Lock the global archives map
+    std::lock_guard lock(s_archives_mutex);
+    s_archives.insert(archivePath);
 }
 
 //------------------------------------------------------------------------------
 
-void Archive::cache_store(const std::filesystem::path& archivePath, const Archive::sptr& archive)
+void Archive::unlock(const std::filesystem::path& archivePath)
 {
     // Normalize path
-    std::filesystem::path normalized_path = archivePath.lexically_normal();
+    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
 
     // Lock the global archives map
-    std::lock_guard lock(s_archives_cache_mutex);
-    s_archives_cache[normalized_path] = archive;
-}
-
-//------------------------------------------------------------------------------
-
-void Archive::cache_clean(const std::filesystem::path& archivePath)
-{
-    // Normalize path
-    std::filesystem::path normalized_path = archivePath.lexically_normal();
-
-    // Lock the global archives map
-    std::lock_guard lock(s_archives_cache_mutex);
-
-    // Clean all expired pointer
-    for(auto it = s_archives_cache.cbegin() ; it != s_archives_cache.cend() ; )
-    {
-        if(it->second.expired())
-        {
-            it = s_archives_cache.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+    std::lock_guard lock(s_archives_mutex);
 
     // Remove completely the archive if not used anymore
-    auto found = s_archives_cache.find(normalized_path);
-    if(found != s_archives_cache.end())
-    {
-        // If use count == 1, it means that the caller is the only left
-        if(found->second.use_count() <= 1)
-        {
-            s_archives_cache.erase(archivePath);
-        }
-    }
+    s_archives.erase(archivePath);
 }
 
 //------------------------------------------------------------------------------
 
-bool Archive::cache_contains(const std::filesystem::path& archivePath)
+bool Archive::is_locked(const std::filesystem::path& archivePath)
 {
     // Normalize path
-    std::filesystem::path normalized_path = archivePath.lexically_normal();
+    const std::filesystem::path normalizedPath = archivePath.lexically_normal();
 
     // Lock the global archives map
-    std::lock_guard lock(s_archives_cache_mutex);
+    std::lock_guard lock(s_archives_mutex);
 
-    return s_archives_cache.find(normalized_path) != s_archives_cache.end();
+    return s_archives.find(normalizedPath) != s_archives.end();
 }
 
 } // namespace sight::io::zip

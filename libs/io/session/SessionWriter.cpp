@@ -57,18 +57,12 @@ public:
     inline void write()
     {
         // Retrieve the root object
-        auto root_object = data::Object::dynamicCast(m_SessionWriter->getObject());
+        auto root_object = std::dynamic_pointer_cast<const data::Object>(m_SessionWriter->getObject());
         SIGHT_FATAL_IF("Root object is null or not a data object.", !root_object);
 
         // Create the session and serialize the root object
         detail::SessionSerializer session;
         session.serialize(m_SessionWriter->getFile(), root_object, m_password->getPassword());
-    }
-
-    /// Defines extension supported by this reader ".sight"
-    inline std::string extension()
-    {
-        return ".sight";
     }
 
     /// Sets the password
@@ -87,7 +81,7 @@ private:
     const std::unique_ptr<PasswordKeeper> m_password;
 };
 
-SessionWriter::SessionWriter(base::writer::IObjectWriter::Key key) :
+SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
     m_pimpl(std::make_unique<SessionWriterImpl>(this))
 {
 }
@@ -106,7 +100,7 @@ void SessionWriter::write()
 
 std::string SessionWriter::extension()
 {
-    return m_pimpl->extension();
+    return ".zip";
 }
 
 //------------------------------------------------------------------------------

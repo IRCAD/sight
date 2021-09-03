@@ -88,19 +88,43 @@ ReconstructionTraits::~ReconstructionTraits()
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+void ReconstructionTraits::shallowCopy(const data::Object::csptr& _source)
 {
-    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
+    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(source, cache);
 
-    SIGHT_FATAL("Not implemented.");
+    this->fieldShallowCopy(other);
+
+    m_identifier      = other->m_identifier;
+    m_maskOpNode      = other->m_maskOpNode;
+    m_meshOpNode      = other->m_meshOpNode;
+    m_structureTraits = other->m_structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+void ReconstructionTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+{
+    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(_source);
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+
+    this->fieldDeepCopy(other, cache);
+    m_identifier      = other->m_identifier;
+    m_maskOpNode      = data::Object::copy(other->m_maskOpNode, cache);
+    m_meshOpNode      = data::Object::copy(other->m_meshOpNode, cache);
+    m_structureTraits = data::Object::copy(other->m_structureTraits, cache);
 }
 
 } // namespace sight::data

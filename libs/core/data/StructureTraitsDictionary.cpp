@@ -59,6 +59,17 @@ StructureTraits::sptr StructureTraitsDictionary::getStructure(std::string type)
 
 //------------------------------------------------------------------------------
 
+StructureTraits::csptr StructureTraitsDictionary::getStructure(std::string type) const
+{
+    SIGHT_ASSERT(
+        "Structure of type '" + type + "' not found",
+        m_structureTraitsMap.find(type) != m_structureTraitsMap.end()
+    );
+    return m_structureTraitsMap.at(type);
+}
+
+//------------------------------------------------------------------------------
+
 void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTraits)
 {
     std::string type                            = structureTraits->getType();
@@ -111,6 +122,13 @@ StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary:
         std::bind(&StructureTraitsMapType::value_type::first, std::placeholders::_1)
     );
     return vectNames;
+}
+
+//------------------------------------------------------------------------------
+
+DATA_API void StructureTraitsDictionary::setStructureTraitsMap(const StructureTraitsMapType& structureTraitsMap)
+{
+    m_structureTraitsMap = structureTraitsMap;
 }
 
 //------------------------------------------------------------------------------

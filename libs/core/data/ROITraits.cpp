@@ -66,6 +66,19 @@ data::Node::sptr ROITraits::getMaskOpNode()
 
 //------------------------------------------------------------------------------
 
+data::Node::csptr ROITraits::getMaskOpNode() const
+{
+    data::Node::csptr opNode;
+    if(m_evaluatedExp != "W") // Thus mask op node must be assigned
+    {
+        opNode = m_maskOpNode;
+    }
+
+    return opNode;
+}
+
+//------------------------------------------------------------------------------
+
 void ROITraits::setStructureTraits(const data::StructureTraits::sptr& structureTraits)
 {
     m_structureTraits = structureTraits;
@@ -80,19 +93,51 @@ data::StructureTraits::sptr ROITraits::getStructureTraits()
 
 //------------------------------------------------------------------------------
 
-void ROITraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
+data::StructureTraits::csptr ROITraits::getStructureTraits() const
 {
-    ROITraits::csptr other = ROITraits::dynamicConstCast(source);
+    return m_structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+void ROITraits::shallowCopy(const Object::csptr& _source)
+{
+    ROITraits::csptr other = ROITraits::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
             + " to " + this->getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(source, cache);
+    this->fieldShallowCopy(_source);
 
-    SIGHT_FATAL("Not implemented.");
+    m_identifier      = other->m_identifier;
+    m_evaluatedExp    = other->m_evaluatedExp;
+    m_maskOpNode      = other->m_maskOpNode;
+    m_structureTraits = other->m_structureTraits;
+}
+
+//------------------------------------------------------------------------------
+
+void ROITraits::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+{
+    ROITraits::csptr other = ROITraits::dynamicConstCast(_source);
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+            + " to " + this->getClassname()
+        ),
+        !bool(other)
+    );
+    this->fieldDeepCopy(_source, cache);
+
+    m_identifier      = other->m_identifier;
+    m_evaluatedExp    = other->m_evaluatedExp;
+    m_maskOpNode      = data::Object::copy(other->m_maskOpNode, cache);
+    m_structureTraits = data::Object::copy(other->m_structureTraits, cache);
 }
 
 } // namespace sight::data

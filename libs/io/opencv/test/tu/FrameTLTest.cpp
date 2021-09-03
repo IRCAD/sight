@@ -171,8 +171,6 @@ static void testCopyToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
 
 void FrameTLTest::setUp()
 {
-    // Set up context before running a test.
-    std::srand(149129791);
 }
 
 //------------------------------------------------------------------------------

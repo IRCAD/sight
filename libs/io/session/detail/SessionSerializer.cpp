@@ -21,28 +21,54 @@
 
 #include "SessionSerializer.hpp"
 
-#include "data/ActivitySeriesSerializer.hpp"
-#include "data/CompositeSerializer.hpp"
-#include "data/EquipmentSerializer.hpp"
-#include "data/GenericSerializer.hpp"
-#include "data/MeshSerializer.hpp"
-#include "data/PatientSerializer.hpp"
-#include "data/SeriesSerializer.hpp"
-#include "data/StringSerializer.hpp"
-#include "data/StudySerializer.hpp"
+#include "ActivitySeries.hpp"
+#include "Array.hpp"
+#include "CalibrationInfo.hpp"
+#include "Camera.hpp"
+#include "CameraSeries.hpp"
+#include "Color.hpp"
+#include "Composite.hpp"
+#include "DicomSeries.hpp"
+#include "Edge.hpp"
+#include "Equipment.hpp"
+#include "Graph.hpp"
+#include "Histogram.hpp"
+#include "Image.hpp"
+#include "ImageSeries.hpp"
+#include "Landmarks.hpp"
+#include "Line.hpp"
+#include "List.hpp"
+#include "Material.hpp"
+#include "Matrix4.hpp"
+#include "Mesh.hpp"
+#include "ModelSeries.hpp"
+#include "Node.hpp"
+#include "Patient.hpp"
+#include "Plane.hpp"
+#include "PlaneList.hpp"
+#include "Point.hpp"
+#include "PointList.hpp"
+#include "Port.hpp"
+#include "ProcessObject.hpp"
+#include "Reconstruction.hpp"
+#include "ReconstructionTraits.hpp"
+#include "Resection.hpp"
+#include "ResectionDB.hpp"
+#include "ROITraits.hpp"
+#include "Series.hpp"
+#include "SeriesDB.hpp"
+#include "String.hpp"
+#include "StructureTraits.hpp"
+#include "StructureTraitsDictionary.hpp"
+#include "Study.hpp"
+#include "Tag.hpp"
+#include "TransferFunction.hpp"
+#include "Vector.hpp"
 
-#include <data/ActivitySeries.hpp>
 #include <data/Boolean.hpp>
-#include <data/Composite.hpp>
-#include <data/Equipment.hpp>
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
-#include <data/Mesh.hpp>
 #include <data/mt/locked_ptr.hpp>
-#include <data/Patient.hpp>
-#include <data/Series.hpp>
-#include <data/String.hpp>
-#include <data/Study.hpp>
 
 #include <io/zip/ArchiveWriter.hpp>
 
@@ -55,35 +81,78 @@ namespace sight::io::session
 namespace detail
 {
 
+// The serializer function signature
+using serializer = std::function<void (
+                                     zip::ArchiveWriter&,
+                                     boost::property_tree::ptree&,
+                                     data::Object::csptr,
+                                     std::map<std::string, data::Object::csptr>&,
+                                     const core::crypto::secure_string&
+                                 )>;
+
 // Serializer registry
 // No concurrency protection as the map is statically initialized
-static const std::unordered_map<std::string, std::function<data::IDataSerializer::cuptr(void)> > s_serializers = {
-    {sight::data::Boolean::classname(), &std::make_unique<data::GenericSerializer<sight::data::Boolean> >},
-    {sight::data::Integer::classname(), &std::make_unique<data::GenericSerializer<sight::data::Integer> >},
-    {sight::data::Float::classname(), &std::make_unique<data::GenericSerializer<sight::data::Float> >},
-    {sight::data::String::classname(), &std::make_unique<data::StringSerializer>},
-    {sight::data::Composite::classname(), &std::make_unique<data::CompositeSerializer>},
-    {sight::data::Mesh::classname(), &std::make_unique<data::MeshSerializer>},
-    {sight::data::Equipment::classname(), &std::make_unique<data::EquipmentSerializer>},
-    {sight::data::Patient::classname(), &std::make_unique<data::PatientSerializer>},
-    {sight::data::Study::classname(), &std::make_unique<data::StudySerializer>},
-    {sight::data::Series::classname(), &std::make_unique<data::SeriesSerializer>},
-    {sight::data::ActivitySeries::classname(), &std::make_unique<data::ActivitySeriesSerializer>}
+static const std::unordered_map<std::string, serializer> s_serializers = {
+    {data::ActivitySeries::classname(), &ActivitySeries::serialize},
+    {data::Array::classname(), &Array::serialize},
+    {data::Boolean::classname(), &Helper::serialize<data::Boolean>},
+    {data::Camera::classname(), &Camera::serialize},
+    {data::CameraSeries::classname(), &CameraSeries::serialize},
+    {data::CalibrationInfo::classname(), &CalibrationInfo::serialize},
+    {data::Color::classname(), &Color::serialize},
+    {data::Composite::classname(), &Composite::serialize},
+    {data::DicomSeries::classname(), &DicomSeries::serialize},
+    {data::Edge::classname(), &Edge::serialize},
+    {data::Equipment::classname(), &Equipment::serialize},
+    {data::Float::classname(), &Helper::serialize<data::Float>},
+    {data::Graph::classname(), &Graph::serialize},
+    {data::Histogram::classname(), &Histogram::serialize},
+    {data::Integer::classname(), &Helper::serialize<data::Integer>},
+    {data::Image::classname(), &Image::serialize},
+    {data::ImageSeries::classname(), &ImageSeries::serialize},
+    {data::Landmarks::classname(), &Landmarks::serialize},
+    {data::Line::classname(), &Line::serialize},
+    {data::List::classname(), &List::serialize},
+    {data::Material::classname(), &Material::serialize},
+    {data::Matrix4::classname(), &Matrix4::serialize},
+    {data::Mesh::classname(), &Mesh::serialize},
+    {data::ModelSeries::classname(), &ModelSeries::serialize},
+    {data::Node::classname(), &Node::serialize},
+    {data::Patient::classname(), &Patient::serialize},
+    {data::Point::classname(), &Point::serialize},
+    {data::PointList::classname(), &PointList::serialize},
+    {data::Plane::classname(), &Plane::serialize},
+    {data::PlaneList::classname(), &PlaneList::serialize},
+    {data::Port::classname(), &Port::serialize},
+    {data::ProcessObject::classname(), &ProcessObject::serialize},
+    {data::Reconstruction::classname(), &Reconstruction::serialize},
+    {data::ReconstructionTraits::classname(), &ReconstructionTraits::serialize},
+    {data::Resection::classname(), &Resection::serialize},
+    {data::ResectionDB::classname(), &ResectionDB::serialize},
+    {data::ROITraits::classname(), &ROITraits::serialize},
+    {data::Series::classname(), &Series::serialize},
+    {data::SeriesDB::classname(), &SeriesDB::serialize},
+    {data::String::classname(), &String::serialize},
+    {data::StructureTraits::classname(), &StructureTraits::serialize},
+    {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::serialize},
+    {data::Study::classname(), &Study::serialize},
+    {data::Tag::classname(), &Tag::serialize},
+    {data::TransferFunction::classname(), &TransferFunction::serialize},
+    {data::Vector::classname(), &Vector::serialize}
 };
 
-// Return a writer from a data object class name
-inline static data::IDataSerializer::cuptr find_serializer(const std::string& class_name)
+// Return a serializer from a data object class name
+inline static serializer findSerializer(const std::string& classname)
 {
-    const auto& it = s_serializers.find(class_name);
+    const auto& it = s_serializers.find(classname);
 
     if(it != s_serializers.cend())
     {
-        // Return the found writer
-        return it->second();
+        // Return the found serializer
+        return it->second;
     }
 
-    // Not found return empty one
-    return data::IDataSerializer::cuptr();
+    SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
 }
 
 /// Serializes recursively a data::Object to an opened archive using an initialized property tree
@@ -92,16 +161,23 @@ inline static data::IDataSerializer::cuptr find_serializer(const std::string& cl
 /// @param tree property tree used to store object index
 /// @param object root object to serialize
 /// @param password password to use for optional encryption. Empty password means no encryption
-inline static void deep_serialize(
+inline static void deepSerialize(
     std::set<std::string>& cache,
-    const zip::ArchiveWriter::sptr& archive,
+    zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
-    const sight::data::Object::csptr& object,
-    const core::crypto::secure_string& password
+    data::Object::csptr object,
+    const core::crypto::secure_string& password,
+    const ISession::EncryptionLevel level
 )
 {
+    // Only serialize non-null object
+    if(!object)
+    {
+        return;
+    }
+
     // Lock the object
-    sight::data::mt::locked_ptr<const sight::data::Object> lock(object);
+    data::mt::locked_ptr<const data::Object> lock(object);
 
     // First check the cache
     const auto& uuid       = object->getUUID();
@@ -111,7 +187,7 @@ inline static void deep_serialize(
     if(uuid_it != cache.cend())
     {
         boost::property_tree::ptree cached_tree;
-        cached_tree.put("uuid", uuid);
+        cached_tree.put(ISession::s_uuid, uuid);
         tree.add_child(class_name, cached_tree);
     }
     else
@@ -123,25 +199,21 @@ inline static void deep_serialize(
         boost::property_tree::ptree object_tree;
 
         // Put basic meta information
-        object_tree.put("uuid", uuid);
+        object_tree.put(ISession::s_uuid, uuid);
 
         // Find the serializer using the classname
-        const auto& serializer = find_serializer(class_name);
+        const auto& serializer = findSerializer(class_name);
 
-        SIGHT_ASSERT(
-            "There is no serializer registered for class '" << class_name << "'.",
-            serializer
-        );
+        // This map is used by serializer to store child objects which will be recursively serialized here
+        std::map<std::string, data::Object::csptr> children;
 
         // Ask the serializer to serialize
-        std::map<std::string, sight::data::Object::csptr> children;
-
-        serializer->serialize(
+        serializer(
             archive,
             object_tree,
             object,
             children,
-            password
+            ISession::pickle(password, core::crypto::secure_string(uuid), level)
         );
 
         // Serialize children, if needed
@@ -154,14 +226,14 @@ inline static void deep_serialize(
                 boost::property_tree::ptree child_tree;
 
                 // Recursively serialize child objects
-                deep_serialize(cache, archive, child_tree, child.second, password);
+                deepSerialize(cache, archive, child_tree, child.second, password, level);
 
                 // Append to the children tree
                 children_tree.add_child(child.first, child_tree);
             }
 
             // Add children tree
-            object_tree.add_child("children", children_tree);
+            object_tree.add_child(ISession::s_children, children_tree);
         }
 
         // Serialize fields, if needed
@@ -173,16 +245,25 @@ inline static void deep_serialize(
 
             for(const auto& field : fields)
             {
-                // Recursively serialize field object
+                // Only serialize non null child
                 boost::property_tree::ptree field_tree;
-                deep_serialize(cache, archive, field_tree, field.second, password);
+
+                // Recursively serialize field object
+                deepSerialize(
+                    cache,
+                    archive,
+                    field_tree,
+                    field.second,
+                    password,
+                    level
+                );
 
                 // Append to the fields tree
                 fields_tree.add_child(field.first, field_tree);
             }
 
             // Add fields tree
-            object_tree.add_child("fields", fields_tree);
+            object_tree.add_child(ISession::s_fields, fields_tree);
         }
 
         // Add the new tree to the root
@@ -194,7 +275,7 @@ inline static void deep_serialize(
 
 void SessionSerializer::serialize(
     const std::filesystem::path& archive_path,
-    const sight::data::Object::csptr& object,
+    data::Object::csptr object,
     const core::crypto::secure_string& password
 ) const
 {
@@ -208,9 +289,14 @@ void SessionSerializer::serialize(
     boost::property_tree::ptree tree;
 
     // Serialize recursively everything into the tree and the archive
-    deep_serialize(cache, archive, tree, object, password);
+    deepSerialize(cache, *archive, tree, object, password, getEncryptionLevel());
 
-    auto ostream = archive->openFile(this->getIndexFilePath(), password, zip::Method::ZSTD, zip::Level::BEST);
+    auto ostream = archive->openFile(
+        this->getIndexFilePath(),
+        password,
+        zip::Method::ZSTD,
+        zip::Level::BEST
+    );
 
     // Write the final property tree back to the archive
     boost::property_tree::write_json(

@@ -50,15 +50,12 @@ namespace ut
 
 void ImageReaderWriterJPGTest::setUp()
 {
-    // Set up context before running a test.
-    srand(time(NULL));
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterJPGTest::tearDown()
 {
-    // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------

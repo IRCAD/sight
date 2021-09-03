@@ -74,7 +74,21 @@ Node::PortContainer& Node::getInputPorts()
 
 //------------------------------------------------------------------------------
 
+const Node::PortContainer& Node::getInputPorts() const
+{
+    return m_inputs;
+}
+
+//------------------------------------------------------------------------------
+
 Node::PortContainer& Node::getOutputPorts()
+{
+    return m_outputs;
+}
+
+//------------------------------------------------------------------------------
+
+const Node::PortContainer& Node::getOutputPorts() const
 {
     return m_outputs;
 }

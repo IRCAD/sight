@@ -26,6 +26,8 @@
 #include "utestData/generator/Mesh.hpp"
 #include "utestData/generator/SeriesDB.hpp"
 
+#include <core/tools/random/Generator.hpp>
+
 #include <data/Integer.hpp>
 #include <data/Plane.hpp>
 #include <data/ProcessObject.hpp>
@@ -41,6 +43,8 @@ namespace sight::utestData
 
 namespace generator
 {
+
+using core::tools::random::safeRand;
 
 //------------------------------------------------------------------------------
 
@@ -134,10 +138,10 @@ data::StructureTraits::sptr Object::createStructureTraits()
 
     data::Color::sptr color = data::Color::New();
     color->setRGBA(
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f
     );
     pStructureTraits->setColor(color);
 
@@ -157,7 +161,7 @@ data::Composite::sptr Object::createROITraits()
 
     data::ROITraits::sptr roi = data::ROITraits::New();
     std::stringstream ss;
-    ss << "ID_" << rand() % 100;
+    ss << "ID_" << safeRand() % 100;
     roi->setIdentifier(ss.str());
 
     roi->setEvaluatedExp("inter(skin),not(liver)");
@@ -183,7 +187,7 @@ data::Composite::sptr Object::createReconstructionTraits()
     data::ReconstructionTraits::sptr rec = data::ReconstructionTraits::New();
 
     std::stringstream ss;
-    ss << "ID_" << rand() % 100;
+    ss << "ID_" << safeRand() % 100;
     rec->setIdentifier(ss.str());
 
     data::StructureTraits::sptr structure = Object::createStructureTraits();
@@ -209,8 +213,8 @@ data::Node::sptr Object::createNode()
 {
     data::Node::sptr node = data::Node::New();
 
-    int nbInputs  = rand() % 5;
-    int nbOutputs = rand() % 5;
+    int nbInputs  = safeRand() % 5;
+    int nbOutputs = safeRand() % 5;
 
     for(int i = 0 ; i < nbInputs ; ++i)
     {
@@ -232,11 +236,11 @@ data::Port::sptr Object::createPort()
     data::Port::sptr port = data::Port::New();
 
     std::stringstream ssId;
-    ssId << "ID_" << rand() % 100;
+    ssId << "ID_" << safeRand() % 100;
     port->setIdentifier(ssId.str());
 
     std::stringstream ssType;
-    ssType << "Type_" << rand() % 100;
+    ssType << "Type_" << safeRand() % 100;
     port->setType(ssType.str());
 
     return port;
@@ -248,10 +252,10 @@ data::Color::sptr Object::randomizeColor()
 {
     data::Color::sptr col = data::Color::New();
     col->setRGBA(
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f,
-        static_cast<float>(rand() % 100) / 100.f
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f,
+        static_cast<float>(safeRand() % 100) / 100.f
     );
     return col;
 }
@@ -268,10 +272,10 @@ data::TransferFunction::sptr Object::createTFColor(
 
     tf->setBackgroundColor(
         data::TransferFunction::TFColor(
-            static_cast<float>(rand() % 100) / 100.f,
-            static_cast<float>(rand() % 100) / 100.f,
-            static_cast<float>(rand() % 100) / 100.f,
-            static_cast<float>(rand() % 100) / 100.f
+            static_cast<float>(safeRand() % 100) / 100.f,
+            static_cast<float>(safeRand() % 100) / 100.f,
+            static_cast<float>(safeRand() % 100) / 100.f,
+            static_cast<float>(safeRand() % 100) / 100.f
         )
     );
     tf->setInterpolationMode(data::TransferFunction::NEAREST);
@@ -282,14 +286,14 @@ data::TransferFunction::sptr Object::createTFColor(
 
     for(unsigned char nb = 0 ; nb < nbPoints ; ++nb)
     {
-        double value = rand() % 100 - level;
+        double value = safeRand() % 100 - level;
         tf->addTFColor(
             value,
             data::TransferFunction::TFColor(
-                static_cast<float>(rand() % 100) / 100.f,
-                static_cast<float>(rand() % 100) / 100.f,
-                static_cast<float>(rand() % 100) / 100.f,
-                static_cast<float>(rand() % 100) / 100.f
+                static_cast<float>(safeRand() % 100) / 100.f,
+                static_cast<float>(safeRand() % 100) / 100.f,
+                static_cast<float>(safeRand() % 100) / 100.f,
+                static_cast<float>(safeRand() % 100) / 100.f
             )
         );
     }
@@ -371,9 +375,9 @@ data::ProcessObject::sptr Object::createProcessObject()
 
 data::Point::sptr Object::generatePoint()
 {
-    std::array<double, 3> coord = {static_cast<double>(rand() % 300),
-                                   static_cast<double>(rand() % 300),
-                                   static_cast<double>(rand() % 300)
+    std::array<double, 3> coord = {static_cast<double>(safeRand() % 300),
+                                   static_cast<double>(safeRand() % 300),
+                                   static_cast<double>(safeRand() % 300)
     };
     data::Point::sptr point = data::Point::New();
     point->setCoord(coord);
@@ -386,7 +390,7 @@ data::Plane::sptr Object::generatePlane()
 {
     data::Plane::sptr plane = data::Plane::New();
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((rand() % 1) ? true : false));
+    plane->setIsIntersection(((safeRand() % 1) ? true : false));
     return plane;
 }
 
@@ -397,9 +401,9 @@ data::Resection::sptr Object::generateResection()
     data::Resection::sptr resection = data::Resection::New();
 
     resection->setName("Resection1");
-    resection->setIsSafePart(((rand() % 1) ? true : false));
-    resection->setIsValid(((rand() % 1) ? true : false));
-    resection->setIsVisible(((rand() % 1) ? true : false));
+    resection->setIsSafePart(((safeRand() % 1) ? true : false));
+    resection->setIsValid(((safeRand() % 1) ? true : false));
+    resection->setIsVisible(((safeRand() % 1) ? true : false));
     data::Reconstruction::sptr recInput = data::Reconstruction::New();
 
     utestData::generator::SeriesDB::generateReconstruction(recInput);

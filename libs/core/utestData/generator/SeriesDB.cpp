@@ -25,6 +25,7 @@
 #include "utestData/generator/Image.hpp"
 #include "utestData/generator/Mesh.hpp"
 
+#include <core/tools/random/Generator.hpp>
 #include <core/tools/Type.hpp>
 
 #include <data/ActivitySeries.hpp>
@@ -50,6 +51,8 @@ namespace sight::utestData
 namespace generator
 {
 
+using core::tools::random::safeRand;
+
 //------------------------------------------------------------------------------
 
 data::SeriesDB::sptr SeriesDB::createSeriesDB(
@@ -58,7 +61,6 @@ data::SeriesDB::sptr SeriesDB::createSeriesDB(
     const unsigned char nbActivitySeries
 )
 {
-    Image::initRand();
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
     for(unsigned char nb = 0 ; nb < nbImgSeries ; ++nb)
     {
@@ -70,7 +72,7 @@ data::SeriesDB::sptr SeriesDB::createSeriesDB(
     for(unsigned char nb = 0 ; nb < nbModelSeries ; ++nb)
     {
         data::Series::sptr modelSeries;
-        modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(rand() % 5 + 1));
+        modelSeries = SeriesDB::createModelSeries(static_cast<unsigned char>(safeRand() % 5 + 1));
         seriesDB->getContainer().push_back(modelSeries);
     }
 

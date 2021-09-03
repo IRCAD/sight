@@ -109,7 +109,6 @@ void WriterReaderTest::writeReadImageSeriesTest()
         return;
     }
 
-    utestData::generator::Image::initRand();
     data::ImageSeries::sptr imgSeries;
     imgSeries = utestData::generator::SeriesDB::createImageSeries();
 
@@ -153,7 +152,6 @@ void WriterReaderTest::writeReadSeriesDBTest()
         return;
     }
 
-    utestData::generator::Image::initRand();
     data::SeriesDB::sptr seriesDB;
     seriesDB = this->createSeriesDB();
 

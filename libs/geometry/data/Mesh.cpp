@@ -28,6 +28,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/random/Generator.hpp>
 
 #include <geometry/data/MeshFunctions.hpp>
 
@@ -43,29 +44,17 @@
 namespace sight::geometry::data
 {
 
+using core::tools::random::safeRand;
+
 struct RandFloat
 {
     //------------------------------------------------------------------------------
 
     float operator()()
     {
-        return ((static_cast<float>(rand() % 101) - 50.f)) / 500.f;
+        return ((static_cast<float>(safeRand() % 101) - 50.f)) / 500.f;
     }
 };
-
-//------------------------------------------------------------------------------
-
-void Mesh::initRand()
-{
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
-}
-
-//------------------------------------------------------------------------------
-
-bool Mesh::hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellTypes cell)
-{
-    return hasUniqueCellType(mesh, static_cast<sight::data::Mesh::CellTypes>(cell));
-}
 
 //------------------------------------------------------------------------------
 
@@ -462,10 +451,10 @@ void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
 
     for( ; itr != itrEnd ; ++itr)
     {
-        itr->rgba->r = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->g = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->b = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->a = static_cast<std::uint8_t>(rand() % 256);
+        itr->rgba->r = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->g = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->b = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->a = static_cast<std::uint8_t>(safeRand() % 256);
     }
 }
 
@@ -490,10 +479,10 @@ void Mesh::colorizeMeshCells(sight::data::Mesh::sptr mesh)
 
     for( ; itr != itrEnd ; ++itr)
     {
-        itr->rgba->r = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->g = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->b = static_cast<std::uint8_t>(rand() % 256);
-        itr->rgba->a = static_cast<std::uint8_t>(rand() % 256);
+        itr->rgba->r = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->g = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->b = static_cast<std::uint8_t>(safeRand() % 256);
+        itr->rgba->a = static_cast<std::uint8_t>(safeRand() % 256);
     }
 }
 

@@ -45,11 +45,6 @@ public:
     typedef std::array<size_t, 3> OrganizationType;
 
     /**
-     * @brief Initialize 'rand' seed
-     */
-    GEOMETRY_DATA_API static void initRand();
-
-    /**
      * @brief Generate cell normals for the mesh.
      *
      * @param[out]  mesh data::Mesh structure to fill with cell normals.

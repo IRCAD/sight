@@ -45,6 +45,7 @@ public:
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraitsDictionary));
 
     typedef std::vector<std::string> StructureTypeNameContainer;
+    typedef std::map<std::string, data::StructureTraits::sptr> StructureTraitsMapType;
 
     /**
      * @brief Constructor
@@ -70,9 +71,13 @@ public:
      * @pre given 'type' must exist in dictionary
      */
     DATA_API StructureTraits::sptr getStructure(std::string type);
+    DATA_API StructureTraits::csptr getStructure(std::string type) const;
 
     /// Return all array names stock in the structureTraits-map
     DATA_API StructureTypeNameContainer getStructureTypeNames() const;
+
+    /// sets the entire structures map
+    DATA_API void setStructureTraitsMap(const StructureTraitsMapType& structureTraitsMap);
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
@@ -81,8 +86,6 @@ public:
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
-
-    typedef std::map<std::string, data::StructureTraits::sptr> StructureTraitsMapType;
 
     /// map to register structure traits. Map key is structure type.
     StructureTraitsMapType m_structureTraitsMap;

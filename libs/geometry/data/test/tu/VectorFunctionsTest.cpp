@@ -23,6 +23,7 @@
 #include "VectorFunctionsTest.hpp"
 
 #include <core/base.hpp>
+#include <core/tools/random/Generator.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -37,6 +38,8 @@ namespace sight::geometry::data
 
 namespace ut
 {
+
+using core::tools::random::safeRand;
 
 //------------------------------------------------------------------------------
 
@@ -58,12 +61,12 @@ void VectorFunctionsTest::checkDot()
 {
     // Dot product
     const double V1_X = 0.1;
-    const double V1_Y = std::rand() % 30 + 0.1;
-    const double V1_Z = std::rand() % 20 + 0.4;
+    const double V1_Y = safeRand() % 30 + 0.1;
+    const double V1_Z = safeRand() % 20 + 0.4;
 
-    const double V2_X = std::rand() % 50 + 0.4;
+    const double V2_X = safeRand() % 50 + 0.4;
     const double V2_Y = 0.5;
-    const double V2_Z = std::rand() % 10 + 0.8;
+    const double V2_Z = safeRand() % 10 + 0.8;
 
     const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
     const fwVec3d V2 = {V2_X, V2_Y, V2_Z};

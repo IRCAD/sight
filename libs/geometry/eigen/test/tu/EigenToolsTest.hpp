@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <core/tools/random/Generator.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <algorithm>
@@ -64,7 +66,7 @@ public:
     template<class T>
     static const T random(const T& a, const T& b)
     {
-        return static_cast<T>(rand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
+        return static_cast<T>(core::tools::random::safeRand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
     }
 };
 

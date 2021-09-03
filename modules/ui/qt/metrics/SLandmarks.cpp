@@ -42,6 +42,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <random>
+
 namespace sight::module::ui::qt::metrics
 {
 
@@ -82,8 +84,6 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_REMOVE_GROUP_SLOT, &SLandmarks::removeGroup, this);
     newSlot(s_MODIFY_GROUP_SLOT, &SLandmarks::modifyGroup, this);
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
-
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1096,11 +1096,13 @@ std::string SLandmarks::generateNewGroupName() const
 
 std::array<float, 4> SLandmarks::generateNewColor()
 {
-    const std::array<float,
-                     4> color =
-    {{rand() % 255 / 255.f, rand() % 255 / 255.f, rand() % 255 / 255.f, m_defaultLandmarkOpacity
-    }
+    const std::array<float, 4> color = {
+        m_distributor(m_generator),
+        m_distributor(m_generator),
+        m_distributor(m_generator),
+        m_defaultLandmarkOpacity
     };
+
     return color;
 }
 

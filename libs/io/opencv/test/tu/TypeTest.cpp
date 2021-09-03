@@ -39,8 +39,6 @@ namespace ut
 
 void TypeTest::setUp()
 {
-    // Set up context before running a test.
-    std::srand(101101);
 }
 
 //------------------------------------------------------------------------------

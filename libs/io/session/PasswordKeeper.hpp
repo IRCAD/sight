@@ -37,6 +37,15 @@ public:
 
     SIGHT_DECLARE_CLASS(PasswordKeeper);
 
+    enum class PasswordPolicy : uint8_t
+    {
+        NEVER   = 0,     /// Never use a password
+        ONCE    = 1,     /// Ask for password once and reuse it later
+        ALWAYS  = 2,     /// Always ask for a password
+        DEFAULT = NEVER, /// Default behavior is nothing is set
+        UNKNOWN = 255    /// Used for error
+    };
+
     /// Delete default copy constructors and assignment operators
     PasswordKeeper(const PasswordKeeper&)            = delete;
     PasswordKeeper(PasswordKeeper&&)                 = delete;
@@ -76,6 +85,51 @@ public:
     /// Returns true if the password matches
     /// @param password the password to verify against stored password
     IO_SESSION_API bool checkPassword(const core::crypto::secure_string& password) const;
+
+    /// Convenience function to convert from PasswordPolicy enum value to string
+    constexpr static std::string_view passwordPolicyToString(PasswordPolicy policy) noexcept
+    {
+        switch(policy)
+        {
+            case PasswordPolicy::NEVER:
+                return "never";
+
+            case PasswordPolicy::ONCE:
+                return "once";
+
+            case PasswordPolicy::ALWAYS:
+                return "always";
+
+            default:
+                return "default";
+        }
+    }
+
+    /// Convenience function to convert from string to PasswordPolicy enum value
+    constexpr static PasswordPolicy stringToPasswordPolicy(std::string_view policy) noexcept
+    {
+        if(constexpr auto NEVER = passwordPolicyToString(PasswordPolicy::NEVER); policy == NEVER)
+        {
+            return PasswordPolicy::NEVER;
+        }
+        else if(constexpr auto ONCE = passwordPolicyToString(PasswordPolicy::ONCE); policy == ONCE)
+        {
+            return PasswordPolicy::ONCE;
+        }
+        else if(constexpr auto ALWAYS = passwordPolicyToString(PasswordPolicy::ALWAYS); policy == ALWAYS)
+        {
+            return PasswordPolicy::ALWAYS;
+        }
+        else if(policy.empty() || policy == "default")
+        {
+            return PasswordPolicy::DEFAULT;
+        }
+        else
+        {
+            // Error case
+            return PasswordPolicy::UNKNOWN;
+        }
+    }
 
 private:
 

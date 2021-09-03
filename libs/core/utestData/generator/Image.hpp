@@ -43,27 +43,6 @@ class Image
 public:
 
     /**
-     * @brief Initialize 'rand' seed
-     */
-    UTESTDATA_API static void initRand();
-
-    /**
-     * @brief Generate an image with the given informations. Buffer is filled with 0.
-     * @param image     image to generate
-     * @param size      vector of image size
-     * @param spacing   vector of image spacing
-     * @param origin    vector of image origin
-     * @param type      image type
-     */
-    [[deprecated("It will be removed in sight 22.0")]] UTESTDATA_API static void generateImage(
-        data::Image::sptr image,
-        data::Image::SizeType size,
-        std::vector<double> spacing,
-        std::vector<double> origin,
-        core::tools::Type type
-    );
-
-    /**
      * @brief Generate an image with the given informations. Buffer is filled with 0.
      * @param image     image to generate
      * @param size      vector of image size
@@ -95,34 +74,6 @@ public:
         const std::string& type,
         data::Array::SizeType sizes
     );
-
-    /// Fill array with random value
-    template<typename TYPE>
-    static void randomizeArray(const data::Array::sptr& array)
-    {
-        const auto dumpLock = array->lock();
-        auto iter           = array->begin<TYPE>();
-        const auto end      = array->end<TYPE>();
-
-        for( ; iter != end ; ++iter)
-        {
-            *iter = static_cast<TYPE>(rand() % 256);
-        }
-    }
-
-    //------------------------------------------------------------------------------
-
-    template<typename TYPE>
-    static data::Array::sptr createRandomizedArray(data::Array::SizeType sizes)
-    {
-        data::Array::sptr array = data::Array::New();
-
-        array->resize(core::tools::Type::create<TYPE>(), sizes, 1, true);
-
-        Image::randomizeArray<TYPE>(array);
-
-        return array;
-    }
 };
 
 } // namespace generator

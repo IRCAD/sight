@@ -59,10 +59,11 @@ public:
     /// Serializes a data::Object to archive
     /// @param archive_path archive file path
     /// @param object root object to serialize
+    /// @param salt encrypt with salt to make direct reading a bit more difficult
     /// @param password password to use for optional encryption. Empty password means no encryption
     void serialize(
         const std::filesystem::path& archive_path,
-        const sight::data::Object::csptr& object,
+        sight::data::Object::csptr object,
         const core::crypto::secure_string& password = ""
     ) const;
 };

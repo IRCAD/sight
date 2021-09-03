@@ -85,8 +85,8 @@ public:
      * @{
      * @brief Get/Set value of the safe resection.
      */
-    data::Resection::sptr& getSafeResection();
-    const data::Resection::sptr& getSafeResection() const;
+    data::Resection::sptr getSafeResection();
+    data::Resection::csptr getSafeResection() const;
     void setSafeResection(const data::Resection::sptr& _safeResection);
     /// @}
 
@@ -142,14 +142,14 @@ inline void ResectionDB::setResections(const ResectionDB::ResectionContainerType
 
 //-----------------------------------------------------------------------------
 
-inline data::Resection::sptr& ResectionDB::getSafeResection()
+inline data::Resection::sptr ResectionDB::getSafeResection()
 {
     return m_safeResection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::Resection::sptr& ResectionDB::getSafeResection() const
+inline data::Resection::csptr ResectionDB::getSafeResection() const
 {
     return m_safeResection;
 }

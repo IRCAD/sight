@@ -23,9 +23,11 @@
 #include "utestData/generator/Image.hpp"
 
 #include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/random/Generator.hpp>
 #include <core/tools/Type.hpp>
 
 #include <ctime>
+#include <random>
 
 namespace sight::utestData
 {
@@ -33,32 +35,81 @@ namespace sight::utestData
 namespace generator
 {
 
+using core::tools::random::safeRand;
+
 //------------------------------------------------------------------------------
 
-void Image::initRand()
+// Because of N4659 29.6.1.1: [rand.req.genl]/1e requires one of short, int, long, long long, unsigned short,
+// unsigned int, unsigned long, or unsigned long long, we need T2 template argument. Sorry
+
+template<typename T, typename T2 = T, typename I>
+inline static void randomize(I& iterable)
 {
-    std::srand(core::tools::numericRoundCast<unsigned int>(std::time(NULL)));
+    using Distribution = typename std::conditional<std::is_floating_point<T>::value,
+                                                   std::uniform_real_distribution<T>,
+                                                   std::uniform_int_distribution<T2> >::type;
+
+    std::mt19937 random;
+    Distribution distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+
+    for(auto it = iterable.template begin<T>(), end = iterable.template end<T>() ; it != end ; ++it)
+    {
+        *it = static_cast<T>(distribution(random));
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void Image::generateImage(
-    data::Image::sptr image,
-    data::Image::SizeType size,
-    std::vector<double> spacing,
-    std::vector<double> origin,
-    core::tools::Type type
-)
+template<typename I>
+inline static void randomizeIterable(I& iterable)
 {
-    image->setSpacing(spacing);
-    image->setOrigin(origin);
-    image->setSize(size);
-    image->setType(type);
+    auto lock       = iterable.lock();
+    const auto type = iterable.getType();
 
-    image->resize();
-
-    auto lock = image->lock();
-    std::fill(image->begin(), image->end(), 0);
+    if(type == core::tools::Type::s_UNSPECIFIED_TYPE || type == core::tools::Type::s_UINT8)
+    {
+        randomize<std::uint8_t, std::uint16_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_UINT16)
+    {
+        randomize<std::uint16_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_UINT32)
+    {
+        randomize<std::uint32_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_UINT64)
+    {
+        randomize<std::uint64_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_INT8)
+    {
+        randomize<std::int8_t, std::int16_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_INT16)
+    {
+        randomize<std::int16_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_INT32)
+    {
+        randomize<std::int32_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_INT64)
+    {
+        randomize<std::int64_t>(iterable);
+    }
+    else if(type == core::tools::Type::s_FLOAT)
+    {
+        randomize<float>(iterable);
+    }
+    else if(type == core::tools::Type::s_DOUBLE)
+    {
+        randomize<double>(iterable);
+    }
+    else
+    {
+        SIGHT_THROW("Unknowntype: " << type);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -89,21 +140,21 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
     image->setType(type);
 
     data::Image::Size size;
-    size[0] = static_cast<data::Image::Size::value_type>(rand() % SIZE + 2);
-    size[1] = static_cast<data::Image::Size::value_type>(rand() % SIZE + 2);
-    size[2] = static_cast<data::Image::Size::value_type>(rand() % SIZE + 2);
+    size[0] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
+    size[1] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
+    size[2] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
     image->setSize2(size);
 
     data::Image::Spacing spacing;
-    spacing[0] = (rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    spacing[1] = (rand() % DOUBLE_SIZE + 1) / double(SIZE);
-    spacing[2] = (rand() % DOUBLE_SIZE + 1) / double(SIZE);
+    spacing[0] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
+    spacing[1] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
+    spacing[2] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
     image->setSpacing2(spacing);
 
     data::Image::Origin origin;
-    origin[0] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    origin[1] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    origin[2] = (rand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
+    origin[0] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
+    origin[1] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
+    origin[2] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     image->setOrigin2(origin);
     image->setPixelFormat(data::Image::GRAY_SCALE);
 
@@ -111,36 +162,22 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
 
     randomizeImage(image);
 
-    image->setWindowWidth((rand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
-    image->setWindowCenter((rand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
+    image->setWindowWidth((safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
+    image->setWindowCenter((safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
 }
 
 //------------------------------------------------------------------------------
 
 void Image::randomizeImage(data::Image::sptr image)
 {
-    auto lock          = image->lock();
-    auto iter          = image->begin();
-    const auto iterEnd = image->end();
-
-    for( ; iter != iterEnd ; ++iter)
-    {
-        *iter = static_cast<char>(rand() % 256);
-    }
+    randomizeIterable(*image);
 }
 
 //------------------------------------------------------------------------------
 
 void Image::randomizeArray(data::Array::sptr array)
 {
-    const auto dumpLock = array->lock();
-    auto iter           = array->begin();
-    const auto end      = array->end();
-
-    for( ; iter != end ; ++iter)
-    {
-        *iter = static_cast<char>(rand() % 256);
-    }
+    randomizeIterable(*array);
 }
 
 //------------------------------------------------------------------------------

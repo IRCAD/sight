@@ -68,9 +68,11 @@ public:
 
     /// Get the container of input ports
     DATA_API PortContainer& getInputPorts();
+    DATA_API const PortContainer& getInputPorts() const;
 
     /// Get the container of output ports
     DATA_API PortContainer& getOutputPorts();
+    DATA_API const PortContainer& getOutputPorts() const;
 
     /// Set object to the node
     DATA_API void setObject(const data::Object::sptr& object);

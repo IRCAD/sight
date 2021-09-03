@@ -65,12 +65,25 @@ void Series::shallowCopy(const data::Object::csptr& _source)
     m_study     = other->m_study;
     m_equipment = other->m_equipment;
 
-    m_instanceUID              = other->m_instanceUID;
-    m_modality                 = other->m_modality;
-    m_date                     = other->m_date;
-    m_time                     = other->m_time;
-    m_performingPhysiciansName = other->m_performingPhysiciansName;
-    m_description              = other->m_description;
+    m_instanceUID                       = other->m_instanceUID;
+    m_modality                          = other->m_modality;
+    m_date                              = other->m_date;
+    m_time                              = other->m_time;
+    m_performingPhysiciansName          = other->m_performingPhysiciansName;
+    m_description                       = other->m_description;
+    m_number                            = other->m_number;
+    m_laterality                        = other->m_laterality;
+    m_protocolName                      = other->m_protocolName;
+    m_bodyPartExamined                  = other->m_bodyPartExamined;
+    m_patientPosition                   = other->m_patientPosition;
+    m_anatomicalOrientationType         = other->m_anatomicalOrientationType;
+    m_performdedProcedureStepID         = other->m_performdedProcedureStepID;
+    m_performedProcedureStepStartDate   = other->m_performedProcedureStepStartDate;
+    m_performedProcedureStepStartTime   = other->m_performedProcedureStepStartTime;
+    m_performedProcedureStepEndDate     = other->m_performedProcedureStepEndDate;
+    m_performedProcedureStepEndTime     = other->m_performedProcedureStepEndTime;
+    m_performedProcedureStepDescription = other->m_performedProcedureStepDescription;
+    m_performedProcedureComments        = other->m_performedProcedureComments;
 }
 
 //------------------------------------------------------------------------------
@@ -92,14 +105,25 @@ void Series::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheTyp
     m_study     = data::Object::copy(other->m_study, cache);
     m_equipment = data::Object::copy(other->m_equipment, cache);
 
-    m_instanceUID              = other->m_instanceUID;
-    m_modality                 = other->m_modality;
-    m_date                     = other->m_date;
-    m_time                     = other->m_time;
-    m_performingPhysiciansName = other->m_performingPhysiciansName;
-    m_description              = other->m_description;
+    m_instanceUID                       = other->m_instanceUID;
+    m_modality                          = other->m_modality;
+    m_date                              = other->m_date;
+    m_time                              = other->m_time;
+    m_performingPhysiciansName          = other->m_performingPhysiciansName;
+    m_description                       = other->m_description;
+    m_number                            = other->m_number;
+    m_laterality                        = other->m_laterality;
+    m_protocolName                      = other->m_protocolName;
+    m_bodyPartExamined                  = other->m_bodyPartExamined;
+    m_patientPosition                   = other->m_patientPosition;
+    m_anatomicalOrientationType         = other->m_anatomicalOrientationType;
+    m_performdedProcedureStepID         = other->m_performdedProcedureStepID;
+    m_performedProcedureStepStartDate   = other->m_performedProcedureStepStartDate;
+    m_performedProcedureStepStartTime   = other->m_performedProcedureStepStartTime;
+    m_performedProcedureStepEndDate     = other->m_performedProcedureStepEndDate;
+    m_performedProcedureStepEndTime     = other->m_performedProcedureStepEndTime;
+    m_performedProcedureStepDescription = other->m_performedProcedureStepDescription;
+    m_performedProcedureComments        = other->m_performedProcedureComments;
 }
-
-//------------------------------------------------------------------------------
 
 } // namespace sight::data
