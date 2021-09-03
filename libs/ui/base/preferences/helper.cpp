@@ -162,25 +162,24 @@ std::string getPreference(const std::string& preferenceKey)
 
 std::filesystem::path getPreferencesFile()
 {
-    namespace bfile = std::filesystem;
-
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
     SIGHT_THROW_IF("No current profile set.", !profile);
 
-    const std::string appName     = profile->getName();
-    const bfile::path appPrefDir  = core::tools::os::getUserDataDir("sight", appName, true);
-    const bfile::path appPrefFile = appPrefDir / "preferences.json";
+    const std::string appName = profile->getName();
+    SIGHT_THROW_IF("Unable to determine application name", appName.empty());
+    const std::filesystem::path appPrefDir  = core::tools::os::getUserDataDir("sight", appName, true);
+    const std::filesystem::path appPrefFile = appPrefDir / "preferences.json";
 
     SIGHT_THROW_IF("Unable to define user data directory", appPrefDir.empty());
 
-    if(!bfile::exists(appPrefDir))
+    if(!std::filesystem::exists(appPrefDir))
     {
-        bfile::create_directories(appPrefDir);
+        std::filesystem::create_directories(appPrefDir);
     }
 
     SIGHT_THROW_IF(
         "Preferences file '" + appPrefFile.string() + "' already exists and is not a regular file.",
-        bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile)
+        std::filesystem::exists(appPrefFile) && !std::filesystem::is_regular_file(appPrefFile)
     );
 
     return appPrefFile;
