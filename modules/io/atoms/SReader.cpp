@@ -245,15 +245,6 @@ void SReader::updating()
                         archiveRootName = "root.json";
                         format          = sight::io::atoms::JSON;
                     }
-                    else if(extension == ".cpz")
-                    {
-                        readArchive = sight::io::zip::ReadZipArchive::New(
-                            filePath.string(),
-                            sight::ui::base::preferences::getPassword()
-                        );
-                        archiveRootName = "root.json";
-                        format          = sight::io::atoms::JSON;
-                    }
                     else if(extension == ".xml")
                     {
                         readArchive     = sight::io::zip::ReadDirArchive::New(folderPath.string());

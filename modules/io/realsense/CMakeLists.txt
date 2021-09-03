@@ -11,9 +11,10 @@ find_package(realsense2 QUIET REQUIRED)
 target_include_directories(module_io_realsense SYSTEM PRIVATE ${REALSENSE2_INCLUDE_DIRS})
 target_link_libraries(module_io_realsense PRIVATE ${realsense2_LIBRARY})
 
-target_link_libraries(module_io_realsense PUBLIC 
+target_link_libraries(module_io_realsense PUBLIC
                       core
                       data
+                      io_base
                       ui_base
                       service
 )

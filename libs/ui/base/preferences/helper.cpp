@@ -29,8 +29,6 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <io/session/PasswordKeeper.hpp>
-
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
@@ -40,75 +38,7 @@
 namespace sight::ui::base::preferences
 {
 
-const std::string s_PREFERENCES_KEY          = "preferences";
-static const std::string s_PASSWORD_HASH_KEY = "~~Private~~";
-
-//------------------------------------------------------------------------------
-
-void setPassword(const core::crypto::secure_string& password)
-{
-    if(password.empty())
-    {
-        // Remove the password
-        io::session::PasswordKeeper::setGlobalPassword("");
-
-        // Remove the password hash
-        data::Composite::sptr prefs = getPreferences();
-        if(prefs && prefs->find(s_PASSWORD_HASH_KEY) != prefs->end())
-        {
-            setPreference(s_PASSWORD_HASH_KEY, "");
-            savePreferences();
-        }
-    }
-    else
-    {
-        // Save the global password
-        io::session::PasswordKeeper::setGlobalPassword(password);
-
-        // Save the password hash to preferences
-        setPreference(s_PASSWORD_HASH_KEY, std::string(io::session::PasswordKeeper::getGlobalPasswordHash()));
-        savePreferences();
-    }
-}
-
-//----------------------------------------------------------------------------
-
-const core::crypto::secure_string getPassword()
-{
-    return io::session::PasswordKeeper::getGlobalPassword();
-}
-
-//----------------------------------------------------------------------------
-
-bool checkPassword(const core::crypto::secure_string& password)
-{
-    const core::crypto::secure_string passwordHash(getPreference(s_PASSWORD_HASH_KEY));
-
-    if(passwordHash.empty())
-    {
-        // No password hash is stored in the preferences or there is no preferences
-        // We must check against s_password
-        return io::session::PasswordKeeper::checkGlobalPassword(password);
-    }
-    else if(core::crypto::hash(password) == passwordHash)
-    {
-        // Store the verified password
-        io::session::PasswordKeeper::setGlobalPassword(password);
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-bool hasPasswordHash()
-{
-    return !getPreference(s_PASSWORD_HASH_KEY).empty();
-}
+const std::string s_PREFERENCES_KEY = "preferences";
 
 //----------------------------------------------------------------------------
 
