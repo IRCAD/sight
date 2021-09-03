@@ -357,7 +357,18 @@ void System::robustRename(
 
         if(error == std::make_error_code(std::errc::cross_device_link))
         {
-            std::filesystem::copy(_p1, _p2);
+            std::filesystem::copy(_p1, _p2, error);
+            if(error == std::make_error_code(std::errc::operation_not_permitted))
+            {
+                // This happens on copying on different filesystem types, i.e. EXT4 -> NTFS
+                // In this case we use an alternative but less performant copy function
+                std::filesystem::remove(_p2);
+                std::ifstream src(_p1.string(), std::ios::binary);
+                std::ofstream dst(_p2.string(), std::ios::binary);
+
+                dst << src.rdbuf();
+            }
+
             std::filesystem::remove(_p1);
         }
         else
