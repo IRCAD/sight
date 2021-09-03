@@ -47,7 +47,7 @@ public:
     inline SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_SessionWriter(sessionWriter),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_EncryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
     {
     }
 
@@ -67,7 +67,7 @@ public:
             m_SessionWriter->getFile(),
             root_object,
             m_password->getPassword(),
-            m_EncryptionPolicy
+            m_encryptionPolicy
         );
     }
 
@@ -78,7 +78,7 @@ public:
     const std::unique_ptr<PasswordKeeper> m_password;
 
     /// The encryption policy
-    PasswordKeeper::EncryptionPolicy m_EncryptionPolicy;
+    PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
 };
 
 SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
@@ -114,7 +114,7 @@ void SessionWriter::setPassword(const core::crypto::secure_string& password)
 
 void SessionWriter::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
-    m_pimpl->m_EncryptionPolicy = policy;
+    m_pimpl->m_encryptionPolicy = policy;
 }
 
 } //namespace sight::io::session

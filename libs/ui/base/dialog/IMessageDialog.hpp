@@ -61,6 +61,7 @@ public:
         YES    = 1 << 2,
         NO     = 1 << 3,
         CANCEL = 1 << 4,
+        RETRY  = 1 << 5,
         YES_NO = YES | NO
     } Buttons;
 
@@ -81,7 +82,7 @@ public:
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
     UI_BASE_API virtual void setIcon(Icons icon) = 0;
 
-    /// Add a button (OK, YES_NO, YES, NO, CANCEL)
+    /// Add a button (OK, YES_NO, YES, NO, CANCEL, RETRY)
     UI_BASE_API virtual void addButton(Buttons button) = 0;
 
     /// Set the default button

@@ -31,6 +31,7 @@
 
 #include <io/session/PasswordKeeper.hpp>
 #include <io/session/SessionReader.hpp>
+#include <io/zip/exception/Read.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/InputDialog.hpp>
@@ -74,13 +75,16 @@ public:
     std::string m_extensionDescription {"Sight session"};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_PasswordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
+    PasswordKeeper::PasswordPolicy m_passwordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_EncryptionPolicy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+    PasswordKeeper::EncryptionPolicy m_encryptionPolicy {PasswordKeeper::EncryptionPolicy::DEFAULT};
 
     /// Signal emitted when job created.
     JobCreatedSignal::sptr m_jobCreatedSignal;
+
+    /// Used in case of bad password
+    int m_passwordRetry {0};
 };
 
 SReader::SReader() noexcept :
@@ -124,23 +128,23 @@ void SReader::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_PasswordPolicy = PasswordKeeper::stringToPasswordPolicy(
+        m_pimpl->m_passwordPolicy = PasswordKeeper::stringToPasswordPolicy(
             password->get<std::string>("policy")
         );
 
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::INVALID
+            m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::INVALID
         );
 
         // Encryption policy
-        m_pimpl->m_EncryptionPolicy = PasswordKeeper::stringToEncryptionPolicy(
+        m_pimpl->m_encryptionPolicy = PasswordKeeper::stringToEncryptionPolicy(
             password->get<std::string>("encryption")
         );
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_EncryptionPolicy == PasswordKeeper::EncryptionPolicy::INVALID
+            m_pimpl->m_encryptionPolicy == PasswordKeeper::EncryptionPolicy::INVALID
         );
     }
 }
@@ -171,7 +175,7 @@ void SReader::updating()
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::NEVER)
+            if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::NEVER)
             {
                 // No password management
                 return secure_string();
@@ -180,8 +184,9 @@ void SReader::updating()
             {
                 const secure_string& globalPassword = PasswordKeeper::getGlobalPassword();
 
-                if((m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                   || (m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ONCE
+                if(m_pimpl->m_passwordRetry > 0
+                   || (m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ALWAYS)
+                   || (m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE
                        && globalPassword.empty()))
                 {
                     sight::ui::base::dialog::InputDialog inputDialog;
@@ -194,7 +199,7 @@ void SReader::updating()
                         )
                     );
 
-                    if(m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
+                    if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
                     {
                         PasswordKeeper::setGlobalPassword(newPassword);
                     }
@@ -216,7 +221,7 @@ void SReader::updating()
             auto reader = sight::io::session::SessionReader::New();
             reader->setFile(filepath);
             reader->setPassword(password);
-            reader->setEncryptionPolicy(m_pimpl->m_EncryptionPolicy);
+            reader->setEncryptionPolicy(m_pimpl->m_encryptionPolicy);
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
             const sight::ui::base::BusyCursor busyCursor;
@@ -252,6 +257,28 @@ void SReader::updating()
     {
         jobs->run().get();
         m_readFailed = false;
+    }
+    catch(sight::io::zip::exception::BadPassword& badPassword)
+    {
+        // Ask if the user want to retry.
+        sight::ui::base::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Wrong password");
+        messageBox.setMessage(
+            "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
+        );
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::RETRY);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+
+        if(messageBox.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
+        {
+            m_pimpl->m_passwordRetry++;
+            updating();
+        }
+        else
+        {
+            m_pimpl->m_passwordRetry = 0;
+        }
     }
     catch(std::exception& _e)
     {

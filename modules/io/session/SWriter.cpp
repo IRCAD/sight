@@ -74,10 +74,10 @@ public:
     std::string m_extensionDescription {"Sight session"};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_PasswordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
+    PasswordKeeper::PasswordPolicy m_passwordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_EncryptionPolicy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+    PasswordKeeper::EncryptionPolicy m_encryptionPolicy {PasswordKeeper::EncryptionPolicy::DEFAULT};
 
     /// Signal emitted when job created.
     JobCreatedSignal::sptr m_jobCreatedSignal;
@@ -124,20 +124,20 @@ void SWriter::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_PasswordPolicy = PasswordKeeper::stringToPasswordPolicy(password->get<std::string>("policy"));
+        m_pimpl->m_passwordPolicy = PasswordKeeper::stringToPasswordPolicy(password->get<std::string>("policy"));
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::INVALID
+            m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::INVALID
         );
 
         // Encryption policy
-        m_pimpl->m_EncryptionPolicy = PasswordKeeper::stringToEncryptionPolicy(
+        m_pimpl->m_encryptionPolicy = PasswordKeeper::stringToEncryptionPolicy(
             password->get<std::string>("encryption")
         );
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_EncryptionPolicy == PasswordKeeper::EncryptionPolicy::INVALID
+            m_pimpl->m_encryptionPolicy == PasswordKeeper::EncryptionPolicy::INVALID
         );
     }
 }
@@ -177,7 +177,7 @@ void SWriter::updating()
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::NEVER)
+            if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::NEVER)
             {
                 // No password management
                 return secure_string();
@@ -186,8 +186,8 @@ void SWriter::updating()
             {
                 const secure_string& globalPassword = PasswordKeeper::getGlobalPassword();
 
-                if((m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                   || (m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ONCE
+                if((m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ALWAYS)
+                   || (m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE
                        && globalPassword.empty()))
                 {
                     sight::ui::base::dialog::InputDialog inputDialog;
@@ -200,7 +200,7 @@ void SWriter::updating()
                         )
                     );
 
-                    if(m_pimpl->m_PasswordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
+                    if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
                     {
                         PasswordKeeper::setGlobalPassword(newPassword);
                     }
@@ -226,7 +226,7 @@ void SWriter::updating()
                 writer->setObject(data.get_shared());
                 writer->setFile(temporaryFile.getTemporaryFilePath());
                 writer->setPassword(password);
-                writer->setEncryptionPolicy(m_pimpl->m_EncryptionPolicy);
+                writer->setEncryptionPolicy(m_pimpl->m_encryptionPolicy);
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
@@ -247,7 +247,7 @@ void SWriter::updating()
             runningJob.doneWork(80);
 
             // Robust rename
-            core::tools::System::robustRename(temporaryFile.getTemporaryFilePath(), filepath);
+            core::tools::System::robustRename(temporaryFile.getTemporaryFilePath(), filepath, true);
 
             runningJob.done();
         },

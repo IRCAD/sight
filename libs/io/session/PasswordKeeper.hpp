@@ -43,7 +43,7 @@ public:
         NEVER   = 0,     /// Never use a password
         ONCE    = 1,     /// Ask for password once and reuse it later
         ALWAYS  = 2,     /// Always ask for a password
-        DEFAULT = NEVER, /// Default behavior is nothing is set
+        DEFAULT = NEVER, /// Default behavior if nothing is set
         INVALID = 255    /// Used for error management
     };
 
@@ -53,7 +53,7 @@ public:
         PASSWORD = 0,        /// Use the given password for encryption
         SALTED   = 1,        /// Use the given password with salt for encryption
         FORCED   = 2,        /// Force encryption with a pseudo random hidden password
-        DEFAULT  = PASSWORD, /// Default behavior is nothing is set
+        DEFAULT  = PASSWORD, /// Default behavior if nothing is set
         INVALID  = 255       /// Used for error management
     };
 
