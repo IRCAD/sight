@@ -31,7 +31,7 @@
 
                 <adaptor uid="interactor4Negato" />
                 <adaptor uid="seriesAdaptor" />
-                <adaptor uid="nameAdaptor" />
+
             </scene>
         </service>
 

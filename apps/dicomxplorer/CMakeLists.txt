@@ -19,11 +19,12 @@ add_dependencies(dicomxplorer
                  activity_io_dicom
                  activity_io_dicomweb
                  activity_viz_negato
+                 activity_viz_3d
                  module_ui_icons
                  atoms
                  module_ui_base
 )
 
-moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
+moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES dicomXplorerBase dicomXplorerAppBase)
 
 sight_generate_profile(dicomxplorer)
