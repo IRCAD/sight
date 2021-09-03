@@ -72,7 +72,12 @@ void Utils::loadResources()
     ::Ogre::ConfigFile cf;
     ::Ogre::String resourceGroupName, typeName, archName;
 
-    for(const auto& moduleName : s_moduleWithResourcesNames)
+    // Ensure we always load the resources of this library first, since other may reuse our programs or shaders
+    std::list<std::string> moduleWithResourcesNames;
+    std::copy(s_moduleWithResourcesNames.begin(), s_moduleWithResourcesNames.end(), moduleWithResourcesNames.begin());
+    moduleWithResourcesNames.push_front("sight::viz::scene3d");
+
+    for(const auto& moduleName : moduleWithResourcesNames)
     {
         try
         {
@@ -137,8 +142,6 @@ void Utils::addResourcesPath(const std::string& moduleName)
 {
     SIGHT_ASSERT("Empty resource path", !moduleName.empty());
 
-    // Pushing front is just because we "assume" that Sight resources path is going to be added last...
-    // and doing so we ensure it is going to be loaded first.
     s_moduleWithResourcesNames.push_front(moduleName);
 }
 
@@ -235,8 +238,6 @@ void Utils::addResourcesPath(const std::string& moduleName)
         root->setRenderSystem(rs);
 
         root->initialise(false);
-
-        viz::scene3d::Utils::addResourcesPath("sight::viz::scene3d");
 
         loadResources();
 
