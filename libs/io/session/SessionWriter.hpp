@@ -23,6 +23,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
+#include "io/session/PasswordKeeper.hpp"
 
 #include <core/crypto/secure_string.hpp>
 #include <core/location/SingleFile.hpp>
@@ -31,6 +32,19 @@
 
 namespace sight::io::session
 {
+
+/**
+ * @brief Session writer.
+ *
+ * @details Class to writer a session file recursively, including all fields from a data object.
+ * The session file is indeed a standard "ZIP" archive, while the compression algorithm for files inside
+ * the session archive is ZSTD. A standard archive reader could open a session file, if it is able to handle
+ * ZIP archive with ZSTD compression
+ *
+ * The archive can be password protected using AES256 algorithm and the compression level is set individually,
+ * depending of the type of data to serialize
+ *
+ */
 
 class IO_SESSION_CLASS_API SessionWriter final :
     public base::writer::IObjectWriter,
@@ -62,6 +76,10 @@ public:
     /// Sets the password
     /// @param password the new password
     IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
+
+    /// Sets the encryption policy
+    /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
+    IO_SESSION_API void setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy);
 
 private:
 

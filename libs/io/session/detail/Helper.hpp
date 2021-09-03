@@ -93,7 +93,7 @@ inline static std::string readString(
     }
     else
     {
-        return core::crypto::decrypt(encrypted, password + key.c_str());
+        return core::crypto::decrypt(encrypted, password);
     }
 }
 
@@ -109,7 +109,7 @@ inline static void writeString(
     const core::crypto::secure_string& password
 )
 {
-    const auto& raw    = password.empty() ? value : core::crypto::encrypt(value, password + key.c_str());
+    const auto& raw    = password.empty() ? value : core::crypto::encrypt(value, password);
     const auto& base64 = core::crypto::to_base64(raw);
     tree.put(key, base64);
 }

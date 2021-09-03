@@ -36,6 +36,8 @@
             <parameter replace="WIZARD_CONFIG" by="${WIZARD_CONFIG}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
             <parameter replace="WID_PARENT" by="activityView" />
+            <parameter replace="SESSION_READER_CONFIG" by="SessionReaderConfig" />
+            <parameter replace="SESSION_WRITER_CONFIG" by="SessionWriterConfig" />
         </service>
 
         <!-- ******************************* Start services ***************************************** -->

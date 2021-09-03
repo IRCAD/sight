@@ -100,6 +100,26 @@
         </config>
     </extension>
 
+    <extension implements="sight::service::extension::Config">
+        <id>SessionReaderConfig</id>
+        <service>sight::module::io::session::SReader</service>
+        <desc>Session reader</desc>
+        <config>
+            <extension name=".sample" description="Sample Sight session file"/>
+            <password policy="once" encryption="salted"/>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config">
+        <id>SessionWriterConfig</id>
+        <service>sight::module::io::session::SWriter</service>
+        <desc>Session writer</desc>
+        <config>
+            <extension name=".sample" description="Sample Sight session file"/>
+            <password policy="once" encryption="salted"/>
+        </config>
+    </extension>
+
     <extension implements="::sight::service::extension::AppConfigParameters" >
         <id>ExActivities_AppCfgParam</id>
         <parameters>

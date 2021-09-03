@@ -42,6 +42,15 @@ public:
 
     SIGHT_DECLARE_CLASS(IInputDialog, ui::base::GuiBaseObject);
 
+    enum class EchoMode : uint8_t
+    {
+        NORMAL       = 0,
+        NOECHO       = 1,
+        PASSWORD     = 2,
+        ECHO_ON_EDIT = 3,
+        DEFAUT       = NORMAL
+    };
+
     /// Constructor. Do nothing.
     UI_BASE_API IInputDialog();
     /// Destructor. Do nothing.
@@ -61,6 +70,9 @@ public:
 
     /// Set the message
     UI_BASE_API virtual void setMessage(const std::string& msg) = 0;
+
+    /// Set the echo mode used to display input field content
+    UI_BASE_API virtual void setEchoMode(EchoMode echoMode) = 0;
 };
 
 } //namespace dialog

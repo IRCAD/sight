@@ -23,6 +23,7 @@
 
 #include <core/crypto/AES256.hpp>
 #include <core/crypto/SHA256.hpp>
+#include <core/tools/System.hpp>
 
 #include <iomanip>
 #include <mutex>
@@ -39,7 +40,7 @@ static core::crypto::secure_string s_password;
 // This generate the hash used to encrypt the global password
 inline static core::crypto::secure_string computeGlobalPasswordKey()
 {
-    return SIGHT_PSEUDO_RANDOM_HASH("");
+    return SIGHT_PSEUDO_RANDOM_HASH(std::to_string(sight::core::tools::System::getPID()));
 }
 
 class PasswordKeeper::PasswordKeeperImpl final

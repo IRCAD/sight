@@ -46,7 +46,8 @@ public:
     /// Constructor
     inline SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_SessionWriter(sessionWriter),
-        m_password(std::make_unique<PasswordKeeper>())
+        m_password(std::make_unique<PasswordKeeper>()),
+        m_EncryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
     {
     }
 
@@ -62,23 +63,22 @@ public:
 
         // Create the session and serialize the root object
         detail::SessionSerializer session;
-        session.serialize(m_SessionWriter->getFile(), root_object, m_password->getPassword());
+        session.serialize(
+            m_SessionWriter->getFile(),
+            root_object,
+            m_password->getPassword(),
+            m_EncryptionPolicy
+        );
     }
-
-    /// Sets the password
-    /// @param password the new password
-    inline void setPassword(const core::crypto::secure_string& password)
-    {
-        m_password->setPassword(password);
-    }
-
-private:
 
     /// Pointer to the public interface
     SessionWriter* const m_SessionWriter;
 
     /// Keep the password in a vault
     const std::unique_ptr<PasswordKeeper> m_password;
+
+    /// The encryption policy
+    PasswordKeeper::EncryptionPolicy m_EncryptionPolicy;
 };
 
 SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
@@ -107,7 +107,14 @@ std::string SessionWriter::extension()
 
 void SessionWriter::setPassword(const core::crypto::secure_string& password)
 {
-    m_pimpl->setPassword(password);
+    m_pimpl->m_password->setPassword(password);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionWriter::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
+{
+    m_pimpl->m_EncryptionPolicy = policy;
 }
 
 } //namespace sight::io::session

@@ -102,6 +102,22 @@ void SystemTest::robustRenameTest()
         std::filesystem::filesystem_error
     );
 
+    // 3. Should NOT throw an exception, even if the original file already exists.
+    // (re)create the fake file.
+    {
+        std::fstream fs;
+        fs.open(originFile, std::ios::out);
+        fs.close();
+    }
+
+    CPPUNIT_ASSERT_NO_THROW(core::tools::System::robustRename(destinationFile, originFile, true));
+    CPPUNIT_ASSERT_NO_THROW(core::tools::System::robustRename(originFile, destinationFile, true));
+    CPPUNIT_ASSERT_MESSAGE("Destination file should exist.", std::filesystem::exists(destinationFile));
+    CPPUNIT_ASSERT_MESSAGE("Origin file shouldn't exist", !std::filesystem::exists(originFile));
+
+    // 4. Should do nothing if both path are indeed the same file
+    CPPUNIT_ASSERT_NO_THROW(core::tools::System::robustRename(destinationFile, destinationFile));
+
     // Clean up.
     std::filesystem::remove(destinationFile);
 }

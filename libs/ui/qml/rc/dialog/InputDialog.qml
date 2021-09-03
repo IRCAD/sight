@@ -19,6 +19,7 @@ Window {
         width: window.width
         height: window.height
         standardButtons: Dialog.Cancel | Dialog.Ok
+        title: inputDialog.title
 
         ColumnLayout {
             id: column
@@ -38,6 +39,7 @@ Window {
                 id: answer
                 Layout.fillWidth: true
                 placeholderText: inputDialog.input
+                echoMode: inputDialog.echoMode == 1 ? TextInput.NoEcho : inputDialog.echoMode == 2 ? TextInput.Password : inputDialog.echoMode == 3 ? TextInput.PasswordEchoOnEdit : TextInput.Normal
             }
         }
 

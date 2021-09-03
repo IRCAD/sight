@@ -66,7 +66,7 @@ MessageDialogQmlButtonType messageDialogQmlButton =
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key key)
+MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key)
 {
     qmlRegisterType<StandardButton>("Dialog", 1, 0, "StandardButton");
 }

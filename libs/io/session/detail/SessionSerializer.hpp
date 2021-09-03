@@ -24,6 +24,7 @@
 
 #include "io/session/config.hpp"
 #include "io/session/detail/ISession.hpp"
+#include "io/session/PasswordKeeper.hpp"
 
 #include <core/crypto/secure_string.hpp>
 
@@ -57,14 +58,15 @@ public:
     ~SessionSerializer() noexcept = default;
 
     /// Serializes a data::Object to archive
-    /// @param archive_path archive file path
+    /// @param archivePath archive file path
     /// @param object root object to serialize
-    /// @param salt encrypt with salt to make direct reading a bit more difficult
     /// @param password password to use for optional encryption. Empty password means no encryption
+    /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     void serialize(
-        const std::filesystem::path& archive_path,
+        const std::filesystem::path& archivePath,
         sight::data::Object::csptr object,
-        const core::crypto::secure_string& password = ""
+        const core::crypto::secure_string& password             = "",
+        const PasswordKeeper::EncryptionPolicy encryptionPolicy = PasswordKeeper::EncryptionPolicy::DEFAULT
     ) const;
 };
 

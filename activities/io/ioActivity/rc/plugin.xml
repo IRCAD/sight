@@ -104,6 +104,7 @@
             <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::session::SReader" />
             <addSelection service="sight::module::io::matrix::SAttachmentSeriesReader" />
         </config>
     </extension>
@@ -201,6 +202,25 @@
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
             <patcher context="Landmark" version="V2" />
+        </config>
+    </extension>
+
+    <!-- Service config used for session reader and writer -->
+    <extension implements="sight::service::extension::Config">
+        <id>DefaultSessionReaderConfig</id>
+        <service>sight::module::io::session::SReader</service>
+        <desc>Session reader</desc>
+        <config>
+            <extension name=".sight" description="Sight session file"/>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config">
+        <id>DefaultSessionWriterConfig</id>
+        <service>sight::module::io::session::SWriter</service>
+        <desc>Session writer</desc>
+        <config>
+            <extension name=".sight" description="Sight session file"/>
         </config>
     </extension>
 

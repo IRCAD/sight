@@ -162,12 +162,13 @@ inline static deserializer findDeserializer(const std::string& classname)
 /// @param archive initialized archive
 /// @param tree property tree used to retrieve object index
 /// @param password password to use for optional encryption. Empty password means no encryption
+/// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
 inline static data::Object::sptr deepDeserialize(
     std::map<std::string, data::Object::sptr>& cache,
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
     const core::crypto::secure_string& password,
-    const ISession::EncryptionLevel level
+    const PasswordKeeper::EncryptionPolicy encryptionPolicy
 )
 {
     const auto& treeIt = tree.begin();
@@ -226,13 +227,7 @@ inline static data::Object::sptr deepDeserialize(
         {
             for(const auto& childIt : childrenIt->second)
             {
-                children[childIt.first] = deepDeserialize(
-                    cache,
-                    archive,
-                    childIt.second,
-                    password,
-                    level
-                );
+                children[childIt.first] = deepDeserialize(cache, archive, childIt.second, password, encryptionPolicy);
             }
         }
 
@@ -242,7 +237,7 @@ inline static data::Object::sptr deepDeserialize(
             objectTree,
             children,
             object,
-            ISession::pickle(password, core::crypto::secure_string(uuid), level)
+            ISession::pickle(password, core::crypto::secure_string(uuid), encryptionPolicy)
         );
 
         if(newObject != object)
@@ -261,13 +256,7 @@ inline static data::Object::sptr deepDeserialize(
         {
             for(const auto& field_it : fields_it->second)
             {
-                fields[field_it.first] = deepDeserialize(
-                    cache,
-                    archive,
-                    field_it.second,
-                    password,
-                    level
-                );
+                fields[field_it.first] = deepDeserialize(cache, archive, field_it.second, password, encryptionPolicy);
             }
         }
 
@@ -282,7 +271,8 @@ inline static data::Object::sptr deepDeserialize(
 
 data::Object::sptr SessionDeserializer::deserialize(
     const std::filesystem::path& archive_path,
-    const core::crypto::secure_string& password
+    const core::crypto::secure_string& password,
+    const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
     // Initialize the object cache
@@ -304,7 +294,7 @@ data::Object::sptr SessionDeserializer::deserialize(
         tree.empty()
     );
 
-    return deepDeserialize(cache, *archive, tree, password, getEncryptionLevel());
+    return deepDeserialize(cache, *archive, tree, password, encryptionPolicy);
 }
 
 } // namespace detail

@@ -37,13 +37,24 @@ public:
 
     SIGHT_DECLARE_CLASS(PasswordKeeper);
 
+    /// Enum to define a password policy
     enum class PasswordPolicy : uint8_t
     {
         NEVER   = 0,     /// Never use a password
         ONCE    = 1,     /// Ask for password once and reuse it later
         ALWAYS  = 2,     /// Always ask for a password
         DEFAULT = NEVER, /// Default behavior is nothing is set
-        UNKNOWN = 255    /// Used for error
+        INVALID = 255    /// Used for error management
+    };
+
+    /// Enum to define a encryption policy
+    enum class EncryptionPolicy : uint8_t
+    {
+        PASSWORD = 0,        /// Use the given password for encryption
+        SALTED   = 1,        /// Use the given password with salt for encryption
+        FORCED   = 2,        /// Force encryption with a pseudo random hidden password
+        DEFAULT  = PASSWORD, /// Default behavior is nothing is set
+        INVALID  = 255       /// Used for error management
     };
 
     /// Delete default copy constructors and assignment operators
@@ -127,7 +138,52 @@ public:
         else
         {
             // Error case
-            return PasswordPolicy::UNKNOWN;
+            return PasswordPolicy::INVALID;
+        }
+    }
+
+    /// Convenience function to convert from EncryptionPolicy enum value to string
+    constexpr static std::string_view encryptionPolicyToString(EncryptionPolicy policy) noexcept
+    {
+        switch(policy)
+        {
+            case EncryptionPolicy::PASSWORD:
+                return "password";
+
+            case EncryptionPolicy::SALTED:
+                return "salted";
+
+            case EncryptionPolicy::FORCED:
+                return "forced";
+
+            default:
+                return "default";
+        }
+    }
+
+    /// Convenience function to convert from string to EncryptionPolicy enum value
+    constexpr static EncryptionPolicy stringToEncryptionPolicy(std::string_view policy) noexcept
+    {
+        if(constexpr auto PASSWORD = encryptionPolicyToString(EncryptionPolicy::PASSWORD); policy == PASSWORD)
+        {
+            return EncryptionPolicy::PASSWORD;
+        }
+        else if(constexpr auto SALTED = encryptionPolicyToString(EncryptionPolicy::SALTED); policy == SALTED)
+        {
+            return EncryptionPolicy::SALTED;
+        }
+        else if(constexpr auto FORCED = encryptionPolicyToString(EncryptionPolicy::FORCED); policy == FORCED)
+        {
+            return EncryptionPolicy::FORCED;
+        }
+        else if(policy.empty() || policy == "default")
+        {
+            return EncryptionPolicy::DEFAULT;
+        }
+        else
+        {
+            // Error case
+            return EncryptionPolicy::INVALID;
         }
     }
 
