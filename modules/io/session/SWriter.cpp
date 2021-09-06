@@ -207,7 +207,7 @@ void SWriter::updating()
                             "Enter Password",
                             "Password:",
                             globalPassword.c_str(),
-                            sight::ui::base::dialog::InputDialog::EchoMode::ECHO_ON_EDIT
+                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                         )
                     );
 
