@@ -101,6 +101,7 @@ SReader::~SReader() noexcept = default;
 
 void SReader::starting()
 {
+    m_pimpl->m_passwordRetry = 0;
     clearLocations();
 }
 
@@ -108,6 +109,7 @@ void SReader::starting()
 
 void SReader::stopping()
 {
+    m_pimpl->m_passwordRetry = 0;
     clearLocations();
 }
 
@@ -168,7 +170,7 @@ void SReader::updating()
 
     // Show the save dialog if the path is empty
     if((!hasLocationDefined() && m_pimpl->m_dialogPolicy != DialogPolicy::NEVER)
-       || m_pimpl->m_dialogPolicy == DialogPolicy::ALWAYS)
+       || (m_pimpl->m_dialogPolicy == DialogPolicy::ALWAYS && m_pimpl->m_passwordRetry == 0))
     {
         openLocationDialog();
     }
@@ -267,7 +269,8 @@ void SReader::updating()
     try
     {
         jobs->run().get();
-        m_readFailed = false;
+        m_readFailed             = false;
+        m_pimpl->m_passwordRetry = 0;
     }
     catch(sight::io::zip::exception::BadPassword& badPassword)
     {
