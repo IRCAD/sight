@@ -1,0 +1,11 @@
+<plugin id="activity_viz_3d" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+
+    <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>

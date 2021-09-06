@@ -39,7 +39,7 @@ Example
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::OrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

@@ -11,7 +11,7 @@
     <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>2DVisualization</id>
         <title>2D visualization</title>
         <desc>Display a medical image in 2D.</desc>

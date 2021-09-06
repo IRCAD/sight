@@ -219,7 +219,7 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             menuItem->setQtMenuItem(action);
 
             m_menuItems.push_back(menuItem);
-            SIGHT_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            SIGHT_ASSERT("No callback found for menu: " << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ui::base::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
             ui::qt::ActionCallback::sptr qtCallback = ui::qt::ActionCallback::dynamicCast(callback);
