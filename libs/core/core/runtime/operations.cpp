@@ -85,7 +85,7 @@ void init(const std::filesystem::path& directory)
     // Load default modules
     core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
 
-    const auto location = rntm->getWorkingPath() / MODULE_RC_PREFIX;
+    const auto location = (rntm->getWorkingPath() / MODULE_RC_PREFIX).lexically_normal();
     SIGHT_INFO("Launching Sight runtime in: " + location.string());
 
     auto profile = std::make_shared<detail::profile::Profile>();

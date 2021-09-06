@@ -25,6 +25,8 @@
 #include "core/config.hpp"
 #include "core/runtime/Runtime.hpp"
 
+#include <regex>
+
 namespace sight::core::runtime
 {
 
@@ -44,6 +46,9 @@ public:
 
     /// Defines the module container type.
     typedef std::set<std::shared_ptr<Module> > ModuleContainer;
+
+    /// Regex used in different places to find the module part in a path
+    static const std::regex s_MATCH_MODULE_PATH;
 
     /**
      * @brief   Retrieves the default runtime instance.

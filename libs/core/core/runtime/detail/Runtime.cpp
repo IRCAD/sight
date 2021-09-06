@@ -44,6 +44,12 @@ namespace sight::core::runtime
 namespace detail
 {
 
+#ifdef WIN32
+const std::regex Runtime::s_MATCH_MODULE_PATH("share(?!.*share)\\\\.*");
+#else
+const std::regex Runtime::s_MATCH_MODULE_PATH("share(?!.*share)/.*");
+#endif
+
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Runtime> Runtime::m_instance;
@@ -124,8 +130,11 @@ void Runtime::addModules(const std::filesystem::path& repository)
     {
         const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules(repository);
         std::for_each(modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1));
-        static const std::regex expr("share[\\\\/]\\w*");
-        const auto libRepoStr = std::regex_replace(repository.string(), expr, MODULE_LIB_PREFIX);
+        const auto libRepoStr = std::regex_replace(
+            repository.lexically_normal().string(),
+            s_MATCH_MODULE_PATH,
+            MODULE_LIB_PREFIX
+        );
         m_repositories.push_back(
             std::make_pair(
                 std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)),

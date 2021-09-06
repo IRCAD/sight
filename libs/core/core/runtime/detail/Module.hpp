@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/runtime/detail/dl/Library.hpp"
+#include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Module.hpp"
 #include <core/base.hpp>
 
