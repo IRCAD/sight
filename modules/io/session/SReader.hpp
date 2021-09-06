@@ -54,7 +54,7 @@ namespace sight::module::io::session
  * @code{.xml}
     <service type="sight::module::io::session::SReader">
         <inout key="data" uid="..." />
-        <extension name=".sample" description="Sample Sight session file"/>
+        <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
         <password policy="once, encryption=salted"/>
     </service>
    @endcode
@@ -63,10 +63,15 @@ namespace sight::module::io::session
  * - \b data [sight::data::Object]: object to read.
  *
  * @subsection Configuration Configuration
- * - \b extensions(optional):
- *      \b name: defines the file extension that will be used for the session file.
- *      If the extensions is not specified, default ".zip" will be used.
+ * - \b dialog(optional):
+ *      \b extension: defines the file extension that will be used for the session file.
+ *      If the extension is not specified, default ".zip" will be used.
  *      \b description: allows to display a label in front of extension when the file dialog is shown.
+ *      \b policy:
+ *          - \b "never": never show the open dialog
+ *          - \b "once": show only once, store the location as long as the service is started
+ *          - \b "always": always show the location dialog
+ *          - \b "default": default behavior, which is "always"
  *
  * - \b password(optional):
  *      \b policy: defines if we should protect the session file using a password and when to ask for it. It could be:

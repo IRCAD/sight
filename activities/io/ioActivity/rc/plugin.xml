@@ -211,7 +211,7 @@
         <service>sight::module::io::session::SReader</service>
         <desc>Session reader</desc>
         <config>
-            <extension name=".sight" description="Sight session file"/>
+            <dialog extension=".sight" description="Sight session file"/>
         </config>
     </extension>
 
@@ -220,7 +220,7 @@
         <service>sight::module::io::session::SWriter</service>
         <desc>Session writer</desc>
         <config>
-            <extension name=".sight" description="Sight session file"/>
+            <dialog extension=".sight" description="Sight session file"/>
         </config>
     </extension>
 

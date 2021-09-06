@@ -105,7 +105,7 @@
         <service>sight::module::io::session::SReader</service>
         <desc>Session reader</desc>
         <config>
-            <extension name=".sample" description="Sample Sight session file"/>
+            <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
             <password policy="once" encryption="salted"/>
         </config>
     </extension>
@@ -115,7 +115,7 @@
         <service>sight::module::io::session::SWriter</service>
         <desc>Session writer</desc>
         <config>
-            <extension name=".sample" description="Sample Sight session file"/>
+            <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
             <password policy="once" encryption="salted"/>
         </config>
     </extension>

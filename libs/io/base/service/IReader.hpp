@@ -53,6 +53,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(IReader, sight::service::IService);
 
+    /// Enum to define a password policy
+    enum class DialogPolicy : uint8_t
+    {
+        NEVER   = 0,      /// Never use show the dialog
+        ONCE    = 1,      /// Show only once, store the location as long as the service is started
+        ALWAYS  = 2,      /// Always show the location dialog
+        DEFAULT = ALWAYS, /// Default behavior if nothing is set
+        INVALID = 255     /// Used for error management
+    };
+
     /**
      * @name Slots API
      * @{
@@ -157,6 +167,51 @@ public:
     IO_BASE_API bool hasFailed() const;
 
     //@}
+
+    /// Convenience function to convert from dialogPolicy enum value to string
+    constexpr static std::string_view dialogPolicyToString(DialogPolicy policy) noexcept
+    {
+        switch(policy)
+        {
+            case DialogPolicy::NEVER:
+                return "never";
+
+            case DialogPolicy::ONCE:
+                return "once";
+
+            case DialogPolicy::ALWAYS:
+                return "always";
+
+            default:
+                return "default";
+        }
+    }
+
+    /// Convenience function to convert from string to PasswordPolicy enum value
+    constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
+    {
+        if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER); policy == NEVER)
+        {
+            return DialogPolicy::NEVER;
+        }
+        else if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
+        {
+            return DialogPolicy::ONCE;
+        }
+        else if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
+        {
+            return DialogPolicy::ALWAYS;
+        }
+        else if(policy.empty() || policy == "default")
+        {
+            return DialogPolicy::DEFAULT;
+        }
+        else
+        {
+            // Error case
+            return DialogPolicy::INVALID;
+        }
+    }
 
 protected:
 

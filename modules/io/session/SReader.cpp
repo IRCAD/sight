@@ -74,6 +74,9 @@ public:
     /// Extension description to use for file save dialog
     std::string m_extensionDescription {"Sight session"};
 
+    /// Dialog policy to use for the file location
+    DialogPolicy m_dialogPolicy = {DialogPolicy::DEFAULT};
+
     /// Password policy to use
     PasswordKeeper::PasswordPolicy m_passwordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
 
@@ -99,12 +102,14 @@ SReader::~SReader() noexcept = default;
 
 void SReader::starting()
 {
+    clearLocations();
 }
 
 //-----------------------------------------------------------------------------
 
 void SReader::stopping()
 {
+    clearLocations();
 }
 
 //-----------------------------------------------------------------------------
@@ -116,11 +121,17 @@ void SReader::configuring()
     const auto& tree = this->getConfigTree();
 
     // Extension configuration
-    const auto& extension = tree.get_child_optional("extension.<xmlattr>");
-    if(extension.is_initialized())
+    const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");
+    if(dialog.is_initialized())
     {
-        m_pimpl->m_extensionName        = extension->get<std::string>("name");
-        m_pimpl->m_extensionDescription = extension->get<std::string>("description");
+        m_pimpl->m_extensionName        = dialog->get<std::string>("extension");
+        m_pimpl->m_extensionDescription = dialog->get<std::string>("description");
+        m_pimpl->m_dialogPolicy         = stringToDialogPolicy(dialog->get<std::string>("policy"));
+
+        SIGHT_THROW_IF(
+            "Cannot read dialog policy.",
+            m_pimpl->m_dialogPolicy == DialogPolicy::INVALID
+        );
     }
 
     // Password configuration
@@ -157,7 +168,8 @@ void SReader::updating()
     m_readFailed = true;
 
     // Show the save dialog if the path is empty
-    if(!hasLocationDefined())
+    if((!hasLocationDefined() && m_pimpl->m_dialogPolicy != DialogPolicy::NEVER)
+       || m_pimpl->m_dialogPolicy == DialogPolicy::ALWAYS)
     {
         openLocationDialog();
     }
