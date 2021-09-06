@@ -17,6 +17,7 @@ add_dependencies(ExActivities
                  activity_viz_negato
                  config_ui_activity
                  module_viz_sample
+                 module_viz_scene3d
 )
 
 moduleParam(module_ui_qt

@@ -7,6 +7,7 @@
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::sight::activity::extension::Activity" >
         <id>ExImage_Import_Activity</id>
