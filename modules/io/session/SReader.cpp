@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -164,7 +163,7 @@ void SReader::configuring()
 
 void SReader::updating()
 {
-    // Set to failled until successful
+    // Set to failed until successful
     m_readFailed = true;
 
     // Show the save dialog if the path is empty
@@ -180,7 +179,7 @@ void SReader::updating()
         return;
     }
 
-    auto filepath = getFile();
+    const auto filepath = getFile();
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Ask password if needed

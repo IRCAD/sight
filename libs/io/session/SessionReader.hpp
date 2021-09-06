@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,10 +38,10 @@ namespace sight::io::session
  * @details Class to read a session file, and restore recursively a data object, including all fields.
  * The session file is indeed a standard "ZIP" archive, while the compression algorithm for files inside
  * the session archive is ZSTD. A standard archive reader could open a session file, if it is able to handle
- * ZIP archive with ZSTD compression
+ * ZIP archive with ZSTD compression.
  *
  * The archive can be password protected using AES256 algorithm and the compression level is set individually,
- * depending of the type of data to serialize
+ * depending of the type of data to serialize.
  *
  */
 class IO_SESSION_CLASS_API SessionReader final :

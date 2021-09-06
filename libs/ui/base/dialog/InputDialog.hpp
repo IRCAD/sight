@@ -33,7 +33,7 @@ namespace dialog
 {
 
 /**
- * @brief   Defines the generic input dialog for IHM.
+ * @brief   Defines the generic input dialog for GUI.
  * Use the Delegate design pattern
  *
  * Example of use:
@@ -63,7 +63,7 @@ public:
         const std::string& title,
         const std::string& message,
         const std::string& text = "",
-        EchoMode echoMode       = EchoMode::DEFAUT
+        EchoMode echoMode       = EchoMode::DEFAULT
     );
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
@@ -90,7 +90,7 @@ public:
         const std::string& title,
         const std::string& message,
         const std::string& text = "",
-        EchoMode echoMode       = EchoMode::DEFAUT
+        EchoMode echoMode       = EchoMode::DEFAULT
     );
 
     /// Destructor. Do nothing
@@ -102,7 +102,7 @@ public:
     /// Set the message
     UI_BASE_API void setMessage(const std::string& msg) override;
 
-    /// Set the echo mode used to display input field content
+    /// Sets the echo mode used to display input field content
     UI_BASE_API void setEchoMode(EchoMode echoMode) override;
 
     /// Set the input text in the input field

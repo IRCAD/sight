@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -157,7 +156,7 @@ void SWriter::configuring()
 
 void SWriter::updating()
 {
-    // Set to failled until successful
+    // Set to failed until successful
     m_writeFailed = true;
 
     // Show the save dialog if the path is empty

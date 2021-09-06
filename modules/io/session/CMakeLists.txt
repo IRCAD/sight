@@ -12,4 +12,4 @@ target_link_libraries(module_io_session PUBLIC
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(SIGHT_BUILD_TESTS)
+endif()

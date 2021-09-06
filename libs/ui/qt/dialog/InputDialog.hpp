@@ -64,7 +64,7 @@ public:
     /// Set the message
     UI_QT_API void setMessage(const std::string& msg) override;
 
-    /// Set the echo mode used to display input field content
+    /// Sets the echo mode used to display input field content
     UI_QT_API void setEchoMode(base::dialog::IInputDialog::EchoMode echoMode) override;
 
     /// Set the input text in the input field
@@ -85,7 +85,7 @@ protected:
     std::string m_input;
 
     /// Echo mode
-    base::dialog::IInputDialog::EchoMode m_echoMode {base::dialog::IInputDialog::EchoMode::DEFAUT};
+    base::dialog::IInputDialog::EchoMode m_echoMode {base::dialog::IInputDialog::EchoMode::DEFAULT};
 };
 
 } // namespace dialog

@@ -73,7 +73,7 @@ public:
     /// Set the message
     UI_QML_API void setMessage(const std::string& msg) override;
 
-    /// Set the echo mode used to display input field content
+    /// Sets the echo mode used to display input field content
     UI_QML_API void setEchoMode(base::dialog::IInputDialog::EchoMode echoMode) override;
 
     /// Set the input text in the input field

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,6 +49,7 @@ public:
     /// String serialization function
     inline std::string toString() const override;
 
+    /// Return the default index file path inside the session archive
     inline std::filesystem::path getIndexFilePath() const;
 
     /// Salt the password, depending of the encryption level

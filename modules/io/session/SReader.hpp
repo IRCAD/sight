@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,7 +39,7 @@ namespace sight::module::io::session
  * the session archive is ZSTD. A standard archive reader could open a session file, if it is able to handle
  * ZIP archive with ZSTD compression.
  *
- * The archive can be password protected using AES256 algorithm. Depending of the choosen encryption policy, the files
+ * The archive can be password protected using AES256 algorithm. Depending of the chosen encryption policy, the files
  * can be protected, and thus not be readable from external archive reader, even if no password (encryption=forced) are
  * provided.
  *
@@ -116,7 +115,7 @@ protected:
     /// Does nothing
     MODULE_IO_SESSION_API void stopping() override;
 
-    /// Parse the configuration
+    /// Parses the configuration
     MODULE_IO_SESSION_API void configuring() override;
 
     /// Read session data from filesystem

@@ -48,7 +48,7 @@ public:
         NOECHO       = 1,
         PASSWORD     = 2,
         ECHO_ON_EDIT = 3,
-        DEFAUT       = NORMAL
+        DEFAULT      = NORMAL
     };
 
     /// Constructor. Do nothing.
@@ -71,7 +71,7 @@ public:
     /// Set the message
     UI_BASE_API virtual void setMessage(const std::string& msg) = 0;
 
-    /// Set the echo mode used to display input field content
+    /// Sets the echo mode used to display input field content
     UI_BASE_API virtual void setEchoMode(EchoMode echoMode) = 0;
 };
 
