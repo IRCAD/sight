@@ -89,6 +89,13 @@ public:
         return core::crypto::decrypt(m_password, computePasswordKey()) == password;
     }
 
+    //------------------------------------------------------------------------------
+
+    inline void resetPassword()
+    {
+        m_password.clear();
+    }
+
 private:
 
     /// Generate a pseudo random password key to store the password obfuscated
@@ -139,6 +146,13 @@ bool PasswordKeeper::checkPassword(const core::crypto::secure_string& password) 
 
 //------------------------------------------------------------------------------
 
+void PasswordKeeper::resetPassword()
+{
+    return m_pimpl->resetPassword();
+}
+
+//------------------------------------------------------------------------------
+
 core::crypto::secure_string PasswordKeeper::getGlobalPasswordHash()
 {
     return core::crypto::hash(PasswordKeeper::getGlobalPassword());
@@ -168,6 +182,15 @@ bool PasswordKeeper::checkGlobalPassword(const core::crypto::secure_string& pass
     std::lock_guard guard(s_password_mutex);
 
     return core::crypto::decrypt(s_password, computeGlobalPasswordKey()) == password;
+}
+
+//------------------------------------------------------------------------------
+
+void PasswordKeeper::resetGlobalPassword()
+{
+    std::lock_guard guard(s_password_mutex);
+
+    s_password.clear();
 }
 
 } // namespace sight::io::session

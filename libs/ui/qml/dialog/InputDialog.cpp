@@ -38,6 +38,13 @@ namespace sight::ui::qml
 namespace dialog
 {
 
+static auto enumRegistered =
+    []
+    {
+        qmlRegisterUncreatableType<InputDialog>("sight.InputDialog", 1, 0, "EchoMode", "Enum EchoMode is not a type");
+        return true;
+    }();
+
 //------------------------------------------------------------------------------
 
 InputDialog::InputDialog(ui::base::GuiBaseObject::Key)
@@ -68,7 +75,7 @@ void InputDialog::setMessage(const std::string& msg)
 
 void InputDialog::setEchoMode(base::dialog::IInputDialog::EchoMode echoMode)
 {
-    m_echoMode = static_cast<decltype(m_echoMode)>(echoMode);
+    m_echoMode = echoMode;
 }
 
 //------------------------------------------------------------------------------

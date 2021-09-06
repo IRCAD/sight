@@ -82,11 +82,17 @@ public:
     /// @param password the password to verify against global stored password
     IO_SESSION_API static bool checkGlobalPassword(const core::crypto::secure_string& password);
 
+    /// Reset the global password
+    IO_SESSION_API static void resetGlobalPassword();
+
     /// Gets the password
     IO_SESSION_API core::crypto::secure_string getPasswordHash() const;
 
     /// Gets the password
     IO_SESSION_API core::crypto::secure_string getPassword() const;
+
+    /// Reset the password
+    IO_SESSION_API void resetPassword();
 
     /// Sets the password
     /// @param password the new password

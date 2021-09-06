@@ -208,7 +208,7 @@ void SReader::updating()
                             "Enter Password",
                             "Password:",
                             globalPassword.c_str(),
-                            sight::ui::base::dialog::InputDialog::EchoMode::ECHO_ON_EDIT
+                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                         )
                     );
 
@@ -292,6 +292,12 @@ void SReader::updating()
         else
         {
             m_pimpl->m_passwordRetry = 0;
+
+            // Reset old wrong password
+            if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
+            {
+                PasswordKeeper::resetGlobalPassword();
+            }
         }
     }
     catch(std::exception& _e)
