@@ -35,7 +35,18 @@ namespace exception
 /// Read exception.
 struct Read : core::Exception
 {
-    IO_ZIP_API Read(const std::string& err);
+    inline Read(const std::string& err) :
+        core::Exception(err)
+    {
+    }
+};
+
+struct BadPassword : Read
+{
+    inline BadPassword(const std::string& err) :
+        Read(err)
+    {
+    }
 };
 
 } // namespace exception

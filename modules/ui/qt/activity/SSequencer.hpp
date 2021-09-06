@@ -139,7 +139,7 @@ public Q_SLOTS:
 
 protected:
 
-    /// Parse the configuration
+    /// Parses the configuration
     void configuring() override;
 
     /// Create the sequencer widgets: launch Qml file

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
+#include "io/session/PasswordKeeper.hpp"
 
 #include <core/crypto/secure_string.hpp>
 #include <core/location/ILocation.hpp>
@@ -42,13 +42,6 @@ public:
 
     SIGHT_DECLARE_CLASS(ISession, core::location::ILocation);
 
-    enum class EncryptionLevel
-    {
-        PASSWORD,
-        SALTED,
-        FORCED
-    };
-
     constexpr static auto s_uuid {"uuid"};
     constexpr static auto s_children {"children"};
     constexpr static auto s_fields {"fields"};
@@ -56,9 +49,8 @@ public:
     /// String serialization function
     inline std::string toString() const override;
 
-    /// Set the encryption level
-    /// @param level the encryption mode
-    inline void setEncryptionLevel(const EncryptionLevel level);
+    /// Return the default index file path inside the session archive
+    inline std::filesystem::path getIndexFilePath() const;
 
     /// Salt the password, depending of the encryption level
     /// "PASSWORD" means encrypt if a password is provided, using the same key.
@@ -68,10 +60,11 @@ public:
     /// @param password original password
     /// @param salt salt used to change a bit the password
     /// @param level the way the password is changed
+    /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& password,
         const core::crypto::secure_string& salt,
-        const ISession::EncryptionLevel level = ISession::EncryptionLevel::SALTED
+        const PasswordKeeper::EncryptionPolicy policy = PasswordKeeper::EncryptionPolicy::DEFAULT
     );
 
 protected:
@@ -81,16 +74,6 @@ protected:
 
     /// Destructor
     IO_SESSION_API virtual ~ISession() = default;
-
-    /// Return the default index file path used to store the objects tree
-    inline virtual std::filesystem::path getIndexFilePath() const;
-
-    /// Return the default encryption level
-    inline EncryptionLevel getEncryptionLevel() const;
-
-private:
-
-    EncryptionLevel m_encryptionLevel {EncryptionLevel::SALTED};
 };
 
 //------------------------------------------------------------------------------
@@ -109,36 +92,22 @@ inline std::filesystem::path ISession::getIndexFilePath() const
 
 //------------------------------------------------------------------------------
 
-inline ISession::EncryptionLevel ISession::getEncryptionLevel() const
-{
-    return m_encryptionLevel;
-}
-
-//------------------------------------------------------------------------------
-
-inline void ISession::setEncryptionLevel(const EncryptionLevel level)
-{
-    m_encryptionLevel = level;
-}
-
-//------------------------------------------------------------------------------
-
 inline core::crypto::secure_string ISession::pickle(
     const core::crypto::secure_string& password,
     const core::crypto::secure_string& salt,
-    const ISession::EncryptionLevel level
+    const PasswordKeeper::EncryptionPolicy policy
 )
 {
-    switch(level)
+    switch(policy)
     {
-        case ISession::EncryptionLevel::PASSWORD:
-            return password;
-
-        case ISession::EncryptionLevel::SALTED:
+        case PasswordKeeper::EncryptionPolicy::SALTED:
             return password.empty() ? password : password + core::crypto::secure_string(salt);
 
-        case ISession::EncryptionLevel::FORCED:
+        case PasswordKeeper::EncryptionPolicy::FORCED:
             return password + core::crypto::secure_string(salt);
+
+        default:
+            return password;
     }
 
     return password;

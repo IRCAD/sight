@@ -35,7 +35,10 @@ namespace exception
 /// Write exception.
 struct Write : core::Exception
 {
-    IO_ZIP_API Write(const std::string& err);
+    inline Write(const std::string& err) :
+        core::Exception(err)
+    {
+    }
 };
 
 } // namespace exception

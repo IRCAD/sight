@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +23,7 @@
 
 #include "io/session/config.hpp"
 #include "io/session/detail/ISession.hpp"
+#include "io/session/PasswordKeeper.hpp"
 
 #include <core/crypto/secure_string.hpp>
 
@@ -57,11 +57,13 @@ public:
     ~SessionDeserializer() noexcept = default;
 
     /// Deserialize a data::Object from archive
-    /// @param archive_path archive file path
+    /// @param archivePath archive file path
     /// @param password password to use for optional decryption. Empty password means no decryption
+    /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     sight::data::Object::sptr deserialize(
-        const std::filesystem::path& archive_path,
-        const core::crypto::secure_string& password = ""
+        const std::filesystem::path& archivePath,
+        const core::crypto::secure_string& password             = "",
+        const PasswordKeeper::EncryptionPolicy encryptionPolicy = PasswordKeeper::EncryptionPolicy::DEFAULT
     ) const;
 };
 

@@ -49,7 +49,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key key, const std::string& title, const std::string& message)
+ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& title, const std::string& message)
 {
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();

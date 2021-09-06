@@ -61,12 +61,13 @@ MessageDialogQmlButtonType messageDialogQmlButton =
     {ui::base::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok},
     {ui::base::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel},
     {ui::base::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes},
-    {ui::base::dialog::IMessageDialog::NO, StandardButton::ButtonList::No}
+    {ui::base::dialog::IMessageDialog::NO, StandardButton::ButtonList::No},
+    {ui::base::dialog::IMessageDialog::RETRY, StandardButton::ButtonList::Retry}
 };
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key key)
+MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key)
 {
     qmlRegisterType<StandardButton>("Dialog", 1, 0, "StandardButton");
 }

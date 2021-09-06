@@ -51,7 +51,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key key)
+LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key)
 {
 }
 

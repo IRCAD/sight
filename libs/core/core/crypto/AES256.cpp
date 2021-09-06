@@ -51,12 +51,10 @@ inline static T xxcrypt(
 
     // Initialize key (265 bits) and iv(128 bits)
     unsigned char key[HASH_SIZE];
-    unsigned char iv[EVP_MAX_IV_LENGTH];
+    unsigned char iv[EVP_MAX_IV_LENGTH] = {0};
 
     // Compute password hash and randomize initialization vector
     hash(password, key);
-    const auto pseudo_random = SIGHT_PSEUDO_RANDOM_HASH("");
-    std::memcpy(iv, pseudo_random.data(), sizeof(iv));
 
     // Initialize the output with size of the original message expanded to block size
     T output;

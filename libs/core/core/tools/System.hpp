@@ -39,6 +39,38 @@ class CORE_CLASS_API System
 {
 public:
 
+    /// Convenience class that deletes the associated temporary file on destruction
+    class TemporaryFile
+    {
+    public:
+
+        TemporaryFile(const TemporaryFile&)            = delete;
+        TemporaryFile(TemporaryFile&&)                 = delete;
+        TemporaryFile& operator=(const TemporaryFile&) = delete;
+        TemporaryFile& operator=(TemporaryFile&&)      = delete;
+
+        inline TemporaryFile() :
+            m_filePath(getTemporaryFolder() / genTempFileName())
+        {
+        }
+
+        inline ~TemporaryFile()
+        {
+            std::filesystem::remove(m_filePath);
+        }
+
+        //------------------------------------------------------------------------------
+
+        inline std::filesystem::path getTemporaryFilePath() const
+        {
+            return m_filePath;
+        }
+
+    private:
+
+        const std::filesystem::path m_filePath;
+    };
+
     /**
      * @brief   Returns the system's temporary folder.
      * Returns the value returned by std::filesystem::temp_directory_path, or
@@ -92,9 +124,14 @@ public:
      * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
      * @param _from source path of the file to rename.
      * @param _to destination path of the renamed file.
+     * @param _force remove the destination in all cases.
      * @throws std::filesystem_error if it fails.
      */
-    CORE_API static void robustRename(const std::filesystem::path& _from, const std::filesystem::path& _to);
+    CORE_API static void robustRename(
+        const std::filesystem::path& _from,
+        const std::filesystem::path& _to,
+        bool _force = false
+    );
 
     /**
      * @brief Sets the temporary folder prefix.

@@ -32,9 +32,14 @@ namespace dialog
 
 //-----------------------------------------------------------------------------
 
-std::string InputDialog::showInputDialog(const std::string& title, const std::string& message, const std::string& text)
+std::string InputDialog::showInputDialog(
+    const std::string& title,
+    const std::string& message,
+    const std::string& text,
+    EchoMode echoMode
+)
 {
-    ui::base::dialog::InputDialog inputBox(title, message, text);
+    ui::base::dialog::InputDialog inputBox(title, message, text, echoMode);
     return inputBox.getInput();
 }
 
@@ -54,7 +59,12 @@ InputDialog::InputDialog()
 
 //-----------------------------------------------------------------------------
 
-InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string& text)
+InputDialog::InputDialog(
+    const std::string& title,
+    const std::string& message,
+    const std::string& text,
+    EchoMode echoMode
+)
 {
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         std::function<void()>(
@@ -65,6 +75,7 @@ InputDialog::InputDialog(const std::string& title, const std::string& message, c
                 m_implementation->setTitle(title);
                 m_implementation->setMessage(message);
                 m_implementation->setInput(text);
+                m_implementation->setEchoMode(echoMode);
             })
     );
 }
@@ -110,6 +121,19 @@ void InputDialog::setInput(const std::string& text)
             [&]
             {
                 m_implementation->setInput(text);
+            })
+    ).wait();
+}
+
+//------------------------------------------------------------------------------
+
+void InputDialog::setEchoMode(EchoMode echoMode)
+{
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
+            {
+                m_implementation->setEchoMode(echoMode);
             })
     ).wait();
 }

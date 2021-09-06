@@ -130,7 +130,7 @@ public Q_SLOTS:
 
 protected:
 
-    /// Parse the configuration (set the parameters to replace in the activities to launch
+    /// Parses the configuration (set the parameters to replace in the activities to launch
     void configuring() override;
 
     /// Do nothing

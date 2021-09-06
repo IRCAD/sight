@@ -1,0 +1,90 @@
+<!-- This configuration allows to read an image and display it in a simple scene -->
+<extension implements="sight::service::extension::AppConfig" >
+    <id>VolumeRendering</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="TF" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="TFPool" type="sight::data::Composite" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="imageScene" start="true" />
+                <view sid="tfm" start="true" />
+                <toolBar sid="toolBarView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="importAct" start="true" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="importAct" type="sight::module::ui::base::io::SSelector" >
+            <inout key="data" uid="${image}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::sight::module::io::vtk::SImageReader" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="imageScene" type="sight::viz::scene3d::SRender">
+            <scene overlay="true">
+                <background color="#36393E" />
+                <layer id="default" order="1" />
+                <adaptor uid="cameraInteractorAdaptor" />
+                <adaptor uid="volumeRender" />
+            </scene>
+        </service>
+
+        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+            <config layer="default" priority="0" />
+        </service>
+
+        <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
+            <inout key="image" uid="${image}" autoConnect="true" />
+            <inout key="tf" uid="TF" />
+            <config layer="default" widgets="false" dynamic="true" preintegration="false" />
+        </service>
+
+        <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction" >
+            <inout key="tfPool" uid="TFPool" autoConnect="true"/>
+            <out key="tf" uid="TF" />
+        </service>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="cameraInteractorAdaptor" />
+        <start uid="volumeRender" />
+
+        <!-- ******************************* Update services ***************************************** -->
+
+    </config>
+</extension>

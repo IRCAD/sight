@@ -37,7 +37,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 InputDialog::InputDialog(ui::base::GuiBaseObject::Key key) :
-    m_input("")
+    IInputDialog()
 {
 }
 
@@ -63,6 +63,13 @@ void InputDialog::setMessage(const std::string& msg)
 
 //------------------------------------------------------------------------------
 
+void InputDialog::setEchoMode(base::dialog::IInputDialog::EchoMode echoMode)
+{
+    m_echoMode = echoMode;
+}
+
+//------------------------------------------------------------------------------
+
 /// Set the input text in the input field
 void InputDialog::setInput(const std::string& text)
 {
@@ -77,12 +84,32 @@ std::string InputDialog::getInput()
     QString title = QObject::tr(m_title.c_str());
     QString text  = QObject::tr(m_message.c_str());
 
-    bool IsOkClicked;
+    const QLineEdit::EchoMode echoMode =
+        [&]
+        {
+            switch(m_echoMode)
+            {
+                case base::dialog::IInputDialog::EchoMode::NOECHO:
+                    return QLineEdit::EchoMode::NoEcho;
+
+                case base::dialog::IInputDialog::EchoMode::PASSWORD:
+                    return QLineEdit::EchoMode::Password;
+
+                case base::dialog::IInputDialog::EchoMode::ECHO_ON_EDIT:
+                    return QLineEdit::EchoMode::PasswordEchoOnEdit;
+
+                default:
+                    return QLineEdit::EchoMode::Normal;
+            }
+        }();
+
+    bool IsOkClicked = false;
+
     QString outputText = QInputDialog::getText(
         qApp->activeWindow(),
         title,
         text,
-        QLineEdit::Normal,
+        echoMode,
         QString::fromStdString(m_input),
         &IsOkClicked
     );
@@ -93,7 +120,7 @@ std::string InputDialog::getInput()
     }
     else
     {
-        m_input = "";
+        m_input.clear();
     }
 
     return m_input;

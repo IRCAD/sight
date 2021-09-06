@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,23 +19,35 @@
  *
  ***********************************************************************/
 
-#include "io/zip/exception/Read.hpp"
+#pragma once
 
-#include "io/zip/config.hpp"
+#include <core/runtime/Plugin.hpp>
 
-#include <core/Exception.hpp>
-
-namespace sight::io::zip
+namespace sight::module::io::session
 {
 
-namespace exception
+class Plugin : public core::runtime::Plugin
 {
+public:
 
-Read::Read(const std::string& err) :
-    core::Exception(err)
-{
-}
+    //! @brief Destructor.
+    ~Plugin() noexcept;
 
-} // namespace exception
+    /**
+     * @brief Start method.
+     *
+     * This method is used by runtime in order to initialize the module.
+     *
+     * @exception core::runtime::RuntimeException
+     */
+    void start();
 
-} // namespace sight::io::zip
+    /**
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the module.
+     */
+    void stop() noexcept;
+};
+
+} // namespace sight::module::io::session

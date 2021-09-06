@@ -54,8 +54,11 @@ class UI_QML_CLASS_API InputDialog : public QObject,
                                      public ui::base::dialog::IInputDialog
 {
 Q_OBJECT
+Q_ENUM(EchoMode)
 Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
+Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
+Q_PROPERTY(EchoMode echoMode MEMBER m_echoMode NOTIFY echoModeChanged)
 
 public:
 
@@ -71,6 +74,9 @@ public:
     /// Set the message
     UI_QML_API void setMessage(const std::string& msg) override;
 
+    /// Sets the echo mode used to display input field content
+    UI_QML_API void setEchoMode(base::dialog::IInputDialog::EchoMode echoMode) override;
+
     /// Set the input text in the input field
     UI_QML_API void setInput(const std::string& text) override;
 
@@ -83,6 +89,7 @@ Q_SIGNALS:
     void inputChanged();
     void messageChanged();
     void titleChanged();
+    void echoModeChanged();
 
 protected Q_SLOTS:
 
@@ -93,10 +100,15 @@ private:
 
     /// Dialog title
     QString m_title;
+
     /// Dialog box message
     QString m_message;
+
     /// Text inputed
     QString m_input;
+
+    /// Echo mode for the TextField
+    EchoMode m_echoMode {EchoMode::DEFAULT};
 };
 
 } // namespace dialog

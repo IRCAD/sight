@@ -33,7 +33,7 @@ namespace dialog
 {
 
 /**
- * @brief   Defines the generic input dialog for IHM.
+ * @brief   Defines the generic input dialog for GUI.
  * Use the Delegate design pattern
  *
  * Example of use:
@@ -45,11 +45,11 @@ namespace dialog
    std::string inputText = inputDlg.getInput();
    @endcode
  */
-class UI_BASE_CLASS_API InputDialog : public ui::base::dialog::IInputDialog
+class UI_BASE_CLASS_API InputDialog : public IInputDialog
 {
 public:
 
-    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, new InputDialog);
+    SIGHT_DECLARE_CLASS(InputDialog, IInputDialog, new InputDialog);
 
     /**
      * Opens a default input box with the specified title and message.
@@ -62,7 +62,8 @@ public:
     UI_BASE_API static std::string showInputDialog(
         const std::string& title,
         const std::string& message,
-        const std::string& text = ""
+        const std::string& text = "",
+        EchoMode echoMode       = EchoMode::DEFAULT
     );
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
@@ -85,7 +86,12 @@ public:
      * @param message Message of the input box
      * @param text the input text in the input field
      */
-    UI_BASE_API InputDialog(const std::string& title, const std::string& message, const std::string& text = "");
+    UI_BASE_API InputDialog(
+        const std::string& title,
+        const std::string& message,
+        const std::string& text = "",
+        EchoMode echoMode       = EchoMode::DEFAULT
+    );
 
     /// Destructor. Do nothing
     UI_BASE_API virtual ~InputDialog();
@@ -95,6 +101,9 @@ public:
 
     /// Set the message
     UI_BASE_API void setMessage(const std::string& msg) override;
+
+    /// Sets the echo mode used to display input field content
+    UI_BASE_API void setEchoMode(EchoMode echoMode) override;
 
     /// Set the input text in the input field
     UI_BASE_API void setInput(const std::string& text) override;

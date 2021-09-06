@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -87,7 +86,7 @@ inline static data::ActivitySeries::sptr deserialize(
     // Deserialize children properties
     activitySeries->setData(std::dynamic_pointer_cast<data::Composite>(children.at(s_Data)));
 
-    // Serialize trivial properties
+    // Deserialize trivial properties
     activitySeries->setActivityConfigId(Helper::readString(tree, s_ActivityConfigId, password));
 
     return activitySeries;

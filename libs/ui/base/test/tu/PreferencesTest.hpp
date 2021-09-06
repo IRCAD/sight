@@ -41,7 +41,6 @@ class PreferencesTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(PreferencesTest);
 CPPUNIT_TEST(runtimeTest);
 CPPUNIT_TEST(helperTest);
-CPPUNIT_TEST(passwordTest);
 CPPUNIT_TEST(cleanup);
 CPPUNIT_TEST_SUITE_END();
 
@@ -53,7 +52,6 @@ public:
 
     void runtimeTest();
     void helperTest();
-    void passwordTest();
     void cleanup();
 
 private:

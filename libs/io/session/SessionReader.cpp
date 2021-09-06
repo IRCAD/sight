@@ -46,7 +46,8 @@ public:
     /// Constructor
     inline SessionReaderImpl(SessionReader* const sessionReader) :
         m_SessionReader(sessionReader),
-        m_password(std::make_unique<PasswordKeeper>())
+        m_password(std::make_unique<PasswordKeeper>()),
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
     {
     }
 
@@ -58,26 +59,20 @@ public:
     {
         // Create the session and deserialize the root object
         detail::SessionDeserializer session;
-        m_object = session.deserialize(m_SessionReader->getFile(), m_password->getPassword());
-    }
-
-    /// Sets the password
-    /// @param password the new password
-    inline void setPassword(const core::crypto::secure_string& password)
-    {
-        m_password->setPassword(password);
+        m_object = session.deserialize(m_SessionReader->getFile(), m_password->getPassword(), m_encryptionPolicy);
     }
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
     core::tools::Object::sptr m_object;
-
-private:
 
     /// Pointer to the public interface
     SessionReader* const m_SessionReader;
 
     /// Keep the password in a vault
     const std::unique_ptr<PasswordKeeper> m_password;
+
+    /// The encryption policy
+    PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
 };
 
 SessionReader::SessionReader(base::reader::IObjectReader::Key) :
@@ -109,7 +104,14 @@ std::string SessionReader::extension()
 
 void SessionReader::setPassword(const core::crypto::secure_string& password)
 {
-    m_pimpl->setPassword(password);
+    m_pimpl->m_password->setPassword(password);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
+{
+    m_pimpl->m_encryptionPolicy = policy;
 }
 
 } // namespace sight::io::session

@@ -230,18 +230,29 @@ public:
                     {
                         // In case of error, unlock the file
                         m_attributes.m_archive->unlock(m_attributes.m_filePath);
-                    }
 
-                    SIGHT_THROW_EXCEPTION_IF(
-                        exception::Read(
-                            "Cannot open file '"
-                            + m_attributes.m_filePath.string()
-                            + "' in archive '"
-                            + m_attributes.m_archive->m_archivePath.string()
-                            + "'."
-                        ),
-                        result != MZ_OK
-                    );
+                        SIGHT_THROW_EXCEPTION_IF(
+                            exception::BadPassword(
+                                "The password used to open file '"
+                                + m_attributes.m_filePath.string()
+                                + "' in archive '"
+                                + m_attributes.m_archive->m_archivePath.string()
+                                + "' is wrong."
+                            ),
+                            result == MZ_PASSWORD_ERROR
+                        );
+
+                        SIGHT_THROW_EXCEPTION(
+                            exception::Read(
+                                "Cannot open file '"
+                                + m_attributes.m_filePath.string()
+                                + "' in archive '"
+                                + m_attributes.m_archive->m_archivePath.string()
+                                + "'.\n\n Error code: "
+                                + std::to_string(result)
+                            )
+                        );
+                    }
                 }
 
                 ~HandleKeeper()

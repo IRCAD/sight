@@ -136,7 +136,7 @@ protected:
     /// Does nothing
     MODULE_IO_ATOMS_API void stopping() override;
 
-    /// Parse the configuration
+    /// Parses the configuration
     MODULE_IO_ATOMS_API void configuring() override;
 
     /**

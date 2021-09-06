@@ -330,35 +330,52 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 
 //------------------------------------------------------------------------------
 
-void System::robustRename(const std::filesystem::path& _p1, const std::filesystem::path& _p2)
+void System::robustRename(
+    const std::filesystem::path& _p1,
+    const std::filesystem::path& _p2,
+    bool _force
+)
 {
-    std::error_code renameError;
-    // First try a basic rename.
-    std::filesystem::rename(_p1, _p2, renameError);
-    if(renameError) // Error
+    // If both paths are indeed the same, do nothing
+    if(_p1.lexically_normal().compare(_p2.lexically_normal()) == 0)
     {
-        // Handle the Invalid cross-device link case: _p1 & _p2 are not on the same disk/volume.
-        if(renameError == std::make_error_code(std::errc::cross_device_link))
-        {
-            // Use a copy-remove scenario instead of the rename.
-            std::error_code copyError;
-            std::filesystem::copy(_p1, _p2, copyError);
-            if(!copyError) // Success
-            {
-                //Remove old file.
-                std::filesystem::remove(_p1); // throw an exception if it fails.
-            }
-            else // Error
-            {
-                throw std::filesystem::filesystem_error(copyError.message(), copyError);
-            }
+        return;
+    }
 
-            // Early return, copy-remove is done.
-            return;
+    std::error_code error;
+
+    // Try a basic rename.
+    std::filesystem::rename(_p1, _p2, error);
+
+    if(error)
+    {
+        // Try to remove target if force is enabled
+        if(_force)
+        {
+            std::filesystem::remove(_p2);
         }
 
-        // Throw all others errors.
-        throw std::filesystem::filesystem_error(renameError.message(), renameError);
+        if(error == std::make_error_code(std::errc::cross_device_link))
+        {
+            std::filesystem::copy(_p1, _p2, error);
+            if(error == std::make_error_code(std::errc::operation_not_permitted))
+            {
+                // This happens on copying on different filesystem types, i.e. EXT4 -> NTFS
+                // In this case we use an alternative but less performant copy function
+                std::filesystem::remove(_p2);
+                std::ifstream src(_p1.string(), std::ios::binary);
+                std::ofstream dst(_p2.string(), std::ios::binary);
+
+                dst << src.rdbuf();
+            }
+
+            std::filesystem::remove(_p1);
+        }
+        else
+        {
+            // This will throw the expected exception
+            std::filesystem::rename(_p1, _p2);
+        }
     }
 }
 

@@ -161,13 +161,14 @@ inline static serializer findSerializer(const std::string& classname)
 /// @param tree property tree used to store object index
 /// @param object root object to serialize
 /// @param password password to use for optional encryption. Empty password means no encryption
+/// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
 inline static void deepSerialize(
     std::set<std::string>& cache,
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     const core::crypto::secure_string& password,
-    const ISession::EncryptionLevel level
+    const PasswordKeeper::EncryptionPolicy encryptionPolicy
 )
 {
     // Only serialize non-null object
@@ -213,7 +214,7 @@ inline static void deepSerialize(
             object_tree,
             object,
             children,
-            ISession::pickle(password, core::crypto::secure_string(uuid), level)
+            ISession::pickle(password, core::crypto::secure_string(uuid), encryptionPolicy)
         );
 
         // Serialize children, if needed
@@ -226,7 +227,7 @@ inline static void deepSerialize(
                 boost::property_tree::ptree child_tree;
 
                 // Recursively serialize child objects
-                deepSerialize(cache, archive, child_tree, child.second, password, level);
+                deepSerialize(cache, archive, child_tree, child.second, password, encryptionPolicy);
 
                 // Append to the children tree
                 children_tree.add_child(child.first, child_tree);
@@ -249,14 +250,7 @@ inline static void deepSerialize(
                 boost::property_tree::ptree field_tree;
 
                 // Recursively serialize field object
-                deepSerialize(
-                    cache,
-                    archive,
-                    field_tree,
-                    field.second,
-                    password,
-                    level
-                );
+                deepSerialize(cache, archive, field_tree, field.second, password, encryptionPolicy);
 
                 // Append to the fields tree
                 fields_tree.add_child(field.first, field_tree);
@@ -276,7 +270,8 @@ inline static void deepSerialize(
 void SessionSerializer::serialize(
     const std::filesystem::path& archive_path,
     data::Object::csptr object,
-    const core::crypto::secure_string& password
+    const core::crypto::secure_string& password,
+    const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
     // Initialize the ptree cache
@@ -289,7 +284,7 @@ void SessionSerializer::serialize(
     boost::property_tree::ptree tree;
 
     // Serialize recursively everything into the tree and the archive
-    deepSerialize(cache, *archive, tree, object, password, getEncryptionLevel());
+    deepSerialize(cache, *archive, tree, object, password, encryptionPolicy);
 
     auto ostream = archive->openFile(
         this->getIndexFilePath(),

@@ -487,26 +487,6 @@ void SWriter::updating()
                 archiveRootName = "root.json";
                 format          = sight::io::atoms::JSON;
             }
-            else if(extension == ".cpz")
-            {
-                writeArchive = sight::io::zip::WriteZipArchive::New(
-                    tmpFilePath.string(),
-                    "",
-                    sight::ui::base::preferences::getPassword()
-                );
-                archiveRootName = "root.json";
-                format          = sight::io::atoms::JSON;
-            }
-            else if(extension == ".sight")
-            {
-                writeArchive = sight::io::zip::WriteZipArchive::New(
-                    tmpFilePath.string(),
-                    "",
-                    sight::ui::base::preferences::getPassword()
-                );
-                archiveRootName = "root.json";
-                format          = sight::io::atoms::JSON;
-            }
             else if(extension == ".xml")
             {
                 writeArchive    = sight::io::zip::WriteDirArchive::New(tmpFolderPath.string());

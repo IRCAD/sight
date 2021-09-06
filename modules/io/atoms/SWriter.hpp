@@ -111,7 +111,7 @@ protected:
     /// Maps file extension to format name.
     typedef std::map<std::string, std::string> FileExtension2NameType;
 
-    /// Parse the configuration
+    /// Parses the configuration
     MODULE_IO_ATOMS_API void configuring() override;
 
     /// Does nothing

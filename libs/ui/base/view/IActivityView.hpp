@@ -90,7 +90,7 @@ protected:
     /// Destructor. Do nothing.
     UI_BASE_API ~IActivityView() override;
 
-    /// Parse the configuration
+    /// Parses the configuration
     UI_BASE_API void configuring() override;
 
     /**

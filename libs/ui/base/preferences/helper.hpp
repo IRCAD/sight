@@ -81,16 +81,4 @@ T getValue(const std::string& var, const char delimiter = '%')
     return ::boost::lexical_cast<T>(value);
 }
 
-/// Sets the password to use in the application. If null or empty, erase it.
-UI_BASE_API void setPassword(const core::crypto::secure_string& password);
-
-/// @Returns the password used in the application.
-UI_BASE_API const core::crypto::secure_string getPassword();
-
-/// Checks if the given password match the hash stored in the preferences
-UI_BASE_API bool checkPassword(const core::crypto::secure_string& password);
-
-/// Checks if a password hash is stored in the preferences
-UI_BASE_API bool hasPasswordHash();
-
 } // namespace sight::ui::base::preferences

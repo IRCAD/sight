@@ -48,11 +48,12 @@ MessageDialogQtIconsType messageDialogQtIcons = {{ui::base::dialog::IMessageDial
 
 typedef const std::map<ui::base::dialog::IMessageDialog::Buttons,
                        QMessageBox::StandardButtons> MessageDialogQtButtonType;
-MessageDialogQtButtonType messageDialogQtButton = {{ui::base::dialog::IMessageDialog::OK, QMessageBox::Ok},
+MessageDialogQtButtonType messageDialogQtButton = {
+    {ui::base::dialog::IMessageDialog::OK, QMessageBox::Ok},
     {ui::base::dialog::IMessageDialog::CANCEL, QMessageBox::Cancel},
     {ui::base::dialog::IMessageDialog::YES, QMessageBox::Yes},
-    {ui::base::dialog::IMessageDialog::NO, QMessageBox::No
-    }
+    {ui::base::dialog::IMessageDialog::NO, QMessageBox::No},
+    {ui::base::dialog::IMessageDialog::RETRY, QMessageBox::Retry}
 };
 
 //------------------------------------------------------------------------------

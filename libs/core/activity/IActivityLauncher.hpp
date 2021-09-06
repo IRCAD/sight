@@ -55,7 +55,7 @@ public:
 
 protected:
 
-    /// Parse the configuration
+    /// Parses the configuration
     ACTIVITY_API virtual void parseConfiguration(
         const ConfigurationType& config,
         const InOutMapType& inouts = InOutMapType()

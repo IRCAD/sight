@@ -58,4 +58,66 @@ protected:
     ui::base::ICursor::sptr m_implementation;
 };
 
+/// Convenience "busy" cursor  that will reset to default once deleted
+/// It can be useful in case of exception
+class UI_BASE_CLASS_API BusyCursor : public Cursor
+{
+public:
+
+    SIGHT_DECLARE_CLASS(BusyCursor, Cursor, new BusyCursor);
+
+    /// Constructor. Sets cursor to "busy" state
+    UI_BASE_API BusyCursor() :
+        Cursor()
+    {
+        setCursor(CursorType::BUSY);
+    }
+
+    /// Destructor. Reset cursor to default
+    UI_BASE_API ~BusyCursor() override
+    {
+        setDefaultCursor();
+    }
+};
+
+class UI_BASE_CLASS_API WaitCursor : public Cursor
+{
+public:
+
+    SIGHT_DECLARE_CLASS(WaitCursor, Cursor, new WaitCursor);
+
+    /// Constructor. Sets cursor to "wait" state
+    UI_BASE_API WaitCursor() :
+        Cursor()
+    {
+        setCursor(CursorType::WAIT);
+    }
+
+    /// Destructor. Reset cursor to default
+    UI_BASE_API ~WaitCursor() override
+    {
+        setDefaultCursor();
+    }
+};
+
+class UI_BASE_CLASS_API CrossCursor : public Cursor
+{
+public:
+
+    SIGHT_DECLARE_CLASS(CrossCursor, Cursor, new CrossCursor);
+
+    /// Constructor. Sets cursor to "cross" state
+    UI_BASE_API CrossCursor() :
+        Cursor()
+    {
+        setCursor(CursorType::CROSS);
+    }
+
+    /// Destructor. Reset cursor to default
+    UI_BASE_API ~CrossCursor() override
+    {
+        setDefaultCursor();
+    }
+};
+
 } // namespace sight::ui::base

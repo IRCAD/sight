@@ -23,14 +23,12 @@
 
 #include "core/config.hpp"
 #include "core/crypto/secure_string.hpp"
-#include "core/tools/System.hpp"
 
 // Convenience macro to generate a pseudo random hash in a pseudo predictable way.
 #define SIGHT_PSEUDO_RANDOM_HASH(salt) \
-    ::sight::core::crypto::hash( \
-        ::sight::core::crypto::secure_string( \
-            std::to_string(::sight::core::tools::System::getPID()) \
-            + __FILE__ \
+    sight::core::crypto::hash( \
+        sight::core::crypto::secure_string( \
+            __FILE__ \
             + std::to_string(__LINE__) \
             + salt \
         ) \

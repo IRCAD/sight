@@ -23,6 +23,7 @@
 
 #include <core/crypto/AES256.hpp>
 #include <core/crypto/SHA256.hpp>
+#include <core/tools/System.hpp>
 
 #include <iomanip>
 #include <mutex>
@@ -39,7 +40,7 @@ static core::crypto::secure_string s_password;
 // This generate the hash used to encrypt the global password
 inline static core::crypto::secure_string computeGlobalPasswordKey()
 {
-    return SIGHT_PSEUDO_RANDOM_HASH("");
+    return SIGHT_PSEUDO_RANDOM_HASH(std::to_string(sight::core::tools::System::getPID()));
 }
 
 class PasswordKeeper::PasswordKeeperImpl final
@@ -86,6 +87,13 @@ public:
     inline bool checkPassword(const core::crypto::secure_string& password) const
     {
         return core::crypto::decrypt(m_password, computePasswordKey()) == password;
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline void resetPassword()
+    {
+        m_password.clear();
     }
 
 private:
@@ -138,6 +146,13 @@ bool PasswordKeeper::checkPassword(const core::crypto::secure_string& password) 
 
 //------------------------------------------------------------------------------
 
+void PasswordKeeper::resetPassword()
+{
+    return m_pimpl->resetPassword();
+}
+
+//------------------------------------------------------------------------------
+
 core::crypto::secure_string PasswordKeeper::getGlobalPasswordHash()
 {
     return core::crypto::hash(PasswordKeeper::getGlobalPassword());
@@ -167,6 +182,15 @@ bool PasswordKeeper::checkGlobalPassword(const core::crypto::secure_string& pass
     std::lock_guard guard(s_password_mutex);
 
     return core::crypto::decrypt(s_password, computeGlobalPasswordKey()) == password;
+}
+
+//------------------------------------------------------------------------------
+
+void PasswordKeeper::resetGlobalPassword()
+{
+    std::lock_guard guard(s_password_mutex);
+
+    s_password.clear();
 }
 
 } // namespace sight::io::session

@@ -7,6 +7,7 @@
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::sight::activity::extension::Activity" >
         <id>ExImage_Import_Activity</id>
@@ -97,6 +98,26 @@
             <icons>
                 <icon type="sight::data::Image" icon="sight::module::ui::flaticons/Volume.svg" />
             </icons>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config">
+        <id>SessionReaderConfig</id>
+        <service>sight::module::io::session::SReader</service>
+        <desc>Session reader</desc>
+        <config>
+            <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
+            <password policy="once" encryption="salted"/>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config">
+        <id>SessionWriterConfig</id>
+        <service>sight::module::io::session::SWriter</service>
+        <desc>Session writer</desc>
+        <config>
+            <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
+            <password policy="once" encryption="salted"/>
         </config>
     </extension>
 

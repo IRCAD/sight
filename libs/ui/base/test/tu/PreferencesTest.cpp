@@ -129,37 +129,6 @@ void PreferencesTest::helperTest()
 
 //------------------------------------------------------------------------------
 
-void PreferencesTest::passwordTest()
-{
-    // Reset password field in settings
-    ui::base::preferences::setPassword(core::crypto::secure_string());
-
-    // Test default empty password (means no password)
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::getPassword(), core::crypto::secure_string());
-
-    // Test if there is no hash in preferences (means no password)
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::hasPasswordHash(), false);
-
-    // Test with a real password
-    const core::crypto::secure_string password = "You are the one for me, for me, for me, formidable";
-    ui::base::preferences::setPassword(password);
-    CPPUNIT_ASSERT_EQUAL(password, ui::base::preferences::getPassword());
-
-    // Save the hash
-    ui::base::preferences::savePreferences();
-
-    // Test if there is a hash in preferences
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::hasPasswordHash(), true);
-
-    // Verify the good password
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::checkPassword(password), true);
-
-    // Verify that bad password doesn't work
-    CPPUNIT_ASSERT_EQUAL(ui::base::preferences::checkPassword("ON DIT CHIFFRER, ET PAS CRYPTER. :-)"), false);
-}
-
-//------------------------------------------------------------------------------
-
 void PreferencesTest::cleanup()
 {
     // Cleanup

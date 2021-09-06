@@ -38,9 +38,16 @@ namespace sight::ui::qml
 namespace dialog
 {
 
+static auto enumRegistered =
+    []
+    {
+        qmlRegisterUncreatableType<InputDialog>("sight.InputDialog", 1, 0, "EchoMode", "Enum EchoMode is not a type");
+        return true;
+    }();
+
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(ui::base::GuiBaseObject::Key key)
+InputDialog::InputDialog(ui::base::GuiBaseObject::Key)
 {
 }
 
@@ -62,6 +69,13 @@ void InputDialog::setTitle(const std::string& title)
 void InputDialog::setMessage(const std::string& msg)
 {
     m_message = QString::fromStdString(msg);
+}
+
+//------------------------------------------------------------------------------
+
+void InputDialog::setEchoMode(base::dialog::IInputDialog::EchoMode echoMode)
+{
+    m_echoMode = echoMode;
 }
 
 //------------------------------------------------------------------------------
@@ -90,6 +104,7 @@ std::string InputDialog::getInput()
     // keep window to destroy it
 
     window->setProperty("title", m_title);
+    Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
     QObject* dialog = window->findChild<QObject*>("dialog");

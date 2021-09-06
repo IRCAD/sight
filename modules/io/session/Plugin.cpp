@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,23 +19,27 @@
  *
  ***********************************************************************/
 
-#include "io/zip/exception/Write.hpp"
+#include "modules/io/session/Plugin.hpp"
 
-#include "io/zip/config.hpp"
-
-#include <core/Exception.hpp>
-
-namespace sight::io::zip
+namespace sight::module::io::session
 {
 
-namespace exception
-{
+SIGHT_REGISTER_PLUGIN("sight::module::io::session::Plugin");
 
-Write::Write(const std::string& err) :
-    core::Exception(err)
+Plugin::~Plugin() noexcept
 {
 }
 
-} // namespace exception
+//------------------------------------------------------------------------------
 
-} // namespace sight::io::zip
+void Plugin::start()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+} // namespace sight::module::io::session

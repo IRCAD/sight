@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 
 import sight.style 1.0
+import sight.InputDialog 1.0
 
 Window {
     id: window
@@ -19,6 +20,7 @@ Window {
         width: window.width
         height: window.height
         standardButtons: Dialog.Cancel | Dialog.Ok
+        title: inputDialog.title
 
         ColumnLayout {
             id: column
@@ -38,6 +40,7 @@ Window {
                 id: answer
                 Layout.fillWidth: true
                 placeholderText: inputDialog.input
+                echoMode: inputDialog.echoMode == EchoMode.NOECHO ? TextInput.NoEcho : inputDialog.echoMode == EchoMode.PASSWORD ? TextInput.Password : inputDialog.echoMode == EchoMode.ECHO_ON_EDIT ? TextInput.PasswordEchoOnEdit : TextInput.Normal
             }
         }
 
