@@ -1,0 +1,5 @@
+<plugin id="Tuto05EditorQml" library="true" >
+
+    <requirement id="sight::module::service" />
+
+</plugin>

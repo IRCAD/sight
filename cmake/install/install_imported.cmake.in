@@ -1,0 +1,32 @@
+set(RC_DIRS "@IMPORTED_RC_DIRS@" )
+if(RC_DIRS)
+    # For now we install everything in the same folder... 
+    # We are going to package this anyway, so there is no real need to separate something
+    file(INSTALL DESTINATION "@CMAKE_INSTALL_PREFIX@/share/sight" TYPE DIRECTORY FILES ${RC_DIRS})
+endif()
+
+set(LIBS "@IMPORTED_LIBS@" )
+if(LIBS)
+    file(INSTALL DESTINATION "@CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@" TYPE DIRECTORY FILES ${LIBS})
+    if(UNIX)
+        # Recreate symlinks... Instead we could use COPY with FOLLOW_SYMLINK_CHAIN but we would have no install log
+        foreach(LIB ${LIBS})
+            get_filename_component(LIB_NAME ${LIB} NAME)
+            string(REGEX REPLACE "(.*so.[0-9]+\\.[0-9])+\\..*" "\\1" LIB_NAME_MAJOR ${LIB_NAME})
+
+            file(CREATE_LINK 
+                ${LIB_NAME}
+                @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME_MAJOR}
+                SYMBOLIC
+            )
+
+            string(REGEX REPLACE "(.*so).[0-9]+\\.[0-9]+\\..*" "\\1" LIB_NAME_RAW ${LIB_NAME})
+
+            file(CREATE_LINK 
+                ${LIB_NAME}
+                @CMAKE_INSTALL_PREFIX@/@SIGHT_MODULE_LIB_PREFIX@/${LIB_NAME_RAW}
+                SYMBOLIC
+            )
+        endforeach()
+    endif()
+endif()

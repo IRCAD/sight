@@ -1,0 +1,23 @@
+<plugin id="::sight::module::ui::dicom" library="true" >
+    
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::ui::base::IEditor</type>
+        <service>sight::module::ui::dicom::SFilterSelectionEditor</service>
+        <object>sight::data::Vector</object>
+        <desc>Filter Selection Editor</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::ui::base::IDialogEditor</type>
+        <service>sight::module::ui::dicom::SFilterSelectorDialog</service>
+        <object>sight::data::String</object>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+        <type>sight::ui::base::IEditor</type>
+        <service>sight::module::ui::dicom::SSliceIndexDicomEditor</service>
+        <object>sight::data::DicomSeries</object>
+        <desc>Slice Index Dicom Editor</desc>
+    </extension>
+
+</plugin>

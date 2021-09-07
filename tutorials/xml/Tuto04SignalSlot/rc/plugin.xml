@@ -1,0 +1,142 @@
+<plugin id="Tuto04SignalSlot" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>Tuto04SignalSlot_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- The main data object is ::sight::data::Mesh. -->
+            <object uid="mesh" type="sight::data::Mesh" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto04SignalSlot</name>
+                        <icon>Tuto04SignalSlot/tuto.ico</icon>
+                        <minSize width="1280" height="720" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="containerView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openMeshAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <!--
+                Default view service:
+                This service defines the view layout. The type '::sight::ui::base::CardinalLayoutManager' represents a main
+                central view and other views at the 'right', 'left', 'bottom' or 'top'.
+                Here the application contains a central view at the right.
+
+                Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
+                A minimum window height and a width are given to the two non-central views.
+            -->
+            <service uid="containerView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::CardinalLayoutManager" >
+                        <view align="center" />
+                        <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
+                        <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="rendering1Srv" start="true" />
+                    <view sid="rendering2Srv" start="true" />
+                    <view sid="rendering3Srv" start="true" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="meshReaderSrv" />
+            </service>
+
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="mesh" />
+                <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
+            </service>
+
+            <!--
+                Visualization services:
+                We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
+                shown in the windows defines in 'view' service.
+            -->
+            <service uid="rendering1Srv" type="sight::module::viz::sample::SMesh" >
+                <in key="mesh" uid="mesh" autoConnect="true" />
+            </service>
+
+            <service uid="rendering2Srv" type="sight::module::viz::sample::SMesh" >
+                <in key="mesh" uid="mesh" autoConnect="true" />
+            </service>
+
+            <service uid="rendering3Srv" type="sight::module::viz::sample::SMesh" >
+                <in key="mesh" uid="mesh" autoConnect="true" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!--
+                Each 3D scene owns a 3D camera that can be moved by clicking in the scene.
+                - When the camera move, a signal 'camUpdated' is emitted with the new camera information (position,
+                focal, view up).
+                - To update the camera without clicking, you could call the slot 'updateCamPosition'
+
+                Here, we connect some rendering services signal 'camUpdated' to the others service slot
+                'updateCamPosition', so the cameras are synchronized between scenes.
+            -->
+            <connect>
+                <signal>rendering1Srv/camUpdated</signal>
+                <slot>rendering2Srv/updateCamPosition</slot>
+                <slot>rendering3Srv/updateCamPosition</slot>
+            </connect>
+
+            <connect>
+                <signal>rendering2Srv/camUpdated</signal>
+                <slot>rendering1Srv/updateCamPosition</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+
+        </config>
+    </extension>
+
+</plugin>

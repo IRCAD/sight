@@ -1,0 +1,103 @@
+<plugin id="Tuto10LaunchBasicConfig" >
+
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+
+    <!-- Allows to include a xml file containing a sub-configuration -->
+    <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>Tuto10LaunchBasicConfig_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="image" type="sight::data::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto10LaunchBasicConfig</name>
+                        <icon>Tuto10LaunchBasicConfig/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="true" />
+                    <view sid="imageRendereSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Launch config" style="check" shortcut="Ctrl+L" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="launchConfigAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="imageReaderSrv" />
+            </service>
+
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <!-- ************************ Configuration launchers ********************************* -->
+
+            <!--
+                Configuration launcher:
+                This service allows to launch a sub-configuration.
+                The configuration is defined by its id.
+            -->
+            <service uid="launchConfigAct" type="sight::module::ui::base::SConfigLauncher" >
+                <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
+                <!--
+                    replace ${image} in the sub-config by the uid of the object with the key
+                    (ie. ${image} is replaced by "image")
+                -->
+                <inout key="imageUid" uid="image" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="image" />
+            </service>
+
+            <service uid="imageRendereSrv" type="sight::module::viz::sample::SImage" >
+                <in key="image" uid="image" />
+            </service>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+
+        </config>
+    </extension>
+</plugin>

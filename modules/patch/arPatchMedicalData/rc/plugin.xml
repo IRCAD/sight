@@ -1,3 +1,0 @@
-<plugin id="arPatchMedicalData" class="::arPatchMedicalData::Plugin" version="@PROJECT_VERSION@" >
-    <library name="arPatchMedicalData" />
-</plugin>

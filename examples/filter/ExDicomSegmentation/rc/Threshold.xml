@@ -1,0 +1,126 @@
+<extension implements="::sight::service::extension::AppConfig" >
+    <id>ExDicomSegmentation_Threshold_AppCfg</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="seriesDB" />
+        <param name="imageSeries" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${imageSeries}"  type="sight::data::ImageSeries" src="ref" />
+        <object uid="imageSeriesMask" type="sight::data::ImageSeries" src="deferred" />
+        <object uid="inputImage" type="sight::data::Image" src="deferred" />
+        <object uid="outputImage" type="sight::data::Image" src="deferred" />
+        <object uid="landmarks1" type="sight::data::Landmarks" />
+        <object uid="landmarks2" type="sight::data::Landmarks" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="true" />
+                <view wid="negato1View" start="true" />
+                <view wid="negato2View" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Threshold" icon="sight::module::ui::flaticons/YellowMenu.svg" />
+                    <menuItem name="Export ImageSeries Mask" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="thresholdAct" start="true" />
+                <menuItem sid="exportAct" start="false" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="thresholdAct" type="sight::module::filter::image::SThreshold" >
+            <in key="source" uid="${imageSeries}" />
+            <out key="target" uid="imageSeriesMask" />
+            <config>
+                <threshold>50</threshold>
+            </config>
+        </service>
+
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true" >
+            <inout key="seriesDB" uid="${seriesDB}" />
+            <inout key="series" uid="imageSeriesMask" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="negato1Srv" type="sight::service::SConfigController" >
+            <appConfig id="2DNegato" />
+            <inout key="image" uid="inputImage" />
+            <inout key="landmarks" uid="landmarks1" />
+            <parameter replace="WID_PARENT" by="negato1View" />
+            <parameter replace="patient_name" by="Source Image" />
+        </service>
+
+        <service uid="negato2Srv" type="sight::service::SConfigController" >
+            <appConfig id="2DNegato" />
+            <inout key="image" uid="outputImage" />
+            <inout key="landmarks" uid="landmarks2" />
+            <parameter replace="WID_PARENT" by="negato2View" />
+            <parameter replace="patient_name" by="Mask Image" />
+        </service>
+
+        <service uid="extractImage1Srv" type="sight::module::data::SExtractObj" >
+           <inout key="source" uid="${imageSeries}" >
+               <extract from="@image" />
+           </inout>
+           <out group="target" >
+               <key uid="inputImage" />
+           </out>
+        </service>
+
+        <service uid="extractImage2Srv" type="sight::module::data::SExtractObj" >
+           <inout key="source" uid="imageSeriesMask" >
+               <extract from="@image" />
+           </inout>
+           <out group="target" >
+               <key uid="outputImage" />
+           </out>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>extractImage1Srv/started</signal>
+            <slot>extractImage1Srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>extractImage2Srv/started</signal>
+            <slot>extractImage2Srv/update</slot>
+        </connect>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="extractImage1Srv" />
+        <start uid="extractImage2Srv" />
+        <start uid="negato1Srv" />
+        <start uid="negato2Srv" />
+        <start uid="exportAct" />
+
+    </config>
+</extension>

@@ -1,0 +1,31 @@
+<plugin id="dicomxplorer">
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::ui::base" />
+
+    <xi:include href="configurations/dicomXplorerBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::sight::service::extension::AppConfigParameters">
+        <id>dicomXplorerAppBase</id>
+        <parameters>
+            <param name="appName" value="DicomXplorer" />
+            <param name="appIconPath" value="dicomxplorer/dicomXplorer.ico" />
+            <param name="appVersion" value="@SIGHT_VERSION@" />
+        </parameters>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>SDBdicomXplorer</id>
+        <title>SDB</title>
+        <desc>Series Selector</desc>
+        <icon>sight::module::ui::icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="SDBdicomXplorer">
+            <parameters />
+        </appConfig>
+    </extension>
+
+</plugin>

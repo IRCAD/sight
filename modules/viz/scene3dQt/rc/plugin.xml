@@ -1,0 +1,5 @@
+<plugin id="sight::module::viz::scene3dQt" library="true" >
+    <requirement id="sight::module::service"/>
+    <requirement id="sight::module::viz::scene3d"/>
+
+</plugin>

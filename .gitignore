@@ -24,7 +24,12 @@ CMakeSettings\.json
 # VSCode
 *.code-workspace
 .vscode/
+/build/
+/.build/
+
 # JetBrains IDEs
 .idea/
 # Just for the CI
 sight-git
+# various logs
+*.log

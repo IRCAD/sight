@@ -1,0 +1,262 @@
+<plugin id="ExDetectCamMotion" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExDetectCamMotion_AppCgf</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="frameTL"    type="sight::data::FrameTL" />
+            <object uid="videoImage" type="sight::data::Image" />
+            <object uid="camera"     type="sight::data::Camera" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <menuBar/>
+                    <toolBar/>
+                    <frame>
+                        <name>ExDetectCamMotion</name>
+                        <icon>ExDetectCamMotion/app.ico</icon>
+                    </frame>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="true" />
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuPreferencesView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="videoDirAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <separator/>
+                        <editor />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <editor sid="motionStatusSrv" start="true" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <!-- Scene in which the video will be rendered -->
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="videoAdp" />
+                </scene>
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+                <in key="image" uid="videoImage" />
+                <config layer="default" />
+            </service>
+
+            <!-- ************************************* Services ************************************ -->
+
+            <service uid="motionStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+                <form>circle</form>
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+                <labelStatus>Motion</labelStatus>
+                <red>No motion</red>
+                <green>Motion</green>
+                <orange>Computing...</orange>
+            </service>
+
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>true</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater" >
+                <in key="frameTL" uid="frameTL" autoConnect="true" />
+                <inout key="frame" uid="videoImage" />
+            </service>
+
+            <service uid="opticalFlowSrv" type="sight::module::io::video::SOpticalFlow" worker="ofWorker" >
+                <in key="timeline" uid="frameTL" autoConnect="true" />
+                <config scaleFactor="3.6" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>opticalFlowSrv/cameraMoved</signal>
+                <slot>motionStatusSrv/changeToGreen</slot>
+            </connect>
+
+            <connect>
+                <signal>opticalFlowSrv/cameraRemained</signal>
+                <slot>motionStatusSrv/changeToRed</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="videoSelectorSrv" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="opticalFlowSrv" />
+            <start uid="videoAdp" />
+
+        </config>
+    </extension>
+</plugin>

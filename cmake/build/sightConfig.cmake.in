@@ -1,0 +1,70 @@
+cmake_minimum_required (VERSION 3.18)
+
+# Use new policy to use CMAKE_CXX_STANDARD in trysight_compile() macro
+cmake_policy(SET CMP0067 NEW)
+
+set(FW_BUILD_EXTERNAL 1)
+
+include(GNUInstallDirs)
+
+include("${CMAKE_CURRENT_LIST_DIR}/build/flags.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
+
+if(NOT SIGHT_CONFIGURED)
+    set(SIGHT_CONFIGURED TRUE)
+    # Needed for FindFilesystem.cmake
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+
+    set(SIGHT_SUPPORTED_COMPONENTS @COMPONENTS@)
+
+    if(UNIX)
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/linux/safe-xvfb-run 
+            ${CMAKE_BINARY_DIR}/bin/safe-xvfb-run
+            COPYONLY
+        )
+        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+        list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    endif()
+
+    set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
+    set(FWCONFIG_PACKAGE_LOCATION lib/cmake/${PROJECT_NAME})
+    set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
+    if(WIN32)
+        set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
+    else()
+        set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}")
+    endif()
+
+    file(TO_CMAKE_PATH "${sight_DIR}/../../../bin" Sight_BINARY_DIR)
+    file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_LIB_PREFIX@" Sight_LIBRARY_DIR)
+    file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULES_DIR)
+    file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
+
+    setExternalLibrariesDir()
+
+    find_package(CppUnit REQUIRED)
+
+    foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
+        if(NOT ${sight_comp} MATCHES "_obj")
+            if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+                include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+            endif()
+            include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Targets.cmake")
+        endif()
+        list(APPEND SIGHT_COMPONENTS sight::${sight_comp})
+    endforeach()
+endif()
+
+foreach(sight_comp ${sight_FIND_COMPONENTS})
+    if(NOT ${sight_comp}_FOUND)
+        message(STATUS "Looking for sight component: ${sight_comp}")
+        if (NOT sight_comp IN_LIST SIGHT_SUPPORTED_COMPONENTS)
+            set(sight_FOUND False)
+            set(sight_NOT_FOUND_MESSAGE "Unsupported component: ${sight_comp}")
+        endif()
+
+        set_property(TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${Sight_DEFINE_DIR}")
+        set(${sight_comp}_FOUND 1)
+    endif()
+endforeach()

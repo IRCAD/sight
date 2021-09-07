@@ -1,0 +1,9 @@
+<profile name="ioITKTest" version="0.1">
+
+    <activate id="sight::module::service" version="0.1" />
+    <activate id="sight::module::ui::base" version="0.1" />
+    <activate id="sight::module::io::itk" version="0.1" />
+
+    <start id="sight::module::io::itk" />
+
+</profile>

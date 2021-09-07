@@ -1,0 +1,23 @@
+<plugin id="sight::module::ui::debug" library="true" >
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::debug::DumpEditor</service>
+         <desc>Editor to dump or restore selected buffer.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::debug::action::ClassFactoryRegistryInfo</service>
+         <object>sight::data::Object</object>
+         <desc>Implements an action to show services registered in factory</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::debug::action::ComponentsTree</service>
+         <object>sight::data::Object</object>
+         <desc>Implements an action that show module information.</desc>
+    </extension>
+</plugin>

@@ -1,0 +1,154 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>dicomXplorerBase</id>
+    <parameters>
+        <param name="appName" />
+        <param name="appIconPath" />
+        <param name="appVersion" />
+    </parameters>
+    <config>
+        <object uid="seriesDB" type="sight::data::SeriesDB" />
+
+        <service uid="action_open" type="sight::module::ui::base::series::SDBMerger">
+            <inout key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
+        </service>
+        <service uid="action_save" type="sight::module::ui::base::com::SStarter">
+            <start uid="SDBWriter" />
+        </service>
+        <service uid="SDBWriter" type="sight::module::ui::base::io::SSelector">
+            <inout key="data" uid="seriesDB" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::sight::module::io::atoms::SWriter" />
+            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+        </service>
+
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <gui>
+                <frame>
+                    <name>${appName}</name>
+                    <icon>${appIconPath}</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="true" />
+                <view sid="dynamicView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuBar" type="sight::module::ui::base::SMenuBar">
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Preferences" />
+                    <menu name="Help" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_file" start="true" />
+                <menu sid="menu_preferences" start="true" />
+                <menu sid="menu_help" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menu_file" type="sight::module::ui::base::SMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Open" shortcut="Ctrl+O" />
+                    <menuItem name="Save" shortcut="Ctrl+S" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_open" start="true" />
+                <menuItem sid="action_save" start="true" />
+                <menuItem sid="action_quit" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menu_preferences" type="sight::module::ui::base::SMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Preferences configuration"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_configuration" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menu_help" type="sight::module::ui::base::SMenu">
+            <gui>
+                <layout>
+                    <menuItem name="About" specialAction="ABOUT" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_about" start="true" />
+            </registry>
+        </service>
+
+        <service uid="action_quit" type="sight::module::ui::base::SQuit" />
+
+        <service uid="action_configuration" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <preference>
+                <type>text</type>
+                <name>Pacs Server Hostname</name>
+                <key>PACS_SERVER_HOSTNAME</key>
+                <default_value>127.0.0.1</default_value>
+            </preference>
+            <preference>
+                <type>int</type>
+                <name>Pacs Server Port</name>
+                <key>PACS_SERVER_PORT</key>
+                <default_value>80</default_value>
+             </preference>
+             <preference>
+                 <type>combobox</type>
+                 <name>Color Theme</name>
+                 <key>THEME</key>
+                 <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                 <default_value>DARKSTYLE</default_value>
+             </preference>
+        </service>
+
+        <service uid="action_about" type="sight::module::ui::qt::SShowAbout">
+            <filename id="dicomxplorer/about/about.html" />
+        </service>
+
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView">
+            <inout key="SERIESDB" uid="seriesDB" />
+            <mainActivity id="SDBdicomXplorer" closable="false" />
+            <parameters>
+                <parameter replace="ICON_PATH" by="${appIconPath}" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicViewChannel" />
+                <parameter replace="PROGRESS_CHANNEL" by="progressStatus" />
+            </parameters>
+        </service>
+
+        <service uid="progress_statusbar" type="sight::module::ui::base::SJobBar" />
+
+         <service uid="qtSelector" type="sight::module::ui::qt::SStyleSelector" />
+
+        <connect channel="progressStatus">
+            <signal>SDBWriter/jobCreated</signal>
+            <slot>progress_statusbar/showJob</slot>
+        </connect>
+
+        <connect channel="dynamicViewChannel">
+            <slot>dynamicView/createTab</slot>
+        </connect>
+
+        <connect channel="parametersChannel">
+            <signal>action_configuration/parametersModified</signal>
+            <slot>styleSelector/updateFromPreferences</slot>
+        </connect>
+
+        <start uid="mainFrame" />
+        <start uid="progress_statusbar" />
+        <start uid="qtSelector" />
+
+    </config>
+</extension>

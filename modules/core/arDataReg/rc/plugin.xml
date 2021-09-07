@@ -1,6 +1,0 @@
-<plugin id="arDataReg" class="::arDataReg::Plugin" version="@PROJECT_VERSION@" >
-    
-    <library name="arDataReg" />
-
-</plugin>
-

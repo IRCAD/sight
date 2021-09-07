@@ -18,5 +18,5 @@ moduledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
 LD_LIBRARY_PATH=$depslibdir:$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
-# Use CMAKE Variable of fwlauncher and Profile.xml path
+# Use CMAKE Variable of sightrun and Profile.xml path
 exec "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $@

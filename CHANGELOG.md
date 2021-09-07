@@ -761,9 +761,9 @@ Remove the useless hack that skipped some events in VTK picker interactor, so th
 
 ### ExSimpleARCVOgre
 
-*Add missing media bundle.*
+*Add missing module_ui_media bundle.*
 
-This solves the crash of ExSimpleARCVOgre at start. The bundle media was missing.
+This solves the crash of ExSimpleARCVOgre at start. The bundle module_ui_media was missing.
 
 ### fwData/Image
 
@@ -1261,7 +1261,7 @@ Simplifies Array API by moving the methods from the helper to the data itself:
 
 Refactor `fwRenderOgre` and `uiVisuOgre` to use new Image, Array and Mesh API.
 
-*Clean the media folder.*
+*Clean the module_ui_media folder.*
 
 Sorts glsl, metarial and compostior.
 
@@ -1400,12 +1400,12 @@ for (; itr != itrEnd ; ++itr)
 }
 ```
 
-### media
+### module_ui_media
 
-*Fuse all media bundles.*
+*Fuse all module_ui_media bundles.*
 
 * Deprecate `arMedia` bundle.
-* Copy all `arMedia` content into `media`.
+* Copy all `arMedia` content into `module_ui_media`.
 * Fixes xml files that used these bundles.
 
 ### Mesh
@@ -1619,9 +1619,9 @@ When iterating through mesh cells, the iterator return the type as a CellType en
 
 ### resource
 
-*Fuse all media bundles.*
+*Fuse all module_ui_media bundles.*
 
-* Adds `arMedia` and `media` into a folder `resource`.
+* Adds `arMedia` and `module_ui_media` into a folder `resource`.
 * Adds a new bundle `flatIcon` with flat theme icons.
 
 ### SNegato2DCamera
@@ -1863,7 +1863,7 @@ Added several patches to build sight on Debian-med
 Create a Qml sample to launch activities: `ExActivitiesQml`
 
 * Create base class for activity launcher and sequencer service to share the code between qml and qt services.
-* Move qml style from `guiQml` to `styleQml` bundles, it is required because some bundles require it and we don't want to start guiQml bundle before them.
+* Move qml style from `guiQml` to `style` bundles, it is required because some bundles require it and we don't want to start guiQml bundle before them.
 * Improve `AppManager` to manage input parameters and to generate unique identifier
 * Create an Qml object `ActivityLauncher` to help launching activities in a Qml application
 
@@ -2674,7 +2674,7 @@ Add a test in CMakeLists.txt to display a warning message if there are links bet
 Add a new technique to the volume rendering in order to display the depth of the volume.
 
 * RayTracedVolumeDepth_FP: new fragment shader that displays the volume depth.
-* OffScreenRenderWindowInteractorManager: fix the rendering by calling the specific target instead of all targets.
+* OffScreenWindowInteractor: fix the rendering by calling the specific target instead of all targets.
 
 Remove a double connection in `::visuOgreAdaptor::SInteractorStyle`.
 
@@ -3149,7 +3149,7 @@ Add a slot which changes enumeration state based on the index and not on the lab
 *Add vs code generator.*
 
 - add VS Code support to build and debug Sight
-- to use VSCode with sight: run CMake configure with option GENERATE_VSCODE_WS, and open the workspace file "sight.code-workspace" (in build dir)
+- to use VSCode with sight: run CMake configure with option SIGHT_GENERATE_VSCODE_WS, and open the workspace file "sight.code-workspace" (in build dir)
 
 ### conan
 
@@ -3738,7 +3738,7 @@ The new Samples `Tuto08GenericSceneCpp` and `Tuto09MesherWithGenericSceneCpp` ar
 
 All the services are managed in C++ in the application `Plugin` class. The services' configurations are written with `::boost::property::tree`.
 
-To achieve this, a new helper : ``::fwServices::AppManager``was added. It simplifies the management of objects/services/connections in an application.
+To achieve this, a new helper : ``::fwServices::AppManager``was added. It simplifies the management of objects/service/connections in an application.
 
 ### CMake
 
@@ -3954,7 +3954,7 @@ in the unit tests.
 *Replace deprecated methods to register a service.*
 
 Replace the `::OSR::registerService(obj, srv)` by `srv->registerInOut(obj, key)`
-and use `::fwServices::add(srv)` helper instead of calling directly `ServiceFactory
+and use `::fwServices::add(srv)` helper instead of calling directly `Factory
 
 ### SVolumeRender
 

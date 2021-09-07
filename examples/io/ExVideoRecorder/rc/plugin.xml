@@ -1,0 +1,231 @@
+<plugin id="ExVideoRecorder" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExVideoRecorder_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="camera" type="sight::data::Camera" />
+            <object uid="frameTL" type="sight::data::FrameTL" >
+                <value>100</value>
+            </object>
+            <object uid="videoImage" type="sight::data::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExVideoRecorder</name>
+                        <icon>ExVideoRecorder/app.ico</icon>
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbarView" start="true" />
+                    <view sid="genericSceneSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <separator />
+                        <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
+                        <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg"  style="check"  />
+                        <editor/>
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="videoSelectorSrv" start="true" />
+                    <menuItem sid="startVideoAct" start="true" />
+                    <menuItem sid="pauseVideoAct" start="true" />
+                    <menuItem sid="resumeVideoAct" start="true" />
+                    <menuItem sid="stopVideoAct" start="true" />
+                    <menuItem sid="loopVideoAct" start="true" />
+                    <menuItem sid="frameRecordingAct" start="true" />
+                    <menuItem sid="videoRecordingAct" start="true" />
+                    <editor sid="parametersSrv" start="true" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <service uid="frameRecordingAct" type="sight::module::ui::base::com::SBooleanSlotCaller">
+                <slots>
+                    <slot>frameWriterSrv/record</slot>
+                </slots>
+            </service>
+
+            <service uid="videoRecordingAct" type="sight::module::ui::base::com::SBooleanSlotCaller">
+                <slots>
+                    <slot>videoWriterSrv/record</slot>
+                </slots>
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="videoAdp" />
+                </scene>
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+                <in key="image" uid="videoImage" />
+                <config layer="default" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
+                </parameters>
+            </service>
+
+            <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="videoRecordingActWorker" >
+                <in key="data" uid="frameTL" autoConnect="true" />
+                <format>.tiff</format>
+            </service>
+
+            <service uid="videoWriterSrv" type="sight::module::io::video::SVideoWriter" worker="videoRecordingActWorker" >
+                <in key="data" uid="frameTL" autoConnect="true" />
+            </service>
+
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>true</videoSupport>
+            </service>
+
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+                <in group="frameTL" >
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image" >
+                    <key uid="videoImage" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>videoSelectorSrv/configuredCameras</signal>
+                <slot>videoGrabberSrv/reconfigure</slot>
+            </connect>
+
+            <connect>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>parametersSrv/enumChanged</signal>
+                <slot>frameWriterSrv/setFormatParameter</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="frameWriterSrv" />
+            <start uid="videoWriterSrv" />
+            <start uid="videoAdp" />
+
+        </config>
+    </extension>
+</plugin>

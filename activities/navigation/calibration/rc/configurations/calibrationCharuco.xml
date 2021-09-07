@@ -1,0 +1,178 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>calibrationCharuco</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="cameraSeries" />
+        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
+        <param name="enabledNextChannel" default="enabledNextChannel" />
+        <param name="previousActivityChannel" default="previousActivityChannel" />
+        <param name="nextActivityChannel" default="nextActivityChannel" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="sight::data::ActivitySeries" src="ref" />
+        <object uid="${cameraSeries}" type="sight::data::CameraSeries" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView">
+            <gui>
+                <toolBar/>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="true" />
+                <view wid="calibrationView" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
+                    <menuItem name="Export camera series" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <separator/>
+                    <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
+                    <separator/>
+                    <editor/>
+                    <separator/>
+                    <menuItem name="Chessboard size" icon="sight::module::ui::flaticons/GreyChessboard.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="previousAct" start="true" />
+                <menuItem sid="nextAct" start="true" />
+                <menuItem sid="exportAct" start="true" />
+                <menuItem sid="writeCalibrationAct" start="true" />
+                <editor sid="cameraLauncherAct" start="false" />
+                <menuItem sid="chessboardSizeAct" start="true" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="writeCalibrationAct" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>calibrationWriterSrv/update</slot>
+            </slots>
+        </service>
+
+        <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
+            <inout key="cameraSeries" uid="${cameraSeries}" />
+            <inout key="activitySeries" uid="${AS_UID}" />
+            <config>
+                <intrinsic>
+                    <appConfig id="calIntrinsicCharucoView" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                </intrinsic>
+                <extrinsic>
+                    <appConfig id="calExtrinsicCharucoView" />
+                    <inout key="cameraSeries" uid="${cameraSeries}" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                </extrinsic>
+            </config>
+        </service>
+
+        <service uid="chessboardSizeAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <preference>
+                <type>int</type>
+                <name>Chessboard width</name>
+                <key>CHARUCO_WIDTH</key>
+                <default_value>11</default_value>
+            </preference>
+            <preference>
+                <type>int</type>
+                <name>Chessboard height</name>
+                <key>CHARUCO_HEIGHT</key>
+                <default_value>8</default_value>
+            </preference>
+            <preference>
+                <type>int</type>
+                <name>Chessboard square size (mm)</name>
+                <key>CHARUCO_SQUARE_SIZE</key>
+                <default_value>20</default_value>
+            </preference>
+            <preference>
+                <type>int</type>
+                <name>Chessboard marker size (mm)</name>
+                <key>CHARUCO_MARKER_SIZE</key>
+                <default_value>32</default_value>
+            </preference>
+            <preference>
+                <type>int</type>
+                <name>Chessboard marker size in bits (bit)</name>
+                <key>CHARUCO_MARKER_SIZE_IN_BITS</key>
+                <default_value>6</default_value>
+            </preference>
+        </service>
+
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="series" uid="${cameraSeries}" />
+        </service>
+
+        <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
+                         This service send signals to enable or not the actions. -->
+        <service uid="previousAct" type="sight::module::ui::base::com::SSignal">
+            <state visible="false" />
+        </service>
+
+        <service uid="nextAct" type="sight::module::ui::base::com::SSignal">
+            <state visible="false" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="calibrationWriterSrv" type="sight::module::io::vision::SOpenCVWriter">
+            <in key="data" uid="${cameraSeries}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="preferencesModifiedProxy">
+            <signal>chessboardSizeAct/parametersModified</signal>
+        </connect>
+
+        <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application configuration.-->
+        <connect channel="${enabledPreviousChannel}">
+            <slot>exportAct/hide</slot>
+            <slot>previousAct/show</slot>
+            <slot>previousAct/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's SSequencer. -->
+        <connect channel="${previousActivityChannel}">
+            <signal>previousAct/triggered</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application configuration.-->
+        <connect channel="${enabledNextChannel}">
+            <slot>exportAct/hide</slot>
+            <slot>nextAct/show</slot>
+            <slot>nextAct/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's SSequencer. -->
+        <connect channel="${nextActivityChannel}">
+            <signal>nextAct/triggered</signal>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="cameraLauncherAct" />  <!-- Must be started after mainView -->
+        <start uid="calibrationWriterSrv" />
+
+    </config>
+</extension>

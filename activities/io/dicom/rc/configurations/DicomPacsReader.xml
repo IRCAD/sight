@@ -1,0 +1,214 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>DicomPacsReader</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="APP_NAME" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="previewSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
+        <object uid="previewSelections" type="sight::data::Vector" />
+
+        <object uid="localSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="localSelections" type="sight::data::Vector" />
+
+        <service uid="mainView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <view caption="DICOM Query" align="left"/>
+                    <view align="center" minWidth="200" />
+                    <view align="bottom"/>
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="true" />
+                <view sid="leftView" start="true" />
+                <view sid="centerView" start="true" />
+                <view sid="bottomView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />
+                    <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="sight::module::ui::icons/Push.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_editPacsConfiguration" start="true" />
+                <menuItem sid="action_pullSeries" start="true" />
+                <menuItem sid="action_pushSeries" start="true" />
+            </registry>
+        </service>
+
+        <service uid="leftView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view align="top" minWidth="350" />
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="queryEditor" start="true" />
+                <view sid="queryEditorSpacerView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="queryEditorSpacerView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                </layout>
+            </gui>
+            <registry>
+            </registry>
+        </service>
+
+        <service uid="centerView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Pacs Information" align="center" minWidth="200" />
+                    <view caption="Pacs Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="previewSelector" start="true" />
+                <view wid="pacsPreview" start="true" />
+            </registry>
+        </service>
+
+        <service uid="bottomView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Local Series" align="center" minWidth="200" />
+                    <view caption="Local Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="localSelector" start="true" />
+                <view wid="localPreview" start="true" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="action_editPacsConfiguration" type="sight::module::ui::base::SConfigLauncher">
+            <appConfig id="PacsConfigurationManager" />
+            <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
+        </service>
+
+        <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
+            <slots>
+                <slot>pullSeriesController/update</slot>
+            </slots>
+        </service>
+
+        <service uid="action_pushSeries" type="sight::module::ui::base::series::SPushSelection">
+            <in key="selectedSeries" uid="localSelections" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController"  worker="progress" />
+
+        <!-- PACS CONFIGURATION -->
+        <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::SPacsConfigurationInitializer">
+            <inout key="config" uid="pacsConfiguration" autoConnect="true" />
+            <config
+                localApplicationTitle="${APP_NAME}"
+                pacsHostName="mypacs.mycompany.com"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="11112"
+                moveApplicationTitle="MoveApplicationTitle"
+                moveApplicationPort="11110"
+                retrieveMethod="GET"
+                preferenceKey="PACS_CONFIGURATION"
+                />
+        </service>
+
+        <!-- PREVIEW -->
+        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+            <inout key="selection" uid="previewSelections" />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+        </service>
+
+        <service uid="queryEditor" type="sight::module::io::dimse::SQueryEditor">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+        </service>
+
+        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="true">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <in key="selectedSeries" uid="previewSelections" />
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="DicomPacsReaderConfig" />
+        </service>
+
+        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+            <in key="series" uid="previewSelections" />
+            <parentView wid="pacsPreview" />
+            <configs>
+                <config id="2DPacsPreviewConfig" type="sight::data::DicomSeries" >
+                    <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration" />
+                </config>
+            </configs>
+        </service>
+
+        <!-- LOCAL -->
+        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <inout key="selection" uid="localSelections" />
+        </service>
+
+        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+            <in key="series" uid="localSelections" />
+            <parentView wid="localPreview" />
+            <configs>
+                <config id="2DSimpleConfig" type="sight::data::ImageSeries">
+                    <extract path="@image" pattern="imageID" />
+                </config>
+            </configs>
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+
+        <connect>
+            <signal>pullSeriesController/progressed</signal>
+            <slot>progressBarController/updateProgress</slot>
+        </connect>
+        <connect>
+            <signal>pullSeriesController/progressStarted</signal>
+            <slot>progressBarController/startProgress</slot>
+        </connect>
+        <connect>
+            <signal>pullSeriesController/progressStopped</signal>
+            <slot>progressBarController/stopProgress</slot>
+         </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="pullSeriesController" />
+        <start uid="localViewer" />
+        <start uid="pacsViewer" />
+        <start uid="progressBarController" />
+        <start uid="pacsConfigurationInitializer" />
+
+        <update uid="pacsConfigurationInitializer" />
+
+    </config>
+</extension>

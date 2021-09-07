@@ -1,0 +1,31 @@
+<plugin id="sight::module::filter::mesh" library="true" >
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IFilter</type>
+         <service>sight::module::filter::mesh::SVTKMesher</service>
+         <object key="imageSeries">sight::data::ImageSeries</object>
+         <object key="modelSeries">sight::data::ModelSeries</object>
+         <desc>This service generates meshes from an ImageSeries using VTK library.</desc>
+    </extension>
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::filter::mesh::action::SMeshCreation</service>
+         <desc>Action to create a mesh from an image using VTK library</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+          <type>sight::service::IGenerator</type>
+          <service>sight::module::filter::mesh::generator::SNeedle</service>
+          <object>sight::data::Mesh</object>
+          <desc>Generates a cylinder shape into a data::Mesh using VTK.</desc>
+     </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IGenerator</type>
+         <service>sight::module::filter::mesh::generator::SUltrasoundMesh</service>
+         <desc>Generate the mesh used to display the ultrasound image.</desc>
+    </extension>
+    
+</plugin>

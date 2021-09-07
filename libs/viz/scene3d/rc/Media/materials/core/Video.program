@@ -1,0 +1,45 @@
+vertex_program Default/Video_VP glsl
+{
+    source Video_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Default/Video_FP glsl
+{
+    source Video_FP.glsl
+    default_params
+    {
+        param_named u_videoTexture int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Default/VideoWithTF_FP glsl
+{
+    source Video_FP.glsl
+    preprocessor_defines TF=1
+    default_params
+    {
+        param_named u_videoTexture int 0
+        param_named u_s1TFTexture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Default/VideoWithTF_Int_FP glsl
+{
+    source Video_FP.glsl
+    preprocessor_defines TF=1,TF_INTEGER=1
+    default_params
+    {
+        param_named u_videoTexture int 0
+        param_named u_s1TFTexture int 1
+    }
+}

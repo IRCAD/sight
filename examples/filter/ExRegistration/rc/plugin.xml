@@ -1,0 +1,378 @@
+<!--
+        graphical application overview for each tab.
+
+
+Point list 1 Tab selected
+=======================================================================
+|                           toolBar                                    |
+|======================================================================|
+|| Point list 1 Tab ||    Point list 2 Tab| Registration Tab|          |
+|======================================================================|
+|                                                                      |
+|                                                                      |
+|                          multiView_negato1                           |
+|                                                                      |
+========================================================================
+
+Point list 2 Tab selected
+
+=======================================================================
+|                           toolBar                                    |
+|======================================================================|
+| Point list 1 Tab ||    Point list 2 Tab || Registration Tab|         |
+|======================================================================|
+|                                                                      |
+|                           negato2SceneSrv                                    |
+|                                                                      |
+========================================================================
+
+Registration Tab selected
+
+=======================================================================
+|                           toolBar                                    |
+|======================================================================|
+| Point list 1 Tab |    Point list 2 Tab || Registration Tab||         |
+|======================================================================|
+|                                                                      |
+|                                                                      |
+|                           negato3SceneSrv                                    |
+|                                                                      |
+========================================================================
+
+Detail of the ToolBar
+=======================================================================================================================================
+| openImageAct | openMesh1Act | openMesh2Act | ActionNewLandmarkPL1 | ActionNewLandmarkPL2 | registerAct |                 |
+=======================================================================================================================================
+
+
+ This application allows to do registration from two meshes or from an image and a mesh.
+ Step 1 : The user loads a mesh or/and image in the first tab by using the button (openImageAct).
+          The first button is for loading an image (openImageAct) and the second is for loading a mesh (openMesh1Act).
+ Step 2 : The user loads a mesh in the second Tab by using the button with a face and a two on the icon (openMesh2Act).
+ Step 3 : The user puts at least 3 points in the first tab named Point list 1 (on ctrl+click on the image or mesh).
+ Step 4 : The user puts at least 3 points in the second tab named Point list 2 (on ctrl+click on the mesh).
+ Step 5 : The user clicks on the register button (Yin_Yang symbol) to do the registration and visualize the result on the
+          third tab (registerAct).
+ -->
+<plugin id="ExRegistration" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExRegistration_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- Object to store the image loading in the first tab -->
+            <object uid="myImage" type="sight::data::Image" />
+            <object uid="meshOnNegato1" type="sight::data::Mesh" />
+            <object uid="meshOnNegato2" type="sight::data::Mesh" />
+            <!-- Object to store the point put in the first tab -->
+            <object uid="pointList1" type="sight::data::PointList" />
+            <!-- Object to store the point put in the second tab -->
+            <object uid="pointList2" type="sight::data::PointList" />
+            <!-- Object to store the registration matrix -->
+            <object uid="registrationMatrix" type="sight::data::Matrix4" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExRegistration</name>
+                        <icon>ExRegistration/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::CardinalLayoutManager" >
+                        <view align="center" />
+                    </layout>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="multiView" start="true" />
+                </registry>
+            </service>
+
+            <!-- service which create a toolbar -->
+            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Load image" icon="ExRegistration/icons/icon-load1.png" />
+                        <menuItem name="Load mesh 1" icon="ExRegistration/icons/icon-load1.png" />
+                        <separator/>
+                        <menuItem name="Load mesh 2" icon="ExRegistration/icons/icon-load2.png" />
+                        <separator/>
+                        <menuItem name="Register" icon="ExRegistration/icons/Fusion-tmp.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="openMesh1Act" start="true" />
+                    <menuItem sid="openMesh2Act" start="true" />
+                    <menuItem sid="registerAct" start="true" />
+                </registry>
+            </service>
+
+            <!-- service which create the three tabs of the application -->
+            <service uid="multiView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::TabLayoutManager" >
+                        <view caption="Point List 1" selected="true" border="5" backgroundColor="#2E3034" />
+                        <view caption="Point List 2" border="5" backgroundColor="#2E3034" />
+                        <view caption="Registration" border="5" backgroundColor="#2E3034" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="image1View" start="true" />
+                    <view sid="negato2SceneSrv" start="true" />
+                    <view sid="negato3SceneSrv" start="true" />
+                </registry>
+            </service>
+
+            <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
+            <service uid="image1View" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="negato1SceneSrv" start="true" />
+                    <view sid="sliderNegatoSrv" start="true" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <!-- Action to load an image in the Tab 1 (Point list 1)-->
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="imageReaderSrv" />
+            </service>
+
+            <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
+            <service uid="openMesh1Act" type="sight::module::ui::base::com::SStarter" >
+                <start uid="meshReader1Srv" />
+            </service>
+
+            <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
+            <service uid="openMesh2Act" type="sight::module::ui::base::com::SStarter" >
+                <start uid="meshReader2Srv" />
+            </service>
+
+            <!-- Action to do the registration -->
+            <service uid="registerAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>PLRegistrationSrv/update</slot>
+                </slots>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- Generic Scene (Negato) for the first tab -->
+            <service uid="negato1SceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4" />
+                    <adaptor uid="N1TrackballInteractorAdp" />
+                    <adaptor uid="N1NegatoAdp" />
+                    <adaptor uid="N1MeshAdp" />
+                    <adaptor uid="N1PointListAdp" />
+                    <adaptor uid="N1PickerAdp" />
+                </scene>
+            </service>
+
+            <service uid="N1TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
+                <inout key="image" uid="myImage" />
+                <config layer="default" sliceIndex="axial" interactive="true" />
+            </service>
+
+            <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+                <inout key="mesh" uid="meshOnNegato1" />
+                <config layer="default" picker="negato1default" />
+            </service>
+
+            <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
+                <in key="pointList" uid="pointList1" />
+                <config layer="default" color="#619647" radius="5.0" />
+            </service>
+
+            <service uid="N1PickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" >
+                <config layer="default" />
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- Generic Scene (Negato) for the second tab -->
+            <service uid="negato2SceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4" />
+                    <adaptor uid="N2TrackballInteractorAdp" />
+                    <adaptor uid="N2MeshAdp" />
+                    <adaptor uid="N2PointListAdp" />
+                    <adaptor uid="N2PickerAdp" />
+                </scene>
+            </service>
+
+            <service uid="N2TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+                <inout key="mesh" uid="meshOnNegato2" />
+                <config layer="default" picker="negato2default" />
+            </service>
+
+            <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true" >
+                <in key="pointList" uid="pointList2" />
+                <config layer="default" color="#619647" radius="5.0" />
+            </service>
+
+            <service uid="N2PickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" >
+                <config layer="default" />
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- Generic Scene (Negato) for the Third tab -->
+            <service uid="negato3SceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="N3TrackballInteractorAdp" />
+                    <adaptor uid="N3Mesh1Adp" />
+                    <adaptor uid="N3Mesh2Adp" />
+                    <adaptor uid="N3NegatoAdp" />
+                    <adaptor uid="N3TransformAdp" />
+                </scene>
+            </service>
+
+            <service uid="N3TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+                <inout key="mesh" uid="meshOnNegato1" />
+                <config layer="default" />
+            </service>
+
+            <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+                <inout key="mesh" uid="meshOnNegato2" />
+                <config layer="default" transform="registrationMatrix" />
+            </service>
+
+            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
+                <inout key="image" uid="myImage" />
+                <config layer="default" sliceIndex="axial" interactive="true" />
+            </service>
+
+            <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >
+                <inout key="transform" uid="registrationMatrix" />
+                <config layer="default" transform="registrationMatrix" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Service which compute the registration -->
+            <service uid="PLRegistrationSrv" type="sight::module::filter::point::SPointListRegistration" >
+                <inout key="registeredPL" uid="pointList2" />
+                <inout key="referencePL" uid="pointList1" />
+                <inout key="output" uid="registrationMatrix" />
+                <config mode="rigid" />
+            </service>
+
+            <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" >
+                <inout key="image" uid="myImage" />
+            </service>
+
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="myImage" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Editors for Negato1 -->
+            <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
+                <inout key="image" uid="myImage" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <service uid="meshReader1Srv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="meshOnNegato1" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="meshReader2Srv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="meshOnNegato2" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Services to add a point in the pointlist when the user clicks in the scene -->
+            <service uid="addLAndmarksInPL1Srv" type="sight::module::geometry::base::SManagePointList" >
+                <inout key="pointList" uid="pointList1" />
+                <config label="true" />
+            </service>
+
+            <service uid="addLAndmarksInPL2Srv" type="sight::module::geometry::base::SManagePointList" >
+                <inout key="pointList" uid="pointList2" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>N1PickerAdp/picked</signal>
+                <slot>addLAndmarksInPL1Srv/pick</slot>
+            </connect>
+
+            <connect>
+                <signal>N2PickerAdp/picked</signal>
+                <slot>addLAndmarksInPL2Srv/pick</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="medicalImageSrv" />
+            <start uid="PLRegistrationSrv" />
+            <start uid="addLAndmarksInPL1Srv" />
+            <start uid="addLAndmarksInPL2Srv" />
+            <start uid="N1TrackballInteractorAdp" />
+            <start uid="N1NegatoAdp" />
+            <start uid="N1MeshAdp" />
+            <start uid="N1PointListAdp" />
+            <start uid="N1PickerAdp" />
+            <start uid="N2TrackballInteractorAdp" />
+            <start uid="N2MeshAdp" />
+            <start uid="N2PointListAdp" />
+            <start uid="N2PickerAdp" />
+            <start uid="N3TrackballInteractorAdp" />
+            <start uid="N3Mesh2Adp" />
+            <start uid="N3Mesh1Adp" />
+            <start uid="N3NegatoAdp" />
+            <start uid="N3TransformAdp" />
+
+        </config>
+    </extension>
+</plugin>

@@ -1,0 +1,85 @@
+<plugin id="sight::module::ui::viz" library="true" >
+    <requirement id="sight::module::ui::base"/>
+    <requirement id="sight::module::ui::qt"/>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IController</type>
+         <service>sight::module::ui::viz::SAddPoint</service>
+         <object>sight::data::PointList</object>
+         <desc>Add points in a data::PointList</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SCompositorParameterEditor</service>
+         <desc>Editor allowing to edit shader uniform from a compositor material.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SCompositorSelector</service>
+         <object>sight::data::Composite</object>
+         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SCoreCompositorEditor</service>
+         <object>sight::data::Composite</object>
+         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SLightEditor</service>
+         <object>sight::data::Composite</object>
+         <desc>This service creates a user interface to manage a light adaptor.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SLightSelector</service>
+         <object>sight::data::Composite</object>
+         <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SMaterialSelector</service>
+         <object>sight::data::Reconstruction</object>
+         <desc>Allows to select an Ogre material template and apply it to the current reconstruction.</desc>
+    </extension>
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::viz::SScreenSelector</service>
+         <desc>Selects a screen and sends its index.</desc>
+    </extension>
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SShaderParameterEditor</service>
+         <object>sight::data::Reconstruction</object>
+         <desc>Editor allowing to edit each parameters from each shader of a reconstruction</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::SStereoSelector</service>
+         <object>sight::data::Composite</object>
+         <desc>Allows to select the stereo mode of an Ogre Compositor</desc>
+    </extension>
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::ui::viz::SStereoToggler</service>
+         <desc>Action to enable/disable stereo in an ogre scene layer.</desc>
+    </extension>
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::ui::base::IEditor</type>
+         <service>sight::module::ui::viz::STextureSelector</service>
+         <object>sight::data::Reconstruction</object>
+         <desc>Allows to select a data::Image and apply it to the current reconstruction as an Ogre texture</desc>
+    </extension>
+</plugin>

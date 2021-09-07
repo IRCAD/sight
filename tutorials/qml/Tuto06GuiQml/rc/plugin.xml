@@ -1,0 +1,10 @@
+<!-- Application name and version (the version is automatically replaced by CMake
+     using the version defined in the Properties.cmake) -->
+<plugin id="::sight::Tuto06GuiQml" library="true" >
+
+    <!-- The modules in requirements are automatically started when this
+         Application is launched. -->
+
+    <requirement id="sight::module::service" />
+
+</plugin>

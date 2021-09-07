@@ -1,0 +1,10 @@
+<profile name="IoPacsTest" version="0.1">
+
+    <activate id="sight::module::service" version="0.1" />
+    <activate id="sight::module::ui::base" version="0.1" />
+
+    <activate id="sight::module::io::dimse" version="0.1" />
+
+    <start id="sight::module::io::dimse" />
+
+</profile>

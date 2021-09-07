@@ -1,0 +1,74 @@
+<!-- This configuration allows to read an image and display it in a simple scene -->
+<extension implements="::sight::service::extension::AppConfig" >
+    <id>ExActivities_ImageReading_AppCfg</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="validationChannel" default="validationChannel" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager" >
+                    <view align="center" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="imageScene" start="true" />
+                <toolBar sid="toolBarView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="importAct" start="true" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="importAct" type="sight::module::ui::base::io::SSelector" >
+            <inout key="data" uid="${image}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::sight::module::io::vtk::SImageReader" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true" >
+            <in key="image" uid="${image}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- The channel is used to call "SSequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
+        <connect channel="${validationChannel}" >
+            <signal>${image}/modified</signal>
+        </connect>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainView" />
+
+        <!-- ******************************* Update services ***************************************** -->
+
+        <!-- imageScene is started by the mainview, it should be updated to display the image when it exists on start. -->
+        <update uid="imageScene" />
+
+    </config>
+</extension>

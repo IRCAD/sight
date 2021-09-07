@@ -7,7 +7,7 @@ commit_msg_help = """
 Required commit message:
  type(scope): description
   - type: enh, feat, fix, refactor
-  - scope: build, ci, core, doc, graphics, io, physics, test, ui, vision
+  - scope: build, ci, core, doc, filter, geometry, io, navigation, test, ui, viz
 or
  type: description
   - type: merge, misc, style
@@ -15,7 +15,7 @@ or
 
 with open(commit_msg_path) as commit_msg_file:
     commit_msg_content = commit_msg_file.readline()
-    message_regex = r'(?:(?P<scoped_type>enh|feat|fix|refactor)\((?P<scope>build|ci|core|doc|graphics|io|physics|test|ui|vision)\)|(?P<unscoped_type>merge|misc|style)): (?P<subject>[a-z].*?(?:\b|[\]\)\'\"\`])$)'
+    message_regex = r'(?:(?P<scoped_type>enh|feat|fix|refactor)\((?P<scope>build|ci|core|doc|filter|geometry|io|navigation|test|ui|viz)\)|(?P<unscoped_type>merge|misc|style)): (?P<subject>[a-z].*?(?:\b|[\]\)\'\"\`])$)'
 
     if not re.match(message_regex, commit_msg_content):
         sys.stderr.write("\n'" + commit_msg_content.strip() + "' message doesn't follow commit rules.\n")

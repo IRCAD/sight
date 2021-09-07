@@ -1,0 +1,13 @@
+<plugin id="sight::config::viz::scene3d">
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene2d" />
+
+    <xi:include href="configurations/OgreHistogramManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreOrganManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>
+

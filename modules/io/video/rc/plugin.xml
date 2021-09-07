@@ -1,0 +1,32 @@
+<plugin id="sight::module::io::video" library="true" >
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::io::base::service::IGrabber</type>
+         <service>sight::module::io::video::SFrameGrabber</service>
+         <object key="camera">::sight::data::Camera</object>
+         <object key="frameTL">::sight::data::FrameTL</object>
+         <desc>OpenCV player</desc>
+         <tags>FILE,DEVICE,STREAM</tags>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::io::base::service::IWriter</type>
+         <service>sight::module::io::video::SFrameWriter</service>
+         <object>sight::data::FrameTL</object>
+         <desc>This service allows to save the timeline frames in files in a folder.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::io::base::service::IGrabber</type>
+         <service>sight::module::io::video::SGrabberProxy</service>
+         <object>sight::data::FrameTL</object>
+         <desc>This service allows you to select a frame grabber implementation at runtime.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::io::base::service::IWriter</type>
+         <service>sight::module::io::video::SVideoWriter</service>
+         <object>sight::data::FrameTL</object>
+         <desc>This service allows to save the timeline frames in a video file.</desc>
+    </extension>
+</plugin>

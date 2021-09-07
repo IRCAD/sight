@@ -1,0 +1,209 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>SightCalibrator_AppCfg</id>
+    <parameters>
+        <param name="APP_NAME" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="loadingSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="currentActivity" type="sight::data::ActivitySeries" src="deferred" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <gui>
+                <frame>
+                    <name>${APP_NAME}</name>
+                    <icon>${ICON_PATH}</icon>
+                    <minSize width="1600" height="900" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBarView" start="true" />
+                <view sid="mainview" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Tools" />
+                    <menu name="Preferences" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFileView" start="true" />
+                <menu sid="menuToolsView" start="true" />
+                <menu sid="menuPreferencesView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Open Series..." shortcut="Ctrl+O" />
+                    <menuItem name="Open Activity..." shortcut="Ctrl+Shift+O" />
+                    <menuItem name="Save..." shortcut="Ctrl+S" />
+                    <menuItem name="Save Activity..." shortcut="Ctrl+Shift+S" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="openSeriesAct" start="true" />
+                <menuItem sid="openActivityAct" start="true" />
+                <menuItem sid="saveAct" start="true" />
+                <menuItem sid="saveActivityAct" start="false" />
+                <menuItem sid="quitAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuToolsView" type="sight::module::ui::base::SMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Show selector" style="check"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="selectorAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Video directory" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="videoDirectoryAct" start="true" />
+            </registry>
+        </service>
+
+
+        <service uid="mainview" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="bottom" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="dynamicView" start="true" />
+                <view wid="selectorView" />
+            </registry>
+        </service>
+
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView" >
+            <mainActivity id="SightCalibratorActivitySelector_Activity" closable="false" />
+            <inout key="SERIESDB" uid="seriesDB" />
+            <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
+            <parameters>
+                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                <parameter replace="CREATE_ACTIVITY_RECEIVER_CHANNEL" by="CREATE_ACTIVITY_SENDER_CHANNEL" />
+                <parameter replace="LAUNCH_ACTIVITY_SENDER_CHANNEL" by="LAUNCH_ACTIVITY_RECEIVER_CHANNEL" />
+                <parameter replace="LAUNCH_ACTIVITY_SERIES_SENDER_CHANNEL" by="LAUNCH_ACTIVITY_SERIES_RECEIVER_CHANNEL" />
+                <parameter replace="LOAD_ACTIVITY_SENDER_CHANNEL" by="LOAD_ACTIVITY_RECEIVER_CHANNEL" />
+            </parameters>
+            <config document="false" />
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="videoDirectoryAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+            <preference>
+                <type>path</type>
+                <name>Video directory</name>
+                <key>VIDEO_DIR_PREF</key>
+                <default_value>...</default_value>
+            </preference>
+        </service>
+
+        <service uid="openSeriesAct" type="sight::module::ui::base::series::SDBMerger" >
+            <inout key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
+        </service>
+
+        <service uid="openActivityAct" type="sight::module::ui::base::series::SDBMerger">
+            <inout key="seriesDB" uid="loadingSeriesDB" />
+            <IOSelectorSrvConfig name="ActivityReaderConfig" />
+        </service>
+
+        <!-- Actions to save all type of series (jsonz, json, ...). -->
+        <service uid="saveAct" type="sight::module::ui::base::com::SStarter">
+            <start uid="seriesDBWriterSrv" />
+        </service>
+
+        <!-- Save current activity. -->
+        <service uid="saveActivityAct" type="sight::module::ui::base::series::SExportWithSeriesDB" >
+            <inout key="series" uid="currentActivity" />
+            <IOSelectorSrvConfig name="ActivityWriterConfig" />
+        </service>
+
+        <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+        <service uid="selectorAct" type="sight::module::ui::base::SConfigLauncher" >
+            <appConfig id="SightCalibrator_Selector_AppCfg" />
+            <inout key="SERIESDB" uid="seriesDB" />
+            <parameter replace="WID_PARENT" by="selectorView" />
+            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="seriesDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <inout key="data" uid="seriesDB" />
+        </service>
+
+        <!-- Service to select the current activity into the composite. -->
+        <service uid="activitySeriesUpdaterSrv" type="sight::module::data::updater::SObjFromSlot">
+            <out key="object" uid="currentActivity" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- Add the current tab activity in the root composite. -->
+        <connect>
+            <signal>dynamicView/activitySelected</signal>
+            <slot>activitySeriesUpdaterSrv/add</slot>
+        </connect>
+
+        <!-- Remove the activity from the root composite when no tab is selected. -->
+        <connect>
+            <signal>dynamicView/nothingSelected</signal>
+            <slot>activitySeriesUpdaterSrv/remove</slot>
+        </connect>
+
+        <!-- When an activity is opened: it calls the creator's update activity slot. -->
+        <connect channel="LAUNCH_ACTIVITY_SERIES_RECEIVER_CHANNEL">
+            <slot>dynamicView/launchActivitySeries</slot>
+        </connect>
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="LAUNCH_ACTIVITY_RECEIVER_CHANNEL">
+            <slot>dynamicView/launchActivity</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="LOAD_ACTIVITY_RECEIVER_CHANNEL">
+            <slot>openActivityAct/update</slot>
+        </connect>
+
+        <connect channel="dynamicView">
+            <slot>dynamicView/createTab</slot>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="activitySeriesUpdaterSrv" />
+        <start uid="saveActivityAct" />
+
+    </config>
+</extension>
