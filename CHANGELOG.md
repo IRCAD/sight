@@ -1,3 +1,632 @@
+# sight 21.0.0
+
+## Bug fixes:
+
+### build
+
+*Use project_name in variable exported by sight_generate_components_list.*
+
+Do not export SIGHT_COMPONENTS in sight_generate_components_list cmake function, use instead COMPONENTS. This avoids variable collision when using sight in subprojects, since SIGHT_COMPONENTS is exported by sightConfig.cmake.
+
+*Sight-project installation error due to sight version.*
+
+To fix the main problem, SOVERSION is no longer defined for executable targets. That simply prevents from creating these useless versioned binaries.
+
+On top of that, several other fixes were brought:
+
+* the version attribute of the `project()` CMake command is used instead of redefining a custom `SIGHT_VERSION` variable,
+* code cleaning was done around this, notably to rename `FWPROJECT_NAME` into `SIGHT_TARGET`, which is more correct with the usage of this variable,
+* dependencies computing now browses `OBJECT` libraries targets, like `io_session_obj` (fixes `Tuto01Basic` packaging for instance where `sight_io_vtk` library was missing),
+* dependencies computing now handles cross-repositories dependencies (fixes some child projects packaging),
+* components ordering was included in a higher-level function `sight_generate_component_list()` for a simpler use outside *Sight*.
+
+*Tests are relatives to last cmake project call.*
+
+* Use `${CMAKE_BINARY_DIR}` instead of `${PROJECT_BINARY_DIR}` to force executable to be produced in ./bin folder.
+* Also testing if safe-svfb-run isn't already copied in ./bin
+* early return in CppUnitConfig.cmake if CppUnit is already FOUND.
+
+*Configure child projects fails.*
+
+To fix the problem, we no longer export PCH targets and we no longer export modules .lib.
+On top of the initial problem, we also always build `utest`, `utestData`, and `module_utest` instead of only building them when `SIGHT_BUILD_TESTS` is `ON`. Child projects may need them even if unit tests were not built in Sight.
+
+*Generate sight component list.*
+
+CMake components in SIGHT_COMPONENTS variable are now ordered automatically according to their dependencies. It will ease the burden to manually maintain the list.
+
+*Explicit relative path in installted imported target library symlinks.*
+
+When we install packages in child repositories, we copy the necessary dependencies from Sight, for instance, the libraries. On Linux, we also need to recreate the library symlinks. This was done with absolute paths, which makes packages not relocatable. This fix just creates relative symlinks instead.
+
+*Fix package generation.*
+
+This brings back the package generation with CPack. Both Linux and Windows are functional. Sight can be packaged as a whole (similar to the former "SDK mode") in `tar.zst` (Linux) or in `.zip` (Windows). Any application or executable target can be packaged in `tar.zst` (Linux) or in `.exe` installer (Windows).
+
+The CI has been updated to always build the Sight and SightViewer packages on both platforms. However, the deployment on [Owncloud](https://owncloud.ircad.fr/index.php/apps/files/?dir=/IRCAD%20-%20Open/Binaries&fileid=894807) is only done on dev and master branch, or on any branch manually.
+On the dev branch, the package version number is replaced by `-latest`, so that it corresponds to a "latest" build. This prevents us from having to clean our archive folder too frequently since the packages will be erased at each upload.
+
+*Readd missing  component io_session.*
+
+*Add missing component for sight-dependent project configurations.*
+
+*Makes the flag WARNING_AS_ERRORS effective.*
+
+*Add SMatricesReader export in the plugin.xml.*
+
+*Export Qt find_package in ui_qt.*
+
+Moves `find_package(Qt5 ...)` to Dependencies.cmake to be exported when using imported target `sight::ui_qt`
+
+*Geometry_eigen export.*
+
+Export also the `find_package(Eigen3 QUIET REQUIRED)` for the target geometry_eigen.
+
+*Move cppunit_main in cmake/build folder.*
+
+Fix the build of unit test on external projects.
+
+* `cppunit_main.cpp` has been moved from `cmake/cppunit` to `cmake/build` folder.
+* `FindOpenNI2.cmake `has been removed
+* `fw*.cmake` files has been removed, contents was added in `cmake/build/macros.cmake` file in order to be retrieved from outside.
+
+*Install executable shell scripts.*
+
+Install missing templates files for executable target
+
+### ci
+
+*Small typo in SightViewer package name.*
+
+*Use sed for regex replacement of dev packages.*
+
+*Launch unit tests properly on Linux.*
+
+The code with `flock` was wrong, and the test was not executed. The initial code was restored, which should be safe.
+
+Also, there was another specific bug with `viz_scene3d` test. It crashed after destroying the first `Ogre::Root`. Indeed we chose to create and destroy it after each test. This problem is thus independent of the display number of `xvfb-run` since it does succeed to create an OpenGL context once but somehow fails to create a second. We assumed `xvfb-run` might be buggy regarding this initialization code.
+
+As a workaround, we create and destroy the `Ogre`::Root``only once thanks to a new module `sight::module::viz::scene3d::test`.
+
+Last, several tests in serviceTest were fixed.
+
+### core
+
+*Broken library path on external projects when using '.local' in installation paths.*
+
+The deduction of the library path failed when share was already present in the main module path. The problem already occurred with module paths themselves, so the regex is now shared between these two places.
+
+*Tuto01DataServiceBasicCpp launch.*
+
+The source image loaded at start in Tuto01DataServiceBasicCpp was changed with the one used in Tuto02DataServiceBasic. This fixes the launch of this tutorial.
+
+*Add case to replace uids for slide views.*
+
+When launching a config, we substitute all `by` attributes with uids. We missed a case to handle slide views when attaching a widget.
+
+*Add an extra LD_LIBRARY_PATH for intermediate sight projects.*
+
+This fixes the inclusion of more than 2 sight projects.
+
+*Fix XML configuration parsing (#3).*
+
+Fix the parsing of objects containing sub-object (like Composite) or values (like String).
+Also fix the parsing of service with an external configuration ("config" tag in the XML service definition).
+
+*Make material resource file handling project independent.*
+
+Make `resources.cfg` path treatment independent of the working dir.
+Indeed, the present behavior uses the working dir for the absolute path generation. However, as this is done inside sight code, the prefix corresponds to the sight install path, and not the loading module-specific path.
+As a result, files that are not installed in the sight install dir can not be loaded.
+
+It is safer to rely on the module name, and get its specific path.
+
+*ExActivities fails to launch.*
+
+This fixes the parsing of a service configuration when a config extension was used (`config=` attribute).
+
+*Harmonize autoConnect booleans config parsing.*
+
+This merge requests changes all:
+- `autoConnect="yes|no"` into `autoConnect="true|false"`
+- `optional="yes|no"` into `optional="true|false"`
+
+*FwServicesTest randomly fails.*
+
+The last failing test was keyGroupTest. The problem was actually quite simple, the autoconnection with a swapped object is done after the swap. Thus, we have to wait for the object to finish the swap sequence before sending a modified signal from the data. Before we waited for the object to be present in the object map, but this is not sufficient since this only tells the object is registered, and the registration occurs before the swap.
+
+*Restore MSVC build.*
+
+Windows support is back! Third-part libraries are now built with vcpkg instead of Conan. We found out that vcpkg packages are much more stable and most of all, coherency is ensured between packages.
+
+Few fixes were brought to support the newest version of these libraries. Indeed they are often more recent than Ubuntu packages.
+
+Doing this, the GitLab CI/CD scripts were updated to use Powershell instead of cmd, as recommended by GitLab.
+
+*Remove TransferFunctionManagerWindow include from sightViewer plugin.xml.*
+
+*Several runtime errors after sight 21.0 upgrade.*
+
+### doc
+
+*Rewriting doc of CardinalLayoutManagerBase.*
+
+### io
+
+*DicomXplorer crashes when display mesh preview.*
+
+This MR fixes a crash upon selecting mesh in `dicomXplorer`.
+The problem was simply that old configurations used in this software were deleted.
+
+**It does not display the mesh in an activity.** It simply fixes the crash and re-enables the preview.
+
+*VTK readers doesn't handle color array properly.*
+
+When converting from vtk to sight mesh format, we check if color array named "Colors" exists in polydata in order to copy vertex or cells colors. When using PLY reader from VTK (maybe other format too) color array is named "RGB" or "RGBA".
+
+We also added a workaround to fix color rendering of first cell on Ogre 3d. Otherwise, mesh can appear black at first render.
+
+*Igtl client is not thread safe.*
+
+Make io_igtl`::Client`thread safe at connect / disconnect.
+
+OpenIgtLink socket class isn't thread safe at connection due to internal function calls (details in #736).
+
+*Dicom readers does not have the good scale along the z axis.*
+
+*Tuto02DataServiceBasic cannot load sample data.*
+
+Tuto02DataServiceBasic loads an image at start, but path to the image was hard-coded (`../../data/patient1.vtk`).
+
+A sample image was provided in the resource folder to the tutorial and loaded at startup.
+
+*Jpeg Writer (ITK) causes the application to crash upon usage.*
+
+ITK jpeg image writer has been replaced by vtk image writer service when saving snapshots in sightviewer.
+
+In addition, the image number of component in the vtk image writer service has been updated, as well as the lock systems.
+
+*Remove VTK warnings when reading meshes.*
+
+Redirect VTK messages (warnings/errors) in a VTK.log file.
+
+*Activities saving failed.*
+
+Saving activities was blocked due to extra "::" in the plugin.xml of ioActivity.
+
+*Add some Dependencies.cmake.*
+
+To build our current projects with sight 21.0, we needed to add missing `Dependencies.cmake` files, otherwise people would have to find the necessary `find_package`commands to run first.
+Besides this, an unrelated change has been made to reenable the load of extra bundle paths. This is needed when you depend on more than two repositories.
+
+### test
+
+*ServiceTest randomly fails.*
+
+This fixes two tests in the `serviceTest` suite. Basically, it is just about waiting for the correct condition before testing the result.
+
+### ui
+
+*Preferences path is broken.*
+
+The application name in the preferences file path is deduced from the profile name attribute. During the generation, this property was not generated properly. This fixes it.
+
+*Floating buttons are frozen when moving underlying main window.*
+
+### viz
+
+*Dialog deadlock with 'always' render mode and GTK.*
+
+This removes the 'always' render mode in `viz::scene3d::SRender`, which is useless and may cause deadlocks with pop-up dialogs.
+
+*Default SRender transparency mode is broken.*
+
+Set the default transparency to `HybridTransparency`.
+(SightViewer's transparency has been set to default instead of `DepthPeeling`)
+
+*Cropbox reset freezes SightViewer.*
+
+We avoid a deadlock in `SVolumeRender::updateClippingBox()` by unlocking the clipping matrix data before calling the interaction callback.
+
+*SightViewer crashes at start.*
+
+In `SVideo`, the SceneManager was used to get the viewport. The correct way to retrieve is to get it through the layer.
+
+## New features:
+
+### build
+
+*Ubuntu 21.04 support.*
+
+### core
+
+*Implement SessionWriter and SessionReader and many other things.*
+
+This is the foundation of the new serialization mechanism.
+
+### New "crypto" package in `libs/core/crypto`
+
+* `secure_string`: a std`::basic_string`implementation with a custom `secure` allocator which erase used memory on de-allocation. This class is mostly used to store sensitive data like password.
+* `SHA256`: computes SHA256 cryptographic hashes
+* `Base64`: encode/decode to/from base64 strings
+* `AES256`: encrypt/decrypt to/from strings using AES with 256 bits key.
+* Unit tests in `libs/core/core/test/api/crypto/CryptoTest.xxx`
+
+### New `ArchiveReader` and `ArchiveWriter` classes in `libs/io/zip`
+
+* Fixed some nasty bugs on ressource deallocation with WriteZipArchive / ReadZipArchive: Handle from files opened inside archive were not closed
+* Implements some thread safety measures: Due to minizip implementation, to avoid strange corruption problems, an archive could only be opened either in `read` or in `write` mode. In the same way, only one file in a archive should be opened at once. With old classes, no restrictions was applied, Yolo mode by default.
+* Allows to specify, as the zip format allows us to do, one compression method, one compression level, and one encryption key by file. This let us, for example, adapt the compression level, when the stored file is already strongly compressed, like for a mp4 file.
+* Use RAII mechanism to close file handle inside archive, global zip handle, etc. It means that opening the same archive, the same file inside an archive in the same scope, or even simply when the ostream/istream is alive, will dead lock (it's a feature, not a bug...)
+* Unit tests in `libs/io/zip/test/tu/ArchiveTest.xxx`
+
+### Refactor UUID
+
+Not planned, but since `core::tools::Object::getUUID()` was not `const`, it requires some attention. Basically, only the generator has been kept in `core`::tools::UUID``and all code went in `core::tools::Object`.
+
+* Removed double mutex, strange double indirection, etc.. while retaining most of the feature (especially the `lazy` getter/generator, which a really doubt it is useful, but I did not Benchmarked it, so I decided to keep it)
+* `core::tools::Object::getUUID()` is now const at the operation doesn't modify external and even internal class state.
+* Unit tests in `libs/core/core/test/api/tools/UUIDTest.xxx`
+
+### Implementation of SessionWriter, SessionReader, ... All in `libs/io/session`
+
+#### New `PasswordKeeper` password management system
+
+Designed to hold passwords, in the case you don't want the user to retype every 3 seconds its password.
+
+* Replace the less secure and more `handcrafted` solution in `libs/ui/base/preferences/helper.xxx`
+* Store the password in an AES256 encrypted `secure_string`. The key is computed in a deterministic way (no surprise), but should not be so easy to guess. Once the password is no more needed, or when the application quit, it will be erased from memory.
+* Allows to store a "global" password along several "instance" passwords.
+* `libs/ui/base/preferences/helper.xxx` has been a bit refactored to use the new `PasswordKeeper`
+* No need to say, a password should never be serialized on disk or in a database. Use only password hash for that.
+* Unit tests in `libs/io/session/test/tu/PasswordKeeperTest.xxx`
+
+#### New `SessionWriter`
+
+It's an implementation of a base::reader::IObjectWriter. It's purpose is to be used in a service to "write" an object to a session archive. It is the public API interface for writing a session archive. Basic usage would be something like:
+
+```cpp
+auto sessionWriter = io::session::SessionWriter::New();
+sessionWriter->setObject(myActivitySeries);
+sessionWriter->setFile("session.zip");
+sessionWriter->setPassword("123")
+sessionWriter->write();
+```
+
+#### New `SessionReader`
+
+It's an implementation of a base::reader::IObjectReader. It's purpose is to be used in a service to "read" an object from a session archive. It is the public API interface for reading a session archive. Basic usage would be something like:
+
+```cpp
+auto sessionReader = io::session::SessionReader::New();
+sessionReader->setFile("session.zip");
+sessionReader->setPassword("123")
+sessionWriter->read();
+
+auto myActivitySeries = sessionReader->getObject();
+```
+
+> You may have noticed the slight change in classical `IObjectReader` API usage. It is no more needed to guess, before reading, the type of object to deserialize. Instead of "setting" and empty object, we simply "get" it back, once the "read" done
+
+#### New `SessionSerializer`
+
+This class contains the the main serialization algorithm. It also contains a specialized serializer (one for each kind of data object) registry, so it can delegate specific serialization tasks. The serialization is done on two medium: one boost ptree and, for big binary file, directly into the archive. The final ptree will also be stored in the archive as the index.json.
+
+The algorithm is really straightforward, not to say "basic":
+
+1. Extract the UUID of the input object and the class name.
+1. With the UUID, look into an object cache. If the object is already serialized, put a reference on the current ptree node, and stop.
+1. With the classname, find a suitable serializer and call it. The specific serializer will update the current ptree node and maybe store binary file to the archive.
+1. The serializer from step (3) will eventually return also a list of "children" object (this is the case for composite objects). Recall recursively the step (1) on them.
+1. If the object contains `fields`, recall recursively the step (1) on them.
+
+> this MR text will be my base for README.md which I will write once everything are reviewed. Don't panic if you don't see it now, a new MR will be issued later.
+
+#### New `SessionDeserializer`
+
+This class is the counterpart of `SessionSerializer`. Instead of a specialized serializer registry, we have a specialized deserializer registry.
+
+The algorithm is a bit more complex, but still straightforward:
+
+1. Extract the UUID and the class name of the current object stored in the ptree index.
+1. With the UUID, look into an object cache. If the object is already deserialized return it, and stop.
+1. With the UUID, look into the global UUID object registry. Use it to avoid unneeded object instanciation. It also allow us to safely deserialize children which have direct reference on parent objects.
+1. With the classname, find a suitable deserializer.
+1. First, deserialize the child objects by recalling recursively the step (1) on them.
+1. Deserialize current object, passing the deserialized child objects from step (5)
+1. If the object contains `fields`, recall recursively the step (1) on them.
+
+#### Specific object serializer/deserializer
+
+For now, only a very small subset is implemented. This subset should however cover most cases encountered while writing a serializer for a new kind of data object:
+
+* ActivitySeries\[De\]serializer:
+  * Demonstrate how to serialize object with a child `Composite` reference and how to use another serializer to mange inheritance (with `Series`).
+* Composite\[De\]serializer
+* Equipment\[De\]serializer
+* Generic\[De\]serializer:
+  * Demonstrate how to serialize "generic" object (Integer, Float, Boolean,String)
+* Mesh\[De\]serializer
+  * Demonstrate how to serialize big binary data to archive
+* Patient\[De\]serializer
+  * Demonstrate how to encrypt sensitive data, regardless of the encryption status of the archive
+* Series\[De\]serializer
+* String\[De\]serializer
+  * This serialize String to and from Base64. Since boost ptree have serious flaws with strings with special characters in it, encoding to base64 is a suitable workaround, but still a bit overkill..
+* Study\[De\]serializer
+
+#### Unit tests
+
+all in `libs/io/session/test/tu/SessionTest.hpp`
+
+*Promotes code from internal to open-source.*
+
+* Create `SRecurrentSignal` service in modules/ui/base/com. This service emits a signal at a defined frequency.
+* Create `Mesh` lib in libs/geometry/vtk and the corresponding unit test. This library computes the center of mass of a mesh using vtk.
+
+### graphics
+
+*Add a material transparency editor.*
+
+A new service `SMaterialOpacityEditor` was added, which allows tweaking the opacity of a `sight`::data::Mesh``via  `sight`::data::Material``with a slider.
+
+*Quad mesh integration in fwRenderQt3D.*
+
+### io
+
+*Drop in replacement for SReader and SWriter to serialize an application session.*
+
+### Main feature
+
+Two services `sight`::module::io::session::SReader``and `sight`::module::io::session::SWriter``were implemented. They read/write a root data object from/to a session file on a filesystem.
+
+The session file is indeed a standard "ZIP" archive, while the compression algorithm for files inside the session archive is ZSTD. A standard archive reader could open a session file, if it is able to handle ZIP archive with ZSTD compression.
+
+The archive can be password protected using AES256 algorithm and the compression level is set individually, depending of the type of data to serialize.
+
+The service configuration includes specifying the file extension and the password policy for encryption.
+
+Configuration example:
+
+```xml
+<service type="sight::module::io::session::SReader">
+    <inout key="data" uid="..." />
+    <dialog extension=".sample" description="Sample Sight session file" policy=always/>
+    <password policy="once" encryption="salted"/>
+</service>
+```
+
+The dialog policy specifies when the open dialog is shown:
+
+* **never**: never show the open dialog
+* **once**: show only once, store the location as long as the service is started
+* **always**: always show the location dialog
+* **default**: default behavior, which is "always"
+
+The password policy defines if we should protect the session file using a password and when to ask for it:
+
+* **never**: a password will never be asked and the session file will never be encrypted.
+* **once**: a password will be asked only once and stored in the memory for subsequent uses. The session file will be encrypted.
+* **always**: a password will always be asked. The session file will be encrypted.
+* **default**: uses the builtin default behavior which is "never".
+
+The encryption policy defines if we uses the password as is or with salt. It can also be used to encrypt without password:
+
+* **password**: Use the given password for encryption.
+* **salted**: Use the given password with salt for encryption.
+* **forced**: Force encryption with a pseudo random hidden password (if no password are provided).
+* **default**: uses the builtin default behavior which is "password".
+
+### General improvement:
+
+* `ExActivities` has been modified to use the new session services instead of atoms
+* new `TemporaryFile` class in `core`::tools::System``that use ROII to delete the associated file as soon as the `TemporaryFile` class is destroyed.
+* `core::tools::System::RobustRename()` now have an optional parameter to force renaming, even if the target already exists (it will be first deleted)
+* `ui`::base::Cursor``improvement: `BusyCursor`, `WaitCursor`, `CrossCursor` classes that use ROII to restore back "default" cursor, even if an exception occurs
+* `ui`::xxx::dialog::InputDialog``improvement: add a "bullet" mode for password field.
+* `ui`::xxx::dialog::MessageDialog``improvement: add a "retry" button.
+
+*Serialize most objects.*
+
+The serialization is done through two classes: SessionSerializer, SessionsDeserializer, and many .hpp with two functions: `serialize()` and `deserialize`, depending of the type of data object to serialize.
+
+For exemple, the serializers for meshes and images are coded respectively in `Mesh.hpp` and `Image.hpp`. They are good samples to demonstrate how it is possible to use a well known format to serialize objects. The Sight images / meshes are converted into VTK format using Sight helpers and are then saved with the now "standard" VTK way using `vtkXMLImageDataWriter` for image and `vtkXMLPolyDataWriter` for meshes.
+
+As a side notes, since the files are stored in a zstd compressed zip file, and since VTK doesn't provide any way to use an output streams, the VTK writers are configured as such (image and mesh are equivalent):
+
+```cpp
+vtkWriter->SetCompressorTypeToNone();
+vtkWriter->SetDataModeToBinary();
+vtkWriter->WriteToOutputStringOn();
+vtkWriter->SetInputData(vtkImage);
+```
+
+This allow us to compress only one time and use fast zstd. Since the compression level can be set independently, some test need to be done to find the best efficiency. For now it is the "default" mode that is used, but better compression ratio at the expense of compression speed (not decompression!) is also possible.
+
+The drawback for using `WriteToOutputStringOn()` is that the complete data need to be written in memory before being able to serialize it. Shame on VTK for not providing an easy way to use c++ streams...
+
+Most serializers are far more simple as we only write/read values into a Boost property tree, a bit like before, but without the complexity of "atoms" tree. The version management is also quite simple, we write a integer in the tree and read it back. It is up to the user to add the `if(version < 666)...`
+
+## Enhancement:
+
+### build
+
+*Enable support of PCH in unit tests.*
+
+Sight CMake targets of type TEST now build with precompiled headers, which speed-ups a bit the global build time.
+
+### core
+
+*Wrap notification signal emission in a function.*
+
+Wraps emission of "notification" signals into `IService`::notify``with an enum class NotificationType (SUCCESS, INFO, FAILURE) and the message.
+
+*Add helper function to ease error handling in boost::property_tree.*
+
+This adds a new function to ease error handling in `boost::property_tree`.
+
+```cpp
+core::runtime::get_ptree_value(config, "test.true", false); // returns true
+core::runtime::get_ptree_value(config, "test.yes", false);  // throws
+core::runtime::get_ptree_value(config, "test.foo", false);  // returns false
+core::runtime::get_ptree_value(config, "test.foo", true);  // returns true
+core::runtime::get_ptree_value(config, "test.true", 42);  // throws because it implicitly request an integer
+```
+
+*Move TransferFunctionManagerWindow configuration to config folder.*
+
+- Move `TransferFunctionManagerWindow.xml` to `configs/viz/scene3d`.
+- Add a link in `sightViewer` application to use it.
+
+### doc
+
+*Add a README.md for each target.*
+
+We now provide a short documentation file for each target. The goal of this file is to give an overview of the content of the library or the module to the developer. It is complementary with the doxygen and sight-doc but it should not overlap with them.
+
+### graphics
+
+*Support keeping the original image size and bilinear filtering in SVideo.*
+
+* Add support for switching between nearest and bilinear filtering for the texture
+* Add support to scale or not the image to the size of the viewport
+
+### io
+
+*Make realsense support optional.*
+
+*Add missing description for pdf writer label.*
+
+add description in plugin.xml of modules/io/document
+
+### ui
+
+*Send value when released slider in SParameters.*
+
+Adds an option to emit value of SParameter sliders only when releasing the slider, this avoids multiple sending when moving the slider.
+
+*Add option to fix the size of QToolButton on a toolbar.*
+
+Adds an option on Toolbar layout to resize buttons to the wider one.
+
+This ensures to keep same size between each button and fix some glitches when larger button was hide / show.
+
+### viz
+
+*Enhance tracked us display.*
+
+- change UsUltrasoundMesh default us format, and allow xml configuration of this format
+- add SMatrixViewer significant number for display
+
+## Refactor:
+
+### build
+
+*Remove obsolete activities.*
+
+The following activities were removed:
+- blendActivity
+- registrationActivity
+- 3DVisualizationActivity
+- volumeRenderingActivity
+
+Only 2DVisualization is kept, and renamed to `sight::activity::viz::negato`. Indeed some configurations of this activity are used in other activities and in **dicomxplorer**.
+
+The following activities were fixed:
+- DicomPacsReader
+- DicomPacsWriter
+- DicomFiltering
+- DicomWebReader
+- DicomWebWriter
+
+Also, the loading of DICOM images from the filesystem or a PACS in SightViewer should also be fixed.
+
+### core
+
+*Use data::ptr everywhere.*
+
+This is the final merge request that generalizes the usage of data`::ptr`instead of IService::get*/getLocked*/getWeak*.
+
+The deprecated `DynamicType` class was also removed, which really helps to clear the build log from many warnings.
+
+Last, Ogre runtime deprecation warnings were also processed, which implied to refactor a bit the material and shader code.
+
+*Move remaining misplaced files.*
+
+- Move several services interfaces from `sight::service`:
+  - `IGrabber` -> io
+  - `IRGBDGrabber` -> io
+  - `ICalibration` -> geometry_vision
+- Rename `IOperator` as `IFilter` to match the new naming scheme and avoid synonyms
+- `IParametersService` is renamed into `IHasParameters`, moved in `ui_base` and is no longer a service. Thus any specialized service can inherit this interface using multiple inheritances.
+- Rename `pchServices/pchServicesOmp` into `pchService/pchServiceOmp` (we have used the singular everywhere for `service`)
+- Renamed and moved `sight`::module::ui::dicom::SSeriesDBMerger``into  `sight::module::ui::series::SPushSelection`, since it pushes a selection (vector) of series into a `SeriesDB`.
+- Removed duplicated `module`::geometry::generator::SUltrasoundMesh``and moved `module`::geometry::generator::SNeedle``into the same module than the duplicate of `SUltrasoundMesh`, i.e. in `module::filter::mesh::generator`.
+
+*New pointer types to manage data in services.*
+
+Two new pointer types are introduced, which the only aim is to be used as service class members:
+- `sight`::data::ptr`:`single data
+- `sight`::data::ptr_vector`:`group of data
+
+For instance, they can be declared this way in a class declaration:
+
+```cpp
+class STest : public IService
+{
+    ...
+private:
+    data::ptr<data::Image, data::Access::in> m_input {this, "image"};
+    data::ptr_vector<data::Mesh, data::Access::inout> m_inoutGroup {this, "meshes", true, 2};
+    data::ptr<data::Object, data::Access::out> m_output {this, "genericOutput", false, true};
+};
+```
+
+`this` must be passed as the first argument, with a class instance inheriting from `IHasData`. So far, only `IService` inherits from this interface, but other cases might appear later. It is used to register the pointers in the OSR and get/set their content automatically, mainly with the `AppManager` (Xml based and C++ based). This prevents calling `registerObject()` for each data in the service constructor (it was almost never done because this only breaks C++-based apps, but normally it should have been done everywhere). Actually, this registration method was removed from the public interface of `IService` so you can no longer call it and there is no risk of conflict. All occurrences were refactored to use these new pointer types.
+
+To retrieve the data, it is simple as using a `data::mt::weak_ptr`, so you can simply call
+
+```cpp
+    auto input = m_input.lock(); // returns a data::mt::locked_ptr<data::Image>
+    const auto data = *input;  // returns a data::Image&
+    const auto data_shared = input.get_shared(); // returns a data::Image::csptr
+
+    // Access data in a group using indexes
+    for(int i = 0; i < m_inoutGroup.size(); ++i)
+    {
+       auto data = m_inoutGroup[i].lock();
+       ...
+    }
+
+    // Access data in a group using for range loop - this gives access to the underlying map,
+    // that's why '.second' should be specified, while '.first' gives the index
+    for(const auto& data : m_inoutGroup)
+    {
+        auto data = data.second.lock();
+        ...
+    }
+
+    // Alternative using structured binding
+    for(const auto&[index, data] : m_inoutGroup)
+    {
+       auto lockedData = data.lock();
+       ...
+    }
+```
+
+*Booleans attributes configuration parsing.*
+
+Harmonize XML configuration of services code by replacing the use of "yes"/"no" with "true"/"false".
+
+*Replace getPathDifference() by std::filesystem::relative().*
+
+*Reorganize all targets and rework the build system.*
+
+Sight 21.0 brings a major update on the naming scheme. We renamed almost every target, according a new naming scheme, and we reduced drastically the scope of categories we use to sort targets. Many targets were merged together. We lost some modularity but we gained in simplicity.
+Also the build system was partially rewritten. Now it relies only on standard CMakeLists.txt, and no longer on our custom Properties.cmake. We no longer support injecting external repositories into a Sight build. To build other repositories, we use what we called before the SDK mode, which is actually the classic way to link some code to another in C++.
+Last we introduced a global `sight`::``namespace, which is also reflected on the filesystem. This makes extensibility easier by avoiding naming conflicts.
+
+
 # sight 20.3.0
 
 ## New features:
