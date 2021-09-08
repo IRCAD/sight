@@ -59,7 +59,7 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 Runtime::Runtime()
 {
     // The lib location is 'SIGHT_DIR/lib/sight_core.dll'
-    m_workingPath = ::boost::dll::program_location().parent_path().parent_path().string();
+    m_workingPath = ::boost::dll::this_line_location().parent_path().parent_path().string();
 }
 
 //------------------------------------------------------------------------------
