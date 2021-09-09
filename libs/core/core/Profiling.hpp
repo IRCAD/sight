@@ -206,22 +206,22 @@ public:
 #ifndef FW_PROFILING_DISABLED
 /// Display the elapsed time inside a code block
 #define FW_PROFILE(_label) \
-    core::fwProfileScope BOOST_PP_CAT(profiler, __LINE__)(_label);
+    sight::core::fwProfileScope BOOST_PP_CAT(profiler, __LINE__)(_label);
 
 /// Display the elapsed time inside a code block, every N seconds
 #define FW_PROFILE_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
-    core::fwProfileScopeAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    sight::core::fwProfileScopeAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block
 #define FW_PROFILE_FRAME(_label) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(0); \
-    core::fwProfileFrame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(0); \
+    sight::core::fwProfileFrame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block, every N seconds
 #define FW_PROFILE_FRAME_AVG(_label, interval) \
-    static core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
-    core::fwProfileFrameAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
+    static sight::core::fwProfileFrameTimer BOOST_PP_CAT(frameTimer, __LINE__)(interval); \
+    sight::core::fwProfileFrameAvg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frameTimer, __LINE__));
 #else // FW_PROFILING_DISABLED
 #define FW_PROFILE(_label)
 #define FW_PROFILE_AVG(_label, interval)
