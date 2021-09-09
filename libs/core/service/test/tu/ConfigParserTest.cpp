@@ -26,18 +26,15 @@
 
 #include <core/runtime/Convert.hpp>
 
-#include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
 #include <service/AppConfigManager.hpp>
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-#include <service/op/Get.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/base.hpp>
+#include <service/parser/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ConfigParserTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ConfigParserTest);
 
 //------------------------------------------------------------------------------
 
@@ -51,7 +48,16 @@ namespace ut
 
 void ConfigParserTest::setUp()
 {
-    // Set up context before running a test.
+    // Set up context before running a test
+    core::runtime::init();
+
+    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
+    CPPUNIT_ASSERT(std::filesystem::exists(location));
+
+    auto& runtime = core::runtime::Runtime::get();
+    runtime.addModules(location);
+
+    core::runtime::loadModule("sight::module::service");
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +112,52 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
 //------------------------------------------------------------------------------
 
+void ConfigParserTest::testImageParser()
+{
+    const std::string objectUUID = "objectUUID";
+    service::IService::ConfigType config;
+
+    // Configuration on core::tools::Object which uid is objectUUID
+    service::IService::ConfigType objCfg;
+    objCfg.add("<xmlattr>.uid", objectUUID);
+    objCfg.add("<xmlattr>.type", "sight::data::Image");
+    objCfg.add("color", "#FF459812");
+    config.add_child("object", objCfg);
+
+    service::IService::ConfigType serviceCfg;
+    serviceCfg.add_child("config", config);
+
+    // Create object configuration
+    const auto cfg = core::runtime::Convert::fromPropertyTree(serviceCfg);
+
+    // Create the object and its services from the configuration
+    service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
+    configManager->service::IAppConfigManager::setConfig(cfg);
+    configManager->create();
+    auto image = std::dynamic_pointer_cast<data::Image>(core::tools::fwID::getObject(objectUUID));
+
+    // Test object uid
+    CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
+    CPPUNIT_ASSERT_EQUAL(sight::data::Image::RGBA, image->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(sight::core::tools::Type::s_UINT8, image->getType());
+
+    // We only test the image content, we do not really care about the image size and other attributes for now
+    auto itr          = image->begin<sight::data::iterator::RGBA>();
+    const auto itrEnd = image->end<sight::data::iterator::RGBA>();
+
+    for( ; itr != itrEnd ; ++itr)
+    {
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0xFF), itr->r);
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0x45), itr->g);
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0x98), itr->b);
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0X12), itr->a);
+    }
+
+    configManager->destroy();
+}
+
+//------------------------------------------------------------------------------
+
 core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 {
     service::IService::ConfigType config;
@@ -113,13 +165,13 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Configuration on core::tools::Object which uid is objectUUID
     service::IService::ConfigType objCfg;
     objCfg.add("<xmlattr>.uid", "objectUUID");
-    objCfg.add("<xmlattr>.type", "::sight::data::Image");
+    objCfg.add("<xmlattr>.type", "sight::data::Image");
     config.add_child("object", objCfg);
 
     // Object's service A
     service::IService::ConfigType serviceA;
     serviceA.add("<xmlattr>.uid", "myTestService1");
-    serviceA.add("<xmlattr>.type", "::sight::service::ut::STest1Image");
+    serviceA.add("<xmlattr>.type", "sight::service::ut::STest1Image");
 
     service::IService::ConfigType dataServiceA;
     dataServiceA.add("<xmlattr>.key", "data");
@@ -130,7 +182,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     // Object's service B
     service::IService::ConfigType serviceB;
     serviceB.add("<xmlattr>.uid", "myTestService2");
-    serviceB.add("<xmlattr>.type", "::sight::service::ut::STest1Image");
+    serviceB.add("<xmlattr>.type", "sight::service::ut::STest1Image");
     config.add_child("service", serviceB);
 
     // Start method from object's services

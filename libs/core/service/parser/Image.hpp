@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,46 +22,36 @@
 
 #pragma once
 
-#include <core/base.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
-
-#include <service/macros.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
+#include "service/config.hpp"
+#include <service/IXMLParser.hpp>
 
 namespace sight::service
 {
 
-namespace ut
+namespace parser
 {
 
 /**
- * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
- * @see     ICompositeParser
- * @see     CompositeEditor
+ * @brief   Specific service that allows to initialize a sight::data::Image.
+ * Currently, this only allows to create a default 4x4 2D image with a custom color.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <object uid="usExtractedImage" type="sight::data::Image" >
+        <color>#00FF00FF</color>
+    </object>
+   @endcode
+ * @see     service::IXMLParser
  */
-class ConfigParserTest : public CPPUNIT_NS::TestFixture
+class SERVICE_CLASS_API Image : public service::IXMLParser
 {
-CPPUNIT_TEST_SUITE(ConfigParserTest);
-CPPUNIT_TEST(testObjectCreationWithConfig);
-CPPUNIT_TEST(testImageParser);
-CPPUNIT_TEST_SUITE_END();
-
 public:
 
-    void setUp();
-    void tearDown();
+    SIGHT_DECLARE_SERVICE(Image, service::IXMLParser);
 
-    /// test object with services creation from a configuration
-    void testObjectCreationWithConfig();
-    void testImageParser();
-
-private:
-
-    /// Create a configurationElement to build an object
-    core::runtime::ConfigurationElement::sptr buildObjectConfig();
+    SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 };
 
-} //namespace ut
+} //namespace parser
 
 } //namespace sight::service
