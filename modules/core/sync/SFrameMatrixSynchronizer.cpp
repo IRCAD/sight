@@ -364,7 +364,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
         auto iter                     = image->begin<std::uint8_t>();
-        std::copy(frameBuff, frameBuff + buffer->getSize(), iter);
+        std::memcpy(&*iter, frameBuff, buffer->getSize());
 
         // Notify
         auto sig = image->signal<data::Image::BufferModifiedSignalType>(
