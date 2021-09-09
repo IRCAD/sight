@@ -328,8 +328,7 @@ void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
     auto r2vbRenderables = m_meshGeometry->updateR2VB(
         _mesh,
         *sceneMgr,
-        m_materialAdaptor->getMaterialName(),
-        m_materialAdaptor->hasDiffuseTexture()
+        m_materialAdaptor->getMaterialName()
     );
     for(auto renderable : r2vbRenderables.second)
     {
@@ -407,7 +406,12 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
     const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
-    materialAdaptor->setTextureName(m_textureName);
+    if(_materialSuffix.empty())
+    {
+        // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
+        materialAdaptor->setTextureName(m_textureName);
+    }
+
     materialAdaptor->setShadingMode(m_shadingMode);
 
     return materialAdaptor;
@@ -489,8 +493,7 @@ void SMesh::modifyVertices()
     m_meshGeometry->updateR2VB(
         mesh.get_shared(),
         *sceneMgr,
-        m_materialAdaptor->getMaterialName(),
-        m_materialAdaptor->hasDiffuseTexture()
+        m_materialAdaptor->getMaterialName()
     );
 
     // Necessary to update the bounding box in the adaptor

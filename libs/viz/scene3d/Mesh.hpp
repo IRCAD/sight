@@ -87,8 +87,7 @@ public:
     VIZ_SCENE3D_API std::pair<bool, std::vector<R2VBRenderable*> > updateR2VB(
         const data::Mesh::sptr& _mesh,
         ::Ogre::SceneManager& _sceneMgr,
-        const std::string& _materialName,
-        bool _hasTexture
+        const std::string& _materialName
     );
 
     /// Updates the vertices position

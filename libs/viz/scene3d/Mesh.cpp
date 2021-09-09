@@ -581,8 +581,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
     const data::Mesh::sptr& _mesh,
     ::Ogre::SceneManager& _sceneMgr,
-    const std::string& _materialName,
-    bool
+    const std::string& _materialName
 )
 {
     //------------------------------------------

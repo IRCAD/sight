@@ -116,7 +116,7 @@ void SMeshList::starting()
         textureAdaptor->setLayerID(m_layerID);
         textureAdaptor->setRenderService(this->getRenderService());
 
-        textureAdaptor->setInput(image, "image", true);
+        textureAdaptor->setInput(image, "image", false);
 
         textureAdaptor->configure(textureConfig);
         textureAdaptor->start();
@@ -211,12 +211,9 @@ void SMeshList::add()
 
         instance.m_isEnabled = true;
 
-        // update the transform
         const sight::viz::scene3d::IAdaptor::sptr textureAdp = instance.m_texture;
         {
-            // set current image
-            const auto image = textureAdp->getInput<data::Image>("image").lock();
-
+            const auto image        = textureAdp->getInput<data::Image>("image").lock();
             const auto textureInput = m_texture.lock();
 
             if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
@@ -224,7 +221,6 @@ void SMeshList::add()
                    || textureInput->getNumberOfComponents() == 1))
             {
                 // transform the image into RGBA with a transparent texture
-
                 if(textureInput->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());

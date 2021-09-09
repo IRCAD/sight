@@ -346,6 +346,12 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
                 const auto material = m_materialData.lock();
 
                 data::String::csptr string = data::String::dynamicCast(elt.second);
+                if(string->value() == m_materialTemplateName)
+                {
+                    // Avoid useless update if this is the same template material
+                    continue;
+                }
+
                 this->setMaterialTemplateName(string->getValue());
 
                 m_materialFw->setTemplate(m_materialTemplateName);
@@ -357,6 +363,14 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
             }
             this->createShaderParameterAdaptors();
             this->updating();
+
+            // When resetting the material template, all techniques and passes will be destroyed,
+            // so we need to reset the texture unit states
+            ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
+            if(currentTexture)
+            {
+                m_materialFw->setDiffuseTexture(currentTexture);
+            }
         }
     }
 }
