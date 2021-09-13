@@ -109,14 +109,9 @@ void RepresentationEditor::starting()
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
-    QRadioButton* buttonGouraud = new QRadioButton(tr("Gouraud"), groupBoxShading);
-    buttonGouraud->setMinimumSize(buttonGouraud->sizeHint());
-    m_buttonGroupShading->addButton(buttonGouraud, 2);
-    layoutGroupBoxShading->addWidget(buttonGouraud);
-
     QRadioButton* buttonPhong = new QRadioButton(tr("Phong"), groupBoxShading);
     buttonPhong->setMinimumSize(buttonPhong->sizeHint());
-    m_buttonGroupShading->addButton(buttonPhong, 3);
+    m_buttonGroupShading->addButton(buttonPhong, 2);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
     layout->addWidget(groupBox);
@@ -235,10 +230,6 @@ void RepresentationEditor::onChangeShading(int id)
             break;
 
         case 2:
-            selectedMode = data::Material::GOURAUD;
-            break;
-
-        case 3:
             selectedMode = data::Material::PHONG;
             break;
     }
@@ -301,13 +292,8 @@ void RepresentationEditor::refreshShading()
             button->setChecked(true);
             break;
 
-        case data::Material::GOURAUD:
-            button = m_buttonGroupShading->button(2);
-            button->setChecked(true);
-            break;
-
         case data::Material::PHONG:
-            button = m_buttonGroupShading->button(3);
+            button = m_buttonGroupShading->button(2);
             button->setChecked(true);
             break;
 

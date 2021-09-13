@@ -59,7 +59,7 @@ public:
     /// Updates material polygon mode (surface, point or wireframe)
     VIZ_SCENE3D_API void updatePolygonMode(int _polygonMode);
 
-    /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
+    /// Update material shading mode (flat/phong)
     VIZ_SCENE3D_API void updateShadingMode(
         int _shadingMode,
         int _numLights,
@@ -67,7 +67,7 @@ public:
         bool useTextureAlpha
     );
 
-    /// Update material color in fixed function pipeline
+    /// Update material color
     VIZ_SCENE3D_API void updateRGBAMode(data::Material::sptr _sightMaterial);
 
     void setHasMeshNormal(bool _hasMeshNormal);

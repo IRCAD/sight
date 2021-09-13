@@ -47,7 +47,7 @@ namespace sight::module::ui::qml::reconstruction
  * - \b onChangeRepresentation(int): called when the organ representation changed, it will update the reconstruction
  * Material (1: SURFACE, 2: POINT, 3: WIREFRAME, 4: EDGE)
  * - \b onChangeShading(int): called when the opacity changed, it will update the reconstruction Material (0: AMBIENT,
- * 1: FLAT, 2: GOURAUD, 3: PHONG)
+ * 1: FLAT, 2: PHONG)
  * - \b onShowNormals(int): called when the opacity changed, it will update the reconstruction Material (1: STANDARD,
  * 2: NORMALS, 3: CELLS_NORMALS)
  *

@@ -57,7 +57,6 @@ SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Material) (ShadingType))
     builder
     .value("AMBIENT", sight::data::Material::AMBIENT)
     .value("FLAT", sight::data::Material::FLAT)
-    .value("GOURAUD", sight::data::Material::GOURAUD)
     .value("PHONG", sight::data::Material::PHONG)
     ;
 }

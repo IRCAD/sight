@@ -4,17 +4,12 @@
 #extension GL_GOOGLE_include_directive : enable
 #endif // GLSL_LANG_VALIDATOR
 
-// Extern functions
-#if defined(FLAT) || (!defined(AMBIENT) && !defined(PIXEL_LIT))
-#include "Lighting.inc.glsl"
-#endif // PIXEL_LIT
-
 uniform mat4 u_worldViewProj;
+uniform mat4 u_worldView;
 uniform mat4 u_world;
 uniform mat4 u_normalMatrix;
 
 #ifdef AUTOSTEREO
-uniform mat4 u_worldView;
 uniform mat4 u_proj;
 #endif // AUTOSTEREO
 
@@ -41,15 +36,17 @@ layout(location = 2) out vec2 vTexCoord;
 
 #else
 
-#if defined(PIXEL_LIT) || defined(CEL_SHADING)
+#   if defined(PHONG) || defined(CEL_SHADING)
 layout(location = 0) out vec3 v_f3Normal_Ws;
 #   endif
 
-#   ifdef PIXEL_LIT
+#   if defined(PHONG)
 layout(location = 1) out vec3 v_f3Position_Ws;
+#   elif defined(FLAT)
+layout(location = 1) out vec3 v_f3Position_Vs;
 #   endif
 
-#   ifdef FLAT
+#   if defined(FLAT)
 layout(location = 2) flat out vec4 v_f4Color;
 #   else
 layout(location = 2) out vec4 v_f4Color;
@@ -61,12 +58,12 @@ layout(location = 3) out vec2 v_f2TexCoord;
 #endif // R2VB
 
 
-#ifndef AMBIENT
+#if defined(FLAT) || defined(PHONG)
 vec4 lighting(vec3 _normal, vec3 _position);
 #else
 uniform vec4 u_ambient;
 uniform vec4 u_diffuse;
-#endif // AMBIENT
+#endif // FLAT || PHONG
 
 void main(void)
 {
@@ -90,11 +87,11 @@ void main(void)
     gl_Position = u_worldViewProj * position;
 #endif
 
-#   if defined(PIXEL_LIT) || defined(CEL_SHADING)
+#   if defined(PHONG) || defined(CEL_SHADING)
     v_f3Normal_Ws = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
 #   endif
 
-#   ifdef PIXEL_LIT
+#   if defined(PHONG)
     v_f3Position_Ws = (u_world * position).xyz;
 
 #       ifdef VERTEX_COLOR
@@ -104,19 +101,18 @@ void main(void)
 #       endif // VERTEX_COLOR
 
 #   else
-#       ifdef AMBIENT
-    v_f4Color = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
+#       ifdef FLAT
+    v_f3Position_Vs = (u_worldView * position).xyz;
+    v_f4Color = vec4(1.,1.,1.,1.);
 #       else
-    vec3 position_WS = (u_world * position).xyz;
-    vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
-    v_f4Color = lighting(normal_WS, position_WS);
-#       endif // AMBIENT
+    v_f4Color = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
+#       endif
 
 #       ifdef VERTEX_COLOR
     v_f4Color *= colour;
 #       endif // VERTEX_COLOR
 
-#   endif // PIXEL_LIT
+#   endif // PHONG || CEL_SHADING
 
 #   ifdef DIFFUSE_TEX
     v_f2TexCoord = uv0;

@@ -53,7 +53,6 @@ static const std::regex s_LIGHT_PARAM_REGEX("u_f[2-4]?(NumLights|Light(Ambient|D
 
 static const std::string s_AMBIENT       = "Ambient";
 static const std::string s_FLAT          = "Flat";
-static const std::string s_GOURAUD       = "Gouraud";
 static const std::string s_PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
@@ -116,10 +115,6 @@ std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _dif
 
         case data::Material::FLAT:
             suffix = s_FLAT;
-            break;
-
-        case data::Material::GOURAUD:
-            suffix = s_GOURAUD;
             break;
 
         case data::Material::PHONG:
@@ -239,8 +234,7 @@ std::string Shading::setPermutationInProgramName(const std::string& _name, const
     prgName = std::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
-    static const std::regex regexShading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_GOURAUD + ")|("
-                                         + s_PIXELLIGHTING + ")");
+    static const std::regex regexShading("(" + s_AMBIENT + ")|(" + s_FLAT + ")|(" + s_PIXELLIGHTING + ")");
     prgName = std::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;

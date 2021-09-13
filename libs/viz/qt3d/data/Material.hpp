@@ -108,7 +108,7 @@ public:
     /// Updates material polygon mode (surface, point, wireframe or edge).
     VIZ_QT3D_QT_API Q_INVOKABLE void updatePolygonMode(int _polygonMode);
 
-    /// Updates material shading mode (ambient/flat/gouraud/phong).
+    /// Updates material shading mode (ambient/flat/phong).
     VIZ_QT3D_QT_API Q_INVOKABLE void updateShadingMode(int _shadingMode);
 
     /// Updates material color.

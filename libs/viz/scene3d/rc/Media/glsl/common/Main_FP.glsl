@@ -4,9 +4,9 @@
 #extension GL_GOOGLE_include_directive : enable
 #endif // GLSL_LANG_VALIDATOR
 
-#ifdef PIXEL_LIT
+#if defined(FLAT) || defined(PHONG)
 #include "Lighting.inc.glsl"
-#endif // PIXEL_LIT
+#endif
 
 // This defines getFragmentColor() and getFragmentAlpha()
 #include "MaterialColor_FP.inc.glsl"

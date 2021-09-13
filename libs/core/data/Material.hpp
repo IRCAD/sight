@@ -111,8 +111,7 @@ public:
     {
         AMBIENT = 0,
         FLAT    = 1,
-        GOURAUD = 2, //FLAT<<1 -> 10
-        PHONG   = 4  //FLAT<<2 -> 100
+        PHONG   = 2
     } ShadingType;
 
     /**
@@ -145,7 +144,7 @@ public:
     } WrappingType;
 
     /** @{
-     *  @brief get/set the shading models(flat, gouraud, phong)
+     *  @brief get/set the shading models(flat, phong)
      */
     ShadingType& getShadingMode();
     const ShadingType& getShadingMode() const;
@@ -201,7 +200,7 @@ public:
 
 protected:
 
-    /// Shading mode (flat, Gouraud, Phong)
+    /// Shading mode (flat, Phong)
     ShadingType m_shadingMode;
 
     /// Fill mode (flat, wireframe, point)

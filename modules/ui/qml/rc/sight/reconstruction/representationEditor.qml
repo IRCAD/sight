@@ -49,9 +49,6 @@ Item {
             case 2:
                 flatButton.checked = true
                 break
-            case 3:
-                gouraudButton.checked = true
-                break;
             case 4:
                 phongButton.checked = true
                 break;
@@ -154,17 +151,6 @@ Item {
                         }
                     }
                 }
-                RadioButton {
-                    id: gouraudButton
-                    text: "Gouraud"
-                    Layout.fillWidth: true
-                    onCheckedChanged:  {
-                        if (checked) {
-                            representationService.onChangeShading(2)
-                        }
-                    }
-                }
-
                 RadioButton {
                     id: phongButton
                     text: "Phong"
