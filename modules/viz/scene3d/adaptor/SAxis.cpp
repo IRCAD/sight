@@ -46,6 +46,7 @@ static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
 static const std::string s_FONT_SOURCE_CONFIG  = "fontSource";
 static const std::string s_ORIGIN_CONFIG       = "origin";
 static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
+static const std::string s_AXIS_NAME           = "name";
 
 //-----------------------------------------------------------------------------
 
@@ -80,6 +81,7 @@ void SAxis::configuring()
     m_fontSize         = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_fontSource       = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
+    m_axisName         = config.get<std::string>(s_AXIS_NAME, m_axisName);
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
     SIGHT_ASSERT(
@@ -98,11 +100,11 @@ void SAxis::starting()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     if(m_originVisibility)
     {
@@ -152,10 +154,11 @@ void SAxis::starting()
     {
         const data::Color::sptr originColor = data::Color::New();
         originColor->setRGBA(m_originColor);
+
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_origin,
             materialAdaptor->getMaterialName(),
-            ::Ogre::ColourValue(
+            Ogre::ColourValue(
                 originColor->red(),
                 originColor->green(),
                 originColor->blue(),
@@ -164,6 +167,7 @@ void SAxis::starting()
             originRadius,
             sample
         );
+
         m_sceneNode->attachObject(m_origin);
     }
 
@@ -171,12 +175,12 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_xLine,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Red),
+        Ogre::ColourValue(::Ogre::ColourValue::Red),
         cylinderRadius,
         cylinderLength,
         sample
     );
-    ::Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
+    Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
     xLineNode->attachObject(m_xLine);
     xLineNode->pitch(::Ogre::Degree(90));
 
@@ -184,12 +188,12 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_yLine,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Green),
+        Ogre::ColourValue(::Ogre::ColourValue::Green),
         cylinderRadius,
         cylinderLength,
         sample
     );
-    ::Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
+    Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
     yLineNode->attachObject(m_yLine);
     yLineNode->roll(::Ogre::Degree(90));
 
@@ -197,28 +201,28 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCylinder(
         m_zLine,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Blue),
+        Ogre::ColourValue(::Ogre::ColourValue::Blue),
         cylinderRadius,
         cylinderLength,
         sample
     );
-    ::Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
+    Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
     zLineNode->attachObject(m_zLine);
     zLineNode->yaw(::Ogre::Degree(-90));
 
-    ::Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
-    ::Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
+    Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
+    Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
 
     // X cone
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_xCone,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Red),
+        Ogre::ColourValue(::Ogre::ColourValue::Red),
         coneRadius,
         coneLength,
         sample
     );
-    ::Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
+    Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
 
     if(m_enableLabel)
     {
@@ -242,12 +246,12 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_yCone,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Green),
+        Ogre::ColourValue(::Ogre::ColourValue::Green),
         coneRadius,
         coneLength,
         sample
     );
-    ::Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
+    Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
     yConeNode->attachObject(m_yCone);
 
     if(m_enableLabel)
@@ -272,12 +276,12 @@ void SAxis::starting()
     sight::viz::scene3d::helper::ManualObject::createCone(
         m_zCone,
         materialAdaptor->getMaterialName(),
-        ::Ogre::ColourValue(::Ogre::ColourValue::Blue),
+        Ogre::ColourValue(::Ogre::ColourValue::Blue),
         coneRadius,
         coneLength,
         sample
     );
-    ::Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
+    Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
     zConeNode->attachObject(m_zCone);
 
     if(m_enableLabel)
@@ -298,6 +302,22 @@ void SAxis::starting()
     zConeNode->translate(0.f, 0.f, cylinderLength);
     zConeNode->yaw(::Ogre::Degree(-90));
 
+    // Display Name if provided.
+    if(!m_axisName.empty())
+    {
+        m_axisNameTxt = sight::viz::scene3d::Text::New(
+            this->getID() + "_Name",
+            sceneMgr,
+            textContainer,
+            m_fontSource,
+            m_fontSize,
+            dpi,
+            cam
+        );
+        m_axisNameTxt->setText(m_axisName);
+        m_sceneNode->attachObject(m_axisNameTxt);
+    }
+
     this->updateVisibility(m_isVisible);
 
     this->requestRender();
@@ -316,7 +336,7 @@ void SAxis::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     if(m_sceneNode != nullptr)
     {
@@ -339,6 +359,13 @@ void SAxis::stopping()
         }
     }
 
+    if(m_axisNameTxt)
+    {
+        m_axisNameTxt->detachFromParent();
+        sceneMgr->destroyMovableObject(m_axisNameTxt);
+        m_axisNameTxt = nullptr;
+    }
+
     if(m_originVisibility)
     {
         sceneMgr->destroyManualObject(m_origin);
@@ -352,8 +379,8 @@ void SAxis::stopping()
     sceneMgr->destroyManualObject(m_yCone);
     sceneMgr->destroyManualObject(m_zCone);
 
-    ::Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
-    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+    Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
 
     this->unregisterServices();
@@ -374,6 +401,11 @@ void SAxis::setVisible(bool _visible)
                 SIGHT_ASSERT("label should not be null", label);
                 label->setVisible(_visible);
             }
+        }
+
+        if(m_axisNameTxt)
+        {
+            m_axisNameTxt->setVisible(_visible);
         }
     }
 

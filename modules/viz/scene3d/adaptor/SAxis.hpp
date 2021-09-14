@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SAxis">
-        <config layer="default" transform="transformUID" length="30" label="true" />
+        <config layer="default" transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
  *
@@ -69,6 +69,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
+ * - \b name (optional, string): displayed name of the axis (default empty).
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SAxis final :
     public sight::viz::scene3d::IAdaptor,
@@ -149,11 +150,16 @@ private:
     /// Stores labels attached to each axis.
     std::array<sight::viz::scene3d::Text*, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
 
+    sight::viz::scene3d::Text* m_axisNameTxt {nullptr};
+
     /// Defines labels font size in points.
     size_t m_fontSize {16};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
+
+    /// Axis name, default empty.
+    std::string m_axisName;
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.
