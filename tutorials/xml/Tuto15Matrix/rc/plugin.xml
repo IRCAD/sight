@@ -169,7 +169,7 @@
         </service>
 
         <service uid="axis1Adp" type="sight::module::viz::scene3d::adaptor::SAxis" >
-            <config layer="default" length="10" transform="transRotMat" label="false" origin="true" originColor="#6997BB" />
+            <config layer="default" length="10" transform="transRotMat" label="false" origin="true" originColor="#6997BB" name="Base" />
         </service>
 
         <service uid="axis2Adp" type="sight::module::viz::scene3d::adaptor::SAxis" >
@@ -240,13 +240,17 @@
             <slot>mesh2Adp/updateVisibility</slot>
         </connect>
 
+        <connect>
+            <signal>trackballInteractorAdp/started</signal>
+            <slot>genericSceneSrv/resetCameras</slot>
+        </connect>
+
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainFrame" />
         <start uid="matrixDecomposerAdp" />
         <start uid="concatenateTranslationAndRotationArv" />
         <start uid="concatenateRotationAndTranslationSrv" />
-        <start uid="trackballInteractorAdp" />
         <start uid="mesh1Adp" />
         <start uid="mesh2Adp" />
         <start uid="matrix1Adp" />
@@ -256,6 +260,7 @@
         <start uid="originAxisAdp" />
         <start uid="text1Adp" />
         <start uid="text2Adp" />
+        <start uid="trackballInteractorAdp" />
 
         </config>
     </extension>
