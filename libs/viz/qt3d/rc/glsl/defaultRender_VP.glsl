@@ -14,7 +14,7 @@ uniform mat4 modelView;
 uniform mat3 modelViewNormal;
 uniform mat4 mvp;
 
-uniform int u_iLightingMode; //0=ambient, 1=flat, 2=gouraud, 4=phong.
+uniform int u_iLightingMode; //0=ambient, 1=flat, 2=phong.
 
 // Include functions from another shader called 'lighting.inc.glsl'.
 #pragma include lighting.inc.glsl
@@ -30,11 +30,6 @@ void main()
     if(u_iLightingMode == 1) //If flat lighting, compute normal in flat output.
     {
         v_out_f3FlatColor = lighting(v_out_f3Position, normalize(modelViewNormal * vertexNormal));
-    }
-
-    if(u_iLightingMode == 2) //If gouraud lighting, compute color in vertex shader.
-    {
-        v_out_f3Color = lighting(v_out_f3Position, normalize(v_out_f3Normal));
     }
 
     gl_Position = mvp * vec4(vertexPosition, 1.0);

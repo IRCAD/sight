@@ -67,7 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
-                shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />
+                shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
     </service>
    @endcode
  *
@@ -83,7 +83,7 @@ namespace sight::module::viz::scene3d::adaptor
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
  *      reference a texture managed by an another module::viz::scene3d::adaptor::STexture.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong): name of the used shading mode.
+ *  - \b shadingMode (optional, none/flat/phong, default=phong): name of the used shading mode.
  *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::Material.

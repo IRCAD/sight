@@ -9,7 +9,12 @@ uniform float u_fShininess;
 uniform float u_fNumLights;
 uniform vec4 u_f4LightAmbientCol;
 
+#ifdef FLAT
+// We have to use a different uniform name otherwise Ogre fails to refresh the constant value when switching shaders
+uniform vec4 u_f4LightPosVs[MAX_LIGHTS];
+#else
 uniform vec4 u_f4LightPos[MAX_LIGHTS];
+#endif
 uniform vec3 u_f3LightDiffuseCol[MAX_LIGHTS];
 uniform vec3 u_f3LightSpecularCol[MAX_LIGHTS];
 
@@ -29,7 +34,11 @@ vec4 lighting(vec3 _f3NormalDir_N, vec3 _f3Pos)
     //  for(int i = 0; i < int(u_fNumLights); ++i)
     for(int i = int(u_fNumLights); --i >= 0 ;)
     {
+#ifdef FLAT
+        vec3 f3LightDir = u_f4LightPosVs[i].w * _f3Pos - u_f4LightPosVs[i].xyz;
+#else
         vec3 f3LightDir = u_f4LightPos[i].w * _f3Pos - u_f4LightPos[i].xyz;
+#endif
         vec3 f3LightDir_N = normalize(f3LightDir);
 
         float fCosTheta  = abs(dot(-f3LightDir_N, _f3NormalDir_N ));
@@ -56,7 +65,11 @@ vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol)
     // (look at "for(int i = int(u_fNumLights)...")
     for(int i = 0; i < int(u_fNumLights); ++i)
     {
+#ifdef FLAT
+        vec3 f3LightDir = u_f4LightPosVs[i].w * _f3Pos - u_f4LightPosVs[i].xyz;
+#else
         vec3 f3LightDir = u_f4LightPos[i].w * _f3Pos - u_f4LightPos[i].xyz;
+#endif
 
         // We use the Blinn-Phong lighting model.
         float fLitDiffuseCol_N = clamp(abs(dot( normalize(f3LightDir), _f3NormalDir_N )), 0, 1);

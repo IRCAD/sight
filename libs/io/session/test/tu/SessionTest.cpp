@@ -1902,7 +1902,6 @@ inline data::Material::sptr _generate<data::Material>(const std::size_t variant)
     data::Material::ShadingType shading[] = {
         data::Material::ShadingType::AMBIENT,
         data::Material::ShadingType::FLAT,
-        data::Material::ShadingType::GOURAUD,
         data::Material::ShadingType::PHONG
     };
 

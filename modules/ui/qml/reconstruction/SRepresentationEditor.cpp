@@ -127,10 +127,6 @@ void SRepresentationEditor::onChangeShading(int id)
             break;
 
         case 2:
-            selectedMode = data::Material::GOURAUD;
-            break;
-
-        case 3:
             selectedMode = data::Material::PHONG;
             break;
 

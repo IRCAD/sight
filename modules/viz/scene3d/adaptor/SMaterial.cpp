@@ -126,10 +126,6 @@ void SMaterial::starting()
             {
                 shadingMode = data::Material::FLAT;
             }
-            else if(m_shadingMode == "gouraud")
-            {
-                shadingMode = data::Material::GOURAUD;
-            }
 
             // Force the shading mode of the material if it has been set in the configuration of the adaptor
             material->setShadingMode(shadingMode);

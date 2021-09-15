@@ -255,12 +255,6 @@ void ShadingTest::getPermutation()
     suffix = Shading::getPermutation(data::Material::FLAT, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("Flat+VT"), suffix);
 
-    suffix = Shading::getPermutation(data::Material::GOURAUD, true, false);
-    CPPUNIT_ASSERT_EQUAL(std::string("Gouraud+DfsTex"), suffix);
-
-    suffix = Shading::getPermutation(data::Material::GOURAUD, true, true);
-    CPPUNIT_ASSERT_EQUAL(std::string("Gouraud+VT+DfsTex"), suffix);
-
     suffix = Shading::getPermutation(data::Material::PHONG, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("PixelLit+VT+DfsTex"), suffix);
 
@@ -299,8 +293,8 @@ void ShadingTest::setPermutationInProgramName()
 {
     std::string prgName;
 
-    prgName = Shading::setPermutationInProgramName("Default/PixelLit+VT+DfsTex_VP", "Gouraud+DfsTex");
-    CPPUNIT_ASSERT_EQUAL(std::string("Default/Gouraud+DfsTex_VP"), prgName);
+    prgName = Shading::setPermutationInProgramName("Default/PixelLit+VT+DfsTex_VP", "PixelLit+DfsTex");
+    CPPUNIT_ASSERT_EQUAL(std::string("Default/PixelLit+DfsTex_VP"), prgName);
 
     prgName = Shading::setPermutationInProgramName("CelShadingDepthPeeling/peel_PixelLit+VT+DfsTex_FP", "Flat+VT");
     CPPUNIT_ASSERT_EQUAL(std::string("CelShadingDepthPeeling/peel_Flat+VT_FP"), prgName);

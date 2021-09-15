@@ -8,9 +8,12 @@ uniform int u_useTextureAlpha;
 // Input semantics
 layout(location = 0) in vec3 v_f3Normal_Ws;
 
-#ifdef PIXEL_LIT
+
+#if defined(FLAT)
+layout(location = 1) in vec3 v_f3Position_Vs;
+#elif defined(PHONG)
 layout(location = 1) in vec3 v_f3Position_Ws;
- #endif
+#endif
 
 #ifdef FLAT
 layout(location = 2) flat in vec4 v_f4Color;
@@ -27,8 +30,12 @@ uniform sampler2D u_texture;
 // Compute illumination or forward illumination received from the vertex shader
 vec4 getFragmentColor()
 {
-
-#ifdef PIXEL_LIT
+#if defined(FLAT)
+    vec3 xTangent = dFdx( v_f3Position_Vs );
+    vec3 yTangent = dFdy( v_f3Position_Vs );
+    vec3 faceNormal_Vs = normalize( cross( xTangent, yTangent ) );
+    vec4 colorOut = lighting(normalize(faceNormal_Vs), v_f3Position_Vs) * v_f4Color;
+#elif defined(PHONG)
     vec4 colorOut = lighting(normalize(v_f3Normal_Ws), v_f3Position_Ws) * v_f4Color;
 #else
     vec4 colorOut = v_f4Color;

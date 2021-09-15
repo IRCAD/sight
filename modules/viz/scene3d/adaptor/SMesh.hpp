@@ -81,7 +81,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMesh" >
         <inout key="mesh" uid="..." />
-        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="gouraud" textureName="..."
+        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
@@ -107,7 +107,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b materialTemplate (optional, string, default=""): the name of the base Ogre material for the internally created
  *       SMaterial.
  *  - \b textureName (optional, default=""): the name of the Ogre texture that the mesh will use.
- *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b shadingMode (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
  *  - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  */

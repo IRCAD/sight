@@ -9,7 +9,7 @@
 // Vertex shader materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, params in configsVP %}
+{% for shading, defines, params in configsVP %}
 
 //---------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ vertex_program R2VB/{{ shading }}_VP glsl
 // Geometry shader materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersGP, params in configsGP %}
+{% for shading, defines, params in configsGP %}
 
 //---------------------------------------------------------------------------
 
