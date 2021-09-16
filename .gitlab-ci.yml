@@ -130,25 +130,25 @@ build:linux-21.04-release-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.04-release-clang:
+build:linux-21.04-RelWithDebInfo-clang:
   extends: .linux_build
   variables:
-    BUILD_TYPE: "Release"
+    BUILD_TYPE: "RelWithDebInfo"
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGE: "OFF"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 
-build:linux-20.10-release-gcc:
+build:linux-21.04-debug-clang:
   extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU20_10}:dev"
   variables:
-    BUILD_TYPE: "Release"
+    BUILD_TYPE: "Debug"
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGE: "OFF"
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    CC: "/usr/lib/ccache/clang"
+    CXX: "/usr/lib/ccache/clang++"
 
 .linux_deploy:
   image: "${SIGHT_CI_UBUNTU21_04}:dev"
@@ -336,7 +336,7 @@ build:windows-release:
     - cd packages
     - $package_name=ls sight-* | Select-Object -First 1
     - $package_name=$package_name.name
-    - |            
+    - |
       if ("${env:CI_COMMIT_REF_NAME}" -eq "dev") {
         $new_name=[regex]::replace($package_name, "-[0-9]*-[a-z0-9]*", "-latest")
         mv $package_name $new_name
