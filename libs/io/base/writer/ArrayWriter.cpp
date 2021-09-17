@@ -69,7 +69,7 @@ void ArrayWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ArrayWriter::extension()
+std::string ArrayWriter::extension() const
 {
     return ".raw";
 }

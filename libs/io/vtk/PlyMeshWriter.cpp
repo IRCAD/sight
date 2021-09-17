@@ -94,7 +94,7 @@ void PlyMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string PlyMeshWriter::extension()
+std::string PlyMeshWriter::extension() const
 {
     return ".ply";
 }

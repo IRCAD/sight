@@ -101,7 +101,7 @@ void MetaImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string MetaImageReader::extension()
+std::string MetaImageReader::extension() const
 {
     return ".mhd";
 }

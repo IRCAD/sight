@@ -147,7 +147,7 @@ SPTR(io::dicom::container::DicomInstance) Series::getImageInstance()
 
 //------------------------------------------------------------------------------
 
-std::string Series::extension()
+std::string Series::extension() const
 {
     return std::string("");
 }

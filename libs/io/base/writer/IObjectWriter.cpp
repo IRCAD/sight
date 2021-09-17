@@ -60,7 +60,7 @@ core::tools::Object::csptr IObjectWriter::getObject() const
 
 //------------------------------------------------------------------------------
 
-std::string IObjectWriter::extension()
+std::string IObjectWriter::extension() const
 {
     return std::string();
 }

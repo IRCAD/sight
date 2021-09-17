@@ -100,7 +100,7 @@ void GzBufferImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string GzBufferImageWriter::extension()
+std::string GzBufferImageWriter::extension() const
 {
     return ".raw.gz";
 }

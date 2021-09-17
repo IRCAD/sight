@@ -59,7 +59,7 @@ DicomSeriesDBWriter::~DicomSeriesDBWriter()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesDBWriter::extension()
+std::string DicomSeriesDBWriter::extension() const
 {
     return "";
 }

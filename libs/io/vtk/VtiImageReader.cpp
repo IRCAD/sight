@@ -102,7 +102,7 @@ void VtiImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageReader::extension()
+std::string VtiImageReader::extension() const
 {
     return ".vti";
 }

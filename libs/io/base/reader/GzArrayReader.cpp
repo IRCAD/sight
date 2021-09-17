@@ -83,7 +83,7 @@ void GzArrayReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string GzArrayReader::extension()
+std::string GzArrayReader::extension() const
 {
     return ".raw.gz";
 }

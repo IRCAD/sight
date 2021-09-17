@@ -120,7 +120,7 @@ void BitmapImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string BitmapImageReader::extension()
+std::string BitmapImageReader::extension() const
 {
     return m_availableExtensions;
 }

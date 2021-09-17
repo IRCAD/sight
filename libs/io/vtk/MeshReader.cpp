@@ -96,7 +96,7 @@ void MeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string MeshReader::extension()
+std::string MeshReader::extension() const
 {
     return ".vtk";
 }

@@ -105,7 +105,7 @@ void ImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ImageReader::extension()
+std::string ImageReader::extension() const
 {
     return ".vtk";
 }

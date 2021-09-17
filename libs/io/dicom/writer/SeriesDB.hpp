@@ -69,7 +69,7 @@ public:
      * Override
      * @brief Do nothing
      */
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
     const io::dicom::writer::Series::FiducialsExportMode& getFiducialsExportMode() const

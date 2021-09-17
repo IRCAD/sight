@@ -158,7 +158,7 @@ void ObjMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ObjMeshWriter::extension()
+std::string ObjMeshWriter::extension() const
 {
     return ".obj";
 }

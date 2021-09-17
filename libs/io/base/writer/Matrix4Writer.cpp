@@ -82,7 +82,7 @@ void Matrix4Writer::write()
 
 //------------------------------------------------------------------------------
 
-std::string Matrix4Writer::extension()
+std::string Matrix4Writer::extension() const
 {
     static std::string ext(".trf");
     return ext;

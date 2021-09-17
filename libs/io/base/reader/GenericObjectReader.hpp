@@ -56,7 +56,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::string extension() override
+    std::string extension() const override
     {
         return "";
     }

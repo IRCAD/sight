@@ -95,7 +95,7 @@ void SessionReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string SessionReader::extension()
+std::string SessionReader::extension() const
 {
     return ".zip";
 }

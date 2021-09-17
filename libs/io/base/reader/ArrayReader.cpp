@@ -81,7 +81,7 @@ void ArrayReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ArrayReader::extension()
+std::string ArrayReader::extension() const
 {
     return ".raw";
 }

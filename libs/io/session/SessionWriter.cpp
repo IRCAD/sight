@@ -98,7 +98,7 @@ void SessionWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string SessionWriter::extension()
+std::string SessionWriter::extension() const
 {
     return ".zip";
 }

@@ -80,7 +80,7 @@ public:
     IO_DICOM_API void write() override;
 
     /// Does nothing
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Returns logger
     IO_DICOM_API SPTR(core::log::Logger) getLogger() const;

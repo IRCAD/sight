@@ -106,7 +106,7 @@ public:
      * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
      * by default be empty
      */
-    IO_BASE_API virtual std::string extension() = 0;
+    IO_BASE_API virtual std::string extension() const = 0;
 
     /**
      * @brief Requests writer abortion.

@@ -70,7 +70,7 @@ public:
     IO_SESSION_API void write() override;
 
     /// Defines extension supported by this writer ".zip"
-    IO_SESSION_API std::string extension() override;
+    IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
     /// @param password the new password

@@ -98,7 +98,7 @@ void VtiImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string VtiImageWriter::extension()
+std::string VtiImageWriter::extension() const
 {
     return ".vti";
 }

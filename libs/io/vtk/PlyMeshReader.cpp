@@ -95,7 +95,7 @@ void PlyMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string PlyMeshReader::extension()
+std::string PlyMeshReader::extension() const
 {
     return ".ply";
 }

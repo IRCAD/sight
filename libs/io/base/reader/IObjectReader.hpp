@@ -100,7 +100,7 @@ public:
      */
     IO_BASE_API virtual core::tools::Object::sptr getObject() const;
 
-    IO_BASE_API virtual std::string extension() = 0;
+    IO_BASE_API virtual std::string extension() const = 0;
 
     /**
      * @brief Requests reader abortion.

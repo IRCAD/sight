@@ -91,7 +91,7 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension()
+std::string ImageWriter::extension() const
 {
     return ".vtk";
 }

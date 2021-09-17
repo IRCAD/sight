@@ -376,7 +376,7 @@ void DictionaryReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string DictionaryReader::extension()
+std::string DictionaryReader::extension() const
 {
     return ".dic";
 }

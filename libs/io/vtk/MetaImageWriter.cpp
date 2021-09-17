@@ -92,7 +92,7 @@ void MetaImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string MetaImageWriter::extension()
+std::string MetaImageWriter::extension() const
 {
     return ".mhd";
 }

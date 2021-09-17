@@ -62,7 +62,7 @@ public:
     IO_BASE_API void write() override;
 
     /// Defines extensions supported by this writer. Here: ".raw"
-    IO_BASE_API std::string extension() override;
+    IO_BASE_API std::string extension() const override;
 };
 
 } // namespace writer

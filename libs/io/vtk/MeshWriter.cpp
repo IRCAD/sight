@@ -94,7 +94,7 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string MeshWriter::extension()
+std::string MeshWriter::extension() const
 {
     return ".vtk";
 }

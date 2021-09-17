@@ -94,7 +94,7 @@ void StlMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string StlMeshWriter::extension()
+std::string StlMeshWriter::extension() const
 {
     return ".stl";
 }

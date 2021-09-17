@@ -64,7 +64,7 @@ public:
     IO_BASE_API void read() override;
 
     /// Defines the extensions supported by this reader. Here: ".raw.gz"
-    IO_BASE_API std::string extension() override;
+    IO_BASE_API std::string extension() const override;
 };
 
 } // namespace reader

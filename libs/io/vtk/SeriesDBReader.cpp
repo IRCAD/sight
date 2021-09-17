@@ -482,7 +482,7 @@ void SeriesDBReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string SeriesDBReader::extension()
+std::string SeriesDBReader::extension() const
 {
     return ".vtk";
 }

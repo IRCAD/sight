@@ -148,7 +148,7 @@ void SurfaceSegmentation::write()
 
 //------------------------------------------------------------------------------
 
-std::string SurfaceSegmentation::extension()
+std::string SurfaceSegmentation::extension() const
 {
     return std::string("");
 }

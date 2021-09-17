@@ -72,7 +72,7 @@ void Matrix4Reader::read()
 
 //------------------------------------------------------------------------------
 
-std::string Matrix4Reader::extension()
+std::string Matrix4Reader::extension() const
 {
     return ".trf";
 }

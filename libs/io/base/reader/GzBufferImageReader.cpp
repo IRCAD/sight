@@ -96,7 +96,7 @@ void GzBufferImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string GzBufferImageReader::extension()
+std::string GzBufferImageReader::extension() const
 {
     return ".raw.gz";
 }

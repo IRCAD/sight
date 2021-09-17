@@ -115,7 +115,7 @@ void BitmapImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string BitmapImageWriter::extension()
+std::string BitmapImageWriter::extension() const
 {
     return ".bmp .jpg .jpeg .png .pnm .tiff";
 }

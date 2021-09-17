@@ -94,7 +94,7 @@ void VtpMeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string VtpMeshWriter::extension()
+std::string VtpMeshWriter::extension() const
 {
     return ".vtp";
 }

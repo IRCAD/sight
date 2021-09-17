@@ -89,7 +89,7 @@ public:
     IO_DICOM_API void write() override;
 
     /// Return an empty string
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Get job observer
     IO_DICOM_API SPTR(core::jobs::IJob) getJob() const override;

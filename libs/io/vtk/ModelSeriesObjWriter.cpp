@@ -138,7 +138,7 @@ void ModelSeriesObjWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ModelSeriesObjWriter::extension()
+std::string ModelSeriesObjWriter::extension() const
 {
     return ".obj";
 }

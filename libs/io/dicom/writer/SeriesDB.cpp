@@ -89,7 +89,7 @@ void SeriesDB::write()
 
 //------------------------------------------------------------------------------
 
-std::string SeriesDB::extension()
+std::string SeriesDB::extension() const
 {
     return std::string("");
 }

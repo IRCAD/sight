@@ -95,7 +95,7 @@ void ObjMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string ObjMeshReader::extension()
+std::string ObjMeshReader::extension() const
 {
     return ".obj";
 }

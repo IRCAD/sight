@@ -95,7 +95,7 @@ void VtpMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string VtpMeshReader::extension()
+std::string VtpMeshReader::extension() const
 {
     return ".vtp";
 }

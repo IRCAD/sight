@@ -220,7 +220,7 @@ void DicomSeriesWriter::processWriteArchive()
 
 //------------------------------------------------------------------------------
 
-std::string DicomSeriesWriter::extension()
+std::string DicomSeriesWriter::extension() const
 {
     return "";
 }

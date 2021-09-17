@@ -124,7 +124,7 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string ImageWriter::extension()
+std::string ImageWriter::extension() const
 {
     if(getFile().empty() || (getFile().string().find(".inr.gz") != std::string::npos))
     {

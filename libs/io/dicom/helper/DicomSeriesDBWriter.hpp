@@ -75,7 +75,7 @@ public:
     /**  @} */
 
     /// Return an empty string
-    IO_DICOM_API std::string extension() override;
+    IO_DICOM_API std::string extension() const override;
 
     /// Get job Aggregator
     IO_DICOM_API SPTR(core::jobs::Aggregator) getAggregator();

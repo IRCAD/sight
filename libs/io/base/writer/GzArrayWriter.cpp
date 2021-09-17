@@ -85,7 +85,7 @@ void GzArrayWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string GzArrayWriter::extension()
+std::string GzArrayWriter::extension() const
 {
     return ".raw.gz";
 }

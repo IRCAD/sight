@@ -71,7 +71,7 @@ public:
     IO_VTK_API void read() override;
 
     /// @return ".vtk"
-    IO_VTK_API std::string extension() override;
+    IO_VTK_API std::string extension() const override;
 
     //------------------------------------------------------------------------------
 

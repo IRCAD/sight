@@ -69,7 +69,7 @@ public:
     IO_SESSION_API void read() override;
 
     /// Defines extension supported by this reader ".zip"
-    IO_SESSION_API std::string extension() override;
+    IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
     /// @param password the new password

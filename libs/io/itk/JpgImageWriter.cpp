@@ -186,7 +186,7 @@ void JpgImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string JpgImageWriter::extension()
+std::string JpgImageWriter::extension() const
 {
     return ".jpg";
 }

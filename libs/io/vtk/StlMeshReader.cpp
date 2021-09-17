@@ -95,7 +95,7 @@ void StlMeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string StlMeshReader::extension()
+std::string StlMeshReader::extension() const
 {
     return ".stl";
 }
