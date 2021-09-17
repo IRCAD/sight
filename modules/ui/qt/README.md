@@ -26,7 +26,6 @@ Here is the list of uncategorized services:
 - **SSelectionMenuButton**: shows a menu button. The user can select one item in the menu.
 - **SShowAbout**: shows the about frame.
 - **SShowHelp**: shows the help content.
-- **SSlider**: draws a slider with an integer data.
 - **SStatus**: shows a colored square (red, orange, green) representing a status.
 - **SStyleSelector**: selects a CSS style.
 - **STextStatus**: displays and update values (int, double or string) in a `QLabel`.

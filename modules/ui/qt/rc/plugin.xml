@@ -55,12 +55,6 @@
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
-         <service>sight::module::ui::qt::SSlider</service>
-         <desc>This editor allows to draw a slider with an integer data.</desc>
-    </extension>
-
-    <extension implements="::sight::service::extension::Factory">
-         <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::SStatus</service>
          <desc>SStatus service shows a colored square (red, orange, green) representing a status.</desc>
     </extension>
@@ -70,18 +64,19 @@
          <service>sight::module::ui::qt::SStyleSelector</service>
          <desc>Selector of theme/style.</desc>
     </extension>
+
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::ui::qt::STextStatus</service>
          <desc>This service is used to displays and update values (int, double or string) in a QLabel.</desc>
     </extension>
 
-
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::view::IActivityView</type>
          <service>sight::module::ui::qt::activity::SDynamicView</service>
          <desc>This editor manages tabs containing activities.</desc>
     </extension>
+
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::qt::activity::SLauncher</service>
