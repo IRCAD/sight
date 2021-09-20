@@ -77,6 +77,7 @@ namespace video
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>true</videoSupport>
+        <useAbsolutePath>false</useAbsolutePath>
         <label>Video source: </label>
     </service>
    @endcode
@@ -87,6 +88,8 @@ namespace video
  *
  * @subsection Configuration Configuration
  * - \b videoSupport (optional, default="false"): if we can open a video file in addition with cameras.
+ * - \b useAbsolutePath (optional, default="false"): when using a file input, tells if the path should be stored as
+ * absolute or relative to the video preferences directory.
  * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
  * camera series already contains camera data, an assertion will be raised.
  * - \b label (optional, default="Video source: "): label of the selector.
@@ -151,6 +154,9 @@ private:
 
     /// Number of cameras to create when using a camera series as input.
     size_t m_numCreateCameras {0};
+
+    // Sets the file path as absolute ones
+    bool m_useAbsolutePath {false};
 
     /// Signal emitted when the cameraSeries has been configured.
     ConfiguredSignalType::sptr m_sigConfiguredCameras;

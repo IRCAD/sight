@@ -64,6 +64,7 @@ static const core::com::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureF
 static const core::com::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
 
 static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
+static const std::string s_USE_ABSOLUTE_PATH           = "useAbsolutePath";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
 
@@ -94,6 +95,7 @@ void SCamera::configuring()
     const service::IService::ConfigType config = this->getConfigTree();
 
     m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
+    m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
     m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
     m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
 
@@ -303,21 +305,24 @@ void SCamera::onChooseFile()
         {
             if(std::filesystem::is_directory(videoDirPreferencePath))
             {
-                const auto videoRelativePath = std::filesystem::relative(
-                    videoPath,
-                    videoDirPreferencePath
-                );
-                const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
-                if(std::filesystem::exists(concatenatedPath))
+                if(!m_useAbsolutePath)
                 {
-                    videoPath = videoRelativePath;
-                }
-                else
-                {
-                    SIGHT_WARN(
-                        "Relative path '" + videoRelativePath.string()
-                        + "' genrerated with preference is not valid."
+                    const auto videoRelativePath = std::filesystem::relative(
+                        videoPath,
+                        videoDirPreferencePath
                     );
+                    const std::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+                    if(std::filesystem::exists(concatenatedPath))
+                    {
+                        videoPath = videoRelativePath;
+                    }
+                    else
+                    {
+                        SIGHT_WARN(
+                            "Relative path '" + videoRelativePath.string()
+                            + "' generated from preferences is not valid."
+                        );
+                    }
                 }
             }
             else
