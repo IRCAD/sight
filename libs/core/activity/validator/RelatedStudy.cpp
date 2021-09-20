@@ -40,7 +40,7 @@ fwActivitiesValidatorRegisterMacro(::sight::activity::validator::RelatedStudy);
 
 //-----------------------------------------------------------------------------
 
-RelatedStudy::RelatedStudy(activity::IValidator::Key key)
+RelatedStudy::RelatedStudy(activity::IValidator::Key)
 {
 }
 
@@ -53,7 +53,7 @@ RelatedStudy::~RelatedStudy()
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType RelatedStudy::validate(
-    const activity::extension::ActivityInfo& activityInfo,
+    const activity::extension::ActivityInfo&,
     const data::Vector::csptr& currentSelection
 ) const
 {

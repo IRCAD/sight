@@ -1,4 +1,4 @@
-sight_add_target( io_dimse TYPE LIBRARY PCH pchData )
+sight_add_target( io_dimse TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS OFF)
 
 target_include_directories(io_dimse PRIVATE ${DCMTK_INCLUDE_DIRS})
 target_link_libraries(io_dimse PUBLIC ${DCMTK_LIBRARIES})

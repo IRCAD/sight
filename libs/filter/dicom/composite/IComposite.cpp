@@ -94,7 +94,7 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(
                 filtered.reserve(filtered.size() + tempo.size());
                 std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
             }
-            catch(filter::dicom::exceptions::FilterFailure e)
+            catch(filter::dicom::exceptions::FilterFailure&)
             {
                 SIGHT_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
                 filtered.push_back(s);

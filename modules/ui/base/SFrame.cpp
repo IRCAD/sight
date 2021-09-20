@@ -63,7 +63,7 @@ void SFrame::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SFrame::info(std::ostream& _sstream)
+void SFrame::info(std::ostream&)
 {
 }
 

@@ -123,7 +123,7 @@ core::location::ILocation::sptr LocationDialog::show()
 
 //------------------------------------------------------------------------------
 
-bool LocationDialog::eventFilter(QObject* watched, QEvent* event)
+bool LocationDialog::eventFilter(QObject*, QEvent* event)
 {
     return event->type() != QEvent::Paint && event->type() != QEvent::MetaCall && !event->spontaneous();
 }

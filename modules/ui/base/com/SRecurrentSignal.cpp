@@ -58,8 +58,6 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
 
 void SRecurrentSignal::configuring()
 {
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-
     core::runtime::ConfigurationElement::sptr timeStepConfig = m_configuration->findConfigurationElement("timeStep");
     SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig);
     if(timeStepConfig)

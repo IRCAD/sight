@@ -126,7 +126,8 @@ void SExtractDeviceInfo::updating()
     SIGHT_DEBUG("Device: " + device);
 
     ConfigurationType config = m_devicesConfig[device];
-    double width, height, fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
+    size_t width, height;
+    double fx, fy, cx, cy, k1, k2, p1, p2, k3, skew;
     if(config)
     {
         ConfigurationType intrinsicCfg = config->findConfigurationElement("intrinsic");
@@ -134,11 +135,11 @@ void SExtractDeviceInfo::updating()
 
         ConfigurationType cfgWidth = intrinsicCfg->findConfigurationElement("width");
         SIGHT_ASSERT("Missing 'width' config element.", cfgWidth);
-        width = std::stod(cfgWidth->getValue());
+        width = std::stoul(cfgWidth->getValue());
 
         ConfigurationType cfgHeight = intrinsicCfg->findConfigurationElement("height");
         SIGHT_ASSERT("Missing 'height' config element.", cfgHeight);
-        height = std::stod(cfgHeight->getValue());
+        height = std::stoul(cfgHeight->getValue());
 
         ConfigurationType cfgFx = intrinsicCfg->findConfigurationElement("fx");
         SIGHT_ASSERT("Missing 'fx' config element.", cfgFx);
@@ -184,8 +185,8 @@ void SExtractDeviceInfo::updating()
     {
         SIGHT_DEBUG(" Device " + device + " not found, default calibration is set ");
 
-        width  = 640.;
-        height = 480.;
+        width  = 640;
+        height = 480;
         fx     = 600.;
         fy     = 600.;
         cx     = 320.;

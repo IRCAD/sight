@@ -1,4 +1,4 @@
-sight_add_target( ui_history TYPE LIBRARY )
+sight_add_target( ui_history TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 
 
 

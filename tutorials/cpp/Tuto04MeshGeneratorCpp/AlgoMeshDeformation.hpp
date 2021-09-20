@@ -74,7 +74,7 @@ private:
 
     unsigned int m_amplitude {40};
 
-    unsigned int m_step {0};
+    int m_step {0};
 
     int m_direction {1};
 

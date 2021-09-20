@@ -34,23 +34,23 @@ namespace sight::module::ui::viz
 namespace helper
 {
 
-class Utils
+class MODULE_UI_VIZ_CLASS_API Utils
 {
 public:
 
     /**
-     * @brief converOgreColorToQColor
+     * @brief convertOgreColorToQColor
      * @param _ogreColor the Ogre color to convert.
      * @return the converted QColor.
      */
-    MODULE_UI_VIZ_API static QColor converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor);
+    MODULE_UI_VIZ_API static QColor convertOgreColorToQColor(const Ogre::ColourValue& _ogreColor);
 
     /**
      * @brief convertQColorToOgreColor
      * @param _qColor the Qt color to convert.
      * @return the converted Ogre color.
      */
-    MODULE_UI_VIZ_API static ::Ogre::ColourValue convertQColorToOgreColor(const QColor& _qColor);
+    MODULE_UI_VIZ_API static Ogre::ColourValue convertQColorToOgreColor(const QColor& _qColor);
 };
 
 } // namespace helper

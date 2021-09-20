@@ -174,11 +174,11 @@ const size_t nbChar = 100;
 #if _MSC_VER > 1499 // Visual C++ 2008 only
 //------------------------------------------------------------------------------
 
-BOOL CALLBACK EnumerateLoadedModules(LPCSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
+BOOL CALLBACK EnumerateLoadedModules(LPCSTR ModuleName, DWORD64 ModuleBase, ULONG, PVOID UserContext)
 #else
 //------------------------------------------------------------------------------
 
-BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG ModuleSize, PVOID UserContext)
+BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG, PVOID UserContext)
 #endif
 {
     std::list<std::string>* pLoadedModules = reinterpret_cast<std::list<std::string>*>(UserContext);

@@ -466,14 +466,14 @@ IService::ConfigType IService::getConfigTree() const
 
     if(srvConfig.is_initialized())
     {
-        return srvConfig.value();
+        return srvConfig.get();
     }
     else
     {
         srvConfig = configTree.get_child_optional("service");
         if(srvConfig.is_initialized())
         {
-            return srvConfig.value();
+            return srvConfig.get();
         }
 
         return IService::ConfigType();

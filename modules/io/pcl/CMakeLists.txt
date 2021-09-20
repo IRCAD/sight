@@ -1,4 +1,4 @@
-sight_add_target( module_io_pcl TYPE MODULE )
+sight_add_target( module_io_pcl TYPE MODULE WARNINGS_AS_ERRORS OFF)
 
 find_package(PCL QUIET REQUIRED COMPONENTS common io)
 target_include_directories(module_io_pcl SYSTEM PRIVATE ${VTK_INCLUDE_DIRS})

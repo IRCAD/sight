@@ -23,7 +23,7 @@
 #include "UtilsTest.hpp"
 
 #ifdef WIN32
-#define UIVISUOGRE_EXPORTS
+#define MODULE_UI_VIZ_EXPORTS
 #endif
 #include "../../../../../modules/ui/viz/helper/Utils.cpp"
 
@@ -54,7 +54,7 @@ void UtilsTest::convertOgreColorToQColor()
 {
     QColor refColor(255, 255, 255);
 
-    QColor resultColor = module::ui::viz::helper::Utils::converOgreColorToQColor(::Ogre::ColourValue());
+    QColor resultColor = module::ui::viz::helper::Utils::convertOgreColorToQColor(::Ogre::ColourValue());
     CPPUNIT_ASSERT(resultColor.red() == refColor.red());
     CPPUNIT_ASSERT(resultColor.green() == refColor.green());
     CPPUNIT_ASSERT(resultColor.blue() == refColor.blue());

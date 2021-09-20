@@ -102,13 +102,13 @@ void SMatrixTLSynchronizer::synchronize()
                     matrixPrint << std::endl;
                 }
 
-                this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(index);
+                this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(int(index));
                 auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
             }
             else
             {
-                this->signal<MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG)->asyncEmit(index);
+                this->signal<MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG)->asyncEmit(int(index));
             }
         }
 

@@ -1,4 +1,4 @@
-sight_add_target( io_dimseTest TYPE TEST )
+sight_add_target( io_dimseTest TYPE TEST WARNINGS_AS_ERRORS OFF)
 
 
 

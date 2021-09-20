@@ -235,7 +235,7 @@ bool SWriter::versionSelection()
 
                         return repoA < repoB;
                     }
-                    catch(std::out_of_range e)
+                    catch(const std::out_of_range&)
                     {
                         SIGHT_ERROR("Bad version format: either " + _a + " or " + _b);
                         return false;
@@ -256,7 +256,7 @@ bool SWriter::versionSelection()
                     prettyVersionsAll.push_back(prettyVersion);
                     prettyVersionsToVersions[prettyVersion] = v;
                 }
-                catch(std::out_of_range e)
+                catch(const std::out_of_range&)
                 {
                     SIGHT_ERROR("Bad version format: " + v);
 

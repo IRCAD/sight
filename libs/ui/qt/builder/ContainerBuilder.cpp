@@ -43,7 +43,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key key)
+ContainerBuilder::ContainerBuilder(ui::base::GuiBaseObject::Key)
 {
 }
 

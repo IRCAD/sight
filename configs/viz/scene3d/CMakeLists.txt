@@ -1,7 +1,6 @@
-sight_add_target( config_viz_scene3d TYPE MODULE )
+sight_add_target( config_viz_scene3d TYPE MODULE)
 
-
-add_dependencies(config_viz_scene3d 
+add_dependencies(config_viz_scene3d
                  config_viz_scene2d
                  data
                  module_data

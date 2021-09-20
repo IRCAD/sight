@@ -143,7 +143,7 @@ bool Projection::projectPoint(
     T u       = a * fx + cx;
     T v       = b * fy + cy;
 
-    if((v < 1.) || (v > height) || (u < 1.) || (u > width))
+    if((v < 1.) || (v > static_cast<T>(height)) || (u < 1.) || (u > static_cast<T>(width)))
     {
         return false;
     }

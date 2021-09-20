@@ -236,7 +236,7 @@ static CppUnit::Exception exception;
 void runBasicTimerTest(
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
-    core::thread::Timer::TimeDurationType duration
+    core::thread::Timer::TimeDurationType
 )
 {
     timer->start();
@@ -256,7 +256,7 @@ void oneShotBasicTimerTest(
     int& i,
     TestHandler& handler,
     const core::thread::Timer::sptr& timer,
-    core::thread::Timer::TimeDurationType duration,
+    core::thread::Timer::TimeDurationType,
     const core::thread::Worker::sptr& worker
 )
 {

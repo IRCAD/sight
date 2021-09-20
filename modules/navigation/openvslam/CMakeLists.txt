@@ -1,4 +1,4 @@
-sight_add_target( module_navigation_openvslam TYPE MODULE PCH OFF )
+sight_add_target( module_navigation_openvslam TYPE MODULE PCH OFF WARNINGS_AS_ERRORS OFF)
 
 # For now openvslam is only available for unix platforms.
 if(UNIX)

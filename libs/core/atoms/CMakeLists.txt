@@ -1,4 +1,4 @@
-sight_add_target( atoms TYPE LIBRARY )
+sight_add_target( atoms TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 
 
 target_compile_definitions(atoms PRIVATE "-DCAMP_COMPILATION")

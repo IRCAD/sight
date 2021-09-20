@@ -1,4 +1,4 @@
-sight_add_target( geometry_vtk TYPE LIBRARY )
+sight_add_target( geometry_vtk TYPE LIBRARY)
 
 find_package(VTK QUIET REQUIRED COMPONENTS
     vtkCommonCore
@@ -7,7 +7,7 @@ find_package(VTK QUIET REQUIRED COMPONENTS
 
 if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
     target_include_directories(geometry_vtk SYSTEM PRIVATE ${VTK_INCLUDE_DIRS})
-    target_link_libraries(geometry_vtk PRIVATE  
+    target_link_libraries(geometry_vtk PRIVATE
         vtkCommonCore
         vtkFiltersCore
     )
@@ -21,7 +21,7 @@ else()
     )
 endif()
 
-target_link_libraries(geometry_vtk PUBLIC 
+target_link_libraries(geometry_vtk PUBLIC
                       data
                       core
                       io_vtk

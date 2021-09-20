@@ -125,7 +125,7 @@ void AlgoMeshDeformation::initSimu()
 void AlgoMeshDeformation::computeSimu()
 {
     m_step += m_direction;
-    if(m_step == m_nbStep)
+    if(m_step == static_cast<int>(m_nbStep))
     {
         m_direction = -1;
     }
@@ -134,7 +134,7 @@ void AlgoMeshDeformation::computeSimu()
         m_direction = 1;
     }
 
-    const float scale = m_step / (float) m_nbStep;
+    const float scale = static_cast<float>(m_step) / static_cast<float>(m_nbStep);
 
     const auto mesh         = m_mesh.lock();
     const auto dumpLock     = mesh->lock();

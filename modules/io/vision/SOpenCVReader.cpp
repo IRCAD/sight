@@ -229,8 +229,9 @@ void SOpenCVReader::updating()
             }
 
             camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
-            auto sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>
-                           (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+            auto sigExtrinsic = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>
+                                    (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+            sigExtrinsic->asyncEmit();
         }
     }
 

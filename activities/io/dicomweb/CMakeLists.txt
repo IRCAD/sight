@@ -1,8 +1,6 @@
-sight_add_target( activity_io_dicomweb TYPE MODULE )
+sight_add_target( activity_io_dicomweb TYPE MODULE)
 
-
-
-add_dependencies(activity_io_dicomweb 
+add_dependencies(activity_io_dicomweb
                  module_activity
                  module_memory
                  module_data

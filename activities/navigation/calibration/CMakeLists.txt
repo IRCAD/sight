@@ -1,5 +1,4 @@
-sight_add_target( activity_navigation_calibration TYPE MODULE )
-
+sight_add_target( activity_navigation_calibration TYPE MODULE)
 
 add_dependencies(activity_navigation_calibration
                  module_ui_base

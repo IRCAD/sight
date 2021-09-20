@@ -774,7 +774,7 @@ macro(sight_add_target)
     cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
     set(NAME ${ARGV0})
-    
+
     message(STATUS "Configuring ${NAME}: ${CMAKE_CURRENT_SOURCE_DIR}")
 
     initProject(${NAME} ${SIGHT_TARGET_TYPE})
@@ -817,8 +817,12 @@ macro(sight_add_target)
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_START "${SIGHT_TARGET_START}")
     endif()
 
-    if(SIGHT_TARGET_WARNINGS_AS_ERRORS)
-        fwManageWarnings(${NAME})
+    if(NOT DEFINED SIGHT_TARGET_WARNINGS_AS_ERRORS OR SIGHT_TARGET_WARNINGS_AS_ERRORS)
+        get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
+        # Skip libraries without code
+        if(NOT "${TARGET_TYPE}" STREQUAL "INTERFACE_LIBRARY")
+            fwManageWarnings(${NAME})
+        endif()
     endif()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")

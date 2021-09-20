@@ -489,7 +489,10 @@ void helperTest::generateCharucoDict()
         ::cv::Ptr< ::cv::aruco::Dictionary> DictExpected =
             ::cv::aruco::generateCustomDictionary(x[ii], bits[ii], ::cv::aruco::getPredefinedDictionary(ii / 2));
 
-        CPPUNIT_ASSERT_NO_THROW(generatedDict = geometry::vision::helper::generateArucoDictionary(x[ii], 2, bits[ii]));
+        CPPUNIT_ASSERT_NO_THROW(
+            generatedDict =
+                geometry::vision::helper::generateArucoDictionary(static_cast<size_t>(x[ii]), 2, bits[ii])
+        );
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("markerSize are not equal", DictExpected->markerSize, generatedDict->markerSize);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(

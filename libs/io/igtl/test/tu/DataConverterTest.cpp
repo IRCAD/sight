@@ -211,11 +211,11 @@ void DataConverterTest::matrixConverterTest()
     ::igtl::Matrix4x4 igtlMatrix;
 
     matrix = data::Matrix4::New();
-    for(int i = 0 ; i < 4 ; ++i)
+    for(size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, i + j);
+            matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
     }
 
@@ -279,7 +279,7 @@ void DataConverterTest::pointListConverterTest()
 
     data::Object::sptr destObj       = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
     data::PointList::sptr pointList2 = data::PointList::dynamicCast(destObj);
-    for(int i = 0 ; i < 2 ; ++i)
+    for(size_t i = 0 ; i < 2 ; ++i)
     {
         CPPUNIT_ASSERT(
             std::equal(
@@ -421,7 +421,7 @@ void DataConverterTest::compositeConverterTest()
     {
         for(size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, i + j);
+            matrix->setCoefficient(i, j, static_cast<double>(i + j));
         }
     }
 

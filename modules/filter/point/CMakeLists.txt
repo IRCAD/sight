@@ -1,4 +1,4 @@
-sight_add_target( module_filter_point TYPE MODULE )
+sight_add_target( module_filter_point TYPE MODULE)
 
 find_package(VTK QUIET COMPONENTS vtkCommonDataModel REQUIRED)
 
@@ -16,7 +16,7 @@ find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 target_link_libraries(module_filter_point PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
 set_target_properties(module_filter_point PROPERTIES AUTOMOC TRUE)
 
-target_link_libraries(module_filter_point PUBLIC 
+target_link_libraries(module_filter_point PUBLIC
                       data
                       ui_qt
                       io_itk

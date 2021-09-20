@@ -1,4 +1,4 @@
-sight_add_target(service TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS OFF)
+sight_add_target(service TYPE LIBRARY PCH pchData)
 
 target_link_libraries(service PUBLIC 
                       activity

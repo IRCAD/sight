@@ -39,7 +39,7 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSe
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(::sight::activity::IValidator::Key key)
+ContainOneTool::ContainOneTool(::sight::activity::IValidator::Key)
 {
 }
 

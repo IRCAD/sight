@@ -98,10 +98,10 @@ void SJobBar::showJob(core::jobs::IJob::sptr iJob)
     }
 
     iJob->addDoneWorkHook(
-        [ = ](core::jobs::IJob& job, std::uint64_t oldDoneWork)
+        [ = ](core::jobs::IJob& job, std::uint64_t)
         {
             std::string msg = (job.getLogs().empty()) ? "" : job.getLogs().back();
-            (*progressDialog)(float(job.getDoneWorkUnits()) / job.getTotalWorkUnits(), msg);
+            (*progressDialog)(float(job.getDoneWorkUnits()) / float(job.getTotalWorkUnits()), msg);
         });
 
     iJob->addStateHook(

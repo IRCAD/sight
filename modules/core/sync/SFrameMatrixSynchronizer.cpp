@@ -88,16 +88,17 @@ void SFrameMatrixSynchronizer::configuring()
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
 
-    m_updateMask = framerate != 0 ? OBJECT_RECEIVED : m_updateMask;
+    if(framerate != 0)
+    {
+        m_updateMask = OBJECT_RECEIVED;
+    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SFrameMatrixSynchronizer::starting()
 {
-    const size_t numFrameTLs = m_frameTLs.size();
-    const size_t numImages   = m_images.size();
-    SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
+    SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", m_frameTLs.size() == m_images.size());
 
     const size_t numMatrixTLs = m_matrixTLs.size();
     SIGHT_ASSERT(
@@ -394,9 +395,9 @@ void SFrameMatrixSynchronizer::synchronize()
 
                 const int sendStatus = m_sendMatricesStatus[tlIdx][k];
 
-                if(buffer->isPresent(k))
+                if(buffer->isPresent(static_cast<unsigned int>(k)))
                 {
-                    const auto& values = buffer->getElement(k);
+                    const auto& values = buffer->getElement(static_cast<unsigned int>(k));
                     for(std::uint8_t i = 0 ; i < 4 ; ++i)
                     {
                         for(std::uint8_t j = 0 ; j < 4 ; ++j)

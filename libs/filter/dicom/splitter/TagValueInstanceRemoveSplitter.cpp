@@ -46,7 +46,7 @@ const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key key) :
+TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key) :
     ISplitter()
 {
     m_tag      = DCM_UndefinedTagKey;

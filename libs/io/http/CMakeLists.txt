@@ -1,4 +1,4 @@
-sight_add_target( io_http TYPE LIBRARY PCH pchData )
+sight_add_target( io_http TYPE LIBRARY PCH pchData)
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)

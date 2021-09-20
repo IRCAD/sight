@@ -72,7 +72,12 @@ void SAddDistance::updating()
         std::copy(image->getOrigin2().begin(), image->getOrigin2().begin() + 3, pt1->getCoord().begin());
 
         const data::Point::sptr pt2 = data::Point::New();
-        std::copy(image->getSize2().begin(), image->getSize2().begin() + 3, pt2->getCoord().begin());
+        std::transform(
+            image->getSize2().begin(),
+            image->getSize2().begin() + 3,
+            pt2->getCoord().begin(),
+            boost::numeric_cast<data::Point::PointCoordType, data::Image::SizeType::value_type>
+        );
 
         std::transform(
             pt2->getCoord().begin(),

@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 // Cause an internal compiler error on windows...
-#pragma once
-
 #ifndef _WIN32
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>

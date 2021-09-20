@@ -1,4 +1,4 @@
-sight_add_target( module_io_document TYPE MODULE )
+sight_add_target( module_io_document TYPE MODULE)
 
 find_package(Qt5 QUIET COMPONENTS PrintSupport REQUIRED)
 target_link_libraries(module_io_document PUBLIC Qt5::PrintSupport)

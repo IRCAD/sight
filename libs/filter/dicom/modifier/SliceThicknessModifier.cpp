@@ -49,7 +49,7 @@ const std::string SliceThicknessModifier::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key key) :
+SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key) :
     IModifier()
 {
 }
@@ -78,7 +78,7 @@ std::string SliceThicknessModifier::getDescription() const
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::Logger::sptr&
 ) const
 {
     DicomSeriesContainerType result;

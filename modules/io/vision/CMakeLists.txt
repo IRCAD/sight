@@ -1,4 +1,4 @@
-sight_add_target( module_io_vision TYPE MODULE )
+sight_add_target( module_io_vision TYPE MODULE)
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_core opencv_imgcodecs)

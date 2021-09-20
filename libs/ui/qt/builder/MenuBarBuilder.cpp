@@ -46,7 +46,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-MenuBarBuilder::MenuBarBuilder(ui::base::GuiBaseObject::Key key)
+MenuBarBuilder::MenuBarBuilder(ui::base::GuiBaseObject::Key)
 {
 }
 

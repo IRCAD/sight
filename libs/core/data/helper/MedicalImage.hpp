@@ -78,7 +78,7 @@ public:
      * @brief Get the image data size (number of slices).
      * @param[out] size : the image size
      */
-    DATA_API void getImageDataSize(int size[3]) const;
+    DATA_API void getImageDataSize(size_t size[3]) const;
 
     /**
      * @brief Get the image size ( = dataSize * spacing ).
@@ -94,20 +94,6 @@ public:
 
     /// Return the image
     DATA_API data::Image::sptr getImage() const;
-
-    /**
-     * @brief Get the image spacing.
-     * @param[out] spacing : the image spacing
-     */
-    template<typename FLOAT_ARRAY_3>
-    void getImageSpacing(FLOAT_ARRAY_3 spacing);
-
-    /**
-     * @brief Get the image data size (number of slices).
-     * @param[out] size : the image size
-     */
-    template<typename INT_INDEX>
-    void getImageDataSize(INT_INDEX size);
 
     /**
      * @brief Return the 4 points of the image plane
@@ -157,22 +143,6 @@ public:
      */
     DATA_API void sliceIndexToWorld(const int index[3], double world[3]);
 
-    /**
-     * @brief Convert world coordinates to slice index coordinates
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the slice index
-     */
-    template<typename WORLD, typename INT_INDEX>
-    void worldToSliceIndex(const WORLD world, INT_INDEX* index);
-
-    /**
-     * @brief Convert coordinates in the world to coordinates in the image
-     * @param[in] world : coordinate in the world
-     * @param[out] index : coordinate in the image
-     */
-    template<typename WORLD, typename INT_INDEX>
-    void worldToImageSliceIndex(const WORLD world, INT_INDEX* index);
-
 protected:
 
     /// Image orientation
@@ -190,70 +160,6 @@ protected:
     /// Current image
     data::Image::wptr m_weakImage;
 };
-
-//------------------------------------------------------------------------------
-
-template<typename FLOAT_ARRAY_3>
-void MedicalImage::getImageSpacing(FLOAT_ARRAY_3 spacing)
-{
-    data::Image::sptr image = this->getImage();
-
-    const data::Image::Spacing imSpacing = image->getSpacing2();
-    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
-}
-
-//------------------------------------------------------------------------------
-
-template<typename INT_INDEX>
-void MedicalImage::getImageDataSize(INT_INDEX size)
-{
-    data::Image::sptr image = this->getImage();
-
-    const data::Image::Size imSize = image->getSize2();
-    std::copy(imSize.begin(), imSize.end(), size);
-}
-
-//------------------------------------------------------------------------------
-
-template<typename WORLD, typename INT_INDEX>
-void MedicalImage::worldToSliceIndex(const WORLD world, INT_INDEX* index)
-{
-    double spacing[3];
-    this->getImageSpacing(spacing);
-    double origin[3];
-    this->getImageOrigin(origin);
-    for(int i = 0 ; i < 3 ; ++i)
-    {
-        index[i] =
-            static_cast<INT_INDEX>(((world[i] - origin[i]) / spacing[i])
-                                   + (((world[i] - origin[i]) / spacing[i]) >= 0 ? 0.5 : -0.5));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-template<typename WORLD, typename INT_INDEX>
-void MedicalImage::worldToImageSliceIndex(const WORLD world, INT_INDEX* index)
-{
-    INT_INDEX imageSize[3];
-    this->getImageDataSize(imageSize);
-    this->worldToSliceIndex(world, index);
-
-    INT_INDEX idval;
-    for(int i = 0 ; i < 3 ; i++)
-    {
-        INT_INDEX max = imageSize[i] - 1;
-        idval = index[i];
-        if(idval < 0)
-        {
-            index[i] = 0;
-        }
-        else if(idval > max)
-        {
-            index[i] = max;
-        }
-    }
-}
 
 } //namespace helper
 

@@ -72,7 +72,7 @@ void ImageDiffCommandTest::undoredoTest()
     const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
-    for(int i = 0 ; i < 8 ; ++i)
+    for(size_t i = 0 ; i < 8 ; ++i)
     {
         const data::Image::IndexType index = indices[i];
 
@@ -82,7 +82,7 @@ void ImageDiffCommandTest::undoredoTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixelBuffer(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 

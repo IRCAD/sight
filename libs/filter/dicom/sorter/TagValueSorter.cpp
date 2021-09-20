@@ -46,7 +46,7 @@ const std::string TagValueSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key key) :
+TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key) :
     ISorter()
 {
     m_tag = DCM_UndefinedTagKey;

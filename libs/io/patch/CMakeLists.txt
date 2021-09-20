@@ -1,4 +1,4 @@
-sight_add_target( io_patch TYPE LIBRARY PCH pchData )
+sight_add_target( io_patch TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS OFF)
 
 
 target_link_libraries(io_patch PUBLIC 

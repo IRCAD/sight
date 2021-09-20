@@ -509,7 +509,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
     QWidget* const container = qtContainer->getQtContainer();
 
     QColor qColor = QColorDialog::getColor(
-        module::ui::viz::helper::Utils::converOgreColorToQColor(_currentColor),
+        module::ui::viz::helper::Utils::convertOgreColorToQColor(_currentColor),
         container,
         _title.c_str()
     );

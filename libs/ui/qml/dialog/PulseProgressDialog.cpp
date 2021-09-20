@@ -113,7 +113,7 @@ void PulseProgressDialog::show()
 
 //------------------------------------------------------------------------------
 
-bool PulseProgressDialog::eventFilter(QObject* watched, QEvent* event)
+bool PulseProgressDialog::eventFilter(QObject*, QEvent* event)
 {
     if(event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride)
     {

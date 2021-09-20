@@ -170,42 +170,37 @@ void IFrameLayoutManager::readConfig()
     {
         if(prefUI->find(IFrameLayoutManager::FRAME_STATE_UI) != prefUI->end())
         {
-            data::Integer::sptr state =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_STATE_UI]);
+            data::Integer::sptr state = data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_STATE_UI]);
             SIGHT_ASSERT("UI state not correct", state);
             m_frameInfo.m_state = (FrameState) state->value();
         }
 
         if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_W_UI) != prefUI->end())
         {
-            data::Integer::sptr sizew =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI]);
+            data::Integer::sptr sizew = data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_W_UI]);
             SIGHT_ASSERT("UI sizeW not correct", sizew);
-            m_frameInfo.m_size.first = *sizew;
+            m_frameInfo.m_size.first = static_cast<int>(*sizew);
         }
 
         if(prefUI->find(IFrameLayoutManager::FRAME_SIZE_H_UI) != prefUI->end())
         {
-            data::Integer::sptr sizeh =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI]);
+            data::Integer::sptr sizeh = data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_SIZE_H_UI]);
             SIGHT_ASSERT("UI sizeH not correct", sizeh);
-            m_frameInfo.m_size.second = *sizeh;
+            m_frameInfo.m_size.second = static_cast<int>(*sizeh);
         }
 
         if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_X_UI) != prefUI->end())
         {
-            data::Integer::sptr posx =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI]);
+            data::Integer::sptr posx = data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_X_UI]);
             SIGHT_ASSERT("UI posX not correct", posx);
-            m_frameInfo.m_position.first = *posx;
+            m_frameInfo.m_position.first = static_cast<int>(*posx);
         }
 
         if(prefUI->find(IFrameLayoutManager::FRAME_POSITION_Y_UI) != prefUI->end())
         {
-            data::Integer::sptr posy =
-                data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI]);
+            data::Integer::sptr posy = data::Integer::dynamicCast((*prefUI)[IFrameLayoutManager::FRAME_POSITION_Y_UI]);
             SIGHT_ASSERT("UI posY not correct", posy);
-            m_frameInfo.m_position.second = *posy;
+            m_frameInfo.m_position.second = static_cast<int>(*posy);
         }
     }
 }

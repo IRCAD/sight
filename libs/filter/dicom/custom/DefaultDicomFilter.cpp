@@ -47,7 +47,7 @@ const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filt
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key key) :
+DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key) :
     ICustom()
 {
 }

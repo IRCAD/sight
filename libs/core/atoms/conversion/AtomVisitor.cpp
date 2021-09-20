@@ -175,7 +175,7 @@ void AtomVisitor::processMetaInfos(const atoms::Object::MetaInfosType& metaInfos
 
 //------------------------------------------------------------------------------
 
-void AtomVisitor::processAttributes(const atoms::Object::AttributesType& attributes)
+void AtomVisitor::processAttributes(const atoms::Object::AttributesType&)
 {
     const camp::Class& metaclass = ::camp::classByName(m_dataObj->getClassname());
     atoms::conversion::AtomToDataMappingVisitor visitor(m_dataObj, m_atomObj, m_cache, m_uuidPolicy);

@@ -49,7 +49,7 @@ const std::string ImagePositionPatientSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key key) :
+ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key) :
     ISorter()
 {
 }

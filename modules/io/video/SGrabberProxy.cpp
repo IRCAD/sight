@@ -428,11 +428,13 @@ void SGrabberProxy::startCamera()
                     auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
                     if(cameraSeries)
                     {
-                        const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
+                        #ifdef DEBUG
+                        const size_t numCameras = cameraSeries->getNumberOfCameras();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
-                            srvCount < numCamerasInSeries
+                            srvCount < numCameras
                         );
+                        #endif
 
                         srv->setInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
                     }

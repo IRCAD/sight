@@ -78,7 +78,7 @@ void LockDumpSrv::updating()
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::info(std::ostream& _sstream)
+void LockDumpSrv::info(std::ostream&)
 {
 }
 

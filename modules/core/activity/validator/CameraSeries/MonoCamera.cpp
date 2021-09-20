@@ -37,7 +37,7 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraS
 
 //-----------------------------------------------------------------------------
 
-MonoCamera::MonoCamera(sight::activity::IValidator::Key key)
+MonoCamera::MonoCamera(sight::activity::IValidator::Key)
 {
 }
 

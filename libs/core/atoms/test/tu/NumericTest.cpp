@@ -116,7 +116,7 @@ void NumericTest::floatingTest()
     double d1 = 0.234;
     double d2 = std::numeric_limits<double>::max();
     double d3 = -42.4;
-    float f1  = 4327.452359;
+    float f1  = 4327.452359f;
 
     numeric = atoms::Numeric::New(d1);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d1)), numeric->getString());

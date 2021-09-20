@@ -46,7 +46,7 @@ const std::string TagValueSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSplitter::TagValueSplitter(filter::dicom::IFilter::Key key) :
+TagValueSplitter::TagValueSplitter(filter::dicom::IFilter::Key) :
     ISplitter()
 {
     m_tag = DCM_UndefinedTagKey;

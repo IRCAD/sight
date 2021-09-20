@@ -142,7 +142,7 @@ void SelectorDialog::resultDialog(QVariant selection)
 
 //------------------------------------------------------------------------------
 
-void SelectorDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void SelectorDialog::addCustomButton(const std::string&, std::function<void()>)
 {
 }
 

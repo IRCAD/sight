@@ -1,4 +1,4 @@
-sight_add_target( dataTest TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( dataTest TYPE TEST )
 
 target_link_libraries(dataTest PUBLIC 
                       atoms

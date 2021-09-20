@@ -66,8 +66,8 @@ int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
             helper.remove(series);
             helper.notify();
         }
-        else if(!(lastActivityIndex + 1 < m_activityIds.size()
-                  && m_activityIds[lastActivityIndex + 1] == activity->getActivityConfigId()))
+        else if(!(lastActivityIndex + 1 < static_cast<int>(m_activityIds.size())
+                  && m_activityIds[static_cast<size_t>(lastActivityIndex + 1)] == activity->getActivityConfigId()))
         {
             // Remove the wrong data
             SIGHT_ERROR("The activity '" + activity->getActivityConfigId() + "' is unknown, it will be removed")

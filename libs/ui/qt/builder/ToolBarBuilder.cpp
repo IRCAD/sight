@@ -47,7 +47,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder(ui::base::GuiBaseObject::Key key)
+ToolBarBuilder::ToolBarBuilder(ui::base::GuiBaseObject::Key)
 {
 }
 

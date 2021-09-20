@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#pragma once
-
 #include <core/base.hpp>
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>

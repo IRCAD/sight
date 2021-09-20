@@ -67,7 +67,7 @@ void MedicalImage::getImageOrigin(double origin[3]) const
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::getImageDataSize(int size[3]) const
+void MedicalImage::getImageDataSize(size_t size[3]) const
 {
     data::Image::sptr image = this->getImage();
 
@@ -83,7 +83,7 @@ void MedicalImage::getImageSize(double size[3]) const
     double spacing[3];
 
     const data::Image::Size& imSize = image->getSize2();
-    std::copy(imSize.begin(), imSize.end(), size);
+    std::transform(imSize.begin(), imSize.end(), size, boost::numeric_cast<double, size_t>);
     this->getImageSpacing(spacing);
 
     size[0] *= spacing[0];
@@ -202,14 +202,14 @@ void MedicalImage::worldToSliceIndex(const double world[3], int index[3])
 
 void MedicalImage::worldToImageSliceIndex(const double world[3], int index[3])
 {
-    int imageSize[3];
+    size_t imageSize[3];
     this->getImageDataSize(imageSize);
     this->worldToSliceIndex(world, index);
 
     int idval;
     for(int i = 0 ; i < 3 ; i++)
     {
-        int max = imageSize[i] - 1;
+        int max = static_cast<int>(imageSize[i]) - 1;
         idval = index[i];
         if(idval < 0)
         {

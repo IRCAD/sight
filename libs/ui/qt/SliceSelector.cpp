@@ -130,13 +130,13 @@ void SliceSelector::setChangeTypeCallback(ChangeTypeCallback fct)
 
 //------------------------------------------------------------------------------
 
-void SliceSelector::printIndex(int index)
+void SliceSelector::printIndex(int)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceSelector::printType(int type)
+void SliceSelector::printType(int)
 {
 }
 

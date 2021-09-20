@@ -44,9 +44,9 @@ namespace sight::module::ui::base::viz
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0},
-    {std::string("half"), 0.5},
-    {std::string("hide"), 0.0
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0f},
+    {std::string("half"), 0.5f},
+    {std::string("hide"), 0.0f
     }
 };
 
@@ -103,7 +103,7 @@ void CrossTypeAction::updating()
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::info(std::ostream& _sstream)
+void CrossTypeAction::info(std::ostream&)
 {
 }
 

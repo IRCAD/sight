@@ -1,7 +1,6 @@
-sight_add_target( config_viz_scene2d TYPE MODULE )
+sight_add_target( config_viz_scene2d TYPE MODULE)
 
-
-add_dependencies(config_viz_scene2d 
+add_dependencies(config_viz_scene2d
                  data
                  module_service
                  module_ui_base

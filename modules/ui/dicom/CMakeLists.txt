@@ -1,4 +1,4 @@
-sight_add_target( module_ui_dicom TYPE MODULE )
+sight_add_target( module_ui_dicom TYPE MODULE)
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)

@@ -1,9 +1,6 @@
-sight_add_target( module_io_itk TYPE MODULE )
+sight_add_target( module_io_itk TYPE MODULE)
 
-
-
-
-target_link_libraries(module_io_itk PUBLIC 
+target_link_libraries(module_io_itk PUBLIC
                       core
                       data
                       ui_base

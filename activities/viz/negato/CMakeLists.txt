@@ -1,6 +1,6 @@
-sight_add_target( activity_viz_negato TYPE MODULE )
+sight_add_target( activity_viz_negato TYPE MODULE)
 
-add_dependencies(activity_viz_negato 
+add_dependencies(activity_viz_negato
                  data
                  module_activity
                  module_ui_base

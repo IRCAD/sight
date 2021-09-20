@@ -84,7 +84,7 @@ void SSnapshot::updating()
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::info(std::ostream& _sstream)
+void SSnapshot::info(std::ostream&)
 {
 }
 

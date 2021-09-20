@@ -150,7 +150,7 @@ void SImageSignalForwarder::updating()
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::info(std::ostream& _sstream)
+void SImageSignalForwarder::info(std::ostream&)
 {
 }
 

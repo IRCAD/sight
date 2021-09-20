@@ -141,12 +141,12 @@ void SClientListener::runClient()
                 if(iter != m_deviceNames.end())
                 {
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    const auto obj                = m_objects[indexReceiveObject].lock();
+                    const auto obj                = m_objects[static_cast<size_t>(indexReceiveObject)].lock();
 
                     const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
                     if(isATimeline)
                     {
-                        this->manageTimeline(receiveObject, indexReceiveObject);
+                        this->manageTimeline(receiveObject, static_cast<size_t>(indexReceiveObject));
                     }
                     else
                     {

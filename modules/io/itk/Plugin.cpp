@@ -29,7 +29,7 @@
 namespace sight::module::io::itk
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::itk::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::itk::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -39,8 +39,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    // force use of code in LIB itkInrImageIO ...
-    typedef ::itk::InrImageIO::Self Dummy;
 }
 
 //------------------------------------------------------------------------------

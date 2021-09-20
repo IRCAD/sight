@@ -1,4 +1,4 @@
-sight_add_target( scene2DTest TYPE TEST )
+sight_add_target( scene2DTest TYPE TEST WARNINGS_AS_ERRORS OFF)
 
 
 add_dependencies(scene2DTest 

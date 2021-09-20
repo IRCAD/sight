@@ -38,7 +38,7 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraS
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(::sight::activity::IValidator::Key key)
+StereoCamera::StereoCamera(::sight::activity::IValidator::Key)
 {
 }
 

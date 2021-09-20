@@ -1,4 +1,4 @@
-sight_add_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
+sight_add_target( io_vtk TYPE LIBRARY PCH pchData )
 
 if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
     target_include_directories(io_vtk SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})

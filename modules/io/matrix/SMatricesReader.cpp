@@ -276,7 +276,7 @@ void SMatricesReader::startReading()
                 const ::boost::tokenizer< ::boost::char_separator<char> > tok {line, sep};
 
                 // nb of 4x4 matrices = nb of elements - 1 (timestamp) / 16.
-                const long int nbOfElements = std::distance(tok.begin(), tok.end());
+                const auto nbOfElements = std::distance(tok.begin(), tok.end());
                 if(nbOfElements < 17)
                 {
                     SIGHT_WARN("Too few elements(" << nbOfElements << ") to convert this csv line into matrices");

@@ -108,13 +108,13 @@ void MessageDialog::addButton(ui::base::dialog::IMessageDialog::Buttons button)
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+void MessageDialog::addCustomButton(const std::string&, std::function<void()>)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button)
+void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons)
 {
 }
 

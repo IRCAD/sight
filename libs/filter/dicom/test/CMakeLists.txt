@@ -1,4 +1,4 @@
-sight_add_target( filter_dicomTest TYPE TEST )
+sight_add_target( filter_dicomTest TYPE TEST)
 
 find_package(DCMTK QUIET REQUIRED)
 target_link_libraries(filter_dicomTest PUBLIC

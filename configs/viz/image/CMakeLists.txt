@@ -1,7 +1,6 @@
-sight_add_target( config_viz_image TYPE MODULE )
+sight_add_target( config_viz_image TYPE MODULE)
 
-
-add_dependencies(config_viz_image 
+add_dependencies(config_viz_image
                  activity_viz_negato
                  config_viz_scene2d
                  data

@@ -277,7 +277,7 @@ void SLightSelector::onEditAmbientColor(bool)
     ::Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
 
     QColor qColor = QColorDialog::getColor(
-        module::ui::viz::helper::Utils::converOgreColorToQColor(ogreColor),
+        module::ui::viz::helper::Utils::convertOgreColorToQColor(ogreColor),
         container,
         "Scene ambient color"
     );

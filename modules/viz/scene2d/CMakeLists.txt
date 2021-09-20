@@ -1,4 +1,4 @@
-sight_add_target( module_viz_scene2d TYPE MODULE PRIORITY 2 )
+sight_add_target( module_viz_scene2d TYPE MODULE PRIORITY 2 WARNINGS_AS_ERRORS OFF)
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 target_link_libraries(module_viz_scene2d PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)

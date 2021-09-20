@@ -1,4 +1,4 @@
-sight_add_target( io_zip TYPE LIBRARY )
+sight_add_target( io_zip TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
 target_link_libraries(io_zip PUBLIC core)
 
 include(CheckIncludeFile)

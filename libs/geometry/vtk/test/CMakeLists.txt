@@ -1,7 +1,7 @@
-sight_add_target( geometry_vtkTest TYPE TEST )
+sight_add_target( geometry_vtkTest TYPE TEST)
 
 
-target_link_libraries(geometry_vtkTest PUBLIC 
+target_link_libraries(geometry_vtkTest PUBLIC
                       core
                       utestData
                       data

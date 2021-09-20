@@ -410,7 +410,7 @@ Layer::ViewportConfigType SRender::configureLayerViewport(const service::IServic
     const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
     if(_vpConfig.has_value())
     {
-        const auto cfg = _vpConfig.value();
+        const auto cfg = _vpConfig.get();
 
         float xPos = cfg.get<float>("hOffset", 0.f);
         float yPos = cfg.get<float>("vOffset", 0.f);

@@ -1,4 +1,4 @@
-sight_add_target( module_ui_qt TYPE MODULE START ON )
+sight_add_target( module_ui_qt TYPE MODULE START ON WARNINGS_AS_ERRORS OFF)
 
 add_dependencies(module_ui_qt module_ui_base module_data)
 

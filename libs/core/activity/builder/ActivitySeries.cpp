@@ -46,7 +46,7 @@ fwActivitiesBuilderRegisterMacro(activity::builder::ActivitySeries, "::activity:
 
 //-----------------------------------------------------------------------------
 
-ActivitySeries::ActivitySeries(activity::IBuilder::Key key)
+ActivitySeries::ActivitySeries(activity::IBuilder::Key)
 {
 }
 

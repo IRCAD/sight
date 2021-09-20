@@ -39,7 +39,7 @@ fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSe
 
 //-----------------------------------------------------------------------------
 
-ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key key)
+ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key)
 {
 }
 

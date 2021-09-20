@@ -1,6 +1,6 @@
-sight_add_target(Tuto02GenericSceneCpp TYPE APP START ON WARNINGS_AS_ERRORS OFF)
+sight_add_target(Tuto02GenericSceneCpp TYPE APP START ON)
 
-add_dependencies(Tuto02GenericSceneCpp 
+add_dependencies(Tuto02GenericSceneCpp
                  module_ui_base
                  module_ui_qt
                  module_viz_scene3d
@@ -23,6 +23,6 @@ moduleParam(module_ui_qt
     PARAM_VALUES
         sight::module::ui::qt/flatdark.rcc
         sight::module::ui::qt/flatdark.qss
-) 
+)
 
 sight_generate_profile(Tuto02GenericSceneCpp)

@@ -38,7 +38,7 @@ fwActivitiesValidatorRegisterMacro(::sight::activity::validator::DefaultActivity
 
 //-----------------------------------------------------------------------------
 
-DefaultActivity::DefaultActivity(activity::IValidator::Key key)
+DefaultActivity::DefaultActivity(activity::IValidator::Key)
 {
 }
 

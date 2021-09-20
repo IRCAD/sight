@@ -91,7 +91,7 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     // ==================================
     // Number of instances
     // ==================================
-    series->setNumberOfInstances(seriesJson["NumberOfSeriesRelatedInstances"].toInt());
+    series->setNumberOfInstances(static_cast<size_t>(seriesJson["NumberOfSeriesRelatedInstances"].toInt()));
 
     // Add series to container
     seriesContainer.push_back(series);

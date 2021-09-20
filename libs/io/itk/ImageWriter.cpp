@@ -42,7 +42,7 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter(io::base::writer::IObjectWriter::Key key)
+ImageWriter::ImageWriter(io::base::writer::IObjectWriter::Key)
 {
 }
 

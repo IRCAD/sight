@@ -47,7 +47,7 @@ const std::string CTImageStorageDefaultComposite::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IFilter::Key key) :
+CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IFilter::Key) :
     IComposite()
 {
     // Split according to image type

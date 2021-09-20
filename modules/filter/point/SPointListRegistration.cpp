@@ -229,7 +229,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
             );
         }
 
-        errorValue /= sourcePts->GetNumberOfPoints();
+        errorValue /= static_cast<double>(sourcePts->GetNumberOfPoints());
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 

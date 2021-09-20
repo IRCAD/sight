@@ -142,7 +142,7 @@ void SServerListener::receiveObject()
                     if(iter != m_deviceNames.end())
                     {
                         const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                        const auto obj                = m_objects[indexReceiveObject].lock();
+                        const auto obj                = m_objects[static_cast<size_t>(indexReceiveObject)].lock();
 
                         obj->shallowCopy(receiveObject);
 

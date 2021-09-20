@@ -33,7 +33,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-Cursor::Cursor(ui::base::GuiBaseObject::Key key)
+Cursor::Cursor(ui::base::GuiBaseObject::Key)
 {
 }
 

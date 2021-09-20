@@ -57,6 +57,9 @@ private:
 };
 
 #define SIGHT_REGISTER_PLUGIN(class) \
-    static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(class)
+    static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> BOOST_PP_CAT( \
+        __registry, \
+        __LINE__ \
+    )(class)
 
 } // namespace sight::core::runtime

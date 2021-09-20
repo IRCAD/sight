@@ -214,7 +214,7 @@ void SFilterSelectionEditor::onForceChecked(int state)
 
 void SFilterSelectionEditor::fillAvailableFilters()
 {
-    unsigned int index = 0;
+    int index = 0;
 
     std::vector<filter::dicom::IFilter::sptr> sortedFilters;
     for(const std::string& key : filter::dicom::registry::get()->getFactoryKeys())

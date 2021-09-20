@@ -1,6 +1,3 @@
-sight_add_target( pchService TYPE LIBRARY )
+sight_add_target( pchService TYPE LIBRARY)
 
-
-target_link_libraries(pchService PUBLIC 
-                      service
-)
+target_link_libraries(pchService PUBLIC service)

@@ -49,36 +49,38 @@ SExtractMeshByType::~SExtractMeshByType()
 
 void SExtractMeshByType::configuring()
 {
-    typedef core::runtime::ConfigurationElement::sptr ConfigType;
-
-    const ConfigType inoutCfg = m_configuration->findConfigurationElement("inout");
+    const auto inoutCfg = m_configuration->findConfigurationElement("inout");
     SIGHT_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
-    const std::vector<ConfigType> extractCfg = inoutCfg->find("extract");
+    const auto extractCfg = inoutCfg->find("extract");
     SIGHT_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
+#ifdef DEBUG
     bool ok = false;
+#endif
 
-    const std::vector<ConfigType> outCfg = m_configuration->find("out");
+    const auto outCfg = m_configuration->find("out");
     for(const auto& cfg : outCfg)
     {
         if(cfg->hasAttribute("group"))
         {
             if(cfg->getAttributeValue("group") == s_TARGET)
             {
-                const std::vector<ConfigType> keyCfg = cfg->find("key");
+                const auto keyCfg = cfg->find("key");
                 SIGHT_ASSERT(
                     "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " << keyCfg.size(),
                     extractCfg.size() == keyCfg.size()
                 );
+                #ifdef DEBUG
                 ok = true;
+                #endif
             }
         }
     }
 
     SIGHT_ASSERT("Missing 'target' output keys", ok);
 
-    for(ConfigType cfg : extractCfg)
+    for(auto cfg : extractCfg)
     {
         const std::string type  = cfg->getAttributeValue("type");
         const std::string regex = cfg->getAttributeValue("matching");

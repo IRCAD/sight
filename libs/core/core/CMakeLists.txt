@@ -1,4 +1,4 @@
-sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON WARNINGS_AS_ERRORS ON)
+sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON )
 
 find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 

@@ -83,8 +83,8 @@ namespace sight::module::ui::qml::image
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
-class MODULE_UI_QML_CLASS_QT_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor,
-                                                             public data::helper::MedicalImage
+class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor,
+                                                          public data::helper::MedicalImage
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
@@ -94,10 +94,10 @@ public:
     SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_QT_API SSliceIndexPositionEditor() noexcept;
+    MODULE_UI_QML_API SSliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_QT_API virtual ~SSliceIndexPositionEditor() noexcept;
+    MODULE_UI_QML_API virtual ~SSliceIndexPositionEditor() noexcept;
 
 Q_SIGNALS:
 
@@ -108,10 +108,10 @@ Q_SIGNALS:
 public Q_SLOTS:
 
     /// This method is called when the slider is moved. Notify the slice index is modified.
-    MODULE_UI_QML_QT_API void onSliceIndex(int index);
+    MODULE_UI_QML_API void onSliceIndex(int index);
 
     /// This method is called when the slice type selected changes. Notify the slice type is modified.
-    MODULE_UI_QML_QT_API void onSliceType(int type);
+    MODULE_UI_QML_API void onSliceType(int type);
 
 protected:
 
@@ -119,16 +119,16 @@ protected:
     using data::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
-    MODULE_UI_QML_QT_API void starting() override;
+    MODULE_UI_QML_API void starting() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API void stopping() override;
+    MODULE_UI_QML_API void stopping() override;
 
     /// Update editor information from the image
-    MODULE_UI_QML_QT_API void updating() override;
+    MODULE_UI_QML_API void updating() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API void configuring() override;
+    MODULE_UI_QML_API void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -139,13 +139,13 @@ protected:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QML_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QML_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the editor slider from the image slice index.
-    MODULE_UI_QML_QT_API void updateSliceIndexFromImg();
+    MODULE_UI_QML_API void updateSliceIndexFromImg();
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QML_QT_API void updateSliceTypeFromImg(Orientation type);
+    MODULE_UI_QML_API void updateSliceTypeFromImg(Orientation type);
 
 private:
 

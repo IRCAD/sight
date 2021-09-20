@@ -49,7 +49,7 @@ const std::string ImagePositionPatientSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key key) :
+ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key) :
     ISplitter()
 {
 }

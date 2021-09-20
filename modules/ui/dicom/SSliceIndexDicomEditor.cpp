@@ -216,7 +216,7 @@ void SSliceIndexDicomEditor::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::changeSliceIndex(int value)
+void SSliceIndexDicomEditor::changeSliceIndex(int)
 {
     // Update text
     std::stringstream ss;

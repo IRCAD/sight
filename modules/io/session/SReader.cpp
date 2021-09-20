@@ -272,7 +272,7 @@ void SReader::updating()
         m_readFailed             = false;
         m_pimpl->m_passwordRetry = 0;
     }
-    catch(sight::io::zip::exception::BadPassword& badPassword)
+    catch(sight::io::zip::exception::BadPassword&)
     {
         // Ask if the user want to retry.
         sight::ui::base::dialog::MessageDialog messageBox;

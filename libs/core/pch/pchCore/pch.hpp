@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#pragma once
-
 #include <core/base.hpp>
 #include <core/Demangler.hpp>
 #include <core/FactoryRegistry.hpp>

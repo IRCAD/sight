@@ -393,8 +393,6 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
             CPPUNIT_FAIL("Unknown value representation.");
             break;
     }
-
-    return "";
 }
 
 //------------------------------------------------------------------------------

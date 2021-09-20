@@ -67,7 +67,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor<atoms::Base::spt
 
     //------------------------------------------------------------------------------
 
-    atoms::Base::sptr operator()(camp::NoType value)
+    atoms::Base::sptr operator()(camp::NoType)
     {
         SIGHT_THROW_EXCEPTION(
             exception::ConversionNotManaged(

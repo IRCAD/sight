@@ -110,7 +110,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
 
     SIGHT_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-        0 <= minOccurs && minOccurs <= maxOccurs
+        minOccurs <= maxOccurs
     );
 }
 
@@ -320,7 +320,7 @@ ActivityInfo::DataCountType Activity::getDataCount(const data::Vector::csptr& da
 {
     ActivityInfo::DataCountType dataCount;
 
-    for(const data::Object::csptr& obj : *data)
+    for(const data::Object::csptr obj : *data)
     {
         ++dataCount[obj->getClassname()];
     }

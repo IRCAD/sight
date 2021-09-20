@@ -68,7 +68,7 @@ int Plugin::run() noexcept
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
     core::runtime::getCurrentProfile()->cleanup();
-    const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
+    const int result = std::any_cast<int>(m_worker->getFuture().get());
 
     core::thread::ActiveWorkers::getDefault()->clearRegistry();
     m_worker.reset();

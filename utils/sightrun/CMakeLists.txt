@@ -1,4 +1,4 @@
-sight_add_target( sightrun TYPE EXECUTABLE WARNINGS_AS_ERRORS ON )
+sight_add_target( sightrun TYPE EXECUTABLE )
 
 
 # TODO: We should manage to get rid of this definition

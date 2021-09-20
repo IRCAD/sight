@@ -1,4 +1,4 @@
-sight_add_target( ui_qml TYPE LIBRARY PCH pchService )
+sight_add_target( ui_qml TYPE LIBRARY PCH pchService)
 
 
 target_compile_definitions(ui_qml PUBLIC "-DQT_NO_KEYWORDS")
