@@ -74,7 +74,11 @@ void Utils::loadResources()
 
     // Ensure we always load the resources of this library first, since other may reuse our programs or shaders
     std::list<std::string> moduleWithResourcesNames;
-    std::copy(s_moduleWithResourcesNames.begin(), s_moduleWithResourcesNames.end(), moduleWithResourcesNames.begin());
+    std::copy(
+        s_moduleWithResourcesNames.begin(),
+        s_moduleWithResourcesNames.end(),
+        std::back_inserter(moduleWithResourcesNames)
+    );
     moduleWithResourcesNames.push_front("sight::viz::scene3d");
 
     for(const auto& moduleName : moduleWithResourcesNames)
