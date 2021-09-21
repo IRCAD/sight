@@ -27,10 +27,24 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/SingleFile.hpp>
 
+#include <data/Object.hpp>
+
 #include <io/base/writer/IObjectWriter.hpp>
+#include <io/zip/ArchiveWriter.hpp>
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace sight::io::session
 {
+
+/// The serializer function signature. This is used to register an object serialization function.
+using serializer_t = std::function<void (
+                                       zip::ArchiveWriter&,
+                                       boost::property_tree::ptree&,
+                                       data::Object::csptr,
+                                       std::map<std::string, data::Object::csptr>&,
+                                       const core::crypto::secure_string&
+                                   )>;
 
 /**
  * @brief Session writer.
@@ -79,6 +93,16 @@ public:
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     IO_SESSION_API void setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy);
+
+    /// Set a serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param serializer the function pointer to the serialization function
+    IO_SESSION_API void setSerializer(const std::string& className, serializer_t serializer = nullptr);
+
+    /// Set a default serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param serializer the function pointer to the serialization function
+    IO_SESSION_API static void setDefaultSerializer(const std::string& className, serializer_t serializer = nullptr);
 
 private:
 

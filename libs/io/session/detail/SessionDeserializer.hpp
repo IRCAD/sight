@@ -24,8 +24,7 @@
 #include "io/session/config.hpp"
 #include "io/session/detail/ISession.hpp"
 #include "io/session/PasswordKeeper.hpp"
-
-#include <core/crypto/secure_string.hpp>
+#include "io/session/SessionReader.hpp"
 
 #include <data/Object.hpp>
 
@@ -64,6 +63,39 @@ public:
         const std::filesystem::path& archivePath,
         const core::crypto::secure_string& password             = "",
         const PasswordKeeper::EncryptionPolicy encryptionPolicy = PasswordKeeper::EncryptionPolicy::DEFAULT
+    ) const;
+
+    /// Set a deserialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param deserializer the function pointer to the deserialization function
+    void setDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+
+    /// Set a default deserialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param deserializer the function pointer to the deserialization function
+    static void setDefaultDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+
+private:
+
+    /// Custom serializers that override default one
+    std::unordered_map<std::string, deserializer_t> m_customDeserializers;
+
+    /// Return a deserializer from a data object class name
+    /// @param className the name of the object to find a deserializer
+    deserializer_t findDeserializer(const std::string& classname) const;
+
+    /// Deserializes recursively an initialized archive to a data::Object using an opened property tree
+    /// @param cache object cache
+    /// @param archive initialized archive
+    /// @param tree property tree used to retrieve object index
+    /// @param password password to use for optional encryption. Empty password means no encryption
+    /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
+    data::Object::sptr deepDeserialize(
+        std::map<std::string, data::Object::sptr>& cache,
+        zip::ArchiveReader& archive,
+        const boost::property_tree::ptree& tree,
+        const core::crypto::secure_string& password,
+        const PasswordKeeper::EncryptionPolicy encryptionPolicy
     ) const;
 };
 

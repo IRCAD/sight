@@ -22,8 +22,8 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
 #include "io/session/detail/Series.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/DicomSeries.hpp>
 

@@ -34,7 +34,7 @@
 namespace sight::io::session
 {
 
-namespace detail::Helper
+namespace Helper
 {
 
 constexpr static auto s_Value {"Value"};
@@ -203,6 +203,6 @@ inline static typename T::sptr deserialize(
     return casted;
 }
 
-} // namespace detail::Helper
+} // namespace Helper
 
 } // namespace sight::io

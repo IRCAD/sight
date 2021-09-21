@@ -27,10 +27,24 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/SingleFile.hpp>
 
+#include <data/Object.hpp>
+
 #include <io/base/reader/IObjectReader.hpp>
+#include <io/zip/ArchiveReader.hpp>
+
+#include <boost/property_tree/ptree.hpp>
 
 namespace sight::io::session
 {
+
+/// The deserializer function signature. This is used to register an object deserialization function.
+using deserializer_t = std::function<data::Object::sptr(
+                                         zip::ArchiveReader&,
+                                         const boost::property_tree::ptree&,
+                                         const std::map<std::string, data::Object::sptr>&,
+                                         data::Object::sptr,
+                                         const core::crypto::secure_string&
+                                     )>;
 
 /**
  * @brief Session reader.
@@ -78,6 +92,19 @@ public:
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     IO_SESSION_API void setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy);
+
+    /// Set a deserialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param deserializer the function pointer to the deserialization function
+    IO_SESSION_API void setDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+
+    /// Set a default deserialization function for an object
+    /// @param className the name of the object to serialize
+    /// @param deserializer the function pointer to the deserialization function
+    IO_SESSION_API static void setDefaultDeserializer(
+        const std::string& className,
+        deserializer_t deserializer = nullptr
+    );
 
 private:
 

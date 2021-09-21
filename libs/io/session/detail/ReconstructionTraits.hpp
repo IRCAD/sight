@@ -22,7 +22,7 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/Helper.hpp"
+#include "io/session/Helper.hpp"
 
 #include <data/Node.hpp>
 #include <data/ReconstructionTraits.hpp>

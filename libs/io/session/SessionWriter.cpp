@@ -45,7 +45,7 @@ public:
 
     /// Constructor
     inline SessionWriterImpl(SessionWriter* const sessionWriter) :
-        m_SessionWriter(sessionWriter),
+        m_sessionWriter(sessionWriter),
         m_password(std::make_unique<PasswordKeeper>()),
         m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
     {
@@ -58,21 +58,23 @@ public:
     inline void write()
     {
         // Retrieve the root object
-        auto root_object = std::dynamic_pointer_cast<const data::Object>(m_SessionWriter->getObject());
+        auto root_object = std::dynamic_pointer_cast<const data::Object>(m_sessionWriter->getObject());
         SIGHT_FATAL_IF("Root object is null or not a data object.", !root_object);
 
-        // Create the session and serialize the root object
-        detail::SessionSerializer session;
-        session.serialize(
-            m_SessionWriter->getFile(),
+        // Serialize the root object
+        m_sessionSerializer.serialize(
+            m_sessionWriter->getFile(),
             root_object,
             m_password->getPassword(),
             m_encryptionPolicy
         );
     }
 
+    /// Session serializer which perform the serialization
+    detail::SessionSerializer m_sessionSerializer;
+
     /// Pointer to the public interface
-    SessionWriter* const m_SessionWriter;
+    SessionWriter* const m_sessionWriter;
 
     /// Keep the password in a vault
     const std::unique_ptr<PasswordKeeper> m_password;
@@ -115,6 +117,20 @@ void SessionWriter::setPassword(const core::crypto::secure_string& password)
 void SessionWriter::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
+{
+    m_pimpl->m_sessionSerializer.setSerializer(className, serializer);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionWriter::setDefaultSerializer(const std::string& className, serializer_t serializer)
+{
+    detail::SessionSerializer::setDefaultSerializer(className, serializer);
 }
 
 } //namespace sight::io::session

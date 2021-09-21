@@ -83,6 +83,7 @@
 #include <io/dicom/reader/SeriesDB.hpp>
 #include <io/session/detail/SessionDeserializer.hpp>
 #include <io/session/detail/SessionSerializer.hpp>
+#include <io/session/Helper.hpp>
 #include <io/session/SessionReader.hpp>
 #include <io/session/SessionWriter.hpp>
 #include <io/zip/exception/Read.hpp>
@@ -223,7 +224,7 @@ inline void _test(const bool encrypt)
         }
 
         // Write the session
-        sessionWriter->write();
+        CPPUNIT_ASSERT_NO_THROW(sessionWriter->write());
 
         CPPUNIT_ASSERT(std::filesystem::exists(testPath));
     }
@@ -242,7 +243,7 @@ inline void _test(const bool encrypt)
         }
 
         // Read the session
-        sessionReader->read();
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
 
         // Test value
         auto object = std::dynamic_pointer_cast<T>(sessionReader->getObject());
@@ -2953,6 +2954,129 @@ void SessionTest::modelSeriesTest()
 
     _test<data::ModelSeries>(true);
     _test<data::ModelSeries>(false);
+}
+
+//------------------------------------------------------------------------------
+
+inline static void customSerialize(
+    zip::ArchiveWriter&,
+    boost::property_tree::ptree& tree,
+    data::Object::csptr object,
+    std::map<std::string, data::Object::csptr>&,
+    const core::crypto::secure_string& password = ""
+)
+{
+    // Cast to the right type
+    const auto string = Helper::safeCast<data::String>(object);
+
+    // Add a version number. Not mandatory, but could help for future release
+    Helper::writeVersion<data::String>(tree, 666);
+
+    Helper::writeString(tree, "custom", string->getValue(), password);
+}
+
+//------------------------------------------------------------------------------
+
+inline static data::String::sptr customDeserialize(
+    zip::ArchiveReader&,
+    const boost::property_tree::ptree& tree,
+    const std::map<std::string, data::Object::sptr>&,
+    data::Object::sptr object,
+    const core::crypto::secure_string& password = ""
+)
+{
+    // Create or reuse the object
+    auto string = Helper::safeCast<data::String>(object);
+
+    // Check version number. Not mandatory, but could help for future release
+    Helper::readVersion<data::String>(tree, 0, 666);
+
+    // Assign the value
+    string->setValue(Helper::readString(tree, "custom", password));
+
+    return string;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::customSerializerTest()
+{
+    // Create a temporary directory
+    const auto tmpfolder = core::tools::System::getTemporaryFolder();
+    std::filesystem::create_directories(tmpfolder);
+    const auto testPath = tmpfolder / "customSerializerTest.zip";
+    std::filesystem::remove(testPath);
+
+    // Register custom serializers
+    io::session::SessionWriter::setDefaultSerializer(data::String::classname(), customSerialize);
+    io::session::SessionReader::setDefaultDeserializer(data::String::classname(), customDeserialize);
+
+    // Test serialization
+    {
+        // Create the data object
+        auto object = _new<data::String>(0);
+
+        // Create the session writer
+        auto sessionWriter = io::session::SessionWriter::New();
+        CPPUNIT_ASSERT(sessionWriter);
+
+        // Configure the session writer
+        sessionWriter->setObject(object);
+        sessionWriter->setFile(testPath);
+
+        // Write the session
+        CPPUNIT_ASSERT_NO_THROW(sessionWriter->write());
+
+        CPPUNIT_ASSERT(std::filesystem::exists(testPath));
+    }
+
+    // Test deserialization
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
+
+        // Test value
+        auto object = std::dynamic_pointer_cast<data::String>(sessionReader->getObject());
+        _compare<data::String>(object, 0);
+    }
+
+    // Restore default serializers
+    io::session::SessionWriter::setDefaultSerializer(data::String::classname());
+    io::session::SessionReader::setDefaultDeserializer(data::String::classname());
+
+    // Test again deserialization, it should fail since the deserializer is not the good one
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session, since we don't use version 666 anymore, an exception should be raised
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+
+        // Retry with the custom deserializer on deserializer instance
+        sessionReader->setDeserializer(data::String::classname(), customDeserialize);
+        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
+    }
+
+    // Test again deserialization, to be sure the custom instance deserializer is really gone
+    {
+        auto sessionReader = io::session::SessionReader::New();
+        CPPUNIT_ASSERT(sessionReader);
+
+        // Configure the session reader
+        sessionReader->setFile(testPath);
+
+        // Read the session, since we don't use version 666 anymore, an exception should be raised
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+    }
 }
 
 } // namespace ut

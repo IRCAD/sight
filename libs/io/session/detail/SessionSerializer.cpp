@@ -70,10 +70,9 @@
 #include <data/Integer.hpp>
 #include <data/mt/locked_ptr.hpp>
 
-#include <io/zip/ArchiveWriter.hpp>
-
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
+
+#include <shared_mutex>
 
 namespace sight::io::session
 {
@@ -81,18 +80,11 @@ namespace sight::io::session
 namespace detail
 {
 
-// The serializer function signature
-using serializer = std::function<void (
-                                     zip::ArchiveWriter&,
-                                     boost::property_tree::ptree&,
-                                     data::Object::csptr,
-                                     std::map<std::string, data::Object::csptr>&,
-                                     const core::crypto::secure_string&
-                                 )>;
+// To protect serializers map
+static std::shared_mutex s_serializers_mutex;
 
 // Serializer registry
-// No concurrency protection as the map is statically initialized
-static const std::unordered_map<std::string, serializer> s_serializers = {
+static const std::unordered_map<std::string, serializer_t> s_defaultSerializers = {
     {data::ActivitySeries::classname(), &ActivitySeries::serialize},
     {data::Array::classname(), &Array::serialize},
     {data::Boolean::classname(), &Helper::serialize<data::Boolean>},
@@ -141,35 +133,43 @@ static const std::unordered_map<std::string, serializer> s_serializers = {
     {data::Vector::classname(), &Vector::serialize}
 };
 
-// Return a serializer from a data object class name
-inline static serializer findSerializer(const std::string& classname)
-{
-    const auto& it = s_serializers.find(classname);
+static std::unordered_map<std::string, serializer_t> s_serializers = s_defaultSerializers;
 
-    if(it != s_serializers.cend())
+//------------------------------------------------------------------------------
+
+serializer_t SessionSerializer::findSerializer(const std::string& classname) const
+{
+    // First try to find in the customized serializer map
+    if(const auto& customIt = m_customSerializers.find(classname); customIt != m_customSerializers.cend())
     {
         // Return the found serializer
-        return it->second;
+        return customIt->second;
+    }
+    else
+    {
+        // Protect serializers map
+        std::shared_lock guard(s_serializers_mutex);
+
+        if(const auto& it = s_serializers.find(classname); it != s_serializers.cend())
+        {
+            // Return the found serializer
+            return it->second;
+        }
     }
 
     SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
 }
 
-/// Serializes recursively a data::Object to an opened archive using an initialized property tree
-/// @param cache ptree cache
-/// @param archive opened archive
-/// @param tree property tree used to store object index
-/// @param object root object to serialize
-/// @param password password to use for optional encryption. Empty password means no encryption
-/// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-inline static void deepSerialize(
+//------------------------------------------------------------------------------
+
+void SessionSerializer::deepSerialize(
     std::set<std::string>& cache,
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     const core::crypto::secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
-)
+) const
 {
     // Only serialize non-null object
     if(!object)
@@ -262,6 +262,53 @@ inline static void deepSerialize(
 
         // Add the new tree to the root
         tree.add_child(class_name, object_tree);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionSerializer::setSerializer(const std::string& className, serializer_t serializer)
+{
+    if(serializer)
+    {
+        // Set the serializer for this class name
+        m_customSerializers[className] = serializer;
+    }
+    else
+    {
+        // Reset the serializer for this class name
+        m_customSerializers.erase(className);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionSerializer::setDefaultSerializer(const std::string& className, serializer_t serializer)
+{
+    // Protect serializers map
+    std::unique_lock guard(s_serializers_mutex);
+
+    if(serializer)
+    {
+        // Set the serializer for this class name
+        s_serializers[className] = serializer;
+    }
+    else if(const auto& it = s_serializers.find(className); it != s_serializers.cend())
+    {
+        if(const auto& defaultIt = s_defaultSerializers.find(className); defaultIt != s_defaultSerializers.cend())
+        {
+            // The serializer was found in the default map, use it
+            s_serializers[className] = defaultIt->second;
+        }
+        else
+        {
+            // The deserializer was not found in the default map. Remove it completely
+            s_serializers.erase(it);
+        }
+    }
+    else
+    {
+        SIGHT_THROW("There is no serializer registered for class '" << className << "'.");
     }
 }
 

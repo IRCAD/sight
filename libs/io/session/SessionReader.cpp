@@ -45,7 +45,7 @@ public:
 
     /// Constructor
     inline SessionReaderImpl(SessionReader* const sessionReader) :
-        m_SessionReader(sessionReader),
+        m_sessionReader(sessionReader),
         m_password(std::make_unique<PasswordKeeper>()),
         m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
     {
@@ -57,16 +57,22 @@ public:
     /// Read the session from archive.
     inline void read()
     {
-        // Create the session and deserialize the root object
-        detail::SessionDeserializer session;
-        m_object = session.deserialize(m_SessionReader->getFile(), m_password->getPassword(), m_encryptionPolicy);
+        // Deserialize the root object
+        m_object = m_sessionDeserializer.deserialize(
+            m_sessionReader->getFile(),
+            m_password->getPassword(),
+            m_encryptionPolicy
+        );
     }
+
+    /// Session deserializer which perform the deserialization
+    detail::SessionDeserializer m_sessionDeserializer;
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
     core::tools::Object::sptr m_object;
 
     /// Pointer to the public interface
-    SessionReader* const m_SessionReader;
+    SessionReader* const m_sessionReader;
 
     /// Keep the password in a vault
     const std::unique_ptr<PasswordKeeper> m_password;
@@ -112,6 +118,20 @@ void SessionReader::setPassword(const core::crypto::secure_string& password)
 void SessionReader::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    m_pimpl->m_sessionDeserializer.setDeserializer(className, deserializer);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setDefaultDeserializer(const std::string& className, deserializer_t deserializer)
+{
+    detail::SessionDeserializer::setDefaultDeserializer(className, deserializer);
 }
 
 } // namespace sight::io::session
