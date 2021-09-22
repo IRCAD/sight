@@ -17,7 +17,7 @@ vertex_program R2VB/{{ shading }}_VP glsl
 {
     source RenderScene_VP.glsl
 
-    preprocessor_defines R2VB=1{% if defines %}, {{ defines }}{% endif %}
+    preprocessor_defines R2VB=1{% if defines %},{{ defines }}{% endif %}
 
 }
 {% endfor %}
