@@ -40,56 +40,63 @@ friend class Numeric;
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-static void setValue( Numeric::ValueType& v,
-                      typename ::boost::enable_if_c<
-                          std::is_same<
-                              typename ::boost::remove_reference< typename std::remove_const <T>::type >::type,
-                              std::string
-                              >::value
+template<typename T>
+static void setValue(
+    Numeric::ValueType& v,
+    typename ::boost::enable_if_c<
+        std::is_same<
+            typename ::boost::remove_reference<typename std::remove_const<T>::type>::type,
+            std::string
+        >::value
 
-                          , T>::type value )
+        , T>::type value
+)
 {
     v = Numeric::valueFromString(value);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-static void setValue( Numeric::ValueType& v,
-                      typename ::boost::enable_if_c<
-                          ::boost::mpl::and_< std::is_signed<T>, std::is_integral<T> >::value
-                          , T>::type value )
+template<typename T>
+static void setValue(
+    Numeric::ValueType& v,
+    typename ::boost::enable_if_c<
+        ::boost::mpl::and_<std::is_signed<T>, std::is_integral<T> >::value,
+        T>::type value
+)
 {
-    v = static_cast< std::int64_t>(value);
+    v = static_cast<std::int64_t>(value);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-static void setValue( Numeric::ValueType& v,
-                      typename ::boost::enable_if_c<
-                          ::boost::mpl::and_< std::is_unsigned<T>, std::is_integral<T> >::value
-                          , T>::type value )
+template<typename T>
+static void setValue(
+    Numeric::ValueType& v,
+    typename ::boost::enable_if_c<
+        ::boost::mpl::and_<std::is_unsigned<T>, std::is_integral<T> >::value,
+        T>::type value
+)
 {
-    v = static_cast< std::uint64_t>(value);
+    v = static_cast<std::uint64_t>(value);
 }
 
 //------------------------------------------------------------------------------
 
-template< typename T >
-static void setValue( Numeric::ValueType& v,
-                      typename ::boost::enable_if_c< std::is_floating_point<T>::value, T>::type value )
+template<typename T>
+static void setValue(
+    Numeric::ValueType& v,
+    typename ::boost::enable_if_c<std::is_floating_point<T>::value, T>::type value
+)
 {
     v = value;
 }
-
 };
 
 //--------------------------------------------------------------------------
 
 template<typename T>
-Numeric::sptr Numeric::New( T value )
+Numeric::sptr Numeric::New(T value)
 {
     Numeric::sptr valueSptr = Numeric::New();
     NumericSetter::setValue<T>(valueSptr->m_value, value);
@@ -105,27 +112,25 @@ public:
 
     //------------------------------------------------------------------------------
 
-    T operator()( ::boost::blank& ) const
+    T operator()(::boost::blank&) const
     {
         SIGHT_THROW_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
-        return T();
-    }
-    //------------------------------------------------------------------------------
-
-    T operator()( const ::boost::blank& ) const
-    {
-        SIGHT_THROW_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
-        return T();
     }
 
     //------------------------------------------------------------------------------
 
-    template <typename U>
-    T operator()( U& value ) const
+    T operator()(const ::boost::blank&) const
+    {
+        SIGHT_THROW_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename U>
+    T operator()(U& value) const
     {
         return ::boost::numeric_cast<T>(value);
     }
-
 };
 
 //------------------------------------------------------------------------------
@@ -133,8 +138,8 @@ public:
 template<typename T>
 T Numeric::getValue() const
 {
-    T val = boost::apply_visitor( get_casted_value<T>(), m_value );
+    T val = boost::apply_visitor(get_casted_value<T>(), m_value);
     return val;
 }
 
-}
+} // namespace sight::atoms
