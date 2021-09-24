@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSignalButton, ::sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSignalButton, sight::ui::base::IEditor);
 
     /// Creates signals and slots.
     MODULE_UI_QT_API SSignalButton() noexcept;

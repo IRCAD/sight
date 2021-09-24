@@ -114,7 +114,7 @@ struct ThresholdFilter
 
         const PIXELTYPE maxValue = std::numeric_limits<PIXELTYPE>::max();
 
-        // Fill the target buffer considering the thresholding
+        // Fill the target buffer considering the threshold
         for( ; it1 != it1End && it2 != it2End ; ++it1, ++it2)
         {
             *it2 = (*it1 < thresholdValue) ? 0 : maxValue;
@@ -131,7 +131,7 @@ void SThreshold::updating()
     // retrieve the input object
     auto input = m_source.lock();
 
-    // try to dynamic cast to an Image and an ImageSeries to know whick type of data we use
+    // try to dynamic cast to an Image and an ImageSeries to know which type of data we use
     data::ImageSeries::csptr imageSeriesSrc = data::ImageSeries::dynamicConstCast(input.get_shared());
     data::Image::csptr imageSrc             = data::Image::dynamicConstCast(input.get_shared());
     data::Object::sptr output;
@@ -172,7 +172,7 @@ void SThreshold::updating()
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
      *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supportted by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *     supported by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:

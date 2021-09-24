@@ -25,7 +25,7 @@
 #include <io/session/PasswordKeeper.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::session::ut::PasswordKeeperTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::session::ut::PasswordKeeperTest);
 
 namespace sight::io::session
 {

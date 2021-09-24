@@ -33,7 +33,7 @@
 
 #include <spdlog/spdlog.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::navigation::openvslam::ut::HelperTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::navigation::openvslam::ut::HelperTest);
 
 namespace sight::navigation::openvslam
 {

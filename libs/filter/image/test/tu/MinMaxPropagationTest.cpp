@@ -30,7 +30,7 @@
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::MinMaxPropagationTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MinMaxPropagationTest);
 
 namespace sight::filter::image
 {

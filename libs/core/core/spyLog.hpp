@@ -160,7 +160,7 @@
 // -----------------------------------------------------------------------------
 
 #  define _SPYLOG_SPYLOGGER_ \
-    ::sight::core::log::SpyLogger::getSpyLogger()
+    sight::core::log::SpyLogger::getSpyLogger()
 
 // Empty function to trigger deprecation warnings
 [[deprecated("OSIGHT_* macros removed in Sight 22.0, use SIGHT_* macros instead.")]]

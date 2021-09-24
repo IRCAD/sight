@@ -50,7 +50,7 @@ namespace data
 Image::Image() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Image";
+    m_originClassname = "sight::data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V09ALA", "V10");
 }
@@ -89,7 +89,7 @@ void Image::apply(
         // create new Landmarks structure
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
-        sight::atoms::Object::sptr currentLandmarks = creators->create("::sight::data::Landmarks", "1");
+        sight::atoms::Object::sptr currentLandmarks = creators->create("sight::data::Landmarks", "1");
         io::atoms::patch::helper::Object helperLandmarks(currentLandmarks);
 
         sight::atoms::Map::sptr currentFieldMap = sight::atoms::Map::dynamicCast(current->getAttribute("fields"));

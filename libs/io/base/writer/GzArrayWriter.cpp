@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::GzArrayWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzArrayWriter);
 
 namespace sight::io::base
 {

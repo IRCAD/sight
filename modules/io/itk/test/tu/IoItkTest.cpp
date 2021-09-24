@@ -43,7 +43,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::itk::ut::IoItkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::itk::ut::IoItkTest);
 
 namespace sight::module::io::itk
 {
@@ -123,7 +123,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     // Create and execute service
     executeService(
         imageSeries,
-        "::sight::module::io::itk::SJpgImageSeriesWriter",
+        "sight::module::io::itk::SJpgImageSeriesWriter",
         srvCfg,
         data::Access::in
     );
@@ -150,7 +150,7 @@ void IoItkTest::testImageWriterJPG()
     // Create and execute service
     executeService(
         image,
-        "::sight::module::io::itk::JpgImageWriterService",
+        "sight::module::io::itk::JpgImageWriterService",
         srvCfg,
         data::Access::in
     );
@@ -187,7 +187,7 @@ void IoItkTest::testSaveLoadInr()
     // Create and execute service
     executeService(
         image,
-        "::sight::module::io::itk::InrImageWriterService",
+        "sight::module::io::itk::InrImageWriterService",
         srvCfg,
         data::Access::in
     );
@@ -196,7 +196,7 @@ void IoItkTest::testSaveLoadInr()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::module::io::itk::InrImageReaderService",
+        "sight::module::io::itk::InrImageReaderService",
         srvCfg,
         data::Access::inout
     );
@@ -240,7 +240,7 @@ void IoItkTest::ImageSeriesInrTest()
     // Create and execute service
     executeService(
         imageSeries,
-        "::sight::module::io::itk::SImageSeriesWriter",
+        "sight::module::io::itk::SImageSeriesWriter",
         srvCfg,
         data::Access::in
     );
@@ -249,7 +249,7 @@ void IoItkTest::ImageSeriesInrTest()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::module::io::itk::InrImageReaderService",
+        "sight::module::io::itk::InrImageReaderService",
         srvCfg,
         data::Access::inout
     );
@@ -301,7 +301,7 @@ void IoItkTest::SeriesDBInrTest()
     data::SeriesDB::sptr sdb = data::SeriesDB::New();
     executeService(
         sdb,
-        "::sight::module::io::itk::SInrSeriesDBReader",
+        "sight::module::io::itk::SInrSeriesDBReader",
         srvCfg,
         data::Access::inout
     );

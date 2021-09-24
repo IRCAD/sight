@@ -61,7 +61,7 @@ public:
     static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STransform, sight::viz::scene3d::IAdaptor);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API STransform() noexcept;

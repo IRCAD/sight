@@ -74,9 +74,9 @@ void SQuit::info(std::ostream& _sstream)
 
 void SQuit::updating()
 {
-    ::sight::ui::base::Cursor cursor;
-    cursor.setCursor(::sight::ui::base::ICursor::BUSY);
-    ::sight::ui::base::Application::New()->exit(0);
+    sight::ui::base::Cursor cursor;
+    cursor.setCursor(sight::ui::base::ICursor::BUSY);
+    sight::ui::base::Application::New()->exit(0);
     cursor.setDefaultCursor();
 }
 

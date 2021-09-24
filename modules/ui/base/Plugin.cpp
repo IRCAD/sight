@@ -34,7 +34,7 @@
 namespace sight::module::ui::base
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::base::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::base::Plugin");
 
 const std::string Plugin::s_PREF_SERVICE_UID = "PREF_SERVICE_UID";
 

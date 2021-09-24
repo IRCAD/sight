@@ -1,6 +1,6 @@
-sight_add_target( Tuto04SignalSlot TYPE APP )
+sight_add_target(Tuto04SignalSlot TYPE APP)
 
-add_dependencies(Tuto04SignalSlot 
+add_dependencies(Tuto04SignalSlot
                  sightrun
                  module_appXml
                  module_ui_qt

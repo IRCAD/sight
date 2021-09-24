@@ -123,7 +123,7 @@ void SStarter::updating()
 
         if(action != DO_NOTHING)
         {
-            ::sight::ui::base::LockAction lock(this->getSptr());
+            sight::ui::base::LockAction lock(this->getSptr());
 
             service::IService::sptr service = service::get(uid);
             SIGHT_ASSERT("service not found", service);
@@ -208,10 +208,10 @@ void SStarter::updating()
         }
         else
         {
-            ::sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Service unavailable",
                 "The service is unavailable.",
-                ::sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::base::dialog::IMessageDialog::WARNING
             );
 
             SIGHT_INFO("Do nothing for Service " << m_uuidServices.at(i).first);

@@ -38,7 +38,7 @@ namespace data
 
 ActivitySeries1::ActivitySeries1()
 {
-    m_classname = "::sight::data::ActivitySeries";
+    m_classname = "sight::data::ActivitySeries";
     m_version   = "1";
 }
 

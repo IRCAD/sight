@@ -47,7 +47,7 @@ namespace sight::module::ui::base::metrics
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image containing the distances.
  */
-class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SShowDistance final : public sight::ui::base::IAction
 {
 public:
 

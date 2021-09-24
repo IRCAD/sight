@@ -35,7 +35,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Patient::V1ToFwMedDataPatientV1Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::Patient::V1ToFwMedDataPatientV1Test);
 
 namespace sight::io::patch::structural
 {
@@ -70,7 +70,7 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     sight::atoms::Object::sptr originObj = sight::atoms::Object::New();
     sight::atoms::Object::sptr targetObj;
 
-    io::atoms::patch::helper::setClassname(originObj, "::sight::data::Patient");
+    io::atoms::patch::helper::setClassname(originObj, "sight::data::Patient");
     io::atoms::patch::helper::setVersion(originObj, "1");
 
     io::atoms::patch::helper::Object helper(originObj);
@@ -93,7 +93,7 @@ void V1ToFwMedDataPatientV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(originObj, targetObj, newVersions));
 
     CPPUNIT_ASSERT(targetObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Patient"), io::atoms::patch::helper::getClassname(targetObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Patient"), io::atoms::patch::helper::getClassname(targetObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), io::atoms::patch::helper::getVersion(targetObj));
 
     CPPUNIT_ASSERT(!targetObj->getAttribute("firstname"));

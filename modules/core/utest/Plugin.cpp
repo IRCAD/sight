@@ -25,7 +25,7 @@
 namespace sight::module::utest
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::utest::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::utest::Plugin");
 
 //-----------------------------------------------------------------------------
 

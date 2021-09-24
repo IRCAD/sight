@@ -51,7 +51,7 @@
 #include <vtkRenderer.h>
 #endif
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::ObjMeshWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ObjMeshWriter);
 
 namespace sight::io::vtk
 {

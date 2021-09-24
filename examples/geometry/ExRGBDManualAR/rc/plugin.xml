@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRGBDManualAR_AppCfg</id>
         <config>
 
@@ -339,10 +339,10 @@
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::matrix::Matrix4ReaderService" />
+                <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->

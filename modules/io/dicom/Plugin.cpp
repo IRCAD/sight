@@ -27,7 +27,7 @@
 namespace sight::module::io::dicom
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::dicom::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::dicom::Plugin");
 
 using namespace core::runtime::utils;
 

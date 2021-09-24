@@ -54,7 +54,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::WriterReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterReaderTest);
 
 namespace sight::io::dicom
 {

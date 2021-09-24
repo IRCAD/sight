@@ -36,8 +36,8 @@ namespace AttachmentSeries
 V2ToV1::V2ToV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::AttachmentSeries";
-    m_targetClassname = "::sight::data::AttachmentSeries";
+    m_originClassname = "sight::data::AttachmentSeries";
+    m_targetClassname = "sight::data::AttachmentSeries";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }

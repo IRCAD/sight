@@ -29,7 +29,7 @@
 #include "io/patch/structural/creator/data/Equipment1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::creator::data::Equipment1Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::creator::data::Equipment1Test);
 
 namespace sight::io::patch::structural
 {
@@ -66,14 +66,14 @@ void Equipment1Test::createTest()
 
     CPPUNIT_ASSERT(equipmentCreator);
     const std::string& classname = equipmentCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Equipment") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Equipment") == classname);
     const std::string& objectVersion = equipmentCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     sight::atoms::Object::sptr equipment = equipmentCreator->create();
 
     const std::string& equipmentClassname = io::atoms::patch::helper::getClassname(equipment);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Equipment") == equipmentClassname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Equipment") == equipmentClassname);
     const std::string& equipmentObjectVersion = io::atoms::patch::helper::getVersion(equipment);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == equipmentObjectVersion);
 
@@ -88,7 +88,7 @@ void Equipment1Test::copyTest()
     Equipment1 equipmentCreator;
 
     const std::string& classname = equipmentCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Equipment") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Equipment") == classname);
     const std::string& objectVersion = equipmentCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
@@ -99,7 +99,7 @@ void Equipment1Test::copyTest()
     CPPUNIT_ASSERT_MESSAGE(
         "Classname must be equal",
         std::string(
-            "::sight::data::Equipment"
+            "sight::data::Equipment"
         ) == classnameEquipmentCreator2
     );
 

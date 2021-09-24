@@ -38,8 +38,8 @@ namespace Study
 V1ToFwMedDataStudyV1::V1ToFwMedDataStudyV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Study";
-    m_targetClassname = "::sight::data::Study";
+    m_originClassname = "sight::data::Study";
+    m_targetClassname = "sight::data::Study";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }

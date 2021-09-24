@@ -72,7 +72,7 @@ class SHistogramValue : public sight::viz::scene2d::IAdaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogramValue, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogramValue, sight::viz::scene2d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SHistogramValue() noexcept;
@@ -135,8 +135,8 @@ private:
     static constexpr std::string_view s_HISTOGRAM_INPUT = "histogram";
     static constexpr std::string_view s_VIEWPORT_INPUT  = "viewport";
 
-    ::sight::data::ptr<sight::data::Histogram, ::sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
-    ::sight::data::ptr<sight::data::Point, ::sight::data::Access::in> m_point {this, "point"};
+    sight::data::ptr<sight::data::Histogram, sight::data::Access::in> m_histogram {this, s_HISTOGRAM_INPUT};
+    sight::data::ptr<sight::data::Point, sight::data::Access::in> m_point {this, "point"};
 };
 
 } // namespace adaptor

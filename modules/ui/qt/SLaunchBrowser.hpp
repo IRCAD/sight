@@ -34,11 +34,11 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action launch a browser on the url given in configuration.
  */
-class MODULE_UI_QT_CLASS_API SLaunchBrowser : public ::sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SLaunchBrowser : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLaunchBrowser, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SLaunchBrowser, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLaunchBrowser() noexcept;
@@ -51,7 +51,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="ui::base::IAction" impl="::sight::module::ui::qt::SLaunchBrowser"
+       <service type="ui::base::IAction" impl="sight::module::ui::qt::SLaunchBrowser"
      * autoConnect="false">
         <url>http://www.ircad.fr</url>
        </service>

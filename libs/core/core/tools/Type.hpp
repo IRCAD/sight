@@ -332,6 +332,6 @@ CORE_API const std::string& Type::traitsToString<8, true, false>();
 namespace std
 {
 
-CORE_API std::ostream& operator<<(std::ostream& os, const ::sight::core::tools::Type& type);
+CORE_API std::ostream& operator<<(std::ostream& os, const sight::core::tools::Type& type);
 
 } // namespace std

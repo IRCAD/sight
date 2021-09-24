@@ -10,7 +10,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto08MesherWithGenericScene_AppCfg</id>
         <config>
 
@@ -252,7 +252,7 @@
                 <type mode="reader" />
             </service>
 
-            <!-- extract a ::sight::data::Image from the ::sight::data::ImageSeries -->
+            <!-- extract a sight::data::Image from the sight::data::ImageSeries -->
             <service uid="extractImageSrv" type="sight::module::data::SExtractObj" >
                <inout key="source" uid="imageSeries" >
                    <extract from="@image" />
@@ -284,7 +284,7 @@
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::module::io::atoms::SWriter" />
+                <addSelection service="sight::module::io::atoms::SWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

@@ -43,8 +43,8 @@ namespace Patient
 V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Patient";
-    m_targetClassname = "::sight::data::Patient";
+    m_originClassname = "sight::data::Patient";
+    m_targetClassname = "sight::data::Patient";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }

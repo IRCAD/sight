@@ -33,7 +33,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::NoFilterCustomTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::NoFilterCustomTest);
 
 namespace sight::filter::dicom
 {

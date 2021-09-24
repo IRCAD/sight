@@ -12,7 +12,7 @@
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPreview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>DicomPacsReader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
@@ -24,7 +24,7 @@
         </appConfig>
         </extension>
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>DicomPacsWriter</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
@@ -36,7 +36,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>DicomPacsReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -44,7 +44,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
@@ -56,7 +56,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
@@ -68,7 +68,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
          <id>DicomReaderConfig</id>
          <desc>DICOM Reader Config</desc>
          <config>
@@ -76,5 +76,5 @@
             <mode>direct</mode>
          </config>
      </extension>
-     
+
 </plugin>

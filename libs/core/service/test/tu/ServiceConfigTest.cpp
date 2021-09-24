@@ -62,7 +62,7 @@ void ServiceConfigTest::serviceConfigTest()
     currentServiceConfig = service::extension::Config::getDefault();
 
     const std::string configId(service::extension::AppConfig::getUniqueIdentifier());
-    const std::string service("::sight::service::ut::TestService");
+    const std::string service("sight::service::ut::TestService");
     const std::string desc("Description of config");
     core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 
@@ -96,7 +96,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     currentServiceConfig = service::extension::Config::getDefault();
     currentServiceConfig->clearRegistry();
     std::vector<std::string> allConfigs = currentServiceConfig->getAllConfigForService(
-        "::sight::service::ut::TestService"
+        "sight::service::ut::TestService"
     );
     CPPUNIT_ASSERT(allConfigs.empty());
 }

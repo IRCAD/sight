@@ -12,7 +12,7 @@ Library dealing with semantic and structural patches for sight::data.
 
 ## Test
 
-Contains tests ensuring version upgrades are working fine for relevant ::sight::data.
+Contains tests ensuring version upgrades are working fine for relevant sight::data.
 
 ## How to use it
 

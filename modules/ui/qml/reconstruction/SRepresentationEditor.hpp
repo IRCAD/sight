@@ -94,7 +94,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SRepresentationEditor, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SRepresentationEditor, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SRepresentationEditor() noexcept;

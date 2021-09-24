@@ -160,7 +160,7 @@ void SSelector::updating()
             availableExtensionsId =
                 service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
                     classname,
-                    "::sight::io::base::service::IReader"
+                    "sight::io::base::service::IReader"
                 );
         }
         else // m_mode == WRITER_MODE
@@ -170,7 +170,7 @@ void SSelector::updating()
             availableExtensionsId =
                 service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
                     obj->getClassname(),
-                    "::sight::io::base::service::IWriter"
+                    "sight::io::base::service::IWriter"
                 );
         }
     }

@@ -30,7 +30,7 @@
 #include <glm/glm.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::MatrixFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::MatrixFunctionsTest);
 
 namespace sight::geometry::data
 {

@@ -67,11 +67,11 @@ namespace sight::module::ui::base
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SConfigLauncher : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SConfigLauncher, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SConfigLauncher, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
@@ -112,7 +112,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
+       <service impl="sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

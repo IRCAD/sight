@@ -34,9 +34,9 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (ActivitySeries))
 {
     builder
     .tag("object_version", "2")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Series>()
-    .property("activity_config_id", &::sight::data::ActivitySeries::m_activityConfigId)
-    .property("data", &::sight::data::ActivitySeries::m_data)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Series>()
+    .property("activity_config_id", &sight::data::ActivitySeries::m_activityConfigId)
+    .property("data", &sight::data::ActivitySeries::m_data)
     ;
 }

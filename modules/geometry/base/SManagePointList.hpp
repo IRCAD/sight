@@ -70,7 +70,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IControl
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SManagePointList, ::sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SManagePointList, sight::service::IController);
 
     /// Initialize slots.
     MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;

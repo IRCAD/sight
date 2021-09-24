@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::sight::data::Image" : "2",
-            "::sight::data::Image" : "3"
+            "sight::data::Image" : "2",
+            "sight::data::Image" : "3"
         }
     ]
 }

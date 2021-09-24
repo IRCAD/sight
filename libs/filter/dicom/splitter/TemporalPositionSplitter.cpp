@@ -26,7 +26,7 @@
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::TemporalPositionSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::TemporalPositionSplitter);
 
 namespace sight::filter::dicom
 {

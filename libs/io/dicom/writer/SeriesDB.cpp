@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::SeriesDB);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SeriesDB);
 
 namespace sight::io::dicom
 {

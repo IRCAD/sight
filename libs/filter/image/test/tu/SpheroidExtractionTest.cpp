@@ -37,7 +37,7 @@
 
 #include <random>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::SpheroidExtractionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::SpheroidExtractionTest);
 
 namespace sight::filter::image
 {

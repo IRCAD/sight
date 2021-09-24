@@ -1,6 +1,6 @@
 <plugin id="tu_validator">
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>TestValidator0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
@@ -21,7 +21,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>TestValidator1</id>
         <title>test 1</title>
         <desc>This is test 1.</desc>
@@ -35,7 +35,7 @@
             </requirement>
             <requirement name="vectorImage" type="sight::data::ImageSeries" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>Some image series...</desc>
-                <validator>::sight::activity::validator::ImageProperties</validator>
+                <validator>sight::activity::validator::ImageProperties</validator>
             </requirement>
             <requirement name="vectorModel" type="sight::data::ModelSeries" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>
@@ -54,10 +54,10 @@
                 </desc>
             </requirement>
             <requirement name="float" type="sight::data::Float" minOccurs="1" maxOccurs="1">
-                <desc>This is a ::sight::data::Float, we can also have ::sight::data::Integer and ::sight::data::String.</desc>
+                <desc>This is a sight::data::Float, we can also have sight::data::Integer and sight::data::String.</desc>
             </requirement>
             <requirement name="int" type="sight::data::Integer" minOccurs="0" maxOccurs="0">
-                <desc>This is a ::sight::data::Integer, it will be automatically created and cannot be updated by the user.</desc>
+                <desc>This is a sight::data::Integer, it will be automatically created and cannot be updated by the user.</desc>
             </requirement>
             <requirement name="boolean" type="sight::data::Boolean" minOccurs="1" maxOccurs="1">
                 <desc>This is a boolean. I don't think it can be useful, but it exists ;)</desc>
@@ -65,7 +65,7 @@
             <requirement name="String" type="sight::data::String" minOccurs="0" maxOccurs="4">
                 <desc>
                 <![CDATA[
-                Currently, it is not visible in the editor, but the following strings will be store into a <b>::sight::data::Composite</b>
+                Currently, it is not visible in the editor, but the following strings will be store into a <b>sight::data::Composite</b>
                 with the keys:<br />
                 - Item1 <br />
                 - Item2 <br />
@@ -94,4 +94,3 @@
     </extension>
 
 </plugin>
-

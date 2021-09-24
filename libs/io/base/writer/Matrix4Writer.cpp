@@ -29,7 +29,7 @@
 #include <iostream>
 #include <vector>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::Matrix4Writer);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::Matrix4Writer);
 
 namespace sight::io::base
 {

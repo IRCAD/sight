@@ -66,7 +66,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SGrid2D : public sight::viz::scene2d::IAdapto
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrid2D, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SGrid2D, sight::viz::scene2d::IAdaptor);
 
     /**
      * @name Slots API

@@ -31,7 +31,7 @@
 #undef GLM_ENABLE_EXPERIMENTAL
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::MatrixRegressorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MatrixRegressorTest);
 
 namespace sight::filter::image
 {

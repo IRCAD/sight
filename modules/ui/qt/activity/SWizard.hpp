@@ -73,7 +73,7 @@ namespace activity
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service impl="::sight::module::ui::qt::activity::SWizard">
+   <service impl="sight::module::ui::qt::activity::SWizard">
      <inout key="seriesDB" uid="..." />
      <inout key="activitySeries" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>

@@ -27,7 +27,7 @@ add_dependencies(myTarget module_service ... )
 example of service factory:
 
  ```xml
-     <extension implements="::sight::service::extension::Factory">
+     <extension implements="sight::service::extension::Factory">
         <type>sight::service::IXMLParser</type>
         <service>sight::service::parser::Color</service>
         <object>sight::data::Color</object>

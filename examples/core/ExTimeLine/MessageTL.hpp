@@ -45,17 +45,17 @@ struct MsgData
 /**
  * @brief Defines a timeline that stores string messages.
  */
-class MessageTL : public ::sight::data::GenericTL<MsgData>
+class MessageTL : public sight::data::GenericTL<MsgData>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MessageTL, ::sight::data::TimeLine, ::sight::data::factory::New<MessageTL>);
+    SIGHT_DECLARE_CLASS(MessageTL, sight::data::TimeLine, sight::data::factory::New<MessageTL>);
 
     /**
      * @brief Creates the data.
      * @param _key private construction key.
      */
-    MessageTL(::sight::data::Object::Key _key) :
+    MessageTL(sight::data::Object::Key _key) :
         GenericTL<MsgData>(_key)
     {
     }

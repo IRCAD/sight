@@ -25,7 +25,7 @@
 namespace sight::module::sync
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::sync::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::sync::Plugin");
 
 Plugin::~Plugin() noexcept
 {

@@ -94,7 +94,7 @@ namespace sight::module::io::dicom
    @endcode
  *
  * @code{.xml}
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>MyFilterSelectorConfig</id>
         <service>module::ui::dicom::SFilterSelectorDialog</service>
         <desc>"Open" action's filter selector config</desc>

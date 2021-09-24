@@ -48,7 +48,7 @@ Image::Image(data::Image::sptr image) :
 {
     FW_DEPRECATED_MSG(
         "::data::helper::Image is no longer supported, the methods have been moved to "
-        "::sight::data::Image",
+        "sight::data::Image",
         "22.0"
     )
     if(image)

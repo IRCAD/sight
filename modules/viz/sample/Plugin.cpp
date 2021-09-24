@@ -29,7 +29,7 @@ namespace sight::module::viz::sample
 
 //------------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::viz::sample::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::viz::sample::Plugin");
 
 //------------------------------------------------------------------------------
 

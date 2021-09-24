@@ -35,7 +35,7 @@ namespace sight::activity
 namespace validator
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::activity::validator::ImageProperties);
+fwActivitiesValidatorRegisterMacro(sight::activity::validator::ImageProperties);
 
 auto fCompare = [](double a, double b){return std::abs(a - b) < 0.00001;};
 

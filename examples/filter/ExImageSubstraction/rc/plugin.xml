@@ -59,7 +59,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExImageSubstraction_AppCfg</id>
         <config>
 

@@ -39,7 +39,7 @@ namespace data
 
 Landmarks1::Landmarks1()
 {
-    m_classname = "::sight::data::Landmarks";
+    m_classname = "sight::data::Landmarks";
     m_version   = "1";
 }
 

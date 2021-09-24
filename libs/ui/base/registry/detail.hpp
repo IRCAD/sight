@@ -39,7 +39,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::sight::core::FactoryRegistry<SPTR(sight::ui::base::GuiBaseObject)(), KeyType> Type;
+typedef sight::core::FactoryRegistry<SPTR(sight::ui::base::GuiBaseObject)(), KeyType> Type;
 
 UI_BASE_API SPTR(Type) get();
 

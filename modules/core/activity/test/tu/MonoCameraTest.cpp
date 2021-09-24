@@ -29,7 +29,7 @@
 #include <data/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::activity::validator::ut::MonoCameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::MonoCameraTest);
 
 namespace sight::module::activity::validator
 {
@@ -59,7 +59,7 @@ void MonoCameraTest::tearDown()
 
 void MonoCameraTest::testValidator()
 {
-    auto validator = factory::New("::sight::module::activity::validator::CameraSeries::MonoCamera");
+    auto validator = factory::New("sight::module::activity::validator::CameraSeries::MonoCamera");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);

@@ -40,7 +40,7 @@ namespace data
 
 ModelSeries1::ModelSeries1()
 {
-    m_classname = "::sight::data::ModelSeries";
+    m_classname = "sight::data::ModelSeries";
     m_version   = "1";
 }
 

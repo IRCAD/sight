@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>SightCalibrator_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />

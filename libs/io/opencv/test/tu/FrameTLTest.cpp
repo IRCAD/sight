@@ -27,7 +27,7 @@
 #include <io/opencv/FrameTL.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::FrameTLTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::FrameTLTest);
 
 namespace sight::io::opencv
 {

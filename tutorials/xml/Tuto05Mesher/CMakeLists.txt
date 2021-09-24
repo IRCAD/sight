@@ -1,6 +1,6 @@
-sight_add_target( Tuto05Mesher TYPE APP )
+sight_add_target(Tuto05Mesher TYPE APP)
 
-add_dependencies(Tuto05Mesher 
+add_dependencies(Tuto05Mesher
                  sightrun
                  module_appXml
                  module_ui_qt

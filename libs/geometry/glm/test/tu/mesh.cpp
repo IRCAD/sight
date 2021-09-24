@@ -45,7 +45,7 @@ namespace ut
 
 const static double s_EPSILON = 10e-9;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::glm::ut::MeshFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::glm::ut::MeshFunctionsTest);
 
 //-----------------------------------------------------------------------------
 

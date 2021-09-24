@@ -65,14 +65,14 @@ namespace series
  * - \b seriesDBImporterConfig : the id of a configuration for SSelector
  * for example
  * @code{.xml}
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>seriesDBImporterConfig</id>
         <service>module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to import SeriesDB</desc>
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
         </config>
     </extension>
    @endcode
@@ -80,7 +80,7 @@ namespace series
  * @subsection In-Out In-Out
  * - \b seriesDB [sight::data::SeriesDB]: the SeriesDB to merge.
  */
-class MODULE_UI_BASE_CLASS_API SDBMerger : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SDBMerger : public sight::ui::base::IAction
 {
 public:
 
@@ -99,7 +99,7 @@ protected:
      * @brief Configure action. Retrieves the IOSelector config.
      *
      * @code{.xml}
-        <service impl="::sight::module::ui::base::series::SDBMerger">
+        <service impl="sight::module::ui::base::series::SDBMerger">
             <IOSelectorSrvConfig name="myConfig" />
         </service>
        @endcode

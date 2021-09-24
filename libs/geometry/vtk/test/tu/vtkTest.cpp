@@ -28,7 +28,7 @@
 #include <geometry/vtk/mesh.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::vtk::ut::vtkTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vtk::ut::vtkTest);
 
 namespace sight::geometry::vtk
 {

@@ -31,7 +31,7 @@
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::detail::reflection::ut::CalibrationInfoTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::CalibrationInfoTest);
 
 namespace sight::data
 {

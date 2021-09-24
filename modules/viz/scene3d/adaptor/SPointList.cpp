@@ -462,7 +462,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _materialSuffix)
 {
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-        "::sight::module::viz::scene3d::adaptor::SMaterial"
+        "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     materialAdaptor->setInOut(m_material, "material", true);
 

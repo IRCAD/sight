@@ -159,7 +159,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     }
     else
     {
-        builderImpl = "::sight::activity::builder::ActivitySeriesInitData";
+        builderImpl = "sight::activity::builder::ActivitySeriesInitData";
     }
 
     // backward compatibility
@@ -186,7 +186,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     // Set Default validator if none is defined
     if(validatorsImpl.empty())
     {
-        validatorsImpl.push_back("::sight::activity::validator::DefaultActivity");
+        validatorsImpl.push_back("sight::activity::validator::DefaultActivity");
     }
 }
 

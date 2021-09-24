@@ -94,7 +94,7 @@ void SListView::configuring()
 void SListView::starting()
 {
     this->create();
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName("SListViewLayout");

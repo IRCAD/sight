@@ -25,7 +25,7 @@
 namespace sight::module::data
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::data::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::data::Plugin");
 
 Plugin::~Plugin() noexcept
 {

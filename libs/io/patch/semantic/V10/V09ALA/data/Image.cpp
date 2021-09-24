@@ -52,7 +52,7 @@ namespace data
 Image::Image() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Image";
+    m_originClassname = "sight::data::Image";
     m_originVersion   = "2";
     this->addContext("MedicalData", "V10", "V09ALA");
 }
@@ -91,7 +91,7 @@ void Image::apply(
         // create new Landmarks structure
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
-        sight::atoms::Object::sptr currentPL = creators->create("::sight::data::PointList", "1");
+        sight::atoms::Object::sptr currentPL = creators->create("sight::data::PointList", "1");
         io::atoms::patch::helper::Object helperPL(currentPL);
 
         sight::atoms::Map::sptr currentFieldMap = sight::atoms::Map::dynamicCast(current->getAttribute("fields"));
@@ -123,7 +123,7 @@ void Image::apply(
                 ::boost::split(res, coords, ::boost::is_any_of(";"));
 
                 sight::atoms::Object::sptr point = sight::atoms::Object::New();
-                io::atoms::patch::helper::setClassname(point, "::sight::data::Point");
+                io::atoms::patch::helper::setClassname(point, "sight::data::Point");
                 io::atoms::patch::helper::setVersion(point, "1");
                 io::atoms::patch::helper::generateID(point);
 

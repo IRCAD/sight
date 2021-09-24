@@ -7,7 +7,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExOgreRGBDStream_AppCfg</id>
         <config>
 
@@ -297,7 +297,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <!-- The videoSelectorSrv creates 2 empty ::sight::data::Camera so we can use it without any prior calibration -->
+            <!-- The videoSelectorSrv creates 2 empty sight::data::Camera so we can use it without any prior calibration -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <videoSupport>true</videoSupport>
@@ -311,7 +311,7 @@
                 <config>
                     <camera type="RGBD" />
                     <selection mode="exclude" />
-                    <addSelection service="::sight::module::io::video::SFrameGrabber" />
+                    <addSelection service="sight::module::io::video::SFrameGrabber" />
                 </config>
             </service>
 

@@ -1,6 +1,6 @@
 <plugin id="tu_builder"  >
 
-    <extension implements="::sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension::Activity">
         <id>TestBuilder0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
@@ -22,4 +22,3 @@
     </extension>
 
 </plugin>
-

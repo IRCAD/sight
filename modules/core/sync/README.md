@@ -8,10 +8,10 @@ Contains services that control execution flow to synchronize various data stream
 
 * **SFrameUpdater**: extracts a frame from a timeline given a timestamp, or when timelines is updated.
 
-* **SMatrixSynchronizer**: reads the content of a Matrix timeline (**::data::MatrixTL**) into a **::sight::data::Matrix4**.
- 
+* **SMatrixSynchronizer**: reads the content of a Matrix timeline (**::data::MatrixTL**) into a **sight::data::Matrix4**.
+
 * **SMatrixTLSynchronizer**: extracts matrices from a Matrix timeline (**::data::MatrixTL**) into independent matrices (**::data::Matrix4**) which are synchronized.
- 
+
 
 
 ## How to use it

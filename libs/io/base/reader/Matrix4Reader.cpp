@@ -28,7 +28,7 @@
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::Matrix4Reader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::Matrix4Reader);
 
 namespace sight::io::base
 {

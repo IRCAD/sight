@@ -5,8 +5,8 @@
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
-    
-    <extension implements="::sight::service::extension::AppConfig" >
+
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRealSense_AppCgf</id>
         <config>
 
@@ -499,7 +499,7 @@
                 </inout>
             </service>
 
-            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
              <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
                  <inout key="source" uid="RGBDCameraSeries" autoConnect="true" >
                      <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->

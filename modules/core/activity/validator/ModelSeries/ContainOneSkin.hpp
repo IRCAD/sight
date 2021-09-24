@@ -43,12 +43,12 @@ public:
 
     SIGHT_DECLARE_CLASS(
         ContainOneSkin,
-        ::sight::activity::IObjectValidator,
-        ::sight::activity::validator::factory::New<ContainOneSkin>
+        sight::activity::IObjectValidator,
+        sight::activity::validator::factory::New<ContainOneSkin>
     )
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API ContainOneSkin(::sight::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API ContainOneSkin(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~ContainOneSkin();

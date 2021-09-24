@@ -1,7 +1,5 @@
 <plugin id="sight::module::filter::point" library="true" >
-    <requirement id="sight::module::ui::qt"/>
-
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IRegisterer</type>
          <service>sight::module::filter::point::SPointListRegistration</service>
          <desc>Register a point list against a reference point list. Each point in the list to register is matched</desc>

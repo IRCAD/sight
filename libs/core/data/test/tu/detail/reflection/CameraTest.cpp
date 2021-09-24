@@ -31,7 +31,7 @@
 #include <boost/lexical_cast.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::detail::reflection::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::CameraTest);
 
 namespace sight::data
 {

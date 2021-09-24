@@ -63,7 +63,7 @@ SView::~SView()
 
 void SView::configuring()
 {
-    this->::sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::base::view::IActivityView::configuring();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -78,9 +78,9 @@ void SView::configuring()
 
 void SView::starting()
 {
-    this->::sight::ui::base::IGuiContainer::create();
+    this->sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -91,11 +91,11 @@ void SView::starting()
     QWidget* widget = new QWidget();
     layout->addWidget(widget);
 
-    auto subContainer = ::sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::QtContainer::New();
 
     subContainer->setQtContainer(widget);
     m_wid = this->getID() + "_container";
-    ::sight::ui::base::GuiRegistry::registerWIDContainer(m_wid, subContainer);
+    sight::ui::base::GuiRegistry::registerWIDContainer(m_wid, subContainer);
 
     parentContainer->setLayout(layout);
 
@@ -120,8 +120,8 @@ void SView::stopping()
         m_configManager->stopAndDestroy();
     }
 
-    auto subContainer = ::sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
-    ::sight::ui::base::GuiRegistry::unregisterWIDContainer(m_wid);
+    auto subContainer = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
+    sight::ui::base::GuiRegistry::unregisterWIDContainer(m_wid);
 
     subContainer->destroyContainer();
 

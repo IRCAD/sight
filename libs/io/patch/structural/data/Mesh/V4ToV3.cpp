@@ -44,8 +44,8 @@ namespace Mesh
 V4ToV3::V4ToV3() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Mesh";
-    m_targetClassname = "::sight::data::Mesh";
+    m_originClassname = "sight::data::Mesh";
+    m_targetClassname = "sight::data::Mesh";
     m_originVersion   = "4";
     m_targetVersion   = "3";
 }

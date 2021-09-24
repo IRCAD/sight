@@ -46,7 +46,7 @@ namespace data
 Image::Image() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Image";
+    m_originClassname = "sight::data::Image";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V2", "V03AGO");
 }

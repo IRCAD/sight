@@ -74,7 +74,7 @@ public:
 
 /**
  * @brief This class allows to register all the configuration which has the point extension
- *        "::sight::service::extension::AppConfig".
+ *        "sight::service::extension::AppConfig".
  */
 class SERVICE_CLASS_API AppConfig : public core::BaseObject
 {

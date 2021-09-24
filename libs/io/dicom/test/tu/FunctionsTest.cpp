@@ -27,7 +27,7 @@
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::FunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::FunctionsTest);
 
 namespace sight::io::dicom
 {

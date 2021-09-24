@@ -29,7 +29,7 @@
 #include "io/patch/structural/creator/data/ActivitySeries1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::creator::data::ActivitySeries1Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::creator::data::ActivitySeries1Test);
 
 namespace sight::io::patch::structural
 {
@@ -66,7 +66,7 @@ void ActivitySeries1Test::createTest()
 
     CPPUNIT_ASSERT(actSeriesCreator);
     const std::string& classname = actSeriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ActivitySeries") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::ActivitySeries") == classname);
     const std::string& objectVersion = actSeriesCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
@@ -75,7 +75,7 @@ void ActivitySeries1Test::createTest()
     const std::string& actSeriesClassname = io::atoms::patch::helper::getClassname(actSeries);
     CPPUNIT_ASSERT_MESSAGE(
         "Classname must be equal",
-        std::string("::sight::data::ActivitySeries") == actSeriesClassname
+        std::string("sight::data::ActivitySeries") == actSeriesClassname
     );
     const std::string& actSeriesObjectVersion = io::atoms::patch::helper::getVersion(actSeries);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == actSeriesObjectVersion);
@@ -92,7 +92,7 @@ void ActivitySeries1Test::copyTest()
     ActivitySeries1 actSeriesCreator;
 
     const std::string& classname = actSeriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::ActivitySeries") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::ActivitySeries") == classname);
     const std::string& objectVersion = actSeriesCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
@@ -102,7 +102,7 @@ void ActivitySeries1Test::copyTest()
     const std::string& classnameActivitySeriesCreator2 = actSeriesCreator2->getObjectClassname();
     CPPUNIT_ASSERT_MESSAGE(
         "Classname must be equal",
-        std::string("::sight::data::ActivitySeries") == classnameActivitySeriesCreator2
+        std::string("sight::data::ActivitySeries") == classnameActivitySeriesCreator2
     );
 
     const std::string& objectVersionActivitySeriesCreator2 = actSeriesCreator2->getObjectVersion();

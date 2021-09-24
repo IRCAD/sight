@@ -89,7 +89,7 @@ void SFrustum::starting()
 
     module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-            "::sight::module::viz::scene3d::adaptor::SMaterial"
+            "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>SightViewer_GenericScene_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -673,7 +673,7 @@
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
-        
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />

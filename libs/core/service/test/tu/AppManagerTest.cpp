@@ -41,7 +41,7 @@
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::AppManagerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppManagerTest);
 
 namespace sight::service
 {
@@ -208,7 +208,7 @@ void AppManagerTest::managerWithObjectTest()
     CPPUNIT_ASSERT(boolean == m_appMgr->getObject(booleanId));
 
     // add a service when object are already added
-    auto service5 = service::add("::sight::service::ut::STest2Inputs");
+    auto service5 = service::add("sight::service::ut::STest2Inputs");
     service5->registerObject(imageId, "data1", data::Access::in, false, false);
     service5->registerObject(booleanId, "data2", data::Access::in, true, false);
     m_appMgr->addService(service5, true, true);
@@ -365,19 +365,19 @@ void AppManagerTest::managerWithServiceConnectionTest()
     const std::string channel = "channel";
 
     auto service1 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service2 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service3 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
     auto service4 = m_appMgr->addService<service::ut::STestNoData>(
-        "::sight::service::ut::STestNoData",
+        "sight::service::ut::STestNoData",
         true
     );
 
@@ -606,7 +606,7 @@ void AppManagerTest::managerWithInputsTest()
 
     appMgr->requireInput(INPUT_OBJ1, AppManagerForTest::InputType::OBJECT);
     appMgr->requireInput(INPUT_OBJ2, AppManagerForTest::InputType::OBJECT);
-    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "::sight::data::Image");
+    appMgr->requireInput(OPTIONAL_INPUT_OBJ, AppManagerForTest::InputType::OBJECT, "sight::data::Image");
 
     CPPUNIT_ASSERT(!appMgr->checkInputs());
 

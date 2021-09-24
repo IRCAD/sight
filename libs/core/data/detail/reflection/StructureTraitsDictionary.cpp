@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (StructureTraitsDictionary))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("structureTraits", &::sight::data::StructureTraitsDictionary::m_structureTraitsMap)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("structureTraits", &sight::data::StructureTraitsDictionary::m_structureTraitsMap)
     ;
 }

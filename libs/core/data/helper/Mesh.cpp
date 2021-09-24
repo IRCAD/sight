@@ -37,7 +37,7 @@ Mesh::Mesh(data::Mesh::sptr mesh) :
 {
     FW_DEPRECATED_MSG(
         "::data::helper::Mesh is no longer supported, the methods have been moved to "
-        "::sight::data::Mesh",
+        "sight::data::Mesh",
         "22.0"
     )
     SIGHT_ASSERT("Mesh ptr is null.", mesh);

@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::atoms::ut::BoostIOTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::atoms::ut::BoostIOTest);
 
 namespace sight::io::atoms
 {

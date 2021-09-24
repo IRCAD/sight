@@ -32,7 +32,7 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::CameraSeries::V2ToV3Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::CameraSeries::V2ToV3Test);
 
 namespace sight::io::patch::structural
 {

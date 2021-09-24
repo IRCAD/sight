@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>TransferFunctionManagerWindow_AppCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />

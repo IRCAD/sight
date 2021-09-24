@@ -36,7 +36,7 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu items.
  */
-class UI_BASE_CLASS_API IAction : public ::sight::service::IService
+class UI_BASE_CLASS_API IAction : public sight::service::IService
 {
 public:
 

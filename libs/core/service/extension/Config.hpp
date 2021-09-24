@@ -60,19 +60,19 @@ public:
 
 /**
  * @brief This class allows to register all the service configuration which has the point extension
- *        "::sight::service::extension::Config".
+ *        "sight::service::extension::Config".
  *
  * Registry config like :
  * @code{.xml}
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SDBOpenIOSelectorConfig</id>
         <service>module::ui::base::editor::SSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
-            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
+            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
         </config>
     </extension>
    @endcode

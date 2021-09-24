@@ -14,7 +14,7 @@ With:
 - ICON_PATH (mandatory): icon of the window
 - WindowTitle(optional): title of the window
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>ModelSeriesManagerWindow</id>
     <parameters>
         <param name="ORGAN_MANAGER_MODELSERIES" />

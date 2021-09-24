@@ -29,7 +29,7 @@
 #include <Eigen/Geometry>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::eigen::ut::EigenToolsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::eigen::ut::EigenToolsTest);
 
 namespace sight::geometry::eigen
 {

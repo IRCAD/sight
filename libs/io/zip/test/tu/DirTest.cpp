@@ -32,7 +32,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::zip::ut::DirTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::zip::ut::DirTest);
 
 namespace sight::io::zip
 {

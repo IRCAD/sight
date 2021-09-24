@@ -31,7 +31,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::SlotsSignalsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::SlotsSignalsTest);
 //
 namespace sight::service
 {

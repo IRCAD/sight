@@ -32,15 +32,15 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (TransferFunction))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("level", &::sight::data::TransferFunction::m_level)
-    .property("window", &::sight::data::TransferFunction::m_window)
-    .property("name", &::sight::data::TransferFunction::m_name)
-    .property("background_color", &::sight::data::TransferFunction::m_backgroundColor)
-    .property("tf_data", &::sight::data::TransferFunction::m_tfData)
-    .property("interpolation_mode", &::sight::data::TransferFunction::m_interpolationMode)
-    .property("is_clamped", &::sight::data::TransferFunction::m_isClamped)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("level", &sight::data::TransferFunction::m_level)
+    .property("window", &sight::data::TransferFunction::m_window)
+    .property("name", &sight::data::TransferFunction::m_name)
+    .property("background_color", &sight::data::TransferFunction::m_backgroundColor)
+    .property("tf_data", &sight::data::TransferFunction::m_tfData)
+    .property("interpolation_mode", &sight::data::TransferFunction::m_interpolationMode)
+    .property("is_clamped", &sight::data::TransferFunction::m_isClamped)
     ;
 }
 

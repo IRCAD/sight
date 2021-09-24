@@ -147,7 +147,7 @@ void SReconstruction::createMeshService()
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
         auto meshAdaptor = this->registerService<module::viz::scene3d::adaptor::SMesh>(
-            "::sight::module::viz::scene3d::adaptor::SMesh"
+            "sight::module::viz::scene3d::adaptor::SMesh"
         );
         meshAdaptor->setInOut(mesh, "mesh", true);
 

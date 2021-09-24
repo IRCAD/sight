@@ -1,5 +1,5 @@
 
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>SDBdicomXplorer</id>
     <parameters>
         <param name="SERIESDB" />

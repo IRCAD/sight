@@ -40,7 +40,7 @@ namespace extension
 
 /**
  * @brief This class allows to register all the configuration parameters which has the point extension
- *        "::sight::service::extension::AppConfigParameters".
+ *        "sight::service::extension::AppConfigParameters".
  */
 class SERVICE_CLASS_API AppConfigParameters : public core::BaseObject
 {

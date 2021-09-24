@@ -34,7 +34,7 @@ namespace registry
 {
 
 #define fwGuiRegisterMacro(GuiClassname, GuiFunctorKey) \
-    static ::sight::ui::base::GuiBaseObject::Registry<GuiClassname> \
+    static sight::ui::base::GuiBaseObject::Registry<GuiClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
 
 } // end namespace registry

@@ -44,7 +44,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::vtk::ut::ModelSeriesWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ModelSeriesWriterTest);
 
 namespace sight::module::io::vtk
 {
@@ -169,7 +169,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         cfg->addConfigurationElement(extCfg);
 
         runModelSeriesSrv(
-            "::sight::module::io::vtk::SModelSeriesWriter",
+            "sight::module::io::vtk::SModelSeriesWriter",
             cfg,
             modelSeries
         );
@@ -195,7 +195,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
         runModelSeriesSrv(
-            "::sight::module::io::vtk::SSeriesDBReader",
+            "sight::module::io::vtk::SSeriesDBReader",
             getIOCfgFromFiles(files),
             seriesDB
         );
@@ -360,7 +360,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
     }
 
     runModelSeriesSrv(
-        "::sight::module::io::vtk::SModelSeriesObjWriter",
+        "sight::module::io::vtk::SModelSeriesObjWriter",
         getIOCfgFromFolder(dir),
         modelSeries
     );

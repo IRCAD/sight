@@ -389,7 +389,7 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
 )
 {
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-        "::sight::module::viz::scene3d::adaptor::SMaterial"
+        "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     materialAdaptor->setInOut(m_material, "material", true);
 

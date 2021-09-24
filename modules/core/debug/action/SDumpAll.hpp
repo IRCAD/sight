@@ -33,11 +33,11 @@ namespace action
 {
 
 /// Implements an action that dump all buffer (if possible)
-class MODULE_DEBUG_CLASS_API SDumpAll : public ::sight::ui::base::IAction
+class MODULE_DEBUG_CLASS_API SDumpAll : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDumpAll, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDumpAll, sight::ui::base::IAction);
 
     /// Does nothing
     MODULE_DEBUG_API SDumpAll() noexcept;

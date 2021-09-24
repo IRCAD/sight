@@ -74,7 +74,7 @@ class SHistogramCursor : public sight::viz::scene2d::IAdaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogramCursor, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogramCursor, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SHistogramCursor() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SHistogramCursor() noexcept;

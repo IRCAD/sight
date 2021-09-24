@@ -32,7 +32,7 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::DicomSeries::V1ToV2Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::DicomSeries::V1ToV2Test);
 
 namespace sight::io::patch::structural
 {
@@ -65,7 +65,7 @@ void V1ToV2Test::applyPatchTest()
     sight::atoms::Object::sptr dicomSeriesV1 = sight::atoms::Object::New();
     sight::atoms::Object::sptr dicomSeriesV2;
 
-    io::atoms::patch::helper::setClassname(dicomSeriesV1, "::sight::data::DicomSeries");
+    io::atoms::patch::helper::setClassname(dicomSeriesV1, "sight::data::DicomSeries");
     io::atoms::patch::helper::setVersion(dicomSeriesV1, "1");
 
     io::atoms::patch::helper::Object helper(dicomSeriesV1);

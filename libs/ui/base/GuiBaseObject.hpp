@@ -34,11 +34,11 @@ namespace sight::ui::base
 /**
  * @brief Base class for all fwGui's classes
  */
-class UI_BASE_CLASS_API GuiBaseObject : public ::sight::core::BaseObject
+class UI_BASE_CLASS_API GuiBaseObject : public sight::core::BaseObject
 {
 public:
 
-    typedef ::sight::ui::base::factory::Key Key;
+    typedef sight::ui::base::factory::Key Key;
 
     /**
      * @brief Class used to register a class factory in factory registry.

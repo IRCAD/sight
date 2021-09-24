@@ -33,7 +33,7 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MODULE_DEBUG_CLASS_API MemoryConsumption : public ::sight::ui::base::IAction
+class MODULE_DEBUG_CLASS_API MemoryConsumption : public sight::ui::base::IAction
 {
 public:
 
@@ -54,7 +54,7 @@ protected:
      *
      * @code{.xml}
          <service uid="myIncMemConsum"  type="ui::base::IAction"
-            implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="false" >
+            implementation="sight::module::core::debug::action::MemoryConsumption" autoComChannel="false" >
             <config mode="increase" value="256" />
         </service>
        @endcode

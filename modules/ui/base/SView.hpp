@@ -35,11 +35,11 @@ namespace sight::module::ui::base
  * @brief Defines the generic layout for application.
  * @see sight::ui::base::IGuiContainer for the service configuration
  */
-class MODULE_UI_BASE_CLASS_API SView : public ::sight::ui::base::view::IView
+class MODULE_UI_BASE_CLASS_API SView : public sight::ui::base::view::IView
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::base::view::IView);
+    SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IView);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SView() noexcept;

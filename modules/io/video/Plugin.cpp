@@ -27,7 +27,7 @@
 namespace sight::module::io::video
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::video::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::video::Plugin");
 
 Plugin::~Plugin() noexcept
 {

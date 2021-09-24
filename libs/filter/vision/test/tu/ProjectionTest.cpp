@@ -27,7 +27,7 @@
 #include <cmath>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::vision::ut::ProjectionTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::vision::ut::ProjectionTest);
 
 namespace sight::filter::vision
 {

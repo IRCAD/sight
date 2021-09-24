@@ -32,11 +32,11 @@ namespace sight::module::ui::base
 /**
  * @brief   Defines the default menubar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SMenuBar : public ::sight::ui::base::IMenuBar
+class MODULE_UI_BASE_CLASS_API SMenuBar : public sight::ui::base::IMenuBar
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMenuBar, ::sight::ui::base::IMenuBar);
+    SIGHT_DECLARE_SERVICE(SMenuBar, sight::ui::base::IMenuBar);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SMenuBar() noexcept;
@@ -54,7 +54,7 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::base::IMenuBar" impl="::sight::module::ui::base::SMenuBar"
+       <service uid="menuBar" type="ui::base::IMenuBar" impl="sight::module::ui::base::SMenuBar"
      * autoConnect="false"
      *>
           <gui>

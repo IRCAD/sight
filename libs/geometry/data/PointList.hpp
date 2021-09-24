@@ -34,7 +34,7 @@ namespace sight::geometry::data
 {
 
 /**
- * @brief Defines a helper to modify a ::sight::data::PointList.
+ * @brief Defines a helper to modify a sight::data::PointList.
  */
 class GEOMETRY_DATA_CLASS_API PointList
 {
@@ -52,9 +52,9 @@ public:
      * @param[in] _pointList2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
-    GEOMETRY_DATA_API static ::sight::data::Array::sptr computeDistance(
-        ::sight::data::PointList::sptr _pointList1,
-        ::sight::data::PointList::sptr _pointList2
+    GEOMETRY_DATA_API static sight::data::Array::sptr computeDistance(
+        sight::data::PointList::sptr _pointList1,
+        sight::data::PointList::sptr _pointList2
     );
 
     /**
@@ -63,8 +63,8 @@ public:
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
     GEOMETRY_DATA_API static void transform(
-        ::sight::data::PointList::sptr& _pointList,
-        const ::sight::data::Matrix4::csptr& _matrix
+        sight::data::PointList::sptr& _pointList,
+        const sight::data::Matrix4::csptr& _matrix
     );
 
     /**
@@ -75,8 +75,8 @@ public:
      * @param[in] _pointList2 pointlist that will be re-ordered
      */
     GEOMETRY_DATA_API static void associate(
-        const ::sight::data::PointList::csptr& _pointList1,
-        ::sight::data::PointList::sptr _pointList2
+        const sight::data::PointList::csptr& _pointList1,
+        sight::data::PointList::sptr _pointList2
     );
 
     /**
@@ -86,9 +86,9 @@ public:
      * @param[in] _delta: the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    GEOMETRY_DATA_API static const ::sight::data::Point::sptr removeClosestPoint(
-        const ::sight::data::PointList::sptr& _pointList,
-        const ::sight::data::Point::csptr& _point,
+    GEOMETRY_DATA_API static const sight::data::Point::sptr removeClosestPoint(
+        const sight::data::PointList::sptr& _pointList,
+        const sight::data::Point::csptr& _point,
         float _delta
     );
 };

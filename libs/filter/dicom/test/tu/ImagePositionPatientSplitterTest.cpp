@@ -35,7 +35,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
 
 namespace sight::filter::dicom
 {

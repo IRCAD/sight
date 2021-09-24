@@ -77,7 +77,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFrustumList final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFrustumList, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFrustumList, sight::viz::scene3d::IAdaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SFrustumList() noexcept;

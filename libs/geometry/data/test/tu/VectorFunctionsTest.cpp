@@ -31,7 +31,7 @@
 #include <geometry/data/VectorFunctions.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::VectorFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::VectorFunctionsTest);
 
 namespace sight::geometry::data
 {

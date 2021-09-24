@@ -36,8 +36,8 @@ namespace ActivitySeries
 V1ToV2::V1ToV2() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::ActivitySeries";
-    m_targetClassname = "::sight::data::ActivitySeries";
+    m_originClassname = "sight::data::ActivitySeries";
+    m_targetClassname = "sight::data::ActivitySeries";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }

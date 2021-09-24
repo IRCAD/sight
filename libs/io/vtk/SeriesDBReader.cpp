@@ -72,7 +72,7 @@
 #include <iosfwd>
 #include <numeric>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::SeriesDBReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::SeriesDBReader);
 
 namespace sight::io::vtk
 {

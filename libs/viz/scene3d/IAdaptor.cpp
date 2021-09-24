@@ -81,7 +81,7 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = service::OSR::getServices("::sight::viz::scene3d::SRender");
+        auto servicesVector = service::OSR::getServices("sight::viz::scene3d::SRender");
 
         auto& registry       = viz::scene3d::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];

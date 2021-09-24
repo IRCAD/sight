@@ -30,7 +30,7 @@
 #include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraTest);
 
 namespace sight::data
 {

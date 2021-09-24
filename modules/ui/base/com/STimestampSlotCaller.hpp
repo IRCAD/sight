@@ -42,7 +42,7 @@ namespace com
  *
  *
  * @code{.xml}
-   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="false">
+   <service uid="..." type=sight::module::ui::base::com::STimestampSlotCaller" autoConnect="false">
         <slots>
             <slot>hasSlotsId/slotKey</slot>
             <slot>hasSlots2Id/slot2Key</slot>
@@ -53,11 +53,11 @@ namespace com
  * - \b hasSlotsId : fwId of the HasSlots (usually a service)
  * - \b slotKey : the identifier of the slot in the HasSlots
  */
-class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STimestampSlotCaller, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(STimestampSlotCaller, sight::ui::base::IAction);
 
     /// Constructor
     MODULE_UI_BASE_API STimestampSlotCaller();

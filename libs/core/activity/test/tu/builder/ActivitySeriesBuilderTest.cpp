@@ -36,7 +36,7 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::activity::ut::ActivitySeriesBuilderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ActivitySeriesBuilderTest);
 
 namespace sight::activity
 {

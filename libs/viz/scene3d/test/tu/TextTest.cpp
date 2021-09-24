@@ -35,7 +35,7 @@
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::scene3d::ut::TextTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::TextTest);
 
 namespace sight::viz::scene3d
 {

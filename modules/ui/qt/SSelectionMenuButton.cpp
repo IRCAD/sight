@@ -121,7 +121,7 @@ void SSelectionMenuButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_dropDownButton = new QPushButton(QString::fromStdString(m_text));
     m_dropDownButton->setToolTip(QString::fromStdString(m_toolTip));

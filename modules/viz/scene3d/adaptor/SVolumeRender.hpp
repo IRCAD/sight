@@ -127,7 +127,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVolumeRender final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVolumeRender, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVolumeRender, sight::viz::scene3d::IAdaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SVolumeRender() noexcept;

@@ -52,7 +52,7 @@ Key()
 }
 };
 
-UI_BASE_API SPTR(::sight::ui::base::GuiBaseObject) New(const ::sight::ui::base::registry::KeyType& classname);
+UI_BASE_API SPTR(sight::ui::base::GuiBaseObject) New(const sight::ui::base::registry::KeyType& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  New()

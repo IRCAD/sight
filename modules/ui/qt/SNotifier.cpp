@@ -99,11 +99,11 @@ void SNotifier::starting()
 
     if(!m_parentContainerID.empty())
     {
-        auto container = ::sight::ui::base::GuiRegistry::getSIDContainer(m_parentContainerID);
+        auto container = sight::ui::base::GuiRegistry::getSIDContainer(m_parentContainerID);
 
         if(!container)
         {
-            container = ::sight::ui::base::GuiRegistry::getWIDContainer(m_parentContainerID);
+            container = sight::ui::base::GuiRegistry::getWIDContainer(m_parentContainerID);
         }
 
         // If we have an SID/WID set the container.

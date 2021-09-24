@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::GzBufferImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzBufferImageWriter);
 
 namespace sight::io::base
 {

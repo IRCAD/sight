@@ -126,7 +126,7 @@ void SParameters::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QGridLayout* layout = new QGridLayout();
 
@@ -350,7 +350,7 @@ void SParameters::starting()
 
 void SParameters::updating()
 {
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* widget  = qtContainer->getQtContainer();
 
     service::IService::ConfigType config               = this->getConfigTree();
@@ -536,7 +536,7 @@ void SParameters::onColorButton()
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -1847,7 +1847,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 QWidget* SParameters::getParamWidget(const std::string& key)
 {
-    auto qtContainer      = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer      = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     const QWidget* widget = qtContainer->getQtContainer();
 
     QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));

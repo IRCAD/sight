@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::splitter::ImagePositionPatientSplitter);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImagePositionPatientSplitter);
 
 namespace sight::filter::dicom
 {

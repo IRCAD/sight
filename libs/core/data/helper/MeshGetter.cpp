@@ -37,7 +37,7 @@ MeshGetter::MeshGetter(data::Mesh::csptr mesh) :
 {
     FW_DEPRECATED_MSG(
         "::data::helper::MeshGetter is no longer supported, the methods have been moved to "
-        "::sight::data::Mesh",
+        "sight::data::Mesh",
         "22.0"
     )
 

@@ -35,7 +35,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Acquisition::V1ToFwMedDataImageSeriesV1Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::Acquisition::V1ToFwMedDataImageSeriesV1Test);
 
 namespace sight::io::patch::structural
 {
@@ -70,7 +70,7 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     sight::atoms::Object::sptr acqObj = sight::atoms::Object::New();
     sight::atoms::Object::sptr isObj;
 
-    io::atoms::patch::helper::setClassname(acqObj, "::sight::data::Acquisition");
+    io::atoms::patch::helper::setClassname(acqObj, "sight::data::Acquisition");
     io::atoms::patch::helper::setVersion(acqObj, "1");
 
     io::atoms::patch::helper::Object helper(acqObj);
@@ -116,7 +116,7 @@ void V1ToFwMedDataImageSeriesV1Test::applyPatchTest()
     CPPUNIT_ASSERT_NO_THROW(patch->apply(acqObj, isObj, newVersions));
 
     CPPUNIT_ASSERT(isObj);
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::ImageSeries"), io::atoms::patch::helper::getClassname(isObj));
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::data::ImageSeries"), io::atoms::patch::helper::getClassname(isObj));
     CPPUNIT_ASSERT_EQUAL(std::string("1"), io::atoms::patch::helper::getVersion(isObj));
 
     CPPUNIT_ASSERT(!isObj->getAttribute("bits_per_pixel"));

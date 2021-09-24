@@ -29,7 +29,7 @@
 namespace sight::Tuto06GuiQml
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::Tuto06GuiQml::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::Tuto06GuiQml::Plugin");
 
 //------------------------------------------------------------------------------
 

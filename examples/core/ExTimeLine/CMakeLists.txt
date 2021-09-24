@@ -1,6 +1,6 @@
 sight_add_target( ExTimeLine TYPE APP )
 
-add_dependencies(ExTimeLine 
+add_dependencies(ExTimeLine
                  module_appXml
                  module_service
                  sightrun

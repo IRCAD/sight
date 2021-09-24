@@ -32,7 +32,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::AppConfigParametersTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppConfigParametersTest);
 
 namespace sight::service
 {

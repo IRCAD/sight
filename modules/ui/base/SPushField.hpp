@@ -40,18 +40,18 @@ namespace sight::module::ui::base
  * @section XML Configuration
  *
  * @code{.xml}
-       <service impl="::sight::module::ui::base::SPushField">
+       <service impl="sight::module::ui::base::SPushField">
            <inout key="source" uid="compositeId" />
            <out key="destination" uid="objectId" />
            <push field="item" />
        </service>
    @endcode
  */
-class MODULE_UI_BASE_CLASS_API SPushField : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SPushField : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPushField, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SPushField, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SPushField() noexcept;

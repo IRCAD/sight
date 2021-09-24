@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLGenericDataObjectReader.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::vtk::VtpMeshReader);
+SIGHT_REGISTER_IO_READER(sight::io::vtk::VtpMeshReader);
 
 namespace sight::io::vtk
 {

@@ -28,7 +28,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::ut::RawBufferTLTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::RawBufferTLTest);
 
 namespace sight::data
 {

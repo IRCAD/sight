@@ -106,7 +106,7 @@ void SPushField::updateObjects()
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-    this->::sight::ui::base::IAction::setIsExecutable(executable);
+    this->sight::ui::base::IAction::setIsExecutable(executable);
 }
 
 //------------------------------------------------------------------------------

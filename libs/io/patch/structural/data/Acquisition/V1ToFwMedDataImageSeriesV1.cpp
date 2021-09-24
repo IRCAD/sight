@@ -49,8 +49,8 @@ namespace Acquisition
 V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Acquisition";
-    m_targetClassname = "::sight::data::ImageSeries";
+    m_originClassname = "sight::data::Acquisition";
+    m_targetClassname = "sight::data::ImageSeries";
     m_originVersion   = "1";
     m_targetVersion   = "1";
 }
@@ -120,13 +120,13 @@ void V1ToFwMedDataImageSeriesV1::apply(
     io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
 
     // Create Patient
-    helper.addAttribute("patient", creators->create("::sight::data::Patient", "1"));
+    helper.addAttribute("patient", creators->create("sight::data::Patient", "1"));
 
     // Create Equipment
-    helper.addAttribute("equipment", creators->create("::sight::data::Equipment", "1"));
+    helper.addAttribute("equipment", creators->create("sight::data::Equipment", "1"));
 
     // Create Study
-    helper.addAttribute("study", creators->create("::sight::data::Study", "1"));
+    helper.addAttribute("study", creators->create("sight::data::Study", "1"));
 
     // Create performing_physicians_name
     helper.addAttribute("performing_physicians_name", sight::atoms::Sequence::New());

@@ -44,7 +44,7 @@
 #include <array>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::semantic::ut::ImageV10ToV09ALATest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::semantic::ut::ImageV10ToV09ALATest);
 
 namespace sight::io::patch::semantic
 {
@@ -86,7 +86,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     sight::atoms::Object::sptr image = sight::atoms::Object::New();
     sight::atoms::Object::sptr patchedObj;
 
-    io::atoms::patch::helper::setClassname(image, "::sight::data::Image");
+    io::atoms::patch::helper::setClassname(image, "sight::data::Image");
     io::atoms::patch::helper::setVersion(image, "2");
 
     io::atoms::patch::helper::Object helperImage(image);
@@ -97,7 +97,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
 
     // create PointList
     sight::atoms::Object::sptr landmarks = sight::atoms::Object::New();
-    io::atoms::patch::helper::setClassname(landmarks, "::sight::data::Landmarks");
+    io::atoms::patch::helper::setClassname(landmarks, "sight::data::Landmarks");
     io::atoms::patch::helper::setVersion(landmarks, "1");
     io::atoms::patch::helper::Object helperLandmarks(landmarks);
 
@@ -127,7 +127,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     CPPUNIT_ASSERT(newFieldMap->find("m_imageLandmarksId") != newFieldMap->end());
     sight::atoms::Object::sptr pl = sight::atoms::Object::dynamicCast((*newFieldMap)["m_imageLandmarksId"]);
     CPPUNIT_ASSERT(pl);
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::PointList"), io::atoms::patch::helper::getClassname(pl));
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::data::PointList"), io::atoms::patch::helper::getClassname(pl));
     CPPUNIT_ASSERT(pl->getAttribute("points"));
     sight::atoms::Sequence::sptr plSeq = sight::atoms::Sequence::dynamicCast(pl->getAttribute("points"));
     CPPUNIT_ASSERT(plSeq);
@@ -138,7 +138,7 @@ void ImageV10ToV09ALATest::applyPatchTest()
     {
         sight::atoms::Object::sptr point = sight::atoms::Object::dynamicCast(elt);
         CPPUNIT_ASSERT(point);
-        CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Point"), io::atoms::patch::helper::getClassname(point));
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Point"), io::atoms::patch::helper::getClassname(point));
         sight::atoms::Sequence::csptr pointCoords = sight::atoms::Sequence::dynamicCast(point->getAttribute("coord"));
         CPPUNIT_ASSERT_EQUAL(size_t(3), pointCoords->size());
         sight::atoms::Numeric::csptr coordX = sight::atoms::Numeric::dynamicCast(pointCoords->getValue()[0]);

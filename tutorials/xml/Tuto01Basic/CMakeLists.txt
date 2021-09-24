@@ -1,6 +1,6 @@
-sight_add_target( Tuto01Basic TYPE APP )
+sight_add_target(Tuto01Basic TYPE APP)
 
-add_dependencies(Tuto01Basic 
+add_dependencies(Tuto01Basic
                  sightrun
                  module_appXml
                  module_ui_qt

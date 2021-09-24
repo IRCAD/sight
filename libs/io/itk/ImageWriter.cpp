@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::itk::ImageWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::itk::ImageWriter);
 
 namespace sight::io::itk
 {

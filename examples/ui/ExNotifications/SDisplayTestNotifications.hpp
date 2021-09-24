@@ -43,11 +43,11 @@ namespace ExNotifications
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IAction
+class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, sight::ui::base::IAction);
 
     /**
      * @name Constructor/Destructor

@@ -32,7 +32,7 @@ namespace sight::module::ui::console
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::console::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::console::Plugin");
 
 //-----------------------------------------------------------------------------
 

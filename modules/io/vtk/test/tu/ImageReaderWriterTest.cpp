@@ -41,7 +41,7 @@
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::vtk::ut::ImageReaderWriterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ImageReaderWriterTest);
 
 static const double epsilon = 0.00001;
 
@@ -633,7 +633,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.xxx";
 
     {
-        const std::string srvname("::sight::module::io::vtk::SImageWriter");
+        const std::string srvname("sight::module::io::vtk::SImageWriter");
 
         service::IService::sptr srv = service::add(srvname);
 

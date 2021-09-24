@@ -309,7 +309,7 @@ void SMaterial::setTextureName(const std::string& _textureName)
     else
     {
         auto textureAdaptors =
-            this->getRenderService()->getAdaptors< ::sight::module::viz::scene3d::adaptor::STexture>();
+            this->getRenderService()->getAdaptors<sight::module::viz::scene3d::adaptor::STexture>();
         auto result =
             std::find_if(
                 textureAdaptors.begin(),

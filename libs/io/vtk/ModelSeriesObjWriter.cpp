@@ -47,7 +47,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::vtk::ModelSeriesObjWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::vtk::ModelSeriesObjWriter);
 
 namespace sight::io::vtk
 {

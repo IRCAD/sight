@@ -41,7 +41,7 @@ const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoint
 
 SAddPoint::SAddPoint() noexcept
 {
-    FW_DEPRECATED("::sight::module::ui::viz::SAddPoint", "::sight::module::geometry::base::SManagePointList", "21.0");
+    FW_DEPRECATED("sight::module::ui::viz::SAddPoint", "sight::module::geometry::base::SManagePointList", "21.0");
 
     newSlot(s_PICK_SLOT, &SAddPoint::pick, this);
     newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this);

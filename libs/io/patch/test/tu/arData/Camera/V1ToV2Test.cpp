@@ -36,7 +36,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Camera::V1ToV2Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::Camera::V1ToV2Test);
 
 namespace sight::io::patch::structural
 {
@@ -71,7 +71,7 @@ void V1ToV2Test::tearDown()
 
 void V1ToV2Test::applyPatchTestFile()
 {
-    using ::sight::atoms::Object;
+    using sight::atoms::Object;
 
     sight::atoms::Object::sptr camObjV1 = sight::atoms::Object::New();
     sight::atoms::Object::sptr camObjV2;

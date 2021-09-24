@@ -29,7 +29,7 @@
 namespace sight::module::ui::dicom
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::dicom::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::dicom::Plugin");
 
 Plugin::Plugin()
 {

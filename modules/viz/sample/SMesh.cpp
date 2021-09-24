@@ -94,21 +94,21 @@ void SMesh::starting()
     renderConfig.add_child("scene.adaptor", negatoCfg);
     renderConfig.add_child("scene.adaptor", cameraCfg);
 
-    m_renderSrv = service::add("::sight::viz::scene3d::SRender");
+    m_renderSrv = service::add("sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
     m_renderSrv->setID(genericSceneId);
     m_renderSrv->configure();
 
     service::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = service::add("::sight::module::viz::scene3d::adaptor::STrackballCamera");
+    m_interactorSrv = service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
     service::IService::ConfigType meshConfig;
     meshConfig.put("config.<xmlattr>.layer", "default");
-    m_meshSrv = service::add("::sight::module::viz::scene3d::adaptor::SMesh");
+    m_meshSrv = service::add("sight::module::viz::scene3d::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
     m_meshSrv->setInOut(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
@@ -124,7 +124,7 @@ void SMesh::starting()
 
     service::IService::ConfigType cameraConfig;
     cameraConfig.put("config.<xmlattr>.layer", "default");
-    m_cameraSrv = service::add("::sight::module::viz::scene3d::adaptor::SCamera");
+    m_cameraSrv = service::add("sight::module::viz::scene3d::adaptor::SCamera");
     m_cameraSrv->setConfiguration(cameraConfig);
     m_cameraSrv->setInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");

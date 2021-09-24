@@ -32,8 +32,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Equipment))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("institution_name", &::sight::data::Equipment::m_institutionName)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("institution_name", &sight::data::Equipment::m_institutionName)
     ;
 }

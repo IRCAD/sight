@@ -30,7 +30,7 @@
 #include <QGuiApplication>
 #include <QObject>
 
-fwGuiRegisterMacro(::sight::ui::qml::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qml::dialog::InputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
 
 namespace sight::ui::qml
 {

@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::sight::data::Mesh" : "1",
-            "::sight::data::Mesh" : "2"
+            "sight::data::Mesh" : "1",
+            "sight::data::Mesh" : "2"
         }
     ]
 }

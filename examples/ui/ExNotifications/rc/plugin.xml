@@ -15,13 +15,13 @@ are already displayed and where they are displayed on screen.
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::Factory" >
+    <extension implements="sight::service::extension::Factory" >
         <type>sight::ui::base::IAction</type>
         <service>ExNotifications::SDisplayTestNotifications</service>
         <object>sight::data::Object</object>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExNotifications_AppCfg</id>
         <config>
 
@@ -125,7 +125,7 @@ are already displayed and where they are displayed on screen.
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
 
-            <service uid="::sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::SStyleSelector" />
+            <service uid="sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::SStyleSelector" />
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -172,7 +172,7 @@ are already displayed and where they are displayed on screen.
             <start uid="mainFrame" />
             <start uid="notifierSrv" />
             <start uid="testNotifierSrv" />
-            <start uid="::sight::module::ui::qtChangerSrv" />
+            <start uid="sight::module::ui::qtChangerSrv" />
 
         </config>
     </extension>

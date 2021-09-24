@@ -81,7 +81,7 @@ public:
      * Example of configuration
      * @code{.xml}
            <service uid="toolbar2" type="ui::base::IToolBar"
-     * impl="::sight::module::ui::base::SToolBar"
+     * impl="sight::module::ui::base::SToolBar"
      * autoConnect="false" >
                <gui>
                    <layout>

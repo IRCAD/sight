@@ -35,11 +35,11 @@ namespace sight::module::activity::validator
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneSkin);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneSkin);
 
 //-----------------------------------------------------------------------------
 
-ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key)
+ContainOneSkin::ContainOneSkin(sight::activity::IValidator::Key)
 {
 }
 
@@ -51,7 +51,7 @@ ContainOneSkin::~ContainOneSkin()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 

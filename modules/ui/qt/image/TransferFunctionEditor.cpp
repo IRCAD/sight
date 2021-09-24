@@ -487,7 +487,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
         data::TransferFunction::sptr tf         = data::TransferFunction::New();
         io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(
-            "::sight::module::io::atoms::SReader"
+            "sight::module::io::atoms::SReader"
         );
         reader->setInOut(tf, io::base::service::s_DATA_KEY);
 

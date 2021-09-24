@@ -104,7 +104,7 @@ namespace sight::module::io::realsense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::sight::module::io::realsense::SScan" autoConnect="false">
+   <service uid="videoGrabber" type ="sight::module::io::realsense::SScan" autoConnect="false">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />

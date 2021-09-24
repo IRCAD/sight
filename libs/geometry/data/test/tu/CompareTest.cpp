@@ -27,7 +27,7 @@
 #include <geometry/data/Compare.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::CompareTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::CompareTest);
 
 namespace sight::geometry::data
 {

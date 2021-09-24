@@ -34,8 +34,8 @@ namespace sight::geometry::data
 //------------------------------------------------------------------------------
 
 bool invert(
-    const ::sight::data::Matrix4& _input,
-    ::sight::data::Matrix4& _output
+    const sight::data::Matrix4& _input,
+    sight::data::Matrix4& _output
 )
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
@@ -127,12 +127,12 @@ void multiply(
 
 // ----------------------------------------------------------------------------
 
-bool isIdentity(const ::sight::data::Matrix4& _trf, const double _epsilon)
+bool isIdentity(const sight::data::Matrix4& _trf, const double _epsilon)
 {
-    static const ::sight::data::Matrix4 s_IDENTITY;
+    static const sight::data::Matrix4 s_IDENTITY;
 
-    const ::sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY.getCoefficients();
-    const ::sight::data::Matrix4::TMCoefArray& arrayTrf = _trf.getCoefficients();
+    const sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY.getCoefficients();
+    const sight::data::Matrix4::TMCoefArray& arrayTrf = _trf.getCoefficients();
 
     for(size_t i = 0 ; i < arrayID.size() ; ++i)
     {

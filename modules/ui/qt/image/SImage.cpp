@@ -56,7 +56,7 @@ void SImage::starting()
 {
     this->create();
 
-    const auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* const layout = new QVBoxLayout();
     QLabel* const label       = new QLabel("");

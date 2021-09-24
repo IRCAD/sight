@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig" >
+<extension implements="sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_VTKMesher_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -191,7 +191,7 @@
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::atoms::SWriter" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

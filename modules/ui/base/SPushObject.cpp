@@ -101,9 +101,9 @@ void SPushObject::updateObjects()
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
 
-    this->::sight::ui::base::IAction::setIsExecutable(executable);
+    this->sight::ui::base::IAction::setIsExecutable(executable);
 
-    if(executable && this->::sight::ui::base::IAction::getIsActive())
+    if(executable && this->sight::ui::base::IAction::getIsActive())
     {
         this->updating();
     }

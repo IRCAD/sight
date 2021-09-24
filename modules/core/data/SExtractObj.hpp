@@ -68,7 +68,7 @@ class MODULE_DATA_CLASS_API SExtractObj : public module::data::ICamp
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SExtractObj, ::sight::module::data::ICamp);
+    SIGHT_DECLARE_SERVICE(SExtractObj, sight::module::data::ICamp);
 
     typedef std::map<std::string, std::string> ExtractMapType;
 

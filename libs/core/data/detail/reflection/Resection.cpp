@@ -30,14 +30,14 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Resection))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("name", &::sight::data::Resection::m_name)
-    .property("plane_list", &::sight::data::Resection::m_planeList)
-    .property("inputs", &::sight::data::Resection::m_vInputs)
-    .property("outputs", &::sight::data::Resection::m_vOutputs)
-    .property("is_safe_part", &::sight::data::Resection::m_isSafePart)
-    .property("is_valid", &::sight::data::Resection::m_isValid)
-    .property("is_visible", &::sight::data::Resection::m_isVisible)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("name", &sight::data::Resection::m_name)
+    .property("plane_list", &sight::data::Resection::m_planeList)
+    .property("inputs", &sight::data::Resection::m_vInputs)
+    .property("outputs", &sight::data::Resection::m_vOutputs)
+    .property("is_safe_part", &sight::data::Resection::m_isSafePart)
+    .property("is_valid", &sight::data::Resection::m_isValid)
+    .property("is_visible", &sight::data::Resection::m_isVisible)
     ;
 }

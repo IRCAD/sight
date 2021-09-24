@@ -43,12 +43,12 @@ public:
 
     SIGHT_DECLARE_CLASS(
         ContainOneTool,
-        ::sight::activity::IObjectValidator,
-        ::sight::activity::validator::factory::New<ContainOneTool>
+        sight::activity::IObjectValidator,
+        sight::activity::validator::factory::New<ContainOneTool>
     )
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API ContainOneTool(::sight::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API ContainOneTool(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~ContainOneTool();

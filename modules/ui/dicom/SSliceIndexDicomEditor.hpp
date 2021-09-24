@@ -86,7 +86,7 @@ namespace sight::module::ui::dicom
         <service type="sight::module::ui::dicom::SSliceIndexDicomEditor">
            <in key="series" uid="..." />
            <out key="image" uid="..." />
-           <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500">
+           <config dicomReader="sight::module::io::dicom::SSeriesDBReader" delay="500">
                <readerConfig> <!-- optional -->
                    <!-- here goes the configuration for the dicom reader implementation -->
                </readerConfig>

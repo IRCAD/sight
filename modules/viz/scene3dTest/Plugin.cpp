@@ -29,7 +29,7 @@
 namespace sight::module::viz::scene3d::test
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene3d::test::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3d::test::Plugin");
 
 //-----------------------------------------------------------------------------
 

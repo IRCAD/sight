@@ -34,7 +34,7 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(::sight::filter::dicom::modifier::SliceThicknessModifier);
+fwDicomIOFilterRegisterMacro(sight::filter::dicom::modifier::SliceThicknessModifier);
 
 namespace sight::filter::dicom
 {

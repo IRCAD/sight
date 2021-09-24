@@ -39,7 +39,7 @@ namespace data
 
 Patient1::Patient1()
 {
-    m_classname = "::sight::data::Patient";
+    m_classname = "sight::data::Patient";
     m_version   = "1";
 }
 

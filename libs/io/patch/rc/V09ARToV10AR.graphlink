@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::sight::data::Material" : "3",
-            "::sight::data::Material" : "4"
+            "sight::data::Material" : "3",
+            "sight::data::Material" : "4"
         }
     ]
 }

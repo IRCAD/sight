@@ -27,7 +27,7 @@
 #include <filter/image/BresenhamLine.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::image::ut::BresenhamLineTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::BresenhamLineTest);
 
 namespace sight::filter::image
 {

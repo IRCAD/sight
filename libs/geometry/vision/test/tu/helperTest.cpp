@@ -38,7 +38,7 @@
 #include <opencv2/imgproc.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::vision::ut::helperTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helperTest);
 
 namespace sight::geometry::vision
 {

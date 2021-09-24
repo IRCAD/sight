@@ -66,7 +66,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SSquare : public sight::viz::scene2d::IAdapto
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSquare, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SSquare, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SSquare() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SSquare() noexcept;

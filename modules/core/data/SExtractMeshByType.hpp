@@ -74,7 +74,7 @@ class MODULE_DATA_CLASS_API SExtractMeshByType : public module::data::ICamp
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SExtractMeshByType, ::sight::module::data::ICamp);
+    SIGHT_DECLARE_SERVICE(SExtractMeshByType, sight::module::data::ICamp);
 
     typedef std::map<std::string, std::tuple<std::string, std::string, std::string> > ExtractMapType;
     typedef std::vector<std::pair<std::string, std::string> > ExtractVectorType;

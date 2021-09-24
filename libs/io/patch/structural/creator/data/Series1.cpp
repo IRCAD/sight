@@ -40,7 +40,7 @@ namespace data
 
 Series1::Series1()
 {
-    m_classname = "::sight::data::Series";
+    m_classname = "sight::data::Series";
     m_version   = "1";
 }
 
@@ -65,9 +65,9 @@ sight::atoms::Object::sptr Series1::create()
     io::atoms::patch::helper::Object helper(series);
 
     io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
-    helper.addAttribute("patient", creators->create("::sight::data::Patient", "1"));
-    helper.addAttribute("study", creators->create("::sight::data::Study", "1"));
-    helper.addAttribute("equipment", creators->create("::sight::data::Equipment", "1"));
+    helper.addAttribute("patient", creators->create("sight::data::Patient", "1"));
+    helper.addAttribute("study", creators->create("sight::data::Study", "1"));
+    helper.addAttribute("equipment", creators->create("sight::data::Equipment", "1"));
 
     helper.addAttribute("instance_uid", sight::atoms::String::New(""));
     helper.addAttribute("modality", sight::atoms::String::New(""));

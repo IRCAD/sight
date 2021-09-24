@@ -35,7 +35,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/foreach.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::DicomDirTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomDirTest);
 
 namespace sight::io::dicom
 {

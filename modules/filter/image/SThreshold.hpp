@@ -63,7 +63,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SThreshold, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SThreshold, sight::service::IFilter);
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 

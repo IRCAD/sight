@@ -39,7 +39,7 @@ namespace data
 
 PointList1::PointList1()
 {
-    m_classname = "::sight::data::PointList";
+    m_classname = "sight::data::PointList";
     m_version   = "1";
 }
 

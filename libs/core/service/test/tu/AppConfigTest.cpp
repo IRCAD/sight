@@ -47,7 +47,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::AppConfigTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppConfigTest);
 
 namespace sight::service
 {
@@ -1435,12 +1435,12 @@ core::runtime::ConfigurationElement::sptr AppConfigTest::buildConfig()
     // Object
     std::shared_ptr<core::runtime::EConfigurationElement> cfg(new core::runtime::EConfigurationElement("object"));
     cfg->setAttributeValue("uid", "image");
-    cfg->setAttributeValue("type", "::sight::data::Image");
+    cfg->setAttributeValue("type", "sight::data::Image");
 
     // Service
     std::shared_ptr<core::runtime::EConfigurationElement> serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue("uid", "myTestService1");
-    serviceA->setAttributeValue("type", "::sight::service::ut::STest1Image");
+    serviceA->setAttributeValue("type", "sight::service::ut::STest1Image");
     serviceA->setAttributeValue("autoConnect", "false");
 
     // Connections

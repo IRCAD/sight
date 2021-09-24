@@ -44,8 +44,8 @@ public:
 
     MiniLauncher(std::filesystem::path profilePath)
     {
-        ::sight::core::runtime::init();
-        const auto& runtime = ::sight::core::runtime::Runtime::get();
+        sight::core::runtime::init();
+        const auto& runtime = sight::core::runtime::Runtime::get();
 
         const std::filesystem::path cwd = runtime.getWorkingPath();
 
@@ -59,7 +59,7 @@ public:
             throw(std::invalid_argument("<" + profilePath.string() + "> not found."));
         }
 
-        m_profile = ::sight::core::runtime::io::ProfileReader::createProfile(profilePath);
+        m_profile = sight::core::runtime::io::ProfileReader::createProfile(profilePath);
 
         m_profile->setParams(0, nullptr);
         m_profile->start();
@@ -75,7 +75,7 @@ public:
 
 private:
 
-    ::sight::core::runtime::Profile::sptr m_profile;
+    sight::core::runtime::Profile::sptr m_profile;
 };
 
 #endif

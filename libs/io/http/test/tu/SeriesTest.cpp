@@ -31,7 +31,7 @@
 
 #include <cppunit/Exception.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::SeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::SeriesTest);
 
 namespace sight::io::http
 {

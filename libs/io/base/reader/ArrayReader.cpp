@@ -29,7 +29,7 @@
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::ArrayReader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::ArrayReader);
 
 namespace sight::io::base
 {

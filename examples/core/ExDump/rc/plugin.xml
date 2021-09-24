@@ -7,7 +7,7 @@
     <requirement id="sight::module::ui::qt" />
 
     <!-- This example allows to test the different dump policy. -->
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExDump_AppCfg</id>
         <config>
 

@@ -81,7 +81,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SShapeExtruder final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShapeExtruder, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SShapeExtruder, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the slot and the signal.
     MODULE_VIZ_SCENE3D_API SShapeExtruder() noexcept;

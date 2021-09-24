@@ -27,7 +27,7 @@
 namespace sight::module::io::atoms
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::io::atoms::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::io::atoms::Plugin");
 
 Plugin::~Plugin() noexcept
 {

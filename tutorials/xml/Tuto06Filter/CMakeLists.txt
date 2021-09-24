@@ -1,6 +1,6 @@
-sight_add_target( Tuto06Filter TYPE APP )
+sight_add_target(Tuto06Filter TYPE APP)
 
-add_dependencies(Tuto06Filter 
+add_dependencies(Tuto06Filter
                  sightrun
                  module_appXml
                  module_ui_qt

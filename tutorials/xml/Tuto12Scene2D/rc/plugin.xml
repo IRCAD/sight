@@ -4,7 +4,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene2d" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto12Scene2D_AppCfg</id>
         <config>
 

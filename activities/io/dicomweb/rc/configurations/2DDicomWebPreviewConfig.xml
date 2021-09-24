@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DDicomWebPreviewConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -42,7 +42,7 @@
             <inout key="image" uid="image" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
-        
+
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="sight::module::memory::LockDumpSrv">
@@ -57,7 +57,7 @@
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader">
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader">
                 <readerConfig>
                     <config>
                         <showLogDialog>false</showLogDialog>

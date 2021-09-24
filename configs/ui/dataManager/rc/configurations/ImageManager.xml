@@ -11,7 +11,7 @@ Example:
     <inout key="transferFunction" uid="..." />
 </service>
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>ImageManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -69,9 +69,9 @@ Example:
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
-        
+
         <start uid="imageManagerView" />
         <start uid="medicalImageConverterImage" />
-        
+
     </config>
 </extension>

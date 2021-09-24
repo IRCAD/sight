@@ -45,7 +45,7 @@ namespace data
 Acquisition::Acquisition() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Acquisition";
+    m_originClassname = "sight::data::Acquisition";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }

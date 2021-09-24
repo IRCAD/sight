@@ -86,7 +86,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVideo final : public sight::viz::scene3d::IA
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVideo, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVideo, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor an initialize slots.
     MODULE_VIZ_SCENE3D_API SVideo() noexcept;

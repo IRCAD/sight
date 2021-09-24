@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DVisualization</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -173,16 +173,16 @@
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SReader" />
-            <config id="LandmarksAtomsConfig" service="::sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::atoms::SReader" />
+            <config id="LandmarksAtomsConfig" service="sight::module::io::atoms::SReader" />
         </service>
 
         <service uid="SaveLandmark" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
-            <config id="LandmarksAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::atoms::SWriter" />
+            <config id="LandmarksAtomsConfig" service="sight::module::io::atoms::SWriter" />
         </service>
 
         <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">

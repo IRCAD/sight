@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRGBDImageMasking_AppCfg</id>
         <config>
 
@@ -336,7 +336,7 @@
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::matrix::Matrix4ReaderService" />
+                <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->
@@ -364,7 +364,7 @@
                </out>
             </service>
 
-            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
+            <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
             <service uid="extractCameraSrv" type="sight::module::data::SExtractObj" >
                 <!-- Source -->
                 <inout key="source" uid="RGBDCameraSeries" >

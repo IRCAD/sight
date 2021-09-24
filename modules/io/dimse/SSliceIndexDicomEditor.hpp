@@ -56,7 +56,7 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />
-        <config delay="500" dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+        <config delay="500" dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
     </service>
    @endcode
  *

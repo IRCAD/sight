@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>dicomXplorerBase</id>
     <parameters>
         <param name="appName" />
@@ -19,8 +19,8 @@
             <inout key="data" uid="seriesDB" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::atoms::SWriter" />
-            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::atoms::SWriter" />
+            <config id="MDAtomsConfig" service="sight::module::io::atoms::SWriter" />
         </service>
 
         <service uid="mainFrame" type="sight::module::ui::base::SFrame">

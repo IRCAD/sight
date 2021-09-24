@@ -10,7 +10,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto09MatrixTransformInGS_AppCfg</id>
         <config>
 

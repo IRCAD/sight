@@ -50,7 +50,7 @@ namespace io
  * @subsection Configuration Configuration:
  * - \b dialogTitle (optional): title of the dialog.
  */
-class MODULE_UI_BASE_CLASS_API SFolderSelector : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SFolderSelector : public sight::ui::base::IAction
 {
 public:
 

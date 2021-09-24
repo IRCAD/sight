@@ -34,7 +34,7 @@
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::data::Material::V1ToV2Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::data::Material::V1ToV2Test);
 
 namespace sight::io::patch::structural
 {
@@ -72,7 +72,7 @@ void V1ToV2Test::applyPatchTest()
     sight::atoms::Object::sptr matObjV1 = sight::atoms::Object::New();
     sight::atoms::Object::sptr matObjV2;
 
-    io::atoms::patch::helper::setClassname(matObjV1, "::sight::data::Material");
+    io::atoms::patch::helper::setClassname(matObjV1, "sight::data::Material");
     io::atoms::patch::helper::setVersion(matObjV1, "1");
 
     io::atoms::patch::helper::Object helper(matObjV1);

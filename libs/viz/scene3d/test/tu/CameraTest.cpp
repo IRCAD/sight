@@ -39,7 +39,7 @@
 #include <tuple>
 #include <vector>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::scene3d::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::CameraTest);
 
 namespace sight::viz::scene3d
 {
@@ -116,32 +116,32 @@ void CameraTest::computeProjectionMatrix()
         typedef std::tuple<std::function<void (const data::Camera::sptr, double)>, double, unsigned int,
                            unsigned int, float> tupleType;
         const std::vector<tupleType> permutation {
-            tupleType(&::sight::data::Camera::setCx, cx, 0, 2, -0.0295966863632202f),
-            tupleType(&::sight::data::Camera::setCy, cy, 1, 2, 0.0245949625968933f),
-            tupleType(&::sight::data::Camera::setFx, fx, 0, 0, 1.65686452388763f),
-            tupleType(&::sight::data::Camera::setFy, fy, 1, 1, 3.01612949371338f),
+            tupleType(&sight::data::Camera::setCx, cx, 0, 2, -0.0295966863632202f),
+            tupleType(&sight::data::Camera::setCy, cy, 1, 2, 0.0245949625968933f),
+            tupleType(&sight::data::Camera::setFx, fx, 0, 0, 1.65686452388763f),
+            tupleType(&sight::data::Camera::setFy, fy, 1, 1, 3.01612949371338f),
 
-            tupleType(&::sight::data::Camera::setCx, 0., 0, 2, 1.00104212760925f),
-            tupleType(&::sight::data::Camera::setCy, 0., 1, 2, -1.00185346603394f),
-            tupleType(&::sight::data::Camera::setFx, 0., 0, 0, 0.f),
-            tupleType(&::sight::data::Camera::setFy, 0., 1, 1, 0.f),
+            tupleType(&sight::data::Camera::setCx, 0., 0, 2, 1.00104212760925f),
+            tupleType(&sight::data::Camera::setCy, 0., 1, 2, -1.00185346603394f),
+            tupleType(&sight::data::Camera::setFx, 0., 0, 0, 0.f),
+            tupleType(&sight::data::Camera::setFy, 0., 1, 1, 0.f),
 
-            tupleType(&::sight::data::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
-            tupleType(&::sight::data::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
-            tupleType(&::sight::data::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f),
-            tupleType(&::sight::data::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f),
+            tupleType(&sight::data::Camera::setCx, std::numeric_limits<float>::min(), 0, 2, 1.00104212760925f),
+            tupleType(&sight::data::Camera::setCy, std::numeric_limits<float>::min(), 1, 2, -1.00185346603394f),
+            tupleType(&sight::data::Camera::setFx, std::numeric_limits<float>::min(), 0, 0, 1.22445459812703e-41f),
+            tupleType(&sight::data::Camera::setFy, std::numeric_limits<float>::min(), 1, 1, 2.17677703448217e-41f),
 
-            tupleType(&::sight::data::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f),
-            tupleType(&::sight::data::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f),
+            tupleType(&sight::data::Camera::setCx, std::numeric_limits<float>::max(), 0, 2, -3.5464549820937e+35f),
+            tupleType(&sight::data::Camera::setCy, std::numeric_limits<float>::max(), 1, 2, 6.30736510970334e+35f),
             tupleType(
-                &::sight::data::Camera::setFx,
+                &sight::data::Camera::setFx,
                 std::numeric_limits<float>::max(),
                 0,
                 0,
                 std::numeric_limits<float>::infinity()
             ),
             tupleType(
-                &::sight::data::Camera::setFy,
+                &sight::data::Camera::setFy,
                 std::numeric_limits<float>::max(),
                 1,
                 1,
@@ -177,21 +177,21 @@ void CameraTest::computeProjectionMatrix()
         typedef std::tuple<std::function<void (const data::Camera::sptr, size_t)>, size_t, unsigned int,
                            unsigned int, float> tupleType;
         const std::vector<tupleType> permutation {
-            tupleType(&::sight::data::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
-            tupleType(&::sight::data::Camera::setHeight, height, 1, 2, 6.30736510970334e+35f),
+            tupleType(&sight::data::Camera::setWidth, width, 0, 2, -3.5464549820937e+35f),
+            tupleType(&sight::data::Camera::setHeight, height, 1, 2, 6.30736510970334e+35f),
 
-            tupleType(&::sight::data::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
-            tupleType(&::sight::data::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
+            tupleType(&sight::data::Camera::setWidth, 1, 0, 2, -std::numeric_limits<float>::infinity()),
+            tupleType(&sight::data::Camera::setHeight, 1, 1, 2, std::numeric_limits<float>::infinity()),
 
             tupleType(
-                &::sight::data::Camera::setWidth,
+                &sight::data::Camera::setWidth,
                 std::numeric_limits<size_t>::max(),
                 0,
                 2,
                 -3.68934859483958e+19f
             ),
             tupleType(
-                &::sight::data::Camera::setHeight,
+                &sight::data::Camera::setHeight,
                 std::numeric_limits<size_t>::max(),
                 1,
                 2,

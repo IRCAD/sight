@@ -10,7 +10,7 @@ Example:
     <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
         <param name="WID_PARENT" />

@@ -37,7 +37,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::filter::dicom::ut::InstanceNumberSorterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::InstanceNumberSorterTest);
 
 namespace sight::filter::dicom
 {

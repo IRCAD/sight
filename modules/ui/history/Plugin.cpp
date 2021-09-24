@@ -25,7 +25,7 @@
 namespace sight::module::ui::history
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::history::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::history::Plugin");
 
 Plugin::~Plugin() noexcept
 {

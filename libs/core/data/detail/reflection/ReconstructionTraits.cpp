@@ -30,11 +30,11 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (ReconstructionTraits))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("name", &::sight::data::ReconstructionTraits::m_identifier)
-    .property("mesh_node", &::sight::data::ReconstructionTraits::m_meshOpNode)
-    .property("mask_node", &::sight::data::ReconstructionTraits::m_maskOpNode)
-    .property("traits", &::sight::data::ReconstructionTraits::m_structureTraits)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("name", &sight::data::ReconstructionTraits::m_identifier)
+    .property("mesh_node", &sight::data::ReconstructionTraits::m_meshOpNode)
+    .property("mask_node", &sight::data::ReconstructionTraits::m_maskOpNode)
+    .property("traits", &sight::data::ReconstructionTraits::m_structureTraits)
     ;
 }

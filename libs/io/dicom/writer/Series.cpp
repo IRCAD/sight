@@ -37,7 +37,7 @@
 
 #include <io/base/writer/registry/macros.hpp>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::Series);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::Series);
 
 namespace sight::io::dicom
 {
@@ -63,7 +63,7 @@ Series::~Series()
 void Series::write()
 {
     data::Series::csptr series = this->getConcreteObject();
-    SIGHT_ASSERT("::sight::data::Series not instanced", series);
+    SIGHT_ASSERT("sight::data::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
@@ -79,9 +79,9 @@ void Series::write()
        || sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-        SIGHT_ASSERT("::sight::data::ImageSeries not instanced", imageSeries);
+        SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
         data::Image::sptr image = imageSeries->getImage();
-        SIGHT_ASSERT("::sight::data::Image not instanced", image);
+        SIGHT_ASSERT("sight::data::Image not instanced", image);
 
         // Write image
         io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");

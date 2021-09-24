@@ -34,11 +34,11 @@ namespace sight::module::ui::base
 /**
  * @brief Defines the default frame for standard application.
  */
-class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrame
+class MODULE_UI_BASE_CLASS_API SFrame : public sight::ui::base::IFrame
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrame, ::sight::ui::base::IFrame);
+    SIGHT_DECLARE_SERVICE(SFrame, sight::ui::base::IFrame);
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SFrame() noexcept;

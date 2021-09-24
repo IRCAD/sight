@@ -43,7 +43,7 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::LockTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::LockTest);
 
 //------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ const service::IService::KeyType LockedService::s_INPUT  = "input";
 const service::IService::KeyType LockedService::s_INOUT  = "inout";
 const service::IService::KeyType LockedService::s_OUTPUT = "output";
 
-SIGHT_REGISTER_SERVICE(::sight::service::IService, ::sight::service::ut::LockedService);
+SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::LockedService);
 
 //------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ void LockTest::tearDown()
 void LockTest::testScopedLock()
 {
     // Add the service
-    service::IService::sptr lockedService = service::add("::sight::service::ut::LockedService");
+    service::IService::sptr lockedService = service::add("sight::service::ut::LockedService");
     CPPUNIT_ASSERT(lockedService);
 
     // Create the data
@@ -361,7 +361,7 @@ void LockTest::testThreadedLock()
         auto sharedInput = weakInput.lock();
         CPPUNIT_ASSERT_EQUAL(input, sharedInput.get_shared());
 
-        std::thread t1(&::sight::service::ut::LockedService::starting, lockedService);
+        std::thread t1(&sight::service::ut::LockedService::starting, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t1 should be in the sleep_for, so m_started and m_input should still be the initial value
@@ -378,7 +378,7 @@ void LockTest::testThreadedLock()
     // Test that outputLock is blocking
     {
         // Start thread immediatly
-        std::thread t2(&::sight::service::ut::LockedService::stopping, lockedService);
+        std::thread t2(&sight::service::ut::LockedService::stopping, lockedService);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // t2 should be in the sleep_for, so m_stopped should still be the initial value

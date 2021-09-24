@@ -33,7 +33,7 @@
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ProxyTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ProxyTest);
 
 namespace sight::service
 {

@@ -35,7 +35,7 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::base::ut::DictionaryReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::base::ut::DictionaryReaderTest);
 
 namespace sight::io::base
 {

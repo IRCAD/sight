@@ -54,11 +54,11 @@ namespace sight::module::ui::base
  * @brief   Service displaying a progress bar.
  */
 
-class MODULE_UI_BASE_CLASS_API SJobBar : public ::sight::ui::base::IDialogEditor
+class MODULE_UI_BASE_CLASS_API SJobBar : public sight::ui::base::IDialogEditor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SJobBar, ::sight::ui::base::IDialogEditor);
+    SIGHT_DECLARE_SERVICE(SJobBar, sight::ui::base::IDialogEditor);
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -101,7 +101,7 @@ protected:
      */
     MODULE_UI_BASE_API virtual void showJob(core::jobs::IJob::sptr iJob);
 
-    typedef std::set<SPTR(::sight::ui::base::dialog::ProgressDialog)> ProgressDialogs;
+    typedef std::set<SPTR(sight::ui::base::dialog::ProgressDialog)> ProgressDialogs;
     ProgressDialogs m_progressDialogs;
 
     typedef core::com::Signal<void ()> StartedSignalType;

@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExOpenvslam_AppCfg</id>
         <config>
 
@@ -366,7 +366,7 @@
                 <inout key="data" uid="cameraSeries" />
             </service>
 
-            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
@@ -476,7 +476,7 @@
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />
-                <addSelection service="::sight::module::io::vtk::SMeshWriter" />
+                <addSelection service="sight::module::io::vtk::SMeshWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

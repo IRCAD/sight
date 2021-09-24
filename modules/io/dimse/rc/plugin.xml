@@ -1,25 +1,25 @@
 <plugin id="sight::module::io::dimse" library="true" >
     <requirement id="sight::module::ui::qt"/>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::io::dimse::SPacsConfigurationEditor</service>
          <object key="config">sight::io::dimse::data::PacsConfiguration</object>
          <desc>This editor is used to edit a pacs configuration.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::io::dimse::SPacsConfigurationInitializer</service>
          <desc>This service is used to initialize a PACS Configuration data and synchronize it with a preference key.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::io::dimse::SProgressBarController</service>
          <desc>This editor service is used to display a progress bar.</desc>
     </extension>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::io::dimse::SQueryEditor</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
@@ -27,7 +27,7 @@
          <desc>This editor allows to perform queries on a pacs.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::io::dimse::SSeriesPuller</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
@@ -36,14 +36,14 @@
          <desc>This service is used to pull series from a PACS.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::io::dimse::SSeriesPusher</service>
          <object>sight::data::Object</object>
          <desc>This service is used to push a DICOM series to a PACS.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>sight::module::io::dimse::SSliceIndexDicomEditor</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>

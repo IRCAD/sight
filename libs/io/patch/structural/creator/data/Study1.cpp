@@ -37,7 +37,7 @@ namespace data
 
 Study1::Study1()
 {
-    m_classname = "::sight::data::Study";
+    m_classname = "sight::data::Study";
     m_version   = "1";
 }
 

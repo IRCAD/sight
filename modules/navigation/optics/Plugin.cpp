@@ -27,7 +27,7 @@
 namespace sight::module::navigation::optics
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::navigation::optics::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::navigation::optics::Plugin");
 
 Plugin::~Plugin() noexcept
 {

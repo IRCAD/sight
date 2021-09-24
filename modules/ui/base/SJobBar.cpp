@@ -89,7 +89,7 @@ void SJobBar::configuring()
 
 void SJobBar::showJob(core::jobs::IJob::sptr iJob)
 {
-    auto progressDialog = ::sight::ui::base::dialog::ProgressDialog::New();
+    auto progressDialog = sight::ui::base::dialog::ProgressDialog::New();
     progressDialog->setTitle(iJob->getName());
 
     if(!iJob->isCancelable())

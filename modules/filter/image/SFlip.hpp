@@ -59,7 +59,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::IFilter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFlip, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SFlip, sight::service::IFilter);
 
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;

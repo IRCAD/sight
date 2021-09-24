@@ -65,7 +65,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;

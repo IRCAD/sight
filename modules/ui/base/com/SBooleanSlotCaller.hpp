@@ -51,7 +51,7 @@ class MODULE_UI_BASE_CLASS_API SBooleanSlotCaller : public module::ui::base::com
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SBooleanSlotCaller, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SBooleanSlotCaller, sight::ui::base::IAction);
 
     /**
      * @brief Constructor. Do nothing.

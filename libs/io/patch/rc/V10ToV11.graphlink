@@ -5,12 +5,12 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::sight::data::ImageSeries" : "1",
-            "::sight::data::ImageSeries" : "2"
+            "sight::data::ImageSeries" : "1",
+            "sight::data::ImageSeries" : "2"
         },
         {
-            "::sight::data::ModelSeries" : "1",
-            "::sight::data::ModelSeries" : "2"
+            "sight::data::ModelSeries" : "1",
+            "sight::data::ModelSeries" : "2"
         }
     ]
 }

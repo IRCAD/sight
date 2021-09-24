@@ -34,7 +34,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::qt3dTest::ut::MeshTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::MeshTest);
 
 namespace sight::viz::qt3dTest
 {

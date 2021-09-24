@@ -22,18 +22,18 @@
 
 #include "Plugin.hpp"
 
-#include <core/thread/ActiveWorkers.hpp>
-#include <core/thread/Pool.hpp>
-
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
 #include <service/extension/Config.hpp>
 #include <service/extension/Factory.hpp>
 
+#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Pool.hpp>
+
 namespace sight::module::service
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::service::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 

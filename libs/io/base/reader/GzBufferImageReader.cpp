@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::GzBufferImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::GzBufferImageReader);
 
 namespace sight::io::base
 {

@@ -43,7 +43,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::vtk::ut::SeriesDBReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::SeriesDBReaderTest);
 
 static const double epsilon = 0.00001;
 

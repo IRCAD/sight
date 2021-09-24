@@ -69,7 +69,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IFilt
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImageExtruder, ::sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SImageExtruder, sight::service::IFilter);
 
     /// Initializes the slot.
     MODULE_FILTER_IMAGE_API SImageExtruder();

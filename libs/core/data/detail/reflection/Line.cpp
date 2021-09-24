@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Line))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .property("position", &::sight::data::Line::m_position)
-    .property("direction", &::sight::data::Line::m_direction)
+    .tag("lib_name", "sight::data")
+    .property("position", &sight::data::Line::m_position)
+    .property("direction", &sight::data::Line::m_direction)
     ;
 }

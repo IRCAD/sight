@@ -32,38 +32,38 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Camera))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "::sight::data")
+    .tag("lib_name", "sight::data")
     .base<sight::data::Object>()
-    .property("intrinsic", &::sight::data::Camera::m_intrinsic)
-    .property("is_calibrated", &::sight::data::Camera::m_isCalibrated)
-    .property("skew", &::sight::data::Camera::m_skew)
-    .property("distortion_coefficient", &::sight::data::Camera::m_distortionCoefficient)
-    .property("width", &::sight::data::Camera::m_width)
-    .property("height", &::sight::data::Camera::m_height)
-    .property("camera_id", &::sight::data::Camera::m_cameraID)
-    .property("description", &::sight::data::Camera::m_description)
-    .property("max_framerate", &::sight::data::Camera::m_maxFrameRate)
-    .property("video_file", &::sight::data::Camera::m_videoFile)
-    .property("stream_url", &::sight::data::Camera::m_streamUrl)
-    .property("camera_source", &::sight::data::Camera::m_cameraSource)
-    .property("pixel_format", &::sight::data::Camera::m_pixelFormat)
-    .property("scale", &::sight::data::Camera::m_scale)
+    .property("intrinsic", &sight::data::Camera::m_intrinsic)
+    .property("is_calibrated", &sight::data::Camera::m_isCalibrated)
+    .property("skew", &sight::data::Camera::m_skew)
+    .property("distortion_coefficient", &sight::data::Camera::m_distortionCoefficient)
+    .property("width", &sight::data::Camera::m_width)
+    .property("height", &sight::data::Camera::m_height)
+    .property("camera_id", &sight::data::Camera::m_cameraID)
+    .property("description", &sight::data::Camera::m_description)
+    .property("max_framerate", &sight::data::Camera::m_maxFrameRate)
+    .property("video_file", &sight::data::Camera::m_videoFile)
+    .property("stream_url", &sight::data::Camera::m_streamUrl)
+    .property("camera_source", &sight::data::Camera::m_cameraSource)
+    .property("pixel_format", &sight::data::Camera::m_pixelFormat)
+    .property("scale", &sight::data::Camera::m_scale)
     ;
 }
 
 SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Camera) (SourceType))
 {
     builder
-    .value("FILE", ::sight::data::Camera::FILE)
-    .value("STREAM", ::sight::data::Camera::STREAM)
-    .value("DEVICE", ::sight::data::Camera::DEVICE)
-    .value("UNKNOWN", ::sight::data::Camera::UNKNOWN)
+    .value("FILE", sight::data::Camera::FILE)
+    .value("STREAM", sight::data::Camera::STREAM)
+    .value("DEVICE", sight::data::Camera::DEVICE)
+    .value("UNKNOWN", sight::data::Camera::UNKNOWN)
     ;
 }
 
 SIGHT_IMPLEMENT_ENUM_REFLECTION((sight) (data) (Camera) (PixelFormat))
 {
-    using ::sight::data::Camera;
+    using sight::data::Camera;
     builder
     .value(Camera::getPixelFormatName(Camera::INVALID), Camera::INVALID)
     .value(Camera::getPixelFormatName(Camera::ARGB32), Camera::ARGB32)

@@ -45,7 +45,7 @@ namespace data
 Study::Study() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Study";
+    m_originClassname = "sight::data::Study";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }

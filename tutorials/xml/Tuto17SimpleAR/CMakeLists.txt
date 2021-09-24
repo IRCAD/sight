@@ -1,4 +1,4 @@
-sight_add_target( Tuto17SimpleAR TYPE APP )
+sight_add_target(Tuto17SimpleAR TYPE APP)
 
 
 set(MODULE_PATH "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/Tuto17SimpleAR")
@@ -9,7 +9,7 @@ file(DOWNLOAD https://owncloud.ircad.fr/index.php/s/ZGo6FTVOsQlWycG/download "${
 file(DOWNLOAD https://owncloud.ircad.fr/index.php/s/oyo3mDMObZcRpQM/download "${MODULE_PATH}/aruco_tag.m4v" SHOW_PROGRESS
       EXPECTED_HASH SHA256=92ffe4f0f89380985980a5c1c2fb7536543dee237cddd21922ead2c4e83ecbe2)
 
-add_dependencies(Tuto17SimpleAR 
+add_dependencies(Tuto17SimpleAR
                  sightrun
                  module_appXml
                  module_ui_base
@@ -28,7 +28,6 @@ add_dependencies(Tuto17SimpleAR
                  module_data
                  module_sync
                  module_navigation_optics
-                 module_geometry_vision
                  module_geometry_vision
                  module_geometry_base
 )

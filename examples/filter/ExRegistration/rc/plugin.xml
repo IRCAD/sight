@@ -62,7 +62,7 @@ Detail of the ToolBar
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>ExRegistration_AppCfg</id>
         <config>
 

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>2DSimpleConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -26,7 +26,7 @@
         <service uid="gs" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
-                
+
                 <layer id="default" order="1" transparency="HybridTransparency" numPeels="4" />
 
                 <adaptor uid="interactor4Negato" />

@@ -307,7 +307,7 @@ void SLightSelector::refreshLayers()
     m_layersBox->clear();
 
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::scene3d::SRender");
+        service::OSR::getServices("sight::viz::scene3d::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(auto srv : renderers)
@@ -387,7 +387,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         this->updateLightsList();
 
         service::registry::ObjectService::ServiceVectorType materialServices =
-            service::OSR::getServices("::sight::module::viz::scene3d::adaptor::SMaterial");
+            service::OSR::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {

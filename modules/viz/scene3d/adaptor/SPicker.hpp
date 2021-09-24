@@ -58,7 +58,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SPicker final : public sight::viz::scene3d::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPicker, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SPicker, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SPicker() noexcept;

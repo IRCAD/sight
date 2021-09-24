@@ -51,8 +51,8 @@ static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
 static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
 
 fwRenderOgreRegisterLightMacro(
-    ::sight::module::viz::scene3d::adaptor::SLight,
-    ::sight::viz::scene3d::ILight::REGISTRY_KEY
+    sight::module::viz::scene3d::adaptor::SLight,
+    sight::viz::scene3d::ILight::REGISTRY_KEY
 )
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ SLight::SLight() noexcept
 
 //------------------------------------------------------------------------------
 
-SLight::SLight(::sight::viz::scene3d::ILight::Key /*key*/)
+SLight::SLight(sight::viz::scene3d::ILight::Key /*key*/)
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -90,7 +90,7 @@ void SLight::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            ::sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
+            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
             this->getID() + "_transform"
         )
     );
@@ -127,7 +127,7 @@ void SLight::starting()
         this->setPhiOffset(m_phiOffset);
     }
 
-    if(m_lightName != ::sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
+    if(m_lightName != sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
     {
         // Creates the visual feedback
         // Creates the material
@@ -135,14 +135,14 @@ void SLight::starting()
 
         const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
             this->registerService<module::viz::scene3d::adaptor::SMaterial>(
-                "::sight::module::viz::scene3d::adaptor::SMaterial"
+                "sight::module::viz::scene3d::adaptor::SMaterial"
             );
         materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
         materialAdaptor->setID(this->getID() + materialAdaptor->getID());
         materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
         materialAdaptor->setRenderService(this->getRenderService());
         materialAdaptor->setLayerID(m_layerID);
-        materialAdaptor->setMaterialTemplateName(::sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+        materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
         materialAdaptor->start();
 
         materialAdaptor->getMaterialFw()->setHasVertexColor(true);
@@ -158,7 +158,7 @@ void SLight::starting()
 
         // Creates the commun sphere position
         m_lightPosition = sceneMgr->createManualObject(this->getID() + "_origin");
-        ::sight::viz::scene3d::helper::ManualObject::createSphere(
+        sight::viz::scene3d::helper::ManualObject::createSphere(
             m_lightPosition,
             materialAdaptor->getMaterialName(),
             ::Ogre::ColourValue(0.98f, 0.96f, 0.62f, 1.0f),
@@ -172,7 +172,7 @@ void SLight::starting()
         m_directionalFeedback.first  = sceneMgr->createManualObject(this->getID() + "_line");
         m_directionalFeedback.second = sceneMgr->createManualObject(this->getID() + "_cone");
 
-        ::sight::viz::scene3d::helper::ManualObject::createCylinder(
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
             m_directionalFeedback.first,
             materialAdaptor->getMaterialName(),
             ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
@@ -184,7 +184,7 @@ void SLight::starting()
         lineNode->attachObject(m_directionalFeedback.first);
         lineNode->yaw(::Ogre::Degree(-90));
 
-        ::sight::viz::scene3d::helper::ManualObject::createCone(
+        sight::viz::scene3d::helper::ManualObject::createCone(
             m_directionalFeedback.second,
             materialAdaptor->getMaterialName(),
             ::Ogre::ColourValue(0.f, 0.f, 1.f, 1.0f),
@@ -251,7 +251,7 @@ void SLight::stopping()
     this->unregisterServices();
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
-    if(m_lightName != ::sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
+    if(m_lightName != sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
     {
         m_lightNode->removeAndDestroyChild(this->getID() + "_lineNode");
         m_lightNode->removeAndDestroyChild(this->getID() + "_coneNode");

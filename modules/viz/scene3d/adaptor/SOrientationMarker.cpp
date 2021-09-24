@@ -87,7 +87,7 @@ void SOrientationMarker::starting()
     // Creates the material for the marker
     const sight::module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<sight::module::viz::scene3d::adaptor::SMaterial>(
-            "::sight::module::viz::scene3d::adaptor::SMaterial"
+            "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());

@@ -79,7 +79,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
  * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
- *      ::sight::module::viz::scene3d:SMesh or a ::sight::module::viz::scene3d:SModelSeries to this material;
+ *      sight::module::viz::scene3d:SMesh or a sight::module::viz::scene3d:SModelSeries to this material;
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
  *      reference a texture managed by an another module::viz::scene3d::adaptor::STexture.
@@ -93,7 +93,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMaterial final : public sight::viz::scene3d:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMaterial, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::scene3d::IAdaptor);
 
     /**
      * @name Slots API

@@ -121,7 +121,7 @@ std::filesystem::path getPreferencesFile()
 ui::base::preferences::IPreferences::sptr getPreferencesSrv()
 {
     ui::base::preferences::IPreferences::sptr srv;
-    const auto preferencesServicesList = service::OSR::getServices("::sight::ui::base::preferences::IPreferences");
+    const auto preferencesServicesList = service::OSR::getServices("sight::ui::base::preferences::IPreferences");
 
     if(!preferencesServicesList.empty())
     {

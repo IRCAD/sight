@@ -90,7 +90,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::service::SConfigController" type="sight::service::IController">
+       <service impl="sight::service::SConfigController" type="sight::service::IController">
             <config>
                 <appConfig id="IdOfConfig" >
                     <parameters>

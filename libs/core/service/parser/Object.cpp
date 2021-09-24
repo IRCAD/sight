@@ -109,7 +109,7 @@ void Object::createConfig(core::tools::Object::sptr _obj)
             );
             std::string key = elem->getExistingAttributeValue("key");
             SIGHT_ASSERT(
-                "The xml element \"item\" must have an attribute named \"key\" whick is not empty.",
+                "The xml element \"item\" must have an attribute named \"key\" which is not empty.",
                 !key.empty()
             );
             SIGHT_ASSERT(

@@ -53,11 +53,11 @@ namespace sight::module::ui::viz
  * interlaced image pairs.
  *
  */
-class MODULE_UI_VIZ_CLASS_API SStereoToggler : public ::sight::ui::base::IAction
+class MODULE_UI_VIZ_CLASS_API SStereoToggler : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SStereoToggler, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SStereoToggler, sight::ui::base::IAction);
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoToggler();

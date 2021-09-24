@@ -59,7 +59,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dicom::ut::SeriesDBReaderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::SeriesDBReaderTest);
 
 namespace sight::io::dicom
 {

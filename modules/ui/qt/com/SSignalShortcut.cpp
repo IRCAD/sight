@@ -99,7 +99,7 @@ void SSignalShortcut::starting()
     // or a window id
     else if(m_wid != "")
     {
-        fwc = ::sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
+        fwc = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
         if(!fwc)
         {
             SIGHT_ERROR("Invalid window id " << m_wid);
@@ -108,7 +108,7 @@ void SSignalShortcut::starting()
 
     if(fwc != nullptr)
     {
-        auto qtc = std::dynamic_pointer_cast< ::sight::ui::qt::container::QtContainer>(fwc);
+        auto qtc = std::dynamic_pointer_cast<sight::ui::qt::container::QtContainer>(fwc);
         if(qtc != nullptr)
         {
             if(!m_shortcutObject)

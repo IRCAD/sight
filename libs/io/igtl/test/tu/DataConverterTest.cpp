@@ -53,7 +53,7 @@
 #include <algorithm>
 #include <iostream>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::igtl::detail::ut::DataConverterTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::igtl::detail::ut::DataConverterTest);
 
 namespace sight::io::igtl::detail
 {

@@ -4,13 +4,13 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto03DataService_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- The root data object in tutoDataService is a ::sight::data::Image. -->
+            <!-- The root data object in tutoDataService is a sight::data::Image. -->
             <object uid="image" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -83,14 +83,14 @@
 
             <!--
                 Quit action:
-                The action service (::sight::module::ui::base::SQuit) is a generic action that will close the application
+                The action service (sight::module::ui::base::SQuit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!--
                 Open file action:
-                This service (::sight::module::ui::base::com::SStarter) is a generic action, it starts and updates the
+                This service (sight::module::ui::base::com::SStarter) is a generic action, it starts and updates the
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
@@ -105,7 +105,7 @@
                 This is a generic service that shows a dialog to display all the readers or writers available for its
                 associated data. By default it is configured to show readers. (Note: if there is only one reading
                 service, it is directly selected without prompting.)
-                Here, the only reader available to read a ::sight::data::Image is ::sight::module::io::vtk::ImageReaderService (see
+                Here, the only reader available to read a sight::data::Image is sight::module::io::vtk::ImageReaderService (see
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->

@@ -28,7 +28,7 @@
 
 #include <opencv2/core.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::PointListTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::PointListTest);
 
 namespace sight::io::opencv
 {

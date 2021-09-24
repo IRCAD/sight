@@ -138,7 +138,7 @@ void SStereoSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::scene3d::SRender");
+        service::OSR::getServices("sight::viz::scene3d::SRender");
 
     for(auto srv : renderers)
     {

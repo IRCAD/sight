@@ -31,7 +31,7 @@ namespace sight::io::opencv
 
 void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -46,7 +46,7 @@ void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -61,7 +61,7 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
 
 void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -76,7 +76,7 @@ void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44f& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -99,7 +99,7 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
         _rvec.channels() == 1 && _tvec.channels() == 1
     );
     // Check that _dst has correctly been initialized.
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     SIGHT_WARN_IF(
         "OpenCV matrices has non-double type but will be cast in 'double'.",
@@ -129,7 +129,7 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
 {
     // Check that _src is not null.
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     ::cv::Mat mat4x4;
     // reinitialize _R & _T.
@@ -152,7 +152,7 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 {
     SIGHT_ASSERT("Size of OpenCV matrix should be 4x4", _src.cols == 4 && _src.rows == 4);
     SIGHT_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1);
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _dst);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _dst);
 
     SIGHT_WARN_IF(
         "OpenCV matrix has non-double type but will be cast in 'double'.",
@@ -175,7 +175,7 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 
 void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _dst)
 {
-    SIGHT_ASSERT("::sight::data::Matrix4 is null", _src);
+    SIGHT_ASSERT("sight::data::Matrix4 is null", _src);
 
     // Reinitialize _dst.
     _dst = ::cv::Mat(4, 4, CV_64F);

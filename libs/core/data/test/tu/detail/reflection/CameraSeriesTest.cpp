@@ -28,7 +28,7 @@
 #include <data/CameraSeries.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::detail::reflection::ut::CameraSeriesTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::detail::reflection::ut::CameraSeriesTest);
 
 namespace sight::data
 {

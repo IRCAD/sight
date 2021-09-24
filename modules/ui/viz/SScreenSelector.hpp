@@ -52,11 +52,11 @@ namespace sight::module::ui::viz
  *   - \b current: select the screen on which the application is currently displayed.
  *   - \b neighbor: select a neighboring screen if there is one.
  */
-class MODULE_UI_VIZ_CLASS_API SScreenSelector : public ::sight::ui::base::IAction
+class MODULE_UI_VIZ_CLASS_API SScreenSelector : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScreenSelector, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SScreenSelector, sight::ui::base::IAction);
 
     /// Constructor.
     MODULE_UI_VIZ_API SScreenSelector();

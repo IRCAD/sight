@@ -41,7 +41,7 @@ namespace data
 
 Equipment1::Equipment1()
 {
-    m_classname = "::sight::data::Equipment";
+    m_classname = "sight::data::Equipment";
     m_version   = "1";
 }
 

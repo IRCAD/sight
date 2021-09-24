@@ -35,7 +35,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-fwDicomIOFilterRegisterMacro(::sight::ui::dicom::splitter::TagValueConfigurableSplitter);
+fwDicomIOFilterRegisterMacro(sight::ui::dicom::splitter::TagValueConfigurableSplitter);
 
 namespace sight::ui::dicom
 {

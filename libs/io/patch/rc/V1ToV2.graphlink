@@ -5,16 +5,16 @@
     "patcher" : "MedicalWorkspacePatcher",
     "links" : [
         {
-            "::sight::data::Patient" : "1",
-            "::sight::data::Patient" : "1"
+            "sight::data::Patient" : "1",
+            "sight::data::Patient" : "1"
         },
         {
-            "::sight::data::Study" : "1",
-            "::sight::data::Study" : "1"
+            "sight::data::Study" : "1",
+            "sight::data::Study" : "1"
         },
         {
-            "::sight::data::Acquisition" : "1",
-            "::sight::data::ImageSeries" : "1"
+            "sight::data::Acquisition" : "1",
+            "sight::data::ImageSeries" : "1"
         }
     ]
 }

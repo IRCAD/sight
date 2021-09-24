@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>toolCalibration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -168,7 +168,7 @@
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
+            <addSelection service="sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
         <service uid="concatenateMatrices" type="sight::module::geometry::base::SConcatenateMatrices">
@@ -189,7 +189,7 @@
                 <layer id="default" order="1" />
                 <adaptor uid="trackedMatrixAdp" />
                 <adaptor uid="calibMatAdp" />
-                <adaptor uid="calibAxisMatAdp" /> 
+                <adaptor uid="calibAxisMatAdp" />
                 <adaptor uid="systemCenterAxisAdp" />
                 <adaptor uid="trackerAxis0Adp" />
                 <adaptor uid="pointlistAdp" />
@@ -281,7 +281,7 @@
 
         <start uid="trackedMatrixAdp" />
         <start uid="calibMatAdp" />
-        <start uid="calibAxisMatAdp" /> 
+        <start uid="calibAxisMatAdp" />
         <start uid="systemCenterAxisAdp" />
         <start uid="trackerAxis0Adp" />
         <start uid="pointlistAdp" />

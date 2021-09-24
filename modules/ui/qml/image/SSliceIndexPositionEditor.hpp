@@ -91,7 +91,7 @@ Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, sight::ui::qml::IQmlEditor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSliceIndexPositionEditor() noexcept;

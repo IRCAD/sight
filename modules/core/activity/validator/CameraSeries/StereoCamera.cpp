@@ -34,11 +34,11 @@ namespace sight::module::activity::validator
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::StereoCamera);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::CameraSeries::StereoCamera);
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(::sight::activity::IValidator::Key)
+StereoCamera::StereoCamera(sight::activity::IValidator::Key)
 {
 }
 
@@ -50,7 +50,7 @@ StereoCamera::~StereoCamera()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 

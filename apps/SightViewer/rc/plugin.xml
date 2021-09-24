@@ -13,7 +13,7 @@
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::service::extension::Config" >
+    <extension implements="sight::service::extension::Config" >
         <id>SightViewer_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
@@ -22,7 +22,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config" >
+    <extension implements="sight::service::extension::Config" >
         <id>SightViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -30,7 +30,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config" >
+    <extension implements="sight::service::extension::Config" >
         <id>SightViewer_gdcm_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
@@ -39,7 +39,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::Config">
+    <extension implements="sight::service::extension::Config">
         <id>SightViewerDicomReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -47,7 +47,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>
         <config>
 

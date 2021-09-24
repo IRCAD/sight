@@ -3,7 +3,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>Tuto05Mesher_AppCfg</id>
         <config>
 

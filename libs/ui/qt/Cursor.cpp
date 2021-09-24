@@ -26,7 +26,7 @@
 
 #include <QApplication>
 
-fwGuiRegisterMacro(::sight::ui::qt::Cursor, ::sight::ui::base::ICursor::REGISTRY_KEY);
+fwGuiRegisterMacro(sight::ui::qt::Cursor, sight::ui::base::ICursor::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {

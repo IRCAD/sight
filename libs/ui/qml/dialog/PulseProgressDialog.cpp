@@ -36,8 +36,8 @@
 #include <QtCore>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::PulseProgressDialog,
-    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::PulseProgressDialog,
+    sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml

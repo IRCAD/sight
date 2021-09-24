@@ -33,7 +33,7 @@ Array::Array(const data::Array::sptr& array) :
 {
     FW_DEPRECATED_MSG(
         "::data::helper::Array is no longer supported, the methods have been moved to "
-        "::sight::data::Array",
+        "sight::data::Array",
         "22.0"
     );
     SIGHT_ASSERT("Array ptr is null.", array);

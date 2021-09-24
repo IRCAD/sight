@@ -25,7 +25,7 @@
 #include <geometry/data/PlaneFunctions.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::geometry::data::ut::PlaneFunctionsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::PlaneFunctionsTest);
 
 namespace sight::geometry::data
 {

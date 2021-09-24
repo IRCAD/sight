@@ -36,8 +36,8 @@ namespace ModelSeries
 V2ToV3::V2ToV3() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::ModelSeries";
-    m_targetClassname = "::sight::data::ModelSeries";
+    m_originClassname = "sight::data::ModelSeries";
+    m_targetClassname = "sight::data::ModelSeries";
     m_originVersion   = "2";
     m_targetVersion   = "3";
 }

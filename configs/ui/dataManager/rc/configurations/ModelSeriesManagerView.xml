@@ -8,7 +8,7 @@ Example
     <parameter replace="WID_PARENT" by="modelManagerView" />
 </service>
 -->
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>ModelSeriesManagerView</id>
     <parameters>
         <param name="WID_PARENT" />

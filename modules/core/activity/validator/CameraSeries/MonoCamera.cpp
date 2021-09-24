@@ -33,7 +33,7 @@ namespace sight::module::activity::validator
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::MonoCamera);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::CameraSeries::MonoCamera);
 
 //-----------------------------------------------------------------------------
 

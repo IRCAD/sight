@@ -51,7 +51,7 @@ namespace sight::module::ui::base::series
  * @subsection In-Out In-Out:
  * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the series.
  */
-class MODULE_UI_BASE_CLASS_API SPushSelection : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SPushSelection : public sight::ui::base::IAction
 {
 public:
 

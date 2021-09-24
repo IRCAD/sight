@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Color))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("rgba", &::sight::data::Color::m_vRGBA)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("rgba", &sight::data::Color::m_vRGBA)
     ;
 }

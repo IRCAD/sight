@@ -3,6 +3,6 @@
     <requirement id="sight::module::service"/>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::sight::activity::extension::Activity" schema="activity/activity.xsd"/>
+    <extension-point id="sight::activity::extension::Activity" schema="activity/activity.xsd"/>
 
 </plugin>

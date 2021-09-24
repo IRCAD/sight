@@ -29,7 +29,7 @@
 #include <random>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::scene3d::ut::UtilsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::UtilsTest);
 
 namespace sight::viz::scene3d
 {

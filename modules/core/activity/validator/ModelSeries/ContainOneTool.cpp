@@ -35,11 +35,11 @@ namespace sight::module::activity::validator
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneTool);
+fwActivitiesValidatorRegisterMacro(sight::module::activity::validator::ModelSeries::ContainOneTool);
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(::sight::activity::IValidator::Key)
+ContainOneTool::ContainOneTool(sight::activity::IValidator::Key)
 {
 }
 
@@ -51,7 +51,7 @@ ContainOneTool::~ContainOneTool()
 
 //-----------------------------------------------------------------------------
 
-::sight::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData) const
+sight::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData) const
 {
     IValidator::ValidationType validation;
 

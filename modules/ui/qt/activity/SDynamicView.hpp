@@ -159,7 +159,7 @@ private:
 
     struct SDynamicViewInfo
     {
-        ::sight::ui::qt::container::QtContainer::sptr container;
+        sight::ui::qt::container::QtContainer::sptr container;
         service::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;

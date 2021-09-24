@@ -107,7 +107,7 @@ void SSeriesDBReader::openLocationDialog()
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = service::extension::Config::getDefault()->getServiceConfig(
             m_filterConfig,
-            "::sight::module::ui::dicom::SFilterSelectorDialog"
+            "sight::module::ui::dicom::SFilterSelectorDialog"
         );
 
         SIGHT_ASSERT(

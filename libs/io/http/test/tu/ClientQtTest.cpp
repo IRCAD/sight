@@ -31,7 +31,7 @@
 
 #include <utest/Exception.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::http::ut::ClientQtTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::ClientQtTest);
 
 namespace sight::io::http
 {

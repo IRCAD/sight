@@ -31,7 +31,7 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::activity::validator::ut::ContainOneToolTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::ContainOneToolTest);
 
 namespace sight::module::activity::validator
 {
@@ -61,7 +61,7 @@ void ContainOneToolTest::tearDown()
 
 void ContainOneToolTest::testValidator()
 {
-    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneTool");
+    auto validator = factory::New("sight::module::activity::validator::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -156,7 +156,7 @@ void ContainOneToolTest::testValidator()
 
 void ContainOneToolTest::testValidatorWithVector()
 {
-    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneTool");
+    auto validator = factory::New("sight::module::activity::validator::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -286,7 +286,7 @@ void ContainOneToolTest::testValidatorWithVector()
 
 void ContainOneToolTest::testValidatorWithComposite()
 {
-    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneTool");
+    auto validator = factory::New("sight::module::activity::validator::ModelSeries::ContainOneTool");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);

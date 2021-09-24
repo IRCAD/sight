@@ -130,11 +130,11 @@ namespace activity
  *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
  *            Boolean object.
  */
-class MODULE_UI_QT_CLASS_API SLauncher : public ::sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SLauncher : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLauncher, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SLauncher, sight::ui::base::IAction);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLauncher() noexcept;

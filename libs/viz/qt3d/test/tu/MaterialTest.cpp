@@ -35,7 +35,7 @@
 #include <Qt3DRender/QTechnique>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::viz::qt3dTest::ut::MaterialTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::MaterialTest);
 
 namespace sight::viz::qt3dTest
 {

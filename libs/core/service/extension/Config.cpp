@@ -32,7 +32,7 @@ namespace sight::service
 namespace extension
 {
 
-const std::string Config::CONFIG_EXT_POINT = "::sight::service::extension::Config";
+const std::string Config::CONFIG_EXT_POINT = "sight::service::extension::Config";
 
 Config::sptr Config::s_currentServiceConfig = Config::New();
 

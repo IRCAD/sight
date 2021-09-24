@@ -42,8 +42,8 @@ namespace Material
 V4ToV3::V4ToV3() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Material";
-    m_targetClassname = "::sight::data::Material";
+    m_originClassname = "sight::data::Material";
+    m_targetClassname = "sight::data::Material";
     m_originVersion   = "4";
     m_targetVersion   = "3";
 }

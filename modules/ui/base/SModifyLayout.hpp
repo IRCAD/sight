@@ -38,11 +38,11 @@ namespace sight::module::ui::base
 /**
  * @brief This action is used to modify the layout configuration.
  */
-class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SModifyLayout : public sight::ui::base::IAction
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SModifyLayout, ::sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SModifyLayout, sight::ui::base::IAction);
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**

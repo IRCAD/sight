@@ -65,7 +65,7 @@ static std::stringstream spiritDebugStream;
 #include "io/base/reader/DictionaryReader.hpp"
 #include "io/base/reader/registry/macros.hpp"
 
-SIGHT_REGISTER_IO_READER(::sight::io::base::reader::DictionaryReader);
+SIGHT_REGISTER_IO_READER(sight::io::base::reader::DictionaryReader);
 
 namespace sight::io::base
 {

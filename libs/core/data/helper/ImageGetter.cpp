@@ -43,7 +43,7 @@ ImageGetter::ImageGetter(data::Image::csptr ImageGetter) :
 {
     FW_DEPRECATED_MSG(
         "::data::helper::ImageGetter is no longer supported, the methods have been moved to "
-        "::sight::data::Image",
+        "sight::data::Image",
         "22.0"
     )
     if(ImageGetter)

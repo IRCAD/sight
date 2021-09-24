@@ -28,7 +28,7 @@
 #include <fstream>
 #include <iostream>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::base::writer::ArrayWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::ArrayWriter);
 
 namespace sight::io::base
 {

@@ -43,7 +43,7 @@
 #include <array>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::semantic::ut::ImageV09ALAToV10Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::semantic::ut::ImageV09ALAToV10Test);
 
 namespace sight::io::patch::semantic
 {
@@ -86,7 +86,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
     sight::atoms::Object::sptr image = sight::atoms::Object::New();
     sight::atoms::Object::sptr patchedObj;
 
-    io::atoms::patch::helper::setClassname(image, "::sight::data::Image");
+    io::atoms::patch::helper::setClassname(image, "sight::data::Image");
     io::atoms::patch::helper::setVersion(image, "2");
 
     io::atoms::patch::helper::Object helperImage(image);
@@ -97,7 +97,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
 
     // create PointList
     sight::atoms::Object::sptr pl = sight::atoms::Object::New();
-    io::atoms::patch::helper::setClassname(pl, "::sight::data::PointList");
+    io::atoms::patch::helper::setClassname(pl, "sight::data::PointList");
     io::atoms::patch::helper::setVersion(pl, "1");
     io::atoms::patch::helper::Object helperPL(pl);
 
@@ -127,7 +127,7 @@ void ImageV09ALAToV10Test::applyPatchTest()
     CPPUNIT_ASSERT(newFieldMap->find("m_landmarksId") != newFieldMap->end());
     sight::atoms::Object::sptr landmarks = sight::atoms::Object::dynamicCast((*newFieldMap)["m_landmarksId"]);
     CPPUNIT_ASSERT(landmarks);
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::data::Landmarks"), io::atoms::patch::helper::getClassname(landmarks));
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::data::Landmarks"), io::atoms::patch::helper::getClassname(landmarks));
     CPPUNIT_ASSERT(landmarks->getAttribute("landmarks"));
     sight::atoms::Map::sptr landmarksMap = sight::atoms::Map::dynamicCast(landmarks->getAttribute("landmarks"));
     CPPUNIT_ASSERT(landmarksMap);
@@ -174,7 +174,7 @@ void ImageV09ALAToV10Test::addPoint(
 )
 {
     sight::atoms::Object::sptr point = sight::atoms::Object::New();
-    io::atoms::patch::helper::setClassname(point, "::sight::data::Point");
+    io::atoms::patch::helper::setClassname(point, "sight::data::Point");
     io::atoms::patch::helper::setVersion(point, "1");
     io::atoms::patch::helper::Object helper(point);
 
@@ -190,7 +190,7 @@ void ImageV09ALAToV10Test::addPoint(
     helper.addAttribute("fields", fieldMap);
 
     sight::atoms::Object::sptr labelObj = sight::atoms::Object::New();
-    io::atoms::patch::helper::setClassname(labelObj, "::sight::data::String");
+    io::atoms::patch::helper::setClassname(labelObj, "sight::data::String");
     io::atoms::patch::helper::setVersion(labelObj, "1");
     io::atoms::patch::helper::Object helperLabel(labelObj);
     helperLabel.addAttribute("value", sight::atoms::String::New(label));

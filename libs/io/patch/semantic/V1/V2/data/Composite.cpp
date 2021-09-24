@@ -61,7 +61,7 @@ typedef std::map<sight::atoms::Object::sptr, sight::atoms::Object::sptr> Image2M
 Composite::Composite() :
     io::atoms::patch::ISemanticPatch()
 {
-    m_originClassname = "::sight::data::Composite";
+    m_originClassname = "sight::data::Composite";
     m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
@@ -144,10 +144,10 @@ void processPlanning(
         }
 
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
-        sight::atoms::Object::sptr newActivitySeries         = creators->create("::sight::data::ActivitySeries", "1");
+        sight::atoms::Object::sptr newActivitySeries         = creators->create("sight::data::ActivitySeries", "1");
 
         sight::atoms::Object::sptr imgComposite = sight::atoms::Object::New();
-        io::atoms::patch::helper::setClassname(imgComposite, "::sight::data::Composite");
+        io::atoms::patch::helper::setClassname(imgComposite, "sight::data::Composite");
         io::atoms::patch::helper::setVersion(imgComposite, "1");
         io::atoms::patch::helper::generateID(imgComposite);
         io::atoms::patch::helper::cleanFields(imgComposite);
@@ -163,7 +163,7 @@ void processPlanning(
         activityDataMap->insert("imageSeries", imgComposite);
 
         sight::atoms::Object::sptr mapObj = sight::atoms::Object::New();
-        io::atoms::patch::helper::setClassname(mapObj, "::sight::data::Composite");
+        io::atoms::patch::helper::setClassname(mapObj, "sight::data::Composite");
         io::atoms::patch::helper::setVersion(mapObj, "1");
         io::atoms::patch::helper::generateID(mapObj);
         io::atoms::patch::helper::cleanFields(mapObj);
@@ -242,13 +242,13 @@ void processProcessing(
         }
 
         io::atoms::patch::StructuralCreatorDB::sptr creators = io::atoms::patch::StructuralCreatorDB::getDefault();
-        sight::atoms::Object::sptr newActivitySeries         = creators->create("::sight::data::ActivitySeries", "1");
+        sight::atoms::Object::sptr newActivitySeries         = creators->create("sight::data::ActivitySeries", "1");
 
         sight::atoms::Map::sptr activityDataMap = sight::atoms::Map::New();
         activityDataMap->insert("processing", oldProcessingAtom.second);
 
         sight::atoms::Object::sptr mapObj = sight::atoms::Object::New();
-        io::atoms::patch::helper::setClassname(mapObj, "::sight::data::Composite");
+        io::atoms::patch::helper::setClassname(mapObj, "sight::data::Composite");
         io::atoms::patch::helper::setVersion(mapObj, "1");
         io::atoms::patch::helper::generateID(mapObj);
         io::atoms::patch::helper::cleanFields(mapObj);
@@ -321,7 +321,7 @@ void Composite::apply(
     if(previous->getMetaInfo("compositeType") == "MedicalWorkspace")
     {
         // Update type/version
-        io::atoms::patch::helper::setClassname(current, "::sight::data::SeriesDB");
+        io::atoms::patch::helper::setClassname(current, "sight::data::SeriesDB");
         io::atoms::patch::helper::setVersion(current, "1");
 
         // Update Attributes
@@ -404,7 +404,7 @@ void Composite::apply(
                     {
                         // Create new model series
                         sight::atoms::Object::sptr newModelSeries =
-                            creators->create("::sight::data::ModelSeries", "1");
+                            creators->create("sight::data::ModelSeries", "1");
 
                         io::atoms::patch::helper::Object msHelper(newModelSeries);
                         sight::atoms::Object::sptr msPatient =

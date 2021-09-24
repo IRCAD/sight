@@ -30,7 +30,7 @@
 #include <data/Matrix4.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::activity::validator::ut::StereoCameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::StereoCameraTest);
 
 namespace sight::module::activity::validator
 {
@@ -60,7 +60,7 @@ void StereoCameraTest::tearDown()
 
 void StereoCameraTest::testValidator()
 {
-    auto validator = factory::New("::sight::module::activity::validator::CameraSeries::StereoCamera");
+    auto validator = factory::New("sight::module::activity::validator::CameraSeries::StereoCamera");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);

@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Float))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("value", (float sight::data::Float::*) &::sight::data::Float::m_value)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("value", (float sight::data::Float::*) &sight::data::Float::m_value)
     ;
 }

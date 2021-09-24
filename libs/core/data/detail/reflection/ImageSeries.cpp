@@ -35,24 +35,24 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (ImageSeries))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Series>()
-    .property("image", &::sight::data::ImageSeries::m_image)
-    .property("dicom_reference", &::sight::data::ImageSeries::m_dicomReference)
-    .property("contrast_bolus_agent", &::sight::data::ImageSeries::m_contrastBolusAgent)
-    .property("contrast_bolus_route", &::sight::data::ImageSeries::m_contrastBolusRoute)
-    .property("contrast_bolus_volume", &::sight::data::ImageSeries::m_contrastBolusVolume)
-    .property("contrast_bolus_start_time", &::sight::data::ImageSeries::m_contrastBolusStartTime)
-    .property("contrast_bolus_stop_time", &::sight::data::ImageSeries::m_contrastBolusStopTime)
-    .property("contrast_bolus_total_dose", &::sight::data::ImageSeries::m_contrastBolusTotalDose)
-    .property("contrast_bolus_flow_rate", &::sight::data::ImageSeries::m_contrastBolusFlowRate)
-    .property("contrast_bolus_flow_duration", &::sight::data::ImageSeries::m_contrastBolusFlowDuration)
-    .property("contrast_bolus_ingredient", &::sight::data::ImageSeries::m_contrastBolusIngredient)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Series>()
+    .property("image", &sight::data::ImageSeries::m_image)
+    .property("dicom_reference", &sight::data::ImageSeries::m_dicomReference)
+    .property("contrast_bolus_agent", &sight::data::ImageSeries::m_contrastBolusAgent)
+    .property("contrast_bolus_route", &sight::data::ImageSeries::m_contrastBolusRoute)
+    .property("contrast_bolus_volume", &sight::data::ImageSeries::m_contrastBolusVolume)
+    .property("contrast_bolus_start_time", &sight::data::ImageSeries::m_contrastBolusStartTime)
+    .property("contrast_bolus_stop_time", &sight::data::ImageSeries::m_contrastBolusStopTime)
+    .property("contrast_bolus_total_dose", &sight::data::ImageSeries::m_contrastBolusTotalDose)
+    .property("contrast_bolus_flow_rate", &sight::data::ImageSeries::m_contrastBolusFlowRate)
+    .property("contrast_bolus_flow_duration", &sight::data::ImageSeries::m_contrastBolusFlowDuration)
+    .property("contrast_bolus_ingredient", &sight::data::ImageSeries::m_contrastBolusIngredient)
     .property(
         "contrast_bolus_ingredient_concentration",
-        &::sight::data::ImageSeries::m_contrastBolusIngredientConcentration
+        &sight::data::ImageSeries::m_contrastBolusIngredientConcentration
     )
-    .property("acquisition_date", &::sight::data::ImageSeries::m_acquisitionDate)
-    .property("acquisition_time", &::sight::data::ImageSeries::m_acquisitionTime)
+    .property("acquisition_date", &sight::data::ImageSeries::m_acquisitionDate)
+    .property("acquisition_time", &sight::data::ImageSeries::m_acquisitionTime)
     ;
 }

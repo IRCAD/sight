@@ -662,7 +662,7 @@ void SLandmarks::onRemoveSelection()
 void SLandmarks::addPickedPoint(data::tools::PickingInfo _pickingInfo)
 {
     FW_DEPRECATED_MSG(
-        "::sight::module::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to module::ui::qt::metrics::pick",
+        "sight::module::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to module::ui::qt::metrics::pick",
         "22.0"
     )
     this->pick(_pickingInfo);

@@ -32,11 +32,11 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Patient))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("name", &::sight::data::Patient::m_name)
-    .property("patient_id", &::sight::data::Patient::m_patientId)
-    .property("birth_date", &::sight::data::Patient::m_birthdate)
-    .property("sex", &::sight::data::Patient::m_sex)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("name", &sight::data::Patient::m_name)
+    .property("patient_id", &sight::data::Patient::m_patientId)
+    .property("birth_date", &sight::data::Patient::m_birthdate)
+    .property("sex", &sight::data::Patient::m_sex)
     ;
 }

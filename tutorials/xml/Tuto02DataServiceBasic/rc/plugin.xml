@@ -1,24 +1,24 @@
 <plugin id="Tuto02DataServiceBasic" >
 
-    <!-- The modules in requirements are automatically started when this 
+    <!-- The modules in requirements are automatically started when this
          Application is launched. -->
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
         <id>TutoDataServiceBasic_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- In tutoDataServiceBasic, the central data object is a ::sight::data::Image. -->
+            <!-- In tutoDataServiceBasic, the central data object is a sight::data::Image. -->
             <object uid="imageData" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
             <!--
                 Description service of the GUI:
-                The ::sight::module::ui::base::SFrame service automatically positions the various
+                The sight::module::ui::base::SFrame service automatically positions the various
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->

@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Matrix4))
 {
     builder
     .tag("object_version", "2")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("coefficient", &::sight::data::Matrix4::m_vCoefficients)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("coefficient", &sight::data::Matrix4::m_vCoefficients)
     ;
 }

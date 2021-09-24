@@ -57,8 +57,8 @@ namespace io
               <inout key="data" uid="${selection}" />
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::sight::module::io::atoms::SWriter" />
-              <config id="ioAtomsConfig" service="::sight::module::io::atoms::SWriter" />
+              <addSelection service="sight::module::io::atoms::SWriter" />
+              <config id="ioAtomsConfig" service="sight::module::io::atoms::SWriter" />
           </service>
  * @endcode
  *

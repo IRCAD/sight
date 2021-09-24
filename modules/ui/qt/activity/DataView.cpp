@@ -736,7 +736,7 @@ void DataView::importObjectFromSDB()
         SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
-        auto obj      = this->readObject("::sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
+        auto obj      = this->readObject("sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
         auto seriesDB = data::SeriesDB::dynamicCast(obj);
         if(seriesDB)
         {
@@ -775,12 +775,12 @@ data::Object::sptr DataView::readObject(
 {
     data::Object::sptr obj;
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
+    ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);

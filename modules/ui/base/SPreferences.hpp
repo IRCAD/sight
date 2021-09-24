@@ -48,11 +48,11 @@ namespace sight::module::ui::base
  * @subsection Configuration Configuration
  * - \b filename : path to the preferences file
  */
-class MODULE_UI_BASE_CLASS_API SPreferences : public ::sight::ui::base::preferences::IPreferences
+class MODULE_UI_BASE_CLASS_API SPreferences : public sight::ui::base::preferences::IPreferences
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPreferences, ::sight::ui::base::preferences::IPreferences);
+    SIGHT_DECLARE_SERVICE(SPreferences, sight::ui::base::preferences::IPreferences);
 
     ///Destructor
     MODULE_UI_BASE_API SPreferences() noexcept

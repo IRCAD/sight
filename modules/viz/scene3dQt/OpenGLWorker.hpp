@@ -42,7 +42,7 @@ struct OpenGLRunner;
  * @warning can not be used for parallel rendering as it is not supported by OGRE.
  * OpenGL workers should mainly be used to fill large gpu buffers in the background.
  */
-class OpenGLWorker final : public ::sight::viz::scene3d::IGraphicsWorker
+class OpenGLWorker final : public sight::viz::scene3d::IGraphicsWorker
 {
 public:
 

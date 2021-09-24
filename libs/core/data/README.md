@@ -3,17 +3,17 @@
 This is one of the most important libraries in _Sight_. It defines data objects that are going to be used in services.
 
 _Sight_ relies on many third part libraries, and as such, it needs common data structures to communicate between them.
-Basic data are provided, such as scalar values, string, geometric entities, as well as medical data used in computer 
+Basic data are provided, such as scalar values, string, geometric entities, as well as medical data used in computer
 assisted surgery such as images, segmentations, etc...
 
 ## Data classes
 
-The base data class is `::sight::data::Object`. It provides a default slot to warn subscribers when its content changes.
+The base data class is `sight::data::Object`. It provides a default slot to warn subscribers when its content changes.
 All concrete data classes implement this interface.
 
 ### Basic
 
-- **Array**: generic and dynamic multi-dimensional array. 
+- **Array**: generic and dynamic multi-dimensional array.
 - **Boolean**: boolean value.
 - **Color**: RGBA color value.
 - **Composite**: contains a map of objects.
@@ -31,9 +31,9 @@ All concrete data classes implement this interface.
 - **ActivitySeries**: contains information and data of an application activity.
 - **DicomSeries**: contains a DICOM series.
 - **Equipment**: contains an equipment information.
-- **Histogram**: contains the histogram of a `::sight::data::Image`.
+- **Histogram**: contains the histogram of a `sight::data::Image`.
 - **Image**: defines an image.
-- **ImageSeries**: contains a `::sight::data::Image` and the associated medical data.
+- **ImageSeries**: contains a `sight::data::Image` and the associated medical data.
 - **Landmarks**: defines a set of spatial (3D) or color (4D) points.
 - **ModelSeries**: holds a medical data.
 - **Patient**: holds a patient information.
@@ -43,19 +43,19 @@ All concrete data classes implement this interface.
 - **ResectionDB**: defines a resection container.
 - **ROITraits**: defines ROI traits containing an identifier, an evaluated expression, a ROI mask node used for ROIand a structure traits associated to the ROI.
 - **Series**: defines medical data.
-- **SeriesDB**: holds `::sight::data::series`
+- **SeriesDB**: holds `sight::data::series`
 - **StructureTraits**: defines a structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
-- **StructureTraitsDictionary**: dictionary of `::sight::data::StructureTraits`.
-- **StructureTraitsHelper**: helper of `::sight::data::StructureTraits`.
-- **Study**: contains a medical study information. 
+- **StructureTraitsDictionary**: dictionary of `sight::data::StructureTraits`.
+- **StructureTraitsHelper**: helper of `sight::data::StructureTraits`.
+- **Study**: contains a medical study information.
 - **TransferFunction**: defines a transfer function which associates color and values
-  
+
 ### Computer vision
 
 - **CalibrationInfo**: stores calibration images used to compute camera calibration.
 - **Camera**: contains intrinsic and extrinsic parameters of a camera.
 - **CameraSeries**: stores a collection of cameras.
-- **FrameTL**: defines a timeline of `::sight::data::Image`.
+- **FrameTL**: defines a timeline of `sight::data::Image`.
 - **MarkerMap**: stores a map of optical markers (2D).
 - **MarkerTL**: defines a timeline of 2D markers from their four corner positions.
 - **MatrixTL**: defines a timeline of raw 4x4 matrices.

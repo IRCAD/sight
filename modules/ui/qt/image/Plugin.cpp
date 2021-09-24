@@ -29,7 +29,7 @@ namespace sight::module::ui::qt::image
 
 //-----------------------------------------------------------------------------
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::qt::image::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

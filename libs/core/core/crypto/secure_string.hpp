@@ -94,9 +94,9 @@ using secure_string = std::basic_string<char, std::char_traits<char>, allocator<
 
 // Zeroes the strings own memory on destruction
 template<>
-inline ::sight::core::crypto::secure_string::~basic_string()
+inline sight::core::crypto::secure_string::~basic_string()
 {
     clear();
     shrink_to_fit();
-    ::sight::core::crypto::cleanse(this, sizeof(*this));
+    sight::core::crypto::cleanse(this, sizeof(*this));
 }

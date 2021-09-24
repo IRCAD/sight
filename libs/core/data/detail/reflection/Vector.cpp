@@ -30,7 +30,7 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Vector))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("values", &::sight::data::Vector::m_container);
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("values", &sight::data::Vector::m_container);
 }

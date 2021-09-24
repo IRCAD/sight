@@ -56,7 +56,7 @@ namespace Tuto04MeshGeneratorCpp
  *  - ShakeCellNormals: shakes cell normals.
  *  - MeshDeformation: deforms the mesh.
  */
-class SMeshModifier final : public ::sight::ui::base::IAction
+class SMeshModifier final : public sight::ui::base::IAction
 {
 public:
 

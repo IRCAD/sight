@@ -80,7 +80,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SText final : public sight::viz::scene3d::IAd
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SText, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SText, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SText() noexcept;

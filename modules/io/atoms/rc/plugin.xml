@@ -1,15 +1,15 @@
-<plugin id="::sight::module::io::atoms" library="true" >
+<plugin id="sight::module::io::atoms" library="true" >
 
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IReader</type>
         <service>sight::module::io::atoms::SReader</service>
         <object>sight::data::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
         <type>sight::io::base::service::IWriter</type>
         <service>sight::module::io::atoms::SWriter</service>
         <object>sight::data::Object</object>
@@ -17,6 +17,3 @@
     </extension>
 
 </plugin>
-
-
-

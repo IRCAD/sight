@@ -39,7 +39,7 @@ namespace data
 
 ImageSeries1::ImageSeries1()
 {
-    m_classname = "::sight::data::ImageSeries";
+    m_classname = "sight::data::ImageSeries";
     m_version   = "1";
 }
 

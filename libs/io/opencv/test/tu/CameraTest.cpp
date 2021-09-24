@@ -28,7 +28,7 @@
 
 #include <opencv2/core.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::CameraTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::CameraTest);
 
 namespace sight::io::opencv
 {

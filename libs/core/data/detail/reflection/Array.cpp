@@ -32,14 +32,14 @@
 
 SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Array))
 {
-    builder.base< ::sight::data::Object>()
+    builder.base<sight::data::Object>()
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .property("strides", &::sight::data::Array::m_strides)
-    .property("size", &::sight::data::Array::m_size)
-    .property("type", &::sight::data::Array::m_type)
-    .property("nb_of_components", &::sight::data::Array::m_nbOfComponents)
-    .property("buffer", &::sight::data::Array::m_bufferObject)
-    .property("isOwner", &::sight::data::Array::m_isBufferOwner)
+    .tag("lib_name", "sight::data")
+    .property("strides", &sight::data::Array::m_strides)
+    .property("size", &sight::data::Array::m_size)
+    .property("type", &sight::data::Array::m_type)
+    .property("nb_of_components", &sight::data::Array::m_nbOfComponents)
+    .property("buffer", &sight::data::Array::m_bufferObject)
+    .property("isOwner", &sight::data::Array::m_isBufferOwner)
     ;
 }

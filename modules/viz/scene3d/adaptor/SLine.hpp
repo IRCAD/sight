@@ -74,7 +74,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLine final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SLine() noexcept;

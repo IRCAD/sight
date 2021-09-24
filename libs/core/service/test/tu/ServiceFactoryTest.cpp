@@ -36,7 +36,7 @@
 #include <unordered_set>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::service::ut::ServiceFactoryTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ServiceFactoryTest);
 
 //------------------------------------------------------------------------------
 

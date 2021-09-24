@@ -54,7 +54,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::vtk::ut::MeshTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::MeshTest);
 
 namespace sight::io::vtk
 {

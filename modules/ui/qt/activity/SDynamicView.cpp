@@ -88,7 +88,7 @@ SDynamicView::~SDynamicView() noexcept
 
 void SDynamicView::configuring()
 {
-    this->::sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::base::view::IActivityView::configuring();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
@@ -124,9 +124,9 @@ void SDynamicView::configuring()
 
 void SDynamicView::starting()
 {
-    this->::sight::ui::base::IGuiContainer::create();
+    this->sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable(true);
@@ -230,10 +230,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     QString finalTitle = QString("%1 %2").arg(info.title.c_str(), "(%1)").arg(m_titleToCount[info.title]);
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
-    auto subContainer = ::sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::QtContainer::New();
     QWidget* widget   = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
-    ::sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+    sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap["WID_PARENT"] = info.wid;
     std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
@@ -329,7 +329,7 @@ void SDynamicView::closeTab(int index, bool forceClose)
         m_currentWidget = 0;
         m_tabWidget->removeTab(index);
 
-        ::sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
+        sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
 
         info.container->destroyContainer();
         info.container.reset();

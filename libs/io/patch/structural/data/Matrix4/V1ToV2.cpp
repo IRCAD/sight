@@ -42,8 +42,8 @@ namespace Matrix4
 V1ToV2::V1ToV2() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Matrix4";
-    m_targetClassname = "::sight::data::Matrix4";
+    m_originClassname = "sight::data::Matrix4";
+    m_targetClassname = "sight::data::Matrix4";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }

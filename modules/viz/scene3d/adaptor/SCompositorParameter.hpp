@@ -69,12 +69,12 @@ class CompositorListener;
  * - \b shaderType (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
  *      fragment.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public ::sight::viz::scene3d::IParameter
+class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public sight::viz::scene3d::IParameter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCompositorParameter, ::sight::viz::scene3d::IParameter);
+    SIGHT_DECLARE_SERVICE(SCompositorParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;

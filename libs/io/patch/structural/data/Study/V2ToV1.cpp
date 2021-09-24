@@ -36,8 +36,8 @@ namespace Study
 V2ToV1::V2ToV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::Study";
-    m_targetClassname = "::sight::data::Study";
+    m_originClassname = "sight::data::Study";
+    m_targetClassname = "sight::data::Study";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }

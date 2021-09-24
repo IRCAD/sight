@@ -67,7 +67,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SHistogram : public sight::viz::scene2d::IAda
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogram, ::sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogram, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SHistogram() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SHistogram() noexcept;

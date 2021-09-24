@@ -39,8 +39,8 @@
 #include <functional>
 
 fwGuiRegisterMacro(
-    ::sight::ui::qml::dialog::LocationDialog,
-    ::sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
+    sight::ui::qml::dialog::LocationDialog,
+    sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
 );
 
 namespace sight::ui::qml

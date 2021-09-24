@@ -35,7 +35,7 @@
 
 #include <boost/foreach.hpp>
 
-SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::helper::DicomSeriesWriter);
+SIGHT_REGISTER_IO_WRITER(sight::io::dicom::helper::DicomSeriesWriter);
 
 namespace sight::io::dicom
 {

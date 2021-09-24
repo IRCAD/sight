@@ -114,11 +114,11 @@ void GetObjectTest::invalidPathTest()
 
     // no exception version
     data::Object::sptr obj = data::reflection::getObject(composite, "@values.string");
-    CPPUNIT_ASSERT_MESSAGE("::sight::data::String must be equal", obj == text);
+    CPPUNIT_ASSERT_MESSAGE("sight::data::String must be equal", obj == text);
 
     // with exception version
     obj = data::reflection::getObject(composite, "@values.string", true);
-    CPPUNIT_ASSERT_MESSAGE("::sight::data::String must be equal", obj == text);
+    CPPUNIT_ASSERT_MESSAGE("sight::data::String must be equal", obj == text);
 
     // no exception version
     data::Object::sptr invalidObj = data::reflection::getObject(composite, "@values.invalidPath", false);
@@ -136,11 +136,11 @@ void GetObjectTest::invalidPathTest()
 
     // no exception version
     obj = data::reflection::getObject(composite, "@values.vector.values.0");
-    CPPUNIT_ASSERT_MESSAGE("::sight::data::Integer must be equal", obj == intValue);
+    CPPUNIT_ASSERT_MESSAGE("sight::data::Integer must be equal", obj == intValue);
 
     // with exception version
     obj = data::reflection::getObject(composite, "@values.vector.values.0", true);
-    CPPUNIT_ASSERT_MESSAGE("::sight::data::Integer must be equal", obj == intValue);
+    CPPUNIT_ASSERT_MESSAGE("sight::data::Integer must be equal", obj == intValue);
 
     /// This is important to test vectors subobjects properties to ensure the visitor path is correct
 

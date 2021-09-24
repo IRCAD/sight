@@ -27,7 +27,7 @@
 namespace sight::module::geometry::vision::charuco
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::geometry::vision::charuco::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::geometry::vision::charuco::Plugin");
 
 Plugin::~Plugin() noexcept
 {

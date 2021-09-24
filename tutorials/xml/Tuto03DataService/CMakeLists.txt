@@ -1,6 +1,6 @@
-sight_add_target( Tuto03DataService TYPE APP )
+sight_add_target(Tuto03DataService TYPE APP)
 
-add_dependencies(Tuto03DataService 
+add_dependencies(Tuto03DataService
                  sightrun
                  module_appXml
                  module_ui_qt

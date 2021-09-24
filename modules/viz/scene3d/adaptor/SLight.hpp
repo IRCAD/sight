@@ -72,12 +72,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SLight final : public ::sight::viz::scene3d::ILight
+class MODULE_VIZ_SCENE3D_CLASS_API SLight final : public sight::viz::scene3d::ILight
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLight, ::sight::viz::scene3d::ILight);
+    SIGHT_DECLARE_SERVICE(SLight, sight::viz::scene3d::ILight);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API SLight() noexcept;

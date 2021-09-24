@@ -57,7 +57,7 @@ namespace sight::module::io::dicomweb
         <service type="sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode
@@ -75,7 +75,7 @@ class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::IController
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPuller, ::sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::IController);
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector<std::string> InstanceUIDContainerType;

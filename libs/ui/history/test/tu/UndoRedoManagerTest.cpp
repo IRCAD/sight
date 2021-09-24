@@ -30,7 +30,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::ui::history::ut::UndoRedoManagerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::UndoRedoManagerTest);
 
 namespace sight::ui::history
 {

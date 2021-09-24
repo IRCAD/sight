@@ -33,7 +33,7 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::data::tools::ut::MedicalImageHelpersTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::MedicalImageHelpersTest);
 
 namespace sight::data::tools
 {

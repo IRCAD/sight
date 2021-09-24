@@ -27,7 +27,7 @@
 namespace sight::module::navigation::openvslam
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::navigation::openvslam::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::navigation::openvslam::Plugin");
 
 //-----------------------------------------------------------------------------
 

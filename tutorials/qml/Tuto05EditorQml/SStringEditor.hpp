@@ -42,7 +42,7 @@ Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SStringEditor, ::sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SStringEditor, sight::ui::qml::IQmlEditor);
 
     /// Constructor.
     TUTO05EDITORQML_API SStringEditor() noexcept;

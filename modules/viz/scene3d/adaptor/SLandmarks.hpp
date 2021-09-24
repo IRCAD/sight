@@ -96,7 +96,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLandmarks, ::sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLandmarks, sight::viz::scene3d::IAdaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;

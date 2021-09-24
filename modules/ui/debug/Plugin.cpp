@@ -25,7 +25,7 @@
 namespace sight::module::ui::debug
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::ui::debug::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::ui::debug::Plugin");
 
 //------------------------------------------------------------------------------
 

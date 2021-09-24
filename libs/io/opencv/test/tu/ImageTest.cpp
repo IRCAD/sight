@@ -29,7 +29,7 @@
 #include <io/opencv/Image.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::opencv::ut::ImageTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::ImageTest);
 
 namespace sight::io::opencv
 {

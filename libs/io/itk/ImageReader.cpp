@@ -41,7 +41,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_IO_READER(::sight::io::itk::ImageReader);
+SIGHT_REGISTER_IO_READER(sight::io::itk::ImageReader);
 
 namespace sight::io::itk
 {
@@ -149,7 +149,7 @@ void ImageReader::read()
 
     core::tools::Dispatcher<core::tools::IntrinsicTypes, ITKLoaderFunctor>::invoke(ti, param);
 
-    SIGHT_ASSERT("::sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
+    SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(

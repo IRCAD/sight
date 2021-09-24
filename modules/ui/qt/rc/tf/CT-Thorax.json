@@ -11,7 +11,7 @@
             "item_0":
             {
                 "key": "CLASSNAME_METAINFO",
-                "value": "::sight::data::TransferFunction"
+                "value": "sight::data::TransferFunction"
             },
             "item_1":
             {
@@ -21,7 +21,7 @@
             "item_2":
             {
                 "key": "lib_name",
-                "value": "::sight::data"
+                "value": "sight::data"
             },
             "item_3":
             {

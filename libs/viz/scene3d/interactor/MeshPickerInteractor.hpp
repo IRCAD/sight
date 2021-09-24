@@ -36,7 +36,7 @@ namespace sight::viz::scene3d::interactor
  *
  * Emits a signal with the relevant intersection data when picking succeeds.
  */
-class VIZ_SCENE3D_CLASS_API MeshPickerInteractor final : public ::sight::viz::scene3d::interactor::IInteractor
+class VIZ_SCENE3D_CLASS_API MeshPickerInteractor final : public sight::viz::scene3d::interactor::IInteractor
 {
 public:
 

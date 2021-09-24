@@ -37,7 +37,7 @@
 #include <algorithm>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::activity::ut::ActivityRegistryTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ActivityRegistryTest);
 
 namespace sight::activity
 {

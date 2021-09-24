@@ -37,16 +37,16 @@ namespace ut
 
 SIGHT_REGISTER_DATA(Buffer);
 
-SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SBasicTest);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SBasicTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SReaderTest);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SReaderTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SShowTest);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SShowTest, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SReader2Test);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SReader2Test, service::ut::Buffer);
-SIGHT_REGISTER_SERVICE(::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test);
-SIGHT_REGISTER_SERVICE_OBJECT(::sight::service::ut::SShow2Test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::IBasicTest, sight::service::ut::SBasicTest);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SBasicTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::IBasicTest, sight::service::ut::SReaderTest);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SReaderTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::IBasicTest, sight::service::ut::SShowTest);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SShowTest, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::IBasicTest, sight::service::ut::SReader2Test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SReader2Test, service::ut::Buffer);
+SIGHT_REGISTER_SERVICE(sight::service::ut::IBasicTest, sight::service::ut::SShow2Test);
+SIGHT_REGISTER_SERVICE_OBJECT(sight::service::ut::SShow2Test, service::ut::Buffer);
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

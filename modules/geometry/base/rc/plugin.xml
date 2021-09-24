@@ -1,13 +1,13 @@
 <plugin id="sight::module::geometry::base" library="true" >
     <requirement id="sight::module::service"/>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::base::SConcatenateMatrices</service>
          <object>sight::data::Matrix4</object>
          <desc>This service concatenates N matrices together.</desc>
     </extension>
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IFilter</type>
          <service>sight::module::geometry::base::SDecomposeMatrix</service>
          <object key="matrix">sight::data::Matrix4</object>
@@ -17,7 +17,7 @@
          <desc>This service decomposes a matrix into a 3 by 3 rotation matrix, a 3 dimensional translation vector</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::base::SManagePointList</service>
          <object key="pointList">sight::data::PointList</object>
@@ -26,44 +26,44 @@
     </extension>
 
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::geometry::base::SMatrixList</service>
          <desc>This service manages vectors of matrices and can be connected to the matrices list visualization service (</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IFilter</type>
          <service>sight::module::geometry::base::SPointListFromMatrices</service>
          <desc>The SPointListFromMatrices service extracts translation part of multiple matrices and put it into a pointlist.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::geometry::base::SPointToLandmarkDistance</service>
          <desc>Computes the intersection between a mesh and a line.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::geometry::base::SPointToLandmarkVector</service>
          <desc>Compute the vector between a point and a target</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IController</type>
          <service>sight::module::geometry::base::SSwitchMatrices</service>
          <object>sight::data::Matrix4</object>
          <desc>This service switch between several matrices.</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::geometry::base::STargeting</service>
          <desc>Return a pointList containing the position of a landmark on a CrossHair</desc>
     </extension>
 
-    <extension implements="::sight::service::extension::Factory">
+    <extension implements="sight::service::extension::Factory">
          <type>sight::service::IService</type>
          <service>sight::module::geometry::base::STransformLandmark</service>
          <desc>Apply a matrix to a landmark.</desc>

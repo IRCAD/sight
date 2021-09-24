@@ -593,7 +593,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
                 std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
                     obj->getClassname(),
-                    "::sight::service::IXMLParser"
+                    "sight::service::IXMLParser"
                 );
 
                 service::IService::sptr srv = srvFactory->create(srvImpl);

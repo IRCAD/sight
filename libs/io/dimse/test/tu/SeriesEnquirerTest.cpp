@@ -37,7 +37,7 @@
 
 #include <dcmtk/config/osconfig.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::dimse::ut::SeriesEnquirerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dimse::ut::SeriesEnquirerTest);
 
 namespace sight::io::dimse
 {

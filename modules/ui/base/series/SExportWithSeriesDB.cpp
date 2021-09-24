@@ -100,7 +100,7 @@ void SExportWithSeriesDB::updating()
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         m_ioSelectorSrvConfig,
-        "::sight::module::ui::base::io::SSelector"
+        "sight::module::ui::base::io::SSelector"
     );
     SIGHT_ASSERT(
         "There is no service configuration "

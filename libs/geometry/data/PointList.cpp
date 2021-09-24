@@ -49,9 +49,9 @@ PointList::~PointList()
 
 //-----------------------------------------------------------------------------
 
-::sight::data::Array::sptr PointList::computeDistance(
-    ::sight::data::PointList::sptr _pointList1,
-    ::sight::data::PointList::sptr _pointList2
+sight::data::Array::sptr PointList::computeDistance(
+    sight::data::PointList::sptr _pointList1,
+    sight::data::PointList::sptr _pointList2
 )
 {
     SIGHT_ASSERT(
@@ -59,21 +59,21 @@ PointList::~PointList()
         _pointList1->getPoints().size() == _pointList2->getPoints().size()
     );
 
-    const ::sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
-    const ::sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
-    const size_t size                                          = points1.size();
+    const sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
+    const sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
+    const size_t size                                        = points1.size();
 
-    ::sight::data::Array::sptr outputArray = ::sight::data::Array::New();
+    sight::data::Array::sptr outputArray = sight::data::Array::New();
     outputArray->resize({size}, sight::core::tools::Type::s_DOUBLE);
     const auto dumpLock   = outputArray->lock();
     auto distanceArrayItr = outputArray->begin<double>();
 
     for(size_t i = 0 ; i < size ; ++i)
     {
-        const ::sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        const ::sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
-        const ::glm::dvec3 pt1                               = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
-        const ::glm::dvec3 pt2                               = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+        const sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const ::glm::dvec3 pt1                             = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
+        const ::glm::dvec3 pt2                             = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         *distanceArrayItr = ::glm::distance(pt1, pt2);
         ++distanceArrayItr;
     }
@@ -84,12 +84,12 @@ PointList::~PointList()
 //------------------------------------------------------------------------------
 
 void PointList::transform(
-    ::sight::data::PointList::sptr& _pointList,
-    const ::sight::data::Matrix4::csptr& _matrix
+    sight::data::PointList::sptr& _pointList,
+    const sight::data::Matrix4::csptr& _matrix
 )
 {
-    ::sight::data::PointList::PointListContainer points = _pointList->getPoints();
-    const size_t size                                   = points.size();
+    sight::data::PointList::PointListContainer points = _pointList->getPoints();
+    const size_t size                                 = points.size();
 
     for(size_t i = 0 ; i < size ; ++i)
     {
@@ -103,8 +103,8 @@ void PointList::transform(
 //------------------------------------------------------------------------------
 
 void PointList::associate(
-    const ::sight::data::PointList::csptr& _pointList1,
-    ::sight::data::PointList::sptr _pointList2
+    const sight::data::PointList::csptr& _pointList1,
+    sight::data::PointList::sptr _pointList2
 )
 {
     SIGHT_ASSERT(
@@ -112,8 +112,8 @@ void PointList::associate(
         _pointList1->getPoints().size() == _pointList2->getPoints().size()
     );
 
-    ::sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
-    ::sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
+    sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
+    sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
 
     const size_t size = points1.size();
 
@@ -125,8 +125,8 @@ void PointList::associate(
 
     for(size_t i = 0 ; i < size ; ++i)
     {
-        const ::sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        const ::sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const sight::data::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
         // Add the point to vector/list
         vec1.push_back(::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]));
@@ -152,12 +152,12 @@ void PointList::associate(
             }
         }
 
-        ::sight::data::Point::PointCoordArrayType pointCoord;
+        sight::data::Point::PointCoordArrayType pointCoord;
         pointCoord[0] = itClosestPoint->x;
         pointCoord[1] = itClosestPoint->y;
         pointCoord[2] = itClosestPoint->z;
 
-        ::sight::data::Point::sptr pt = points2[index];
+        sight::data::Point::sptr pt = points2[index];
         pt->setCoord(pointCoord);
         ++index;
 
@@ -168,9 +168,9 @@ void PointList::associate(
 
 //------------------------------------------------------------------------------
 
-const ::sight::data::Point::sptr PointList::removeClosestPoint(
-    const ::sight::data::PointList::sptr& _pointList,
-    const ::sight::data::Point::csptr& _point,
+const sight::data::Point::sptr PointList::removeClosestPoint(
+    const sight::data::PointList::sptr& _pointList,
+    const sight::data::Point::csptr& _point,
     float _delta
 )
 {
@@ -182,10 +182,10 @@ const ::sight::data::Point::sptr PointList::removeClosestPoint(
         const ::glm::vec3 p1 {coord1[0], coord1[1], coord1[2]};
 
         // Data to find the closest point
-        float closest                    = std::numeric_limits<float>::max();
-        ::sight::data::Point::sptr point = nullptr;
-        size_t index                     = 0;
-        bool pointIsFound                = false;
+        float closest                  = std::numeric_limits<float>::max();
+        sight::data::Point::sptr point = nullptr;
+        size_t index                   = 0;
+        bool pointIsFound              = false;
 
         // Find the closest one
         for(size_t i = 0 ; i < list.size() ; ++i)

@@ -29,7 +29,7 @@
 #include "io/patch/structural/creator/data/Patient1.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::io::patch::structural::ut::creator::data::Patient1Test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::patch::structural::ut::creator::data::Patient1Test);
 
 namespace sight::io::patch::structural
 {
@@ -66,14 +66,14 @@ void Patient1Test::createTest()
 
     CPPUNIT_ASSERT(patientCreator);
     const std::string& classname = patientCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Patient") == classname);
     const std::string& objectVersion = patientCreator->getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
     sight::atoms::Object::sptr patient = patientCreator->create();
 
     const std::string& patientClassname = io::atoms::patch::helper::getClassname(patient);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == patientClassname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Patient") == patientClassname);
     const std::string& patientObjectVersion = io::atoms::patch::helper::getVersion(patient);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == patientObjectVersion);
 
@@ -91,7 +91,7 @@ void Patient1Test::copyTest()
     Patient1 patientCreator;
 
     const std::string& classname = patientCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::sight::data::Patient") == classname);
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("sight::data::Patient") == classname);
     const std::string& objectVersion = patientCreator.getObjectVersion();
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion);
 
@@ -101,7 +101,7 @@ void Patient1Test::copyTest()
     const std::string& classnamePatientCreator2 = patientCreator2->getObjectClassname();
     CPPUNIT_ASSERT_MESSAGE(
         "Classname must be equal",
-        std::string("::sight::data::Patient") == classnamePatientCreator2
+        std::string("sight::data::Patient") == classnamePatientCreator2
     );
 
     const std::string& objectVersionPatientCreator2 = patientCreator2->getObjectVersion();

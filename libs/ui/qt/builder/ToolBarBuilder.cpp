@@ -35,8 +35,8 @@
 #include <QToolBar>
 
 fwGuiRegisterMacro(
-    ::sight::ui::base::builder::ToolBarBuilder,
-    ::sight::ui::base::builder::IToolBarBuilder::REGISTRY_KEY
+    sight::ui::base::builder::ToolBarBuilder,
+    sight::ui::base::builder::IToolBarBuilder::REGISTRY_KEY
 );
 
 namespace sight::ui::base

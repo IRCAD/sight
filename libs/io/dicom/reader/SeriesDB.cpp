@@ -46,7 +46,7 @@
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
 
-SIGHT_REGISTER_IO_READER(::sight::io::dicom::reader::SeriesDB);
+SIGHT_REGISTER_IO_READER(sight::io::dicom::reader::SeriesDB);
 
 namespace sight::io::dicom
 {

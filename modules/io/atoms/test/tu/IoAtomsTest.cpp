@@ -44,7 +44,7 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(::sight::module::io::atoms::ut::IoAtomsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::atoms::ut::IoAtomsTest);
 
 namespace sight::module::io::atoms
 {
@@ -156,20 +156,20 @@ void atomTest(const std::filesystem::path& filePath)
     writeReadFile<data::Composite>(
         srvCfg,
         workspace,
-        "::sight::module::io::atoms::SWriter",
-        "::sight::module::io::atoms::SReader"
+        "sight::module::io::atoms::SWriter",
+        "sight::module::io::atoms::SReader"
     );
     writeReadFile<data::SeriesDB>(
         srvCfg,
         seriesDB,
-        "::sight::module::io::atoms::SWriter",
-        "::sight::module::io::atoms::SReader"
+        "sight::module::io::atoms::SWriter",
+        "sight::module::io::atoms::SReader"
     );
 
     data::SeriesDB::sptr readSeriesDB;
 
     // Default policy
-    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -181,7 +181,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Change' UUID policy
     srvCfg.add("uuidPolicy", "Change");
 
-    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -193,7 +193,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Strict' UUID policy
     srvCfg.put("uuidPolicy", "Strict");
 
-    readSeriesDB = read<data::SeriesDB>(srvCfg, "::sight::module::io::atoms::SReader");
+    readSeriesDB = read<data::SeriesDB>(srvCfg, "sight::module::io::atoms::SReader");
 
     {
         // DuplicatedDataUUID exception should have been thrown and catch by reader before any data/atom conversion.
@@ -227,9 +227,9 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
 
     std::filesystem::create_directories(filePath.parent_path());
 
-    write<data::Array>(srvCfg, array, "::sight::module::io::atoms::SWriter");
+    write<data::Array>(srvCfg, array, "sight::module::io::atoms::SWriter");
 
-    data::Array::sptr readArray = read<data::Array>(srvCfg, "::sight::module::io::atoms::SReader");
+    data::Array::sptr readArray = read<data::Array>(srvCfg, "sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;

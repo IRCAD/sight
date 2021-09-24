@@ -180,7 +180,7 @@ void SSignalButton::starting()
 {
     this->create();
 
-    auto qtContainer = ::sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));

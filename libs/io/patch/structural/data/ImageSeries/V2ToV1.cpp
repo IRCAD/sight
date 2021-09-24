@@ -37,8 +37,8 @@ namespace ImageSeries
 V2ToV1::V2ToV1() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::ImageSeries";
-    m_targetClassname = "::sight::data::ImageSeries";
+    m_originClassname = "sight::data::ImageSeries";
+    m_targetClassname = "sight::data::ImageSeries";
     m_originVersion   = "2";
     m_targetVersion   = "1";
 }

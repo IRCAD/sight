@@ -34,8 +34,8 @@
 #include <QMenuBar>
 
 fwGuiRegisterMacro(
-    ::sight::ui::base::builder::MenuBarBuilder,
-    ::sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY
+    sight::ui::base::builder::MenuBarBuilder,
+    sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY
 );
 
 namespace sight::ui::base

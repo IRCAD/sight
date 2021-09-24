@@ -33,9 +33,9 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (CameraSeries))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "::sight::data")
+    .tag("lib_name", "sight::data")
     .base<sight::data::Series>()
-    .property("cameras", &::sight::data::CameraSeries::m_cameras)
-    .property("extrinsic_matrices", &::sight::data::CameraSeries::m_extrinsicMatrices)
+    .property("cameras", &sight::data::CameraSeries::m_cameras)
+    .property("extrinsic_matrices", &sight::data::CameraSeries::m_extrinsicMatrices)
     ;
 }

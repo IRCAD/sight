@@ -30,8 +30,8 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (PointList))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "::sight::data")
-    .base< ::sight::data::Object>()
-    .property("points", &::sight::data::PointList::m_vPoints)
+    .tag("lib_name", "sight::data")
+    .base<sight::data::Object>()
+    .property("points", &sight::data::PointList::m_vPoints)
     ;
 }

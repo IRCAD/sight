@@ -1,4 +1,4 @@
-<extension implements="::sight::service::extension::AppConfig">
+<extension implements="sight::service::extension::AppConfig">
     <id>activity_io_dicomweb</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -118,7 +118,7 @@
         <service uid="pullSeriesController" type="sight::module::io::dicomweb::SSeriesPuller" >
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" readerConfig="DicomWebReaderConfig" />
+            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="DicomWebReaderConfig" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 

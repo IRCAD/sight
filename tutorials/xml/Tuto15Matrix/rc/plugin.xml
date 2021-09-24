@@ -5,7 +5,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig" >
     <id>Tuto15Matrix_AppCfg</id>
         <config>
 
@@ -154,8 +154,8 @@
 
         <!--
             Defines transform adaptors:
-            This adaptor works on a ::sight::data::Matrix4 and manages a vtkTransform. When
-            the ::sight::data::Matrix4 is modified, it updates the vtkTransform, and vice
+            This adaptor works on a sight::data::Matrix4 and manages a vtkTransform. When
+            the sight::data::Matrix4 is modified, it updates the vtkTransform, and vice
             versa.
         -->
         <service uid="matrix1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true" >

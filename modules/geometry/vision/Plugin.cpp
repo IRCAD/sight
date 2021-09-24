@@ -27,7 +27,7 @@
 namespace sight::module::geometry::vision
 {
 
-SIGHT_REGISTER_PLUGIN("::sight::module::geometry::vision::Plugin");
+SIGHT_REGISTER_PLUGIN("sight::module::geometry::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

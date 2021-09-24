@@ -49,7 +49,7 @@
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::module::io::vtk::SImageReader" />
+            <addSelection service="sight::module::io::vtk::SImageReader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
