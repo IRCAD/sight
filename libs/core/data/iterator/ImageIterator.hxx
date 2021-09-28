@@ -26,135 +26,101 @@
 
 namespace sight::data
 {
+
 namespace iterator
 {
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase()
+template<class FORMAT>
+constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(ImageType image) :
+    m_current(static_cast<pointer>(image->getBuffer()))
 {
+#ifdef SIGHT_DEBUG_ITERATOR
+    m_begin = m_current;
+    m_end   = m_current + static_cast<difference_type>(image->getSizeInBytes());
+#endif
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(ImageType image) :
-    m_lock(image->lock()),
-    m_pointer(static_cast<pointer>(image->getBuffer())),
-    m_idx(0),
-    m_numberOfElements(static_cast<difference_type>(image->getSizeInBytes()/sizeof(FORMAT)))
+template<class FORMAT>
+template<bool isConst, typename>
+constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(
+    const ImageIteratorBase<std::remove_const_t<FORMAT> >& other
+) :
+    m_current(other.m_current)
 {
+#ifdef SIGHT_DEBUG_ITERATOR
+    m_begin = other.m_begin;
+    m_end   = other.m_end;
+#endif
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other) :
-    m_lock(other.m_lock),
-    m_pointer(other.m_pointer),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements)
+template<class FORMAT>
+constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator==(const ImageIteratorBase& other) const noexcept
 {
+    return m_current == other.m_current;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>::ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other) :
-    m_lock(other.m_lock),
-    m_pointer(other.m_pointer),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements)
+template<class FORMAT>
+constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator!=(const ImageIteratorBase& other) const noexcept
 {
-    static_assert(isConst == true, "Cannot convert const ImageIterator to not const ImageIterator.");
+    return m_current != other.m_current;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>::~ImageIteratorBase()
+template<class FORMAT>
+inline FINLINE typename ImageIteratorBase<FORMAT>::reference ImageIteratorBase<FORMAT>::operator*() const
 {
-    m_lock.reset();
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator needs to be initialized", m_current);
+#endif
+    return *m_current;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator=(const ImageIteratorBase& other)
+template<class FORMAT>
+constexpr FINLINE typename ImageIteratorBase<FORMAT>::pointer ImageIteratorBase<FORMAT>::operator->() const noexcept
 {
-    if (this != &other)
-    {
-        m_lock             = other.m_lock;
-        m_pointer          = other.m_pointer;
-        m_idx              = other.m_idx;
-        m_numberOfElements = other.m_numberOfElements;
-    }
+    return m_current;
+}
+
+//------------------------------------------------------------------------------
+
+template<class FORMAT>
+inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator++()
+{
+    ++m_current;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_current <= m_end);
+#endif
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline bool ImageIteratorBase<FORMAT, isConst>::operator==(const ImageIteratorBase& other) const
-{
-    return m_pointer == other.m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-inline bool ImageIteratorBase<FORMAT, isConst>::operator!=(const ImageIteratorBase& other) const
-{
-    return m_pointer != other.m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-inline typename ImageIteratorBase<FORMAT, isConst>::reference ImageIteratorBase<FORMAT, isConst>::operator*() const
-{
-    SIGHT_ASSERT("Iterator needs to be initialized", m_pointer);
-    return *(reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer));
-}
-
-//------------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-inline typename ImageIteratorBase<FORMAT, isConst>::value_type* ImageIteratorBase<FORMAT, isConst>::operator->() const
-{
-    return reinterpret_cast<ImageIteratorBase<FORMAT, isConst>::value_type*>(m_pointer);
-}
-
-//------------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator++()
-{
-    ++m_idx;
-    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-                 m_idx <= m_numberOfElements );
-    ++m_pointer;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator++(int)
+template<class FORMAT>
+FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator++(int)
 {
     ImageIteratorBase tmp(*this);
-    ++m_idx;
-    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-                 m_idx <= m_numberOfElements );
-    ++m_pointer;
+    ++m_current;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_current <= m_end);
+#endif
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator+(difference_type index)  const
+template<class FORMAT>
+constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator+(difference_type index) const
 {
     ImageIteratorBase tmp(*this);
     tmp += index;
@@ -163,43 +129,45 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator+=(difference_type index)
+template<class FORMAT>
+inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator+=(difference_type index)
 {
-    m_idx += index;
-    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-                 m_idx <= m_numberOfElements );
-    m_pointer += index;
+    m_current += index;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_current <= m_end);
+#endif
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator--()
+template<class FORMAT>
+FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator--()
 {
-    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
-    --m_idx;
-    --m_pointer;
+    --m_current;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_begin <= m_current);
+#endif
     return *this;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator--(int)
+template<class FORMAT>
+FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator--(int)
 {
-    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     ImageIteratorBase tmp(*this);
-    --m_idx;
-    --m_pointer;
+    --m_current;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_begin <= m_current);
+#endif
     return tmp;
 }
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::operator-(difference_type index) const
+template<class FORMAT>
+constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator-(difference_type index) const
 {
     ImageIteratorBase tmp(*this);
     tmp -= index;
@@ -208,35 +176,28 @@ inline ImageIteratorBase<FORMAT, isConst> ImageIteratorBase<FORMAT, isConst>::op
 
 //------------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-inline ImageIteratorBase<FORMAT, isConst>& ImageIteratorBase<FORMAT, isConst>::operator-=(difference_type index)
+template<class FORMAT>
+FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator-=(difference_type index)
 {
-    SIGHT_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                               << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
-    m_idx     -= index;
-    m_pointer -= index;
+    m_current -= index;
+#ifdef SIGHT_DEBUG_ITERATOR
+    SIGHT_ASSERT("Iterator out of bounds ", m_begin <= m_current);
+#endif
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-template <class FORMAT, bool isConst>
-typename ImageIteratorBase<FORMAT, isConst>::difference_type ImageIteratorBase<FORMAT, isConst>::operator+(
-    const ImageIteratorBase& other) const
+template<class FORMAT>
+constexpr FINLINE typename ImageIteratorBase<FORMAT>::difference_type ImageIteratorBase<FORMAT>::operator-(
+    const ImageIteratorBase& other
+) const noexcept
 {
-    return m_idx + other.m_idx;
-}
-
-//-----------------------------------------------------------------------------
-
-template <class FORMAT, bool isConst>
-typename ImageIteratorBase<FORMAT, isConst>::difference_type ImageIteratorBase<FORMAT, isConst>::operator-(
-    const ImageIteratorBase& other) const
-{
-    return m_idx - other.m_idx;
+    return m_current - other.m_current;
 }
 
 //------------------------------------------------------------------------------
 
 } // namespace iterator
+
 } // namespace sight::data

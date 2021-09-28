@@ -235,7 +235,7 @@ public:
     ptr& operator=(ptr&&)      = delete;
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
     ptr& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
     {
         m_holder->_setOutput(m_key, _obj, 0);
@@ -245,7 +245,7 @@ public:
     }
 
     /// This method is only available if it is an output
-    template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
+    template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
     void reset()
     {
         m_holder->_setOutput(m_key, nullptr, 0);

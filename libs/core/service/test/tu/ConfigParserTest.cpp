@@ -142,8 +142,9 @@ void ConfigParserTest::testImageParser()
     CPPUNIT_ASSERT_EQUAL(sight::core::tools::Type::s_UINT8, image->getType());
 
     // We only test the image content, we do not really care about the image size and other attributes for now
-    auto itr          = image->begin<sight::data::iterator::RGBA>();
-    const auto itrEnd = image->end<sight::data::iterator::RGBA>();
+    const auto dumpLock = image->lock();
+    auto itr            = image->begin<sight::data::iterator::RGBA>();
+    const auto itrEnd   = image->end<sight::data::iterator::RGBA>();
 
     for( ; itr != itrEnd ; ++itr)
     {

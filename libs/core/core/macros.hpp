@@ -281,3 +281,10 @@
  */
 #define SIGHT_DECLARE_SERVICE(_class, _parentClass) \
     __FWCORE_CLASS_MACRO_2(_class, _parentClass)
+
+/// Force inline
+#ifdef _MSC_VER
+    #define FINLINE __forceinline
+#else
+    #define FINLINE __attribute__((always_inline))
+#endif

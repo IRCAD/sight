@@ -106,19 +106,10 @@ public:
     {
     public:
 
-        typedef typename ::boost::conditional<std::is_const<T>::value, const void*, void*>::type BufferType;
+        typedef typename std::conditional_t<std::is_const_v<T>, const void*, void*> BufferType;
 
-        /// Build an empty lock.
-        LockBase()
-        {
-        }
-
-        /// Ensure the unlock is done before the release of the shared ptr
-        ~LockBase()
-        {
-            m_count.reset();
-            m_bufferObject.reset();
-        }
+        LockBase()  = default;
+        ~LockBase() = default;
 
         /**
          * @brief Build a lock on object 'bo'

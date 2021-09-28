@@ -58,8 +58,9 @@ void Image::createConfig(core::tools::Object::sptr _obj)
         image->setPixelFormat(data::Image::RGBA);
         image->resize();
 
-        auto itr          = image->begin<sight::data::iterator::RGBA>();
-        const auto itrEnd = image->end<sight::data::iterator::RGBA>();
+        const auto dumpLock = image->lock();
+        auto itr            = image->begin<sight::data::iterator::RGBA>();
+        const auto itrEnd   = image->end<sight::data::iterator::RGBA>();
 
         for( ; itr != itrEnd ; ++itr)
         {

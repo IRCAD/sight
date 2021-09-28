@@ -67,10 +67,21 @@ struct BGRA
     std::uint8_t a;
 };
 
+/// Used to iterate through a RGBA image of type 'uint8'
+struct RGBA16
+{
+    std::uint16_t r;
+    std::uint16_t g;
+    std::uint16_t b;
+    std::uint16_t a;
+};
+
 /**
- * @brief Iterator on Image buffer
+ * @brief Iterator on image pixel buffer
  *
- * Iterate through the buffer and check if the index is not out of the bounds
+ * By default, this does not check out of bounds conditions. However it is possible to enable them temporarily
+ * by defining the definition SIGHT_DEBUG_ITERATOR before including this file. Also, you should consider to disable
+ * the PCH in the current target to avoid skipping this definition.
  *
  * @tparam FORMAT format used to iterate through the buffer, should be one of the formats defined in IterationBase
  *
@@ -90,7 +101,8 @@ struct BGRA
     }
    @endcode
  */
-template<class FORMAT, bool isConstIterator = true>
+
+template<class FORMAT>
 class ImageIteratorBase
 {
 public:
@@ -99,29 +111,16 @@ public:
      * For ConstIterator:   define input to be a const Image*
      * For Iterator: define input to be a Image*
      */
-    typedef typename std::conditional<isConstIterator, const Image*, Image*>::type ImageType;
+    typedef typename std::conditional_t<std::is_const_v<FORMAT>, const Image*, Image*> ImageType;
 
     /**
      * @name Typedefs required by std::iterator_traits
      * @{
      */
-    /**
-     * For ConstIterator:   define buffer type to be a const TYPE*
-     * For Iterator: define buffer type to be a TYPE*
-     */
-    typedef typename std::conditional<isConstIterator, const FORMAT*, FORMAT*>::type pointer;
 
-    /**
-     * For const_iterator:   define value_type to be a   const TYPE
-     * For regular iterator: define value_type to be a   TYPE
-     */
-    typedef typename std::conditional<isConstIterator, const FORMAT, FORMAT>::type value_type;
-
-    /**
-     * For const_iterator:   define reference to be a   const TYPE&
-     * For regular iterator: define reference to be a   TYPE&
-     */
-    typedef typename std::conditional<isConstIterator, const FORMAT&, FORMAT&>::type reference;
+    using pointer    = FORMAT*;
+    using value_type = FORMAT;
+    using reference  = FORMAT&;
 
     /// Define difference type
     typedef std::ptrdiff_t difference_type;
@@ -131,50 +130,50 @@ public:
     /// @}
 
     /// empty Constructor
-    ImageIteratorBase();
-    /// Constructor
-    ImageIteratorBase(ImageType image);
-    /// Copy constructor
-    ImageIteratorBase(const ImageIteratorBase<FORMAT, false>& other);
-    /// Copy constructor
-    ImageIteratorBase(const ImageIteratorBase<FORMAT, true>& other);
-    /// Destructor
-    ~ImageIteratorBase();
+    ImageIteratorBase() = default;
+    constexpr ImageIteratorBase(ImageType image);
+    ImageIteratorBase(const ImageIteratorBase<FORMAT>& other) = default;
+    ImageIteratorBase(ImageIteratorBase<FORMAT>&& other)      = default;
+    ~ImageIteratorBase()                                      = default;
 
-    ImageIteratorBase& operator=(const ImageIteratorBase& other);
+    template<bool isConst = std::is_const_v<FORMAT>, typename = typename std::enable_if_t<isConst> >
+    constexpr ImageIteratorBase(const ImageIteratorBase<std::remove_const_t<FORMAT> >& other);
+
+    ImageIteratorBase& operator=(const ImageIteratorBase& other) = default;
+    ImageIteratorBase& operator=(ImageIteratorBase&& other)      = default;
 
     /// Comparison operators
-    bool operator==(const ImageIteratorBase& other) const;
-    bool operator!=(const ImageIteratorBase& other) const;
+    constexpr bool operator==(const ImageIteratorBase& other) const noexcept;
+    constexpr bool operator!=(const ImageIteratorBase& other) const noexcept;
 
     /// Increment/Decrement operators
     ImageIteratorBase& operator++();
     ImageIteratorBase operator++(int);
-    ImageIteratorBase operator+(difference_type index) const;
+    constexpr ImageIteratorBase operator+(difference_type index) const;
     ImageIteratorBase& operator+=(difference_type index);
     ImageIteratorBase& operator--();
     ImageIteratorBase operator--(int);
-    ImageIteratorBase operator-(difference_type index) const;
+    constexpr ImageIteratorBase operator-(difference_type index) const;
     ImageIteratorBase& operator-=(difference_type index);
 
-    difference_type operator+(const ImageIteratorBase& other) const;
-    difference_type operator-(const ImageIteratorBase& other) const;
+    constexpr difference_type operator-(const ImageIteratorBase& other) const noexcept;
 
     /// Value access operators
     reference operator*() const;
 
     /// Value access operators
-    value_type* operator->() const;
+    constexpr pointer operator->() const noexcept;
 
 protected:
 
     /// allow to create a ConstIterator from an Iterator
-    friend class ImageIteratorBase<FORMAT, true>;
+    friend class ImageIteratorBase<const FORMAT>;
 
-    core::memory::BufferObject::Lock m_lock;
-    pointer m_pointer {nullptr};
-    difference_type m_idx {0};
-    difference_type m_numberOfElements {0};
+    pointer m_current {nullptr};
+#ifdef SIGHT_DEBUG_ITERATOR
+    pointer m_begin {nullptr};
+    pointer m_end {nullptr};
+#endif
 };
 
 } // namespace iterator

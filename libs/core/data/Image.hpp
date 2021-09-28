@@ -377,10 +377,10 @@ public:
      */
     /// Image iterator
     template<typename FORMAT>
-    using Iterator = iterator::ImageIteratorBase<FORMAT, false>;
+    using Iterator = iterator::ImageIteratorBase<FORMAT>;
     template<typename FORMAT>
     /// Image const iterator
-    using ConstIterator = iterator::ImageIteratorBase<FORMAT, true>;
+    using ConstIterator = iterator::ImageIteratorBase<const FORMAT>;
     /// @}
 
     /**

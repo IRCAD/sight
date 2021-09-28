@@ -1028,6 +1028,9 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
         {
             using T = decltype(type);
 
+            const auto dumpLockExpected = expected->lock();
+            const auto dumpLockActual   = actual->lock();
+
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),
                 actualIt = actual->begin<T>(),
