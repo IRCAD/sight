@@ -30,6 +30,9 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+
 #include <regex>
 
 namespace sight::service
@@ -49,6 +52,7 @@ AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = {{"object", 
     {"view", "wid"},
     {"slideView", "wid"},
     {"connect", "channel"},
+    {"menuItem", "sid"},
 };
 static const std::regex s_isVariable("\\$\\{.*\\}.*");
 
@@ -334,8 +338,16 @@ void AppConfig::collectUIDForParameterReplace(
         }
     }
 
+    // Check if a service if used only on signal/slot
     for(const auto& subElem : _cfgElem->getElements())
     {
+        if(subElem->getName() == "signal" || subElem->getName() == "slot")
+        {
+            std::vector<std::string> tokens;
+            boost::split(tokens, subElem->getValue(), boost::is_any_of("/"));
+            _replaceMap.insert(tokens[0]);
+        }
+
         collectUIDForParameterReplace(subElem, _replaceMap);
     }
 }
