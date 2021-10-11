@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2019-2021 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -66,8 +66,8 @@ int IActivitySequencer::parseActivities(data::SeriesDB& seriesDB)
             helper.remove(series);
             helper.notify();
         }
-        else if(!(lastActivityIndex + 1 < static_cast<int>(m_activityIds.size())
-                  && m_activityIds[static_cast<size_t>(lastActivityIndex + 1)] == activity->getActivityConfigId()))
+        else if(!(static_cast<std::size_t>(lastActivityIndex + 1) < m_activityIds.size()
+                  && m_activityIds[static_cast<std::size_t>(lastActivityIndex + 1)] == activity->getActivityConfigId()))
         {
             // Remove the wrong data
             SIGHT_ERROR("The activity '" + activity->getActivityConfigId() + "' is unknown, it will be removed")
@@ -103,7 +103,7 @@ void IActivitySequencer::storeActivityData(
 )
 {
     // Retrives the current activity data
-    const size_t currentIdx = static_cast<size_t>(index);
+    const std::size_t currentIdx = static_cast<std::size_t>(index);
     SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB.size() > currentIdx);
     data::Series::sptr series           = seriesDB.getContainer()[currentIdx];
     data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
@@ -135,7 +135,7 @@ void IActivitySequencer::storeActivityData(
 
 data::ActivitySeries::sptr IActivitySequencer::getActivity(
     data::SeriesDB& seriesDB,
-    size_t index,
+    std::size_t index,
     const core::com::SlotBase::sptr& slot,
     const data::Composite::csptr& overrides
 )
@@ -257,6 +257,30 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(
     }
 
     return activity;
+}
+
+//------------------------------------------------------------------------------
+
+void IActivitySequencer::removeLastActivities(data::SeriesDB& seriesDB, std::size_t index)
+{
+    if(seriesDB.size() > index)
+    {
+        data::helper::SeriesDB helper(seriesDB);
+
+        // remove the last activities
+        while(seriesDB.size() > index)
+        {
+            const auto activity = seriesDB.back();
+            helper.remove(activity);
+        }
+
+        helper.notify();
+
+        // clear the requirements and parse the remaining activities to regereate the requirements with the existing
+        // activities
+        m_requirements.clear();
+        this->parseActivities(seriesDB);
+    }
 }
 
 //------------------------------------------------------------------------------

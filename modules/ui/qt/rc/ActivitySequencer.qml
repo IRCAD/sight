@@ -17,6 +17,10 @@ Item{
         repeater.itemAt(index).enabled = true
     }
 
+    function disableActivity(index){
+        repeater.itemAt(index).enabled = false
+    }
+
     function setCurrentActivity(index){
         currentSelection = index
     }
@@ -27,7 +31,6 @@ Item{
         Material.foreground =  (foreground != "") ? foreground : Material.color(Material.BlueGrey, Material.Shade900)
         Material.background = (background != "") ? background : Material.background
         Material.primary = (primary != "") ? primary : Material.color(Material.Teal)
-        Material.elevation = (elevation != "") ? elevation : Material.elevation
     }
 
     RowLayout {
@@ -55,10 +58,14 @@ Item{
                     text : modelData
 
                     onClicked: {
-                        activitySelected(index)
-                        activitySequencer.currentSelection = index
+                        if (activitySequencer.currentSelection !== index)
+                        {
+                            activitySelected(index)
+                        }
                     }
                     background: Rectangle {
+                        implicitWidth: 200
+                        implicitHeight: 50
                         color: {
                             var color = Material.background
                             if(activitySequencer.currentSelection === index)
