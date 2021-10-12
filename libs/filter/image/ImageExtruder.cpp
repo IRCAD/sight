@@ -35,7 +35,7 @@ namespace sight::filter::image
 
 void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh)
 {
-    SIGHT_ASSERT("The image must be in 3 dimensions", _image->getNumberOfDimensions() == 3);
+    SIGHT_ASSERT("The image must be in 3 dimensions", _image->numDimensions() == 3);
 
     Parameters param;
     param.m_image = _image;

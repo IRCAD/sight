@@ -248,7 +248,7 @@ void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 
 QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 {
-    if(fwImage.getNumberOfComponents() == 3
+    if(fwImage.numComponents() == 3
        && fwImage.getType().string() == "uint8"
        && fwImage.getSize()[2] == 1)
     {

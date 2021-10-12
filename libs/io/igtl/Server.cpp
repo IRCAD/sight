@@ -185,7 +185,7 @@ void Server::stop()
 
 //------------------------------------------------------------------------------
 
-size_t Server::getNumberOfClients() const
+size_t Server::numClients() const
 {
     if(this->isStarted())
     {

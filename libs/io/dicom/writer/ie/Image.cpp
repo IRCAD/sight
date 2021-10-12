@@ -89,7 +89,7 @@ void Image::writeImagePlaneModule()
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY Sight), but stuff like "Pixel Aspect Ratio"
-    const std::size_t dimension = m_object->getNumberOfDimensions();
+    const std::size_t dimension = m_object->numDimensions();
     const auto& spacing         = m_object->getSpacing();
     for(unsigned int i = 0 ; i < dimension ; ++i)
     {
@@ -139,7 +139,7 @@ void Image::writeImagePixelModule()
 
     //Image's number of dimension
     unsigned int dimension =
-        static_cast<unsigned int>((m_instance->getIsMultiFiles()) ? 2 : m_object->getNumberOfDimensions());
+        static_cast<unsigned int>((m_instance->getIsMultiFiles()) ? 2 : m_object->numDimensions());
     gdcmImage.SetNumberOfDimensions(dimension);
 
     // Image's dimension

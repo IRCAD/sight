@@ -169,7 +169,7 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot0);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 
     CPPUNIT_ASSERT(connection.expired());
@@ -180,7 +180,7 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot1);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 
     CPPUNIT_ASSERT(connection.expired());
@@ -191,7 +191,7 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot2);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 
     CPPUNIT_ASSERT(connection.expired());
@@ -202,7 +202,7 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot3);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 
     CPPUNIT_ASSERT(connection.expired());
@@ -214,10 +214,10 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot0);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         connection.disconnect();
         CPPUNIT_ASSERT(connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
     }
 
     {
@@ -228,10 +228,10 @@ void SignalTest::connectTest()
         connection = sig->getConnection(slot0);
 
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         connection.disconnect();
         CPPUNIT_ASSERT(connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
 
         CPPUNIT_ASSERT_THROW(sig->getConnection(slot3, true), core::com::exception::BadSlot);
     }
@@ -242,10 +242,10 @@ void SignalTest::connectTest()
 
         connection = sig->connect(slot0);
         CPPUNIT_ASSERT(!connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         sig->disconnect(slot0);
         CPPUNIT_ASSERT(connection.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
     }
 
     {
@@ -260,11 +260,11 @@ void SignalTest::connectTest()
 
         CPPUNIT_ASSERT(!connection.expired());
         CPPUNIT_ASSERT(!connection2.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->numConnections());
         sig->disconnectAll();
         CPPUNIT_ASSERT(connection.expired());
         CPPUNIT_ASSERT(connection2.expired());
-        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
     }
 
     {
@@ -300,7 +300,7 @@ void SignalTest::connectTest()
         sig->connect(slot0);
         CPPUNIT_ASSERT_THROW(sig->connect(slot0), core::com::exception::AlreadyConnected);
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 }
 
@@ -322,7 +322,7 @@ void SignalTest::emitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         sig->emit();
         CPPUNIT_ASSERT(testObject.m_method0);
     }
@@ -341,7 +341,7 @@ void SignalTest::emitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->emit(21.0f);
         CPPUNIT_ASSERT(testObject.m_method1);
@@ -361,7 +361,7 @@ void SignalTest::emitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->emit(21.0f, 42);
         CPPUNIT_ASSERT(testObject.m_method2);
@@ -381,7 +381,7 @@ void SignalTest::emitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->emit(21.0f, 42.0, "emit");
         CPPUNIT_ASSERT(testObject.m_method3);
@@ -405,29 +405,29 @@ void SignalTest::autoSlotDisconnectTest()
 
         sig->connect(slot0);
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         {
             core::com::Slot<float(float)>::sptr slot1 =
                 core::com::newSlot(&SignalTestClass::method1, &testObject);
 
             sig->connect(slot1);
-            CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->getNumberOfConnections());
+            CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->numConnections());
         }
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         {
             core::com::Slot<void()>::sptr slot00 =
                 core::com::newSlot(&SignalTestClass::method00, &testObject);
 
             sig->connect(slot00);
-            CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->getNumberOfConnections());
+            CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->numConnections());
         }
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
     }
 
-    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
 }
 
 //-----------------------------------------------------------------------------
@@ -447,13 +447,13 @@ void SignalTest::argumentLossTest()
         core::com::newSlot(&SignalTestClass::method3, &testObject);
 
     sig->connect(slot0);
-    CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
     sig->connect(slot1);
-    CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->numConnections());
 
     sig->connect(slot3);
-    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->numConnections());
 
     sig->emit(21.0f, 42.0, "emit");
 
@@ -462,7 +462,7 @@ void SignalTest::argumentLossTest()
     CPPUNIT_ASSERT(testObject.m_method3);
 
     sig->disconnectAll();
-    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
 }
 
 //-----------------------------------------------------------------------------
@@ -487,13 +487,13 @@ void SignalTest::asyncArgumentLossTest()
     slot3->setWorker(worker);
 
     sig->connect(slot0);
-    CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
     sig->connect(slot1);
-    CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 2, sig->numConnections());
 
     sig->connect(slot3);
-    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->numConnections());
 
     sig->asyncEmit(21.0f, 42.0, "asyncEmit");
 
@@ -504,7 +504,7 @@ void SignalTest::asyncArgumentLossTest()
     CPPUNIT_ASSERT(testObject.m_method3);
 
     sig->disconnectAll();
-    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 0, sig->numConnections());
     worker->stop();
 }
 
@@ -530,7 +530,7 @@ void SignalTest::blockTest()
     connection = sig->connect(slot1);
     sig->connect(slot3);
 
-    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t) 3, sig->numConnections());
 
     sig->emit(21.0f, 42.0, "emit");
 
@@ -596,7 +596,7 @@ void SignalTest::asyncEmitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
         sig->asyncEmit();
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -618,7 +618,7 @@ void SignalTest::asyncEmitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->asyncEmit(21.0f);
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -641,7 +641,7 @@ void SignalTest::asyncEmitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->asyncEmit(21.0f, 42);
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -664,7 +664,7 @@ void SignalTest::asyncEmitTest()
         connection = sig->connect(slot);
         CPPUNIT_ASSERT(!connection.expired());
 
-        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->getNumberOfConnections());
+        CPPUNIT_ASSERT_EQUAL((size_t) 1, sig->numConnections());
 
         sig->asyncEmit(21.0f, 42.0, "emit");
         std::this_thread::sleep_for(std::chrono::seconds(1));

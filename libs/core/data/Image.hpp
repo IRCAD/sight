@@ -234,7 +234,7 @@ public:
     const Size& getSize() const;
 
     /// Number of dimensions of the image (3 for 3D image)
-    DATA_API size_t getNumberOfDimensions() const;
+    DATA_API size_t numDimensions() const;
 
     /** @{
      *  @brief Get/set preferred window center
@@ -251,10 +251,10 @@ public:
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
-    DATA_API size_t getNumElements() const;
+    DATA_API size_t numElements() const;
 
     /// Get the number of components of an image pixel
-    size_t getNumberOfComponents() const;
+    size_t numComponents() const;
 
     /// Get image type
     DATA_API core::tools::Type getType() const;
@@ -597,7 +597,7 @@ private:
     ///@}
 
     //! Number of components
-    size_t m_numberOfComponents {1};
+    size_t m_numComponents {1};
 
     //! type of image pixel
     core::tools::Type m_type {core::tools::Type::s_UNSPECIFIED_TYPE};
@@ -639,16 +639,9 @@ inline void Image::setWindowWidth(double val)
 
 //-----------------------------------------------------------------------------
 
-inline size_t Image::getNumberOfComponents() const
+inline size_t Image::numComponents() const
 {
-    return m_numberOfComponents;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Image::setNumberOfComponents(size_t val)
-{
-    m_numberOfComponents = val;
+    return m_numComponents;
 }
 
 //-----------------------------------------------------------------------------

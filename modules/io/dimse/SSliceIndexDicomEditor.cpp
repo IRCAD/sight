@@ -162,7 +162,7 @@ void SSliceIndexDicomEditor::updating()
 {
     // Retrieve the DICOM series and its informations.
     const auto dicomSeries   = m_series.lock();
-    const size_t sliceNumber = dicomSeries->getNumberOfInstances();
+    const size_t sliceNumber = dicomSeries->numInstances();
 
     if(sliceNumber > 0)
     {

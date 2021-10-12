@@ -227,7 +227,7 @@ void SSeriesPuller::pullSeries()
                 m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
 
                 pullSeriesVector.push_back(series);
-                m_instanceCount += series->getNumberOfInstances();
+                m_instanceCount += series->numInstances();
             }
 
             selectedSeriesVector.push_back(series);

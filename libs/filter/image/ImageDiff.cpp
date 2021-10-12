@@ -182,7 +182,7 @@ size_t ImageDiff::getSize() const
 
 //------------------------------------------------------------------------------
 
-size_t ImageDiff::getNumberOfElements() const
+size_t ImageDiff::numElements() const
 {
     return m_nbElts;
 }

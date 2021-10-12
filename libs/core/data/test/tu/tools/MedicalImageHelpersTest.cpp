@@ -294,7 +294,7 @@ void getPixelTestHelper(const P& pixelValue)
     P value = image->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "Pixel values are not equal",
@@ -306,7 +306,7 @@ void getPixelTestHelper(const P& pixelValue)
     }
     else
     {
-        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
@@ -364,7 +364,7 @@ void setPixelTestHelper(P& pixelValue)
     const P value                 = constImage->at<P>(coords[0], coords[1], coords[2]);
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "Pixel values are not equal",
@@ -376,7 +376,7 @@ void setPixelTestHelper(P& pixelValue)
     }
     else
     {
-        for(std::uint8_t i = 0 ; i != image->getNumberOfComponents() ; ++i)
+        for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }

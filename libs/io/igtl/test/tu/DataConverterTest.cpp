@@ -94,8 +94,8 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
     const auto lock2 = mesh2->lock();
 
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), mesh2->numPoints());
+    CPPUNIT_ASSERT_EQUAL(mesh->numCells(), mesh2->numCells());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellSize(), mesh2->getCellSize());
     CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), mesh2->getDataSizeInBytes());
 

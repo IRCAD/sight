@@ -53,7 +53,7 @@ inline static void serialize(
     Series::serialize(archive, tree, cameraSeries, children, password);
 
     // Serialize the children camera
-    for(size_t index = 0, end = cameraSeries->getNumberOfCameras() ; index < end ; ++index)
+    for(size_t index = 0, end = cameraSeries->numCameras() ; index < end ; ++index)
     {
         children[data::Camera::classname() + std::to_string(index)] = cameraSeries->getCamera(index);
     }

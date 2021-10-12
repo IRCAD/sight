@@ -117,7 +117,7 @@ void SeriesTest::testSeries()
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getDescription(), seriesDescription.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getModality(), modality.toStdString());
     CPPUNIT_ASSERT_EQUAL(
-        dicomSeries->getNumberOfInstances(),
+        dicomSeries->numInstances(),
         static_cast<size_t>(numberOfSeriesRelatedInstances.toULong())
     );
 

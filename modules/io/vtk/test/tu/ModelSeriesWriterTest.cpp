@@ -226,13 +226,13 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Points.",
-                refMesh->getNumberOfPoints(),
-                readMesh->getNumberOfPoints()
+                refMesh->numPoints(),
+                readMesh->numPoints()
             );
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Number of Cells.",
-                refMesh->getNumberOfCells(),
-                readMesh->getNumberOfCells()
+                refMesh->numCells(),
+                readMesh->numCells()
             );
 
             // Don't test internal structures for obj, ply and stl, since some of them are missing.

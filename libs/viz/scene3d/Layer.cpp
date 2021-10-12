@@ -110,7 +110,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
             {
                 auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
 
-                for(std::uint8_t i = 0 ; i < m_layer->getNumberOfCameras() ; ++i)
+                for(std::uint8_t i = 0 ; i < m_layer->numCameras() ; ++i)
                 {
                     ::Ogre::Matrix4 projMat = m_layer->getCameraProjMat(i);
 
@@ -351,7 +351,7 @@ void Layer::createScene()
 
         if(m_stereoMode != compositor::Core::StereoModeType::NONE)
         {
-            m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
+            m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->numCameras());
             ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
@@ -982,7 +982,7 @@ void Layer::setStereoMode(compositor::Core::StereoModeType mode)
 
     if(m_stereoMode != compositor::Core::StereoModeType::NONE)
     {
-        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->getNumberOfCameras());
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->numCameras());
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
@@ -1198,7 +1198,7 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 {
     SIGHT_ASSERT(
         "Index exceeds the number of cameras used for this stereo mode",
-        cameraIdx < this->getNumberOfCameras()
+        cameraIdx < this->numCameras()
     );
     ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
 
@@ -1254,7 +1254,7 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
 //-------------------------------------------------------------------------------------
 
-uint8_t Layer::getNumberOfCameras() const
+uint8_t Layer::numCameras() const
 {
     return m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_8 ? 8
                                                                                         : m_stereoMode

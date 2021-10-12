@@ -117,9 +117,9 @@ void MeshTest::setCubeMesh()
     CPPUNIT_ASSERT_EQUAL(Qt3DRender::QGeometryRenderer::Triangles, geomRenderer->primitiveType());
 
     // Asserts number of vertices, normals, and indexes.
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), posAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfPoints()), normalAttribute->count());
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfCells() * 3), indexAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), posAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numPoints()), normalAttribute->count());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->numCells() * 3), indexAttribute->count());
 
     // Asserts each point is at the right position.
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();

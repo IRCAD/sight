@@ -387,7 +387,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
 
                 SIGHT_ASSERT(
                     "index must be inferior to the number of points in '" + groupName + "'.",
-                    index < landmarks->getNumberOfPoints(groupName)
+                    index < landmarks->numPoints(groupName)
                 );
 
                 deselectSig->asyncEmit(groupName, index);
@@ -429,7 +429,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
 
                     SIGHT_ASSERT(
                         "index must be inferior to the number of points in '" + groupName + "'.",
-                        index < landmarks->getNumberOfPoints(groupName)
+                        index < landmarks->numPoints(groupName)
                     );
 
                     const core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
@@ -761,7 +761,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
 
             for(const std::string& groupName : landmarks->getGroupNames())
             {
-                for(size_t index = 0 ; index < landmarks->getNumberOfPoints(groupName) ; ++index)
+                for(size_t index = 0 ; index < landmarks->numPoints(groupName) ; ++index)
                 {
                     const data::Landmarks::PointType landmark = landmarks->getPoint(groupName, index);
 
@@ -784,7 +784,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             if(!foundGroupname.empty() && closest < 10.)
             {
                 // If the group contains only one point, we remove it.
-                if(landmarks->getNumberOfPoints(foundGroupname) == 1)
+                if(landmarks->numPoints(foundGroupname) == 1)
                 {
                     this->removeGroup(foundGroupname);
 
@@ -832,7 +832,7 @@ void SLandmarks::addPoint(std::string _groupName)
         QTreeWidgetItem* const item = getGroupItem(_groupName);
 
         const size_t nbChilds = static_cast<size_t>(item->childCount());
-        const size_t nbPoints = landmarks->getNumberOfPoints(_groupName);
+        const size_t nbPoints = landmarks->numPoints(_groupName);
         for(size_t idx = nbChilds ; idx < nbPoints ; ++idx)
         {
             const data::Landmarks::PointType& newPoint = landmarks->getPoint(_groupName, idx);

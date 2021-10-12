@@ -106,7 +106,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
     void asyncEmit(A ... a) const;
 
     /// Returns number of connected slots.
-    size_t getNumberOfConnections() const
+    size_t numConnections() const
     {
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();

@@ -133,7 +133,7 @@ void SOpenCVWriter::updating()
 
     SIGHT_ASSERT("CameraSeries is null", camSeries);
 
-    size_t numberOfCameras = camSeries->getNumberOfCameras();
+    size_t numberOfCameras = camSeries->numCameras();
 
     std::vector<data::Camera::sptr> cameras;
     std::vector< ::cv::Mat> cameraMatrices;

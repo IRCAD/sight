@@ -225,7 +225,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _imag
 
         // Update QSlider
         int max = 0;
-        if(_image.getNumberOfDimensions() > m_helper.getOrientation())
+        if(_image.numDimensions() > m_helper.getOrientation())
         {
             max = static_cast<int>(_image.getSize()[m_helper.getOrientation()] - 1);
         }

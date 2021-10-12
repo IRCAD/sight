@@ -120,7 +120,7 @@ public:
      * @brief Gets the number of instances in the series.
      * @return The number of instances in the series.
      */
-    size_t getNumberOfInstances() const
+    size_t numInstances() const
     {
         return m_numberOfInstances;
     }

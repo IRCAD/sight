@@ -136,7 +136,7 @@ void SCameraConfigLauncher::starting()
     {
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT("Missing cameraSeries.", cameraSeries);
-        nbCam = cameraSeries->getNumberOfCameras();
+        nbCam = cameraSeries->numCameras();
     }
     if(nbCam == 0)
     {
@@ -191,7 +191,7 @@ void SCameraConfigLauncher::onCameraChanged(int index)
         const auto cameraSeries = m_cameraSeries.lock();
         SIGHT_ASSERT(
             "Bad index: " << index,
-            index >= 0 && static_cast<size_t>(index) < cameraSeries->getNumberOfCameras()
+            index >= 0 && static_cast<size_t>(index) < cameraSeries->numCameras()
         );
     }
 
@@ -285,7 +285,7 @@ void SCameraConfigLauncher::onImportClicked()
         for(auto nSeries = 0 ; nSeries != cameraSeriesVector.size() ; ++nSeries)
         {
             auto cameraSeries_ = cameraSeriesVector[nSeries];
-            for(auto nCam = 0 ; nCam != cameraSeries_->getNumberOfCameras() ; ++nCam)
+            for(auto nCam = 0 ; nCam != cameraSeries_->numCameras() ; ++nCam)
             {
                 auto cam      = cameraSeries_->getCamera(nCam);
                 auto cameraID =
@@ -358,7 +358,7 @@ void SCameraConfigLauncher::onRemoveClicked()
             const auto activitySeries      = m_activitySeries.lock();
             activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
-            const size_t nbCam = cameraSeries->getNumberOfCameras();
+            const size_t nbCam = cameraSeries->numCameras();
             if(nbCam == 1)
             {
                 m_extrinsicButton->setEnabled(false);
@@ -392,7 +392,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
     {
         const auto cameraSeries = m_cameraSeries.lock();
         index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-        SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->getNumberOfCameras());
+        SIGHT_ASSERT("Bad index: " << index, index < cameraSeries->numCameras());
     }
     if(checked)
     {
@@ -492,7 +492,7 @@ void SCameraConfigLauncher::addCamera()
     size_t nbCam;
     {
         const auto cameraSeries = m_cameraSeries.lock();
-        nbCam = cameraSeries->getNumberOfCameras();
+        nbCam = cameraSeries->numCameras();
 
         data::Camera::sptr camera = data::Camera::New();
 

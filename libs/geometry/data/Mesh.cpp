@@ -187,14 +187,14 @@ void vectorSum(std::vector<std::vector<T> >& vectors, size_t regionMin, size_t r
 
 void Mesh::generateCellNormals(sight::data::Mesh::sptr mesh)
 {
-    const sight::data::Mesh::size_t numberOfCells = mesh->getNumberOfCells();
+    const sight::data::Mesh::size_t numberOfCells = mesh->numCells();
     if(numberOfCells > 0)
     {
         if(!mesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>())
         {
             mesh->resize(
-                mesh->getNumberOfPoints(),
-                mesh->getNumberOfCells(),
+                mesh->numPoints(),
+                mesh->numCells(),
                 mesh->getCellType(),
                 sight::data::Mesh::Attributes::CELL_NORMALS
             );
@@ -226,7 +226,7 @@ void generateRegionCellNormalsByPoints(
 {
     FloatVectors::value_type& normalsResults = normalsData[dataId];
 
-    const sight::data::Mesh::size_t nbOfPoints = mesh->getNumberOfPoints();
+    const sight::data::Mesh::size_t nbOfPoints = mesh->numPoints();
     normalsResults.resize(3 * nbOfPoints, 0.f);
 
     auto accumNormal = [&](const auto& cell, const auto& normal)
@@ -324,10 +324,10 @@ void normalizeRegionCellNormalsByPoints(
 
 void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
 {
-    const sight::data::Mesh::size_t nbOfPoints = mesh->getNumberOfPoints();
+    const sight::data::Mesh::size_t nbOfPoints = mesh->numPoints();
     if(nbOfPoints > 0)
     {
-        const sight::data::Mesh::size_t numberOfCells = mesh->getNumberOfCells();
+        const sight::data::Mesh::size_t numberOfCells = mesh->numCells();
 
         // To generate point normals, we need to use the cell normals
         if(!mesh->has<sight::data::Mesh::Attributes::CELL_NORMALS>())
@@ -338,8 +338,8 @@ void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
         if(!mesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
         {
             mesh->resize(
-                mesh->getNumberOfPoints(),
-                mesh->getNumberOfCells(),
+                mesh->numPoints(),
+                mesh->numCells(),
                 mesh->getCellType(),
                 sight::data::Mesh::Attributes::POINT_NORMALS
             );
@@ -407,8 +407,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
     if(array
        && array->getType() == core::tools::Type::create<float>()
        && !array->empty()
-       && array->getNumberOfComponents() == 3
-       && array->getNumberOfDimensions() == 1)
+       && array->numDimensions() == 2)
     {
         const auto dumpLock = array->lock();
         void* buf;
@@ -480,8 +479,8 @@ void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
     if(!mesh->has<sight::data::Mesh::Attributes::POINT_COLORS>())
     {
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::POINT_COLORS
         );
@@ -505,8 +504,8 @@ void Mesh::colorizeMeshCells(sight::data::Mesh::sptr mesh)
     if(!mesh->has<sight::data::Mesh::Attributes::CELL_COLORS>())
     {
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );
@@ -552,8 +551,8 @@ void Mesh::transform(
 
     const glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
-    [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
-    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
+    [[maybe_unused]] const size_t numPts = inMesh->numPoints();
+    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->numPoints());
 
     SIGHT_ASSERT(
         "in and out meshes must have the same point normals attribute",

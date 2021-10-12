@@ -131,7 +131,7 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 
         // Compute instance dimension
         unsigned int dimension =
-            (this->getIsMultiFiles()) ? 2 : static_cast<unsigned int>(image->getNumberOfDimensions());
+            (this->getIsMultiFiles()) ? 2 : static_cast<unsigned int>(image->numDimensions());
 
         // Define SOP Class UID from the modality
         ::gdcm::MediaStorage mediaStorage;

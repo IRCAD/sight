@@ -274,7 +274,7 @@ void Landmarks::clearPoints(const std::string& name)
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::getNumberOfPoints() const
+size_t Landmarks::numPoints() const
 {
     size_t nb = 0;
     for(const auto& elt : m_landmarks)
@@ -288,7 +288,7 @@ size_t Landmarks::getNumberOfPoints() const
 
 //------------------------------------------------------------------------------
 
-size_t Landmarks::getNumberOfPoints(const std::string& name) const
+size_t Landmarks::numPoints(const std::string& name) const
 {
     const LandmarksGroup& group = this->getGroup(name);
     return group.m_points.size();

@@ -85,7 +85,7 @@ void SImageExtruder::updating()
         // Copy the image into the output.
         {
             const auto imageOut = m_extrudedImage.lock();
-            SIGHT_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
+            SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
 

@@ -63,7 +63,7 @@ inline static void serialize(
     Series::serialize(archive, tree, dicomSeries, children, password);
 
     // Serialize other attributes
-    tree.put(s_NumberOfInstances, dicomSeries->getNumberOfInstances());
+    tree.put(s_NumberOfInstances, dicomSeries->numInstances());
     tree.put(s_FirstInstanceNumber, dicomSeries->getFirstInstanceNumber());
 
     // SOPClassUIDs

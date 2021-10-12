@@ -66,7 +66,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
     CPPUNIT_ASSERT(!array->empty());
 
-    CPPUNIT_ASSERT_EQUAL(size.size(), array->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(size.size(), array->numDimensions());
     CPPUNIT_ASSERT_EQUAL(size[0], array->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(size[1], array->getSize()[1]);
     CPPUNIT_ASSERT_EQUAL(true, array->getIsBufferOwner());

@@ -269,7 +269,7 @@ data::Image::sptr SCharucoBoardDetector::createImage(
         data::Image::PixelFormat format = data::Image::PixelFormat::UNDEFINED;
 
         // FIXME: Currently, FrameTL does not contain Pixel format, so we assume that format is GrayScale, RGB or RGBA.
-        switch(tl.getNumberOfComponents())
+        switch(tl.numComponents())
         {
             case 1:
                 format = data::Image::PixelFormat::GRAY_SCALE;
@@ -328,21 +328,21 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(
 
         ::cv::Mat grayImg;
         const ::cv::Mat img = io::opencv::FrameTL::moveToCv(tl, frameBuff);
-        if(tl->getNumberOfComponents() == 1)
+        if(tl->numComponents() == 1)
         {
             grayImg = img;
         }
-        else if(tl->getNumberOfComponents() == 3)
+        else if(tl->numComponents() == 3)
         {
             ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGB2GRAY);
         }
-        else if(tl->getNumberOfComponents() == 4)
+        else if(tl->numComponents() == 4)
         {
             ::cv::cvtColor(img, grayImg, ::cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << tl->getNumberOfComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << tl->numComponents() << ").");
         }
 
         std::vector<std::vector< ::cv::Point2f> > arucoCorners;

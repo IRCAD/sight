@@ -34,7 +34,7 @@ namespace sight::io::opencv
 static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
-    const auto imageComp = _image->getNumberOfComponents();
+    const auto imageComp = _image->numComponents();
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
@@ -44,7 +44,7 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     const auto imageSize = _image->getSize();
     std::vector<int> cvSize;
-    for(size_t i = 0 ; i < _image->getNumberOfDimensions() ; ++i)
+    for(size_t i = 0 ; i < _image->numDimensions() ; ++i)
     {
         cvSize.push_back(static_cast<int>(imageSize[i]));
     }
@@ -91,7 +91,7 @@ const ::cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
 {
     const auto prevImageType = _image.getType();
-    const auto prevImageComp = _image.getNumberOfComponents();
+    const auto prevImageComp = _image.numComponents();
 
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;

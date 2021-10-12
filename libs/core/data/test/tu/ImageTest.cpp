@@ -53,7 +53,7 @@ static bool imagesEqual(const data::Image::sptr& _leftImg, const data::Image::sp
 {
     bool result            = false;
     const bool equalFormat = _leftImg->getPixelFormat() == _rightImg->getPixelFormat()
-                             && _leftImg->getNumberOfComponents() == _rightImg->getNumberOfComponents();
+                             && _leftImg->numComponents() == _rightImg->numComponents();
     const bool equalDims = _leftImg->getSize() == _rightImg->getSize()
                            && _leftImg->getSpacing() == _rightImg->getSpacing()
                            && _leftImg->getOrigin() == _rightImg->getOrigin();
@@ -130,11 +130,11 @@ void ImageTest::testAllocation()
     // process
     data::Image::sptr img1 = data::Image::New();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), img1->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), img1->numElements());
 
     img1->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->numElements());
     CPPUNIT_ASSERT(img1->getType() == TYPE);
 
     data::Image::sptr img3 = data::Image::New();
@@ -348,7 +348,7 @@ void ImageTest::testSetGetPixelRGBA()
         {
             for(size_t z = 0 ; z < SIZE[2] ; ++z)
             {
-                for(size_t c = 0 ; c < img->getNumberOfComponents() ; ++c)
+                for(size_t c = 0 ; c < img->numComponents() ; ++c)
                 {
                     const data::Image::IndexType index = c + 4 * (x + y * SIZE[0] + z * SIZE[0] * SIZE[1]);
                     const std::uint8_t val             = static_cast<std::uint8_t>(index);
@@ -389,7 +389,7 @@ void ImageTest::testSetGetPixelRGBA()
 
                 if(index % 2 == 0)
                 {
-                    for(size_t c = 0 ; c < img->getNumberOfComponents() ; ++c)
+                    for(size_t c = 0 ; c < img->numComponents() ; ++c)
                     {
                         const std::uint8_t val = static_cast<std::uint8_t>((index * 4 + c) * 2);
                         img->at<std::uint8_t>(x, y, z, c) = val;
@@ -474,7 +474,7 @@ void ImageTest::testIterator()
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 2, allocatedSize);
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2], img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2], img->numElements());
 
     {
         CPPUNIT_ASSERT_THROW(img->getBuffer(), core::Exception);
@@ -498,20 +498,20 @@ void ImageTest::testIterator()
         const auto itr    = img->begin<std::int16_t>();
         const auto itrEnd = img->end<std::int16_t>();
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->getNumElements()), itrEnd - itr);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->numElements()), itrEnd - itr);
     }
 
     const auto allocatedSize2 = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGB);
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3 * 2, allocatedSize2);
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, img->numElements());
 
     {
         // check raw int16 iterator
         const auto itr    = img->begin<std::int16_t>();
         const auto itrEnd = img->end<std::int16_t>();
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->getNumElements()), itrEnd - itr);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->numElements()), itrEnd - itr);
     }
 
     {
@@ -519,7 +519,7 @@ void ImageTest::testIterator()
         const auto itr    = img->begin<data::iterator::rgb>();
         const auto itrEnd = img->end<data::iterator::rgb>();
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->getNumElements() / 3 * 2), itrEnd - itr);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::ptrdiff_t>(img->numElements() / 3 * 2), itrEnd - itr);
     }
 
     {
@@ -544,7 +544,7 @@ void ImageTest::testRGBIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, allocatedSize);
 
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 3, img->numElements());
 
     const auto lock = img->lock();
 
@@ -608,7 +608,7 @@ void ImageTest::testBGRIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 3, allocatedSize);
 
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 3, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 3, img->numElements());
 
     const auto lock = img->lock();
 
@@ -659,7 +659,7 @@ void ImageTest::testBGRAIterator()
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 4, allocatedSize);
 
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 4, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * 4, img->numElements());
 
     const auto lock = img->lock();
 
@@ -713,7 +713,7 @@ void ImageTest::testRGBAIterator()
 
     const auto allocatedSize = img->resize(SIZE, TYPE, data::Image::PixelFormat::RGBA);
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, allocatedSize);
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->numElements());
 
     const auto lock = img->lock();
 
@@ -776,14 +776,14 @@ void ImageTest::benchmarkIterator()
     }
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * TYPE.sizeOf(), allocatedSize);
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img->numElements());
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, img->getSizeInBytes());
 
     data::Image::sptr img2 = data::Image::New();
     img2->copyInformation(img);
     img2->resize(img2->getSize(), img2->getType(), img2->getPixelFormat());
 
-    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img2->getNumElements());
+    CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img2->numElements());
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, img2->getSizeInBytes());
 
     const auto imgDumpLock  = img->lock();

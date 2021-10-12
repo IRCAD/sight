@@ -215,7 +215,7 @@ size_t Array::getElementSizeInBytes() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::getNumberOfElements() const
+size_t Array::numElements() const
 {
     return computeSize(1, m_size);
 }
@@ -243,7 +243,7 @@ const data::Array::OffsetType& Array::getStrides() const
 
 //------------------------------------------------------------------------------
 
-size_t Array::getNumberOfDimensions() const
+size_t Array::numDimensions() const
 {
     return m_size.size();
 }

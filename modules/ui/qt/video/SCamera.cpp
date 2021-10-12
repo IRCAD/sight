@@ -140,7 +140,7 @@ void SCamera::starting()
     auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        const size_t numCameras = cameraSeries->numCameras();
         if(numCameras == 0)
         {
             SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
@@ -148,7 +148,7 @@ void SCamera::starting()
             for(size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
                 data::Camera::sptr camera = data::Camera::New();
-                const size_t index        = cameraSeries->getNumberOfCameras();
+                const size_t index        = cameraSeries->numCameras();
                 cameraSeries->addCamera(camera);
                 cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
                 const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
@@ -428,7 +428,7 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
     const auto cameraSeries = m_cameraSeries.lock();
     if(cameraSeries)
     {
-        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        const size_t numCameras = cameraSeries->numCameras();
         for(size_t i = 0 ; i < numCameras ; ++i)
         {
             cameras.push_back(cameraSeries->getCamera(i));

@@ -128,7 +128,7 @@ static void compareImages(
 
     if(_d > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<size_t>(_cvImage.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[2]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(_d, static_cast<size_t>(_cvImage.size[0]));
@@ -152,7 +152,7 @@ static void compareImages(
     }
     else if(_h > 0)
     {
-        CPPUNIT_ASSERT_EQUAL(_image->getNumberOfDimensions(), static_cast<size_t>(_cvImage.dims));
+        CPPUNIT_ASSERT_EQUAL(_image->numDimensions(), static_cast<size_t>(_cvImage.dims));
         CPPUNIT_ASSERT_EQUAL(_w, static_cast<size_t>(_cvImage.size[1]));
         CPPUNIT_ASSERT_EQUAL(_h, static_cast<size_t>(_cvImage.size[0]));
 

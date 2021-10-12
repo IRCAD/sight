@@ -193,7 +193,7 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /**  @} */
 
     /// Returns number of connections.
-    size_t getNumberOfConnections() const
+    size_t numConnections() const
     {
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();

@@ -159,7 +159,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
 
         // Update QSlider
         int max = 0;
-        if(image->getNumberOfDimensions() > m_orientation)
+        if(image->numDimensions() > m_orientation)
         {
             max = static_cast<int>(image->getSize()[m_orientation] - 1);
         }

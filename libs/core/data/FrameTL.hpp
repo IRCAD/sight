@@ -105,7 +105,7 @@ public:
     }
 
     /// Returns the number of components of an image in the timeline
-    size_t getNumberOfComponents() const
+    size_t numComponents() const
     {
         return m_numberOfComponents;
     }

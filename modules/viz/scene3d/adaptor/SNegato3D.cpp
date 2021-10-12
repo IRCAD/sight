@@ -620,7 +620,7 @@ void SNegato3D::moveSlices(int _x, int _y)
 
 void SNegato3D::pickIntensity(int _x, int _y)
 {
-    if(m_pickedVoxelSignal->getNumberOfConnections() > 0)
+    if(m_pickedVoxelSignal->numConnections() > 0)
     {
         const auto pickedPos = this->getPickedSlices(_x, _y);
 

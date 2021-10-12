@@ -32,7 +32,7 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Mesh))
     .tag("object_version", "4")
     .tag("lib_name", "sight::data")
     .base<sight::data::Object>()
-    .property("nb_points", &sight::data::Mesh::m_nbPoints)
+    .property("nb_points", &sight::data::Mesh::m_numPoints)
     .property("points", &sight::data::Mesh::m_points)
     //.property("attributes", &sight::data::Mesh::m_attributes) // It uses a mapper to convert attributes property.
     ;

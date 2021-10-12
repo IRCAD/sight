@@ -162,7 +162,7 @@ bool SImageWriter::saveImage(
     {
         // Get image information
         std::string type = image->getType().string();
-        std::size_t noc  = image->getNumberOfComponents();
+        std::size_t noc  = image->numComponents();
 
         // Check type.
         // All extension handles uint8, and ".png" also handles uint16.

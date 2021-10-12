@@ -58,8 +58,8 @@ void AlgoMeshDeformation::setParam(
     m_amplitude = _amplitude;
     m_direction = 1;
 
-    m_nbPoints = _mesh->getNumberOfPoints();
-    m_nbCells  = _mesh->getNumberOfCells();
+    m_nbPoints = _mesh->numPoints();
+    m_nbCells  = _mesh->numCells();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,8 +71,8 @@ void AlgoMeshDeformation::computeDeformation(
 )
 {
     if(m_mesh.expired()
-       || m_nbPoints != _mesh->getNumberOfPoints()
-       || m_nbCells != _mesh->getNumberOfCells()
+       || m_nbPoints != _mesh->numPoints()
+       || m_nbCells != _mesh->numCells()
        || !_mesh->has<data::Mesh::Attributes::POINT_COLORS>())
     {
         this->setParam(_mesh, _nbStep, _amplitude);

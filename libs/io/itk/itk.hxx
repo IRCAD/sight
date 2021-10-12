@@ -115,7 +115,7 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
     // Pre Condition
     SIGHT_ASSERT(
         "Sorry, itk image dimension not correspond to fwData image",
-        imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension
+        imageData->numDimensions() == ITKIMAGE::ImageDimension
     );
 
     const auto dumpLock = imageData->lock();

@@ -107,7 +107,7 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IO_IGTL_API size_t getNumberOfClients() const;
+    IO_IGTL_API size_t numClients() const;
 
     /**
      * @brief method to receive all headers of all connected clients

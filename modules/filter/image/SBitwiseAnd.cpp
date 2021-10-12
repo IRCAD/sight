@@ -58,7 +58,7 @@ struct AndImageFilter
         data::Image::sptr outputImage = params.outputImage;
 
         const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->getNumberOfDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->numDimensions() == dimension);
 
         typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
         typedef typename ::itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;

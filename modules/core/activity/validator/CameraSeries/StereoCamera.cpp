@@ -66,7 +66,7 @@ sight::activity::IValidator::ValidationType StereoCamera::validate(const data::O
     }
     else
     {
-        if(cameraSeries->getNumberOfCameras() == 2)
+        if(cameraSeries->numCameras() == 2)
         {
             data::Camera::sptr camera0 = cameraSeries->getCamera(0);
             if(!camera0->getIsCalibrated())

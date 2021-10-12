@@ -210,7 +210,7 @@ namespace sight::data
     void copyPoints(const data::Mesh& origin, const data::Mesh& dest)
     {
         SIGHT_ASSERT("Meshes must have the same number of points",
-                   origin.getNumberOfPoints() == dest.getNumberOfPoints());
+                   origin.numPoints() == dest.numPoints());
 
         auto origIt = origin.begin< data::Mesh::iterator::xyz >();
         auto origEnd = origin.end< data::Mesh::iterator::xyz >();
@@ -372,8 +372,7 @@ public:
      * @brief Adjust mesh memory usage
      *
      * The arrays (points, cell-types, cell-data, cell-data-offsets, and if they exists point-colors/normals and
-     * cell-colors/normals) will be resized according to the number of points and cells of the mesh (they may have
-     * been defined before adjusting by setNumberOfPoints or setNumberOfCells).
+     * cell-colors/normals) will be resized according to the number of points and cells of the mesh.
      *
      * @return true if memory usage changed
      *
@@ -406,10 +405,10 @@ public:
     bool has() const;
 
     /// Get number of points.
-    size_t getNumberOfPoints() const;
+    size_t numPoints() const;
 
     /// Get number of cells.
-    size_t getNumberOfCells() const;
+    size_t numCells() const;
 
     /// Get the cell type of this mesh.
     CellType getCellType() const;
@@ -643,7 +642,7 @@ private:
 
     /// Helper function used to get the number of points or cells given a point or cell attribute type
     template<class ATTR>
-    std::size_t getNumElements() const;
+    std::size_t numElements() const;
 
     enum class PointAttribute : std::uint8_t
     {
@@ -663,10 +662,10 @@ private:
     };
 
     /// Number of points defined for the mesh
-    size_t m_nbPoints {0};
+    size_t m_numPoints {0};
 
     /// Number of cells defined for the mesh
-    size_t m_nbCells {0};
+    size_t m_numCells {0};
 
     /// Type of primitive
     CellType m_cellType {CellType::_SIZE};
@@ -674,16 +673,16 @@ private:
     /**
      * @brief Points arrays
      *
-     * Position : 3-components 1-dimension float array, size = m_nbPoints x 3.
+     * Position : 3-components 1-dimension float array, size = m_numPoints x 3.
      * Contains points : [ x1 y1 z1 x2 y2 z2 ... xn yn zn ]
      *
-     * Point colors array : 3 or 4-components 1-dimension float array, size = m_nbPoints.
+     * Point colors array : 3 or 4-components 1-dimension float array, size = m_numPoints.
      * Contains point colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      *
-     * Mesh point array : 3-components 1-dimension uint8_t array, size = m_nbPoints.
+     * Mesh point array : 3-components 1-dimension uint8_t array, size = m_numPoints.
      * Contains point normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      *
-     * Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
+     * Mesh texCoord array : 2-components 1-dimension float array, size = m_numPoints.
      * Contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
     std::array<data::Array::sptr, static_cast<size_t>(PointAttribute::_SIZE)> m_points;
@@ -693,16 +692,16 @@ private:
      *
      * Cell index array : 1-components 1-dimension uint64 array, size = m_cellsDataSize.
      * Contains cell data : cell points ids are contiguously stored regardless
-     * of the cell type. Size depends of cell type. If we have only TRIANGLE type, size = m_nbCells x 3.
+     * of the cell type. Size depends of cell type. If we have only TRIANGLE type, size = m_numCells x 3.
      * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, ... ]
      *
-     * Cell colors array : 3 or 4-components 1-dimension uint8_t array, size = m_nbCells.
+     * Cell colors array : 3 or 4-components 1-dimension uint8_t array, size = m_numCells.
      * Contains cell colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      *
-     * Cell normal array : 3-components 1-dimension float array, size = m_nbCells.
+     * Cell normal array : 3-components 1-dimension float array, size = m_numCells.
      * Contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      *
-     * Cell texCoord array : 2-components 1-dimension float array, size = m_nbCells.
+     * Cell texCoord array : 2-components 1-dimension float array, size = m_numCells.
      * Contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
     std::array<data::Array::sptr, static_cast<size_t>(CellAttribute::_SIZE)> m_cells;
@@ -740,16 +739,16 @@ inline Mesh::Attributes operator~(const Mesh::Attributes& lhs)
 
 //------------------------------------------------------------------------------
 
-inline Mesh::size_t Mesh::getNumberOfPoints() const
+inline Mesh::size_t Mesh::numPoints() const
 {
-    return m_nbPoints;
+    return m_numPoints;
 }
 
 //------------------------------------------------------------------------------
 
-inline Mesh::size_t Mesh::getNumberOfCells() const
+inline Mesh::size_t Mesh::numCells() const
 {
-    return m_nbCells;
+    return m_numCells;
 }
 
 //------------------------------------------------------------------------------
@@ -807,7 +806,7 @@ template<typename T>
 inline array_iterator<T> Mesh::end()
 {
     auto itr = begin<T>();
-    itr += static_cast<typename array_iterator<T>::difference_type>(getNumElements<T>());
+    itr += static_cast<typename array_iterator<T>::difference_type>(numElements<T>());
     return itr;
 }
 
@@ -845,7 +844,7 @@ template<typename T>
 inline const_array_iterator<T> Mesh::cend() const
 {
     auto itr = cbegin<T>();
-    itr += static_cast<typename const_array_iterator<T>::difference_type>(getNumElements<T>());
+    itr += static_cast<typename const_array_iterator<T>::difference_type>(numElements<T>());
     return itr;
 }
 

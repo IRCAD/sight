@@ -287,7 +287,7 @@ struct MinMaxPropagator
         const auto dumpLock = params.outputImage->lock();
 
         const std::uint8_t outImgPixelSize = params.outputImage->getType().sizeOf()
-                                             * static_cast<std::uint8_t>(params.outputImage->getNumberOfComponents());
+                                             * static_cast<std::uint8_t>(params.outputImage->numComponents());
 
         for( ; !iter.IsAtEnd() ; ++iter)
         {
@@ -331,7 +331,7 @@ ImageDiff MinMaxPropagation::propagate(
 )
 {
     const core::tools::Type type   = m_inImage->getType();
-    const size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->getNumberOfComponents();
+    const size_t outImagePixelSize = m_outImage->getType().sizeOf() * m_outImage->numComponents();
 
     MinMaxPropagator::Parameters params;
     params.inputImage  = m_inImage;

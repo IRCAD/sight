@@ -343,7 +343,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
     const float height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
     const float nearClip = static_cast<float>(m_camera->getNearClipDistance());
     const float farClip  = static_cast<float>(m_camera->getFarClipDistance());
-    const size_t nbCams  = _cs.getNumberOfCameras();
+    const size_t nbCams  = _cs.numCameras();
 
     SIGHT_WARN_IF(
         "There are no cameras in the '" << s_CAMERA_SERIES_INPUT << "', the default projection transform"

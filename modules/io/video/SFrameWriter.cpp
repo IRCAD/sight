@@ -228,19 +228,19 @@ void SFrameWriter::startRecord()
             frameTL
         );
 
-        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
+        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 4)
+        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 1)
+        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->getNumberOfComponents() == 1)
+        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
@@ -248,7 +248,7 @@ void SFrameWriter::startRecord()
         {
             SIGHT_ERROR(
                 "This type of frame : " + frameTL->getType().string() + " with "
-                + std::to_string(frameTL->getNumberOfComponents()) + " is not supported"
+                + std::to_string(frameTL->numComponents()) + " is not supported"
             );
             return;
         }

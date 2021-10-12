@@ -110,8 +110,8 @@ void SOpenCVExtrinsic::updating()
         const auto camSeries = m_cameraSeries.lock();
 
         SIGHT_ASSERT(
-            "camera index must be > 0 and < camSeries->getNumberOfCameras()",
-            m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras()
+            "camera index must be > 0 and < camSeries->numCameras()",
+            m_camIndex > 0 && m_camIndex < camSeries->numCameras()
         );
     }
 

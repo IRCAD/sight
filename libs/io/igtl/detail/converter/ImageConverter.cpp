@@ -72,7 +72,7 @@ ImageConverter::~ImageConverter()
     dest->SetCoordinateSystem(::igtl::ImageMessage::COORDINATE_LPS);
     dest->SetOrigin(srcImg->getOrigin()[0], srcImg->getOrigin()[1], srcImg->getOrigin()[2]);
     dest->SetSpacing(srcImg->getSpacing()[0], srcImg->getSpacing()[1], srcImg->getSpacing()[2]);
-    dest->SetNumComponents(static_cast<int>(srcImg->getNumberOfComponents()));
+    dest->SetNumComponents(static_cast<int>(srcImg->numComponents()));
     dest->SetDimensions(
         static_cast<int>(srcImg->getSize()[0]),
         static_cast<int>(srcImg->getSize()[1]),

@@ -157,8 +157,8 @@ void MeshConverter::copyAttributesFromFwMesh(
 {
     const auto dumpLock = meshSrc->lock();
 
-    const size_t numberOfPoints = meshSrc->getNumberOfPoints();
-    const size_t numberOfCells  = meshSrc->getNumberOfCells();
+    const size_t numberOfPoints = meshSrc->numPoints();
+    const size_t numberOfCells  = meshSrc->numCells();
 
     dest->ClearAttributes();
 
@@ -469,7 +469,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             {
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->getNumberOfPoints() ; ++j)
+                for(unsigned int j = 0 ; j < dest->numPoints() ; ++j)
                 {
                     dest->setPointNormal(j, data[j * 3], data[j * 3 + 1], data[j * 3 + 2]);
                 }
@@ -483,7 +483,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             {
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->getNumberOfCells() ; ++j)
+                for(unsigned int j = 0 ; j < dest->numCells() ; ++j)
                 {
                     dest->setCellNormal(j, data[j * 3], data[j * 3 + 1], data[j * 3 + 2]);
                 }
@@ -497,7 +497,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             {
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->getNumberOfPoints() ; ++j)
+                for(unsigned int j = 0 ; j < dest->numPoints() ; ++j)
                 {
                     dest->setPointTexCoord(j, data[j * 2], data[j * 2 + 1]);
                 }
@@ -511,7 +511,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             {
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for(unsigned int j = 0 ; j < dest->getNumberOfCells() ; ++j)
+                for(unsigned int j = 0 ; j < dest->numCells() ; ++j)
                 {
                     dest->setCellTexCoord(j, data[j * 2], data[j * 2 + 1]);
                 }

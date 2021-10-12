@@ -411,7 +411,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
     detachAndDestroyEntity();
 
-    const size_t uiNumVertices = _mesh->getNumberOfPoints();
+    const size_t uiNumVertices = _mesh->numPoints();
     if(uiNumVertices == 0)
     {
         SIGHT_DEBUG("Empty mesh");

@@ -267,7 +267,7 @@ public:
     VIZ_SCENE3D_API ::Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
 
     /// @returns the number of cameras (viewpoints) used by this layer. Defined by the stereo mode.
-    VIZ_SCENE3D_API std::uint8_t getNumberOfCameras() const;
+    VIZ_SCENE3D_API std::uint8_t numCameras() const;
 
     /// Sets default light flag.
     VIZ_SCENE3D_API void setHasDefaultLight(bool hasDefaultLight);

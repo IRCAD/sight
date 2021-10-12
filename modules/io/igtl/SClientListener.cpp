@@ -255,7 +255,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
         if(!m_tlInitialized)
         {
             frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->getNumberOfComponents());
+            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->numComponents());
             m_tlInitialized = true;
         }
 

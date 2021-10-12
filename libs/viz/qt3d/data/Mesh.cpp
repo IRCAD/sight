@@ -113,7 +113,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
     SIGHT_ASSERT("sight::data::Mesh pointer does not exist.", _mesh);
 
     // Sets the number of points (for a mesh of triangles).
-    m_numberOfPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
+    m_numberOfPoints = static_cast<unsigned int>(_mesh->numPoints());
 
     if(m_geometry->attributes().size() != 0)
     {
@@ -148,7 +148,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
     m_indexAttrib->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     m_indexAttrib->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     m_indexAttrib->setBuffer(m_indexBuffer);
-    m_indexAttrib->setCount(3 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
+    m_indexAttrib->setCount(3 * static_cast<unsigned int>(_mesh->numCells()));
     m_indexAttrib->setName("indexAttribute");
 
     m_geometry->addAttribute(m_indexAttrib);
@@ -183,7 +183,7 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     SIGHT_ASSERT("sight::data::Mesh pointer does not exist.", _mesh);
 
     // Returns if _mesh is empty.
-    if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)
+    if(static_cast<int>(_mesh->numCells()) == 0 || static_cast<int>(_mesh->numPoints()) == 0)
     {
         return;
     }
@@ -198,7 +198,7 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     float* rawNormalBufferData = reinterpret_cast<float*>(normalBufferData.data());
 
     QByteArray indexBufferData;
-    indexBufferData.resize(3 * static_cast<int>(_mesh->getNumberOfCells()) * static_cast<int>(sizeof(unsigned int)));
+    indexBufferData.resize(3 * static_cast<int>(_mesh->numCells()) * static_cast<int>(sizeof(unsigned int)));
     unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
     // Checks if the mesh has normals. If not, generates them.
@@ -302,14 +302,14 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
         // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
         // triangle mesh.
         indexBufferData.resize(
-            6 * static_cast<int>(_mesh->getNumberOfCells())
+            6 * static_cast<int>(_mesh->numCells())
             * static_cast<int>(sizeof(unsigned int))
         );
         rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
-        m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
+        m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->numCells()));
 
-        this->addComputeEntityToScene(static_cast<int>(_mesh->getNumberOfCells()));
+        this->addComputeEntityToScene(static_cast<int>(_mesh->numCells()));
         for(const auto& cell : _mesh->crange<cell::quad>())
         {
             rawIndexBufferData[countIndex++] = cell.pt[0];

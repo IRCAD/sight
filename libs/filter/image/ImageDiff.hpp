@@ -81,7 +81,7 @@ public:
     FILTER_IMAGE_API size_t getSize() const;
 
     /// Returns the number of stored pixel diffs.
-    FILTER_IMAGE_API size_t getNumberOfElements() const;
+    FILTER_IMAGE_API size_t numElements() const;
 
     /// Set the number of elements to 0.
     FILTER_IMAGE_API void clear();

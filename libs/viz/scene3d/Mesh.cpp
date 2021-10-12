@@ -167,7 +167,7 @@ void Mesh::bindLayer(
     // Get requested buffer size and previous buffer size.
     ::Ogre::HardwareVertexBufferSharedPtr cbuf;
 
-    const size_t uiNumVertices = _mesh->getNumberOfPoints();
+    const size_t uiNumVertices = _mesh->numPoints();
     size_t uiPrevNumVertices   = 0;
     if(bind->isBufferBound(m_binding[_binding]))
     {
@@ -215,7 +215,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     const auto dumpLock = _mesh->lock();
 
     /// The values in this table refer to vertices in the above table
-    const size_t numVertices = _mesh->getNumberOfPoints();
+    const size_t numVertices = _mesh->numPoints();
     SIGHT_DEBUG("Vertices #" << numVertices);
 
     // Check if the mesh has normals - we assume we should have as many normals as points
@@ -315,7 +315,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
         const data::Mesh::CellType cellType     = _mesh->getCellType();
         const data::Mesh::CellType prevCellType = m_cellType;
 
-        const bool destroyMesh = _mesh->getNumberOfCells() == 0 || prevCellType != cellType
+        const bool destroyMesh = _mesh->numCells() == 0 || prevCellType != cellType
                                  || m_hasPrimitiveColor != hasPrimitiveColor;
 
         // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
@@ -335,7 +335,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
             m_subMesh = nullptr;
         }
 
-        if(_mesh->getNumberOfCells() > 0)
+        if(_mesh->numCells() > 0)
         {
             if(!m_subMesh)
             {
@@ -379,7 +379,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
             if(cellType != data::Mesh::CellType::POINT)
             {
                 ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMesh->indexData->indexBuffer;
-                const unsigned int numIndices             = _mesh->getNumberOfCells() * _mesh->getCellSize();
+                const unsigned int numIndices             = _mesh->numCells() * _mesh->getCellSize();
 
                 // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
                 // We don't reallocate if we have more space than requested
@@ -941,7 +941,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
 
         // Copy points
         const size_t nbComponents = 4;
-        viz::scene3d::helper::Mesh::copyColors(pColor, colors, _mesh->getNumberOfPoints(), nbComponents);
+        viz::scene3d::helper::Mesh::copyColors(pColor, colors, _mesh->numPoints(), nbComponents);
 
         cbuf->unlock();
     }
@@ -959,7 +959,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
 
         // Copy cells
         const size_t nbComponents = 4;
-        viz::scene3d::helper::Mesh::copyColors(pColorDest, colors, _mesh->getNumberOfCells(), nbComponents);
+        viz::scene3d::helper::Mesh::copyColors(pColorDest, colors, _mesh->numCells(), nbComponents);
 
         pixelBuffer->unlock();
     }

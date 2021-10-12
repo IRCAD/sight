@@ -135,14 +135,14 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     // which is the opposite on windows (???)... Assuming the Dicom is file based, the way the OS sorts files may
     // explain the different behaviors. We should investigate this ....
     // The test is written to assume the one of 304 elements is taken.
-    if(dicomSeries->getNumberOfInstances() != 304)
+    if(dicomSeries->numInstances() != 304)
     {
         dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(1));
         CPPUNIT_ASSERT(dicomSeries);
     }
 
     // Just in case we load the wrong series or the data is corrupted.
-    CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->getNumberOfInstances());
+    CPPUNIT_ASSERT_EQUAL(size_t(304), dicomSeries->numInstances());
 
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);

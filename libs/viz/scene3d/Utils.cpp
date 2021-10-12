@@ -308,7 +308,7 @@ void Utils::destroyOgreRoot()
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
     uint32_t height = 1, depth = 1;
-    const auto dimensions = imageFw->getNumberOfDimensions();
+    const auto dimensions = imageFw->numDimensions();
 
     if(dimensions >= 2)
     {
@@ -367,7 +367,7 @@ void Utils::convertFromOgreTexture(::Ogre::TexturePtr _texture, const data::Imag
 
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
         const ::Ogre::PixelBox& pixelBox         = pixelBuffer->getCurrentLock();
-        const size_t pitch                       = pixelBox.rowPitch * _imageFw->getNumberOfComponents();
+        const size_t pitch                       = pixelBox.rowPitch * _imageFw->numComponents();
         const std::uint8_t* __restrict srcBuffer =
             reinterpret_cast<const std::uint8_t*>(pixelBox.data) + (flip ? pixelBox.getConsecutiveSize() : 0);
 
@@ -402,7 +402,7 @@ void Utils::convertFromOgreTexture(::Ogre::TexturePtr _texture, const data::Imag
 ::Ogre::PixelFormat Utils::getPixelFormatOgre(data::Image::csptr imageFw)
 {
     const core::tools::Type pixelType = imageFw->getType();
-    const size_t numberOfComponent    = imageFw->getNumberOfComponents();
+    const size_t numberOfComponent    = imageFw->numComponents();
 
     if(numberOfComponent == 1)
     {
@@ -639,8 +639,8 @@ void Utils::loadOgreTexture(
            || _texture->getFormat() != pixelFormat)
         {
             const auto& size = _image->getSize();
-            SIGHT_ASSERT("Only handle 2D and 3D textures", _image->getNumberOfDimensions() >= 2);
-            const size_t depth = _image->getNumberOfDimensions() == 2 ? 1 : size[2];
+            SIGHT_ASSERT("Only handle 2D and 3D textures", _image->numDimensions() >= 2);
+            const size_t depth = _image->numDimensions() == 2 ? 1 : size[2];
 
             viz::scene3d::Utils::allocateTexture(
                 _texture.get(),

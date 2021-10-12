@@ -64,7 +64,7 @@ struct CORE_CLASS_API SignalBase : virtual core::BaseObject
     virtual void disconnect(SPTR(SlotBase) slot) = 0;
 
     /// Returns number of connections.
-    virtual size_t getNumberOfConnections() const = 0;
+    virtual size_t numConnections() const = 0;
 
     protected:
 

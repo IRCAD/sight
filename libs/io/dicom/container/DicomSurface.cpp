@@ -64,14 +64,14 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
         const auto end   = mesh->cend<data::iterator::point::xyz>();
 
         // Retrieve & copy data
-        m_pointBuffer.reserve(mesh->getNumberOfPoints() * 3);
+        m_pointBuffer.reserve(mesh->numPoints() * 3);
         m_pointBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 
     // Cells
     {
         // Retrieve & copy data
-        m_cellBuffer.resize(mesh->getNumberOfCells() * 3);
+        m_cellBuffer.resize(mesh->numCells() * 3);
 
         std::size_t index = 0;
         for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
@@ -90,7 +90,7 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
         const auto end   = mesh->cend<data::iterator::point::nxyz>();
 
         // Retrieve & copy data
-        m_normalBuffer.reserve(mesh->getNumberOfPoints() * 3);
+        m_normalBuffer.reserve(mesh->numPoints() * 3);
         m_normalBuffer.assign(reinterpret_cast<const float*>(&*begin), reinterpret_cast<const float*>(&*end));
     }
 }

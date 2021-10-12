@@ -131,7 +131,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                 data::Image::PixelFormat format;
                 // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or
                 // RGBA
-                switch(frameTL->getNumberOfComponents())
+                switch(frameTL->numComponents())
                 {
                     case 1:
                         format = data::Image::GRAY_SCALE;

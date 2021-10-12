@@ -98,7 +98,7 @@ void SPointCloudFromDepthMap::updating()
     }
 
     // Initialize mesh points memory one time in order to increase performances
-    if(pointCloud->getNumberOfPoints() == 0)
+    if(pointCloud->numPoints() == 0)
     {
         const auto size       = depthMap->getSize();
         const size_t width    = size[0];
@@ -277,9 +277,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    if(4 != colorMap->getNumberOfComponents())
+    if(4 != colorMap->numComponents())
     {
-        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
+        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->numComponents() << ", 4 is expected.");
         return;
     }
 

@@ -76,8 +76,8 @@ void MeshTest::colorizePointsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::POINT_COLORS
         );
@@ -108,8 +108,8 @@ void MeshTest::colorizePointsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::POINT_COLORS
         );
@@ -173,8 +173,8 @@ void MeshTest::colorizeCellsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );
@@ -205,8 +205,8 @@ void MeshTest::colorizeCellsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );
@@ -236,8 +236,8 @@ void MeshTest::colorizeCellsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );
@@ -285,8 +285,8 @@ void MeshTest::colorizeCellsTest()
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
-            mesh->getNumberOfPoints(),
-            mesh->getNumberOfCells(),
+            mesh->numPoints(),
+            mesh->numCells(),
             mesh->getCellType(),
             sight::data::Mesh::Attributes::CELL_COLORS
         );

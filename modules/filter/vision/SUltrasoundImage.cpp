@@ -172,7 +172,7 @@ void SUltrasoundImage::updating()
     const data::Image::Size outputSize = {{m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
     if(outputImage->getSize() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8
-       || outputImage->getNumberOfComponents() != 1)
+       || outputImage->numComponents() != 1)
     {
         outputImage->setSpacing({{1., 1., 0.}});
         outputImage->setOrigin({{0., 0., 0.}});

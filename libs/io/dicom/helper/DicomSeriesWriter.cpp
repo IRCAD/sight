@@ -133,7 +133,7 @@ void DicomSeriesWriter::processWrite()
         std::filesystem::create_directories(folder);
     }
 
-    std::size_t nbInstances = dicomSeries->getNumberOfInstances();
+    std::size_t nbInstances = dicomSeries->numInstances();
 
     m_job->setTotalWorkUnits(nbInstances);
     unsigned int count = 0;
@@ -182,7 +182,7 @@ void DicomSeriesWriter::processWriteArchive()
 
     data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
-    const size_t nbInstances = dicomSeries->getNumberOfInstances();
+    const size_t nbInstances = dicomSeries->numInstances();
     unsigned int count       = 0;
 
     m_job->setTotalWorkUnits(nbInstances);

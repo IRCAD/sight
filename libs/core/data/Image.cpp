@@ -219,13 +219,13 @@ size_t Image::numDimensions() const
 size_t Image::getSizeInBytes() const
 {
     size_t size       = 0;
-    const size_t dims = this->getNumberOfDimensions();
+    const size_t dims = this->numDimensions();
     if(dims > 0)
     {
         size = std::accumulate(
             m_size.begin(),
             m_size.begin() + dims,
-            static_cast<size_t>(m_type.sizeOf()) * m_numberOfComponents,
+            static_cast<size_t>(m_type.sizeOf()) * m_numComponents,
             std::multiplies<size_t>()
         );
     }
@@ -278,7 +278,7 @@ void* Image::getBuffer() const
 
 void* Image::getPixel(IndexType index)
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
     BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
     const IndexType bufIndex    = index * imagePixelSize;
     return buf + bufIndex;
@@ -288,7 +288,7 @@ void* Image::getPixel(IndexType index)
 
 void* Image::getPixel(IndexType index) const
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
     BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
     const IndexType bufIndex    = index * imagePixelSize;
     return buf + bufIndex;
@@ -298,7 +298,7 @@ void* Image::getPixel(IndexType index) const
 
 void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
 {
-    const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
+    const size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
     BufferType* buf             = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
@@ -350,12 +350,12 @@ Image::const_iterator<char> Image::end() const
 
 //------------------------------------------------------------------------------
 
-size_t Image::getNumElements() const
+size_t Image::numElements() const
 {
     size_t nbElts = 0;
     if(m_size[0] > 0)
     {
-        nbElts = m_numberOfComponents;
+        nbElts = m_numComponents;
         for(const auto& val : m_size)
         {
             if(val > 0)

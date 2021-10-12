@@ -327,7 +327,7 @@ void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr
 {
     const auto dumpLock = _pDataImage->lock();
 
-    if(_pDataImage->getNumberOfDimensions() == 2)
+    if(_pDataImage->numDimensions() == 2)
     {
         _pImageImport->SetDataSpacing(
             _pDataImage->getSpacing()[0],
@@ -374,7 +374,7 @@ void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr
         );
     }
 
-    _pImageImport->SetNumberOfScalarComponents(static_cast<int>(_pDataImage->getNumberOfComponents()));
+    _pImageImport->SetNumberOfScalarComponents(static_cast<int>(_pDataImage->numComponents()));
 
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();

@@ -82,7 +82,7 @@ void ImageDiffCommandTest::undoredoTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(i + 1, diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(i + 1, diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
@@ -151,7 +151,7 @@ void ImageDiffCommandTest::getSizeTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 

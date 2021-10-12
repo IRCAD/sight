@@ -73,7 +73,7 @@ const ::gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& 
 const ::gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
     ::gdcm::PhotometricInterpretation pi;
-    const size_t components = image->getNumberOfComponents();
+    const size_t components = image->numComponents();
 
     // Attempt a guess (VTK do the same choice)
     switch(components)
@@ -153,10 +153,10 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
     const double zCoordinate = static_cast<double>(point->getCoord()[2]);
@@ -179,10 +179,10 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->numDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Compute coordinate
     const std::size_t frameIndex = (frameNumber - 1);

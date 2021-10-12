@@ -214,13 +214,13 @@ public:
     DATA_API void clearPoints(const std::string& name);
 
     /// Return the number of groups
-    size_t getNumberOfGroups() const;
+    size_t numGroups() const;
 
     /// Return the number of points in the entire structure
-    DATA_API size_t getNumberOfPoints() const;
+    DATA_API size_t numPoints() const;
 
     /// Return the number of points in the group
-    DATA_API size_t getNumberOfPoints(const std::string& name) const;
+    DATA_API size_t numPoints(const std::string& name) const;
 
     /**
      * @name Signals
@@ -278,7 +278,7 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline size_t Landmarks::getNumberOfGroups() const
+inline size_t Landmarks::numGroups() const
 {
     return m_landmarks.size();
 }

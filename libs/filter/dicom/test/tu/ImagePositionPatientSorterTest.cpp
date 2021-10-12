@@ -155,7 +155,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
     double oldPosition = -1.0;
 
     const data::DicomSeries::DicomContainerType& dicomContainer = dicomSeries->getDicomContainer();
-    for(size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->getNumberOfInstances() ; ++index)
+    for(size_t index = dicomSeries->getFirstInstanceNumber() ; index < dicomSeries->numInstances() ; ++index)
     {
         const double position = getInstanceZPosition(dicomContainer.at(index));
 

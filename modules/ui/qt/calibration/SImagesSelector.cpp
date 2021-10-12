@@ -189,7 +189,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     data::Image::PixelFormat format;
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
-    switch(frameTL->getNumberOfComponents())
+    switch(frameTL->numComponents())
     {
         case 1:
             format = data::Image::GRAY_SCALE;

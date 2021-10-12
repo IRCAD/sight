@@ -212,7 +212,7 @@ void DicomSeriesCampTest::propertiesTest()
 
     // Number of instances
     ::std::stringstream ss;
-    ss << obj->getNumberOfInstances();
+    ss << obj->numInstances();
     ::DataCampHelper::compareSimplePropertyValue(obj, "@number_of_instances", ss.str());
 
     // Dicom binaries

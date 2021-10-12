@@ -200,7 +200,7 @@ void SGrabberProxy::startCamera()
                     auto cameraSeries = std::dynamic_pointer_cast<const data::CameraSeries>(cameraInput.get_shared());
                     if(cameraSeries)
                     {
-                        numCamerasInSeries = cameraSeries->getNumberOfCameras();
+                        numCamerasInSeries = cameraSeries->numCameras();
                         SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
                         // Assume same source on all cameras
@@ -429,7 +429,7 @@ void SGrabberProxy::startCamera()
                     if(cameraSeries)
                     {
                         #ifdef DEBUG
-                        const size_t numCameras = cameraSeries->getNumberOfCameras();
+                        const size_t numCameras = cameraSeries->numCameras();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
                             srvCount < numCameras

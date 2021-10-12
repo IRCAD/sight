@@ -88,8 +88,8 @@ void LandmarksTest::copyTest()
         data::Landmarks::csptr landmarksCopy = data::Object::copy(landmarks);
         CPPUNIT_ASSERT(landmarksCopy);
 
-        CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfGroups(), landmarksCopy->getNumberOfGroups());
-        CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfPoints(), landmarksCopy->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(landmarks->numGroups(), landmarksCopy->numGroups());
+        CPPUNIT_ASSERT_EQUAL(landmarks->numPoints(), landmarksCopy->numPoints());
 
         const data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
 
@@ -115,8 +115,8 @@ void LandmarksTest::copyTest()
         landmarksCopy->shallowCopy(landmarks);
         CPPUNIT_ASSERT(landmarksCopy);
 
-        CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfGroups(), landmarksCopy->getNumberOfGroups());
-        CPPUNIT_ASSERT_EQUAL(landmarks->getNumberOfPoints(), landmarksCopy->getNumberOfPoints());
+        CPPUNIT_ASSERT_EQUAL(landmarks->numGroups(), landmarksCopy->numGroups());
+        CPPUNIT_ASSERT_EQUAL(landmarks->numPoints(), landmarksCopy->numPoints());
 
         const data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
         for(const auto& name : names)
@@ -158,15 +158,15 @@ void LandmarksTest::groupTest()
     const bool VISIBILITY3                  = true;
 
     data::Landmarks::sptr landmarks = data::Landmarks::New();
-    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->getNumberOfGroups());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->numGroups());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->numPoints());
 
     CPPUNIT_ASSERT_NO_THROW(landmarks->addGroup(GROUP1, COLOR1, SIZE1, SHAPE1, VISIBILITY1));
     CPPUNIT_ASSERT_NO_THROW(landmarks->addGroup(GROUP2, COLOR2, SIZE2, SHAPE2, VISIBILITY2));
     CPPUNIT_ASSERT_THROW(landmarks->addGroup(GROUP1), data::Exception);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfGroups());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numGroups());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->numPoints());
 
     const data::Landmarks::GroupNameContainer names = landmarks->getGroupNames();
     CPPUNIT_ASSERT_EQUAL(size_t(2), names.size());
@@ -201,7 +201,7 @@ void LandmarksTest::groupTest()
 
     // Remove group 1
     CPPUNIT_ASSERT_NO_THROW(landmarks->removeGroup(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfGroups());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numGroups());
     const data::Landmarks::GroupNameContainer names2 = landmarks->getGroupNames();
     CPPUNIT_ASSERT_EQUAL(size_t(1), names2.size());
 
@@ -210,7 +210,7 @@ void LandmarksTest::groupTest()
     // Rename group_2 to group_1
     CPPUNIT_ASSERT_NO_THROW(landmarks->renameGroup(GROUP2, GROUP3));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfGroups());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numGroups());
     const data::Landmarks::GroupNameContainer names3 = landmarks->getGroupNames();
     CPPUNIT_ASSERT_EQUAL(size_t(1), names3.size());
 
@@ -291,8 +291,8 @@ void LandmarksTest::pointsTest()
     CPPUNIT_ASSERT_THROW(landmarks->addPoint(NO_GROUP, POINT1), data::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(landmarks->addPoint(GROUP1, POINT1));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints(GROUP1));
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints());
 
     const data::Landmarks::PointContainer& points = landmarks->getPoints(GROUP1);
     CPPUNIT_ASSERT_EQUAL(size_t(1), points.size());
@@ -301,12 +301,12 @@ void LandmarksTest::pointsTest()
     CPPUNIT_ASSERT_THROW(landmarks->getPoint(GROUP1, 23), std::out_of_range);
 
     CPPUNIT_ASSERT_NO_THROW(landmarks->addPoint(GROUP2, POINT2));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints(GROUP2));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints(GROUP2));
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numPoints());
 
     CPPUNIT_ASSERT_NO_THROW(landmarks->addPoint(GROUP2, POINT3));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfPoints(GROUP2));
-    CPPUNIT_ASSERT_EQUAL(size_t(3), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numPoints(GROUP2));
+    CPPUNIT_ASSERT_EQUAL(size_t(3), landmarks->numPoints());
 
     const data::Landmarks::PointContainer& points2 = landmarks->getPoints(GROUP2);
     CPPUNIT_ASSERT_EQUAL(size_t(2), points2.size());
@@ -329,20 +329,20 @@ void LandmarksTest::pointsTest()
     CPPUNIT_ASSERT_THROW(landmarks->removePoint(GROUP1, 2), std::out_of_range);
     CPPUNIT_ASSERT_NO_THROW(landmarks->removePoint(GROUP3, 1));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints(GROUP3));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints(GROUP3));
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numPoints());
     CPPUNIT_ASSERT(POINT2 == landmarks->getPoint(GROUP3, 0));
 
     // Check remove group
     CPPUNIT_ASSERT_NO_THROW(landmarks->removeGroup(GROUP3));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints(GROUP1));
+    CPPUNIT_ASSERT_EQUAL(size_t(1), landmarks->numPoints());
     CPPUNIT_ASSERT_THROW(landmarks->getPoints(GROUP3), data::Exception);
 
     // Check insert point
     CPPUNIT_ASSERT_NO_THROW(landmarks->insertPoint(GROUP1, 0, POINT4));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfPoints(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numPoints(GROUP1));
+    CPPUNIT_ASSERT_EQUAL(size_t(2), landmarks->numPoints());
 
     const data::Landmarks::PointContainer& points4 = landmarks->getPoints(GROUP1);
     CPPUNIT_ASSERT_EQUAL(size_t(2), points4.size());
@@ -357,8 +357,8 @@ void LandmarksTest::pointsTest()
 
     // check clear points
     CPPUNIT_ASSERT_NO_THROW(landmarks->clearPoints(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->getNumberOfPoints(GROUP1));
-    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->numPoints(GROUP1));
+    CPPUNIT_ASSERT_EQUAL(size_t(0), landmarks->numPoints());
 }
 
 //------------------------------------------------------------------------------

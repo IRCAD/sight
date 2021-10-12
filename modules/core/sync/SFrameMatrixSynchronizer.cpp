@@ -285,7 +285,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
             const data::Image::Size size = {frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
-            if(size != image->getSize() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
+            if(size != image->getSize() || frameTL->numComponents() != image->numComponents())
             {
                 m_imagesInitialized = false;
             }
@@ -323,7 +323,7 @@ void SFrameMatrixSynchronizer::synchronize()
                             "22.0"
                         );
                         // FIXME Support old FrameTL API (sight 22.0)
-                        switch(frameTL->getNumberOfComponents())
+                        switch(frameTL->numComponents())
                         {
                             case 1:
                                 format = data::Image::GRAY_SCALE;

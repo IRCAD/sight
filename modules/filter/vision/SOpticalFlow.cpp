@@ -119,21 +119,21 @@ void SOpticalFlow::updating()
             cv::resize(tempImg, tempImg, s);
         }
 
-        if(frameTL->getNumberOfComponents() == 1)
+        if(frameTL->numComponents() == 1)
         {
             grayImg = tempImg;
         }
-        else if(frameTL->getNumberOfComponents() == 3)
+        else if(frameTL->numComponents() == 3)
         {
             cv::cvtColor(tempImg, grayImg, cv::COLOR_RGB2GRAY);
         }
-        else if(frameTL->getNumberOfComponents() == 4)
+        else if(frameTL->numComponents() == 4)
         {
             cv::cvtColor(tempImg, grayImg, cv::COLOR_RGBA2GRAY);
         }
         else
         {
-            SIGHT_FATAL("Wrong type of image (nb of components = " << frameTL->getNumberOfComponents() << ").");
+            SIGHT_FATAL("Wrong type of image (nb of components = " << frameTL->numComponents() << ").");
         }
     }
 

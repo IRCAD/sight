@@ -279,7 +279,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
             data::Camera::sptr depthCamera;
 
             // check if there is camera
-            if(cameraSeries->getNumberOfCameras() == 0)
+            if(cameraSeries->numCameras() == 0)
             {
                 depthCamera = data::Camera::New();
                 colorCamera = data::Camera::New();
@@ -292,7 +292,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
                 sig->asyncEmit(depthCamera);
                 sig->asyncEmit(colorCamera);
             }
-            else if(cameraSeries->getNumberOfCameras() == 1) // missing one camera
+            else if(cameraSeries->numCameras() == 1) // missing one camera
             {
                 depthCamera = cameraSeries->getCamera(0);
                 colorCamera = data::Camera::New();

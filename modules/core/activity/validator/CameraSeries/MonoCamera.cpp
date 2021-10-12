@@ -65,7 +65,7 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
     }
     else
     {
-        if(cameraSeries->getNumberOfCameras() == 1)
+        if(cameraSeries->numCameras() == 1)
         {
             data::Camera::sptr camera = cameraSeries->getCamera(0);
             if(!camera->getIsCalibrated())

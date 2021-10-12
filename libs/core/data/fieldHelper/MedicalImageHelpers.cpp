@@ -71,7 +71,7 @@ bool MedicalImageHelpers::checkImageValidity(const data::Image& _image)
 
     if(dataImageIsAllocated)
     {
-        size_t nbDim = _image.getNumberOfDimensions();
+        size_t nbDim = _image.numDimensions();
         dataImageIsAllocated &= nbDim > 1;
 
         for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)

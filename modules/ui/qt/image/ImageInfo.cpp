@@ -134,7 +134,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
             };
 
             bool isInside = (coords[0] < size[0] && coords[1] < size[1]);
-            if(image->getNumberOfDimensions() < 3)
+            if(image->numDimensions() < 3)
             {
                 isInside = (isInside && coords[2] == 0);
             }

@@ -346,7 +346,7 @@ void updatePointsAndAttributes(vtkPointSet& pointSetDst, const data::Mesh& meshS
 {
     vtkPoints* dataPoints = pointSetDst.GetPoints();
 
-    const vtkIdType nbPoints = static_cast<vtkIdType>(meshSrc.getNumberOfPoints());
+    const vtkIdType nbPoints = static_cast<vtkIdType>(meshSrc.numPoints());
 
     if(nbPoints != dataPoints->GetNumberOfPoints())
     {
@@ -461,7 +461,7 @@ void toVTKPointSet(const data::Mesh& mesh, vtkPointSet& dataset)
     const vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
     dataset.SetPoints(pts);
 
-    const auto nbCells  = mesh.getNumberOfCells();
+    const auto nbCells  = mesh.numCells();
     const auto dumpLock = mesh.lock();
 
     if(nbCells > 0)

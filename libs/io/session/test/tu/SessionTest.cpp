@@ -408,8 +408,8 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
     // Retrieve the expected variant
     const auto& expected = _expected<data::Mesh>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getNumberOfCells(), actual->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(expected->getNumberOfPoints(), actual->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(expected->numCells(), actual->numCells());
+    CPPUNIT_ASSERT_EQUAL(expected->numPoints(), actual->numPoints());
     CPPUNIT_ASSERT_EQUAL(expected->getCellSize(), actual->getCellSize());
     CPPUNIT_ASSERT_EQUAL(expected->getDataSizeInBytes(), actual->getDataSizeInBytes());
 
@@ -1452,7 +1452,7 @@ inline void _compare<data::CameraSeries>(const data::CameraSeries::csptr& actual
 {
     CPPUNIT_ASSERT(actual);
 
-    for(std::size_t i = 0, end = actual->getNumberOfCameras() ; i < end ; ++i)
+    for(std::size_t i = 0, end = actual->numCameras() ; i < end ; ++i)
     {
         _compare<data::Camera>(actual->getCamera(i), variant + i);
     }

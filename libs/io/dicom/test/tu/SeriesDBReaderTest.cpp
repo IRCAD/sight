@@ -225,7 +225,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesDB::sptr& se
             nbComponents = 4;
         }
 
-        CPPUNIT_ASSERT_EQUAL(nbComponents, image->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(nbComponents, image->numComponents());
     }
 }
 
@@ -496,7 +496,7 @@ void SeriesDBReaderTest::readCTSeries()
     const auto dumpLock            = image->lock();
 
     // Check number of dimensions
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
 
     // Check size
     const data::Image::Size size = image->getSize();
@@ -563,7 +563,7 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
 
     // Check size
     const data::Image::Size size = image->getSize();
@@ -631,7 +631,7 @@ void SeriesDBReaderTest::readOTSeries()
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
     // crashes...
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(size_t(3), image->numDimensions());
 
     // Check size
     data::Image::Size size = image->getSize();
@@ -703,8 +703,8 @@ void SeriesDBReaderTest::readSEGSeries()
 
     // Check mesh
     data::Mesh::sptr mesh = reconstruction->getMesh();
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(2498), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(5000), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(2498), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(5000), mesh->numCells());
 
     // Check material
     data::Material::sptr material = reconstruction->getMaterial();

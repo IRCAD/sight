@@ -40,7 +40,7 @@ Slots::~Slots()
 #if 0
     for(SlotMapType::value_type elem : m_slots)
     {
-        SIGHT_ASSERT("Slot '" << elem.first << "' has connected signals", elem.second->getNumberOfConnections() == 0);
+        SIGHT_ASSERT("Slot '" << elem.first << "' has connected signals", elem.second->numConnections() == 0);
     }
 #endif
 }

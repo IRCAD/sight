@@ -106,8 +106,8 @@ void MeshTest::testMeshToVtk()
     source->Update();
     const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->numCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->numPoints());
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -116,8 +116,8 @@ void MeshTest::testMeshToVtk()
     geometry::data::Mesh::colorizeMeshPoints(mesh1);
     geometry::data::Mesh::colorizeMeshCells(mesh1);
 
-    CPPUNIT_ASSERT(mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT(mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT(mesh1->numCells());
+    CPPUNIT_ASSERT(mesh1->numPoints());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_NORMALS>());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_NORMALS>());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_COLORS>());
@@ -154,8 +154,8 @@ void MeshTest::testMeshToGrid()
     source->Update();
     const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->numCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->numPoints());
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -164,8 +164,8 @@ void MeshTest::testMeshToGrid()
     geometry::data::Mesh::colorizeMeshPoints(mesh1);
     geometry::data::Mesh::colorizeMeshCells(mesh1);
 
-    CPPUNIT_ASSERT(mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT(mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT(mesh1->numCells());
+    CPPUNIT_ASSERT(mesh1->numPoints());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_NORMALS>());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_NORMALS>());
     CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_COLORS>());
@@ -288,8 +288,8 @@ void MeshTest::testPointCloud()
     const data::Mesh::sptr mesh2 = data::Mesh::New();
     io::vtk::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numPoints());
+    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numCells());
     compare(mesh1, mesh2);
 }
 
@@ -312,8 +312,8 @@ void MeshTest::testReadVtkFile()
 
     CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
 
-    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
-    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+    CPPUNIT_ASSERT(mesh->numCells() == 720);
+    CPPUNIT_ASSERT(mesh->numPoints() == 362);
 }
 
 //------------------------------------------------------------------------------
@@ -335,8 +335,8 @@ void MeshTest::testReadVtpFile()
 
     CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
 
-    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
-    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+    CPPUNIT_ASSERT(mesh->numCells() == 720);
+    CPPUNIT_ASSERT(mesh->numPoints() == 362);
 }
 
 //------------------------------------------------------------------------------
@@ -358,8 +358,8 @@ void MeshTest::testReadObjFile()
 
     CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
 
-    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
-    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+    CPPUNIT_ASSERT(mesh->numCells() == 720);
+    CPPUNIT_ASSERT(mesh->numPoints() == 362);
 }
 
 //------------------------------------------------------------------------------
@@ -381,8 +381,8 @@ void MeshTest::testReadPlyFile()
 
     CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
 
-    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
-    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+    CPPUNIT_ASSERT(mesh->numCells() == 720);
+    CPPUNIT_ASSERT(mesh->numPoints() == 362);
 }
 
 //------------------------------------------------------------------------------
@@ -404,8 +404,8 @@ void MeshTest::testReadStlFile()
 
     CPPUNIT_ASSERT_NO_THROW(vtkReader->read());
 
-    CPPUNIT_ASSERT(mesh->getNumberOfCells() == 720);
-    CPPUNIT_ASSERT(mesh->getNumberOfPoints() == 362);
+    CPPUNIT_ASSERT(mesh->numCells() == 720);
+    CPPUNIT_ASSERT(mesh->numPoints() == 362);
 }
 
 //------------------------------------------------------------------------------

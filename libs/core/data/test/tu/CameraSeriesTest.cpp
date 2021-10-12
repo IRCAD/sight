@@ -130,7 +130,7 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT_THROW(series->getExtrinsicMatrix(2), core::Exception);
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(1) == mat);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), series->numCameras());
 
     CPPUNIT_ASSERT(series->getCamera(0) == camera1);
     CPPUNIT_ASSERT(series->getCamera(1) == camera2);
@@ -140,16 +140,16 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT(series->getCamera(2) == camera3);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera1));
-    CPPUNIT_ASSERT_EQUAL(size_t(2), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera2);
     CPPUNIT_ASSERT_THROW(series->removeCamera(camera1), core::Exception);
 
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera2));
-    CPPUNIT_ASSERT_EQUAL(size_t(1), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), series->numCameras());
     CPPUNIT_ASSERT(series->getCamera(0) == camera3);
     CPPUNIT_ASSERT_NO_THROW(series->removeCamera(camera3));
 
-    CPPUNIT_ASSERT_EQUAL(size_t(0), series->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), series->numCameras());
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ void CameraSeriesTest::shallowCopyTest()
 
     series2->shallowCopy(series);
 
-    CPPUNIT_ASSERT_EQUAL(series->getNumberOfCameras(), series2->getNumberOfCameras());
+    CPPUNIT_ASSERT_EQUAL(series->numCameras(), series2->numCameras());
     CPPUNIT_ASSERT_EQUAL(series->getCamera(0), series2->getCamera(0));
     CPPUNIT_ASSERT_EQUAL(series->getCamera(1), series2->getCamera(1));
 }

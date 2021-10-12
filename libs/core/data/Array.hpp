@@ -250,7 +250,7 @@ public:
      *
      * @return number of array elements
      */
-    DATA_API size_t getNumberOfElements() const;
+    DATA_API size_t numElements() const;
 
     /**
      * @brief Getter for the array view size
@@ -278,7 +278,7 @@ public:
      *
      * @return Array's number of dimensions
      */
-    DATA_API size_t getNumberOfDimensions() const;
+    DATA_API size_t numDimensions() const;
 
     /**
      * @brief Set array's buffer ownership

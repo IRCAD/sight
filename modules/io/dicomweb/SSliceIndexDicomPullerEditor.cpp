@@ -135,7 +135,7 @@ void SSliceIndexDicomPullerEditor::starting()
 
     const auto dicomSeries = m_series.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
-    m_numberOfSlices = dicomSeries->getNumberOfInstances();
+    m_numberOfSlices = dicomSeries->numInstances();
 
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);

@@ -92,7 +92,7 @@ void LineDrawerTest::circleTest()
         const std::int16_t resValue = image->at<std::int16_t>(POINT[0], POINT[1], POINT[2]);
 
         CPPUNIT_ASSERT_EQUAL(VALUE, resValue);
-        CPPUNIT_ASSERT_EQUAL(size_t(1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(size_t(1), diff.numElements());
         data::Image::IndexType index = (POINT[0] + POINT[1] * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1]);
         CPPUNIT_ASSERT_EQUAL(index, diff.getElement(0).m_index);
         CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<std::int16_t*>(diff.getElement(0).m_oldValue));
@@ -306,7 +306,7 @@ void LineDrawerTest::ellipseTest()
                             VALUE,
                             resValue
                         );
-                        CPPUNIT_ASSERT(diffIndex != diff.getNumberOfElements());
+                        CPPUNIT_ASSERT(diffIndex != diff.numElements());
                         const data::Image::IndexType index = i + j * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1];
 
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(

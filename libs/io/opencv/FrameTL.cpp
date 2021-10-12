@@ -39,7 +39,7 @@ static void toCv(
 )
 {
     const auto imageType = _timeline->getType();
-    const auto imageComp = _timeline->getNumberOfComponents();
+    const auto imageComp = _timeline->numComponents();
 
     const auto cvType = io::opencv::Type::toCv(imageType, imageComp);
 
@@ -89,7 +89,7 @@ void FrameTL::copyFromCv(
 )
 {
     const auto prevImageType = _timeline->getType();
-    const auto prevImageComp = _timeline->getNumberOfComponents();
+    const auto prevImageComp = _timeline->numComponents();
 
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;

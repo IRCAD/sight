@@ -97,7 +97,7 @@ void ResectionDB::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionContainerType::size_type ResectionDB::getNumberOfResections() const
+ResectionDB::ResectionContainerType::size_type ResectionDB::numResections() const
 {
     return m_resections.size();
 }

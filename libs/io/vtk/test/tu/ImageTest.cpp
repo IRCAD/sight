@@ -130,7 +130,7 @@ void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
         size,
         spacing,
         origin,
-        image->getNumberOfDimensions(),
+        image->numDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
@@ -187,12 +187,12 @@ void writerTest(const std::string& imagetype, const std::string& filename)
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions(),
+        image->numDimensions(),
 
         image2->getSize(),
         image2->getSpacing(),
         image2->getOrigin(),
-        image2->getNumberOfDimensions()
+        image2->numDimensions()
     );
 }
 
@@ -229,7 +229,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions()
+        image->numDimensions()
     );
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + imagename + "> Failed ", core::tools::Type(type), image->getType());
@@ -272,7 +272,7 @@ void testVtkReader(std::string imagetype)
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions(),
+        image->numDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
@@ -352,7 +352,7 @@ void ImageTest::testFromVtk()
     const auto dumpLock = image->lock();
     CPPUNIT_ASSERT_EQUAL(
         static_cast<size_t>(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
-        static_cast<size_t>(image->getNumberOfComponents())
+        static_cast<size_t>(image->numComponents())
     );
     compareImageAttributes(
         vtkImage->GetDimensions(),
@@ -363,7 +363,7 @@ void ImageTest::testFromVtk()
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions()
+        image->numDimensions()
     );
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + type + "> Failed ", core::tools::Type(type), image->getType());
 
@@ -397,7 +397,7 @@ void fromToTest(data::Image::PixelFormat format)
     CPPUNIT_ASSERT_EQUAL(image->getSize()[1], image2->getSize()[1]);
     CPPUNIT_ASSERT_EQUAL(image->getSize()[2], image2->getSize()[2]);
     CPPUNIT_ASSERT_EQUAL(image->getType(), image2->getType());
-    CPPUNIT_ASSERT_EQUAL(image->getNumberOfComponents(), image2->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(image->numComponents(), image2->numComponents());
     CPPUNIT_ASSERT_EQUAL(image->getPixelFormat(), image2->getPixelFormat());
 
     const auto imageDumpLock  = image->lock();
@@ -471,7 +471,7 @@ void ImageTest::mhdReaderTest()
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions()
+        image->numDimensions()
     );
 }
 
@@ -562,7 +562,7 @@ void ImageTest::vtiReaderTest()
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions()
+        image->numDimensions()
     );
 }
 
@@ -611,7 +611,7 @@ void ImageTest::vtkReaderTest()
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
-        image->getNumberOfDimensions()
+        image->numDimensions()
     );
 
     testVtkReader(std::string("int8"));

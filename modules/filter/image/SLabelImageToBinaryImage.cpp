@@ -116,7 +116,7 @@ void SLabelImageToBinaryImage::updating()
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",
-        labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1
+        labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->numComponents() == 1
     );
 
     LambdaFunctor functor;

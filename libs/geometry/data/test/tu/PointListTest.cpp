@@ -75,7 +75,7 @@ void PointListTest::computeDistance()
         // Compare the point lists
         auto outputArray = geometry::data::PointList::computeDistance(pl1, pl2);
 
-        CPPUNIT_ASSERT(outputArray->getNumberOfElements() == 0);
+        CPPUNIT_ASSERT(outputArray->numElements() == 0);
     }
 
     // Simple test with parallel point lists

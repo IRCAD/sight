@@ -66,7 +66,7 @@ public:
     /**
      * @brief Get the number of resections
      */
-    DATA_API ResectionContainerType::size_type getNumberOfResections() const;
+    DATA_API ResectionContainerType::size_type numResections() const;
 
     /**
      * @brief add resection

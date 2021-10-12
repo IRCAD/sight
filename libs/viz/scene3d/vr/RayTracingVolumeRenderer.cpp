@@ -170,7 +170,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto* const viewport                         = layer->getViewport();
 
-    const std::uint8_t numViewPoints  = this->getLayer()->getNumberOfCameras();
+    const std::uint8_t numViewPoints  = this->getLayer()->numCameras();
     const auto stereoMode             = layer->getStereoMode();
     const auto rayEntryCompositorName = "VolumeEntries" + std::to_string(numViewPoints);
     m_rayEntryCompositor = std::make_unique<RayEntryCompositor>(
@@ -535,7 +535,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(
     texUnitState = _rayCastingPass->createTextureUnitState();
     texUnitState->setName("entryPoints");
 
-    if(this->getLayer()->getNumberOfCameras() == 1)
+    if(this->getLayer()->numCameras() == 1)
     {
         const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
         texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
@@ -735,7 +735,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial(const std::string& _sour
 
         texUnitState = pass->createTextureUnitState();
         texUnitState->setName("entryPoints");
-        if(this->getLayer()->getNumberOfCameras() == 1)
+        if(this->getLayer()->numCameras() == 1)
         {
             const auto& rayEntryCompositorName = m_rayEntryCompositor->getName();
             texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);

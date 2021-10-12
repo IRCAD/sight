@@ -218,7 +218,7 @@ void SMeshList::add()
 
             if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
                && (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE
-                   || textureInput->getNumberOfComponents() == 1))
+                   || textureInput->numComponents() == 1))
             {
                 // transform the image into RGBA with a transparent texture
                 if(textureInput->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
@@ -245,7 +245,7 @@ void SMeshList::add()
             }
             else if(m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8
                     && (textureInput->getPixelFormat() == data::Image::PixelFormat::RGB
-                        || textureInput->getNumberOfComponents() == 3))
+                        || textureInput->numComponents() == 3))
             {
                 // transform the image into RGBA with a transparent texture
 

@@ -200,7 +200,7 @@ void SDistortion::remap()
 
     const auto inputSize = inputImage->getSize();
 
-    if(inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
+    if(inputImage->getSizeInBytes() == 0 || inputImage->numDimensions() < 2)
     {
         SIGHT_WARN("Can not remap this image, it is empty.");
         return;

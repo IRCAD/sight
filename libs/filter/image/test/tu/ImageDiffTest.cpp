@@ -52,9 +52,9 @@ namespace ut
 template<typename T>
 static void testDiffEquality(const ImageDiff& diff1, const ImageDiff& diff2)
 {
-    CPPUNIT_ASSERT_EQUAL(diff1.getNumberOfElements(), diff2.getNumberOfElements());
+    CPPUNIT_ASSERT_EQUAL(diff1.numElements(), diff2.numElements());
 
-    for(size_t i = 0 ; i < diff1.getNumberOfElements() ; ++i)
+    for(size_t i = 0 ; i < diff1.numElements() ; ++i)
     {
         ImageDiff::ElementType diff1Elt = diff1.getElement(i);
         ImageDiff::ElementType diff2Elt = diff2.getElement(i);
@@ -104,13 +104,13 @@ void ImageDiffTest::storeDiffsTest()
 
         diff.addDiff(index, oldBufferValue, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
     }
 
     // Shrink and test that we didn't lose any values.
     diff.shrink();
-    CPPUNIT_ASSERT_EQUAL(size_t(8), diff.getNumberOfElements());
+    CPPUNIT_ASSERT_EQUAL(size_t(8), diff.numElements());
 
     // Ensure the elements where inserted.
     for(int i = 0 ; i < 8 ; ++i)
@@ -132,17 +132,17 @@ void ImageDiffTest::storeDiffsTest()
 
         diff2.addDiff(index, oldBufferValue, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff2.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff2.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff2.getElementDiffIndex(i));
     }
 
     // Merge both diffs. Ensure the total size is 11.
     diff.addDiff(diff2);
-    CPPUNIT_ASSERT_EQUAL(size_t(11), diff.getNumberOfElements());
+    CPPUNIT_ASSERT_EQUAL(size_t(11), diff.numElements());
 
     // Shrink and test that we didn't lose any values.
     diff.shrink();
-    CPPUNIT_ASSERT_EQUAL(size_t(11), diff.getNumberOfElements());
+    CPPUNIT_ASSERT_EQUAL(size_t(11), diff.numElements());
 
     std::vector<data::Image::IndexType> mergedIndices;
     mergedIndices.insert(mergedIndices.end(), indices.begin(), indices.end());
@@ -178,7 +178,7 @@ void ImageDiffTest::storeDiffsTest()
     diff.clear();
 
     CPPUNIT_ASSERT_EQUAL(size_t(0), diff.getSize());
-    CPPUNIT_ASSERT_EQUAL(size_t(0), diff.getNumberOfElements());
+    CPPUNIT_ASSERT_EQUAL(size_t(0), diff.numElements());
 }
 
 //------------------------------------------------------------------------------
@@ -216,7 +216,7 @@ void ImageDiffTest::undoRedoTest()
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
 
-        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
+        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.numElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
         CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(index)));
     }

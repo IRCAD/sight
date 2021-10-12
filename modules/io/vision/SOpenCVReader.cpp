@@ -137,7 +137,7 @@ void SOpenCVReader::updating()
     // Remove all CameraSeries
     const auto data      = m_data.lock();
     const auto camSeries = std::dynamic_pointer_cast<data::CameraSeries>(data.get_shared());
-    const size_t cams    = camSeries->getNumberOfCameras();
+    const size_t cams    = camSeries->numCameras();
 
     for(size_t c = 0 ; c < cams ; ++c)
     {

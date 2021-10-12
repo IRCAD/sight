@@ -102,7 +102,7 @@ struct ThresholdFilter
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
         data::Image::csptr imageIn     = param.imageIn;
         data::Image::sptr imageOut     = param.imageOut;
-        SIGHT_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3);
+        SIGHT_ASSERT("Sorry, image must be 3D", imageIn->numDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->resize(imageOut->getSize(), imageOut->getType(), imageOut->getPixelFormat());

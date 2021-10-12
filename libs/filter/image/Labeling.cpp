@@ -110,7 +110,7 @@ struct LabelImageFilter
     {
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", image->numDimensions() == dimension);
         typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
         typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
 

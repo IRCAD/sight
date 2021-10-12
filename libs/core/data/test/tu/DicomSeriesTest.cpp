@@ -74,7 +74,7 @@ void DicomSeriesTest::dicomTest()
     const size_t nbInstances = 100;
     CPPUNIT_ASSERT(!m_series->isInstanceAvailable(42));
     m_series->setNumberOfInstances(nbInstances);
-    CPPUNIT_ASSERT_EQUAL(nbInstances, m_series->getNumberOfInstances());
+    CPPUNIT_ASSERT_EQUAL(nbInstances, m_series->numInstances());
 
     //Paths
     m_series->addDicomPath(42, filename);

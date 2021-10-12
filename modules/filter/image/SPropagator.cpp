@@ -273,7 +273,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
         m_diff = m_lineDrawer->draw(m_orientation, m_oldPoint, m_oldPoint, val.get(), thickness, m_overwrite);
 
-        imgBufferModified = m_diff.getNumberOfElements() > 0;
+        imgBufferModified = m_diff.numElements() > 0;
     }
     else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
@@ -310,7 +310,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
         imgBufferModified |= this->appendDiff(propagDiff);
 
-        if(m_diff.getNumberOfElements() > 0)
+        if(m_diff.numElements() > 0)
         {
             ui::history::ImageDiffCommand::sptr diffCommand(new ui::history::ImageDiffCommand(
                                                                 imgOutLock.get_shared(),
@@ -337,7 +337,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 
 bool SPropagator::appendDiff(const sight::filter::image::ImageDiff& diff)
 {
-    const bool append = (diff.getNumberOfElements() > 0);
+    const bool append = (diff.numElements() > 0);
 
     if(append)
     {
@@ -358,7 +358,7 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
-    const size_t nbElts = m_diff.getNumberOfElements();
+    const size_t nbElts = m_diff.numElements();
     for(size_t i = 0 ; i < nbElts ; ++i)
     {
         data::Image::IndexType index = m_diff.getElementDiffIndex(i);

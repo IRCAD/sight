@@ -88,8 +88,8 @@ void MeshTest::insertion()
         data::Mesh::point_t p3[3] = {7, 2, 5};
         mesh->pushCell(p3, 3);
 
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(8), mesh->getNumberOfPoints());
-        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(6), mesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(8), mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(6), mesh->numCells());
 
         auto it = mesh->cbegin<data::iterator::point::xyz>();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(10.f, it->x, EPSILON);
@@ -208,8 +208,8 @@ void MeshTest::insertion()
             mesh->setCellTexCoord(id, texCoords);
         }
 
-        CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh->getNumberOfPoints());
-        CPPUNIT_ASSERT_EQUAL(NB_CELLS, mesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(NB_CELLS, mesh->numCells());
         CPPUNIT_ASSERT_EQUAL(mesh->getAllocatedSizeInBytes(), mesh->getDataSizeInBytes());
         const bool resizeMemory = mesh->shrinkToFit();
         CPPUNIT_ASSERT_EQUAL(false, resizeMemory);
@@ -248,8 +248,8 @@ void MeshTest::copy()
     mesh->pushCell(pt3, 4);
 
     mesh->resize(
-        mesh->getNumberOfPoints(),
-        mesh->getNumberOfCells(),
+        mesh->numPoints(),
+        mesh->numCells(),
         data::Mesh::CellType::QUAD,
         data::Mesh::Attributes::POINT_COLORS | data::Mesh::Attributes::POINT_TEX_COORDS
     );
@@ -261,8 +261,8 @@ void MeshTest::copy()
         deepCopyMesh = data::Object::copy(mesh);
         const auto copyDumpLock = deepCopyMesh->lock();
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), deepCopyMesh->getNumberOfPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), deepCopyMesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), deepCopyMesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), deepCopyMesh->numCells());
         CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), deepCopyMesh->getDataSizeInBytes());
 
         auto pointItr         = mesh->cbegin<point::xyz>();
@@ -293,8 +293,8 @@ void MeshTest::copy()
     //check shallow copy
     {
         shallowCopyMesh->shallowCopy(mesh);
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), shallowCopyMesh->getNumberOfPoints());
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), shallowCopyMesh->getNumberOfCells());
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), shallowCopyMesh->numPoints());
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), shallowCopyMesh->numCells());
         CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), shallowCopyMesh->getDataSizeInBytes());
 
         {
@@ -335,8 +335,8 @@ void MeshTest::allocationTest()
     mesh->pushPoint(20, 20, 10);
 
     mesh->pushCell(0, 1, 2);
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(3), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(3), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->numCells());
 
     CPPUNIT_ASSERT_EQUAL(
         size_t(3 * 3 * sizeof(data::Mesh::position_t) + 3 * sizeof(data::Mesh::cell_t)),
@@ -355,8 +355,8 @@ void MeshTest::allocationTest()
         mesh->getAllocatedSizeInBytes()
     );
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(3), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(3), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->numCells());
 
     CPPUNIT_ASSERT_EQUAL(data::Mesh::Attributes::NONE, mesh->getAttributes());
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::Mesh::Attributes::POINT_COLORS>());
@@ -431,8 +431,8 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(true, mesh->has<data::Mesh::Attributes::CELL_TEX_COORDS>());
 
     mesh->clear();
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh->numCells());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), mesh->getDataSizeInBytes());
 
     CPPUNIT_ASSERT_EQUAL(false, mesh->has<data::Mesh::Attributes::POINT_COLORS>());
@@ -522,7 +522,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     {
@@ -589,7 +589,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
 
     {
@@ -637,7 +637,7 @@ void MeshTest::iteratorTest()
                     ++count;
                 });
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
 
     data::Mesh::csptr mesh2 = data::Mesh::copy(mesh);
@@ -693,7 +693,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
 
     data::Mesh::sptr mesh3 = data::Mesh::New();
@@ -724,7 +724,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     {
@@ -752,7 +752,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
 
     {
@@ -784,7 +784,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     {
@@ -814,7 +814,7 @@ void MeshTest::iteratorTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
 }
 
@@ -883,7 +883,7 @@ void MeshTest::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     {
@@ -929,7 +929,7 @@ void MeshTest::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     data::Mesh::sptr copiedMesh = data::Mesh::New();
@@ -1003,7 +1003,7 @@ void MeshTest::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 
     {
@@ -1064,7 +1064,7 @@ void MeshTest::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
 
         auto rangeCopy = copiedMesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv,
                                                 cell::point, cell::nxyz, cell::rgba, cell::uv>();
@@ -1100,7 +1100,7 @@ void MeshTest::iteratorCopyTest()
             ++count;
         }
 
-        CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), count);
+        CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), count);
     }
 }
 
