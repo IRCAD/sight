@@ -25,13 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/helper/Array.hpp>
-#include <data/helper/ArrayGetter.hpp>
 #include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::module::filter::vision
 {

@@ -183,6 +183,27 @@ public:
     /**
      * @brief Resizes and allocate (if needed) the array.
      *
+     * If no buffer is allocated and reallocate is true, this method will allocate a buffer and take ownership of it.
+     * If the combination of type and size parameters does not match the size of the previously allocated buffer
+     * anymore, a reallocation is needed.
+     * In this case :
+     *  - if reallocate is true and if the Array does not own the buffer, an exception is thrown
+     *  - else if reallocate is false, the array will update the view's information
+     *  - else, the reallocation is performed.
+     *
+     * @param size           New size of the array or the view.
+     * @param type           New type of the array or the view
+     * @param reallocate     If true, allow buffer reallocation
+     *
+     * @return return the size of the array view
+     *
+     * @throw data::Exception
+     */
+    DATA_API size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
+
+    /**
+     * @brief Resizes and allocate (if needed) the array.
+     *
      * If no buffer is allocated and reallocate is true, this method will allocate a buffer and take it ownership,
      * the type of the array is not changed.
      *
@@ -274,35 +295,11 @@ public:
     DATA_API bool getIsBufferOwner() const;
 
     /**
-     * @{
-     * @brief Setter for array's type
-     *
-     * @param type new array type
-     */
-    DATA_API void setType(const std::string& type);
-    DATA_API void setType(const core::tools::Type& type);
-    /// @}
-    /**
      * @brief Getter for array's type
      *
      * @return Type of array
      */
     DATA_API core::tools::Type getType() const;
-
-    /**
-     * @brief Compute offset in buffer
-     *
-     * @param id Item id
-     * @param component Item component id
-     * @param sizeOfType size of a component
-     *
-     * @return buffer offset
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use getBufferOffset( const data::Array::IndexType& id, size_t sizeOfType )
-     */
-    [[deprecated("will be removed in sight 22.0,"
-                 "use getBufferOffset( const data::Array::IndexType& id, size_t sizeOfType )")]]
-    DATA_API size_t getBufferOffset(const data::Array::IndexType& id, size_t component, size_t sizeOfType) const;
 
     /**
      * @brief Compute strides for given parameters
@@ -321,35 +318,10 @@ public:
     /// Exchanges the content of the Array with the content of _source.
     DATA_API void swap(Array::sptr _source);
 
-    // -----------------------------------
-    // New Array API
-    // -----------------------------------
-
     template<typename T>
     using iterator = array_iterator<T>;
     template<typename T>
     using const_iterator = array_iterator<const T>;
-
-    /**
-     * @brief Resizes and allocate (if needed) the array.
-     *
-     * If no buffer is allocated and reallocate is true, this method will allocate a buffer and take ownership of it.
-     * If the combination of type and size parameters does not match the size of the previously allocated buffer
-     * anymore, a reallocation is needed.
-     * In this case :
-     *  - if reallocate is true and if the Array does not own the buffer, an exception is thrown
-     *  - else if reallocate is false, the array will update the view's information
-     *  - else, the reallocation is performed.
-     *
-     * @param size           New size of the array or the view.
-     * @param type           New type of the array or the view
-     * @param reallocate     If true, allow buffer reallocation
-     *
-     * @return return the size of the array view
-     *
-     * @throw data::Exception
-     */
-    DATA_API size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
 
     /**
      * @brief Return a lock on the array to prevent from dumping the buffer on the disk.
@@ -476,6 +448,8 @@ public:
     template<typename T>
     auto range();
     template<typename T>
+    auto range() const;
+    template<typename T>
     auto crange() const;
     /// @}
 
@@ -522,99 +496,6 @@ public:
     DATA_API const_iterator<char> end() const;
     /// @}
 
-    //-----------------------------------------------------
-    // Deprecated API
-    // ----------------------------------------------------
-
-    /**
-     * @brief Resizes and allocate (if needed) the array.
-     *
-     * If no buffer is allocated and reallocate is true, this method will
-     * allocate a buffer and take it ownership.
-     *
-     * If the combination of type, size and components parameters do not match anymore the size of the previously
-     * allocated buffer, a reallocation is needed.
-     * In this case :
-     *  - if reallocate is true and if the Array do not own the buffer, an exception is thrown
-     *  - else if reallocate is false, the array will update the view informations
-     *  - else, the reallocation is performed.
-     *
-     * @param type           Type of the array view
-     * @param size           Size of the array view
-     * @param nbOfComponents Number of components of the array view, Min value : 1
-     * @param reallocate     If true, allow buffer reallocation
-     *
-     * @return return the size of the array view
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false).
-     *
-     * @throw data::Exception
-     */
-    [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false)")]]
-    DATA_API virtual size_t resize(
-        const core::tools::Type& type,
-        const SizeType& size,
-        size_t nbOfComponents,
-        bool reallocate = false
-    );
-
-    /**
-     * @brief  Aliases to the resize method
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false).
-     * @{
-     */
-    [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false) ")]]
-    DATA_API virtual size_t resize(
-        const std::string& type,
-        const SizeType& size,
-        size_t nbOfComponents,
-        bool reallocate = false
-    );
-    [[deprecated("will be removed in sight 22.0,"
-                 " use resize(const core::tools::Type& type, const SizeType& size, bool reallocate = false)")]]
-    DATA_API virtual size_t resize(
-        const SizeType& size,
-        size_t nbOfComponents,
-        bool reallocate = false
-    );
-    /// @}
-
-    /**
-     * @brief  Temporary method to resize an image's array.
-     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Array
-     */
-    DATA_API virtual size_t resizeTMP(const core::tools::Type& type, const SizeType& size, size_t nbOfComponents);
-
-    /**
-     * @brief  Temporary method to resize a mesh's array.
-     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Mesh
-     */
-    DATA_API virtual size_t resizeTMP(const SizeType& size, size_t nbOfComponents);
-
-    /**
-     * @brief Setter for array's number of components
-     * If the array has a buffer and owns it, the buffer will be reallocated
-     *
-     * @param nb number of components
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0
-     */
-    [[deprecated("will be removed in sight 22.0, increase array dimension instead.")]]
-    DATA_API virtual void setNumberOfComponents(size_t nb);
-
-    /**
-     * @brief Getter for number of components
-     *
-     * @return Array's number of components
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0
-     */
-    [[deprecated("will be removed in sight 22.0, increase array dimension instead.")]]
-    DATA_API virtual size_t getNumberOfComponents() const;
-
 protected:
 
     /**
@@ -644,22 +525,6 @@ protected:
     DATA_API void lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) const override;
 
     /**
-     * @brief Compute strides for given parameters
-     *
-     * @param size Array size
-     * @param nbOfComponents number of components
-     * @param sizeOfType size of a component
-     * @deprecated Component attribute is deprecated, increase array dimension instead of using component, it will be
-     * removed in sight 22.0. Use computeStrides( SizeType size, size_t sizeOfType )
-     */
-    [[deprecated("will be removed in sight 22.0, use computeStrides( SizeType size, size_t sizeOfType )")]]
-    DATA_API static OffsetType computeStrides(
-        SizeType size,
-        size_t nbOfComponents,
-        size_t sizeOfType
-    );
-
-    /**
      * @brief Retrieves a pointer to the value at the given index.
      *
      * @param id Item array index
@@ -684,12 +549,11 @@ protected:
 
 private:
 
-    OffsetType m_strides;
+    OffsetType m_strides {0};
     core::tools::Type m_type;
     core::memory::BufferObject::sptr m_bufferObject;
     SizeType m_size;
-    size_t m_nbOfComponents;
-    bool m_isBufferOwner;
+    bool m_isBufferOwner {true};
 };
 
 //-----------------------------------------------------------------------------
@@ -826,6 +690,16 @@ auto Array::range()
 {
     auto b = begin<T>();
     auto e = end<T>();
+    return boost::make_iterator_range(b, e);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Array::range() const
+{
+    auto b = cbegin<T>();
+    auto e = cend<T>();
     return boost::make_iterator_range(b, e);
 }
 

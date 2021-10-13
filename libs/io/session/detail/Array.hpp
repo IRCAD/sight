@@ -95,9 +95,6 @@ inline static data::Array::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Array>(tree, 0, 1);
 
-    // Type
-    array->setType(tree.get<std::string>(s_Type));
-
     // IsBufferOwner
     array->setIsBufferOwner(tree.get<bool>(s_IsBufferOwner, false));
 
@@ -110,7 +107,7 @@ inline static data::Array::sptr deserialize(
         sizes.push_back(size);
     }
 
-    array->resize(sizes, true);
+    array->resize(sizes, tree.get<std::string>(s_Type), true);
 
     // Buffer
     const auto& bufferObject = array->getBufferObject();

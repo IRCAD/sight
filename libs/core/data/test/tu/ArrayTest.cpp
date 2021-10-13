@@ -62,8 +62,7 @@ void ArrayTest::allocation()
 
     data::Array::SizeType size = {10, 100};
 
-    // deprecated: replace by array->resize(size, core::tools::Type::s_UINT32, true)
-    array->resize("uint32", size, 1, true);
+    array->resize(size, core::tools::Type::s_UINT32, true);
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
     CPPUNIT_ASSERT(!array->empty());
 
@@ -80,7 +79,6 @@ void ArrayTest::allocation()
 
     array->clear();
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getNumberOfComponents()); //deprecated
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(array->getBuffer() == nullptr);
     CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UNSPECIFIED_TYPE, array->getType());
@@ -200,25 +198,6 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({0, 6, 32}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({0, 7, 94}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({0, 8, 23}));
-
-    //test deprecated API with component
-    newSize = {10, 100};
-
-    array->resize(core::tools::Type::s_UINT16, newSize, 2, false);
-    CPPUNIT_ASSERT(newSize == array->getSize());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), array->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2 * 100 * 10 * 2), array->getSizeInBytes());
-    {
-        data::Array::OffsetType stride = {4, 40};
-        CPPUNIT_ASSERT(array->getStrides() == stride);
-    }
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(999), array->at<std::uint32_t>({9, 99}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({6, 32}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(947), array->at<std::uint32_t>({7, 94}));
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({8, 23}));
 }
 
 //-----------------------------------------------------------------------------
@@ -267,31 +246,6 @@ void ArrayTest::reallocate()
     std::uint32_t value2 = 25464;
     array->at<std::uint32_t>({99, 99}) = value2;
     CPPUNIT_ASSERT_EQUAL(value2, array->at<std::uint32_t>({99, 99}));
-
-    {
-        // deprecated API
-        array->resize(newSize, 2, true);
-        CPPUNIT_ASSERT(newSize == array->getSize());
-        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4 * 100 * 100 * 2), array->getSizeInBytes());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({5, 0}));
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(998), array->at<std::uint32_t>({99, 4}));
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(326), array->at<std::uint32_t>({63, 1}));
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(946), array->at<std::uint32_t>({73, 4}));
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(238), array->at<std::uint32_t>({19, 1}));
-
-        CPPUNIT_ASSERT_EQUAL(value, array->at<std::uint32_t>({25, 45}));
-
-        std::uint32_t value3 = 45643;
-        array->at<std::uint32_t>({35, 48}) = value3;
-        CPPUNIT_ASSERT_EQUAL(value3, array->at<std::uint32_t>({35, 48}));
-
-        std::uint32_t value4 = 16165;
-        array->at<std::uint32_t>({99, 99}) = value4;
-        CPPUNIT_ASSERT_EQUAL(value4, array->at<std::uint32_t>({99, 99}));
-
-        newSize.clear();
-    }
 
     newSize = {2, 100, 100};
     array->resize(newSize, core::tools::Type::s_UINT32, true);

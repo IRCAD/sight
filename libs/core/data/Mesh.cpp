@@ -77,10 +77,7 @@ Mesh::Mesh(data::Object::Key)
     newSignal<signal_t>(s_CELL_TEX_COORDS_MODIFIED_SIG);
 
     std::for_each(m_points.begin(), m_points.end(), [](auto& array){array = data::Array::New();});
-    m_points[static_cast<size_t>(PointAttribute::POSITION)]->setType(core::tools::Type::create<position_t>());
-
     std::for_each(m_cells.begin(), m_cells.end(), [](auto& array){array = data::Array::New();});
-    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->setType(core::tools::Type::create<cell_t>());
 }
 
 //------------------------------------------------------------------------------
@@ -147,15 +144,13 @@ void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 std::size_t Mesh::reserve(Mesh::size_t nbPts, Mesh::size_t nbCells, CellType cellType, Attributes arrayMask)
 {
     m_cellType = cellType;
-    const size_t nbCellsData = getCellSize() * nbCells;
 
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception("Cannot not allocate empty size"),
-        nbPts == 0
-        || nbCells == 0 || nbCellsData == 0
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Cannot not allocate empty size"), nbPts == 0 || nbCells == 0);
+
+    m_points[static_cast<size_t>(PointAttribute::POSITION)]->resize(
+        {3, nbPts},
+        core::tools::Type::create<position_t>()
     );
-
-    m_points[static_cast<size_t>(PointAttribute::POSITION)]->resizeTMP({nbPts}, 3);
 
     m_attributes = m_attributes | arrayMask;
 
@@ -164,34 +159,37 @@ std::size_t Mesh::reserve(Mesh::size_t nbPts, Mesh::size_t nbCells, CellType cel
     // Test attributes mask, if present resize corresponding array, if not check if array needs to be cleared.
     if(static_cast<int>(arrayMask & Attributes::POINT_COLORS))
     {
-        m_points[static_cast<size_t>(PointAttribute::COLORS)]->resizeTMP(core::tools::Type::s_UINT8, {nbPts}, 4);
+        m_points[static_cast<size_t>(PointAttribute::COLORS)]->resize({4, nbPts}, core::tools::Type::s_UINT8);
     }
 
     if(static_cast<int>(arrayMask & Attributes::POINT_NORMALS))
     {
-        m_points[static_cast<size_t>(PointAttribute::NORMALS)]->resizeTMP(core::tools::Type::s_FLOAT, {nbPts}, 3);
+        m_points[static_cast<size_t>(PointAttribute::NORMALS)]->resize({3, nbPts}, core::tools::Type::s_FLOAT);
     }
 
     if(static_cast<int>(arrayMask & Attributes::POINT_TEX_COORDS))
     {
-        m_points[static_cast<size_t>(PointAttribute::TEX_COORDS)]->resizeTMP(core::tools::Type::s_FLOAT, {nbPts}, 2);
+        m_points[static_cast<size_t>(PointAttribute::TEX_COORDS)]->resize({2, nbPts}, core::tools::Type::s_FLOAT);
     }
 
-    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->resize({nbCellsData});
+    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->resize(
+        {getCellSize(), nbCells},
+        core::tools::Type::create<cell_t>()
+    );
 
     if(static_cast<int>(arrayMask & Attributes::CELL_COLORS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::COLORS)]->resizeTMP(core::tools::Type::s_UINT8, {nbCells}, 4);
+        m_cells[static_cast<size_t>(CellAttribute::COLORS)]->resize({4, nbCells}, core::tools::Type::s_UINT8);
     }
 
     if(static_cast<int>(arrayMask & Attributes::CELL_NORMALS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::NORMALS)]->resizeTMP(core::tools::Type::s_FLOAT, {nbCells}, 3);
+        m_cells[static_cast<size_t>(CellAttribute::NORMALS)]->resize({3, nbCells}, core::tools::Type::s_FLOAT);
     }
 
     if(static_cast<int>(arrayMask & Attributes::CELL_TEX_COORDS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::TEX_COORDS)]->resizeTMP(core::tools::Type::s_FLOAT, {nbCells}, 2);
+        m_cells[static_cast<size_t>(CellAttribute::TEX_COORDS)]->resize({2, nbCells}, core::tools::Type::s_FLOAT);
     }
 
     return this->getAllocatedSizeInBytes();
@@ -214,37 +212,37 @@ bool Mesh::shrinkToFit()
 {
     const auto oldAllocatedSize = this->getAllocatedSizeInBytes();
 
-    m_points[static_cast<size_t>(PointAttribute::POSITION)]->resizeTMP({m_nbPoints}, 3);
-    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->resize({m_nbCells* getCellSize()});
+    m_points[static_cast<size_t>(PointAttribute::POSITION)]->resize({3, m_nbPoints});
+    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->resize({getCellSize(), m_nbCells});
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_COLORS))
     {
-        m_points[static_cast<size_t>(PointAttribute::COLORS)]->resize({size_t(m_nbPoints)});
+        m_points[static_cast<size_t>(PointAttribute::COLORS)]->resize({4, size_t(m_nbPoints)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_NORMALS))
     {
-        m_points[static_cast<size_t>(PointAttribute::NORMALS)]->resize({size_t(m_nbPoints)});
+        m_points[static_cast<size_t>(PointAttribute::NORMALS)]->resize({3, size_t(m_nbPoints)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::POINT_TEX_COORDS))
     {
-        m_points[static_cast<size_t>(PointAttribute::TEX_COORDS)]->resize({size_t(m_nbPoints)});
+        m_points[static_cast<size_t>(PointAttribute::TEX_COORDS)]->resize({2, size_t(m_nbPoints)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_COLORS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::COLORS)]->resize({size_t(m_nbCells)});
+        m_cells[static_cast<size_t>(CellAttribute::COLORS)]->resize({4, size_t(m_nbCells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_NORMALS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::NORMALS)]->resize({size_t(m_nbCells)});
+        m_cells[static_cast<size_t>(CellAttribute::NORMALS)]->resize({3, size_t(m_nbCells)});
     }
 
     if(static_cast<std::uint8_t>(m_attributes & Attributes::CELL_TEX_COORDS))
     {
-        m_cells[static_cast<size_t>(CellAttribute::TEX_COORDS)]->resize({size_t(m_nbCells)});
+        m_cells[static_cast<size_t>(CellAttribute::TEX_COORDS)]->resize({2, size_t(m_nbCells)});
     }
 
     const auto newAllocatedSize = this->getAllocatedSizeInBytes();
@@ -262,11 +260,11 @@ void Mesh::truncate(Mesh::size_t nbPts, Mesh::size_t nbCells)
 {
     SIGHT_THROW_IF(
         "Can not truncate with a number of points higher than the allocated size",
-        nbPts > m_points[0]->getSize().at(0)
+        nbPts > m_points[0]->getSize().at(1)
     );
     SIGHT_THROW_IF(
         "Can not truncate with a number of cells higher than the allocated size",
-        nbCells > m_cells[0]->getSize().at(0)
+        nbCells > m_cells[0]->getSize().at(1)
     );
     m_nbPoints = nbPts;
     m_nbCells  = nbCells;
@@ -283,9 +281,6 @@ void Mesh::clear()
     m_nbPoints = 0;
     m_nbCells  = 0;
 
-    m_points[static_cast<size_t>(PointAttribute::POSITION)]->setType(core::tools::Type::create<position_t>());
-    m_cells[static_cast<size_t>(CellAttribute::INDEX)]->setType(core::tools::Type::create<cell_t>());
-
     m_attributes = Attributes::NONE;
 }
 
@@ -300,18 +295,19 @@ std::size_t Mesh::getDataSizeInBytes() const
         m_points.end(),
         [&](auto& array)
         {
-            size += array->getElementSizeInBytes() * static_cast<std::size_t>(m_nbPoints);
+            const auto numComponents = array->empty() ? 1 : array->getSize()[0];
+            size                    += array->getElementSizeInBytes() * numComponents
+                                       * static_cast<std::size_t>(m_nbPoints);
         });
 
-    // We count indices separately
-    size += m_cells[static_cast<std::size_t>(CellAttribute::INDEX)]->getElementSizeInBytes()
-            * getCellSize() * static_cast<std::size_t>(m_nbCells);
     std::for_each(
-        m_cells.begin() + 1,
+        m_cells.begin(),
         m_cells.end(),
         [&](auto& array)
         {
-            size += array->getElementSizeInBytes() * static_cast<std::size_t>(m_nbCells);
+            const auto numComponents = array->empty() ? 1 : array->getSize()[0];
+            size                    += array->getElementSizeInBytes() * numComponents
+                                       * static_cast<std::size_t>(m_nbCells);
         });
 
     return size;
@@ -336,11 +332,11 @@ Mesh::point_t Mesh::pushPoint(const position_t p[3])
     const auto nbPoints = m_nbPoints;
 
     auto positions          = m_points[static_cast<size_t>(PointAttribute::POSITION)];
-    const auto allocatedPts = positions->empty() ? 0 : positions->getSize().at(0);
+    const auto allocatedPts = positions->empty() ? 0 : positions->getSize().at(1);
 
     if(allocatedPts <= nbPoints)
     {
-        positions->resizeTMP({allocatedPts + POINT_REALLOC_STEP}, 3);
+        positions->resize({3, allocatedPts + POINT_REALLOC_STEP}, core::tools::Type::create<position_t>(), true);
     }
 
     this->setPoint(nbPoints, p);
@@ -417,19 +413,18 @@ Mesh::cell_t Mesh::pushCell(const point_t* pointIds, size_t nbPoints)
     const auto nbCells = m_nbCells;
 
     auto& cells                  = m_cells[static_cast<size_t>(CellAttribute::INDEX)];
-    const auto allocatedCellData = cells->empty() ? 0 : cells->getSize().at(0);
+    const auto allocatedCellData = cells->empty() ? 0 : cells->getSize().at(1);
+    const auto cellSize          = getCellSize();
 
-    auto cellsDataSize = getCellSize() * m_nbCells;
-
-    if(allocatedCellData < cellsDataSize + nbPoints)
+    if(allocatedCellData <= m_nbCells)
     {
-        cells->resize({allocatedCellData + CELLDATA_REALLOC_STEP});
+        cells->resize({cellSize, allocatedCellData + CELLDATA_REALLOC_STEP}, core::tools::Type::create<cell_t>());
     }
 
     for(size_t i = 0 ; i < nbPoints ; ++i)
     {
         const point_t cellValue = pointIds[i];
-        cells->at<cell_t>(cellsDataSize + i) = cellValue;
+        cells->at<cell_t>(m_nbCells * cellSize + i) = cellValue;
     }
 
     ++m_nbCells;
