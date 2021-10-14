@@ -117,7 +117,7 @@ void Runtime::unregisterModule(std::shared_ptr<Module> module)
 
 void Runtime::addModules(const std::filesystem::path& repository)
 {
-    for(const auto repo : m_repositories)
+    for(const auto& repo : m_repositories)
     {
         if(repo.second == repository)
         {

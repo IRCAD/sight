@@ -166,7 +166,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
             }
         }
 
-        for(const BufferVectorType::value_type& pair : bufferInfos)
+        for(const auto& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {

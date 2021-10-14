@@ -84,7 +84,7 @@ IJob::SharedFuture Aggregator::runImpl()
             }
         });
 
-    return std::move(future);
+    return future;
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
         // doneWork call after setTotalWorkUnitsUpgradeLock, because
         // doneWork value can be thresholded by setTotalWorkUnitsUpgradeLock
         // call
-        jobInfo.lastValue = std::uint64_t(jobInfo.progress() * normValue);
+        jobInfo.lastValue = std::uint64_t(jobInfo.progress() * double(normValue));
         {
             core::mt::UpgradeToWriteLock writeLock(lock);
             m_jobs.push_back(iJob);
@@ -126,14 +126,14 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
         // TODO : add a way to disconnect on aggregator destruction
         iJob->addDoneWorkHook(
-            [ =, &jobInfo](IJob& subJob, std::uint64_t oldDoneWork)
+            [ =, &jobInfo](IJob& subJob, std::uint64_t)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
                 auto oldInfo = jobInfo;
                 jobInfo      = Aggregator::JobInfo(subJob);
 
-                jobInfo.lastValue = std::uint64_t(normValue * jobInfo.progress());
+                jobInfo.lastValue = std::uint64_t(jobInfo.progress() * double(normValue));
 
                 auto doneWork = m_doneWorkUnits + jobInfo.lastValue;
                 // minimize numerical uncertainty by substracting in a second time :

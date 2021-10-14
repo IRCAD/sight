@@ -68,7 +68,7 @@ Value MapProperty::getValue(const UserObject& object) const
 
 //-----------------------------------------------------------------------------
 
-void MapProperty::setValue(const UserObject& object, const Value& value) const
+void MapProperty::setValue(const UserObject&, const Value&) const
 {
     //FIXME XXX TODO DO something
 }

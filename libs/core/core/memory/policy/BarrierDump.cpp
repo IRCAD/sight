@@ -47,7 +47,7 @@ BarrierDump::BarrierDump() :
 
 void BarrierDump::allocationRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType size
 )
 {
@@ -67,7 +67,7 @@ void BarrierDump::allocationRequest(
 
 void BarrierDump::setRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType size
 )
 {
@@ -87,7 +87,7 @@ void BarrierDump::setRequest(
 
 void BarrierDump::reallocateRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType buffer,
+    core::memory::BufferManager::ConstBufferPtrType,
     BufferInfo::SizeType newSize
 )
 {
@@ -105,7 +105,7 @@ void BarrierDump::reallocateRequest(
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     if(!info.loaded)
     {
@@ -119,27 +119,27 @@ void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::lockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::lockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::unlockRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::unlockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer)
+void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
 {
     SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
@@ -189,7 +189,7 @@ size_t BarrierDump::dump(size_t nbOfBytes)
             }
         }
 
-        for(const BufferVectorType::value_type& pair : bufferInfos)
+        for(const auto& pair : bufferInfos)
         {
             if(dumped < nbOfBytes)
             {

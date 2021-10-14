@@ -40,7 +40,7 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Activater::Activater(const std::string& identifier, const std::string& version) :
+Activater::Activater(const std::string& identifier, const std::string&) :
     m_identifier(identifier)
 {
 }

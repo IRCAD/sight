@@ -339,7 +339,7 @@ struct AutoUnlock
         {
             m_manager->unlockBuffer(m_bufferPtr);
         }
-        catch(std::exception& e)
+        catch([[maybe_unused]] const std::exception& e)
         {
             SIGHT_ASSERT("Unlock Failed" << e.what(), 0);
         }
@@ -481,8 +481,8 @@ bool BufferManager::restoreBuffer(
         bool notFailed = false;
         {
             SPTR(std::istream) isptr = (*info.istreamFactory)();
-            std::istream& is = *isptr;
-            SizeType read    = is.read(charBuf, size).gcount();
+            std::istream& is    = *isptr;
+            const SizeType read = static_cast<SizeType>(is.read(charBuf, static_cast<std::streamsize>(size)).gcount());
 
             SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
             notFailed = !is.fail();
@@ -538,7 +538,7 @@ bool BufferManager::writeBufferImpl(
     std::ofstream fs(path, std::ios::binary | std::ios::trunc);
     SIGHT_THROW_IF("Memory management : Unable to open " << path, !fs.good());
     const char* charBuf = static_cast<const char*>(buffer);
-    fs.write(charBuf, size);
+    fs.write(charBuf, static_cast<std::streamsize>(size));
     fs.close();
     return !fs.bad();
 }
@@ -566,11 +566,11 @@ bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType si
 
     SIGHT_THROW_IF(
         path << ": Bad file size, expected: " << size << ", was: " << fileSize,
-        size - fileSize != 0
+        size - static_cast<SizeType>(fileSize) != 0
     );
 
     char* charBuf = static_cast<char*>(buffer);
-    fs.read(charBuf, size);
+    fs.read(charBuf, static_cast<std::streamsize>(size));
 
     fs.close();
     return !fs.bad();

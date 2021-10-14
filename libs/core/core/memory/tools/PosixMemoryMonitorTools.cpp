@@ -54,8 +54,8 @@ namespace sight::core::memory
 namespace tools
 {
 
-std::uint64_t PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
-std::uint64_t PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
+long PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
+long PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
 
 //-----------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ std::uint64_t PosixMemoryMonitorTools::estimateFreeMem()
 void PosixMemoryMonitorTools::printProcessMemoryInformation()
 {
     Status stat;
-    getStatusOfPid(getpid(), stat);
+    getStatusOfPid(static_cast<unsigned int>(getpid()), stat);
     printStatus(stat);
 }
 
@@ -142,7 +142,7 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 std::uint64_t PosixMemoryMonitorTools::getTotalSystemMemory()
 {
-    return s_totalMemory;
+    return static_cast<std::uint64_t>(s_totalMemory);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +160,7 @@ std::uint64_t PosixMemoryMonitorTools::getFreeSystemMemory()
     //getAllStatus( allStat );
     MemInfo memory;
     get_memory_stats(memory);
-    return sysconf(_SC_AVPHYS_PAGES) * s_pageSize + memory.cached;
+    return std::uint64_t(sysconf(_SC_AVPHYS_PAGES) * s_pageSize) + memory.cached;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,7 +168,7 @@ std::uint64_t PosixMemoryMonitorTools::getFreeSystemMemory()
 std::uint64_t PosixMemoryMonitorTools::getUsedProcessMemory()
 {
     Status stat;
-    getStatusOfPid(getpid(), stat);
+    getStatusOfPid(static_cast<unsigned int>(getpid()), stat);
     return stat.VmSize;
 }
 
@@ -313,7 +313,7 @@ void PosixMemoryMonitorTools::analyseMemInfo(std::string& line, MemInfo& meminfo
 
 void PosixMemoryMonitorTools::printStatus(Status& stat)
 {
-    int oToMo = 1024 * 1024;
+    std::uint64_t oToMo = 1024 * 1024;
     SIGHT_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo");
     SIGHT_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo");
     SIGHT_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo");
@@ -508,7 +508,6 @@ void PosixMemoryMonitorTools::printAllStatus()
 {
     std::filesystem::path path("/proc");
     std::regex e("[0-9]+");
-    int oToMo = 1024 * 1024;
 
     std::uint64_t totalVmPeak = 0;
     std::uint64_t totalVmSize = 0;
@@ -548,6 +547,7 @@ void PosixMemoryMonitorTools::printAllStatus()
         }
     }
 
+    std::uint64_t oToMo = 1024 * 1024;
     totalVmPeak /= oToMo;
     totalVmSize /= oToMo;
     totalVmLck  /= oToMo;

@@ -197,7 +197,8 @@ std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
     BOOL result;
     PROCESS_MEMORY_COUNTERS_EX pmc;
     if(result =
-           GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)))
+           GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc));
+       result)
     {
         memory = pmc.WorkingSetSize;
     }

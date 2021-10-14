@@ -109,8 +109,6 @@ inline core::crypto::secure_string ISession::pickle(
         default:
             return password;
     }
-
-    return password;
 }
 
 } // namespace detail

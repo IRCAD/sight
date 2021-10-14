@@ -124,7 +124,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 
 //------------------------------------------------------------------------------
 
-void setCurrentProfile(Profile::sptr prof)
+void setCurrentProfile(Profile::sptr)
 {
 }
 

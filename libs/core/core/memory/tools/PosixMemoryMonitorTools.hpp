@@ -117,8 +117,8 @@ public:
 
 private:
 
-    static std::uint64_t s_pageSize;
-    static std::uint64_t s_totalMemory;
+    static long s_pageSize;
+    static long s_totalMemory;
 
     /* Extract numbers from a string between the start and end indices */
     static std::uint64_t extract_number(char* str, int start, int end);
