@@ -1,7 +1,7 @@
 <plugin id="dicomxplorer">
 
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::base" />
 

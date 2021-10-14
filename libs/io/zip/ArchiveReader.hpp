@@ -27,7 +27,6 @@
 #include <core/crypto/secure_string.hpp>
 
 #include <istream>
-#include <mutex>
 
 namespace sight::io::zip
 {
@@ -43,30 +42,38 @@ public:
     SIGHT_DECLARE_CLASS(ArchiveReader, Archive);
 
     /// Delete copy constructors and assignment operators, as we don't want to allow resources duplication
+    ArchiveReader()                                = delete;
     ArchiveReader(const ArchiveReader&)            = delete;
     ArchiveReader(ArchiveReader&&)                 = delete;
     ArchiveReader& operator=(const ArchiveReader&) = delete;
     ArchiveReader& operator=(ArchiveReader&&)      = delete;
 
-    /// Shared factory. It uses a cache mechanism to return the same instance for the same archivePath.
-    /// @param archivePath path of the archive file. The file will be kept opened as long as the instance leave.
-    IO_ZIP_API static ArchiveReader::sptr shared(const std::filesystem::path& archivePath);
+    /// Destructor
+    IO_ZIP_API ~ArchiveReader() override = default;
+
+    /// Shared factory. It uses a cache mechanism to return the same instance for the same _prchivePath.
+    /// @param archive_path path of the archive file. The file will be kept opened as long as the instance leave.
+    /// @param format the format of the archive. @see sight::io::zip::Archive::ArchiveFormat
+    IO_ZIP_API static ArchiveReader::uptr get(
+        const std::filesystem::path& archive_path,
+        const ArchiveFormat format = ArchiveFormat::DEFAULT
+    );
 
     /// Returns an std::istream to read an archived file
-    /// @param filePath path of an archived file.
+    /// @param file_path path of an archived file.
     /// @param password the password needed to decrypt the file.
     IO_ZIP_API virtual std::unique_ptr<std::istream> openFile(
-        const std::filesystem::path& filePath,
+        const std::filesystem::path& file_path,
         const core::crypto::secure_string& password = ""
     )                                               = 0;
+
+    /// Returns true for raw archive
+    IO_ZIP_API virtual bool isRaw() const = 0;
 
 protected:
 
     /// Constructor
-    IO_ZIP_API ArchiveReader() = default;
-
-    /// Destructor
-    IO_ZIP_API ~ArchiveReader() override = default;
+    IO_ZIP_API ArchiveReader(const std::filesystem::path& archive_path);
 };
 
 } // namespace sight::io::zip

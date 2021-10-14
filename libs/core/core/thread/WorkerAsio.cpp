@@ -27,6 +27,8 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
 
+#include <thread>
+
 namespace sight::core::thread
 {
 

@@ -36,7 +36,7 @@
 #include <io/opencv/Matrix.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -472,22 +472,16 @@ void SOpenCVExtrinsic::updating()
 
 void SOpenCVExtrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
+        ui::base::Preferences preferences;
+        m_width      = preferences.get(m_widthKey, m_width);
+        m_height     = preferences.get(m_heightKey, m_height);
+        m_squareSize = preferences.get(m_squareSizeKey, m_squareSize);
     }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
-    {
-        m_squareSize = std::stof(squareSizeStr);
+        // Nothing to do..
     }
 }
 

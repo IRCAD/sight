@@ -35,7 +35,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/preferences.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -140,7 +140,7 @@ void SFrameGrabber::startCamera()
         // For compatibility with old calibration with absolute path
         if(!file.is_absolute())
         {
-            const std::filesystem::path videoDir(ui::base::preferences::getVideoDir());
+            const std::filesystem::path videoDir(ui::base::Preferences().get("VIDEO_DIR_PREF", std::string()));
             file = videoDir / file;
         }
 

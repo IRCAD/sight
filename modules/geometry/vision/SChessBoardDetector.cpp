@@ -31,7 +31,7 @@
 
 #include <io/opencv/Image.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -183,28 +183,22 @@ void SChessBoardDetector::recordPoints()
 
 void SChessBoardDetector::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
-    }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string scaleStr = ui::base::preferences::getPreference(m_scaleKey);
-    if(!scaleStr.empty())
-    {
-        m_scale = std::stof(scaleStr);
+        ui::base::Preferences preferences;
+        m_width  = preferences.get(m_widthKey, m_width);
+        m_height = preferences.get(m_heightKey, m_height);
+        m_scale  = preferences.get(m_scaleKey, m_scale);
 
         if(m_scale > 1.f)
         {
             m_scale = 1.f;
             SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 }
 

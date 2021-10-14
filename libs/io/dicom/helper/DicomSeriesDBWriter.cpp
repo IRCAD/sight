@@ -35,7 +35,6 @@
 #include <data/SeriesDB.hpp>
 
 #include <io/zip/WriteDirArchive.hpp>
-#include <io/zip/WriteZipArchive.hpp>
 
 namespace sight::io::dicom
 {
@@ -46,8 +45,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key) :
-    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series")),
-    m_enableZippedArchive(false)
+    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series"))
 {
 }
 
@@ -87,13 +85,6 @@ void DicomSeriesDBWriter::setProducer(std::string producer)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesDBWriter::enableZippedArchive(bool enable)
-{
-    m_enableZippedArchive = enable;
-}
-
-//------------------------------------------------------------------------------
-
 std::string getSubPath(int index)
 {
     std::stringstream ss;
@@ -108,18 +99,7 @@ void DicomSeriesDBWriter::write()
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SIGHT_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
 
-    io::zip::IWriteArchive::sptr writeArchive;
-
-    if(m_enableZippedArchive)
-    {
-        io::zip::WriteZipArchive::sptr writeZipArchive = io::zip::WriteZipArchive::New(this->getFile(), m_producer);
-
-        writeArchive = writeZipArchive;
-    }
-    else
-    {
-        writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
-    }
+    io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
 
     const auto nbSeries = seriesDB->getContainer().size();
     int processedSeries = 0;

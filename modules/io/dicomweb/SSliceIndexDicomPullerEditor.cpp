@@ -44,7 +44,7 @@
 #include <service/base.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QApplication>
@@ -368,16 +368,24 @@ void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomS
         throw core::tools::Failed("'server' element not found");
     }
 
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    ui::base::Preferences preferences;
+
+    try
     {
-        m_serverHostname = hostname;
+        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    try
     {
-        m_serverPort = std::stoi(port);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
     // Catch any errors

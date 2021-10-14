@@ -55,6 +55,7 @@ namespace sight::module::io::session
         <in key="data" uid="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="once"/>
         <password policy="once", encryption=salted/>
+        <archive format="optimized"/>
     </service>
    @endcode
  *
@@ -70,7 +71,7 @@ namespace sight::module::io::session
  *          - \b "never": never show the open dialog
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog
- *          - \b "default": default behavior, which is "always"
+ *          - \b "default": default behavior, which is "never"
  *
  * - \b password(optional):
  *      \b policy: defines if we should protect the session file using a password and when to ask for it. It could be:
@@ -87,6 +88,13 @@ namespace sight::module::io::session
  *          - \b "force": force encryption, even without password. Use a pseudo-random hidden password, if
  *                        no password are provided
  *          - \b "default": uses the builtin default behavior which is "password".
+ *
+ * - \b archive(optional):
+ *      \b format: defines the archive format.
+ *          - \b "filesystem": Use the filesystem to store files.
+ *          - \b "compatible": Store files in a ZIP archive, with old deflate algorithm
+ *          - \b "optimized": Store files in a ZIP archive, with zstd algorithm
+ *          - \b "default": uses the builtin default behavior which is "optimized"
  *
  * @see sight::io::base::service::IWriter
  * @see sight::io::session::SessionWriter

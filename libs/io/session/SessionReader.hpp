@@ -22,8 +22,8 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/PasswordKeeper.hpp"
 
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/SingleFile.hpp>
 
@@ -91,7 +91,11 @@ public:
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-    IO_SESSION_API void setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy);
+    IO_SESSION_API void setEncryptionPolicy(const core::crypto::PasswordKeeper::EncryptionPolicy policy);
+
+    /// Set archive format
+    /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::Archive::ArchiveFormat
+    IO_SESSION_API void setArchiveFormat(const zip::Archive::ArchiveFormat archiveFormat);
 
     /// Set a deserialization function for an object
     /// @param className the name of the object to serialize

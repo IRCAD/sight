@@ -2,7 +2,7 @@ sight_add_target( Tuto15Matrix TYPE APP )
 
 
 
-add_dependencies(Tuto15Matrix 
+add_dependencies(Tuto15Matrix
                  sightrun
                  module_appXml
                  module_ui_base
@@ -14,7 +14,6 @@ add_dependencies(Tuto15Matrix
                  module_ui_base
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
                  module_geometry_base
 )
 

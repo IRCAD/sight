@@ -38,7 +38,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <filesystem>
 
@@ -143,16 +143,15 @@ void SSeriesPuller::stopping()
 
 void SSeriesPuller::updating()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    try
     {
-        m_serverHostname = hostname;
+        ui::base::Preferences preferences;
+        m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
-
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    catch(...)
     {
-        m_serverPort = std::stoi(port);
+        // Do nothing
     }
 
     if(m_isPulling)

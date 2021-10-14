@@ -2,7 +2,7 @@ sight_add_target( Tuto08MesherWithGenericScene TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(Tuto08MesherWithGenericScene 
+add_dependencies(Tuto08MesherWithGenericScene
                  sightrun
                  module_appXml
                  module_ui_base
@@ -15,7 +15,6 @@ add_dependencies(Tuto08MesherWithGenericScene
                  module_ui_flaticons
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
                  module_data
                  module_filter_mesh
 )

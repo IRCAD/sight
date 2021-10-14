@@ -43,6 +43,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <thread>
 
 namespace sight::module::io::realsense
 {

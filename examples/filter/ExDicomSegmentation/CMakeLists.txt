@@ -1,8 +1,8 @@
-sight_add_target( ExDicomSegmentation TYPE APP UNIQUE ON )
+sight_add_target(ExDicomSegmentation TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(ExDicomSegmentation 
+add_dependencies(ExDicomSegmentation
                  sightrun
                  module_appXml
                  module_ui_base
@@ -18,7 +18,6 @@ add_dependencies(ExDicomSegmentation
                  module_io_matrix
                  module_io_dicom
                  module_io_vtk
-                 module_io_atoms
                  activity_viz_negato
                  module_filter_image
                  module_data

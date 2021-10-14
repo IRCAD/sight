@@ -24,6 +24,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <limits>
+
 namespace sight::data
 {
 

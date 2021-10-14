@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/tags.hpp"
 
-#include <io/zip/WriteZipArchive.hpp>
+#include <core/macros.hpp>
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 

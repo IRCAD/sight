@@ -84,7 +84,7 @@ namespace series
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
         </config>
     </extension>
     @endcode

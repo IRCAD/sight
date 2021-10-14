@@ -92,10 +92,16 @@ void SeriesDB::clear()
 
 void SeriesDB::merge(data::SeriesDB::sptr seriesDBIn)
 {
-    data::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
-    for(data::Series::sptr series : vectIn)
+    auto& container = m_seriesDB.getContainer();
+
+    for(data::Series::sptr series : seriesDBIn->getContainer())
     {
-        this->add(series);
+        // Only add the new series if not already here
+        if(std::find(container.cbegin(), container.cend(), series) == container.cend())
+        {
+            container.push_back(series);
+            m_addedSeries.push_back(series);
+        }
     }
 }
 

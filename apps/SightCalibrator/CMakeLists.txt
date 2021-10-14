@@ -11,11 +11,11 @@ add_dependencies(SightCalibrator
                  module_ui_base
                  module_ui_flaticons
                  module_ui_icons
-                 module_io_atoms
                  module_io_vision
                  module_io_video
                  module_io_activity
                  module_io_igtl
+                 module_io_session
                  module_activity
                  activity_navigation_calibration
                  module_data

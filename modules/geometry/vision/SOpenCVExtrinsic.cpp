@@ -42,7 +42,7 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -213,11 +213,11 @@ void SOpenCVExtrinsic::updating()
         data::Image::sptr img = calInfo1->getImageContainer().front();
         ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
         {
-            data::Camera::sptr cam1 = camSeries->getCamera(0);
-            data::Camera::sptr cam2 = camSeries->getCamera(m_camIndex);
+            data::Camera::csptr cam1 = camSeries->getCamera(0);
+            data::Camera::csptr cam2 = camSeries->getCamera(m_camIndex);
 
-            data::mt::ObjectReadLock cam1Lock(cam1);
-            data::mt::ObjectReadLock cam2Lock(cam2);
+            data::mt::locked_ptr cam1Lock(cam1);
+            data::mt::locked_ptr cam2Lock(cam2);
 
             cameraMatrix1.at<double>(0, 0) = cam1->getFx();
             cameraMatrix1.at<double>(1, 1) = cam1->getFy();
@@ -284,22 +284,16 @@ void SOpenCVExtrinsic::updating()
 
 void SOpenCVExtrinsic::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoi(widthStr);
+        ui::base::Preferences preferences;
+        m_width      = preferences.get(m_widthKey, m_width);
+        m_height     = preferences.get(m_heightKey, m_height);
+        m_squareSize = preferences.get(m_squareSizeKey, m_squareSize);
     }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_height = std::stoi(heightStr);
-    }
-
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
-    {
-        m_squareSize = std::stof(squareSizeStr);
+        // Nothing to do..
     }
 }
 

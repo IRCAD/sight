@@ -38,7 +38,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 namespace sight::module::io::dicomweb
 {
@@ -97,16 +97,24 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    ui::base::Preferences preferences;
+
+    try
     {
-        m_serverHostname = hostname;
+        m_serverPort = preferences.delimited_get(m_serverPortKey, m_serverPort);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    try
     {
-        m_serverPort = std::stoi(port);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
+    }
+    catch(...)
+    {
+        // Do nothing
     }
 
     const auto selectedSeries = m_selectedSeries.lock();

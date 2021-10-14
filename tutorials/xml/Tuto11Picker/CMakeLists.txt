@@ -2,7 +2,7 @@ sight_add_target( Tuto11Picker TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(Tuto11Picker 
+add_dependencies(Tuto11Picker
                  sightrun
                  module_appXml
                  module_ui_base
@@ -15,7 +15,6 @@ add_dependencies(Tuto11Picker
                  module_ui_flaticons
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
                  module_data
 )
 

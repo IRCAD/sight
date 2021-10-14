@@ -27,6 +27,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <functional>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MTLockTest);

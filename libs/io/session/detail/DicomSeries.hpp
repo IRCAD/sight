@@ -106,9 +106,7 @@ inline static void serialize(
         // Create the output file inside the archive
         const auto& ostream = archive.openFile(
             std::filesystem::path(dicomSeries->getUUID() + "/" + std::to_string(key) + ".dcm"),
-            password,
-            zip::Method::ZSTD,
-            zip::Level::DEFAULT
+            password
         );
 
         // Write the data

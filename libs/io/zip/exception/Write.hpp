@@ -35,10 +35,13 @@ namespace exception
 /// Write exception.
 struct Write : core::Exception
 {
-    inline Write(const std::string& err) :
-        core::Exception(err)
+    inline Write(const std::string& err, const std::int32_t error_code = -1) :
+        core::Exception(err),
+        m_error_code(error_code)
     {
     }
+
+    std::int32_t m_error_code {-1};
 };
 
 } // namespace exception

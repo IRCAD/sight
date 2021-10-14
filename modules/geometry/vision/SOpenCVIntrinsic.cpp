@@ -27,7 +27,7 @@
 
 #include <io/opencv/Matrix.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -198,22 +198,28 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoi(widthStr);
-    }
+        ui::base::Preferences preferences;
 
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoi(heightStr);
-    }
+        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
+        {
+            m_width = *saved;
+        }
 
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
+        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_heightKey); saved)
+        {
+            m_height = *saved;
+        }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_squareSize)>(m_squareSizeKey); saved)
+        {
+            m_squareSize = *saved;
+        }
+    }
+    catch(const ui::base::PreferencesDisabled&)
     {
-        m_squareSize = std::stof(squareSizeStr);
+        // Nothing to do..
     }
 }
 

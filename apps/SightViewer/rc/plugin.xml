@@ -7,18 +7,18 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene2d" />
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::io::dimse" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::service::extension::Config" >
-        <id>SightViewer_jsonReader_SrvCfg</id>
-        <desc>JSON</desc>
+    <extension implements="sight::service::extension::Config">
+        <id>SightViewer_SightData_SrvCfg</id>
+        <desc>Sight data</desc>
         <config>
-            <patcher />
-            <windowTitle>Open JSON file</windowTitle>
+            <dialog extension=".sight" description="Sight data" policy="default"/>
+            <password policy="default" encryption="default"/>
         </config>
     </extension>
 
@@ -291,7 +291,7 @@
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
-                <config id="SightViewer_jsonReader_SrvCfg" service="sight::module::io::atoms::SReader" />
+                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
                 <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
                 <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
             </service>

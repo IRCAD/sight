@@ -44,13 +44,6 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::preferences::IPreferences</type>
-         <service>sight::module::ui::base::SPreferences</service>
-         <object>sight::data::Composite</object>
-         <desc>Service to load and save preferences.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
          <type>sight::ui::base::IAction</type>
          <service>sight::module::ui::base::SPushField</service>
          <desc>To add or remove an object in composite with specific key.</desc>

@@ -23,7 +23,7 @@
 
 #include "detail/SessionDeserializer.hpp"
 
-#include "PasswordKeeper.hpp"
+#include <core/crypto/PasswordKeeper.hpp>
 
 #include <io/base/reader/registry/macros.hpp>
 
@@ -31,6 +31,10 @@ SIGHT_REGISTER_IO_READER(sight::io::session::SessionReader);
 
 namespace sight::io::session
 {
+
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
 
 class SessionReader::SessionReaderImpl
 {
@@ -47,7 +51,8 @@ public:
     inline SessionReaderImpl(SessionReader* const sessionReader) :
         m_sessionReader(sessionReader),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
+        m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
 
@@ -60,6 +65,7 @@ public:
         // Deserialize the root object
         m_object = m_sessionDeserializer.deserialize(
             m_sessionReader->getFile(),
+            m_archiveFormat,
             m_password->getPassword(),
             m_encryptionPolicy
         );
@@ -79,6 +85,9 @@ public:
 
     /// The encryption policy
     PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
+
+    /// Archive format to use
+    Archive::ArchiveFormat m_archiveFormat;
 };
 
 SessionReader::SessionReader(base::reader::IObjectReader::Key) :
@@ -108,7 +117,7 @@ std::string SessionReader::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setPassword(const core::crypto::secure_string& password)
+void SessionReader::setPassword(const secure_string& password)
 {
     m_pimpl->m_password->setPassword(password);
 }
@@ -118,6 +127,13 @@ void SessionReader::setPassword(const core::crypto::secure_string& password)
 void SessionReader::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionReader::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
+{
+    m_pimpl->m_archiveFormat = archiveFormat;
 }
 
 //------------------------------------------------------------------------------

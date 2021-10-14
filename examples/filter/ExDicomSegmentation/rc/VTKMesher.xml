@@ -191,7 +191,7 @@
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
-            <addSelection service="sight::module::io::atoms::SWriter" />
+            <addSelection service="sight::module::io::session::SWriter" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

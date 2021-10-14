@@ -39,27 +39,78 @@ public:
     SIGHT_DECLARE_CLASS(Archive);
 
     /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
+    Archive()                          = delete;
     Archive(const Archive&)            = delete;
     Archive(Archive&&)                 = delete;
     Archive& operator=(const Archive&) = delete;
     Archive& operator=(Archive&&)      = delete;
 
+    /// Destructor
+    IO_ZIP_API virtual ~Archive();
+
+    /// Enum to define
+    enum class ArchiveFormat : uint8_t
+    {
+        FILESYSTEM = 0,         /// Use the filesystem to store files.
+        COMPATIBLE = 2,         /// Store files in a ZIP archive, with old deflate algorithm
+        OPTIMIZED  = 3,         /// Store files in a ZIP archive, with zstd algorithm
+        DEFAULT    = OPTIMIZED, /// Default behavior if nothing is set
+        INVALID    = 255        /// Used for error management
+    };
+
+    /// Convenience function to convert from ArchiveFormat enum value to string
+    constexpr static std::string_view archiveFormatToString(ArchiveFormat archiveFormat) noexcept
+    {
+        switch(archiveFormat)
+        {
+            case ArchiveFormat::FILESYSTEM:
+                return "filesystem";
+
+            case ArchiveFormat::COMPATIBLE:
+                return "compatible";
+
+            case ArchiveFormat::OPTIMIZED:
+                return "optimized";
+
+            default:
+                return "default";
+        }
+    }
+
+    /// Convenience function to convert from string to ArchiveFormat enum value
+    constexpr static ArchiveFormat stringToArchiveFormat(std::string_view archiveFormat) noexcept
+    {
+        if(archiveFormat == archiveFormatToString(ArchiveFormat::FILESYSTEM))
+        {
+            return ArchiveFormat::FILESYSTEM;
+        }
+        else if(archiveFormat == archiveFormatToString(ArchiveFormat::COMPATIBLE))
+        {
+            return ArchiveFormat::COMPATIBLE;
+        }
+        else if(archiveFormat == archiveFormatToString(ArchiveFormat::OPTIMIZED))
+        {
+            return ArchiveFormat::OPTIMIZED;
+        }
+        else if(archiveFormat.empty() || archiveFormat == "default")
+        {
+            return ArchiveFormat::DEFAULT;
+        }
+        else
+        {
+            // Error case
+            return ArchiveFormat::INVALID;
+        }
+    }
+
 protected:
 
     /// Constructor
-    IO_ZIP_API Archive() = default;
+    IO_ZIP_API Archive(const std::filesystem::path& archive_path);
 
-    /// Destructor
-    IO_ZIP_API virtual ~Archive() = default;
+private:
 
-    /// Locks an archive
-    static void lock(const std::filesystem::path& archivePath);
-
-    /// Unlocks an archive
-    static void unlock(const std::filesystem::path& archivePath);
-
-    /// Returns true if the archive is locked
-    static bool is_locked(const std::filesystem::path& archivePath);
+    const std::filesystem::path m_archive_path;
 };
 
 } // namespace sight::io::session

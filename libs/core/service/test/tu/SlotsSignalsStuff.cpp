@@ -29,6 +29,8 @@
 
 #include <service/macros.hpp>
 
+#include <thread>
+
 namespace sight::service
 {
 

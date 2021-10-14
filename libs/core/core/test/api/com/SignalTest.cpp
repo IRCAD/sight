@@ -34,6 +34,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <string>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SignalTest);

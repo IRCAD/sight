@@ -1,7 +1,7 @@
-sight_add_target( ExDump TYPE APP )
+sight_add_target(ExDump TYPE APP)
 
 
-add_dependencies(ExDump 
+add_dependencies(ExDump
                  sightrun
                  module_appXml
                  module_ui_base
@@ -10,11 +10,11 @@ add_dependencies(ExDump
                  module_service
                  module_ui_base
                  module_ui_flaticons
-                 module_io_atoms
                  module_io_itk
                  module_io_vtk
                  module_io_dicom
                  module_io_matrix
+                 module_io_session
                  module_memory
                  activity_viz_negato
                  module_io_activity

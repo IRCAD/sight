@@ -190,15 +190,17 @@ inline void _compare(const typename T::csptr& actual, const std::size_t variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void _test(const bool encrypt)
+inline void _test(const bool encrypt, const bool raw)
 {
     static constexpr auto password = "password";
 
+    const auto& test_id = T::leafClassname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
+
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder();
+    const auto tmpfolder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
+    std::filesystem::remove_all(tmpfolder);
     std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / (T::leafClassname() + (encrypt ? "_C" : "") + ".zip");
-    std::filesystem::remove(testPath);
+    const auto testPath = tmpfolder / (test_id + (raw ? ".json" : ".zip"));
 
     static constexpr auto fieldName = "field";
 
@@ -218,7 +220,11 @@ inline void _test(const bool encrypt)
         sessionWriter->setObject(object);
         sessionWriter->setFile(testPath);
 
-        if(encrypt)
+        if(raw)
+        {
+            sessionWriter->setArchiveFormat(io::zip::Archive::ArchiveFormat::FILESYSTEM);
+        }
+        else if(encrypt)
         {
             sessionWriter->setPassword(password);
         }
@@ -237,7 +243,11 @@ inline void _test(const bool encrypt)
         // Configure the session reader
         sessionReader->setFile(testPath);
 
-        if(encrypt)
+        if(raw)
+        {
+            sessionReader->setArchiveFormat(io::zip::Archive::ArchiveFormat::FILESYSTEM);
+        }
+        else if(encrypt)
         {
             sessionReader->setPassword(password);
         }
@@ -253,6 +263,18 @@ inline void _test(const bool encrypt)
         auto fieldObject = std::dynamic_pointer_cast<T>(object->getField(fieldName));
         _compare<T>(fieldObject, 1);
     }
+
+    std::filesystem::remove_all(tmpfolder);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline void _test_combine()
+{
+    _test<T>(false, false);
+    _test<T>(false, true);
+    _test<T>(true, false);
 }
 
 //------------------------------------------------------------------------------
@@ -267,16 +289,14 @@ inline data::Boolean::sptr _generate<data::Boolean>(const std::size_t variant)
 
 void SessionTest::booleanTest()
 {
-    _test<data::Boolean>(true);
-    _test<data::Boolean>(false);
+    _test_combine<data::Boolean>();
 }
 
 //------------------------------------------------------------------------------
 
 void SessionTest::integerTest()
 {
-    _test<data::Integer>(true);
-    _test<data::Integer>(false);
+    _test_combine<data::Integer>();
 }
 
 //------------------------------------------------------------------------------
@@ -292,8 +312,7 @@ inline void _compare<data::Float>(const data::Float::csptr& actual, const std::s
 
 void SessionTest::floatTest()
 {
-    _test<data::Float>(true);
-    _test<data::Float>(false);
+    _test_combine<data::Float>();
 }
 
 //------------------------------------------------------------------------------
@@ -308,8 +327,7 @@ inline data::String::sptr _generate<data::String>(const std::size_t)
 
 void SessionTest::stringTest()
 {
-    _test<data::String>(true);
-    _test<data::String>(false);
+    _test_combine<data::String>();
 }
 
 //------------------------------------------------------------------------------
@@ -352,8 +370,7 @@ inline void _compare<data::Composite>(const data::Composite::csptr& actual, cons
 
 void SessionTest::compositeTest()
 {
-    _test<data::Composite>(true);
-    _test<data::Composite>(false);
+    _test_combine<data::Composite>();
 }
 
 //------------------------------------------------------------------------------
@@ -438,8 +455,7 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
 
 void SessionTest::meshTest()
 {
-    _test<data::Mesh>(true);
-    _test<data::Mesh>(false);
+    _test_combine<data::Mesh>();
 }
 
 //------------------------------------------------------------------------------
@@ -470,8 +486,7 @@ inline void _compare<data::Equipment>(const data::Equipment::csptr& actual, cons
 
 void SessionTest::equipmentTest()
 {
-    _test<data::Equipment>(true);
-    _test<data::Equipment>(false);
+    _test_combine<data::Equipment>();
 }
 
 //------------------------------------------------------------------------------
@@ -508,8 +523,7 @@ inline void _compare<data::Patient>(const data::Patient::csptr& actual, const st
 
 void SessionTest::patientTest()
 {
-    _test<data::Patient>(true);
-    _test<data::Patient>(false);
+    _test_combine<data::Patient>();
 }
 
 //------------------------------------------------------------------------------
@@ -560,8 +574,7 @@ inline void _compare<data::Study>(const data::Study::csptr& actual, const std::s
 
 void SessionTest::studyTest()
 {
-    _test<data::Study>(true);
-    _test<data::Study>(false);
+    _test_combine<data::Study>();
 }
 
 //------------------------------------------------------------------------------
@@ -667,8 +680,7 @@ inline void _compare<data::Series>(const data::Series::csptr& actual, const std:
 
 void SessionTest::seriesTest()
 {
-    _test<data::Series>(true);
-    _test<data::Series>(false);
+    _test_combine<data::Series>();
 }
 
 //------------------------------------------------------------------------------
@@ -709,8 +721,7 @@ inline void _compare<data::ActivitySeries>(const data::ActivitySeries::csptr& ac
 
 void SessionTest::activitySeriesTest()
 {
-    _test<data::ActivitySeries>(true);
-    _test<data::ActivitySeries>(false);
+    _test_combine<data::ActivitySeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -876,8 +887,7 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
 
 void SessionTest::arrayTest()
 {
-    _test<data::Array>(true);
-    _test<data::Array>(false);
+    _test_combine<data::Array>();
 }
 
 //------------------------------------------------------------------------------
@@ -1093,8 +1103,7 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
 
 void SessionTest::imageTest()
 {
-    _test<data::Image>(true);
-    _test<data::Image>(false);
+    _test_combine<data::Image>();
 }
 
 //------------------------------------------------------------------------------
@@ -1134,8 +1143,7 @@ inline void _compare<data::Vector>(const data::Vector::csptr& actual, const std:
 
 void SessionTest::vectorTest()
 {
-    _test<data::Vector>(true);
-    _test<data::Vector>(false);
+    _test_combine<data::Vector>();
 }
 
 //------------------------------------------------------------------------------
@@ -1179,8 +1187,7 @@ inline void _compare<data::Point>(const data::Point::csptr& actual, const std::s
 
 void SessionTest::pointTest()
 {
-    _test<data::Point>(true);
-    _test<data::Point>(false);
+    _test_combine<data::Point>();
 }
 
 //------------------------------------------------------------------------------
@@ -1223,8 +1230,7 @@ inline void _compare<data::PointList>(const data::PointList::csptr& actual, cons
 
 void SessionTest::pointListTest()
 {
-    _test<data::PointList>(true);
-    _test<data::PointList>(false);
+    _test_combine<data::PointList>();
 }
 
 //------------------------------------------------------------------------------
@@ -1269,8 +1275,7 @@ inline void _compare<data::CalibrationInfo>(const data::CalibrationInfo::csptr& 
 
 void SessionTest::calibrationInfoTest()
 {
-    _test<data::CalibrationInfo>(true);
-    _test<data::CalibrationInfo>(false);
+    _test_combine<data::CalibrationInfo>();
 }
 
 //------------------------------------------------------------------------------
@@ -1429,8 +1434,7 @@ inline void _compare<data::Camera>(const data::Camera::csptr& actual, const std:
 
 void SessionTest::cameraTest()
 {
-    _test<data::Camera>(true);
-    _test<data::Camera>(false);
+    _test_combine<data::Camera>();
 }
 
 //------------------------------------------------------------------------------
@@ -1470,8 +1474,7 @@ inline void _compare<data::CameraSeries>(const data::CameraSeries::csptr& actual
 
 void SessionTest::cameraSeriesTest()
 {
-    _test<data::CameraSeries>(true);
-    _test<data::CameraSeries>(false);
+    _test_combine<data::CameraSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -1506,8 +1509,7 @@ inline void _compare<data::Color>(const data::Color::csptr& actual, const std::s
 
 void SessionTest::colorTest()
 {
-    _test<data::Color>(true);
-    _test<data::Color>(false);
+    _test_combine<data::Color>();
 }
 
 //------------------------------------------------------------------------------
@@ -1542,8 +1544,7 @@ inline void _compare<data::Edge>(const data::Edge::csptr& actual, const std::siz
 
 void SessionTest::edgeTest()
 {
-    _test<data::Edge>(true);
-    _test<data::Edge>(false);
+    _test_combine<data::Edge>();
 }
 
 //------------------------------------------------------------------------------
@@ -1577,8 +1578,7 @@ inline void _compare<data::Port>(const data::Port::csptr& actual, const std::siz
 
 void SessionTest::portTest()
 {
-    _test<data::Port>(true);
-    _test<data::Port>(false);
+    _test_combine<data::Port>();
 }
 
 //------------------------------------------------------------------------------
@@ -1630,8 +1630,7 @@ inline void _compare<data::Node>(const data::Node::csptr& actual, const std::siz
 
 void SessionTest::nodeTest()
 {
-    _test<data::Node>(true);
-    _test<data::Node>(false);
+    _test_combine<data::Node>();
 }
 
 //------------------------------------------------------------------------------
@@ -1674,8 +1673,7 @@ inline void _compare<data::Graph>(const data::Graph::csptr& actual, const std::s
 
 void SessionTest::graphTest()
 {
-    _test<data::Graph>(true);
-    _test<data::Graph>(false);
+    _test_combine<data::Graph>();
 }
 
 //------------------------------------------------------------------------------
@@ -1727,8 +1725,7 @@ inline void _compare<data::Histogram>(const data::Histogram::csptr& actual, cons
 
 void SessionTest::histogramTest()
 {
-    _test<data::Histogram>(true);
-    _test<data::Histogram>(false);
+    _test_combine<data::Histogram>();
 }
 
 //------------------------------------------------------------------------------
@@ -1819,8 +1816,7 @@ inline void _compare<data::Landmarks>(const data::Landmarks::csptr& actual, cons
 
 void SessionTest::landmarksTest()
 {
-    _test<data::Landmarks>(true);
-    _test<data::Landmarks>(false);
+    _test_combine<data::Landmarks>();
 }
 
 //------------------------------------------------------------------------------
@@ -1851,8 +1847,7 @@ inline void _compare<data::Line>(const data::Line::csptr& actual, const std::siz
 
 void SessionTest::lineTest()
 {
-    _test<data::Line>(true);
-    _test<data::Line>(false);
+    _test_combine<data::Line>();
 }
 
 //------------------------------------------------------------------------------
@@ -1892,8 +1887,7 @@ inline void _compare<data::List>(const data::List::csptr& actual, const std::siz
 
 void SessionTest::listTest()
 {
-    _test<data::List>(true);
-    _test<data::List>(false);
+    _test_combine<data::List>();
 }
 
 //------------------------------------------------------------------------------
@@ -1980,8 +1974,7 @@ inline void _compare<data::Material>(const data::Material::csptr& actual, const 
 
 void SessionTest::materialTest()
 {
-    _test<data::Material>(true);
-    _test<data::Material>(false);
+    _test_combine<data::Material>();
 }
 
 //------------------------------------------------------------------------------
@@ -2025,8 +2018,7 @@ inline void _compare<data::Matrix4>(const data::Matrix4::csptr& actual, const st
 
 void SessionTest::matrix4Test()
 {
-    _test<data::Matrix4>(true);
-    _test<data::Matrix4>(false);
+    _test_combine<data::Matrix4>();
 }
 
 //------------------------------------------------------------------------------
@@ -2063,8 +2055,7 @@ inline void _compare<data::Plane>(const data::Plane::csptr& actual, const std::s
 
 void SessionTest::planeTest()
 {
-    _test<data::Plane>(true);
-    _test<data::Plane>(false);
+    _test_combine<data::Plane>();
 }
 
 //------------------------------------------------------------------------------
@@ -2102,8 +2093,7 @@ inline void _compare<data::PlaneList>(const data::PlaneList::csptr& actual, cons
 
 void SessionTest::planeListTest()
 {
-    _test<data::PlaneList>(true);
-    _test<data::PlaneList>(false);
+    _test_combine<data::PlaneList>();
 }
 
 //------------------------------------------------------------------------------
@@ -2140,8 +2130,7 @@ inline void _compare<data::ProcessObject>(const data::ProcessObject::csptr& actu
 
 void SessionTest::processObjectTest()
 {
-    _test<data::ProcessObject>(true);
-    _test<data::ProcessObject>(false);
+    _test_combine<data::ProcessObject>();
 }
 
 //------------------------------------------------------------------------------
@@ -2201,8 +2190,7 @@ inline void _compare<data::Reconstruction>(const data::Reconstruction::csptr& ac
 
 void SessionTest::reconstructionTest()
 {
-    _test<data::Reconstruction>(true);
-    _test<data::Reconstruction>(false);
+    _test_combine<data::Reconstruction>();
 }
 
 //------------------------------------------------------------------------------
@@ -2294,8 +2282,7 @@ inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& 
 
 void SessionTest::structureTraitsTest()
 {
-    _test<data::StructureTraits>(true);
-    _test<data::StructureTraits>(false);
+    _test_combine<data::StructureTraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2384,8 +2371,7 @@ inline void _compare<data::StructureTraitsDictionary>(
 
 void SessionTest::structureTraitsDictionaryTest()
 {
-    _test<data::StructureTraitsDictionary>(true);
-    _test<data::StructureTraitsDictionary>(false);
+    _test_combine<data::StructureTraitsDictionary>();
 }
 
 //------------------------------------------------------------------------------
@@ -2438,8 +2424,7 @@ inline void _compare<data::ReconstructionTraits>(
 
 void SessionTest::reconstructionTraitsTest()
 {
-    _test<data::ReconstructionTraits>(true);
-    _test<data::ReconstructionTraits>(false);
+    _test_combine<data::ReconstructionTraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2494,8 +2479,7 @@ inline void _compare<data::Resection>(const data::Resection::csptr& actual, cons
 
 void SessionTest::resectionTest()
 {
-    _test<data::Resection>(true);
-    _test<data::Resection>(false);
+    _test_combine<data::Resection>();
 }
 
 //------------------------------------------------------------------------------
@@ -2535,8 +2519,7 @@ inline void _compare<data::ResectionDB>(const data::ResectionDB::csptr& actual, 
 
 void SessionTest::resectionDBTest()
 {
-    _test<data::ResectionDB>(true);
-    _test<data::ResectionDB>(false);
+    _test_combine<data::ResectionDB>();
 }
 
 //------------------------------------------------------------------------------
@@ -2578,8 +2561,7 @@ inline void _compare<data::ROITraits>(const data::ROITraits::csptr& actual, cons
 
 void SessionTest::roiTraitsTest()
 {
-    _test<data::ROITraits>(true);
-    _test<data::ROITraits>(false);
+    _test_combine<data::ROITraits>();
 }
 
 //------------------------------------------------------------------------------
@@ -2616,8 +2598,7 @@ inline void _compare<data::SeriesDB>(const data::SeriesDB::csptr& actual, const 
 
 void SessionTest::seriesDBTest()
 {
-    _test<data::SeriesDB>(true);
-    _test<data::SeriesDB>(false);
+    _test_combine<data::SeriesDB>();
 }
 
 //------------------------------------------------------------------------------
@@ -2654,8 +2635,7 @@ inline void _compare<data::Tag>(const data::Tag::csptr& actual, const std::size_
 
 void SessionTest::tagTest()
 {
-    _test<data::Tag>(true);
-    _test<data::Tag>(false);
+    _test_combine<data::Tag>();
 }
 
 //------------------------------------------------------------------------------
@@ -2738,8 +2718,7 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
 
 void SessionTest::transferFunctionTest()
 {
-    _test<data::TransferFunction>(true);
-    _test<data::TransferFunction>(false);
+    _test_combine<data::TransferFunction>();
 }
 
 //------------------------------------------------------------------------------
@@ -2824,8 +2803,7 @@ void SessionTest::dicomSeriesTest()
         return;
     }
 
-    _test<data::DicomSeries>(true);
-    _test<data::DicomSeries>(false);
+    _test_combine<data::DicomSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -2899,8 +2877,7 @@ void SessionTest::imageSeriesTest()
         return;
     }
 
-    _test<data::ImageSeries>(true);
-    _test<data::ImageSeries>(false);
+    _test_combine<data::ImageSeries>();
 }
 
 //------------------------------------------------------------------------------
@@ -2955,8 +2932,7 @@ void SessionTest::modelSeriesTest()
         return;
     }
 
-    _test<data::ModelSeries>(true);
-    _test<data::ModelSeries>(false);
+    _test_combine<data::ModelSeries>();
 }
 
 //------------------------------------------------------------------------------

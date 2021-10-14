@@ -35,16 +35,19 @@ namespace exception
 /// Read exception.
 struct Read : core::Exception
 {
-    inline Read(const std::string& err) :
-        core::Exception(err)
+    inline Read(const std::string& err, const std::int32_t error_code = -1) :
+        core::Exception(err),
+        m_error_code(error_code)
     {
     }
+
+    std::int32_t m_error_code {-1};
 };
 
 struct BadPassword : Read
 {
-    inline BadPassword(const std::string& err) :
-        Read(err)
+    inline BadPassword(const std::string& err, const std::int32_t error_code = -1) :
+        Read(err, error_code)
     {
     }
 };

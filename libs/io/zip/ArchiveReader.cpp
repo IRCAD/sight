@@ -23,332 +23,337 @@
 
 #include "exception/Read.hpp"
 
-#include "minizip/unzip.h"
+#include "minizip/mz.h"
+#include "minizip/mz_os.h"
+#include "minizip/mz_strm.h"
+#include "minizip/mz_strm_os.h"
+#include "minizip/mz_zip.h"
+#include "minizip/mz_zip_rw.h"
 
 #include <core/exceptionmacros.hpp>
 
 #include <boost/iostreams/stream.hpp>
 
-#include <mutex>
-#include <set>
+#include <fstream>
+#include <iostream>
 
 namespace sight::io::zip
 {
 
-/// Implementation class
-class ArchiveReaderImpl final : public ArchiveReader
+namespace
+{
+
+class RawArchiveReader final : public ArchiveReader
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ArchiveReaderImpl, ArchiveReader);
+    SIGHT_DECLARE_CLASS(RawArchiveReader, ArchiveReader);
 
     /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
-    ArchiveReaderImpl()                                    = delete;
-    ArchiveReaderImpl(const ArchiveReaderImpl&)            = delete;
-    ArchiveReaderImpl(ArchiveReaderImpl&&)                 = delete;
-    ArchiveReaderImpl& operator=(const ArchiveReaderImpl&) = delete;
-    ArchiveReaderImpl& operator=(ArchiveReaderImpl&&)      = delete;
+    RawArchiveReader()                                   = delete;
+    RawArchiveReader(const RawArchiveReader&)            = delete;
+    RawArchiveReader(RawArchiveReader&&)                 = delete;
+    RawArchiveReader& operator=(const RawArchiveReader&) = delete;
+    RawArchiveReader& operator=(RawArchiveReader&&)      = delete;
 
     /// Constructor. It open the archive and create all resources needed to access it.
     /// @param archivePath path of the archive file. The file will be kept opened as long as the instance lives.
-    ArchiveReaderImpl(const std::filesystem::path& archivePath) :
-        m_archivePath(archivePath)
+    RawArchiveReader(const std::filesystem::path& root) :
+        ArchiveReader(root),
+        m_root(root)
     {
-        const std::string& archivePathString = archivePath.string();
-
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::Read("Archive '" + archivePathString + "' doesn't exist."),
-            !std::filesystem::exists(archivePath)
-        );
-
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::Read("Archive '" + archivePathString + "' is already opened."),
-            is_locked(archivePath)
-        );
-
-        // Lock the archive to disallow opening it again
-        lock(archivePath);
-
-        m_unzFile = unzOpen(archivePathString.c_str());
-
-        if(m_unzFile == nullptr)
-        {
-            unlock(archivePath);
-            SIGHT_THROW_EXCEPTION(exception::Read("Archive '" + archivePathString + "' cannot be opened."));
-        }
     }
 
-    /// Destructor
-    ~ArchiveReaderImpl() override
-    {
-        if(m_unzFile != nullptr)
-        {
-            const int result = unzClose(m_unzFile);
+    ~RawArchiveReader() override = default;
 
-            SIGHT_THROW_EXCEPTION_IF(
-                exception::Read("Archive '" + m_archivePath.string() + "' cannot be closed."),
-                result != UNZ_OK
-            );
+    //------------------------------------------------------------------------------
 
-            m_unzFile = nullptr;
-        }
-
-        // Unlock the archive
-        unlock(m_archivePath);
-    }
-
-    /// Returns a std::istream to read an archived file
-    /// @param filePath path of an archived file.
-    /// @param password the password needed to decrypt the file.
     std::unique_ptr<std::istream> openFile(
         const std::filesystem::path& filePath,
-        const core::crypto::secure_string& password = ""
+        [[maybe_unused]] const core::crypto::secure_string& password = ""
     ) override
     {
-        // Boost iostreams Source. It allows easy istream implementation
-        class ZipSource
-        {
-        public:
-
-            typedef char char_type;
-            typedef boost::iostreams::source_tag category;
-
-            /// Delete default constructor
-            ZipSource() = delete;
-
-            // Boost iostreams Source do not like constructor with more than one parameter
-            // So, we use a sub struct to hold parameters and class attributes.
-            struct Parameters
-            {
-                ArchiveReaderImpl* const m_archive;
-                const std::filesystem::path m_filePath;
-                const core::crypto::secure_string m_password;
-
-                Parameters(
-                    ArchiveReaderImpl* const archive,
-                    const std::filesystem::path& filePath,
-                    const core::crypto::secure_string& password
-                ) :
-                    m_archive(archive),
-                    m_filePath(filePath),
-                    m_password(password)
-                {
-                }
-            };
-
-            ZipSource(const Parameters& parameters) :
-                m_attributes(parameters),
-                m_handleKeeper(std::make_shared<const HandleKeeper>(m_attributes))
-            {
-            }
-
-            //------------------------------------------------------------------------------
-
-            std::streamsize read(char* buffer, std::streamsize size)
-            {
-                const int read = unzReadCurrentFile(
-                    m_attributes.m_archive->m_unzFile,
-                    buffer,
-                    static_cast<std::uint32_t>(size)
-                );
-
-                SIGHT_THROW_EXCEPTION_IF(
-                    exception::Read(
-                        "Cannot read file '"
-                        + m_attributes.m_filePath.string()
-                        + "' in archive '"
-                        + m_attributes.m_archive->m_archivePath.string()
-                        + "'."
-                    ),
-                    read < 0
-                );
-
-                return read;
-            }
-
-        private:
-
-            // Used to destroy the handle to the zip file, so it is only deleted once
-            // BEWARE Boost makes copy of ZipSource !
-            struct HandleKeeper
-            {
-                HandleKeeper(const Parameters& parameters) :
-                    m_attributes(parameters)
-                {
-                    SIGHT_THROW_EXCEPTION_IF(
-                        exception::Read(
-                            "File '"
-                            + m_attributes.m_filePath.string()
-                            + "' in archive '"
-                            + m_attributes.m_archive->m_archivePath.string()
-                            + "' is already opened."
-                        ),
-                        m_attributes.m_archive->is_locked(m_attributes.m_filePath)
-                    );
-
-                    // Lock the file to disallow opening it again
-                    m_attributes.m_archive->lock(m_attributes.m_filePath);
-
-                    // Locate the file
-                    int result = unzLocateFile(
-                        m_attributes.m_archive->m_unzFile,
-                        m_attributes.m_filePath.string().c_str(),
-                        nullptr
-                    );
-
-                    if(result != MZ_OK)
-                    {
-                        // In case of error, unlock the file
-                        m_attributes.m_archive->unlock(m_attributes.m_filePath);
-                    }
-
-                    SIGHT_THROW_EXCEPTION_IF(
-                        exception::Read(
-                            "File '"
-                            + m_attributes.m_filePath.string()
-                            + "' doesn't exist in archive '"
-                            + m_attributes.m_archive->m_archivePath.string()
-                            + "'"
-                        ),
-                        result != UNZ_OK
-                    );
-
-                    // Open the file
-                    if(m_attributes.m_password.empty())
-                    {
-                        result = unzOpenCurrentFile(m_attributes.m_archive->m_unzFile);
-                    }
-                    else
-                    {
-                        result = unzOpenCurrentFilePassword(
-                            m_attributes.m_archive->m_unzFile,
-                            m_attributes.m_password.c_str()
-                        );
-                    }
-
-                    if(result != MZ_OK)
-                    {
-                        // In case of error, unlock the file
-                        m_attributes.m_archive->unlock(m_attributes.m_filePath);
-
-                        SIGHT_THROW_EXCEPTION_IF(
-                            exception::BadPassword(
-                                "The password used to open file '"
-                                + m_attributes.m_filePath.string()
-                                + "' in archive '"
-                                + m_attributes.m_archive->m_archivePath.string()
-                                + "' is wrong."
-                            ),
-                            result == MZ_PASSWORD_ERROR
-                        );
-
-                        SIGHT_THROW_EXCEPTION(
-                            exception::Read(
-                                "Cannot open file '"
-                                + m_attributes.m_filePath.string()
-                                + "' in archive '"
-                                + m_attributes.m_archive->m_archivePath.string()
-                                + "'.\n\n Error code: "
-                                + std::to_string(result)
-                            )
-                        );
-                    }
-                }
-
-                ~HandleKeeper()
-                {
-                    // Do not forget to clean file handle in zip
-                    const int result = unzCloseCurrentFile(m_attributes.m_archive->m_unzFile);
-
-                    SIGHT_THROW_EXCEPTION_IF(
-                        exception::Read(
-                            "Cannot close file '"
-                            + m_attributes.m_filePath.string()
-                            + "' in archive '"
-                            + m_attributes.m_archive->m_archivePath.string()
-                            + "'."
-                        ),
-                        result != MZ_OK
-                    );
-
-                    m_attributes.m_archive->unlock(m_attributes.m_filePath);
-                }
-
-                // Store constructor parameters
-                const Parameters m_attributes;
-            };
-
-            // Store constructor parameters
-            const Parameters m_attributes;
-
-            // Used to destroy the zip handle
-            const std::shared_ptr<const HandleKeeper> m_handleKeeper;
-        };
-
-        const ZipSource::Parameters parameters(
-            this,
-            filePath,
-            password
-        );
-
         // Creating a ZipSource also lock the archive mutex.
         // Due to its design, minizip only allows one archive with the same path with one file operation.
-        return std::make_unique<boost::iostreams::stream<ZipSource> >(parameters);
+        return std::make_unique<std::ifstream>(m_root / filePath.relative_path(), std::ios::in | std::ios::binary);
+    }
+
+    //------------------------------------------------------------------------------
+
+    bool isRaw() const override
+    {
+        return true;
     }
 
 private:
 
-    /// Locks a file
-    void lock(const std::filesystem::path& filePath)
-    {
-        // Normalize path
-        const std::filesystem::path normalizedPath = filePath.lexically_normal();
+    /// Path of the root directory
+    const std::filesystem::path m_root;
+};
 
-        std::lock_guard lock(m_fileMutex);
-        m_files.insert(normalizedPath);
+class ZipHandle final
+{
+public:
+
+    /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
+    ZipHandle()                            = delete;
+    ZipHandle(const ZipHandle&)            = delete;
+    ZipHandle(ZipHandle&&)                 = delete;
+    ZipHandle& operator=(const ZipHandle&) = delete;
+    ZipHandle& operator=(ZipHandle&&)      = delete;
+
+    inline ZipHandle(const std::filesystem::path& archive_path) :
+        m_archive_path(archive_path.string())
+    {
+        // Create zip writer instance
+        mz_zip_reader_create(&m_zip_reader);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot create zip writer instance",
+                MZ_MEM_ERROR
+            ),
+            m_zip_reader == nullptr
+        );
+
+        const auto result = mz_zip_reader_open_file(m_zip_reader, m_archive_path.c_str());
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot open archive '" + m_archive_path + "'. Error code: " + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
     }
 
-    /// Unlocks a file
-    void unlock(const std::filesystem::path& filePath)
+    inline ~ZipHandle()
     {
-        // Normalize path
-        const std::filesystem::path normalizedPath = filePath.lexically_normal();
+        // Close zip handle
+        const auto result = mz_zip_reader_close(m_zip_reader);
 
-        std::lock_guard lock(m_fileMutex);
-        m_files.erase(normalizedPath);
+        // Cleanup
+        mz_zip_reader_delete(&m_zip_reader);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot close writer for archive '"
+                + m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
     }
 
-    /// Returns true if a file is locked
-    bool is_locked(const std::filesystem::path& filePath)
-    {
-        // Normalize path
-        const std::filesystem::path normalizedPath = filePath.lexically_normal();
+    // Path to the archive converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
+    const std::string m_archive_path;
 
-        std::lock_guard lock(m_fileMutex);
-        return m_files.find(normalizedPath) != m_files.end();
+    // Zip writer handle
+    void* m_zip_reader {nullptr};
+};
+
+class ZipFileHandle final
+{
+public:
+
+    /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
+    ZipFileHandle()                                = delete;
+    ZipFileHandle(const ZipFileHandle&)            = delete;
+    ZipFileHandle(ZipFileHandle&&)                 = delete;
+    ZipFileHandle& operator=(const ZipFileHandle&) = delete;
+    ZipFileHandle& operator=(ZipFileHandle&&)      = delete;
+
+    inline ZipFileHandle(
+        std::shared_ptr<ZipHandle> zip_handle,
+        const std::filesystem::path& file_path,
+        const core::crypto::secure_string& password = ""
+    ) :
+        m_file_path(file_path.string()),
+        m_zip_handle(zip_handle)
+    {
+        // Set encryption
+        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, password.empty() ? nullptr : password.c_str());
+
+        auto result = mz_zip_reader_locate_entry(m_zip_handle->m_zip_reader, m_file_path.c_str(), 0);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot locate file '"
+                + m_file_path
+                + "' in archive '"
+                + m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
+
+        result = mz_zip_reader_entry_open(m_zip_handle->m_zip_reader);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot create file '"
+                + m_file_path
+                + "' in archive '"
+                + m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
     }
 
-    /// Internal class
+    inline ~ZipFileHandle()
+    {
+        const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
+
+        // Restore defaults
+        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, nullptr);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot close file '"
+                + m_file_path
+                + "' in archive '"
+                + m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
+    }
+
+private:
+
     friend class ZipSource;
 
-    /// Path of the archive file
-    std::filesystem::path m_archivePath;
+    // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
+    const std::string m_file_path;
 
-    /// Archive context handle
-    void* m_unzFile {nullptr};
-
-    /// Set of opened file
-    std::set<std::filesystem::path> m_files;
-
-    /// Protect opened file set
-    std::mutex m_fileMutex;
+    // Zip handles pack which contains the zip writer
+    const std::shared_ptr<ZipHandle> m_zip_handle;
 };
+
+class ZipSource final
+{
+public:
+
+    // Needed by Boost
+    using char_type = char;
+    using category  = boost::iostreams::source_tag;
+
+    // BEWARE: Boost make shallow copies of the ZipSource...
+    ZipSource(const std::shared_ptr<ZipFileHandle> zip_file_handle) :
+        m_zip_file_handle(zip_file_handle)
+    {
+    }
+
+    // Boost use this to read things
+    std::streamsize read(char* buffer, std::streamsize size)
+    {
+        const auto read = mz_zip_reader_entry_read(
+            m_zip_file_handle->m_zip_handle->m_zip_reader,
+            buffer,
+            std::int32_t(size)
+        );
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::Read(
+                "Cannot read in file '"
+                + m_zip_file_handle->m_file_path
+                + "' in archive '"
+                + m_zip_file_handle->m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(read),
+                read
+            ),
+            read < 0
+        );
+
+        return read;
+    }
+
+private:
+
+    const std::shared_ptr<ZipFileHandle> m_zip_file_handle;
+};
+
+class ZipArchiveReader final : public ArchiveReader
+{
+public:
+
+    SIGHT_DECLARE_CLASS(ZipArchiveReader, ArchiveReader);
+
+    /// Delete default constructors and assignment operators, as we don't want to allow resources duplication
+    ZipArchiveReader()                                   = delete;
+    ZipArchiveReader(const ZipArchiveReader&)            = delete;
+    ZipArchiveReader(ZipArchiveReader&&)                 = delete;
+    ZipArchiveReader& operator=(const ZipArchiveReader&) = delete;
+    ZipArchiveReader& operator=(ZipArchiveReader&&)      = delete;
+
+    inline ZipArchiveReader(const std::filesystem::path& archive_path) :
+        ArchiveReader(archive_path),
+        m_zip_handle(std::make_shared<ZipHandle>(archive_path))
+    {
+    }
+
+    ~ZipArchiveReader() override = default;
+
+    //------------------------------------------------------------------------------
+
+    inline std::unique_ptr<std::istream> openFile(
+        const std::filesystem::path& file_path,
+        const core::crypto::secure_string& password = ""
+    ) override
+    {
+        const auto zip_file_handle = std::make_shared<ZipFileHandle>(
+            m_zip_handle,
+            file_path,
+            password
+        );
+
+        return std::make_unique<boost::iostreams::stream<ZipSource> >(zip_file_handle);
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline bool isRaw() const override
+    {
+        return false;
+    }
+
+private:
+
+    std::shared_ptr<ZipHandle> m_zip_handle;
+};
+
+} // anonymous namespace
+
+ArchiveReader::ArchiveReader(const std::filesystem::path& archive_path) :
+    Archive(archive_path)
+{
+}
 
 //------------------------------------------------------------------------------
 
-ArchiveReader::sptr ArchiveReader::shared(const std::filesystem::path& archivePath)
+ArchiveReader::uptr ArchiveReader::get(
+    const std::filesystem::path& archivePath,
+    const ArchiveFormat format
+)
 {
-    return std::make_shared<ArchiveReaderImpl>(archivePath);
+    if(format == ArchiveFormat::FILESYSTEM)
+    {
+        return std::make_unique<RawArchiveReader>(archivePath);
+    }
+    else
+    {
+        return std::make_unique<ZipArchiveReader>(archivePath);
+    }
 }
 
 } // namespace sight::io::zip

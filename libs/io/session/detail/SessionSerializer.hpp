@@ -23,8 +23,11 @@
 
 #include "io/session/config.hpp"
 #include "io/session/detail/ISession.hpp"
-#include "io/session/PasswordKeeper.hpp"
 #include "io/session/SessionWriter.hpp"
+
+#include <core/crypto/PasswordKeeper.hpp>
+
+#include <io/zip/Archive.hpp>
 
 #include <filesystem>
 
@@ -56,13 +59,15 @@ public:
     /// Serializes a data::Object to archive
     /// @param archivePath archive file path
     /// @param object root object to serialize
+    /// @param archiveFormat how files are stored in the archive @see sight::io::zip::Archive::ArchiveFormat
     /// @param password password to use for optional encryption. Empty password means no encryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     void serialize(
         const std::filesystem::path& archivePath,
         sight::data::Object::csptr object,
-        const core::crypto::secure_string& password             = "",
-        const PasswordKeeper::EncryptionPolicy encryptionPolicy = PasswordKeeper::EncryptionPolicy::DEFAULT
+        const io::zip::Archive::ArchiveFormat archiveFormat                   = io::zip::Archive::ArchiveFormat::DEFAULT,
+        const core::crypto::secure_string& password                           = "",
+        const core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
     ) const;
 
     /// Set a serialization function for an object
@@ -97,7 +102,7 @@ private:
         boost::property_tree::ptree& tree,
         data::Object::csptr object,
         const core::crypto::secure_string& password,
-        const PasswordKeeper::EncryptionPolicy encryptionPolicy
+        const core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy
     ) const;
 };
 

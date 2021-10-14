@@ -22,7 +22,6 @@ add_dependencies(Tuto17SimpleAR
                  module_ui_flaticons
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
                  module_io_video
                  module_io_vision
                  module_data

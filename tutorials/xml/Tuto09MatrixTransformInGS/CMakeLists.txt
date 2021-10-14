@@ -2,7 +2,7 @@ sight_add_target( Tuto09MatrixTransformInGS TYPE APP )
 
 
 
-add_dependencies(Tuto09MatrixTransformInGS 
+add_dependencies(Tuto09MatrixTransformInGS
                  sightrun
                  module_appXml
                  module_ui_base
@@ -13,7 +13,6 @@ add_dependencies(Tuto09MatrixTransformInGS
                  module_service
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
                  module_geometry_base
 )
 

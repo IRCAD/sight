@@ -31,6 +31,7 @@
 #include <atomic>
 #include <exception>
 #include <iostream>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::thread::ut::WorkerTest);

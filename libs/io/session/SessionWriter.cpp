@@ -23,7 +23,7 @@
 
 #include "detail/SessionSerializer.hpp"
 
-#include "PasswordKeeper.hpp"
+#include <core/crypto/PasswordKeeper.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
 
@@ -32,6 +32,9 @@ SIGHT_REGISTER_IO_WRITER(sight::io::session::SessionWriter);
 namespace sight::io::session
 {
 
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
 class SessionWriter::SessionWriterImpl
 {
 public:
@@ -47,7 +50,8 @@ public:
     inline SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_sessionWriter(sessionWriter),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT)
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
+        m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
 
@@ -65,6 +69,7 @@ public:
         m_sessionSerializer.serialize(
             m_sessionWriter->getFile(),
             root_object,
+            m_archiveFormat,
             m_password->getPassword(),
             m_encryptionPolicy
         );
@@ -81,6 +86,9 @@ public:
 
     /// The encryption policy
     PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
+
+    /// Archive format to use
+    Archive::ArchiveFormat m_archiveFormat;
 };
 
 SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
@@ -107,7 +115,7 @@ std::string SessionWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setPassword(const core::crypto::secure_string& password)
+void SessionWriter::setPassword(const secure_string& password)
 {
     m_pimpl->m_password->setPassword(password);
 }
@@ -117,6 +125,13 @@ void SessionWriter::setPassword(const core::crypto::secure_string& password)
 void SessionWriter::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void SessionWriter::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
+{
+    m_pimpl->m_archiveFormat = archiveFormat;
 }
 
 //------------------------------------------------------------------------------

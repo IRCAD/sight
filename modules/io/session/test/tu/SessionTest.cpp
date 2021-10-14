@@ -22,6 +22,17 @@
 #include "SessionTest.hpp"
 
 #include <core/thread/ActiveWorkers.hpp>
+#include <core/tools/System.hpp>
+
+#include <data/String.hpp>
+
+#include <io/base/service/ioTypes.hpp>
+#include <io/base/service/IReader.hpp>
+#include <io/base/service/IWriter.hpp>
+
+#include <service/IService.hpp>
+#include <service/IService.hxx>
+#include <service/op/Add.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::session::ut::SessionTest);
@@ -51,8 +62,118 @@ void SessionTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SessionTest::BasicTest()
+// Returns a basic configuration for SReader and SWriter
+inline static service::IService::ConfigType getConfiguration(const bool read = true, const bool raw = false)
 {
+    service::IService::ConfigType config;
+
+    config.put("dialog.<xmlattr>.extension", ".perlimpinpin");
+    config.put("dialog.<xmlattr>.description", "Perlimpinpin powder container");
+    config.put("dialog.<xmlattr>.policy", "never");
+
+    config.put("password.<xmlattr>.policy", "never");
+    config.put("password.<xmlattr>.encryption", "password");
+
+    if(raw)
+    {
+        config.put("archive.<xmlattr>.format", "filesystem");
+    }
+    else if(read)
+    {
+        config.put("archive.<xmlattr>.format", "archive");
+    }
+    else
+    {
+        config.put("archive.<xmlattr>.format", "optimized");
+    }
+
+    return config;
+}
+
+//------------------------------------------------------------------------------
+
+inline static void _basicTest(const bool raw = false)
+{
+    // Create a temporary directory
+    const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
+    std::filesystem::remove_all(tmpfolder);
+    std::filesystem::create_directories(tmpfolder);
+    const auto testPath = tmpfolder / "powder.perlimpinpin";
+
+    const std::string expected("Abracadabra");
+    {
+        // Create a writer service
+        auto writer = sight::io::base::service::IWriter::dynamicCast(
+            service::add("sight::module::io::session::SWriter")
+        );
+        CPPUNIT_ASSERT(writer);
+
+        // Set data input
+        auto inString = data::String::New(expected);
+        writer->setInput(inString, sight::io::base::service::s_DATA_KEY);
+
+        // Set file output
+        writer->setFile(testPath);
+
+        // Configure the writer service
+        writer->setConfiguration(getConfiguration(false, raw));
+        writer->configure();
+
+        // Execute the writer service
+        writer->start().wait();
+        writer->update().wait();
+        writer->stop().wait();
+
+        // Cleanup
+        service::OSR::unregisterService(writer);
+    }
+
+    // The file should have been created
+    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+
+    {
+        // Create a reader service
+        auto reader = sight::io::base::service::IReader::dynamicCast(
+            service::add("sight::module::io::session::SReader")
+        );
+        CPPUNIT_ASSERT(reader);
+
+        // Set data output
+        auto outString = data::String::New();
+        reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
+
+        // Set file input
+        reader->setFile(testPath);
+
+        // Configure the reader service
+        reader->setConfiguration(getConfiguration(true, raw));
+        reader->configure();
+
+        // Execute the writer service
+        reader->start().wait();
+        reader->update().wait();
+        reader->stop().wait();
+
+        // Cleanup
+        service::OSR::unregisterService(reader);
+
+        // Final test
+        CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::basicArchiveTest()
+{
+    _basicTest(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::basicRawTest()
+{
+    _basicTest(true);
 }
 
 //------------------------------------------------------------------------------

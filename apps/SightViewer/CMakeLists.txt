@@ -1,7 +1,7 @@
 sight_add_target( SightViewer TYPE APP )
 
 
-add_dependencies(SightViewer 
+add_dependencies(SightViewer
                  sightrun
                  module_appXml
                  module_ui_base
@@ -16,8 +16,8 @@ add_dependencies(SightViewer
                  module_ui_viz
                  module_ui_flaticons
                  module_io_vtk
-                 module_io_atoms
                  module_io_dicom
+                 module_io_session
                  module_viz_scene2d
                  module_data
                  module_filter_image

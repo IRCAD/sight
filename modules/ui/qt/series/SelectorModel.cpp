@@ -512,7 +512,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
 void SelectorModel::removeSeries(data::Series::sptr _series)
 {
     QStandardItem* seriesItem = this->findSeriesItem(_series);
-    this->removeSeriesItem(seriesItem);
+
+    if(seriesItem)
+    {
+        this->removeSeriesItem(seriesItem);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -606,15 +610,18 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
     data::Study::sptr study   = _series->getStudy();
     QStandardItem* studyItem  = this->findStudyItem(study);
 
-    int nbRow = studyItem->rowCount();
-    for(int row = 0 ; row < nbRow ; ++row)
+    if(studyItem)
     {
-        QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
-        std::string seriesId = child->data(Role::UID).toString().toStdString();
-        if(seriesId == _series->getID())
+        int nbRow = studyItem->rowCount();
+        for(int row = 0 ; row < nbRow ; ++row)
         {
-            seriesItem = child;
-            break;
+            QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
+            std::string seriesId = child->data(Role::UID).toString().toStdString();
+            if(seriesId == _series->getID())
+            {
+                seriesItem = child;
+                break;
+            }
         }
     }
 

@@ -10,7 +10,6 @@ add_dependencies(Tuto02GenericSceneCpp
                  module_ui_flaticons
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
 )
 
 target_link_libraries(Tuto02GenericSceneCpp PUBLIC data service)

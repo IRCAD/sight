@@ -290,12 +290,12 @@ void SSelector::updating()
             // Configure and start service
             if(m_mode == READER_MODE)
             {
-                io::base::service::IReader::sptr reader = service::add<io::base::service::IReader>(extensionId);
+                auto reader = service::add<io::base::service::IReader>(extensionId);
                 {
-                    auto objLock           = m_data.lock();
-                    data::Object::sptr obj = objLock.get_shared();
-                    reader->setInOut(obj, io::base::service::s_DATA_KEY);
+                    auto obj = m_data.lock();
+                    reader->setInOut(obj.get_shared(), io::base::service::s_DATA_KEY);
                 }
+
                 reader->setWorker(m_associatedWorker);
 
                 if(hasConfigForService)
@@ -340,14 +340,7 @@ void SSelector::updating()
             }
             else
             {
-                // When all writers make use of getObject(), we can use the following code instead:
-                //      io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
-                // extensionId );
-                //      writer->registerInput(this->getObject(), io::base::service::s_DATA_KEY);
-
-                auto factory                            = service::extension::Factory::getDefault();
-                io::base::service::IWriter::sptr writer =
-                    io::base::service::IWriter::dynamicCast(factory->create(extensionId));
+                auto writer = service::add<io::base::service::IWriter>(extensionId);
                 {
                     auto obj = m_data.lock();
                     writer->setInput(obj.get_shared(), io::base::service::s_DATA_KEY);

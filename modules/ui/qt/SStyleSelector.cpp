@@ -28,7 +28,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -113,12 +113,14 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 {
     auto path = m_styleMap[_styleName];
 
+    sight::ui::base::Preferences preferences;
+
     // DEFAULT (no theme) case.
     if(path.empty())
     {
         qApp->setStyleSheet("");
-        sight::ui::base::preferences::setPreference("THEME", "DEFAULT");
-        sight::ui::base::preferences::savePreferences();
+
+        preferences.put("THEME", "DEFAULT");
         return;
     }
 
@@ -134,8 +136,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
         const QString style = styleIn.readAll();
         data.close();
         qApp->setStyleSheet(style);
-        sight::ui::base::preferences::setPreference("THEME", _styleName);
-        sight::ui::base::preferences::savePreferences();
+        preferences.put("THEME", _styleName);
     }
 }
 
@@ -144,10 +145,17 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 void SStyleSelector::updateFromPrefs()
 {
     // Apply previously saved style in preferences file.
-    const std::string value = sight::ui::base::preferences::getPreference("THEME");
-    if(!value.empty())
+    try
     {
-        this->changeStyle(value);
+        sight::ui::base::Preferences preferences;
+        if(const auto& theme = preferences.get_optional<std::string>("THEME"); theme)
+        {
+            this->changeStyle(*theme);
+        }
+    }
+    catch(const sight::ui::base::PreferencesDisabled& e)
+    {
+        // Nothing to do..
     }
 }
 

@@ -81,6 +81,10 @@ namespace sight::io::session
 namespace detail
 {
 
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
+
 // To protect deserializers map
 static std::shared_mutex s_deserializers_mutex;
 
@@ -168,7 +172,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     std::map<std::string, data::Object::sptr>& cache,
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const core::crypto::secure_string& password,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
@@ -238,13 +242,13 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
             objectTree,
             children,
             object,
-            ISession::pickle(password, core::crypto::secure_string(uuid), encryptionPolicy)
+            ISession::pickle(password, secure_string(uuid), encryptionPolicy)
         );
 
         if(newObject != object)
         {
             // This should not happen normally, only if the serializer doesn't reuse object
-            newObject->setUUID(uuid);
+            newObject->setUUID(uuid, true);
             cache[uuid] = newObject;
         }
 
@@ -319,28 +323,51 @@ void SessionDeserializer::setDefaultDeserializer(const std::string& className, d
 
 data::Object::sptr SessionDeserializer::deserialize(
     const std::filesystem::path& archive_path,
-    const core::crypto::secure_string& password,
+    const Archive::ArchiveFormat archiveFormat,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
-    // Initialize the object cache
-    std::map<std::string, data::Object::sptr> cache;
-
-    // Create the archive that contain everything
-    const auto& archive = zip::ArchiveReader::shared(archive_path);
-
-    // Create the tree used to store everything and read the index.json from the archive
+    zip::ArchiveReader::uptr archive;
     boost::property_tree::ptree tree;
+
+    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
     {
+        // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
+        if(!password.empty())
+        {
+            const std::string& message =
+                "Archive format '"
+                + std::string(Archive::archiveFormatToString(archiveFormat))
+                + "' doesn't support encryption.";
+
+            SIGHT_ASSERT(message, false);
+            SIGHT_ERROR(message);
+        }
+
+        // Create the archive that contain everything
+        archive = zip::ArchiveReader::get(archive_path.parent_path(), archiveFormat);
+
+        // Create the tree used to store everything and read the json archive.
+        boost::property_tree::read_json(archive_path.string(), tree);
+    }
+    else
+    {
+        // Create the archive that contain everything
+        archive = zip::ArchiveReader::get(archive_path, archiveFormat);
+
         // istream must be closed after this, since archive could only open files one by one
-        const auto istream = archive->openFile(getIndexFilePath(), password);
-        boost::property_tree::read_json(*istream, tree);
+        // Create the tree used to store everything and read the index.json from the archive
+        boost::property_tree::read_json(*archive->openFile(getIndexFilePath(), password), tree);
     }
 
     SIGHT_THROW_IF(
-        "Empty '" << getIndexFilePath() << "' from archive '" << archive_path << "'.",
+        "Empty tree from archive '" << archive_path << "'.",
         tree.empty()
     );
+
+    // Initialize the object cache
+    std::map<std::string, data::Object::sptr> cache;
 
     return deepDeserialize(cache, *archive, tree, password, encryptionPolicy);
 }

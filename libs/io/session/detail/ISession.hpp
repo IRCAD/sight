@@ -22,8 +22,8 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/PasswordKeeper.hpp"
 
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/location/ILocation.hpp>
 
@@ -64,7 +64,7 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& password,
         const core::crypto::secure_string& salt,
-        const PasswordKeeper::EncryptionPolicy policy = PasswordKeeper::EncryptionPolicy::DEFAULT
+        const core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
     );
 
 protected:
@@ -87,7 +87,7 @@ inline std::string ISession::toString() const
 
 inline std::filesystem::path ISession::getIndexFilePath() const
 {
-    return "/index.json";
+    return "index.json";
 }
 
 //------------------------------------------------------------------------------
@@ -95,15 +95,15 @@ inline std::filesystem::path ISession::getIndexFilePath() const
 inline core::crypto::secure_string ISession::pickle(
     const core::crypto::secure_string& password,
     const core::crypto::secure_string& salt,
-    const PasswordKeeper::EncryptionPolicy policy
+    const core::crypto::PasswordKeeper::EncryptionPolicy policy
 )
 {
     switch(policy)
     {
-        case PasswordKeeper::EncryptionPolicy::SALTED:
+        case core::crypto::PasswordKeeper::EncryptionPolicy::SALTED:
             return password.empty() ? password : password + core::crypto::secure_string(salt);
 
-        case PasswordKeeper::EncryptionPolicy::FORCED:
+        case core::crypto::PasswordKeeper::EncryptionPolicy::FORCED:
             return password + core::crypto::secure_string(salt);
 
         default:

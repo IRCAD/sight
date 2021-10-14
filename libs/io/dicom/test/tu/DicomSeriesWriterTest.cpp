@@ -31,9 +31,7 @@
 #include <io/dicom/helper/DicomAnonymizer.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
-#include <io/zip/ReadZipArchive.hpp>
 #include <io/zip/WriteDirArchive.hpp>
-#include <io/zip/WriteZipArchive.hpp>
 
 #include <utest/Filter.hpp>
 

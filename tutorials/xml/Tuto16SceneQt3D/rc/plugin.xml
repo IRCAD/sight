@@ -4,13 +4,15 @@
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::io::vtk" />
+    <requirement id="sight::module::io::session" />
 
-    <extension implements="sight::service::extension::Config" >
-        <id>Tuto16SceneQt3D_jsonReader_SrvCfg</id>
-        <desc>JSON</desc>
+    <extension implements="sight::service::extension::Config">
+        <id>Tuto16SceneQt3D_Sightdata_SrvCfg</id>
+        <desc>Sight data</desc>
         <config>
-            <patcher />
-            <windowTitle>Open JSON file</windowTitle>
+            <dialog extension=".sight" description="Sight data" policy="default"/>
+            <password policy="default" encryption="default"/>
         </config>
     </extension>
 
@@ -99,7 +101,7 @@
             <service uid="meshReaderAct" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
-                <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="sight::module::io::atoms::SReader" />
+                <config id="Tuto16SceneQt3D_Sightdata_SrvCfg" service="sight::module::io::session::SReader" />
                 <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="sight::module::io::vtk::SMeshReader" />
             </service>
 

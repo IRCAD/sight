@@ -4,7 +4,7 @@
     <requirement id="sight::module::memory" />
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::activity" />
-    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::session" />
     <requirement id="sight::module::ui::qt" />
 
     <xi:include href="configurations/SightCalibratorActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

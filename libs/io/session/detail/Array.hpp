@@ -71,9 +71,7 @@ inline static void serialize(
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
         std::filesystem::path(array->getUUID() + s_array),
-        password,
-        zip::Method::ZSTD,
-        zip::Level::DEFAULT
+        password
     );
 
     // Write back to the archive

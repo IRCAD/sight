@@ -86,9 +86,6 @@ public:
     /// Write the image series in DICOM format.
     IO_DICOM_API void write() override;
 
-    /// Enable Zip output format
-    IO_DICOM_API void enableZippedArchive(bool enable);
-
     /// Set Producer
     IO_DICOM_API void setProducer(std::string producer);
 
@@ -99,9 +96,6 @@ private:
 
     /// Optionnal anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;
-
-    /// Enable zip archive
-    bool m_enableZippedArchive;
 
     /// Producer
     std::string m_producer;

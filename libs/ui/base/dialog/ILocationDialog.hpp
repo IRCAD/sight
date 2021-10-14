@@ -119,8 +119,6 @@ protected:
 
     UI_BASE_API void writeConfig();
 
-    UI_BASE_API data::Composite::sptr getPreferenceUI();
-
 private:
 
     std::string m_title;

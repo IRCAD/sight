@@ -26,8 +26,6 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <data/Composite.hpp>
-
 namespace sight::module::ui::base
 {
 
@@ -56,12 +54,6 @@ public:
      * @brief This method is used by runtime to close the module. Do nothing.
      */
     MODULE_UI_BASE_API void stop() noexcept;
-
-private:
-
-    static const std::string s_PREF_SERVICE_UID;
-
-    data::Composite::sptr m_preferences;
 };
 
 } // namespace sight::module::ui::base

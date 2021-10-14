@@ -1,7 +1,7 @@
 sight_add_target( Tuto07GenericScene TYPE APP UNIQUE ON )
 
 
-add_dependencies(Tuto07GenericScene 
+add_dependencies(Tuto07GenericScene
                  sightrun
                  module_appXml
                  module_ui_base
@@ -13,7 +13,6 @@ add_dependencies(Tuto07GenericScene
                  module_ui_flaticons
                  module_io_matrix
                  module_io_vtk
-                 module_io_atoms
 )
 
 moduleParam(module_ui_qt

@@ -55,6 +55,7 @@ namespace sight::module::io::session
         <inout key="data" uid="..." />
         <dialog extension=".sample" description="Sample Sight session file" policy="always"/>
         <password policy="once, encryption=salted"/>
+        <archive format="default"/>
     </service>
    @endcode
  *
@@ -70,7 +71,7 @@ namespace sight::module::io::session
  *          - \b "never": never show the open dialog
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog
- *          - \b "default": default behavior, which is "always"
+ *          - \b "default": default behavior, which is "never"
  *
  * - \b password(optional):
  *      \b policy: defines if we should protect the session file using a password and when to ask for it. It could be:
@@ -88,11 +89,17 @@ namespace sight::module::io::session
  *                        no password are provided
  *          - \b "default": uses the builtin default behavior which is "password".
  *
+ * - \b archive(optional):
+ *      \b format: defines the archive format.
+ *          - \b "filesystem": Reads files from the filesystem.
+ *          - \b "archive": Reads files from an session archive.
+ *          - \b "default": uses the builtin default behavior which is "archive"
+ *
  * @see sight::io::base::service::IReader
  * @see sight::io::session::SessionReader
  */
 
-class MODULE_IO_SESSION_CLASS_API SReader : public sight::io::base::service::IReader
+class MODULE_IO_SESSION_CLASS_API SReader final : public sight::io::base::service::IReader
 {
 public:
 

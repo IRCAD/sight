@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
@@ -273,23 +273,18 @@ void SChessboardReprojection::toggleDistortion()
 void SChessboardReprojection::updateChessboardSize()
 {
     unsigned long width(0), height(0);
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
-    {
-        width = std::stoul(widthStr);
-    }
-
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        height = std::stoul(heightStr);
-    }
-
     double squareSize(0.);
-    const std::string squareSizeStr = ui::base::preferences::getPreference(m_squareSizeKey);
-    if(!squareSizeStr.empty())
+
+    try
     {
-        squareSize = std::stod(squareSizeStr);
+        ui::base::Preferences preferences;
+        width      = preferences.get(m_widthKey, width);
+        height     = preferences.get(m_heightKey, height);
+        squareSize = preferences.get(m_squareSizeKey, squareSize);
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 
     m_chessboardModel.clear();
@@ -298,11 +293,11 @@ void SChessboardReprojection::updateChessboardSize()
 
     for(unsigned long i = 0 ; i < height - 1 ; ++i)
     {
-        const double x = i * squareSize;
+        const double x = double(i) * squareSize;
 
         for(unsigned long j = 0 ; j < width - 1 ; ++j)
         {
-            const double y = j * squareSize;
+            const double y = double(j) * squareSize;
             m_chessboardModel.push_back(cv::Point3d(x, y, 0.));
             chessboardModelPl->pushBack(data::Point::New(x, y, 0.));
         }

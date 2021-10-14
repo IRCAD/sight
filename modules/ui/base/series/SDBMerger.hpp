@@ -72,7 +72,7 @@ namespace series
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::session::SReader" />
         </config>
     </extension>
    @endcode

@@ -54,10 +54,6 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
     container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::createMessage;
     container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::createMessage;
 
-    // Messages with parameters (custom igtl message from sight).
-    container["ATOMS"]   = std::bind(&MessageMaker<RawMessage, true>::createMessage, "ATOMS");
-    container["INTEGER"] = std::bind(&MessageMaker<RawMessage, true>::createMessage, "INTEGER");
-    container["FLOAT"]   = std::bind(&MessageMaker<RawMessage, true>::createMessage, "FLOAT");
     return container;
 }
 

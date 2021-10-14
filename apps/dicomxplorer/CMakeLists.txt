@@ -1,7 +1,7 @@
 sight_add_target( dicomxplorer TYPE APP )
 
 
-add_dependencies(dicomxplorer 
+add_dependencies(dicomxplorer
                  module_service
                  data
                  module_ui_base
@@ -10,12 +10,12 @@ add_dependencies(dicomxplorer
                  module_appXml
                  module_memory
                  sightrun
-                 module_io_atoms
                  module_io_itk
                  module_io_vtk
                  module_io_dicom
                  module_io_matrix
                  module_io_activity
+                 module_io_session
                  activity_io_dicom
                  activity_io_dicomweb
                  activity_viz_negato

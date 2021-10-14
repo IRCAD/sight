@@ -229,13 +229,17 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto sdb                              = data::SeriesDB::New();
-    service::IService::sptr readerService = service::add("sight::module::io::atoms::SReader");
-    readerService->setInOut(sdb, io::base::service::s_DATA_KEY);
+    auto sdb    = data::SeriesDB::New();
+    auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
+    reader->setInOut(sdb, io::base::service::s_DATA_KEY);
 
     try
     {
-        io::base::service::IReader::sptr reader = io::base::service::IReader::dynamicCast(readerService);
+        service::IService::ConfigType config;
+        config.add("dialog.<xmlattr>.extension", ".cam");
+        config.add("dialog.<xmlattr>.description", "Cameras");
+        reader->configure(config);
+
         reader->start();
         reader->openLocationDialog();
         reader->update();
@@ -252,7 +256,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         throw;
     }
-    service::OSR::unregisterService(readerService);
+    service::OSR::unregisterService(reader);
 
     auto series             = sdb->getContainer();
     auto cameraSeriesVector = std::vector<data::CameraSeries::sptr>();

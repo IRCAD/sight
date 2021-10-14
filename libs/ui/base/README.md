@@ -13,7 +13,7 @@ This is the core library in _sight_ which defines the various base interface for
 - **IApplication**: defines the generic interface for application manipulation
 - **ICursor**: defines the generic interface to define a graphical cursor
 - **IDialogEditor**: defines the generic interface to define a graphical dialog editor service which creates its own container
-- **IEditor**: defines the generic interface to define a graphical object editor services 
+- **IEditor**: defines the generic interface to define a graphical object editor services
 - **IFrame**: defines the generic interface to define a frame graphical display
 - **IGuiContainer**: defines the generic interface to manage the layouts and the various displayed object container
 - **IHasParameters**: generic interface meant to define basic slots to receive parameter values from signals
@@ -31,24 +31,24 @@ This is the core library in _sight_ which defines the various base interface for
 
 ### _dialog_
 
-- **IInputDialog**: defines the generic graphical interface to display dialog box 
+- **IInputDialog**: defines the generic graphical interface to display dialog box
 - **ILocationDialog**: defines the generic graphical interface to display a file/folder selector dialog
-- **ILoggerDialog**: defines the generic graphical interface to display a dialog message and a set of logs 
+- **ILoggerDialog**: defines the generic graphical interface to display a dialog message and a set of logs
 - **IMessageDialog**: defines the generic graphical interface to display generic message box
 - **IMultiSelectorDialog**: defines the generic graphical interface to display a dialog box with the choice of some elements among several
-- **INotificationDialog**: defines the generic graphical interface to display a generic notification popup 
+- **INotificationDialog**: defines the generic graphical interface to display a generic notification popup
 - **InputDialog**: defines the generic graphical interface to display an input dialog for IHM.
 - **IProgressDialog**: defines the generic graphical interface to display a generic progress dialog
 - **IPulseProgressDialog**: defines the generic graphical interface to display a pulse progress dialog
 - **ISelectorDialog**: defines the generic graphical interface to display a bialog box which allows the choice of an element among several
-- **LocationDialog**: defines the generic graphical file/folder selector dialog 
+- **LocationDialog**: defines the generic graphical file/folder selector dialog
 - **LoggerDialog**: defines the generic graphical a dialog message and a set of logs
 - **MessageDialog**: defines the generic graphical message box
 - **MultiSelectorDialog**: defines the generic graphical dialog with the choice of some element among several
 - **NotificationDialog**: defines the generic graphical notification popup
 - **ProgressDialog**: defines the generic graphical progress dialog
 - **PulseProgressDialog**: defines the generic graphical pulse progress dialog
-- **SelectorDialog**: defines the generic graphical dialog with the choice of a single element among several 
+- **SelectorDialog**: defines the generic graphical dialog with the choice of a single element among several
 
 ### _factory_
 
@@ -56,21 +56,19 @@ This is the core library in _sight_ which defines the various base interface for
 
 ### _preferences_
 
-Mechanism which allows to store and get user preferences and propose them from one application start to an other one. 
+Mechanism which allows to store and get user preferences and propose them from one application start to an other one.
 
-- **IPreferences**:  defines the generic interface for preferences services
 - **preferences**: handles user preferences
-- **helper**: internal only, contains various methods used for the preferences handling
 
 ### _registry_
 
 - **Action**:  defines the action registry for the graphical interface services
 - **detail**: internal mechanism: provides the instances of the factory registry
 - **macro**: defines the macro which registers internally the user interfaces services
-- **Menu**: defines a registry which handles xml definitions of a graphical menu 
+- **Menu**: defines a registry which handles xml definitions of a graphical menu
 - **MenuBar**: defines a registry which handles xml definitions of a graphical menu bar
-- **ToolBar**: defines a registry which handles xml definitions of a graphical tool bar 
-- **View**: defines a registry which handles xml definitions of a graphical generic view manager 
+- **ToolBar**: defines a registry which handles xml definitions of a graphical tool bar
+- **View**: defines a registry which handles xml definitions of a graphical generic view manager
 
 
 ### _view_
@@ -83,7 +81,7 @@ Mechanism which allows to store and get user preferences and propose them from o
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( myTarget <PUBLIC|PRIVATE>
                        ui_base
 )
 ```

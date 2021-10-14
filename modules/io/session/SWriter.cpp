@@ -22,13 +22,13 @@
 #include "modules/io/session/SWriter.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/secure_string.hpp>
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/location/SingleFolder.hpp>
 #include <core/tools/System.hpp>
 
-#include <io/session/PasswordKeeper.hpp>
 #include <io/session/SessionWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -39,8 +39,9 @@
 namespace sight::module::io::session
 {
 
-using sight::io::session::PasswordKeeper;
+using core::crypto::PasswordKeeper;
 using core::crypto::secure_string;
+using sight::io::zip::Archive;
 
 /// Private SWriter implementation
 class SWriter::WriterImpl
@@ -56,7 +57,7 @@ public:
     /// Constructor
     inline WriterImpl(SWriter* const writer) noexcept :
         m_writer(writer),
-        m_jobCreatedSignal(writer->newSignal<JobCreatedSignal>("jobCreated"))
+        m_job_created_signal(writer->newSignal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -67,22 +68,25 @@ public:
     SWriter* const m_writer;
 
     /// Extension name to use for session file
-    std::string m_extensionName {".zip"};
+    std::string m_extension_name {".zip"};
 
     /// Extension description to use for file save dialog
-    std::string m_extensionDescription {"Sight session"};
+    std::string m_extension_description {"Sight session"};
 
     /// Dialog policy to use for the file location
-    DialogPolicy m_dialogPolicy = {DialogPolicy::DEFAULT};
+    DialogPolicy m_dialog_policy = {DialogPolicy::DEFAULT};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_passwordPolicy {PasswordKeeper::PasswordPolicy::DEFAULT};
+    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_encryptionPolicy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+
+    /// Archive format to use
+    Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
 
     /// Signal emitted when job created.
-    JobCreatedSignal::sptr m_jobCreatedSignal;
+    JobCreatedSignal::sptr m_job_created_signal;
 };
 
 SWriter::SWriter() noexcept :
@@ -97,7 +101,6 @@ SWriter::~SWriter() noexcept = default;
 
 void SWriter::starting()
 {
-    clearLocations();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,13 +122,13 @@ void SWriter::configuring()
     const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");
     if(dialog.is_initialized())
     {
-        m_pimpl->m_extensionName        = dialog->get<std::string>("extension");
-        m_pimpl->m_extensionDescription = dialog->get<std::string>("description");
-        m_pimpl->m_dialogPolicy         = stringToDialogPolicy(dialog->get<std::string>("policy"));
+        m_pimpl->m_extension_name        = dialog->get<std::string>("extension");
+        m_pimpl->m_extension_description = dialog->get<std::string>("description");
+        m_pimpl->m_dialog_policy         = stringToDialogPolicy(dialog->get<std::string>("policy", "default"));
 
         SIGHT_THROW_IF(
             "Cannot read dialog policy.",
-            m_pimpl->m_dialogPolicy == DialogPolicy::INVALID
+            m_pimpl->m_dialog_policy == DialogPolicy::INVALID
         );
     }
 
@@ -134,20 +137,35 @@ void SWriter::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_passwordPolicy = PasswordKeeper::stringToPasswordPolicy(password->get<std::string>("policy"));
+        m_pimpl->m_password_policy = PasswordKeeper::stringToPasswordPolicy(
+            password->get<std::string>("policy", "default")
+        );
+
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::INVALID
+            m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::INVALID
         );
 
         // Encryption policy
-        m_pimpl->m_encryptionPolicy = PasswordKeeper::stringToEncryptionPolicy(
-            password->get<std::string>("encryption")
+        m_pimpl->m_encryption_policy = PasswordKeeper::stringToEncryptionPolicy(
+            password->get<std::string>("encryption", "default")
         );
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_encryptionPolicy == PasswordKeeper::EncryptionPolicy::INVALID
+            m_pimpl->m_encryption_policy == PasswordKeeper::EncryptionPolicy::INVALID
+        );
+    }
+
+    // Format configuration
+    const auto& archive = tree.get_child_optional("archive.<xmlattr>");
+    if(archive.is_initialized())
+    {
+        m_pimpl->m_archive_format = Archive::stringToArchiveFormat(archive->get<std::string>("format", "default"));
+
+        SIGHT_THROW_IF(
+            "Cannot read archive format.",
+            m_pimpl->m_archive_format == Archive::ArchiveFormat::INVALID
         );
     }
 }
@@ -160,8 +178,8 @@ void SWriter::updating()
     m_writeFailed = true;
 
     // Show the save dialog if the path is empty
-    if((!hasLocationDefined() && m_pimpl->m_dialogPolicy != DialogPolicy::NEVER)
-       || m_pimpl->m_dialogPolicy == DialogPolicy::ALWAYS)
+    if((!hasLocationDefined() && m_pimpl->m_dialog_policy != DialogPolicy::NEVER)
+       || m_pimpl->m_dialog_policy == DialogPolicy::ALWAYS)
     {
         openLocationDialog();
     }
@@ -176,7 +194,7 @@ void SWriter::updating()
     auto filepath = getFile();
     if(!filepath.has_extension())
     {
-        filepath += m_pimpl->m_extensionName;
+        filepath += m_pimpl->m_extension_name;
     }
 
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
@@ -188,7 +206,7 @@ void SWriter::updating()
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::NEVER)
+            if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::NEVER)
             {
                 // No password management
                 return secure_string();
@@ -197,8 +215,8 @@ void SWriter::updating()
             {
                 const secure_string& globalPassword = PasswordKeeper::getGlobalPassword();
 
-                if((m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                   || (m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE
+                if((m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
+                   || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE
                        && globalPassword.empty()))
                 {
                     sight::ui::base::dialog::InputDialog inputDialog;
@@ -211,7 +229,7 @@ void SWriter::updating()
                         )
                     );
 
-                    if(m_pimpl->m_passwordPolicy == PasswordKeeper::PasswordPolicy::ONCE)
+                    if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
                     {
                         PasswordKeeper::setGlobalPassword(newPassword);
                     }
@@ -237,7 +255,8 @@ void SWriter::updating()
                 writer->setObject(data.get_shared());
                 writer->setFile(temporaryFile.getTemporaryFilePath());
                 writer->setPassword(password);
-                writer->setEncryptionPolicy(m_pimpl->m_encryptionPolicy);
+                writer->setEncryptionPolicy(m_pimpl->m_encryption_policy);
+                writer->setArchiveFormat(m_pimpl->m_archive_format);
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
@@ -270,7 +289,7 @@ void SWriter::updating()
     jobs->add(renameJob);
     jobs->setCancelable(false);
 
-    m_pimpl->m_jobCreatedSignal->emit(jobs);
+    m_pimpl->m_job_created_signal->emit(jobs);
 
     try
     {
@@ -319,7 +338,7 @@ void SWriter::openLocationDialog()
     locationDialog.setDefaultLocation(defaultLocation);
     locationDialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
     locationDialog.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
-    locationDialog.addFilter(m_pimpl->m_extensionDescription, "*" + m_pimpl->m_extensionName);
+    locationDialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
 
     // Show the dialog
     const auto result = std::dynamic_pointer_cast<core::location::SingleFile>(locationDialog.show());
@@ -328,7 +347,7 @@ void SWriter::openLocationDialog()
     {
         const auto& filepath = result->getFile();
         setFile(filepath);
-        m_pimpl->m_extensionName = locationDialog.getCurrentSelection();
+        m_pimpl->m_extension_name = locationDialog.getCurrentSelection();
 
         // Save default location for later use
         defaultLocation->setFolder(filepath.parent_path());

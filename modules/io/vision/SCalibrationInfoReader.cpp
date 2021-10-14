@@ -38,7 +38,7 @@
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -229,28 +229,34 @@ void SCalibrationInfoReader::stopping()
 
 void SCalibrationInfoReader::updateChessboardSize()
 {
-    const std::string widthStr = ui::base::preferences::getPreference(m_widthKey);
-    if(!widthStr.empty())
+    try
     {
-        m_width = std::stoul(widthStr);
-    }
+        ui::base::Preferences preferences;
 
-    const std::string heightStr = ui::base::preferences::getPreference(m_heightKey);
-    if(!heightStr.empty())
-    {
-        m_height = std::stoul(heightStr);
-    }
-
-    const std::string scaleStr = ui::base::preferences::getPreference(m_scaleKey);
-    if(!scaleStr.empty())
-    {
-        m_scale = std::stof(scaleStr);
-
-        if(m_scale > 1.f)
+        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
-            m_scale = 1.f;
-            SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
+            m_width = *saved;
         }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_heightKey); saved)
+        {
+            m_height = *saved;
+        }
+
+        if(const auto& saved = preferences.get_optional<decltype(m_scale)>(m_scaleKey); saved)
+        {
+            m_scale = *saved;
+
+            if(m_scale > 1.f)
+            {
+                m_scale = 1.f;
+                SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
+            }
+        }
+    }
+    catch(const ui::base::PreferencesDisabled&)
+    {
+        // Nothing to do..
     }
 }
 

@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <functional>
 
@@ -74,7 +74,9 @@ void SServerListener::starting()
 {
     try
     {
-        const std::uint16_t port = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+        ui::base::Preferences preferences;
+        const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
+
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));

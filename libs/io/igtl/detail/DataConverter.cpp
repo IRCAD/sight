@@ -22,8 +22,6 @@
 
 #include "DataConverter.hpp"
 
-#include "io/igtl/detail/converter/AtomConverter.hpp"
-
 #include <core/LazyInstantiator.hpp>
 
 #include <data/Float.hpp>
@@ -53,7 +51,6 @@ void DataConverter::registerConverter(converter::IConverter::sptr c)
 
 DataConverter::DataConverter()
 {
-    m_defaultConverter = io::igtl::detail::converter::AtomConverter::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +72,8 @@ DataConverter::~DataConverter()
         }
     }
 
-    return m_defaultConverter->fromFwDataObject(src);
+    SIGHT_THROW("Object of type " << classname << " is not supported");
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,12 +82,6 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 {
     data::Object::sptr obj;
     const std::string deviceType = src->GetDeviceType();
-
-    if(deviceType == "ATOMS")
-    {
-        obj = m_defaultConverter->fromIgtlMessage(src);
-        return obj;
-    }
 
     for(const converter::IConverter::sptr& converter : m_converters)
     {
@@ -100,7 +92,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         }
     }
 
-    SIGHT_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
+    SIGHT_THROW("Message of type " << std::string(src->GetDeviceType()) << " is not supported");
     return obj;
 }
 

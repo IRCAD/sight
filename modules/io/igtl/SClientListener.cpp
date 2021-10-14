@@ -33,7 +33,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 
 #include <functional>
 #include <string>
@@ -102,8 +102,9 @@ void SClientListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = ui::base::preferences::getValue(m_hostnameConfig);
+        ui::base::Preferences preferences;
+        const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
+        const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();

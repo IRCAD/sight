@@ -30,7 +30,7 @@
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
+#include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <boost/foreach.hpp>
@@ -144,16 +144,15 @@ void SQueryEditor::updating()
 
 void SQueryEditor::queryPatientName()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    try
     {
-        m_serverHostname = hostname;
+        ui::base::Preferences preferences;
+        m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
-
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    catch(...)
     {
-        m_serverPort = std::stoi(port);
+        // Do nothing
     }
 
     try
@@ -214,16 +213,15 @@ void SQueryEditor::queryPatientName()
 
 void SQueryEditor::queryStudyDate()
 {
-    const std::string hostname = ui::base::preferences::getValue(m_serverHostnameKey);
-    if(!hostname.empty())
+    try
     {
-        m_serverHostname = hostname;
+        ui::base::Preferences preferences;
+        m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
+        m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
-
-    const std::string port = ui::base::preferences::getValue(m_serverPortKey);
-    if(!port.empty())
+    catch(...)
     {
-        m_serverPort = std::stoi(port);
+        // Do nothing
     }
 
     try

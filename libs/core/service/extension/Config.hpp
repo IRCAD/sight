@@ -71,8 +71,8 @@ public:
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::atoms::SReader" />
-            <config id="MDAtomsConfig" service="sight::module::io::atoms::SReader" />
+            <addSelection service="sight::module::io::session::SReader" />
+            <config id="SightDataConfig" service="sight::module::io::session::SReader" />
         </config>
     </extension>
    @endcode

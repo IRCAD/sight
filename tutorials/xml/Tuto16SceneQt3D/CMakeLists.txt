@@ -1,7 +1,7 @@
 sight_add_target( Tuto16SceneQt3D TYPE APP UNIQUE ON )
 
 
-add_dependencies(Tuto16SceneQt3D 
+add_dependencies(Tuto16SceneQt3D
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -9,7 +9,7 @@ add_dependencies(Tuto16SceneQt3D
                  module_service
                  module_ui_base
                  module_io_vtk
-                 module_io_atoms
+                 module_io_session
                  module_viz_qt3d
 )
 

@@ -31,7 +31,7 @@
 #include <data/DicomSeries.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
-#include <io/zip/WriteZipArchive.hpp>
+#include <io/zip/IWriteArchive.hpp>
 
 #include <boost/foreach.hpp>
 

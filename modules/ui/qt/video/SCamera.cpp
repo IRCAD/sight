@@ -37,7 +37,7 @@
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/preferences.hpp>
+#include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QByteArray>
@@ -210,7 +210,10 @@ void SCamera::onChooseFile()
     std::vector<data::Camera::sptr> cameras = this->getCameras();
 
     // Check preferences
-    const std::filesystem::path videoDirPreferencePath(sight::ui::base::preferences::getVideoDir());
+    const std::filesystem::path videoDirPreferencePath(sight::ui::base::Preferences().get(
+                                                           "VIDEO_DIR_PREF",
+                                                           std::string()
+    ));
 
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 

@@ -72,6 +72,7 @@
 
 #include <boost/property_tree/json_parser.hpp>
 
+#include <atomic>
 #include <shared_mutex>
 
 namespace sight::io::session
@@ -79,6 +80,10 @@ namespace sight::io::session
 
 namespace detail
 {
+
+using core::crypto::PasswordKeeper;
+using core::crypto::secure_string;
+using sight::io::zip::Archive;
 
 // To protect serializers map
 static std::shared_mutex s_serializers_mutex;
@@ -167,7 +172,7 @@ void SessionSerializer::deepSerialize(
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    const core::crypto::secure_string& password,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
@@ -214,7 +219,7 @@ void SessionSerializer::deepSerialize(
             object_tree,
             object,
             children,
-            ISession::pickle(password, core::crypto::secure_string(uuid), encryptionPolicy)
+            ISession::pickle(password, secure_string(uuid), encryptionPolicy)
         );
 
         // Serialize children, if needed
@@ -317,15 +322,38 @@ void SessionSerializer::setDefaultSerializer(const std::string& className, seria
 void SessionSerializer::serialize(
     const std::filesystem::path& archive_path,
     data::Object::csptr object,
-    const core::crypto::secure_string& password,
+    const Archive::ArchiveFormat archiveFormat,
+    const secure_string& password,
     const PasswordKeeper::EncryptionPolicy encryptionPolicy
 ) const
 {
+    zip::ArchiveWriter::uptr archive;
+
+    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
+    {
+        // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
+        if(!password.empty())
+        {
+            const std::string& message =
+                "Archive format '"
+                + std::string(Archive::archiveFormatToString(archiveFormat))
+                + "' doesn't support encryption.";
+
+            SIGHT_ASSERT(message, false);
+            SIGHT_ERROR(message);
+        }
+
+        // Create the archive that will hold all binary files
+        archive = zip::ArchiveWriter::get(archive_path.parent_path(), archiveFormat);
+    }
+    else
+    {
+        // Create the archive that will hold the property tree and all binary files
+        archive = zip::ArchiveWriter::get(archive_path, archiveFormat);
+    }
+
     // Initialize the ptree cache
     std::set<std::string> cache;
-
-    // Create the archive that will hold the property tree and all binary files
-    const auto& archive = zip::ArchiveWriter::shared(archive_path);
 
     // Create the tree used to store indexes.
     boost::property_tree::ptree tree;
@@ -333,19 +361,19 @@ void SessionSerializer::serialize(
     // Serialize recursively everything into the tree and the archive
     deepSerialize(cache, *archive, tree, object, password, encryptionPolicy);
 
-    auto ostream = archive->openFile(
-        this->getIndexFilePath(),
-        password,
-        zip::Method::ZSTD,
-        zip::Level::BEST
-    );
+    if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
+    {
+        // Write the final property tree to the filesystem
+        boost::property_tree::write_json(archive_path.string(), tree);
+    }
+    else
+    {
+        // Open the ostream from the json stored into the archive
+        auto ostream = archive->openFile(getIndexFilePath(), password, zip::Method::DEFAULT, zip::Level::BEST);
 
-    // Write the final property tree back to the archive
-    boost::property_tree::write_json(
-        *ostream,
-        tree,
-        false
-    );
+        // Write the final property tree back to the archive
+        boost::property_tree::write_json(*ostream, tree, false);
+    }
 }
 
 } // namespace detail
