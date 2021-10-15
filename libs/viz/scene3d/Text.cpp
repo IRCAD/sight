@@ -105,7 +105,7 @@ Text* Text::New(
     const std::string& _id,
     ::Ogre::SceneManager* _sm,
     ::Ogre::OverlayContainer* _parent,
-    ::Ogre::FontPtr _font,
+    ::Ogre::FontPtr,
     ::Ogre::Camera* _cam
 )
 {

@@ -49,7 +49,7 @@ IContainerBuilder::~IContainerBuilder()
 
 //-----------------------------------------------------------------------------
 
-void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr)
 {
 }
 

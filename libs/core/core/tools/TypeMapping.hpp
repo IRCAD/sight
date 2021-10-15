@@ -122,8 +122,8 @@ struct EmptyListMapping
     //------------------------------------------------------------------------------
 
     static bool evaluate(
-        typename KeyTypeContainer::const_iterator& begin,
-        typename KeyTypeContainer::const_iterator& end
+        [[maybe_unused]] typename KeyTypeContainer::const_iterator& begin,
+        [[maybe_unused]] typename KeyTypeContainer::const_iterator& end
 )
     {
         assert(begin == end); // assertion fails iff TypeList & KeyType container does not have the same size

@@ -54,10 +54,10 @@ Such combination includes:
 > tested. If you are on this kind of platform and are able to build and use **Sight**, feel free to share with us your
 > success !
 
-> We use some fine tuned compiler flags (like `/arch:AVX`) to optimize and generate code specifically for CPUs that were
-> released around 2008 and later. It means, if your CPU is too old, **Sight** will crash at runtime because some CPU
-> instructions are not implemented. In such situation, you can modify the default compiler flag directly in **Sight**
-> CMake code.
+> We use some fine tuned compiler flags (like `/arch:AVX2`) to optimize and generate code specifically for CPUs that
+> were released around 2013 and later. It means, if your CPU is too old, **Sight** will crash at runtime because some
+> CPU instructions are not implemented. In such situation, you can modify hidden cmake variable `SIGHT_ARCH` at
+> configuring time or modify the default compiler flag directly in **Sight** CMake code.
 
 ## Applications
 

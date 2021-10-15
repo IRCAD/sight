@@ -74,6 +74,7 @@ lint:sheldon:
       -G Ninja
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+      -DSIGHT_ARCH=sandybridge
       -DSIGHT_BUILD_TESTS=ON
       -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
       -DSIGHT_ENABLE_PCH=OFF
