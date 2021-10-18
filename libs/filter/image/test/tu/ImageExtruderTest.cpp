@@ -69,39 +69,39 @@ void ImageExtruderTest::extrudeTriangleMesh()
     mesh->resize(8, 12, data::Mesh::CellType::TRIANGLE);
 
     {
-        auto it = mesh->begin<data::iterator::PointIterator>();
+        auto it = mesh->begin<data::iterator::point::xyz>();
 
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
     }
 
@@ -109,24 +109,13 @@ void ImageExtruderTest::extrudeTriangleMesh()
         std::array<size_t, 36> indexes {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 1, 5, 4, 1, 4, 0,
                                         2, 3, 6, 3, 6, 7, 1, 2, 6, 1, 6, 5, 0, 3, 7, 0, 7, 4
         };
-        auto it              = mesh->begin<data::iterator::CellIterator>();
-        const auto itEnd     = mesh->end<data::iterator::CellIterator>();
-        const auto itPrevEnd = itEnd - 1;
-
+        auto it   = mesh->begin<data::iterator::cell::triangle>();
         size_t pt = 0;
         for(size_t index = 0 ; index < 36 ; index += 3)
         {
-            *it->type   = data::Mesh::CellType::TRIANGLE;
-            *it->offset = index;
-
-            if(it != itPrevEnd)
-            {
-                (*(it + 1)->offset) = index + 3;
-            }
-
-            it->pointIdx[0] = indexes[pt++];
-            it->pointIdx[1] = indexes[pt++];
-            it->pointIdx[2] = indexes[pt++];
+            it->pt[0] = indexes[pt++];
+            it->pt[1] = indexes[pt++];
+            it->pt[2] = indexes[pt++];
 
             ++it;
         }
@@ -174,63 +163,52 @@ void ImageExtruderTest::extrudeQuadMesh()
     mesh->resize(8, 6, data::Mesh::CellType::QUAD);
 
     {
-        auto it = mesh->begin<data::iterator::PointIterator>();
+        auto it = mesh->begin<data::iterator::point::xyz>();
 
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_origin[2] + 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_origin[2] + 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_origin[0] + 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_origin[0] + 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_size[1] - 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_size[1] - 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
-        it->point->x = static_cast<float>(m_size[0] - 1);
-        it->point->y = static_cast<float>(m_origin[1] + 1);
-        it->point->z = static_cast<float>(m_size[2] - 1);
+        it->x = static_cast<float>(m_size[0] - 1);
+        it->y = static_cast<float>(m_origin[1] + 1);
+        it->z = static_cast<float>(m_size[2] - 1);
         ++it;
     }
 
     {
         std::array<size_t, 36> indexes {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 5, 4, 2, 3, 7, 6, 1, 2, 6, 5, 0, 3, 7, 4};
-        auto it              = mesh->begin<data::iterator::CellIterator>();
-        const auto itEnd     = mesh->end<data::iterator::CellIterator>();
-        const auto itPrevEnd = itEnd - 1;
-
+        auto it   = mesh->begin<data::iterator::cell::quad>();
         size_t pt = 0;
         for(size_t index = 0 ; index < 24 ; index += 4)
         {
-            *it->type   = data::Mesh::CellType::QUAD;
-            *it->offset = index;
-
-            if(it != itPrevEnd)
-            {
-                (*(it + 1)->offset) = index + 4;
-            }
-
-            it->pointIdx[0] = indexes[pt++];
-            it->pointIdx[1] = indexes[pt++];
-            it->pointIdx[2] = indexes[pt++];
-            it->pointIdx[3] = indexes[pt++];
+            it->pt[0] = indexes[pt++];
+            it->pt[1] = indexes[pt++];
+            it->pt[2] = indexes[pt++];
+            it->pt[3] = indexes[pt++];
 
             ++it;
         }

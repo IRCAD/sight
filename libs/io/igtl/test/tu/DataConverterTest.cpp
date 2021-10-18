@@ -96,65 +96,79 @@ void DataConverterTest::meshConverterTest()
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellSize(), mesh2->getCellSize());
     CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), mesh2->getDataSizeInBytes());
 
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointColors(), mesh2->hasPointColors());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellColors(), mesh2->hasCellColors());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointNormals(), mesh2->hasPointNormals());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellNormals(), mesh2->hasCellNormals());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasPointTexCoords(), mesh2->hasPointTexCoords());
-    CPPUNIT_ASSERT_EQUAL(mesh->hasCellTexCoords(), mesh2->hasCellTexCoords());
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_COLORS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_COLORS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_COLORS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_COLORS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_NORMALS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_NORMALS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_NORMALS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_NORMALS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::POINT_TEX_COORDS>(),
+        mesh2->has<data::Mesh::Attributes::POINT_TEX_COORDS>()
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        mesh->has<data::Mesh::Attributes::CELL_TEX_COORDS>(),
+        mesh2->has<data::Mesh::Attributes::CELL_TEX_COORDS>()
+    );
 
     const auto dumpLock = mesh->lock();
+    using namespace data::iterator;
 
-    auto itrPt  = mesh->begin<data::iterator::ConstPointIterator>();
-    auto itrPt2 = mesh2->begin<data::iterator::ConstPointIterator>();
+    const auto range1 = mesh->czip_range<point::xyz, point::rgba, point::nxyz>();
+    const auto range2 = mesh2->czip_range<point::xyz, point::rgba, point::nxyz>();
 
-    for(unsigned int i = 0 ; i < mesh->getNumberOfPoints() ; ++i)
+    for(const auto& [orig, cur] : boost::combine(range1, range2))
     {
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->x, itrPt2->point->x);
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->y, itrPt2->point->y);
-        CPPUNIT_ASSERT_EQUAL(itrPt->point->z, itrPt2->point->z);
+        const auto& [pt1, c1, n1] = orig;
+        const auto& [pt2, c2, n2] = cur;
 
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->r, itrPt2->rgba->r);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->g, itrPt2->rgba->g);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->b, itrPt2->rgba->b);
-        CPPUNIT_ASSERT_EQUAL(itrPt->rgba->a, itrPt2->rgba->a);
+        CPPUNIT_ASSERT_EQUAL(pt1.x, pt2.x);
+        CPPUNIT_ASSERT_EQUAL(pt1.y, pt2.y);
+        CPPUNIT_ASSERT_EQUAL(pt1.z, pt2.z);
 
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nx, itrPt2->normal->nx);
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->ny, itrPt2->normal->ny);
-        CPPUNIT_ASSERT_EQUAL(itrPt->normal->nz, itrPt2->normal->nz);
+        CPPUNIT_ASSERT_EQUAL(c1.r, c2.r);
+        CPPUNIT_ASSERT_EQUAL(c1.g, c2.g);
+        CPPUNIT_ASSERT_EQUAL(c1.b, c2.b);
+        CPPUNIT_ASSERT_EQUAL(c1.a, c2.a);
 
-        ++itrPt;
-        ++itrPt2;
+        CPPUNIT_ASSERT_EQUAL(n1.nx, n2.nx);
+        CPPUNIT_ASSERT_EQUAL(n1.ny, n2.ny);
+        CPPUNIT_ASSERT_EQUAL(n1.nz, n2.nz);
     }
 
-    auto itrCell  = mesh->begin<data::iterator::ConstCellIterator>();
-    auto itrCell2 = mesh2->begin<data::iterator::ConstCellIterator>();
+    const auto cellRange1 = mesh->czip_range<cell::triangle, cell::rgba, cell::nxyz>();
+    const auto cellRange2 = mesh2->czip_range<cell::triangle, cell::rgba, cell::nxyz>();
 
-    for(unsigned int i = 0 ; i < mesh->getNumberOfCells() ; ++i)
+    for(const auto& [orig, cur] : boost::combine(cellRange1, cellRange2))
     {
-        CPPUNIT_ASSERT_EQUAL(itrCell->nbPoints, itrCell2->nbPoints);
-        CPPUNIT_ASSERT_EQUAL(*itrCell->type, *itrCell2->type);
-        CPPUNIT_ASSERT_EQUAL(*itrCell->offset, *itrCell2->offset);
+        const auto& [cell1, c1, n1] = orig;
+        const auto& [cell2, c2, n2] = cur;
 
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->r, itrCell2->rgba->r);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->g, itrCell2->rgba->g);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->b, itrCell2->rgba->b);
-        CPPUNIT_ASSERT_EQUAL(itrCell->rgba->a, itrCell2->rgba->a);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[0], cell2.pt[0]);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[1], cell2.pt[1]);
+        CPPUNIT_ASSERT_EQUAL(cell1.pt[2], cell2.pt[2]);
 
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nx, itrCell2->normal->nx);
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->ny, itrCell2->normal->ny);
-        CPPUNIT_ASSERT_EQUAL(itrCell->normal->nz, itrCell2->normal->nz);
+        CPPUNIT_ASSERT_EQUAL(c1.r, c2.r);
+        CPPUNIT_ASSERT_EQUAL(c1.g, c2.g);
+        CPPUNIT_ASSERT_EQUAL(c1.b, c2.b);
+        CPPUNIT_ASSERT_EQUAL(c1.a, c2.a);
 
-        for(unsigned int j = 0 ; j < itrCell->nbPoints ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(itrCell->pointIdx[j], itrCell2->pointIdx[j]);
-        }
-
-        ++itrCell;
-        ++itrCell2;
+        CPPUNIT_ASSERT_EQUAL(n1.nx, n2.nx);
+        CPPUNIT_ASSERT_EQUAL(n1.ny, n2.ny);
+        CPPUNIT_ASSERT_EQUAL(n1.nz, n2.nz);
     }
 }
 

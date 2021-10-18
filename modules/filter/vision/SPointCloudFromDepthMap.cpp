@@ -116,15 +116,12 @@ void SPointCloudFromDepthMap::updating()
 
         const auto dumpLock = pointCloud->lock();
 
-        auto itr = pointCloud->begin<data::iterator::CellIterator>();
+        auto itr = pointCloud->begin<data::iterator::cell::point>();
 
         // to display the mesh, we need to create cells with one point.
         for(size_t i = 0 ; i < nbPoints ; ++i, ++itr)
         {
-            *itr->type         = data::Mesh::CellType::POINT;
-            *itr->offset       = i;
-            *(itr + 1)->offset = i + 1; // to be able to iterate through point indices
-            itr->pointIdx[0]   = i;
+            itr->pt = i;
         }
 
         auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::s_MODIFIED_SIG);
@@ -143,19 +140,17 @@ void SPointCloudFromDepthMap::updating()
         );
 
         auto sig =
-            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
 
-        auto sig2 = pointCloud->signal<data::Mesh::PointColorsModifiedSignalType>(
-            data::Mesh::s_POINT_COLORS_MODIFIED_SIG
-        );
+        auto sig2 = pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sig2->asyncEmit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap.get_shared(), pointCloud.get_shared());
         auto sig =
-            pointCloud->signal<data::Mesh::VertexModifiedSignalType>(data::Mesh::s_VERTEX_MODIFIED_SIG);
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -226,7 +221,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
+    auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
 
     size_t nbRealPoints = 0;
     for(size_t y = 0 ; y != height ; ++y)
@@ -238,9 +233,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
             {
                 double px, py, pz;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                pointsItr->point->x = static_cast<float>(px);
-                pointsItr->point->y = static_cast<float>(py);
-                pointsItr->point->z = static_cast<float>(pz);
+                pointsItr->x = static_cast<float>(px);
+                pointsItr->y = static_cast<float>(py);
+                pointsItr->z = static_cast<float>(pz);
                 ++pointsItr;
                 ++nbRealPoints;
             }
@@ -248,10 +243,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
             ++depthItr;
         }
     }
-
-    pointCloud->setNumberOfPoints(nbRealPoints);
-    pointCloud->setNumberOfCells(nbRealPoints);
-    pointCloud->setCellDataSize(nbRealPoints);
 }
 
 //------------------------------------------------------------------------------
@@ -306,7 +297,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     auto depthItr            = depthMap->begin<std::uint16_t>();
 
     const auto rgbDumpLock = colorMap->lock();
-    const auto rgbBegin    = colorMap->begin<data::iterator::RGBA>();
+    const auto rgbBegin    = colorMap->begin<data::iterator::rgba>();
 
     const double cx = depthCamera->getCx(),
                  cy = depthCamera->getCy(),
@@ -320,9 +311,9 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
     const auto meshDumpLock = pointCloud->lock();
 
-    auto pointsItr = pointCloud->begin<data::iterator::PointIterator>();
+    auto pointsItr = pointCloud->zip_range<data::iterator::point::xyz, data::iterator::point::rgba>().begin();
 
-    const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
+    const data::iterator::rgba defaultColor = {255, 255, 255, 255};
 
     unsigned int nbRealPoints = 0;
     auto glmExtrinsicMatrix   = geometry::data::getMatrixFromTF3D(*extrinsic);
@@ -335,12 +326,14 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
             const uint16_t depth = *depthItr;
             if(depth >= m_minDepth && depth <= m_maxDepth)
             {
+                auto&& [p, c] = *pointsItr;
+
                 // get the 3D coordinates in the depth world
                 double px, py, pz;
                 sight::filter::vision::Projection::projectPixel<double>(x, y, depth, cx, cy, fx, fy, px, py, pz);
-                pointsItr->point->x = static_cast<float>(px);
-                pointsItr->point->y = static_cast<float>(py);
-                pointsItr->point->z = static_cast<float>(pz);
+                p.x = static_cast<float>(px);
+                p.y = static_cast<float>(py);
+                p.z = static_cast<float>(pz);
 
                 // Transform point to the rgb sensor world
                 const ::glm::dvec4 point(px, py, pz, 1.0);
@@ -368,16 +361,16 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
                     if(rgbIdx < imageSize)
                     {
                         const auto color = rgbBegin + rgbIdx;
-                        *pointsItr->rgba = *color;
+                        c = *color;
                     }
                     else
                     {
-                        *pointsItr->rgba = defaultColor;
+                        c = defaultColor;
                     }
                 }
                 else
                 {
-                    *pointsItr->rgba = defaultColor;
+                    c = defaultColor;
                 }
 
                 ++pointsItr;
@@ -389,9 +382,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Since we discard points for which the depth map is zero, the mesh buffers are not full
-    pointCloud->setNumberOfPoints(nbRealPoints);
-    pointCloud->setNumberOfCells(nbRealPoints);
-    pointCloud->setCellDataSize(nbRealPoints);
+    pointCloud->truncate(nbRealPoints, nbRealPoints);
 }
 
 //-----------------------------------------------------------------------------

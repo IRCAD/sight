@@ -123,12 +123,10 @@ private:
     /// Binding for each layer
     unsigned short m_binding[NUM_BINDINGS];
 
-    /// Number of primitives types that are handled by data::Mesh
-    static const unsigned int s_numPrimitiveTypes = static_cast<std::uint8_t>(data::Mesh::CellType::TETRA) + 1;
-
-    /// Pointers on submeshes needed for reallocation check.
+    data::Mesh::CellType m_cellType {data::Mesh::CellType::_SIZE};
+    /// Pointers on submeshes need for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
-    std::array< ::Ogre::SubMesh*, s_numPrimitiveTypes> m_subMeshes;
+    ::Ogre::SubMesh* m_subMesh;
 
     /// Texture used to store per-primitive color
     ::Ogre::TexturePtr m_perPrimitiveColorTexture;

@@ -59,8 +59,8 @@ void Image::createConfig(core::tools::Object::sptr _obj)
         image->resize();
 
         const auto dumpLock = image->lock();
-        auto itr            = image->begin<sight::data::iterator::RGBA>();
-        const auto itrEnd   = image->end<sight::data::iterator::RGBA>();
+        auto itr            = image->begin<sight::data::iterator::rgba>();
+        const auto itrEnd   = image->end<sight::data::iterator::rgba>();
 
         for( ; itr != itrEnd ; ++itr)
         {

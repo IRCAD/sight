@@ -286,11 +286,11 @@ void LockTest::testDumpLock()
 
         mesh->reserve(3, 1, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_COLORS);
 
-        data::Mesh::PointValueType A[3] = {0., 0., 0.};
-        data::Mesh::PointValueType B[3] = {1., 0., 0.};
-        data::Mesh::PointValueType C[3] = {1., 1., 0.};
+        data::Mesh::position_t A[3] = {0., 0., 0.};
+        data::Mesh::position_t B[3] = {1., 0., 0.};
+        data::Mesh::position_t C[3] = {1., 1., 0.};
 
-        data::Mesh::PointId ids[3];
+        data::Mesh::point_t ids[3];
 
         ids[0] = mesh->pushPoint(A);
         ids[1] = mesh->pushPoint(B);
@@ -302,9 +302,9 @@ void LockTest::testDumpLock()
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(B));
         CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(C));
 
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(data::Mesh::CellType::TRIANGLE, ids, 3));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(ids, 3));
 
-        const std::array<data::Mesh::ColorValueType, 4> color = {255, 0, 0, 255};
+        const std::array<data::Mesh::color_t, 4> color = {255, 0, 0, 255};
 
         // This are not locked since they didn't exists when creating the mesh the first time.
         CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[0], color));

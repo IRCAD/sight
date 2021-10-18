@@ -245,9 +245,9 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     // Update Reconstruction
     data::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
     data::Mesh::sptr mesh          = rec->getMesh();
-    mesh->clearCellColors();
-    mesh->clearPointColors();
-    mesh->clearCellNormals();
+    mesh->clear<data::Mesh::Attributes::CELL_COLORS>();
+    mesh->clear<data::Mesh::Attributes::POINT_COLORS>();
+    mesh->clear<data::Mesh::Attributes::CELL_NORMALS>();
 
     // gdcm only manage ambient color in reconstruction
     data::Material::sptr material = data::Material::New();

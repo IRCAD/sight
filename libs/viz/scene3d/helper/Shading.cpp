@@ -138,50 +138,6 @@ std::string Shading::getPermutation(data::Material::ShadingType _mode, bool _dif
 //-----------------------------------------------------------------------------
 
 std::string Shading::getR2VBGeometryProgramName(
-    data::Mesh::CellTypesEnum _primitiveType,
-    bool _diffuseTexture,
-    bool _vertexColor,
-    bool _hasPrimitiveColor
-)
-{
-    std::string suffix;
-
-    if(_primitiveType == data::Mesh::QUAD)
-    {
-        suffix = "Quad";
-    }
-    else if(_primitiveType == data::Mesh::TETRA)
-    {
-        suffix = "Tetra";
-    }
-    else
-    {
-        suffix = "Triangles";
-    }
-
-    if(_vertexColor)
-    {
-        suffix += "+VT";
-    }
-
-    if(_diffuseTexture)
-    {
-        suffix += "+DfsTex";
-    }
-
-    if(_hasPrimitiveColor)
-    {
-        suffix += "+PPColor";
-    }
-
-    const std::string name = "R2VB/" + suffix + "_GP";
-
-    return name;
-}
-
-//-----------------------------------------------------------------------------
-
-std::string Shading::getR2VBGeometryProgramName(
     data::Mesh::CellType _primitiveType,
     bool _diffuseTexture,
     bool _vertexColor,

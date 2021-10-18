@@ -48,15 +48,6 @@ class VIZ_SCENE3D_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
 
-    [[deprecated("Will be removed in sight 22.0")]]
-    VIZ_SCENE3D_API static R2VBRenderable* New(
-        const std::string& _name,
-        ::Ogre::SubEntity* _sourceObject,
-        ::Ogre::SceneManager* _sceneManager,
-        data::Mesh::CellTypesEnum _primitiveType,
-        const std::string& _mtlName
-    );
-
     /// Create a new instance of R2VBRenderable
     VIZ_SCENE3D_API static R2VBRenderable* New(
         const std::string& _name,
@@ -107,10 +98,7 @@ public:
 
     viz::scene3d::IAdaptor::wptr m_materialAdaptor;
 
-    [[deprecated("Will be removed in sight 22.0")]]
-    data::Mesh::CellTypesEnum getInputPrimitiveType() const;
-
-    data::Mesh::CellType getInputPrimitiveType2() const;
+    data::Mesh::CellType getInputPrimitiveType() const;
 
 protected:
 
@@ -178,14 +166,7 @@ inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlNam
 
 //------------------------------------------------------------------------------
 
-inline data::Mesh::CellTypesEnum R2VBRenderable::getInputPrimitiveType() const
-{
-    return static_cast<data::Mesh::CellTypesEnum>(m_inputPrimitiveType);
-}
-
-//------------------------------------------------------------------------------
-
-inline data::Mesh::CellType R2VBRenderable::getInputPrimitiveType2() const
+inline data::Mesh::CellType R2VBRenderable::getInputPrimitiveType() const
 {
     return m_inputPrimitiveType;
 }

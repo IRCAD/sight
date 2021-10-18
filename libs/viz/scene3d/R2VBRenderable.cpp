@@ -37,46 +37,6 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
     const std::string& _name,
     ::Ogre::SubEntity* _sourceObject,
     ::Ogre::SceneManager* _sceneManager,
-    data::Mesh::CellTypesEnum _primitiveType,
-    const std::string& _mtlName
-)
-{
-    data::Mesh::CellType type = data::Mesh::CellType::NO_CELL;
-    switch(_primitiveType)
-    {
-        case data::Mesh::POINT:
-            type = data::Mesh::CellType::POINT;
-            break;
-
-        case data::Mesh::EDGE:
-            type = data::Mesh::CellType::EDGE;
-            break;
-
-        case data::Mesh::TRIANGLE:
-            type = data::Mesh::CellType::TRIANGLE;
-            break;
-
-        case data::Mesh::QUAD:
-            type = data::Mesh::CellType::QUAD;
-            break;
-
-        case data::Mesh::TETRA:
-            type = data::Mesh::CellType::TETRA;
-            break;
-
-        default:
-            type = data::Mesh::CellType::NO_CELL;
-    }
-
-    return viz::scene3d::R2VBRenderable::New(_name, _sourceObject, _sceneManager, type, _mtlName);
-}
-
-//-----------------------------------------------------------------------------
-
-viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
-    const std::string& _name,
-    ::Ogre::SubEntity* _sourceObject,
-    ::Ogre::SceneManager* _sceneManager,
     data::Mesh::CellType _primitiveType,
     const std::string& _mtlName
 )

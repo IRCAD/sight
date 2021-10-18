@@ -1,8 +1,3 @@
-sight_add_target( dataTest TYPE TEST )
+sight_add_target(dataTest TYPE TEST FAST_DEBUG ON)
 
-target_link_libraries(dataTest PUBLIC 
-                      atoms
-                      core
-                      utestData
-                      data
-)
+target_link_libraries(dataTest PUBLIC atoms core utestData data)

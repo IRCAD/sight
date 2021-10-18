@@ -358,33 +358,33 @@ const std::string Image::getPixelAsString(
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<char> Image::begin()
+Image::iterator<char> Image::begin()
 {
-    return Iterator<char>(this);
+    return iterator<char>(static_cast<char*>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-Image::Iterator<char> Image::end()
+Image::iterator<char> Image::end()
 {
-    auto itr = Iterator<char>(this);
-    itr += static_cast<typename Iterator<char>::difference_type>(this->getSizeInBytes());
+    auto itr = begin<char>();
+    itr += static_cast<typename iterator<char>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<char> Image::begin() const
+Image::const_iterator<char> Image::begin() const
 {
-    return ConstIterator<char>(this);
+    return const_iterator<char>(static_cast<const char*>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-Image::ConstIterator<char> Image::end() const
+Image::const_iterator<char> Image::end() const
 {
-    auto itr = ConstIterator<char>(this);
-    itr += static_cast<typename Iterator<char>::difference_type>(this->getSizeInBytes());
+    auto itr = begin<char>();
+    itr += static_cast<typename iterator<char>::difference_type>(this->getSizeInBytes());
     return itr;
 }
 

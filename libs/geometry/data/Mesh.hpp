@@ -40,7 +40,7 @@ class Mesh
 {
 public:
 
-    typedef std::map<Point, sight::data::Mesh::PointId> PointsMapType;
+    typedef std::map<Point, sight::data::Mesh::point_t> PointsMapType;
     typedef std::array<double, 3> PositionType;
     typedef std::array<size_t, 3> OrganizationType;
 
@@ -105,22 +105,6 @@ public:
      * @param[in]  mesh data::Mesh mesh structure to colorize.
      */
     GEOMETRY_DATA_API static void colorizeMeshCells(sight::data::Mesh::sptr mesh);
-
-    /**
-     * @brief
-     *
-     * @param[in]  mesh data::Mesh mesh structure to find cell type.
-     * @param[in]  cell CellTypes to find in mesh.
-     */
-    GEOMETRY_DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellTypes cell);
-
-    /**
-     * @brief
-     *
-     * @param[in]  mesh data::Mesh mesh structure to find cell type.
-     * @param[in]  cell CellType to find in mesh (POINT, EDGE, TRAINGLE, ...).
-     */
-    GEOMETRY_DATA_API static bool hasUniqueCellType(sight::data::Mesh::csptr mesh, sight::data::Mesh::CellType cell);
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
     GEOMETRY_DATA_API static void transform(

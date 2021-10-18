@@ -29,6 +29,8 @@
 #include <core/thread/Pool.hpp>
 #include <core/thread/Worker.hpp>
 
+#include <data/iterator/types.hpp>
+
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -260,7 +262,7 @@ QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 
         const auto dumpLock = fwImage.lock();
 
-        auto imageItr = fwImage.begin<data::iterator::RGB>();
+        auto imageItr = fwImage.begin<data::iterator::rgb>();
 
         const unsigned int size = static_cast<unsigned int>(width * height) * 4;
         for(unsigned int idx = 0 ; idx < size ; idx += 4, ++imageItr)

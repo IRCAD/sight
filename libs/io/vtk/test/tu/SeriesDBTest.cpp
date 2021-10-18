@@ -104,8 +104,8 @@ void SeriesDBTest::testImportSeriesDB()
     data::Mesh::sptr mesh1 = rec1->getMesh();
     data::Mesh::sptr mesh2 = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (data::Mesh::Size) 720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (data::Mesh::Size) 362);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (data::Mesh::size_t) 720);
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (data::Mesh::size_t) 362);
 
     data::reflection::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);

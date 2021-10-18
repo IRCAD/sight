@@ -163,8 +163,8 @@ void SeriesDBReaderTest::testSeriesDBReader()
     data::Mesh::sptr mesh1          = rec1->getMesh();
     data::Mesh::sptr mesh2          = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size) 720, mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::Size) 362, mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 720, mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 362, mesh1->getNumberOfPoints());
 
     compare(mesh1, mesh2);
 }

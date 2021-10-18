@@ -74,8 +74,6 @@ public:
     void setHasUV(bool _hasUV);
     void setHasVertexColor(bool _hasVertexColor);
     void setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName);
-    [[deprecated("Use 'data::Mesh::CellType' instead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
-    void setPrimitiveType(data::Mesh::CellTypesEnum _type);
 
     /// Set the type of primitive
     void setPrimitiveType(data::Mesh::CellType _type);
@@ -154,13 +152,6 @@ inline void Material::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::s
 {
     m_hasPrimitiveColor            = _hasPrimitiveColor;
     m_perPrimitiveColorTextureName = _textureName;
-}
-
-//------------------------------------------------------------------------------
-
-inline void Material::setPrimitiveType(data::Mesh::CellTypesEnum _type)
-{
-    m_primitiveType = static_cast<data::Mesh::CellType>(_type);
 }
 
 //------------------------------------------------------------------------------

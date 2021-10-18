@@ -41,7 +41,7 @@ class Mesh
 {
 public:
 
-    typedef std::map<std::array<float, 3>, data::Mesh::PointId> PointsMapType;
+    typedef std::map<std::array<float, 3>, data::Mesh::point_t> PointsMapType;
 
     /**
      * @brief Generate a mesh.
@@ -121,8 +121,8 @@ private:
         float edgeDim         = 100.f
     );
 
-    static data::Mesh::PointId addPoint(
-        const data::Mesh::PointValueType* pt,
+    static data::Mesh::point_t addPoint(
+        const data::Mesh::position_t* pt,
         const data::Mesh::sptr& mesh,
         PointsMapType& points
     );

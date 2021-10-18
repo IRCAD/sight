@@ -24,8 +24,8 @@
 
 #include "data/Array.hpp"
 #include "data/factory/new.hpp"
-#include "data/iterator/ImageIterator.hpp"
 #include "data/Object.hpp"
+#include <data/iterator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -36,7 +36,6 @@
 
 #include <filesystem>
 #include <vector>
-
 SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Image));
 
 namespace sight::data
@@ -103,9 +102,9 @@ class PointList;
     value = image->at<std::int16_t>(index);
    @endcode
  *
- * @subsection Iterators Iterators
+ * @subsection iterators iterators
  *
- * To parse the buffer from beginning to end, the iterator can be used (data::iterator::ImageIteratorBase).
+ * To parse the buffer from beginning to end, the iterator can be used (data::iterator::ImageiteratorBase).
  *
  * The iteration depends on the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
  * can also be a simple struct like:
@@ -121,7 +120,7 @@ class PointList;
  *
  * This struct allows to parse the image as an RGBA buffer (RGBARGBARGBA....).
  *
- * To get an iterator on the image, use begin<FORMAT>() and end<FORMAT>() methods.
+ * To get an iterator on the image, use begin<T>() and end<T>() methods.
  *
  * @warning The iterator does not assert that the image type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
@@ -376,11 +375,10 @@ public:
      * @{
      */
     /// Image iterator
-    template<typename FORMAT>
-    using Iterator = iterator::ImageIteratorBase<FORMAT>;
-    template<typename FORMAT>
-    /// Image const iterator
-    using ConstIterator = iterator::ImageIteratorBase<const FORMAT>;
+    template<typename T>
+    using iterator = array_iterator<T>;
+    template<typename T>
+    using const_iterator = array_iterator<const T>;
     /// @}
 
     /**
@@ -397,14 +395,14 @@ public:
             std::uint8_t a;
         };
         @endcode
-     * @see data::iterator::RGBA
+     * @see data::iterator::rgba
      *
      * Example:
      * @code{.cpp}
         data::Image::sptr img = data::Image::New();
         img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, data::Image::PixelFormat::RGBA);
-        data::Image::Iterator< Color > iter    = img->begin< Color >();
-        const data::Image::Iterator< Color > iterEnd = img->end< Color >();
+        data::Image::iterator< Color > iter    = img->begin< Color >();
+        const data::Image::iterator< Color > iterEnd = img->end< Color >();
 
         for (; iter != iterEnd; ++iter)
         {
@@ -417,30 +415,42 @@ public:
      *
      * @warning The iterator does not assert that the buffer type is the same as the given format. It only asserts
      * (in debug) that the iterator does not iterate outside of the buffer bounds).
-     * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    template<typename FORMAT>
-    Iterator<FORMAT> begin();
-    template<typename FORMAT>
-    Iterator<FORMAT> end();
-    template<typename FORMAT>
-    ConstIterator<FORMAT> begin() const;
-    template<typename FORMAT>
-    ConstIterator<FORMAT> end() const;
+    template<typename T>
+    iterator<T> begin();
+    template<typename T>
+    iterator<T> end();
+    template<typename T>
+    const_iterator<T> begin() const;
+    template<typename T>
+    const_iterator<T> end() const;
+    template<typename T>
+    const_iterator<T> cbegin() const;
+    template<typename T>
+    const_iterator<T> cend() const;
     /// @}
+
+    /**
+     * @brief Returns a range of begin/end iterators, especially useful to be used in "for range loops".
+     * @{
+     */
+    template<typename T>
+    auto range();
+    template<typename T>
+    auto crange() const;
+    /// @}
+
     /**
      * @brief Returns the begin/end iterators to the array buffer, cast to char
      *
      * Iterate through all the element of the buffer.
-     *
-     * @note These functions lock the buffer
      * @{
      */
-    DATA_API Iterator<char> begin();
-    DATA_API Iterator<char> end();
-    DATA_API ConstIterator<char> begin() const;
-    DATA_API ConstIterator<char> end() const;
+    DATA_API iterator<char> begin();
+    DATA_API iterator<char> end();
+    DATA_API const_iterator<char> begin() const;
+    DATA_API const_iterator<char> end() const;
     /// @}
 
     ///
@@ -833,38 +843,76 @@ inline void Image::setSize2(const Size& size)
 
 //------------------------------------------------------------------------------
 
-template<typename FORMAT>
-inline Image::Iterator<FORMAT> Image::begin()
+template<typename T>
+inline Image::iterator<T> Image::begin()
 {
-    return Iterator<FORMAT>(this);
+    return iterator<T>(static_cast<typename iterator<T>::pointer>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-template<typename FORMAT>
-inline Image::Iterator<FORMAT> Image::end()
+template<typename T>
+inline Image::iterator<T> Image::end()
 {
-    auto itr = Iterator<FORMAT>(this);
-    itr += static_cast<typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes() / sizeof(FORMAT));
+    auto itr = begin<T>();
+    itr += static_cast<typename iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename FORMAT>
-inline Image::ConstIterator<FORMAT> Image::begin() const
+template<typename T>
+inline Image::const_iterator<T> Image::begin() const
 {
-    return ConstIterator<FORMAT>(this);
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-template<typename FORMAT>
-inline Image::ConstIterator<FORMAT> Image::end() const
+template<typename T>
+inline Image::const_iterator<T> Image::end() const
 {
-    auto itr = ConstIterator<FORMAT>(this);
-    itr += static_cast<typename Iterator<FORMAT>::difference_type>(this->getSizeInBytes() / sizeof(FORMAT));
+    auto itr = begin<T>();
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
     return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline Image::const_iterator<T> Image::cbegin() const
+{
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(getBuffer()));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline Image::const_iterator<T> Image::cend() const
+{
+    auto itr = begin<T>();
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    return itr;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Image::range()
+{
+    auto b = begin<T>();
+    auto e = end<T>();
+    return boost::make_iterator_range(b, e);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+auto Image::crange() const
+{
+    auto b = cbegin<T>();
+    auto e = cend<T>();
+    return boost::make_iterator_range(b, e);
 }
 
 //------------------------------------------------------------------------------

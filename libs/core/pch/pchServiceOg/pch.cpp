@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,8 @@
  *
  ***********************************************************************/
 
-#define CAMP_COMPILATION
+#include "pch.hpp"
 
-#include "data/detail/reflection/Mesh.hpp"
-
-#include <core/reflection/UserObject.hpp>
-
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Mesh))
-{
-    builder
-    .tag("object_version", "4")
-    .tag("lib_name", "sight::data")
-    .base<sight::data::Object>()
-    .property("nb_points", &sight::data::Mesh::m_nbPoints)
-    .property("points", &sight::data::Mesh::m_points)
-    //.property("attributes", &sight::data::Mesh::m_attributes) // It uses a mapper to convert attributes property.
-    ;
-}
+// Empty source file
+// This is only to get a source file compiled, otherwise CMake would consider this target as an utility target
+// And the pch would not be generated properly

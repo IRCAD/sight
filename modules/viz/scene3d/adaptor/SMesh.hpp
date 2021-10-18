@@ -306,7 +306,7 @@ private:
     sight::viz::scene3d::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Stores material adaptors attached to the r2vb objects.
-    std::map<data::Mesh::CellTypes, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+    std::map<data::Mesh::cell_t, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};

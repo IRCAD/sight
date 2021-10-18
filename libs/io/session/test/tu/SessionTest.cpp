@@ -44,10 +44,6 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/iterator/ImageIterator.hpp>
-#include <data/iterator/ImageIterator.hxx>
-#include <data/iterator/MeshIterators.hpp>
-#include <data/iterator/MeshIterators.hxx>
 #include <data/Landmarks.hpp>
 #include <data/Line.hpp>
 #include <data/List.hpp>
@@ -380,7 +376,7 @@ inline data::Mesh::sptr _new<data::Mesh>(const std::size_t variant)
 {
     const auto& object = data::Mesh::New();
     object->deepCopy(_expected<data::Mesh>(variant));
-    object->adjustAllocatedMemory();
+    object->shrinkToFit();
     return object;
 }
 
@@ -397,7 +393,7 @@ inline data::Mesh::sptr _generate<data::Mesh>(const std::size_t)
     geometry::data::Mesh::colorizeMeshCells(object);
     geometry::data::Mesh::generatePointNormals(object);
     geometry::data::Mesh::generateCellNormals(object);
-    object->adjustAllocatedMemory();
+    object->shrinkToFit();
 
     return object;
 }
@@ -412,42 +408,31 @@ inline void _compare<data::Mesh>(const data::Mesh::csptr& actual, const std::siz
     // Retrieve the expected variant
     const auto& expected = _expected<data::Mesh>(variant);
 
-    CPPUNIT_ASSERT_EQUAL(expected->getAttributes(), actual->getAttributes());
     CPPUNIT_ASSERT_EQUAL(expected->getNumberOfCells(), actual->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(expected->getNumberOfPoints(), actual->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(expected->getCellDataSize(), actual->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(expected->getCellSize(), actual->getCellSize());
     CPPUNIT_ASSERT_EQUAL(expected->getDataSizeInBytes(), actual->getDataSizeInBytes());
 
     // This is needed to use iterators
     data::mt::locked_ptr<const data::Mesh> expectedGuard(expected);
     data::mt::locked_ptr<const data::Mesh> actualGuard(actual);
 
-    for(auto expectedIt = expected->begin<data::iterator::PointIterator>(),
-        expectedEnd = expected->end<data::iterator::PointIterator>(),
-        actualIt = actual->begin<data::iterator::PointIterator>(),
-        actualEnd = actual->end<data::iterator::PointIterator>() ;
-        expectedIt != expectedEnd && actualIt != actualEnd ;
-        ++expectedIt, ++actualIt)
-    {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->x, actualIt->point->x, FLOAT_EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->y, actualIt->point->y, FLOAT_EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedIt->point->z, actualIt->point->z, FLOAT_EPSILON);
+    using namespace data::iterator;
+    const auto expectedRange = expected->czip_range<point::xyz, point::nxyz>();
+    const auto actualRange   = actual->czip_range<point::xyz, point::nxyz>();
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->nx,
-            actualIt->normal->nx,
-            FLOAT_EPSILON
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->ny,
-            actualIt->normal->ny,
-            FLOAT_EPSILON
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            expectedIt->normal->nz,
-            actualIt->normal->nz,
-            FLOAT_EPSILON
-        );
+    for(const auto& [orig, cur] : boost::combine(expectedRange, actualRange))
+    {
+        const auto& [p1, n1] = orig;
+        const auto& [p2, n2] = cur;
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.x, p2.x, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.y, p2.y, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1.z, p2.z, FLOAT_EPSILON);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.nx, n2.nx, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.ny, n2.ny, FLOAT_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(n1.nz, n2.nz, FLOAT_EPSILON);
     }
 }
 
@@ -731,6 +716,8 @@ inline data::Array::sptr _generate<data::Array>(const std::size_t variant)
 {
     auto object = data::Array::New();
 
+    const auto lock = object->lock();
+
     auto fill =
         [&](auto type)
         {
@@ -824,6 +811,9 @@ inline void _compare<data::Array>(const data::Array::csptr& actual, const std::s
         [&](auto type)
         {
             using T = decltype(type);
+
+            const auto dumpLockExpected = expected->lock();
+            const auto dumpLockActual   = actual->lock();
 
             for(auto expectedIt = expected->begin<T>(),
                 expectedEnd = expected->end<T>(),

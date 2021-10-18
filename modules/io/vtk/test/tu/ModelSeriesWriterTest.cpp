@@ -55,6 +55,8 @@ namespace ut
 namespace fs = std::filesystem;
 typedef std::vector<std::string> FileContainerType;
 
+using namespace sight::data::iterator;
+
 //------------------------------------------------------------------------------
 
 void ModelSeriesWriterTest::setUp()
@@ -232,107 +234,53 @@ void ModelSeriesWriterTest::testWriteMeshes()
                 refMesh->getNumberOfCells(),
                 readMesh->getNumberOfCells()
             );
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "Cell Data size.",
-                refMesh->getCellDataSize(),
-                readMesh->getCellDataSize()
-            );
 
             // Don't test internal structures for obj, ply and stl, since some of them are missing.
             if(ext != "obj" && ext != "ply" && ext != "stl")
             {
-                auto refPointsItr       = refMesh->begin<data::iterator::ConstPointIterator>();
-                auto readPointsItr      = readMesh->begin<data::iterator::ConstPointIterator>();
-                const auto refPointsEnd = refMesh->end<data::iterator::ConstPointIterator>();
+                const auto refPoints  = refMesh->czip_range<point::xyz, point::nxyz, point::rgba>();
+                const auto readPoints = readMesh->czip_range<point::xyz, point::nxyz, point::rgba>();
 
-                for( ; refPointsItr != refPointsEnd ; ++refPointsItr, ++readPointsItr)
+                for(const auto& [ref, read] : boost::combine(refPoints, readPoints))
                 {
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point.x ",
-                        refPointsItr->point->x,
-                        readPointsItr->point->x,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point.y",
-                        refPointsItr->point->y,
-                        readPointsItr->point->y,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point.z",
-                        refPointsItr->point->z,
-                        readPointsItr->point->z,
-                        0.00001
-                    );
+                    const auto& [pt1, n1, c1] = ref;
+                    const auto& [pt2, n2, c2] = read;
 
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color R", refPointsItr->rgba->r, readPointsItr->rgba->r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color G", refPointsItr->rgba->g, readPointsItr->rgba->g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color B", refPointsItr->rgba->b, readPointsItr->rgba->b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color A", refPointsItr->rgba->a, readPointsItr->rgba->a);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.x ", pt1.x, pt2.x, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.y", pt1.y, pt2.y, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point.z", pt1.z, pt2.z, 0.00001);
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point normal x",
-                        refPointsItr->normal->nx,
-                        readPointsItr->normal->nx,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point normal y",
-                        refPointsItr->normal->ny,
-                        readPointsItr->normal->ny,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Point normal z",
-                        refPointsItr->normal->nz,
-                        readPointsItr->normal->nz,
-                        0.00001
-                    );
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color R", c1.r, c2.r);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color G", c1.g, c2.g);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color B", c1.b, c2.b);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Point color A", c1.a, c2.a);
+
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal x", n1.nx, n2.nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal y", n1.ny, n2.ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Point normal z", n1.nz, n2.nz, 0.00001);
                 }
 
-                auto refCellsItr       = refMesh->begin<data::iterator::ConstCellIterator>();
-                auto readCellsItr      = readMesh->begin<data::iterator::ConstCellIterator>();
-                const auto refCellsEnd = refMesh->end<data::iterator::ConstCellIterator>();
+                const auto refCells  = refMesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
+                const auto readCells = readMesh->czip_range<cell::triangle, cell::nxyz, cell::rgba>();
 
-                for( ; refCellsItr != refCellsEnd ; ++refCellsItr, ++readCellsItr)
+                for(const auto& [ref, read] : boost::combine(refCells, readCells))
                 {
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell type", *refCellsItr->type, *readCellsItr->type);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell offset", *refCellsItr->offset, *readCellsItr->offset);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell nbrPoints", refCellsItr->nbPoints, readCellsItr->nbPoints);
+                    const auto& [tri1, n1, c1] = ref;
+                    const auto& [tri2, n2, c2] = read;
 
-                    for(size_t i = 0 ; i < refCellsItr->nbPoints ; ++i)
+                    for(size_t i = 0 ; i < 3 ; ++i)
                     {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "Celle point index",
-                            refCellsItr->pointIdx[i],
-                            readCellsItr->pointIdx[i]
-                        );
+                        CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell point index", tri1.pt[i], tri2.pt[i]);
                     }
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Cell normal x",
-                        refCellsItr->normal->nx,
-                        readCellsItr->normal->nx,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Cell normal y",
-                        refCellsItr->normal->ny,
-                        readCellsItr->normal->ny,
-                        0.00001
-                    );
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                        "Cell normal z",
-                        refCellsItr->normal->nz,
-                        readCellsItr->normal->nz,
-                        0.00001
-                    );
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal x", n1.nx, n2.nx, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal y", n1.ny, n2.ny, 0.00001);
+                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Cell normal z", n1.nz, n2.nz, 0.00001);
 
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color R", refCellsItr->rgba->r, readCellsItr->rgba->r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color G", refCellsItr->rgba->g, readCellsItr->rgba->g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color B", refCellsItr->rgba->b, readCellsItr->rgba->b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color A", refCellsItr->rgba->a, readCellsItr->rgba->a);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color R", c1.r, c2.r);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color G", c1.g, c2.g);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color B", c1.b, c2.b);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE("Cell color A", c1.a, c2.a);
                 }
             }
         }

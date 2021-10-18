@@ -122,32 +122,26 @@ void MeshTest::setCubeMesh()
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(mesh->getNumberOfCells() * 3), indexAttribute->count());
 
     // Asserts each point is at the right position.
-    auto itrPt          = mesh->begin<data::iterator::ConstPointIterator>();
-    const auto endItrPt = mesh->end<data::iterator::ConstPointIterator>();
-
     const QByteArray posBufferDataByte = posAttribute->buffer()->data();
     const float* const posBufferData   = reinterpret_cast<const float*>(posBufferDataByte.data());
     unsigned int count                 = 0;
-    for( ; itrPt != endItrPt ; ++itrPt)
+    for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->x) - posBufferData[count] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->y) - posBufferData[count + 1] < 0.01f);
-        CPPUNIT_ASSERT(static_cast<float>(itrPt->point->z) - posBufferData[count + 2] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.x) - posBufferData[count] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.y) - posBufferData[count + 1] < 0.01f);
+        CPPUNIT_ASSERT(static_cast<float>(p.z) - posBufferData[count + 2] < 0.01f);
         count += 3;
     }
 
     // Asserts indexes are in the right order.
-    auto itrCell      = mesh->begin<data::iterator::ConstCellIterator>();
-    const auto endItr = mesh->end<data::iterator::ConstCellIterator>();
-
     const QByteArray indexBufferDataByte      = indexAttribute->buffer()->data();
     const unsigned int* const indexBufferData = reinterpret_cast<const unsigned int*>(indexBufferDataByte.data());
     count = 0;
-    for( ; itrCell != endItr ; ++itrCell)
+    for(const auto& cell : mesh->crange<data::iterator::cell::triangle>())
     {
-        for(unsigned int i = 0 ; i < itrCell->nbPoints ; ++i)
+        for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(itrCell->pointIdx[i]), indexBufferData[count]);
+            CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(cell.pt[i]), indexBufferData[count]);
             count++;
         }
     }

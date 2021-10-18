@@ -106,8 +106,8 @@ void MeshTest::testMeshToVtk()
     source->Update();
     const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfPoints());
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -118,11 +118,11 @@ void MeshTest::testMeshToVtk()
 
     CPPUNIT_ASSERT(mesh1->getNumberOfCells());
     CPPUNIT_ASSERT(mesh1->getNumberOfPoints());
-    CPPUNIT_ASSERT(mesh1->hasPointNormals());
-    CPPUNIT_ASSERT(mesh1->hasCellNormals());
-    CPPUNIT_ASSERT(mesh1->hasPointColors());
-    CPPUNIT_ASSERT(mesh1->hasCellColors());
-    CPPUNIT_ASSERT(mesh1->hasPointTexCoords());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_NORMALS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_NORMALS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_COLORS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_COLORS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_TEX_COORDS>());
 
     const vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
     io::vtk::helper::Mesh::toVTKMesh(mesh1, vtkMesh);
@@ -154,8 +154,8 @@ void MeshTest::testMeshToGrid()
     source->Update();
     const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
 
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(0), mesh1->getNumberOfPoints());
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
@@ -166,11 +166,11 @@ void MeshTest::testMeshToGrid()
 
     CPPUNIT_ASSERT(mesh1->getNumberOfCells());
     CPPUNIT_ASSERT(mesh1->getNumberOfPoints());
-    CPPUNIT_ASSERT(mesh1->hasPointNormals());
-    CPPUNIT_ASSERT(mesh1->hasCellNormals());
-    CPPUNIT_ASSERT(mesh1->hasPointColors());
-    CPPUNIT_ASSERT(mesh1->hasCellColors());
-    CPPUNIT_ASSERT(mesh1->hasPointTexCoords());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_NORMALS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_NORMALS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_COLORS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::CELL_COLORS>());
+    CPPUNIT_ASSERT(mesh1->has<data::Mesh::Attributes::POINT_TEX_COORDS>());
     const vtkSmartPointer<vtkUnstructuredGrid> vtkGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
     io::vtk::helper::Mesh::toVTKGrid(mesh1, vtkGrid);
     CPPUNIT_ASSERT(vtkGrid);
@@ -192,7 +192,7 @@ void MeshTest::testSyntheticMesh()
         const data::Mesh::sptr mesh1 = data::Mesh::New();
         utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
         geometry::data::Mesh::shakePoint(mesh1);
-        mesh1->adjustAllocatedMemory();
+        mesh1->shrinkToFit();
 
         const vtkSmartPointer<vtkPolyData> poly = vtkSmartPointer<vtkPolyData>::New();
         io::vtk::helper::Mesh::toVTKMesh(mesh1, poly);
@@ -211,7 +211,7 @@ void MeshTest::testSyntheticMesh()
         geometry::data::Mesh::colorizeMeshCells(mesh1);
         geometry::data::Mesh::generatePointNormals(mesh1);
         geometry::data::Mesh::generateCellNormals(mesh1);
-        mesh1->adjustAllocatedMemory();
+        mesh1->shrinkToFit();
 
         const vtkSmartPointer<vtkPolyData> poly = vtkSmartPointer<vtkPolyData>::New();
         io::vtk::helper::Mesh::toVTKMesh(mesh1, poly);
@@ -236,7 +236,7 @@ void MeshTest::testExportImportSyntheticMesh()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "testExportImportSyntheticMesh.vtk";
@@ -263,7 +263,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
 void MeshTest::testPointCloud()
 {
-    const data::Mesh::Size NB_POINTS = static_cast<data::Mesh::Size>(100 + safeRand() % 1000);
+    const data::Mesh::size_t NB_POINTS = static_cast<data::Mesh::size_t>(100 + safeRand() % 1000);
 
     const data::Mesh::sptr mesh1 = data::Mesh::New();
 
@@ -271,9 +271,9 @@ void MeshTest::testPointCloud()
 
     const auto dumpLock = mesh1->lock();
 
-    for(data::Mesh::Size i = 0 ; i < NB_POINTS ; ++i)
+    for(data::Mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
     {
-        data::Mesh::PointValueType point[3];
+        data::Mesh::position_t point[3];
         point[0] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
         point[1] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
         point[2] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
@@ -290,205 +290,6 @@ void MeshTest::testPointCloud()
 
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getCellDataSize());
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testMeshUpdatePoints()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    // modify mesh vertex position
-    geometry::data::Mesh::shakePoint(mesh1);
-
-    io::vtk::helper::Mesh::updatePolyDataPoints(poly_source, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh2);
-
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testMeshUpdateColors()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    geometry::data::Mesh::colorizeMeshPoints(mesh1);
-    geometry::data::Mesh::colorizeMeshCells(mesh1);
-
-    io::vtk::helper::Mesh::updatePolyDataPointColor(poly_source, mesh1);
-    io::vtk::helper::Mesh::updatePolyDataCellColor(poly_source, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh2);
-
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testMeshUpdateNormals()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    geometry::data::Mesh::generatePointNormals(mesh1);
-    geometry::data::Mesh::generateCellNormals(mesh1);
-    geometry::data::Mesh::shakePointNormals(mesh1);
-    geometry::data::Mesh::shakeCellNormals(mesh1);
-
-    io::vtk::helper::Mesh::updatePolyDataPointNormals(poly_source, mesh1);
-    io::vtk::helper::Mesh::updatePolyDataCellNormals(poly_source, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh2);
-
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testGridUpdatePoints()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    vtkSmartPointer<vtkUnstructuredGrid> vtkGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    io::vtk::helper::Mesh::toVTKGrid(mesh1, vtkGrid);
-    CPPUNIT_ASSERT(vtkGrid);
-
-    // modify mesh vertex position
-    geometry::data::Mesh::shakePoint(mesh1);
-    io::vtk::helper::Mesh::updateGridPoints(vtkGrid, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
-
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testGridUpdateColors()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    vtkSmartPointer<vtkUnstructuredGrid> vtkGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    io::vtk::helper::Mesh::toVTKGrid(mesh1, vtkGrid);
-    CPPUNIT_ASSERT(vtkGrid);
-
-    geometry::data::Mesh::colorizeMeshPoints(mesh1);
-    geometry::data::Mesh::colorizeMeshCells(mesh1);
-
-    io::vtk::helper::Mesh::updateGridPointColor(vtkGrid, mesh1);
-    io::vtk::helper::Mesh::updateGridCellColor(vtkGrid, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
-
-    compare(mesh1, mesh2);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::testGridUpdateNormals()
-{
-    const data::Mesh::sptr mesh1 = data::Mesh::New();
-    CPPUNIT_ASSERT(mesh1);
-
-    const vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-    source->SetThetaResolution(50);
-    source->SetPhiResolution(50);
-    source->SetRadius(2);
-    source->Update();
-    const vtkSmartPointer<vtkPolyData> poly_source = source->GetOutput();
-
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::Size>(0), mesh1->getNumberOfPoints());
-
-    io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
-
-    geometry::data::Mesh::generatePointNormals(mesh1);
-    geometry::data::Mesh::generateCellNormals(mesh1);
-
-    CPPUNIT_ASSERT(mesh1->getNumberOfCells());
-    CPPUNIT_ASSERT(mesh1->getNumberOfPoints());
-
-    vtkSmartPointer<vtkUnstructuredGrid> vtkGrid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    io::vtk::helper::Mesh::toVTKGrid(mesh1, vtkGrid);
-    CPPUNIT_ASSERT(vtkGrid);
-
-    io::vtk::helper::Mesh::updateGridPoints(vtkGrid, mesh1);
-    io::vtk::helper::Mesh::updateGridPointNormals(vtkGrid, mesh1);
-    io::vtk::helper::Mesh::updateGridCellNormals(vtkGrid, mesh1);
-
-    const data::Mesh::sptr mesh2 = data::Mesh::New();
-    io::vtk::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
-
     compare(mesh1, mesh2);
 }
 
@@ -619,7 +420,7 @@ void MeshTest::testWriteVtkFile()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "vtkTestMesh.vtk";
@@ -643,7 +444,7 @@ void MeshTest::testWriteVtpFile()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "vtpTestMesh.vtp";
@@ -667,7 +468,7 @@ void MeshTest::testWriteObjFile()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "objTestMesh.obj";
@@ -691,7 +492,7 @@ void MeshTest::testWritePlyFile()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "plyTestMesh.ply";
@@ -715,7 +516,7 @@ void MeshTest::testWriteStlFile()
     geometry::data::Mesh::generatePointNormals(mesh1);
     geometry::data::Mesh::generateCellNormals(mesh1);
 
-    mesh1->adjustAllocatedMemory();
+    mesh1->shrinkToFit();
 
     const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
                                            / "stlTestMesh.stl";

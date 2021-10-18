@@ -740,7 +740,7 @@ macro(fwModule SIGHT_TARGET TARGET_TYPE)
     set_target_properties(${SIGHT_TARGET} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES")
 endmacro()
 
-function(getPchTarget TARGET TARGET_DIR TYPE PCH OBJECT_LIBRARY)
+function(getPchTarget TARGET TARGET_DIR TYPE PCH OBJECT_LIBRARY FAST_DEBUG)
 
     if(${OBJECT_LIBRARY})
         set(TARGET_NAME ${TARGET}_obj)
@@ -756,10 +756,13 @@ function(getPchTarget TARGET TARGET_DIR TYPE PCH OBJECT_LIBRARY)
         set(${TARGET_NAME}_PCH_TARGET ${TARGET_NAME} PARENT_SCOPE)
     else()
         # Default pch
+        if(FAST_DEBUG AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            set(PCH_SUFFIX "Og")
+        endif()
         if( TYPE STREQUAL "MODULE" )
-            set(${TARGET_NAME}_PCH_TARGET pchService PARENT_SCOPE)
+            set(${TARGET_NAME}_PCH_TARGET pchService${PCH_SUFFIX} PARENT_SCOPE)
         else()
-            set(${TARGET_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
+            set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
         endif()
     endif()
 
@@ -769,7 +772,7 @@ endfunction()
 macro(sight_add_target)
 
     set(options)
-    set(oneValueArgs TYPE PCH START PRIORITY CONSOLE OBJECT_LIBRARY WARNINGS_AS_ERRORS UNIQUE)
+    set(oneValueArgs TYPE PCH START PRIORITY CONSOLE OBJECT_LIBRARY WARNINGS_AS_ERRORS UNIQUE FAST_DEBUG)
     set(multiValueArgs)
     cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -788,9 +791,13 @@ macro(sight_add_target)
         set(SIGHT_TARGET_OBJECT_LIBRARY OFF)
     endif()
     
+    if(NOT DEFINED SIGHT_TARGET_FAST_DEBUG)
+        set(SIGHT_TARGET_FAST_DEBUG OFF)
+    endif()
+
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(SIGHT_ENABLE_PCH AND SIGHT_TARGET_TYPE AND SIGHT_TARGET_PCH)
-        getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH} ${SIGHT_TARGET_OBJECT_LIBRARY})
+        getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH} ${SIGHT_TARGET_OBJECT_LIBRARY} ${SIGHT_TARGET_FAST_DEBUG})
     endif()
     
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE")
@@ -827,6 +834,19 @@ macro(sight_add_target)
         # Forward the flag on the object library if it is used
         if(SIGHT_TARGET_OBJECT_LIBRARY)
             fwManageWarnings(${SIGHT_TARGET}_obj)
+        endif()
+    endif()
+
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        
+        if(SIGHT_TARGET_FAST_DEBUG)
+            if(UNIX)
+                target_compile_options(${SIGHT_TARGET} PRIVATE "-Og")
+            elseif(MSVC)
+                set_fast_debug_cxx_flags(${SIGHT_TARGET} ${SIGHT_TARGET_OBJECT_LIBRARY})
+            endif()
+        elseif(MSVC)
+            restore_cxx_flags(${SIGHT_TARGET} ${SIGHT_CMAKE_CXX_FLAGS_DEBUG} ${SIGHT_TARGET_OBJECT_LIBRARY})
         endif()
     endif()
 

@@ -128,7 +128,7 @@ void ArrayTest::resize()
 
     std::uint32_t count = 0;
 
-    data::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
+    auto iter = array->begin<std::uint32_t>();
 
     for( ; iter != array->end<std::uint32_t>() ; ++iter)
     {
@@ -232,9 +232,9 @@ void ArrayTest::reallocate()
     array->resize(size, core::tools::Type::s_UINT32, true);
     auto lock = array->lock();
 
-    std::uint32_t count                          = 0;
-    data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
-    data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+    std::uint32_t count = 0;
+    auto iter           = array->begin<std::uint32_t>();
+    auto iterEnd        = array->end<std::uint32_t>();
     for( ; iter != iterEnd ; ++iter)
     {
         *iter = count++;
@@ -368,9 +368,9 @@ void ArrayTest::copy()
     auto arrayLock = array->lock();
     CPPUNIT_ASSERT(array->getBuffer() != nullptr);
 
-    std::uint32_t count                          = 0;
-    data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
-    data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
+    std::uint32_t count = 0;
+    auto iter           = array->begin<std::uint32_t>();
+    auto iterEnd        = array->end<std::uint32_t>();
 
     for( ; iter != iterEnd ; ++iter)
     {
@@ -471,23 +471,25 @@ void ArrayTest::bufferAccessTest()
     array->resize(size, core::tools::Type::s_UINT32, true);
 
     {
+        CPPUNIT_ASSERT_THROW(array->getBuffer(), core::Exception);
+        CPPUNIT_ASSERT_THROW(array->begin(), core::Exception);
+        CPPUNIT_ASSERT_THROW(array->end(), core::Exception);
+    }
+
+    const auto lock = array->lock();
+    {
         // Check that the iterator properly lock the buffer
         CPPUNIT_ASSERT_NO_THROW(array->begin());
-        const auto itr = array->begin();
         CPPUNIT_ASSERT_NO_THROW(array->getBuffer());
     }
 
-    std::uint32_t count                          = 0;
-    data::Array::Iterator<std::uint32_t> iter    = array->begin<std::uint32_t>();
-    data::Array::Iterator<std::uint32_t> iterEnd = array->end<std::uint32_t>();
-
-    for( ; iter != iterEnd ; ++iter)
+    std::uint32_t count = 0;
+    for(auto& iter : array->range<std::uint32_t>())
     {
-        *iter = count++;
+        iter = count++;
     }
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), count);
-    CPPUNIT_ASSERT(iterEnd == iter);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), array->at<std::uint32_t>({0, 0}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(10), array->at<std::uint32_t>({0, 1}));
     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(99), array->at<std::uint32_t>({9, 9}));
@@ -496,7 +498,7 @@ void ArrayTest::bufferAccessTest()
     CPPUNIT_ASSERT_THROW(array->at<std::uint32_t>({0, 100}), data::Exception);
 
     {
-        Array::Iterator<std::uint32_t> itr = array->begin<std::uint32_t>();
+        auto itr = array->begin<std::uint32_t>();
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), *itr);
         itr++;
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
@@ -521,7 +523,7 @@ void ArrayTest::bufferAccessTest()
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1000), val);
     }
     {
-        Array::ConstIterator<std::uint32_t> itr = array->begin<std::uint32_t>();
+        auto itr = array->cbegin<std::uint32_t>();
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(0), *itr);
         itr++;
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint32_t>(1), *itr);
@@ -556,8 +558,8 @@ void ArrayTest::constArrayTest()
     array->resize(size, core::tools::Type::s_UINT32, true);
     auto lock = array->lock();
 
-    std::uint32_t count                       = 0;
-    data::Array::Iterator<std::uint32_t> iter = array->begin<std::uint32_t>();
+    std::uint32_t count = 0;
+    auto iter           = array->begin<std::uint32_t>();
     for( ; iter != array->end<std::uint32_t>() ; ++iter)
     {
         *iter = count++;
@@ -599,9 +601,9 @@ void ArrayTest::emptyIteratorTest()
     array->resize({10, 100}, core::tools::Type::s_UINT32);
     auto lock = array->lock();
 
-    std::uint32_t count                                 = 0;
-    data::Array::Iterator<std::uint32_t> iterForFilling = array->begin<std::uint32_t>();
-    const auto end                                      = array->end<std::uint32_t>();
+    std::uint32_t count = 0;
+    auto iterForFilling = array->begin<std::uint32_t>();
+    const auto end      = array->end<std::uint32_t>();
 
     for( ; iterForFilling != end ; ++iterForFilling)
     {
@@ -610,7 +612,7 @@ void ArrayTest::emptyIteratorTest()
 
     auto iter = array->begin<std::uint32_t>();
 
-    data::Array::Iterator<std::uint32_t> maxIter;
+    data::Array::iterator<std::uint32_t> maxIter;
 
     std::uint32_t maxValue = *iter;
     for( ; iter != end ; ++iter)

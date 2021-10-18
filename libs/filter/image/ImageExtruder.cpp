@@ -52,32 +52,29 @@ template<typename IMAGE_TYPE>
 void ImageExtruder::operator()(Parameters& _param)
 {
     // Creates triangles and bounding box of the mesh.
-    const auto itPoint   = _param.m_mesh->begin<data::iterator::ConstPointIterator>();
-    const auto itCellEnd = _param.m_mesh->end<data::iterator::ConstCellIterator>();
-    auto itCell          = _param.m_mesh->begin<data::iterator::ConstCellIterator>();
-    const float min      = std::numeric_limits<float>::lowest();
-    const float max      = std::numeric_limits<float>::max();
+    const float min = std::numeric_limits<float>::lowest();
+    const float max = std::numeric_limits<float>::max();
 
     std::list<Triangle> triangles;
     ::glm::vec3 minBound(max, max, max);
     ::glm::vec3 maxBound(min, min, min);
 
     const auto addTriangle =
-        [&](const data::iterator::ConstPointIterator& _pa,
-            const data::iterator::ConstPointIterator& _pb,
-            const data::iterator::ConstPointIterator& _pc)
+        [&](const data::iterator::point::xyz& _pa,
+            const data::iterator::point::xyz& _pb,
+            const data::iterator::point::xyz& _pc)
         {
-            const float ax = _pa->point->x;
-            const float ay = _pa->point->y;
-            const float az = _pa->point->z;
+            const float ax = _pa.x;
+            const float ay = _pa.y;
+            const float az = _pa.z;
 
-            const float bx = _pb->point->x;
-            const float by = _pb->point->y;
-            const float bz = _pb->point->z;
+            const float bx = _pb.x;
+            const float by = _pb.y;
+            const float bz = _pb.z;
 
-            const float cx = _pc->point->x;
-            const float cy = _pc->point->y;
-            const float cz = _pc->point->z;
+            const float cx = _pc.x;
+            const float cy = _pc.y;
+            const float cz = _pc.z;
 
             const ::glm::vec3 triA(ax, ay, az);
             const ::glm::vec3 triB(bx, by, bz);
@@ -94,34 +91,39 @@ void ImageExtruder::operator()(Parameters& _param)
             maxBound.z = std::max(std::max(std::max(maxBound.z, az), bz), cz);
         };
 
-    for( ; itCell != itCellEnd ; ++itCell)
+    auto itPoint = _param.m_mesh->cbegin<data::iterator::point::xyz>();
+
+    const auto cellSize = _param.m_mesh->getCellSize();
+    if(cellSize < 3)
     {
-        if(itCell->nbPoints < 3)
+        SIGHT_FATAL("The extrusion works only with meshes of at least three points per cells");
+    }
+    else if(cellSize == 3)
+    {
+        for(const auto& cell : _param.m_mesh->crange<data::iterator::cell::triangle>())
         {
-            SIGHT_FATAL("The extrusion works only with meshes of at least three points per cells");
+            const auto& pointA = itPoint + cell.pt[0];
+            const auto& pointB = itPoint + cell.pt[1];
+            const auto& pointC = itPoint + cell.pt[2];
+            addTriangle(*pointA, *pointB, *pointC);
         }
-        else if(itCell->nbPoints == 3)
+    }
+    else if(cellSize == 4)
+    {
+        for(const auto& cell : _param.m_mesh->crange<data::iterator::cell::quad>())
         {
-            const auto pointA = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
-            const auto pointB = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
-            const auto pointC = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
+            const auto& pointA = itPoint + cell.pt[0];
+            const auto& pointB = itPoint + cell.pt[1];
+            const auto& pointC = itPoint + cell.pt[2];
+            const auto& pointD = itPoint + cell.pt[3];
 
-            addTriangle(pointA, pointB, pointC);
+            addTriangle(*pointA, *pointB, *pointC);
+            addTriangle(*pointC, *pointD, *pointA);
         }
-        else if(itCell->nbPoints == 4)
-        {
-            const auto pointA = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[0]);
-            const auto pointB = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[1]);
-            const auto pointC = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[2]);
-            const auto pointD = data::iterator::ConstPointIterator(itPoint + itCell->pointIdx[3]);
-
-            addTriangle(pointA, pointB, pointC);
-            addTriangle(pointC, pointD, pointA);
-        }
-        else
-        {
-            SIGHT_FATAL("The extrusion works only with meshes of at most four points per cells");
-        }
+    }
+    else
+    {
+        SIGHT_FATAL("The extrusion works only with meshes of at most four points per cells");
     }
 
     // Get images.

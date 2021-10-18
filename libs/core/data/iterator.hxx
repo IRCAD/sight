@@ -22,19 +22,14 @@
 
 #pragma once
 
-#include "data/Image.hpp"
-
 namespace sight::data
-{
-
-namespace iterator
 {
 
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(ImageType image) :
-    m_current(static_cast<pointer>(image->getBuffer()))
+constexpr FINLINE array_iterator<FORMAT>::array_iterator(pointer begin) :
+    m_current(begin)
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     m_begin = m_current;
@@ -46,8 +41,8 @@ constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(ImageType image) 
 
 template<class FORMAT>
 template<bool isConst, typename>
-constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(
-    const ImageIteratorBase<std::remove_const_t<FORMAT> >& other
+constexpr FINLINE array_iterator<FORMAT>::array_iterator(
+    const array_iterator<std::remove_const_t<FORMAT> >& other
 ) :
     m_current(other.m_current)
 {
@@ -60,7 +55,7 @@ constexpr FINLINE ImageIteratorBase<FORMAT>::ImageIteratorBase(
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator==(const ImageIteratorBase& other) const noexcept
+constexpr FINLINE bool array_iterator<FORMAT>::operator==(const array_iterator& other) const noexcept
 {
     return m_current == other.m_current;
 }
@@ -68,7 +63,7 @@ constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator==(const ImageIterator
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator!=(const ImageIteratorBase& other) const noexcept
+constexpr FINLINE bool array_iterator<FORMAT>::operator!=(const array_iterator& other) const noexcept
 {
     return m_current != other.m_current;
 }
@@ -76,7 +71,7 @@ constexpr FINLINE bool ImageIteratorBase<FORMAT>::operator!=(const ImageIterator
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE typename ImageIteratorBase<FORMAT>::reference ImageIteratorBase<FORMAT>::operator*() const
+inline FINLINE typename array_iterator<FORMAT>::reference array_iterator<FORMAT>::operator*() const
 {
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator needs to be initialized", m_current);
@@ -87,7 +82,7 @@ inline FINLINE typename ImageIteratorBase<FORMAT>::reference ImageIteratorBase<F
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE typename ImageIteratorBase<FORMAT>::pointer ImageIteratorBase<FORMAT>::operator->() const noexcept
+constexpr FINLINE typename array_iterator<FORMAT>::pointer array_iterator<FORMAT>::operator->() const noexcept
 {
     return m_current;
 }
@@ -95,7 +90,7 @@ constexpr FINLINE typename ImageIteratorBase<FORMAT>::pointer ImageIteratorBase<
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator++()
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator++()
 {
     ++m_current;
 #ifdef SIGHT_DEBUG_ITERATOR
@@ -107,9 +102,9 @@ inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator++(
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator++(int)
+inline FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator++(int)
 {
-    ImageIteratorBase tmp(*this);
+    array_iterator tmp(*this);
     ++m_current;
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator out of bounds ", m_current <= m_end);
@@ -120,9 +115,9 @@ FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator++(int)
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator+(difference_type index) const
+constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator+(difference_type index) const
 {
-    ImageIteratorBase tmp(*this);
+    array_iterator tmp(*this);
     tmp += index;
     return tmp;
 }
@@ -130,7 +125,7 @@ constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator+
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator+=(difference_type index)
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator+=(difference_type index)
 {
     m_current += index;
 #ifdef SIGHT_DEBUG_ITERATOR
@@ -142,7 +137,7 @@ inline FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator+=(
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator--()
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator--()
 {
     --m_current;
 #ifdef SIGHT_DEBUG_ITERATOR
@@ -154,9 +149,9 @@ FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator--()
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator--(int)
+inline FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator--(int)
 {
-    ImageIteratorBase tmp(*this);
+    array_iterator tmp(*this);
     --m_current;
 #ifdef SIGHT_DEBUG_ITERATOR
     SIGHT_ASSERT("Iterator out of bounds ", m_begin <= m_current);
@@ -167,9 +162,9 @@ FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator--(int)
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator-(difference_type index) const
+constexpr FINLINE array_iterator<FORMAT> array_iterator<FORMAT>::operator-(difference_type index) const
 {
-    ImageIteratorBase tmp(*this);
+    array_iterator tmp(*this);
     tmp -= index;
     return tmp;
 }
@@ -177,7 +172,7 @@ constexpr FINLINE ImageIteratorBase<FORMAT> ImageIteratorBase<FORMAT>::operator-
 //------------------------------------------------------------------------------
 
 template<class FORMAT>
-FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator-=(difference_type index)
+inline FINLINE array_iterator<FORMAT>& array_iterator<FORMAT>::operator-=(difference_type index)
 {
     m_current -= index;
 #ifdef SIGHT_DEBUG_ITERATOR
@@ -189,15 +184,13 @@ FINLINE ImageIteratorBase<FORMAT>& ImageIteratorBase<FORMAT>::operator-=(differe
 //-----------------------------------------------------------------------------
 
 template<class FORMAT>
-constexpr FINLINE typename ImageIteratorBase<FORMAT>::difference_type ImageIteratorBase<FORMAT>::operator-(
-    const ImageIteratorBase& other
+constexpr FINLINE typename array_iterator<FORMAT>::difference_type array_iterator<FORMAT>::operator-(
+    const array_iterator& other
 ) const noexcept
 {
     return m_current - other.m_current;
 }
 
 //------------------------------------------------------------------------------
-
-} // namespace iterator
 
 } // namespace sight::data

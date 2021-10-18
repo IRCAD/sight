@@ -726,52 +726,41 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
         // 3 points per triangle and one cell per triangle.
         mesh->resize(
-            static_cast<data::Mesh::Size>(_triangulation.size() * 3),
-            static_cast<data::Mesh::Size>(_triangulation.size()),
+            static_cast<data::Mesh::size_t>(_triangulation.size() * 3),
+            static_cast<data::Mesh::size_t>(_triangulation.size()),
             data::Mesh::CellType::TRIANGLE,
             data::Mesh::Attributes::POINT_NORMALS
         );
 
         // Fill points.
         {
-            auto it = mesh->begin<data::iterator::PointIterator>();
+            auto it = mesh->begin<data::iterator::point::xyz>();
 
             for(const Triangle3D& triangle : _triangulation)
             {
-                it->point->x = triangle.a.x;
-                it->point->y = triangle.a.y;
-                it->point->z = triangle.a.z;
+                it->x = triangle.a.x;
+                it->y = triangle.a.y;
+                it->z = triangle.a.z;
                 ++it;
-                it->point->x = triangle.b.x;
-                it->point->y = triangle.b.y;
-                it->point->z = triangle.b.z;
+                it->x = triangle.b.x;
+                it->y = triangle.b.y;
+                it->z = triangle.b.z;
                 ++it;
-                it->point->x = triangle.c.x;
-                it->point->y = triangle.c.y;
-                it->point->z = triangle.c.z;
+                it->x = triangle.c.x;
+                it->y = triangle.c.y;
+                it->z = triangle.c.z;
                 ++it;
             }
         }
 
         // Fill cell coordinates.
         {
-            auto it              = mesh->begin<data::iterator::CellIterator>();
-            const auto itEnd     = mesh->end<data::iterator::CellIterator>();
-            const auto itPrevEnd = itEnd - 1;
-
-            for(data::Mesh::Size index = 0 ; index < _triangulation.size() * 3 ; index += 3)
+            auto it = mesh->begin<data::iterator::cell::triangle>();
+            for(data::Mesh::size_t index = 0 ; index < _triangulation.size() * 3 ; index += 3)
             {
-                *it->type   = data::Mesh::CellType::TRIANGLE;
-                *it->offset = index;
-
-                if(it != itPrevEnd)
-                {
-                    (*(it + 1)->offset) = index + 3;
-                }
-
-                it->pointIdx[0] = index;
-                it->pointIdx[1] = index + 1;
-                it->pointIdx[2] = index + 2;
+                it->pt[0] = index;
+                it->pt[1] = index + 1;
+                it->pt[2] = index + 2;
 
                 ++it;
             }

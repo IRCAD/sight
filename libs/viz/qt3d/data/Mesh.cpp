@@ -202,7 +202,7 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
     // Checks if the mesh has normals. If not, generates them.
-    if(!_mesh->hasPointNormals())
+    if(!_mesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
     {
         geometry::data::Mesh::generatePointNormals(_mesh);
     }
@@ -211,63 +211,62 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     bool minMaxSet = false;
 
     // Iterates over points and registers each point in position and normal buffers.
-    auto itrPt          = _mesh->begin<sight::data::iterator::ConstPointIterator>();
-    const auto endItrPt = _mesh->end<sight::data::iterator::ConstPointIterator>();
+    using namespace sight::data::iterator;
 
     unsigned int countPts = 0;
-    for( ; itrPt != endItrPt ; ++itrPt)
+    for(const auto& [p, n] : _mesh->czip_range<point::xyz, point::nxyz>())
     {
-        rawPosBufferData[countPts]     = itrPt->point->x;
-        rawPosBufferData[countPts + 1] = itrPt->point->y;
-        rawPosBufferData[countPts + 2] = itrPt->point->z;
+        rawPosBufferData[countPts]     = p.x;
+        rawPosBufferData[countPts + 1] = p.y;
+        rawPosBufferData[countPts + 2] = p.z;
 
-        rawNormalBufferData[countPts]     = itrPt->normal->nx;
-        rawNormalBufferData[countPts + 1] = itrPt->normal->ny;
-        rawNormalBufferData[countPts + 2] = itrPt->normal->nz;
+        rawNormalBufferData[countPts]     = n.nx;
+        rawNormalBufferData[countPts + 1] = n.ny;
+        rawNormalBufferData[countPts + 2] = n.nz;
 
         countPts += 3;
 
         // Computes mesh extents and center. Needed to center camera.
         if(!minMaxSet)
         {
-            minX      = itrPt->point->x;
-            maxX      = itrPt->point->x;
-            minY      = itrPt->point->y;
-            maxY      = itrPt->point->y;
-            minZ      = itrPt->point->z;
-            maxZ      = itrPt->point->z;
+            minX      = p.x;
+            maxX      = p.x;
+            minY      = p.y;
+            maxY      = p.y;
+            minZ      = p.z;
+            maxZ      = p.z;
             minMaxSet = true;
         }
         else
         {
-            if(itrPt->point->x < minX)
+            if(p.x < minX)
             {
-                minX = itrPt->point->x;
+                minX = p.x;
             }
 
-            if(itrPt->point->x > maxX)
+            if(p.x > maxX)
             {
-                maxX = itrPt->point->x;
+                maxX = p.x;
             }
 
-            if(itrPt->point->y < minY)
+            if(p.y < minY)
             {
-                minY = itrPt->point->y;
+                minY = p.y;
             }
 
-            if(itrPt->point->y > maxY)
+            if(p.y > maxY)
             {
-                maxY = itrPt->point->y;
+                maxY = p.y;
             }
 
-            if(itrPt->point->z < minZ)
+            if(p.z < minZ)
             {
-                maxZ = itrPt->point->z;
+                maxZ = p.z;
             }
 
-            if(itrPt->point->z > maxZ)
+            if(p.z > maxZ)
             {
-                maxZ = itrPt->point->z;
+                maxZ = p.z;
             }
         }
     }
@@ -283,60 +282,44 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
         );
 
     // Iterates over cells and registers points index in index buffer.
-    auto itrCell      = _mesh->begin<sight::data::iterator::ConstCellIterator>();
-    const auto endItr = _mesh->end<sight::data::iterator::ConstCellIterator>();
-
-    bool isTriangleMesh = true;
+    const auto cellType = _mesh->getCellType();
 
     // TODO: The loop before is probably not optimal and would need some extra optimization work
-    // Also, mesh composed of triangles and quads would probably not be handled properly
     // See comments in https://git.ircad.fr/sight/sight/-/merge_requests/476
     unsigned int countIndex = 0;
-    for( ; itrCell != endItr ; ++itrCell)
+
+    if(cellType == sight::data::Mesh::CellType::TRIANGLE)
     {
-        if(countIndex == 0 && itrCell->nbPoints == 4)
+        for(const auto& cell : _mesh->crange<cell::triangle>())
         {
-            isTriangleMesh = false;
-
-            // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
-            // triangle mesh.
-            indexBufferData.resize(
-                6 * static_cast<int>(_mesh->getNumberOfCells())
-                * static_cast<int>(sizeof(unsigned int))
-            );
-            rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
-
-            m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
-
-            this->addComputeEntityToScene(static_cast<int>(_mesh->getNumberOfCells()));
+            rawIndexBufferData[countIndex++] = cell.pt[0];
+            rawIndexBufferData[countIndex++] = cell.pt[1];
+            rawIndexBufferData[countIndex++] = cell.pt[2];
         }
+    }
+    else if(cellType == sight::data::Mesh::CellType::QUAD)
+    {
+        // Resizes index buffer if quad mesh to have correct number of indices once quad mesh is converted to
+        // triangle mesh.
+        indexBufferData.resize(
+            6 * static_cast<int>(_mesh->getNumberOfCells())
+            * static_cast<int>(sizeof(unsigned int))
+        );
+        rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
-        SIGHT_WARN_IF(
-            "A mesh can contain only one type of primitive (quad or triangle).",
-            (!isTriangleMesh && itrCell->nbPoints != 4) || (isTriangleMesh && itrCell->nbPoints != 3)
-        )
+        m_indexAttrib->setCount(6 * static_cast<unsigned int>(_mesh->getNumberOfCells()));
 
-        for(unsigned int i = 0 ; i < itrCell->nbPoints ; ++i)
+        this->addComputeEntityToScene(static_cast<int>(_mesh->getNumberOfCells()));
+        for(const auto& cell : _mesh->crange<cell::quad>())
         {
-            auto pIdx = static_cast<unsigned int>(itrCell->pointIdx[i]);
+            rawIndexBufferData[countIndex++] = cell.pt[0];
+            rawIndexBufferData[countIndex++] = cell.pt[1];
+            rawIndexBufferData[countIndex++] = cell.pt[2];
+            rawIndexBufferData[countIndex++] = cell.pt[3];
 
-            // If triangle mesh, only need to copy each point
-            if(isTriangleMesh || (i != itrCell->nbPoints - 1))
-            {
-                rawIndexBufferData[countIndex] = pIdx;
-
-                countIndex++;
-            }
-            // If quad mesh, a quad face is rearranged in 2 triangle face
-            // 6 points are defined, 4 with quad coordinates, and the last 2 points will be completed by compute shader
-            else
-            {
-                rawIndexBufferData[countIndex]     = 0;
-                rawIndexBufferData[countIndex + 1] = pIdx;
-                rawIndexBufferData[countIndex + 2] = 0;
-
-                countIndex += 3;
-            }
+            rawIndexBufferData[countIndex++]     = 0;
+            rawIndexBufferData[countIndex++ + 1] = cell.pt[0];
+            rawIndexBufferData[countIndex++ + 2] = 0;
         }
     }
 

@@ -80,6 +80,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_PCH=OFF
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
+      -DSIGHT_ENABLE_REALSENSE=ON
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build

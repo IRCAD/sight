@@ -53,50 +53,51 @@ const unsigned int Mesh::s_maxTextureSize;
 
 template<typename T>
 void copyIndices(
-    void* _pTriangles,
-    void* _pQuads,
-    void* _pEdges,
-    void* _pTetras,
-    const data::Mesh::csptr& _mesh
+    void* _cells,
+    const data::Mesh& _mesh
 )
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
-    T* pTriangles = static_cast<T*>(_pTriangles);
-    T* pQuads     = static_cast<T*>(_pQuads);
-    T* pEdges     = static_cast<T*>(_pEdges);
-    T* pTetras    = static_cast<T*>(_pTetras);
+    T* cells = static_cast<T*>(_cells);
 
-    auto cellItr       = _mesh->begin<data::iterator::ConstCellIterator>();
-    const auto cellEnd = _mesh->end<data::iterator::ConstCellIterator>();
+    const auto type = _mesh.getCellType();
 
-    for( ; cellItr != cellEnd ; ++cellItr)
+    if(type == data::Mesh::CellType::TRIANGLE)
     {
-        const auto type = *cellItr->type;
-        if(type == data::Mesh::CellType::TRIANGLE)
+        for(auto& cell : _mesh.crange<data::iterator::cell::triangle>())
         {
-            *pTriangles++ = static_cast<T>(cellItr->pointIdx[0]);
-            *pTriangles++ = static_cast<T>(cellItr->pointIdx[1]);
-            *pTriangles++ = static_cast<T>(cellItr->pointIdx[2]);
+            *cells++ = static_cast<T>(cell.pt[0]);
+            *cells++ = static_cast<T>(cell.pt[1]);
+            *cells++ = static_cast<T>(cell.pt[2]);
         }
-        else if(type == data::Mesh::CellType::QUAD)
+    }
+    else if(type == data::Mesh::CellType::QUAD)
+    {
+        for(auto& cell : _mesh.crange<data::iterator::cell::quad>())
         {
-            *pQuads++ = static_cast<T>(cellItr->pointIdx[0]);
-            *pQuads++ = static_cast<T>(cellItr->pointIdx[1]);
-            *pQuads++ = static_cast<T>(cellItr->pointIdx[2]);
-            *pQuads++ = static_cast<T>(cellItr->pointIdx[3]);
+            *cells++ = static_cast<T>(cell.pt[0]);
+            *cells++ = static_cast<T>(cell.pt[1]);
+            *cells++ = static_cast<T>(cell.pt[2]);
+            *cells++ = static_cast<T>(cell.pt[3]);
         }
-        else if(type == data::Mesh::CellType::EDGE)
+    }
+    else if(type == data::Mesh::CellType::LINE)
+    {
+        for(auto& cell : _mesh.crange<data::iterator::cell::line>())
         {
-            *pEdges++ = static_cast<T>(cellItr->pointIdx[0]);
-            *pEdges++ = static_cast<T>(cellItr->pointIdx[1]);
+            *cells++ = static_cast<T>(cell.pt[0]);
+            *cells++ = static_cast<T>(cell.pt[1]);
         }
-        else if(type == data::Mesh::CellType::TETRA)
+    }
+    else if(type == data::Mesh::CellType::TETRA)
+    {
+        for(auto& cell : _mesh.crange<data::iterator::cell::tetra>())
         {
-            *pTetras++ = static_cast<T>(cellItr->pointIdx[0]);
-            *pTetras++ = static_cast<T>(cellItr->pointIdx[1]);
-            *pTetras++ = static_cast<T>(cellItr->pointIdx[2]);
-            *pTetras++ = static_cast<T>(cellItr->pointIdx[3]);
+            *cells++ = static_cast<T>(cell.pt[0]);
+            *cells++ = static_cast<T>(cell.pt[1]);
+            *cells++ = static_cast<T>(cell.pt[2]);
+            *cells++ = static_cast<T>(cell.pt[3]);
         }
     }
 }
@@ -105,7 +106,7 @@ void copyIndices(
 
 Mesh::Mesh(const std::string& _name)
 {
-    m_subMeshes.fill(nullptr);
+    m_subMesh = nullptr;
 
     m_binding[POSITION_NORMAL] = 0;
     m_binding[COLOUR]          = 0xFFFF;
@@ -219,7 +220,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
     // Check if the mesh has normals - we assume we should have as many normals as points
     // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
-    m_hasNormal = _mesh->hasPointNormals();
+    m_hasNormal = _mesh->has<data::Mesh::Attributes::POINT_NORMALS>();
 
     //------------------------------------------
     // Create vertex arrays
@@ -242,20 +243,11 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     {
         // Verify if mesh contains Tetra, Edge or Point
         // If not, generate normals
-        auto cellItr        = _mesh->begin<data::iterator::ConstCellIterator>();
-        const auto cellEnd  = _mesh->end<data::iterator::ConstCellIterator>();
-        bool computeNormals = true;
 
-        for( ; cellItr != cellEnd ; ++cellItr)
-        {
-            auto cellType = *cellItr->type;
-            if(cellType == data::Mesh::CellType::EDGE || cellType == data::Mesh::CellType::TETRA
-               || cellType == data::Mesh::CellType::POINT)
-            {
-                computeNormals = false;
-                break;
-            }
-        }
+        const auto cellType       = _mesh->getCellType();
+        const bool computeNormals = (cellType != data::Mesh::CellType::LINE
+                                     && cellType != data::Mesh::CellType::TETRA
+                                     && cellType != data::Mesh::CellType::POINT);
 
         if(computeNormals)
         {
@@ -311,192 +303,134 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
     // Create indices arrays
     //------------------------------------------
 
-    // 1 - Count number of primitives for each type
-    auto cellItr       = _mesh->begin<data::iterator::ConstCellIterator>();
-    const auto cellEnd = _mesh->end<data::iterator::ConstCellIterator>();
-    unsigned int numIndices[s_numPrimitiveTypes];
-
-    memset(numIndices, 0, sizeof(numIndices));
-
-    for( ; cellItr != cellEnd ; ++cellItr)
-    {
-        auto cellType = _pointsOnly
-                        ? data::Mesh::CellType::POINT
-                        : *cellItr->type;
-        if(cellType == data::Mesh::CellType::POINT)
-        {
-            numIndices[static_cast<unsigned int>(data::Mesh::CellType::POINT)] += 1;
-        }
-        else if(cellType == data::Mesh::CellType::EDGE)
-        {
-            numIndices[static_cast<unsigned int>(data::Mesh::CellType::EDGE)] += 2;
-        }
-        else if(cellType == data::Mesh::CellType::TRIANGLE)
-        {
-            numIndices[static_cast<unsigned int>(data::Mesh::CellType::TRIANGLE)] += 3;
-        }
-        else if(cellType == data::Mesh::CellType::QUAD)
-        {
-            numIndices[static_cast<unsigned int>(data::Mesh::CellType::QUAD)] += 4;
-        }
-        else if(cellType == data::Mesh::CellType::TETRA)
-        {
-            numIndices[static_cast<unsigned int>(data::Mesh::CellType::TETRA)] += 4;
-        }
-        else
-        {
-            SIGHT_ERROR("Unhandled cell type in Ogre mesh: " << static_cast<int>(cellType));
-        }
-    }
-
-    // 2 - Create a submesh for each primitive type
-    void* indexBuffer[s_numPrimitiveTypes];
-    memset(indexBuffer, 0, sizeof(indexBuffer));
-
+    // 1 - Create a submesh for the primitive type
     const bool indices32Bits     = numVertices >= (1 << 16);
     const bool indicesPrev32Bits = prevNumVertices >= (1 << 16);
-    const bool hasPrimitiveColor = _mesh->hasCellColors();
+    const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
 
+    void* indexBuffer;
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
-        for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
+        const data::Mesh::CellType cellType     = _mesh->getCellType();
+        const data::Mesh::CellType prevCellType = m_cellType;
+
+        const bool destroyMesh = _mesh->getNumberOfCells() == 0 || prevCellType != cellType
+                                 || m_hasPrimitiveColor != hasPrimitiveColor;
+
+        // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
+        if(destroyMesh && m_subMesh)
         {
-            const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
-
-            if(numIndices[i] > 0)
+            std::string name = std::to_string(static_cast<int>(prevCellType));
+            if((prevCellType == data::Mesh::CellType::TRIANGLE && hasPrimitiveColor)
+               || (prevCellType == data::Mesh::CellType::TETRA || prevCellType == data::Mesh::CellType::QUAD))
             {
-                if(!m_subMeshes[i])
-                {
-                    // Create one submesh
-                    const std::string name = std::to_string(static_cast<int>(cellType));
-                    if(cellType == data::Mesh::CellType::TRIANGLE)
-                    {
-                        if(hasPrimitiveColor)
-                        {
-                            // Use r2vb pipeline for per-primitive color
-                            m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
-                            m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
-                        }
-                        else
-                        {
-                            m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
-                            m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
-                        }
-                    }
-                    else if(cellType == data::Mesh::CellType::EDGE)
-                    {
-                        m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
-                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
-                    }
-                    else if(cellType == data::Mesh::CellType::POINT)
-                    {
-                        m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
-                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
-                    }
-                    else if(cellType == data::Mesh::CellType::QUAD || cellType == data::Mesh::CellType::TETRA)
-                    {
-                        // Use r2vb pipeline to generate quads or tetrahedrons
-                        m_subMeshes[i]                = m_r2vbMesh->createSubMesh(name);
-                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST_ADJ;
-                    }
-
-                    m_subMeshes[i]->useSharedVertices     = true;
-                    m_subMeshes[i]->indexData->indexStart = 0;
-                }
-
-                if(cellType != data::Mesh::CellType::POINT)
-                {
-                    ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMeshes[i]->indexData->indexBuffer;
-
-                    // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
-                    // We don't reallocate if we have more space than requested
-                    bool createIndexBuffer = !ibuf;
-                    if(ibuf)
-                    {
-                        // reallocate if new mesh has more indexes or IndexType change
-                        createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i])
-                                            || (indicesPrev32Bits != indices32Bits);
-                    }
-
-                    if(createIndexBuffer)
-                    {
-                        ::Ogre::HardwareBuffer::Usage usage = m_isDynamic
-                                                              ? ::Ogre::HardwareBuffer::
-                                                              HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
-                                                              :
-                                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
-
-                        ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-                            indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
-                            numIndices[i],
-                            usage
-                        );
-
-                        m_subMeshes[i]->indexData->indexBuffer = ibuf;
-                    }
-
-                    m_subMeshes[i]->indexData->indexCount = numIndices[i];
-                    SIGHT_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount);
-
-                    // Lock index data, we are going to write into it in the next loop
-                    indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-                }
+                m_r2vbMesh->destroySubMesh(name);
             }
             else
             {
-                // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
-                if(m_subMeshes[i])
+                m_ogreMesh->destroySubMesh(name);
+            }
+
+            m_subMesh = nullptr;
+        }
+
+        if(_mesh->getNumberOfCells() > 0)
+        {
+            if(!m_subMesh)
+            {
+                // Create one submesh
+                const std::string name = std::to_string(static_cast<int>(cellType));
+                if(cellType == data::Mesh::CellType::TRIANGLE)
                 {
-                    std::string name = std::to_string(static_cast<int>(cellType));
-                    if((cellType == data::Mesh::CellType::TRIANGLE && hasPrimitiveColor)
-                       || (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
+                    if(hasPrimitiveColor)
                     {
-                        m_r2vbMesh->destroySubMesh(name);
+                        // Use r2vb pipeline for per-primitive color
+                        m_subMesh                = m_r2vbMesh->createSubMesh(name);
+                        m_subMesh->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST_ADJ;
                     }
                     else
                     {
-                        m_ogreMesh->destroySubMesh(name);
+                        m_subMesh                = m_ogreMesh->createSubMesh(name);
+                        m_subMesh->operationType = ::Ogre::RenderOperation::OT_TRIANGLE_LIST;
                     }
+                }
+                else if(cellType == data::Mesh::CellType::LINE)
+                {
+                    m_subMesh                = m_ogreMesh->createSubMesh(name);
+                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
+                }
+                else if(cellType == data::Mesh::CellType::POINT)
+                {
+                    m_subMesh                = m_ogreMesh->createSubMesh(name);
+                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+                }
+                else if(cellType == data::Mesh::CellType::QUAD || cellType == data::Mesh::CellType::TETRA)
+                {
+                    // Use r2vb pipeline to generate quads or tetrahedrons
+                    m_subMesh                = m_r2vbMesh->createSubMesh(name);
+                    m_subMesh->operationType = ::Ogre::RenderOperation::OT_LINE_LIST_ADJ;
+                }
 
-                    m_subMeshes[i] = nullptr;
+                m_subMesh->useSharedVertices     = true;
+                m_subMesh->indexData->indexStart = 0;
+            }
+
+            if(cellType != data::Mesh::CellType::POINT)
+            {
+                ::Ogre::HardwareIndexBufferSharedPtr ibuf = m_subMesh->indexData->indexBuffer;
+                const unsigned int numIndices             = _mesh->getNumberOfCells() * _mesh->getCellSize();
+
+                // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
+                // We don't reallocate if we have more space than requested
+                bool createIndexBuffer = !ibuf;
+                if(ibuf)
+                {
+                    // reallocate if new mesh has more indexes or IndexType change
+                    createIndexBuffer = (ibuf->getNumIndexes() < numIndices
+                                         || (indicesPrev32Bits != indices32Bits));
+                }
+
+                if(createIndexBuffer)
+                {
+                    ::Ogre::HardwareBuffer::Usage usage = m_isDynamic
+                                                          ? ::Ogre::HardwareBuffer::
+                                                          HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE
+                                                          :
+                                                          ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+                    ibuf = ::Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+                        indices32Bits ? ::Ogre::HardwareIndexBuffer::IT_32BIT : ::Ogre::HardwareIndexBuffer::IT_16BIT,
+                        numIndices,
+                        usage
+                    );
+
+                    m_subMesh->indexData->indexBuffer = ibuf;
+                }
+
+                m_subMesh->indexData->indexCount = numIndices;
+                SIGHT_DEBUG("Index #" << m_subMesh->indexData->indexCount);
+
+                // Lock index data, we are going to write into it in the next loop
+                indexBuffer = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+
+                if(indices32Bits)
+                {
+                    copyIndices<std::uint32_t>(indexBuffer, *_mesh);
+                }
+                else
+                {
+                    copyIndices<std::uint16_t>(indexBuffer, *_mesh);
                 }
             }
         }
-    }
 
-    // 3 - Copy indices data
+        if(m_subMesh->indexData->indexBuffer)
+        {
+            m_subMesh->indexData->indexBuffer->unlock();
+        }
 
-    if(!_pointsOnly)
-    {
-        if(indices32Bits)
-        {
-            copyIndices<std::uint32_t>(
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
-                _mesh
-            );
-        }
-        else
-        {
-            copyIndices<std::uint16_t>(
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TRIANGLE)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::EDGE)],
-                indexBuffer[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)],
-                _mesh
-            );
-        }
-    }
-
-    for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
-    {
-        if(numIndices[i] > 0 && m_subMeshes[i]->indexData->indexBuffer)
-        {
-            m_subMeshes[i]->indexData->indexBuffer->unlock();
-        }
+        m_cellType = cellType;
     }
 }
 
@@ -567,12 +501,11 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
         m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
     }
 
-    const size_t pointType = static_cast<size_t>(data::Mesh::CellType::POINT);
-    if(m_subMeshes[pointType] == nullptr)
+    if(m_subMesh == nullptr)
     {
-        m_subMeshes[pointType] =
-            m_ogreMesh->createSubMesh(std::to_string(pointType));
-        m_subMeshes[pointType]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+        const size_t pointType = static_cast<size_t>(data::Mesh::CellType::POINT);
+        m_subMesh                = m_ogreMesh->createSubMesh(std::to_string(pointType));
+        m_subMesh->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
     }
 }
 
@@ -594,9 +527,10 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
     std::vector<R2VBRenderable*> r2vbRenderables;
     bool add = true;
 
-    const bool hasPrimitiveColor = _mesh->hasCellColors();
-    if((m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::QUAD)]
-        || m_subMeshes[static_cast<unsigned int>(data::Mesh::CellType::TETRA)]) || hasPrimitiveColor)
+    const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
+    const bool bQuad             = m_cellType == data::Mesh::CellType::QUAD;
+    const bool bTetra            = m_cellType == data::Mesh::CellType::TETRA;
+    if(bQuad || bTetra || hasPrimitiveColor)
     {
         if(!m_r2vbMesh->sharedVertexData)
         {
@@ -623,9 +557,6 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
         {
             const auto subEntity = m_r2vbEntity->getSubEntity(i);
             const auto subMesh   = subEntity->getSubMesh();
-
-            const bool bQuad  = (subMesh == m_subMeshes[static_cast<std::uint8_t>(data::Mesh::CellType::QUAD)]);
-            const bool bTetra = (subMesh == m_subMeshes[static_cast<std::uint8_t>(data::Mesh::CellType::TETRA)]);
 
             const data::Mesh::CellType cellType = bQuad ? data::Mesh::CellType::QUAD
                                                         : bTetra ? data::Mesh::CellType::TETRA
@@ -693,64 +624,59 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     // Update Ogre Mesh with data::Mesh
     const auto dumpLock = _mesh->lock();
 
-    auto pointsItr       = _mesh->begin<data::iterator::ConstPointIterator>();
-    const auto pointsEnd = _mesh->end<data::iterator::ConstPointIterator>();
-
     size_t uiStrideFloat = 3;
     if(m_hasNormal)
     {
         uiStrideFloat += 3;
     }
 
-    typedef data::Mesh::PointValueType PointValueType;
-    typedef data::Mesh::NormalValueType NormalValueType;
+    typedef data::Mesh::position_t position_t;
+    typedef data::Mesh::normal_t normal_t;
 
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
-    PointValueType xMin = std::numeric_limits<PointValueType>::max();
-    PointValueType yMin = std::numeric_limits<PointValueType>::max();
-    PointValueType zMin = std::numeric_limits<PointValueType>::max();
-    PointValueType xMax = std::numeric_limits<PointValueType>::lowest();
-    PointValueType yMax = std::numeric_limits<PointValueType>::lowest();
-    PointValueType zMax = std::numeric_limits<PointValueType>::lowest();
+    position_t xMin = std::numeric_limits<position_t>::max();
+    position_t yMin = std::numeric_limits<position_t>::max();
+    position_t zMin = std::numeric_limits<position_t>::max();
+    position_t xMax = std::numeric_limits<position_t>::lowest();
+    position_t yMax = std::numeric_limits<position_t>::lowest();
+    position_t zMax = std::numeric_limits<position_t>::lowest();
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for( ; pointsItr != pointsEnd ; ++pointsItr)
+        for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
         {
-            const auto& pt0 = pointsItr->point->x;
+            const auto& pt0 = p.x;
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
 
-            const auto& pt1 = pointsItr->point->y;
+            const auto& pt1 = p.y;
             yMin = std::min(yMin, pt1);
             yMax = std::max(yMax, pt1);
 
-            const auto& pt2 = pointsItr->point->z;
+            const auto& pt2 = p.z;
             zMin = std::min(zMin, pt2);
             zMax = std::max(zMax, pt2);
         }
     }
     {
-        pointsItr = _mesh->begin<data::iterator::ConstPointIterator>();
-        PointValueType* __restrict pPos = static_cast<PointValueType*>(pVertex);
         FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
+        position_t* __restrict pPos = static_cast<position_t*>(pVertex);
+        for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
+        {
+            memcpy(pPos, &p.x, 3 * sizeof(position_t));
+            pPos += uiStrideFloat;
+        }
 
-        NormalValueType* __restrict pNormal = nullptr;
+        normal_t* __restrict pNormal = nullptr;
 
         if(m_hasNormal)
         {
-            pNormal = static_cast<NormalValueType*>(pVertex) + 3;
-        }
+            pNormal = static_cast<normal_t*>(pVertex) + 3;
 
-        for( ; pointsItr != pointsEnd ; ++pointsItr)
-        {
-            memcpy(pPos, pointsItr->point, 3 * sizeof(PointValueType));
-            pPos += uiStrideFloat;
-
-            if(m_hasNormal)
+            for(const auto& n : _mesh->crange<data::iterator::point::nxyz>())
             {
-                memcpy(pNormal, pointsItr->normal, 3 * sizeof(NormalValueType));
+                memcpy(pNormal, &n.nx, 3 * sizeof(normal_t));
                 pNormal += uiStrideFloat;
             }
         }
@@ -759,12 +685,12 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     // Unlock vertex data
     vbuf->unlock();
 
-    if(xMin < std::numeric_limits<PointValueType>::max()
-       && yMin < std::numeric_limits<PointValueType>::max()
-       && zMin < std::numeric_limits<PointValueType>::max()
-       && xMax > std::numeric_limits<PointValueType>::lowest()
-       && yMax > std::numeric_limits<PointValueType>::lowest()
-       && zMax > std::numeric_limits<PointValueType>::lowest())
+    if(xMin < std::numeric_limits<position_t>::max()
+       && yMin < std::numeric_limits<position_t>::max()
+       && zMin < std::numeric_limits<position_t>::max()
+       && xMax > std::numeric_limits<position_t>::lowest()
+       && yMax > std::numeric_limits<position_t>::lowest()
+       && zMax > std::numeric_limits<position_t>::lowest())
     {
         m_ogreMesh->_setBounds(::Ogre::AxisAlignedBox(xMin, yMin, zMin, xMax, yMax, zMax));
 
@@ -925,8 +851,8 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
-    const bool hasVertexColor    = _mesh->hasPointColors();
-    const bool hasPrimitiveColor = _mesh->hasCellColors();
+    const bool hasVertexColor    = _mesh->has<data::Mesh::Attributes::POINT_COLORS>();
+    const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
 
     // 1 - Initialization
     if(hasVertexColor)
@@ -946,19 +872,16 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     if(hasPrimitiveColor)
     {
         unsigned int numIndicesTotal = 0;
-        for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
+
+        if(m_subMesh)
         {
-            if(m_subMeshes[i])
+            if(_mesh->getCellType() == data::Mesh::CellType::TRIANGLE)
             {
-                const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
-                if(cellType == data::Mesh::CellType::TRIANGLE)
-                {
-                    numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount / 3);
-                }
-                else
-                {
-                    numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount >> 2);
-                }
+                numIndicesTotal += static_cast<unsigned int>(m_subMesh->indexData->indexCount / 3);
+            }
+            else
+            {
+                numIndicesTotal += static_cast<unsigned int>(m_subMesh->indexData->indexCount >> 2);
             }
         }
 
@@ -1014,10 +937,10 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
             static_cast< ::Ogre::RGBA*>(cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD));
 
         // Destination
-        const std::uint8_t* colors = _mesh->getPointColorsBuffer();
+        const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::point::rgba>())->r;
 
         // Copy points
-        const size_t nbComponents = _mesh->hasRGBPointColors() ? 3 : 4;
+        const size_t nbComponents = 4;
         viz::scene3d::helper::Mesh::copyColors(pColor, colors, _mesh->getNumberOfPoints(), nbComponents);
 
         cbuf->unlock();
@@ -1032,10 +955,10 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         ::Ogre::RGBA* pColorDest         = reinterpret_cast< ::Ogre::RGBA*>(pixelBox.data);
 
         // Destination
-        const std::uint8_t* colors = _mesh->getCellColorsBuffer();
+        const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::cell::rgba>())->r;
 
         // Copy cells
-        const size_t nbComponents = _mesh->hasRGBCellColors() ? 3 : 4;
+        const size_t nbComponents = 4;
         viz::scene3d::helper::Mesh::copyColors(pColorDest, colors, _mesh->getNumberOfCells(), nbComponents);
 
         pixelBuffer->unlock();
@@ -1055,7 +978,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
 
 void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 {
-    m_hasUV = _mesh->hasPointTexCoords();
+    m_hasUV = _mesh->has<data::Mesh::Attributes::POINT_TEX_COORDS>();
 
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
     if(m_hasUV)
@@ -1069,13 +992,12 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
         void* pBuf                                  = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV                                  = static_cast<float*>(pBuf);
 
-        auto itr = _mesh->begin<data::iterator::ConstPointIterator>();
-
         // Copy UV coordinates for each mesh point
-        for(unsigned int i = 0 ; i < _mesh->getNumberOfPoints() ; ++i, ++itr)
+        for(const auto& uv : _mesh->crange<data::iterator::point::uv>())
         {
-            pUV[2 * i]     = itr->tex->u;
-            pUV[2 * i + 1] = itr->tex->v;
+            pUV[0] = uv.u;
+            pUV[1] = uv.v;
+            pUV   += 2;
         }
 
         uvbuf->unlock();
@@ -1090,24 +1012,22 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
 void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
 {
     // Destroy all the submeshes, but keep the two meshes alive
-    for(size_t i = 0 ; i < s_numPrimitiveTypes ; ++i)
-    {
-        if(m_subMeshes[i])
-        {
-            const data::Mesh::CellType cellType = static_cast<data::Mesh::CellType>(i);
-            const std::string name              = std::to_string(static_cast<int>(cellType));
-            if((cellType == data::Mesh::CellType::TRIANGLE && m_hasPrimitiveColor)
-               || (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
-            {
-                m_r2vbMesh->destroySubMesh(name);
-            }
-            else
-            {
-                m_ogreMesh->destroySubMesh(name);
-            }
 
-            m_subMeshes[i] = nullptr;
+    if(m_subMesh)
+    {
+        const data::Mesh::CellType cellType = m_cellType;
+        const std::string name              = std::to_string(static_cast<int>(cellType));
+        if((cellType == data::Mesh::CellType::TRIANGLE && m_hasPrimitiveColor)
+           || (cellType == data::Mesh::CellType::TETRA || cellType == data::Mesh::CellType::QUAD))
+        {
+            m_r2vbMesh->destroySubMesh(name);
         }
+        else
+        {
+            m_ogreMesh->destroySubMesh(name);
+        }
+
+        m_subMesh = nullptr;
     }
 
     for(auto r2vbObject : m_r2vbObject)
@@ -1151,8 +1071,8 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
 
 bool Mesh::hasColorLayerChanged(const data::Mesh::csptr& _mesh)
 {
-    const bool hasVertexColor    = _mesh->hasPointColors();
-    const bool hasPrimitiveColor = _mesh->hasCellColors();
+    const bool hasVertexColor    = _mesh->has<data::Mesh::Attributes::POINT_COLORS>();
+    const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
 
     return hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor;
 }

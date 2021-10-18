@@ -3,6 +3,7 @@ macro(replace_flags FLAGS_BEFORE FLAGS_AFTER)
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_CXX_FLAGS_DEBUG_INIT "${CMAKE_CXX_FLAGS_DEBUG_INIT}")
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     string(REGEX REPLACE "${FLAGS_BEFORE}" "${FLAGS_AFTER}" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
@@ -107,12 +108,21 @@ if(MSVC)
     # Force set cleaned compile flags.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" CACHE STRING "" FORCE)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
+
+    if(MSVC)
+        # On MSVC, we want different optimizations depending on the target
+        # CMake does allow us to override CXX_FLAGS, so we reset them here and 
+        # restore them later, modified or not, in restore_cxx_flags()
+        set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
+        set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
+    else()
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
+    endif()
 endif()
 
 # Color for ninja and Clang on Linux and OSX
@@ -122,3 +132,40 @@ if(CMAKE_GENERATOR STREQUAL "Ninja")
         "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
     )
 endif()
+
+
+function(restore_cxx_flags SIGHT_TARGET CXX_FLAGS OBJECT_LIBRARY)
+
+    string(STRIP "${CXX_FLAGS}" SIGHT_CXX_FLAGS)
+    string(REPLACE " " ";" SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS})
+
+    get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
+    # Skip libraries without code
+    if(NOT "${TARGET_TYPE}" STREQUAL "INTERFACE_LIBRARY")
+        target_compile_options(${SIGHT_TARGET} PRIVATE ${SIGHT_CXX_FLAGS})
+
+        if(OBJECT_LIBRARY)
+            target_compile_options(${SIGHT_TARGET}_obj PRIVATE ${SIGHT_CXX_FLAGS})
+            if(TARGET ${SIGHT_TARGET}_obj_PCH_OBJ)
+                target_compile_options(${SIGHT_TARGET}_obj_PCH_OBJ PRIVATE ${SIGHT_CXX_FLAGS})
+            endif()
+        elseif(TARGET ${SIGHT_TARGET}_PCH_OBJ)
+            target_compile_options(${SIGHT_TARGET}_PCH_OBJ PRIVATE ${SIGHT_CXX_FLAGS})
+        endif()
+    endif()
+endfunction()
+
+
+function(set_fast_debug_cxx_flags SIGHT_TARGET OBJECT_LIBRARY)
+
+    # /RTC[1csu] is incompatible with optimization
+    string(REGEX REPLACE "/RTC[1csu]+" "" SIGHT_CXX_FLAGS ${SIGHT_CMAKE_CXX_FLAGS_DEBUG})
+
+    # Avoid errors and command-line Warning D9025
+    string(REGEX REPLACE "/Ob[012]" "" SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS})
+    string(REGEX REPLACE "/O[x12d]" "" SIGHT_CXX_FLAGS ${SIGHT_CXX_FLAGS})
+        
+    set(SIGHT_CXX_FLAGS "${SIGHT_CXX_FLAGS} /Ob1 /Ox /Oy-")
+
+    restore_cxx_flags(${SIGHT_TARGET} ${SIGHT_CXX_FLAGS} ${OBJECT_LIBRARY})
+endfunction()

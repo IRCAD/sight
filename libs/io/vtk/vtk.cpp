@@ -26,8 +26,6 @@
 
 #include <geometry/data/MeshFunctions.hpp>
 
-#include <boost/cast.hpp>
-
 #include <vtkCell.h>
 #include <vtkCellType.h>
 #include <vtkDataArray.h>
@@ -51,7 +49,6 @@
 #include <chrono>
 #include <cstring>
 #include <ctime>
-#include <functional>
 #include <numeric>
 #include <stdexcept>
 

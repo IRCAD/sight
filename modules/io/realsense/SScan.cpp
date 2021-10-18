@@ -239,10 +239,10 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
 
     SIGHT_DEBUG("Actual mode : \n" + str.str());
 
-    const data::Mesh::Size depthStreamW = static_cast<data::Mesh::Size>(depthStream.width());
-    const data::Mesh::Size depthStreamH = static_cast<data::Mesh::Size>(depthStream.height());
-    const data::Mesh::Size colorStreamW = static_cast<data::Mesh::Size>(colorStream.width());
-    const data::Mesh::Size colorStreamH = static_cast<data::Mesh::Size>(colorStream.height());
+    const data::Mesh::size_t depthStreamW = static_cast<data::Mesh::size_t>(depthStream.width());
+    const data::Mesh::size_t depthStreamH = static_cast<data::Mesh::size_t>(depthStream.height());
+    const data::Mesh::size_t colorStreamW = static_cast<data::Mesh::size_t>(colorStream.width());
+    const data::Mesh::size_t colorStreamH = static_cast<data::Mesh::size_t>(colorStream.height());
 
     {
         const auto colorTimeline = m_frame.lock();
@@ -382,25 +382,19 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     auto pointcloud     = data::Mesh::New();
     const auto dumpLock = pointcloud->lock();
 
-    const data::Mesh::Size nbPoints = depthStreamW * depthStreamH;
+    const data::Mesh::size_t nbPoints = depthStreamW * depthStreamH;
 
     // Allocate mesh.
-    pointcloud->resize(nbPoints, nbPoints, nbPoints, data::Mesh::Attributes::POINT_COLORS);
-
-    auto itr = pointcloud->begin<data::iterator::CellIterator>();
+    pointcloud->resize(nbPoints, nbPoints, data::Mesh::CellType::POINT, data::Mesh::Attributes::POINT_COLORS);
 
     // to display the mesh, we need to create cells with one point.
-    for(data::Mesh::Size i = 0 ; i < nbPoints ; ++i, ++itr)
+    data::Mesh::cell_t i = 0;
+    for(auto& cell : pointcloud->range<data::iterator::cell::point>())
     {
-        *itr->type         = data::Mesh::CellType::POINT;
-        *itr->offset       = i;
-        *(itr + 1)->offset = i + 1; // to be able to iterate through point indices
-        itr->pointIdx[0]   = i;
+        cell.pt = i++;
     }
 
-    pointcloud->setNumberOfPoints(nbPoints);
-    pointcloud->setNumberOfCells(nbPoints);
-    pointcloud->setCellDataSize(nbPoints);
+    pointcloud->truncate(nbPoints, nbPoints);
 
     m_pointCloudOutput = pointcloud;
 }
@@ -638,9 +632,7 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(
-            IGrabber::s_CAMERA_STOPPED_SIG
-        );
+        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
 }
@@ -1296,17 +1288,15 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
         // Parallelization of the loop is possible since each element is independent.
 
-        const auto pointBegin = pointcloud->begin<data::iterator::PointIterator>();
-        auto points           = pointBegin->point;
-        auto colors           = pointBegin->rgba;
+        auto points = pointcloud->begin<data::iterator::point::xyz>();
+        auto colors = pointcloud->begin<data::iterator::point::rgba>();
 
-        #pragma omp parallel for
         for(std::int64_t i = 0 ; i < static_cast<std::int64_t>(pcSize) ; ++i)
         {
             // Fill the point buffer (x = +0, y = +1, z = +2).
-            points[i].x = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
-            points[i].y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
-            points[i].z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale; // Re-map to mm.
+            points->x = static_cast<float>(vertices[i].x) * s_METERS_TO_MMS;
+            points->y = static_cast<float>(vertices[i].y) * s_METERS_TO_MMS;
+            points->z = static_cast<float>(vertices[i].z) * s_METERS_TO_MMS * m_depthScale; // Re-map to mm.
 
             // Normals to Texture Coordinates conversion
             const int x_value = std::min(
@@ -1331,18 +1321,19 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
             const int index   = (bytes + strides);
 
             // Fill the color buffer (R = +0, G = +1, B = +2).
-            colors[i].r = textureBuff[index + 0];
-            colors[i].g = textureBuff[index + 1];
-            colors[i].b = textureBuff[index + 2];
-            colors[i].a = 255;
+            colors->r = textureBuff[index + 0];
+            colors->g = textureBuff[index + 1];
+            colors->b = textureBuff[index + 2];
+            colors->a = 255;
+
+            ++points;
+            ++colors;
         }
 
-        const auto sigVertex = pointcloud->signal<data::Mesh::VertexModifiedSignalType>
-                                   (data::Mesh::s_VERTEX_MODIFIED_SIG);
+        const auto sigVertex = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
         sigVertex->asyncEmit();
 
-        const auto sigcolor = pointcloud->signal<data::Mesh::PointColorsModifiedSignalType>
-                                  (data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+        const auto sigcolor = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
         sigcolor->asyncEmit();
     }
 }

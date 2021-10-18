@@ -26,6 +26,7 @@
 #include "data/Exception.hpp"
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
+#include <data/iterator.hpp>
 
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/IBuffered.hpp>
@@ -86,7 +87,7 @@ namespace sight::data
     value = array->at<std::int16_t>(index);
    @endcode
  *
- * @subsection Iterators Iterators
+ * @subsection iterators iterators
  *
  * To parse the buffer from beginning to end, the iterator can be used.
  *
@@ -94,7 +95,7 @@ namespace sight::data
  * can also be a simple struct like:
  *
  * @code{.cpp}
-    struct RGBA {
+    struct rgba {
         std::uint8_t r;
         std::uint8_t g;
         std::uint8_t b;
@@ -102,9 +103,9 @@ namespace sight::data
     };
     @endcode
  *
- * This struct allows to parse the array as an RGBA buffer (RGBARGBARGBA....).
+ * This struct allows to parse the array as an rgba buffer (RGBARGBARGBA....).
  *
- * To get an iterator on the array, use begin<FORMAT>() and end<FORMAT>() methods.
+ * To get an iterator on the array, use begin<T>() and end<T>() methods.
  *
  * @warning The iterator does not assert that the array type is the same as the given format. It only asserts (in debug)
  * that the iterator does not iterate outside of the buffer bounds).
@@ -324,99 +325,10 @@ public:
     // New Array API
     // -----------------------------------
 
-    /**
-     * @brief Iterator on array buffer
-     *
-     * Iterate through the buffer and check if the index is not out of the bounds
-     */
-    template<class TYPE, bool isConstIterator = true>
-    class IteratorBase
-    {
-    public:
-
-        /**
-         * For ConstIterator:   define input to be a const Array*
-         * For Iterator: define input to be a Array*
-         */
-        typedef typename std::conditional<isConstIterator, const Array*, Array*>::type ArrayType;
-
-        /**
-         * @name Typedefs required by std::iterator_traits
-         * @{
-         */
-        /**
-         * For ConstIterator:   define buffer type to be a const TYPE*
-         * For Iterator: define buffer type to be a TYPE*
-         */
-        typedef typename std::conditional<isConstIterator, const TYPE*, TYPE*>::type pointer;
-
-        /**
-         * For const_iterator:   define value_type to be a   const TYPE
-         * For regular iterator: define value_type to be a   TYPE
-         */
-        typedef typename std::conditional<isConstIterator, const TYPE, TYPE>::type value_type;
-
-        /**
-         * For const_iterator:   define reference to be a   const TYPE&
-         * For regular iterator: define reference to be a   TYPE&
-         */
-        typedef typename std::conditional<isConstIterator, const TYPE&, TYPE&>::type reference;
-
-        /// Define difference type
-        typedef std::ptrdiff_t difference_type;
-
-        /// define the category of the iterator.
-        typedef std::random_access_iterator_tag iterator_category;
-        /// @}
-
-        /// Constructor
-        IteratorBase();
-        IteratorBase(ArrayType array);
-        /// Copy constructor
-        IteratorBase(const IteratorBase<TYPE, false>& other);
-        IteratorBase(const IteratorBase<TYPE, true>& other);
-        /// Destructor
-        ~IteratorBase();
-
-        IteratorBase& operator=(const IteratorBase& other) = default;
-        IteratorBase& operator=(IteratorBase&& other)      = default;
-
-        /// Comparison operators
-        bool operator==(const IteratorBase& other) const;
-        bool operator!=(const IteratorBase& other) const;
-
-        /// Increment/Decrement operators
-        IteratorBase& operator++();
-        IteratorBase operator++(int);
-        IteratorBase operator+(difference_type index) const;
-        IteratorBase& operator+=(difference_type index);
-        IteratorBase& operator--();
-        IteratorBase operator--(int);
-        IteratorBase operator-(difference_type index) const;
-        IteratorBase& operator-=(difference_type index);
-
-        difference_type operator+(const IteratorBase& other) const;
-        difference_type operator-(const IteratorBase& other) const;
-
-        /// Value access operators
-        reference operator*() const;
-        value_type* operator->() const;
-
-    private:
-
-        /// allow to create a ConstIterator from an Iterator
-        friend class IteratorBase<TYPE, true>;
-
-        core::memory::BufferObject::Lock m_lock;
-        pointer m_pointer {nullptr};
-        difference_type m_idx {0};
-        difference_type m_numberOfElements {0};
-    };
-
-    template<typename TYPE>
-    using Iterator = IteratorBase<TYPE, false>;
-    template<typename TYPE>
-    using ConstIterator = IteratorBase<TYPE, true>;
+    template<typename T>
+    using iterator = array_iterator<T>;
+    template<typename T>
+    using const_iterator = array_iterator<const T>;
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -544,14 +456,29 @@ public:
      * @{
      */
     template<typename T>
-    Iterator<T> begin();
+    iterator<T> begin();
     template<typename T>
-    Iterator<T> end();
+    iterator<T> end();
     template<typename T>
-    ConstIterator<T> begin() const;
+    const_iterator<T> begin() const;
     template<typename T>
-    ConstIterator<T> end() const;
+    const_iterator<T> end() const;
+    template<typename T>
+    const_iterator<T> cbegin() const;
+    template<typename T>
+    const_iterator<T> cend() const;
     /// @}
+
+    /**
+     * @brief Returns a range of begin/end iterators, especially useful to be used in "for range loops".
+     * @{
+     */
+    template<typename T>
+    auto range();
+    template<typename T>
+    auto crange() const;
+    /// @}
+
     ///
     /**
      * @brief Returns the beginning/end iterators to the array buffer, cast to char*
@@ -562,7 +489,7 @@ public:
      * can also be a simple struct like:
      *
      * @code{.cpp}
-        struct RGBA {
+        struct rgba {
             std::uint8_t r;
             std::uint8_t g;
             std::uint8_t b;
@@ -570,7 +497,7 @@ public:
         };
         @endcode
      *
-     * This struct allows to parse the array as an RGBA buffer (RGBARGBARGBA....).
+     * This struct allows to parse the array as an rgba buffer (RGBARGBARGBA....).
      *
      * Example :
      * @code{.cpp}
@@ -589,10 +516,10 @@ public:
      * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    DATA_API Iterator<char> begin();
-    DATA_API Iterator<char> end();
-    DATA_API ConstIterator<char> begin() const;
-    DATA_API ConstIterator<char> end() const;
+    DATA_API iterator<char> begin();
+    DATA_API iterator<char> end();
+    DATA_API const_iterator<char> begin() const;
+    DATA_API const_iterator<char> end() const;
     /// @}
 
     //-----------------------------------------------------
@@ -657,7 +584,7 @@ public:
 
     /**
      * @brief  Temporary method to resize an image's array.
-     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Image
+     * @warning This method will be removed with the deprecate API 22.0, it is used to keep the old API of Array
      */
     DATA_API virtual size_t resizeTMP(const core::tools::Type& type, const SizeType& size, size_t nbOfComponents);
 
@@ -782,42 +709,6 @@ inline void Array::setBufferObject(const core::memory::BufferObject::sptr& buffe
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline Array::Iterator<T> Array::begin()
-{
-    return Iterator<T>(this);
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline Array::Iterator<T> Array::end()
-{
-    auto itr = Iterator<T>(this);
-    itr += static_cast<typename Array::Iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
-    return itr;
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline Array::ConstIterator<T> Array::begin() const
-{
-    return ConstIterator<T>(this);
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline Array::ConstIterator<T> Array::end() const
-{
-    auto itr = ConstIterator<T>(this);
-    itr += static_cast<typename Array::ConstIterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
-    return itr;
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
 inline T& Array::at(const data::Array::IndexType& id)
 {
     const bool isIndexInBounds =
@@ -874,207 +765,78 @@ inline const T& Array::at(const size_t& offset) const
     return *(reinterpret_cast<const T*>(this->getBuffer()) + offset);
 }
 
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>::IteratorBase()
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline Array::iterator<T> Array::begin()
 {
+    return iterator<T>(static_cast<typename iterator<T>::pointer>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>::IteratorBase(ArrayType array) :
-    m_lock(array->lock()),
-    m_pointer(static_cast<pointer>(array->getBuffer())),
-    m_idx(0),
-    m_numberOfElements(static_cast<difference_type>(array->getSizeInBytes() / sizeof(TYPE)))
+template<typename T>
+inline Array::iterator<T> Array::end()
 {
+    auto itr = begin<T>();
+    itr += static_cast<typename iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, false>& other) :
-    m_lock(other.m_lock),
-    m_pointer(other.m_pointer),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements)
+template<typename T>
+inline Array::const_iterator<T> Array::begin() const
 {
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>::IteratorBase(const IteratorBase<TYPE, true>& other) :
-    m_lock(other.m_lock),
-    m_pointer(other.m_pointer),
-    m_idx(other.m_idx),
-    m_numberOfElements(other.m_numberOfElements)
+template<typename T>
+inline Array::const_iterator<T> Array::end() const
 {
-    static_assert(isConst == true, "Cannot convert const Iterator to not const Iterator.");
+    auto itr = begin<T>();
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>::~IteratorBase()
+template<typename T>
+inline Array::const_iterator<T> Array::cbegin() const
 {
-    m_lock.reset();
+    return const_iterator<T>(static_cast<typename const_iterator<T>::pointer>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline bool Array::IteratorBase<TYPE, isConst>::operator==(const IteratorBase& other) const
+template<typename T>
+inline Array::const_iterator<T> Array::cend() const
 {
-    return m_pointer == other.m_pointer;
+    auto itr = begin<T>();
+    itr += static_cast<typename const_iterator<T>::difference_type>(this->getSizeInBytes() / sizeof(T));
+    return itr;
 }
 
 //------------------------------------------------------------------------------
 
-template<class TYPE, bool isConst>
-inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& other) const
+template<typename T>
+auto Array::range()
 {
-    return m_pointer != other.m_pointer;
+    auto b = begin<T>();
+    auto e = end<T>();
+    return boost::make_iterator_range(b, e);
 }
 
 //------------------------------------------------------------------------------
 
-template<typename TYPE, bool isConst>
-inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*() const
+template<typename T>
+auto Array::crange() const
 {
-    SIGHT_ASSERT("Iterator needs to be initialized", m_pointer);
-    return *m_pointer;
+    auto b = cbegin<T>();
+    auto e = cend<T>();
+    return boost::make_iterator_range(b, e);
 }
-
-//------------------------------------------------------------------------------
-
-template<typename TYPE, bool isConst>
-inline typename Array::IteratorBase<TYPE, isConst>::value_type* Array::IteratorBase<TYPE, isConst>::operator->() const
-{
-    return m_pointer;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator++()
-{
-    ++m_idx;
-    SIGHT_ASSERT(
-        "Array out of bounds: index " << m_idx << " is not in [0-" << m_numberOfElements << "]",
-        m_idx <= m_numberOfElements
-    );
-    ++m_pointer;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator++(int)
-{
-    IteratorBase tmp(*this);
-    ++m_idx;
-    SIGHT_ASSERT(
-        "Array out of bounds: index " << m_idx << " is not in [0-" << m_numberOfElements << "]",
-        m_idx <= m_numberOfElements
-    );
-    ++m_pointer;
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator+(difference_type index) const
-{
-    IteratorBase tmp(*this);
-    tmp += index;
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(difference_type index)
-{
-    m_idx += index;
-    SIGHT_ASSERT(
-        "Array out of bounds: index " << m_idx << " is not in [0-" << m_numberOfElements << "]",
-        m_idx <= m_numberOfElements
-    );
-    m_pointer += index;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator--()
-{
-    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-" << m_numberOfElements << "]", m_idx > 0);
-    --m_idx;
-    --m_pointer;
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator--(int)
-{
-    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-" << m_numberOfElements << "]", m_idx > 0);
-    --m_idx;
-    IteratorBase tmp(*this);
-    --m_pointer;
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator-(difference_type index) const
-{
-    IteratorBase tmp(*this);
-    tmp -= index;
-    return tmp;
-}
-
-//------------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(difference_type index)
-{
-    SIGHT_ASSERT(
-        "Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-        << " is not in [0-" << m_numberOfElements << "]",
-        m_idx >= index
-    );
-    m_idx     -= index;
-    m_pointer -= index;
-    return *this;
-}
-
-//-----------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-typename Array::IteratorBase<TYPE, isConst>::difference_type Array::IteratorBase<TYPE, isConst>::operator+(
-    const IteratorBase& other
-) const
-{
-    return m_pointer + other.m_pointer;
-}
-
-//-----------------------------------------------------------------------------
-
-template<class TYPE, bool isConst>
-typename Array::IteratorBase<TYPE, isConst>::difference_type Array::IteratorBase<TYPE, isConst>::operator-(
-    const IteratorBase& other
-) const
-{
-    return m_pointer - other.m_pointer;
-}
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::data

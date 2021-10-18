@@ -94,22 +94,6 @@ public:
      * @param[in] _diffuseTexture is diffuse texture bound ?
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
-     * @deprecated Use 'data::Mesh::CellType' intead of 'data::Mesh::CellTypesEnum'. It will be removed in
-     * sight 22.0
-     */
-    [[deprecated("Use 'data::Mesh::CellType' intead of 'data::Mesh::CellTypesEnum'(sight 22.0)")]]
-    VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(
-        data::Mesh::CellTypesEnum _primitiveType,
-        bool _diffuseTexture,
-        bool _vertexColor,
-        bool _hasPrimitiveColor
-    );
-    /**
-     * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
-     * @param[in] _primitiveType type of the primitive (only triangles, quads and tetrahedrons supported right now)
-     * @param[in] _diffuseTexture is diffuse texture bound ?
-     * @param[in] _vertexColor is vertex color enabled ?
-     * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
      */
     VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(
         data::Mesh::CellType _primitiveType,

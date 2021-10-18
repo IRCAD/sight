@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,22 @@
  *
  ***********************************************************************/
 
-#define CAMP_COMPILATION
+// Cause an internal compiler error on windows...
+#ifndef _WIN32
+#include <core/com/HasSignals.hpp>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/HasSlots.hpp>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
+#endif // _WIN32
 
-#include "data/detail/reflection/Mesh.hpp"
+#include <data/Image.hpp>
+#include <data/Mesh.hpp>
 
-#include <core/reflection/UserObject.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
-SIGHT_IMPLEMENT_DATA_REFLECTION((sight) (data) (Mesh))
-{
-    builder
-    .tag("object_version", "4")
-    .tag("lib_name", "sight::data")
-    .base<sight::data::Object>()
-    .property("nb_points", &sight::data::Mesh::m_nbPoints)
-    .property("points", &sight::data::Mesh::m_points)
-    //.property("attributes", &sight::data::Mesh::m_attributes) // It uses a mapper to convert attributes property.
-    ;
-}
+#include <filesystem>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>

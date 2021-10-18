@@ -446,32 +446,32 @@ void Array::lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) con
 
 //------------------------------------------------------------------------------
 
-Array::Iterator<char> Array::begin()
+Array::iterator<char> Array::begin()
 {
-    return Iterator<char>(this);
+    return iterator<char>(static_cast<char*>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-Array::Iterator<char> Array::end()
+Array::iterator<char> Array::end()
 {
-    auto itr = Iterator<char>(this);
+    auto itr = iterator<char>(static_cast<char*>(getBuffer()));
     itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }
 
 //------------------------------------------------------------------------------
 
-Array::ConstIterator<char> Array::begin() const
+Array::const_iterator<char> Array::begin() const
 {
-    return ConstIterator<char>(this);
+    return const_iterator<char>(static_cast<const char*>(getBuffer()));
 }
 
 //------------------------------------------------------------------------------
 
-Array::ConstIterator<char> Array::end() const
+Array::const_iterator<char> Array::end() const
 {
-    auto itr = ConstIterator<char>(this);
+    auto itr = const_iterator<char>(static_cast<const char*>(getBuffer()));
     itr += static_cast<std::ptrdiff_t>(this->getSizeInBytes());
     return itr;
 }

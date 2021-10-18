@@ -143,8 +143,8 @@ void ConfigParserTest::testImageParser()
 
     // We only test the image content, we do not really care about the image size and other attributes for now
     const auto dumpLock = image->lock();
-    auto itr            = image->begin<sight::data::iterator::RGBA>();
-    const auto itrEnd   = image->end<sight::data::iterator::RGBA>();
+    auto itr            = image->begin<sight::data::iterator::rgba>();
+    const auto itrEnd   = image->end<sight::data::iterator::rgba>();
 
     for( ; itr != itrEnd ; ++itr)
     {

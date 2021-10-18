@@ -56,7 +56,7 @@ atoms::Object::sptr Mesh::convert(
 
     data::Mesh::sptr mesh = data::Mesh::dynamicCast(object);
 
-    const auto meshAttributes = mesh->getAttributes();
+    const auto meshAttributes = 0;
 
     atoms::Numeric::sptr attributes = atoms::Numeric::New(static_cast<int>(meshAttributes));
 
@@ -77,12 +77,6 @@ data::Object::sptr Mesh::convert(
     visitor.visit();
     data::Object::sptr data = visitor.getDataObject();
     data::Mesh::sptr mesh   = data::Mesh::dynamicCast(data);
-
-    atoms::Numeric::sptr attributes = atoms::Numeric::dynamicCast(atom->getAttribute("attributes"));
-
-    data::Mesh::Attributes meshAttributes = static_cast<data::Mesh::Attributes>(attributes->getValue<int>());
-
-    mesh->setAttributes(meshAttributes);
 
     return mesh;
 }

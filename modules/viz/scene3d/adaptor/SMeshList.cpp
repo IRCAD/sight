@@ -231,7 +231,7 @@ void SMeshList::add()
 
                 auto inItr = textureInput->begin<std::uint8_t>();
                 auto inEnd = textureInput->end<std::uint8_t>();
-                auto itr   = instance.m_image->begin<data::iterator::RGBA>();
+                auto itr   = instance.m_image->begin<data::iterator::rgba>();
 
                 for( ; inItr != inEnd ; ++inItr, ++itr)
                 {
@@ -255,9 +255,9 @@ void SMeshList::add()
                     instance.m_image->resize();
                 }
 
-                auto inItr = textureInput->begin<data::iterator::RGB>();
-                auto inEnd = textureInput->end<data::iterator::RGB>();
-                auto itr   = instance.m_image->begin<data::iterator::RGBA>();
+                auto inItr = textureInput->begin<data::iterator::rgb>();
+                auto inEnd = textureInput->end<data::iterator::rgb>();
+                auto itr   = instance.m_image->begin<data::iterator::rgba>();
 
                 for( ; inItr != inEnd ; ++inItr, ++itr)
                 {

@@ -205,7 +205,7 @@ void SMaterial::updating()
 
     if(m_r2vbObject)
     {
-        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType2());
+        m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());
     }
 
     // Set up representation mode

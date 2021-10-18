@@ -185,7 +185,7 @@ void SPointList::starting()
         const auto mesh = m_mesh.lock();
         if(mesh)
         {
-            if(!m_customMaterial && mesh->hasPointColors())
+            if(!m_customMaterial && mesh->has<data::Mesh::Attributes::POINT_COLORS>())
             {
                 m_materialTemplateName += "_PerPointColor";
             }
