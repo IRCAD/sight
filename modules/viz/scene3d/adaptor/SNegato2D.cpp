@@ -226,7 +226,7 @@ void SNegato2D::newImage()
         m_plane->setOriginPosition(origin);
 
         // Update Slice
-        const auto imgSize       = image->getSize2();
+        const auto imgSize       = image->getSize();
         const auto axialIdxField = image->getField<data::Integer>(
             data::fieldHelper::Image::m_axialSliceIndexId
         );
@@ -297,7 +297,7 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
     this->getRenderService()->makeCurrent();
 
-    auto imgSize = image->getSize2();
+    auto imgSize = image->getSize();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].

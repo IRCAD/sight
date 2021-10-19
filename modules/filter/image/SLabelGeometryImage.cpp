@@ -24,12 +24,10 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/helper/Image.hpp>
 #include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
@@ -95,13 +93,6 @@ void SLabelGeometryImage::starting()
 void SLabelGeometryImage::updating()
 {
     const auto image = m_image.lock();
-
-    data::helper::Image imageHelper(image.get_shared());
-    if(!imageHelper.getBuffer())
-    {
-        SIGHT_INFO("Image is not set.");
-        return;
-    }
 
     // Call the ITK operator
     sight::filter::image::computeCentroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);

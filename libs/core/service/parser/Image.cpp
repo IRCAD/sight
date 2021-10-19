@@ -50,13 +50,9 @@ void Image::createConfig(core::tools::Object::sptr _obj)
         data::tools::Color::hexaStringToRGBA(colorStr, color);
 
         // Initialize with a dummy 4x4 black image
-        image->setType(core::tools::Type::s_UINT8);
-        image->setNumberOfComponents(4);
-        image->setSize2({4, 4, 1});
-        image->setSpacing2({1, 1, 1});
-        image->setOrigin2({0, 0, 0});
-        image->setPixelFormat(data::Image::RGBA);
-        image->resize();
+        image->setSpacing({1, 1, 1});
+        image->setOrigin({0, 0, 0});
+        image->resize({4, 4, 1}, core::tools::Type::s_UINT8, data::Image::RGBA);
 
         const auto dumpLock = image->lock();
         auto itr            = image->begin<sight::data::iterator::rgba>();

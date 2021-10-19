@@ -224,9 +224,11 @@ void SMeshList::add()
                 if(textureInput->getAllocatedSizeInBytes() * 4 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
-                    instance.m_image->setNumberOfComponents(4);
-                    instance.m_image->resize();
+                    instance.m_image->resize(
+                        instance.m_image->getSize(),
+                        instance.m_image->getType(),
+                        data::Image::PixelFormat::RGBA
+                    );
                 }
 
                 auto inItr = textureInput->begin<std::uint8_t>();
@@ -250,9 +252,11 @@ void SMeshList::add()
                 if(textureInput->getAllocatedSizeInBytes() * 4 / 3 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
-                    instance.m_image->setNumberOfComponents(4);
-                    instance.m_image->resize();
+                    instance.m_image->resize(
+                        instance.m_image->getSize(),
+                        instance.m_image->getType(),
+                        data::Image::PixelFormat::RGBA
+                    );
                 }
 
                 auto inItr = textureInput->begin<data::iterator::rgb>();

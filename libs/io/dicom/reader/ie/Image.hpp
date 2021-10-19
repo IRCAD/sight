@@ -109,6 +109,7 @@ protected:
      */
     char* readImageBuffer(
         const std::vector<unsigned int>& dimensions,
+        const core::tools::Type imageType,
         const unsigned short bitsAllocated,
         const unsigned short newBitsAllocated,
         const bool performRescale
@@ -122,7 +123,7 @@ protected:
      */
     char* correctImageOrientation(
         char* buffer,
-        const std::vector<unsigned int>& dimensions,
+        std::vector<unsigned int>& dimensions,
         unsigned short bitsAllocated
     );
 

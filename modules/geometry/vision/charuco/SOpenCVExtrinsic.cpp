@@ -223,7 +223,7 @@ void SOpenCVExtrinsic::updating()
         const ::cv::Mat fundamentalMatrix = ::cv::Mat::zeros(3, 3, CV_64F);
 
         data::Image::sptr img = calInfo1->getImageContainer().front();
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
+        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
             const auto camSeries = m_cameraSeries.lock();
 

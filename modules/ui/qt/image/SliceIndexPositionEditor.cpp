@@ -227,7 +227,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _imag
         int max = 0;
         if(_image.getNumberOfDimensions() > m_helper.getOrientation())
         {
-            max = static_cast<int>(_image.getSize2()[m_helper.getOrientation()] - 1);
+            max = static_cast<int>(_image.getSize()[m_helper.getOrientation()] - 1);
         }
 
         m_sliceSelectorPanel->setSliceRange(0, max);

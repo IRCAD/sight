@@ -170,7 +170,7 @@ void SColourImageMasking::updating()
         SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
         SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
         SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
-        const auto maskSize = mask->getSize2();
+        const auto maskSize = mask->getSize();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
             SIGHT_ERROR(

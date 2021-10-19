@@ -124,8 +124,8 @@ void Image::generateImage(
 )
 {
     image->resize(size, type, format);
-    image->setSpacing2(spacing);
-    image->setOrigin2(origin);
+    image->setSpacing(spacing);
+    image->setOrigin(origin);
 
     auto lock = image->lock();
     std::fill(image->begin(), image->end(), 0);
@@ -137,28 +137,25 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
 {
     constexpr int SIZE        = 50;
     constexpr int DOUBLE_SIZE = SIZE * 2;
-    image->setType(type);
 
     data::Image::Size size;
     size[0] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
     size[1] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
     size[2] = static_cast<data::Image::Size::value_type>(safeRand() % SIZE + 2);
-    image->setSize2(size);
 
     data::Image::Spacing spacing;
     spacing[0] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
     spacing[1] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
     spacing[2] = (safeRand() % DOUBLE_SIZE + 1) / double(SIZE);
-    image->setSpacing2(spacing);
+    image->setSpacing(spacing);
 
     data::Image::Origin origin;
     origin[0] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[1] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
     origin[2] = (safeRand() % DOUBLE_SIZE - SIZE) / (SIZE / 10.);
-    image->setOrigin2(origin);
-    image->setPixelFormat(data::Image::GRAY_SCALE);
+    image->setOrigin(origin);
 
-    image->resize();
+    image->resize(size, type, data::Image::GRAY_SCALE);
 
     randomizeImage(image);
 

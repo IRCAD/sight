@@ -77,10 +77,10 @@ void ImageDiffCommandTest::undoredoTest()
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixelBuffer(index, newBufferValue);
+        image->setPixel(index, newBufferValue);
 
         CPPUNIT_ASSERT_EQUAL(i + 1, diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
@@ -94,7 +94,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     for(size_t it = 0 ; it < image->getSizeInBytes() ; ++it)
     {
-        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(it)));
+        CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(it)));
     }
 
     // Apply diff. Ensure all values are zero except the ones at the selected indices.
@@ -107,11 +107,11 @@ void ImageDiffCommandTest::undoredoTest()
 
         if(indexIt != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
         else
         {
-            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
     }
 }
@@ -146,10 +146,10 @@ void ImageDiffCommandTest::getSizeTest()
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixelBuffer(index, newBufferValue);
+        image->setPixel(index, newBufferValue);
 
         CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));

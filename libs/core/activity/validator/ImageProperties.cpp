@@ -70,9 +70,9 @@ IValidator::ValidationType ImageProperties::validate(
         data::Image::sptr img0 = imgSeries0->getImage();
         SIGHT_ASSERT("Failed to retrieve image from image series", img0);
 
-        data::Image::Size size       = img0->getSize2();
-        data::Image::Spacing spacing = img0->getSpacing2();
-        data::Image::Origin origin   = img0->getOrigin2();
+        data::Image::Size size       = img0->getSize();
+        data::Image::Spacing spacing = img0->getSpacing();
+        data::Image::Origin origin   = img0->getOrigin();
 
         data::Vector::ContainerType::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
@@ -82,14 +82,14 @@ IValidator::ValidationType ImageProperties::validate(
             data::Image::sptr img = imgSeries->getImage();
             SIGHT_ASSERT("Failed to retrieve an image data", img);
 
-            if(size != img->getSize2()
-               || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
-               || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
+            if(size != img->getSize()
+               || !std::equal(spacing.begin(), spacing.end(), img->getSpacing().begin(), fCompare)
+               || !std::equal(origin.begin(), origin.end(), img->getOrigin().begin(), fCompare))
             {
                 std::string errorMsg = "Images in selection have not the same properties :\n";
-                errorMsg += (size != img->getSize2()) ? "- size\n" : "";
-                errorMsg += (spacing != img->getSpacing2()) ? "- spacing\n" : "";
-                errorMsg += (origin != img->getOrigin2()) ? "- origin" : "";
+                errorMsg += (size != img->getSize()) ? "- size\n" : "";
+                errorMsg += (spacing != img->getSpacing()) ? "- spacing\n" : "";
+                errorMsg += (origin != img->getOrigin()) ? "- origin" : "";
 
                 validation.first  = false;
                 validation.second = errorMsg;
@@ -140,16 +140,16 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
                 }
                 else
                 {
-                    data::Image::Spacing spacing = img0->getSpacing2();
-                    data::Image::Origin origin   = img0->getOrigin2();
-                    if(img0->getSize2() != img->getSize2()
-                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
-                       || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
+                    data::Image::Spacing spacing = img0->getSpacing();
+                    data::Image::Origin origin   = img0->getOrigin();
+                    if(img0->getSize() != img->getSize()
+                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing().begin(), fCompare)
+                       || !std::equal(origin.begin(), origin.end(), img->getOrigin().begin(), fCompare))
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
-                        errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
-                        errorMsg += (img0->getSpacing2() != img->getSpacing2()) ? "- spacing\n" : "";
-                        errorMsg += (img0->getOrigin2() != img->getOrigin2()) ? "- origin" : "";
+                        errorMsg += (img0->getSize() != img->getSize()) ? "- size\n" : "";
+                        errorMsg += (img0->getSpacing() != img->getSpacing()) ? "- spacing\n" : "";
+                        errorMsg += (img0->getOrigin() != img->getOrigin()) ? "- origin" : "";
 
                         validation.first  = false;
                         validation.second = errorMsg;
@@ -184,16 +184,16 @@ IValidator::ValidationType ImageProperties::validate(const data::Object::csptr& 
                 }
                 else
                 {
-                    data::Image::Spacing spacing = img0->getSpacing2();
-                    data::Image::Origin origin   = img0->getOrigin2();
-                    if(img0->getSize2() != img->getSize2()
-                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare)
-                       || !std::equal(origin.begin(), origin.end(), img->getOrigin2().begin(), fCompare))
+                    data::Image::Spacing spacing = img0->getSpacing();
+                    data::Image::Origin origin   = img0->getOrigin();
+                    if(img0->getSize() != img->getSize()
+                       || !std::equal(spacing.begin(), spacing.end(), img->getSpacing().begin(), fCompare)
+                       || !std::equal(origin.begin(), origin.end(), img->getOrigin().begin(), fCompare))
                     {
                         std::string errorMsg = "Images in selection have not the same properties :\n";
-                        errorMsg += (img0->getSize2() != img->getSize2()) ? "- size\n" : "";
-                        errorMsg += (img0->getSpacing2() != img->getSpacing2()) ? "- spacing\n" : "";
-                        errorMsg += (img0->getOrigin2() != img->getOrigin2()) ? "- origin" : "";
+                        errorMsg += (img0->getSize() != img->getSize()) ? "- size\n" : "";
+                        errorMsg += (img0->getSpacing() != img->getSpacing()) ? "- spacing\n" : "";
+                        errorMsg += (img0->getOrigin() != img->getOrigin()) ? "- origin" : "";
 
                         validation.first  = false;
                         validation.second = errorMsg;

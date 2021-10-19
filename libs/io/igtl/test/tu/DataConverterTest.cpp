@@ -204,13 +204,13 @@ void DataConverterTest::imageConverterTest()
     exclude.insert("spacing.2");
     exclude.insert("origin.2");
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[0], image2->getSpacing2()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[1], image2->getSpacing2()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing2()[2], image2->getSpacing2()[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[0], image2->getOrigin2()[0], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[1], image2->getOrigin2()[1], epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin2()[2], image2->getOrigin2()[2], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[0], image2->getOrigin()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1], image2->getOrigin()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2], image2->getOrigin()[2], epsilon);
 
     CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 }

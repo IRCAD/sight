@@ -298,9 +298,9 @@ void DefaultActivityTest::objectTest()
     utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
     utestData::generator::Image::generateImage(
         img2,
-        img1->getSize2(),
-        img1->getSpacing2(),
-        img1->getOrigin2(),
+        img1->getSize(),
+        img1->getSpacing(),
+        img1->getOrigin(),
         img1->getType(),
         data::Image::PixelFormat::GRAY_SCALE
     );
@@ -519,9 +519,9 @@ void DefaultActivityTest::bigActivityTest()
     utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
     utestData::generator::Image::generateImage(
         img3,
-        img2->getSize2(),
-        img2->getSpacing2(),
-        img2->getOrigin2(),
+        img2->getSize(),
+        img2->getSpacing(),
+        img2->getOrigin(),
         img2->getType(),
         data::Image::PixelFormat::GRAY_SCALE
     );
@@ -574,14 +574,14 @@ void DefaultActivityTest::bigActivityTest()
     }
     {
         const data::Image::Spacing spacing = {45., 45., 45.};
-        img3->setSpacing2(spacing);
+        img3->setSpacing(spacing);
         validation = activityValidator->validate(activitySeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Activity with different image properties data should NOT be valid",
             false,
             validation.first
         );
-        img3->setSpacing2(img2->getSpacing2());
+        img3->setSpacing(img2->getSpacing());
     }
 }
 

@@ -61,10 +61,10 @@ void ProcessingTest::tearDown()
 void ProcessingTest::histogramTest()
 {
     typedef signed short ImageType;
-    const int sizeX     = 50;
-    const int sizeY     = 50;
-    const int sizeZ     = 50;
-    const int imageSize = sizeX * sizeY * sizeZ;
+    const size_t sizeX     = 50;
+    const size_t sizeY     = 50;
+    const size_t sizeZ     = 50;
+    const size_t imageSize = sizeX * sizeY * sizeZ;
 
     std::string implementation = "sight::module::viz::scene2d::processing::SComputeHistogram";
 
@@ -73,7 +73,7 @@ void ProcessingTest::histogramTest()
     data::Histogram::sptr histogram = data::Histogram::New();
 
     // Create image.
-    image->resize(sizeX, sizeY, sizeZ, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
+    image->resize({sizeX, sizeY, sizeZ}, core::tools::Type::s_INT16, data::Image::GRAY_SCALE);
 
     const auto dumpLock = image->lock();
     auto itr            = image->begin<ImageType>();

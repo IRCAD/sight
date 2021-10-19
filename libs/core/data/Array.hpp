@@ -200,13 +200,13 @@ public:
      *
      * @throw data::Exception
      */
-    DATA_API virtual size_t resize(const SizeType& size, bool reallocate = true);
+    DATA_API size_t resize(const SizeType& size, bool reallocate = true);
 
     /**
      * @brief Clear this array.
      * Size and type are reset, buffer is released.
      */
-    DATA_API virtual void clear();
+    DATA_API void clear();
 
     /**
      * @brief Test whether array is empty
@@ -214,7 +214,7 @@ public:
      * @return Returns whether array is empty, ie. this->getSize() is an empty
      * vector.
      */
-    DATA_API virtual bool empty() const;
+    DATA_API bool empty() const;
 
     /**
      * @brief Get the size of one element of the array,
@@ -222,56 +222,56 @@ public:
      *
      * @return One array elemet size in bytes.
      */
-    DATA_API virtual size_t getElementSizeInBytes() const;
+    DATA_API size_t getElementSizeInBytes() const;
 
     /**
      * @brief Get the number of elements of type <getType()> in the array
      *
      * @return number of array elements
      */
-    DATA_API virtual size_t getNumberOfElements() const;
+    DATA_API size_t getNumberOfElements() const;
 
     /**
      * @brief Getter for the array view size
      *
      * @return  Array view size in bytes.
      */
-    DATA_API virtual size_t getSizeInBytes() const;
+    DATA_API size_t getSizeInBytes() const;
 
     /**
      * @brief Getter for the array size
      *
      * @return vector of size lengths in each dimension
      */
-    DATA_API virtual const SizeType& getSize() const;
+    DATA_API const SizeType& getSize() const;
 
     /**
      * @brief Getter for the array strides
      *
      * @return vector of steps in each dimension for array walking
      */
-    DATA_API virtual const OffsetType& getStrides() const;
+    DATA_API const OffsetType& getStrides() const;
 
     /**
      * @brief Getter for number of dimensions, ie. getSize().size()
      *
      * @return Array's number of dimensions
      */
-    DATA_API virtual size_t getNumberOfDimensions() const;
+    DATA_API size_t getNumberOfDimensions() const;
 
     /**
      * @brief Set array's buffer ownership
      *
      * @param own New ownership value
      */
-    DATA_API virtual void setIsBufferOwner(const bool own);
+    DATA_API void setIsBufferOwner(const bool own);
 
     /**
      * @brief Getter for array's buffer ownership
      *
      * @return Current array buffer ownership
      */
-    DATA_API virtual bool getIsBufferOwner() const;
+    DATA_API bool getIsBufferOwner() const;
 
     /**
      * @{
@@ -279,15 +279,15 @@ public:
      *
      * @param type new array type
      */
-    DATA_API virtual void setType(const std::string& type);
-    DATA_API virtual void setType(const core::tools::Type& type);
+    DATA_API void setType(const std::string& type);
+    DATA_API void setType(const core::tools::Type& type);
     /// @}
     /**
      * @brief Getter for array's type
      *
      * @return Type of array
      */
-    DATA_API virtual core::tools::Type getType() const;
+    DATA_API core::tools::Type getType() const;
 
     /**
      * @brief Compute offset in buffer

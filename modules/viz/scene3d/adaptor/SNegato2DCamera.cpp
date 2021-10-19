@@ -293,9 +293,9 @@ void SNegato2DCamera::resetCamera()
     camNode->setPosition(::Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
-    const auto origin  = image->getOrigin2();
-    const auto size    = image->getSize2();
-    const auto spacing = image->getSpacing2();
+    const auto origin  = image->getOrigin();
+    const auto size    = image->getSize();
+    const auto spacing = image->getSpacing();
 
     if(size[0] > 0 && size[1] > 0 && size[2] > 0)
     {

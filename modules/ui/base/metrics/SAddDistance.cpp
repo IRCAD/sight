@@ -69,27 +69,27 @@ void SAddDistance::updating()
     if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         const data::Point::sptr pt1 = data::Point::New();
-        std::copy(image->getOrigin2().begin(), image->getOrigin2().begin() + 3, pt1->getCoord().begin());
+        std::copy(image->getOrigin().begin(), image->getOrigin().begin() + 3, pt1->getCoord().begin());
 
         const data::Point::sptr pt2 = data::Point::New();
         std::transform(
-            image->getSize2().begin(),
-            image->getSize2().begin() + 3,
+            image->getSize().begin(),
+            image->getSize().begin() + 3,
             pt2->getCoord().begin(),
-            boost::numeric_cast<data::Point::PointCoordType, data::Image::SizeType::value_type>
+            boost::numeric_cast<data::Point::PointCoordType, data::Image::Size::value_type>
         );
 
         std::transform(
             pt2->getCoord().begin(),
             pt2->getCoord().end(),
-            image->getSpacing2().begin(),
+            image->getSpacing().begin(),
             pt2->getCoord().begin(),
             std::multiplies<double>()
         );
         std::transform(
             pt2->getCoord().begin(),
             pt2->getCoord().end(),
-            image->getOrigin2().begin(),
+            image->getOrigin().begin(),
             pt2->getCoord().begin(),
             std::plus<double>()
         );

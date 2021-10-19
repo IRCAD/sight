@@ -86,7 +86,7 @@ sight::data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::
     image->Graft(imageFilter->GetOutput());
 
     auto outputImage = sight::data::Image::New();
-    sight::io::itk::itkImageToFwDataImage(image, outputImage);
+    sight::io::itk::moveFromItk(image, outputImage);
 
     return outputImage;
 }

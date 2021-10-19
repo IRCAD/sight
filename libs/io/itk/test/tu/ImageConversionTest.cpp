@@ -67,11 +67,11 @@ void ImageConversionTest::testConversion()
     utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
 
     typedef ::itk::Image<std::int16_t, 3> ImageType;
-    ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(image);
+    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
     data::Image::sptr image2    = data::Image::New();
     bool image2ManagesHisBuffer = false;
-    io::itk::dataImageFactory<ImageType>(itkImage, image2, image2ManagesHisBuffer);
+    io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
 
     io::itk::ut::helper::roundSpacing(image);
     io::itk::ut::helper::roundSpacing(image2);
@@ -84,7 +84,7 @@ void ImageConversionTest::testConversion()
     CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    data::Image::sptr image3    = io::itk::dataImageFactory<ImageType>(itkImage, image3ManagesHisBuffer);
+    data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
     CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
 }
 
@@ -125,11 +125,11 @@ void ImageConversionTest::testConversion2D()
 
     typedef ::itk::Image<std::int16_t, 2> ImageType;
 
-    ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(image);
+    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
     data::Image::sptr image2    = data::Image::New();
     bool image2ManagesHisBuffer = false;
-    io::itk::dataImageFactory<ImageType>(itkImage, image2, image2ManagesHisBuffer);
+    io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
 
     io::itk::ut::helper::roundSpacing(image);
     io::itk::ut::helper::roundSpacing(image2);
@@ -142,7 +142,7 @@ void ImageConversionTest::testConversion2D()
     CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    data::Image::sptr image3    = io::itk::dataImageFactory<ImageType>(itkImage, image3ManagesHisBuffer);
+    data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
     CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
 }
 

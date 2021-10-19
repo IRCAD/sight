@@ -92,7 +92,7 @@ struct ITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>(param.m_dataImage);
+        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(param.m_dataImage);
 
         writer->SetFileName(param.m_filename.c_str());
         writer->SetInput(itkImage);

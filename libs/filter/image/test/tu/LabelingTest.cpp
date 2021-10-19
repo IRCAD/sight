@@ -64,8 +64,8 @@ void LabelingTest::computeCentroids()
     const data::Image::Origin imgOrigin   = {0., 0., 0.};
     uint8_t val                           = 0;
 
-    img->setSpacing2(imgSpacing);
-    img->setOrigin2(imgOrigin);
+    img->setSpacing(imgSpacing);
+    img->setOrigin(imgOrigin);
     img->resize(imgSize, type, data::Image::PixelFormat::GRAY_SCALE);
 
     const auto dumpLock = img->lock();

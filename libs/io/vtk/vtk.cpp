@@ -241,38 +241,37 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 //    source->PropagateUpdateExtent();
 
     int dim = source->GetDataDimension();
+    data::Image::Size imageSize;
 
     if(dim == 2)
     {
-        const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                        static_cast<size_t>(source->GetDimensions()[1]), 0
+        imageSize = {static_cast<size_t>(source->GetDimensions()[0]),
+                     static_cast<size_t>(source->GetDimensions()[1]), 0
         };
-        destination->setSize2(size);
 
         const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
         };
-        destination->setSpacing2(spacing);
+        destination->setSpacing(spacing);
 
         const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.
         };
-        destination->setOrigin2(origin);
+        destination->setOrigin(origin);
     }
     else
     {
-        const data::Image::Size size = {static_cast<size_t>(source->GetDimensions()[0]),
-                                        static_cast<size_t>(source->GetDimensions()[1]),
-                                        static_cast<size_t>(source->GetDimensions()[2])
+        imageSize = {static_cast<size_t>(source->GetDimensions()[0]),
+                     static_cast<size_t>(source->GetDimensions()[1]),
+                     static_cast<size_t>(source->GetDimensions()[2])
         };
-        destination->setSize2(size);
 
         const data::Image::Spacing spacing =
         {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]
         };
-        destination->setSpacing2(spacing);
+        destination->setSpacing(spacing);
 
         const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]
         };
-        destination->setOrigin2(origin);
+        destination->setOrigin(origin);
     }
 
     const int nbComponents = source->GetNumberOfScalarComponents();
@@ -290,22 +289,29 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
     {
         void* destBuffer;
 
-        destination->setType(TypeTranslator::translate(source->GetScalarType()));
-        destination->setNumberOfComponents(static_cast<size_t>(nbComponents));
+        sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
         if(nbComponents == 1)
         {
-            destination->setPixelFormat(data::Image::PixelFormat::GRAY_SCALE);
+            format = data::Image::PixelFormat::GRAY_SCALE;
+        }
+        else if(nbComponents == 2)
+        {
+            format = data::Image::PixelFormat::RG;
         }
         else if(nbComponents == 3)
         {
-            destination->setPixelFormat(data::Image::PixelFormat::RGB);
+            format = data::Image::PixelFormat::RGB;
         }
         else if(nbComponents == 4)
         {
-            destination->setPixelFormat(data::Image::PixelFormat::RGBA);
+            format = data::Image::PixelFormat::RGBA;
+        }
+        else
+        {
+            SIGHT_FATAL("Unhandled pixel format");
         }
 
-        destination->resize();
+        destination->resize(imageSize, TypeTranslator::translate(source->GetScalarType()), format);
 
         const auto dumpLock = destination->lock();
 
@@ -324,22 +330,22 @@ void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr
     if(_pDataImage->getNumberOfDimensions() == 2)
     {
         _pImageImport->SetDataSpacing(
-            _pDataImage->getSpacing2()[0],
-            _pDataImage->getSpacing2()[1],
+            _pDataImage->getSpacing()[0],
+            _pDataImage->getSpacing()[1],
             0
         );
 
         _pImageImport->SetDataOrigin(
-            _pDataImage->getOrigin2()[0],
-            _pDataImage->getOrigin2()[1],
+            _pDataImage->getOrigin()[0],
+            _pDataImage->getOrigin()[1],
             0
         );
 
         _pImageImport->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+            static_cast<int>(_pDataImage->getSize()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize2()[1]) - 1,
+            static_cast<int>(_pDataImage->getSize()[1]) - 1,
             0,
             0
         );
@@ -347,24 +353,24 @@ void configureVTKImageImport(::vtkImageImport* _pImageImport, data::Image::csptr
     else
     {
         _pImageImport->SetDataSpacing(
-            _pDataImage->getSpacing2()[0],
-            _pDataImage->getSpacing2()[1],
-            _pDataImage->getSpacing2()[2]
+            _pDataImage->getSpacing()[0],
+            _pDataImage->getSpacing()[1],
+            _pDataImage->getSpacing()[2]
         );
 
         _pImageImport->SetDataOrigin(
-            _pDataImage->getOrigin2()[0],
-            _pDataImage->getOrigin2()[1],
-            _pDataImage->getOrigin2()[2]
+            _pDataImage->getOrigin()[0],
+            _pDataImage->getOrigin()[1],
+            _pDataImage->getOrigin()[2]
         );
 
         _pImageImport->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->getSize2()[0]) - 1,
+            static_cast<int>(_pDataImage->getSize()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize2()[1]) - 1,
+            static_cast<int>(_pDataImage->getSize()[1]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize2()[2]) - 1
+            static_cast<int>(_pDataImage->getSize()[2]) - 1
         );
     }
 

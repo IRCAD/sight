@@ -679,8 +679,8 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
     {
         this->getRenderService()->makeCurrent();
 
-        const auto& imgSpacing = imageLock->getSpacing2();
-        const auto& imgOrigin  = imageLock->getOrigin2();
+        const auto& imgSpacing = imageLock->getSpacing();
+        const auto& imgOrigin  = imageLock->getOrigin();
 
         m_currentSlicePos = {
             static_cast<float>(_sagittalIndex + 1) * static_cast<float>(imgSpacing[0])

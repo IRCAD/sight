@@ -159,8 +159,8 @@ void SCalibrationInfoReader::updating()
                     data::Image::sptr calibImg = data::Image::New();
                     sight::io::opencv::Image::copyFromCv(*calibImg.get(), img);
 
-                    calibImg->setSpacing2({{1., 1., 1.}});
-                    calibImg->setOrigin2({{0., 0., 0.}});
+                    calibImg->setSpacing({{1., 1., 1.}});
+                    calibImg->setOrigin({{0., 0., 0.}});
 
                     const auto detectionPair = std::make_pair(calibImg, chessboardPts);
                     const auto filename      = dirEntry.filename().string();

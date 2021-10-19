@@ -47,7 +47,6 @@ private:
     CPPUNIT_TEST(testBGRAIterator);
     CPPUNIT_TEST(benchmarkIterator);
     CPPUNIT_TEST(imageDeepCopy);
-    CPPUNIT_TEST(setISStreamTest);
     CPPUNIT_TEST(emptyIteratorTest);
     CPPUNIT_TEST_SUITE_END();
 
@@ -69,7 +68,6 @@ public:
     void testBGRAIterator();
     void benchmarkIterator();
     void imageDeepCopy();
-    void setISStreamTest();
     void emptyIteratorTest();
 };
 

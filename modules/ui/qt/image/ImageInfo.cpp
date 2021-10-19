@@ -115,7 +115,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         if(imageIsValid)
         {
             const double* point          = info.m_worldPos;
-            const data::Image::Size size = image->getSize2();
+            const data::Image::Size size = image->getSize();
 
             if(point[0] < 0 || point[1] < 0 || point[2] < 0)
             {

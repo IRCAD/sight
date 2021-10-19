@@ -25,8 +25,6 @@
 #include <core/spyLog.hpp>
 
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/helper/Image.hpp>
-#include <data/helper/ImageGetter.hpp>
 
 namespace sight::filter::image
 {
@@ -41,7 +39,7 @@ LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& r
 
     m_imageTypeSize = m_image->getType().sizeOf();
     m_roiTypeSize   = m_useROI ? m_roiImage->getType().sizeOf() : 0;
-    const auto& size = m_image->getSize2();
+    const auto& size = m_image->getSize();
     m_yPitch = size[0];
     m_zPitch = size[1] * m_yPitch;
 }
@@ -60,8 +58,8 @@ bool LineDrawer::drawEllipse(
 {
     bool modified = false;
 
-    const auto& spacing = m_image->getSpacing2();
-    const auto& size    = m_image->getSize2();
+    const auto& spacing = m_image->getSpacing();
+    const auto& size    = m_image->getSize();
 
     const double width  = radius / spacing[firstDim];
     const double height = radius / spacing[secondDim];
@@ -108,12 +106,12 @@ bool LineDrawer::drawPixel(
 )
 {
     const data::Image::BufferType* pixBuf =
-        reinterpret_cast<data::Image::BufferType*>(m_image->getPixelBuffer(index));
+        reinterpret_cast<data::Image::BufferType*>(m_image->getPixel(index));
 
     if(m_useROI)
     {
         data::Image::BufferType* roiVal =
-            reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixel(index));
         if(data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;
@@ -131,7 +129,7 @@ bool LineDrawer::drawPixel(
     }
 
     diff.addDiff(index, pixBuf, value);
-    m_image->setPixelBuffer(index, value);
+    m_image->setPixel(index, value);
 
     return true;
 }

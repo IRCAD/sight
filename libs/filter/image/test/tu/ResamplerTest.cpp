@@ -75,11 +75,11 @@ void ResamplerTest::identityTest()
         data::Image::csptr(imageIn),
         imageOut,
         data::Matrix4::csptr(idMat),
-        imageIn
+        std::make_tuple(imageIn->getSize(), imageIn->getOrigin(), imageIn->getSpacing())
     );
 
-    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
     CPPUNIT_ASSERT(imageOut->getType() == TYPE);
 
     const auto inDumpLock  = imageIn->lock();
@@ -120,7 +120,7 @@ void ResamplerTest::translateTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
 
     const auto inDumpLock = imageIn->lock();
 
@@ -167,8 +167,8 @@ void ResamplerTest::translateTest()
     }
 
     // Check if size and spacing are the same as the input.
-    CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
-    CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
+    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
 }
 
 //------------------------------------------------------------------------------

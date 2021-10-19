@@ -115,7 +115,7 @@ void SDistortion::updating()
 
     if(inputImage && m_calibrationMismatch)
     {
-        const auto inputSize = inputImage->getSize2();
+        const auto inputSize = inputImage->getSize();
         if(inputSize != m_prevImageSize)
         {
             // Reset the error detection boolean
@@ -198,7 +198,7 @@ void SDistortion::remap()
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
-    const auto inputSize = inputImage->getSize2();
+    const auto inputSize = inputImage->getSize();
 
     if(inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
     {
@@ -227,7 +227,7 @@ void SDistortion::remap()
         return;
     }
 
-    const auto prevSize = outputImage->getSize2();
+    const auto prevSize = outputImage->getSize();
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
@@ -245,21 +245,15 @@ void SDistortion::remap()
         outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
 
         const data::Image::Origin origin = {0., 0., 0.};
-        outputImage->setOrigin2(origin);
+        outputImage->setOrigin(origin);
 
         const data::Image::Spacing spacing = {1., 1., 1.};
-        outputImage->setSpacing2(spacing);
+        outputImage->setSpacing(spacing);
         outputImage->setWindowWidth(1);
         outputImage->setWindowCenter(0);
-        if(inputImage->getNumberOfComponents() != outputImage->getNumberOfComponents())
-        {
-            FW_DEPRECATED_MSG("Number of components should be defined by pixel format", "sight 22.0");
-            outputImage->setNumberOfComponents(inputImage->getNumberOfComponents());
-            outputImage->resize();
-        }
     }
 
-    const auto newSize = outputImage->getSize2();
+    const auto newSize = outputImage->getSize();
 
     // Get cv::Mat from data::Image
     cv::Mat img = io::opencv::Image::moveToCv(inputImage.get_shared());

@@ -38,7 +38,7 @@ namespace sight::io::itk
  * data::Image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-data::Image::sptr dataImageFactory(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
+data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
 
 /**
  * @brief Update a data Image from an itk one.
@@ -49,7 +49,7 @@ data::Image::sptr dataImageFactory(typename ITKIMAGE::Pointer itkImage, bool buf
  * data::Image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-void dataImageFactory(
+void moveFromItk(
     typename ITKIMAGE::Pointer itkImage,
     data::Image::sptr _dataImage,
     bool bufferManagerIsDataImage = true
@@ -67,7 +67,7 @@ void dataImageFactory(
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory(data::Image::csptr imageData, bool bufferManagerIsDataImage = true);
+typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData);
 
 }
 

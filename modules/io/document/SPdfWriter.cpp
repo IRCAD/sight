@@ -250,10 +250,10 @@ QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 {
     if(fwImage.getNumberOfComponents() == 3
        && fwImage.getType().string() == "uint8"
-       && fwImage.getSize2()[2] == 1)
+       && fwImage.getSize()[2] == 1)
     {
         // Initialize QImage parameters
-        const data::Image::Size dimension = fwImage.getSize2();
+        const data::Image::Size dimension = fwImage.getSize();
         const int width                   = static_cast<int>(dimension[0]);
         const int height                  = static_cast<int>(dimension[1]);
 

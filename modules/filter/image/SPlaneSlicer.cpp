@@ -104,12 +104,12 @@ void SPlaneSlicer::updating()
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
     // This is because the adaptor uses a vtkImageActor which doesn't handle 2d images.
-    const auto size = slice->getSize2();
-    slice->setSize2({{size[0], size[1], 1}});
-    const auto spacing = slice->getSpacing2();
-    slice->setSpacing2({{spacing[0], spacing[1], 0}});
-    const auto origin = slice->getOrigin2();
-    slice->setOrigin2({{origin[0], origin[1], 0}});
+    const auto size = slice->getSize();
+    slice->resize({{size[0], size[1], 1}}, slice->getType(), slice->getPixelFormat());
+    const auto spacing = slice->getSpacing();
+    slice->setSpacing({{spacing[0], spacing[1], 0}});
+    const auto origin = slice->getOrigin();
+    slice->setOrigin({{origin[0], origin[1], 0}});
 
     auto sig = slice->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
 
@@ -168,9 +168,9 @@ void SPlaneSlicer::setReslicerExtent()
 
     SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extentImg);
 
-    const auto& size    = extentImg->getSize2();
-    const auto& origin  = extentImg->getOrigin2();
-    const auto& spacing = extentImg->getSpacing2();
+    const auto& size    = extentImg->getSize();
+    const auto& origin  = extentImg->getOrigin();
+    const auto& spacing = extentImg->getSpacing();
 
     // cast size_t to int.
     std::vector<int> intSize(size.size());
@@ -278,8 +278,8 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
 
     const int idx = data::Integer::dynamicCast(index)->value();
 
-    const auto& spacing = image->getSpacing2();
-    const auto& origin  = image->getOrigin2();
+    const auto& spacing = image->getSpacing();
+    const auto& origin  = image->getOrigin();
 
     const std::uint8_t axis = static_cast<std::uint8_t>(m_orientation);
 

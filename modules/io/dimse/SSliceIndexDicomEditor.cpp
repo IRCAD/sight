@@ -383,8 +383,8 @@ void SSliceIndexDicomEditor::readSlice(
         image->deepCopy(newImage);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0] / 2);
-        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1] / 2);
+        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize()[0] / 2);
+        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize()[1] / 2);
 
         image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
         image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);

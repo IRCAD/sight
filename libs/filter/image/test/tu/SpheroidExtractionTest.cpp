@@ -147,7 +147,7 @@ void SpheroidExtractionTest::extractionTest()
 
     makeNoise<std::int16_t>(image, 0, 128);
 
-    ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(image);
+    ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
     const std::vector<std::array<double, 3> > spheroidCenters = {{{16., 16., 16.}},
         {{54., 67., 12.}},
@@ -177,7 +177,7 @@ void SpheroidExtractionTest::extractionTest()
     }
 
     // Rewrite the itk image to the Sight image.
-    io::itk::itkImageToFwDataImage(itkImage, image);
+    io::itk::moveFromItk(itkImage, image);
 
     data::PointList::sptr extractedSpheroids =
         filter::image::SpheroidExtraction::extract(image, 200., 4., 9., 0.8, 1.2);

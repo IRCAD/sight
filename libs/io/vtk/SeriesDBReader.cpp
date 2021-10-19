@@ -194,81 +194,6 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
 
 //------------------------------------------------------------------------------
 
-struct FilteringStream : ::boost::iostreams::filtering_istream
-{
-    typedef ::boost::iostreams::stream< ::boost::iostreams::array_source> BufferStreamType;
-
-    FilteringStream(const data::Image::sptr& source) :
-        m_image(source),
-        m_bufferObject(source->getBufferObject()),
-        m_lock(m_bufferObject->lock()),
-        m_bufferStream(std::make_shared<BufferStreamType>(
-                           static_cast<char*>(m_lock.getBuffer()),
-                           m_bufferObject->getSize()
-        ))
-    {
-        this->push(*m_bufferStream);
-    }
-
-    ~FilteringStream()
-    {
-        try
-        {
-            this->reset();
-        }
-        catch(...)
-        {
-        }
-    }
-
-    data::Image::sptr m_image;
-    core::memory::BufferObject::sptr m_bufferObject;
-    core::memory::BufferObject::Lock m_lock;
-    SPTR(BufferStreamType) m_bufferStream;
-};
-
-//------------------------------------------------------------------------------
-
-template<typename READER>
-class ImageStream : public core::memory::stream::in::IFactory
-{
-public:
-
-    ImageStream(const std::filesystem::path& path) :
-        m_path(path)
-    {
-    }
-
-protected:
-
-    //------------------------------------------------------------------------------
-
-    data::Image::sptr getImage()
-    {
-        if(!std::filesystem::exists(m_path))
-        {
-            SIGHT_THROW("file " << m_path.string() << " does not exist anymore or has moved.");
-        }
-
-        vtkSmartPointer<vtkDataObject> obj;
-        obj = getObj<READER>(m_path, nullptr);
-
-        return data::Image::dynamicCast(getDataObject(obj, m_path));
-    }
-
-    SPTR(std::istream) get()
-    {
-        SPTR(FilteringStream) is =
-            std::make_shared<FilteringStream>(this->getImage());
-
-        return is;
-    }
-
-    std::filesystem::path m_path;
-};
-
-//------------------------------------------------------------------------------
-
 bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkMetaImageReader>&)
 {
     return true;
@@ -290,97 +215,6 @@ bool checkIfReadDataTypeIsImage(const vtkSmartPointer<vtkXMLGenericDataObjectRea
 
 //------------------------------------------------------------------------------
 
-void updateImageFromVtkInfo(const vtkSmartPointer<vtkInformation>& info, const data::Image::sptr& imgObj)
-{
-    int extent[6];
-    info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-    const data::Image::Size size = {static_cast<size_t>(extent[1] - extent[0] + 1),
-                                    static_cast<size_t>(extent[3] - extent[2] + 1),
-                                    static_cast<size_t>(extent[5] - extent[4] + 1)
-    };
-    imgObj->setSize2(size);
-
-    data::Image::Spacing spacing;
-    info->Get(vtkDataObject::SPACING(), &spacing[0]);
-    imgObj->setSpacing2(spacing);
-
-    data::Image::Origin origin;
-    info->Get(vtkDataObject::ORIGIN(), &origin[0]);
-    imgObj->setOrigin2(origin);
-
-    vtkInformation* attrInfo = vtkDataObject::GetActiveFieldInformation(
-        info,
-        vtkDataObject::FIELD_ASSOCIATION_POINTS,
-        vtkDataSetAttributes::SCALARS
-    );
-    int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
-    imgObj->setType(io::vtk::TypeTranslator::translate(attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE())));
-    imgObj->setNumberOfComponents(static_cast<size_t>(nbOfComponents));
-}
-
-//------------------------------------------------------------------------------
-
-void getInfo(const vtkSmartPointer<vtkGenericDataObjectReader>& reader, const data::Image::sptr& imgObj)
-{
-    vtkSmartPointer<vtkStructuredPointsReader> imgReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
-    imgReader->SetFileName(reader->GetFileName());
-
-    vtkSmartPointer<vtkInformation> info = vtkSmartPointer<vtkInformation>::New();
-    imgReader->ReadMetaData(info);
-
-    updateImageFromVtkInfo(info, imgObj);
-
-    std::filesystem::path file = reader->GetFileName();
-    imgObj->setIStreamFactory(
-        std::make_shared<ImageStream<vtkStructuredPointsReader> >(file),
-        imgObj->getSizeInBytes()
-    );
-}
-
-//------------------------------------------------------------------------------
-
-void getInfo(const vtkSmartPointer<vtkXMLGenericDataObjectReader>& reader, const data::Image::sptr& imgObj)
-{
-    vtkSmartPointer<vtkXMLImageDataReader> imgReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
-    imgReader->SetFileName(reader->GetFileName());
-
-    vtkSmartPointer<vtkInformation> info = vtkSmartPointer<vtkInformation>::New();
-    imgReader->UpdateInformation();
-    imgReader->CopyOutputInformation(info, 0);
-
-    updateImageFromVtkInfo(info, imgObj);
-
-    std::filesystem::path file = reader->GetFileName();
-    imgObj->setIStreamFactory(
-        std::make_shared<ImageStream<vtkXMLImageDataReader> >(file),
-        imgObj->getSizeInBytes()
-    );
-}
-
-//------------------------------------------------------------------------------
-
-template<typename DATA_READER>
-data::Image::sptr lazyRead(const std::filesystem::path& file, const core::jobs::Observer::sptr& job)
-{
-    vtkSmartPointer<DATA_READER> reader = vtkSmartPointer<DATA_READER>::New();
-    reader->SetFileName(file.string().c_str());
-    reader->UpdateInformation();
-
-    data::Image::sptr imgObj;
-
-    if(checkIfReadDataTypeIsImage(reader))
-    {
-        imgObj = data::Image::New();
-        getInfo(reader, imgObj);
-
-        job->finish();
-    }
-
-    return imgObj;
-}
-
-//------------------------------------------------------------------------------
-
 void SeriesDBReader::read()
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -398,11 +232,6 @@ void SeriesDBReader::read()
 
         if(file.extension().string() == ".vtk")
         {
-            if(m_lazyMode)
-            {
-                img = lazyRead<vtkGenericDataObjectReader>(file, m_job);
-            }
-
             if(!img)
             {
                 obj = getObj<vtkGenericDataObjectReader>(file, m_job);
@@ -410,11 +239,6 @@ void SeriesDBReader::read()
         }
         else if(file.extension().string() == ".vti")
         {
-            if(m_lazyMode)
-            {
-                img = lazyRead<vtkXMLGenericDataObjectReader>(file, m_job);
-            }
-
             if(!img)
             {
                 obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);

@@ -120,7 +120,9 @@ public:
      * @param _image The Sight Image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static void setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat _format);
+    VIZ_SCENE3D_API static std::pair<core::tools::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
+        ::Ogre::PixelFormat _format
+    );
 
     /**
      * @brief loadOgreTexture

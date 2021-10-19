@@ -119,7 +119,7 @@ void ImageReaderWriterTest::checkSaveLoadInr(data::Image::sptr image)
 {
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";

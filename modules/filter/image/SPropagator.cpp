@@ -129,10 +129,10 @@ void SPropagator::starting()
     bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgInLock.get_shared())
                    && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOutLock.get_shared());
 
-    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize2() != imgOutLock->getSize2());
+    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize() != imgOutLock->getSize());
     SIGHT_WARN_IF(
         "Input and output image must have the same spacing.",
-        imgInLock->getSpacing2() != imgOutLock->getSpacing2()
+        imgInLock->getSpacing() != imgOutLock->getSpacing()
     );
 
     if(isValid)
@@ -253,9 +253,9 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOutLock);
 
     SPTR(data::Image::BufferType) val =
-        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imgOutLock.get_shared(), m_value);
+        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imgOutLock.get_shared(), m_value);
 
-    const data::Image::Spacing imgSpacing = imgOutLock->getSpacing2();
+    const data::Image::Spacing imgSpacing = imgOutLock->getSpacing();
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
@@ -354,7 +354,7 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
     const auto imgOut = m_imageOut.lock();
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOut);
 
-    const data::Image::Size& imgSize = imgOut->getSize2();
+    const data::Image::Size& imgSize = imgOut->getSize();
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 

@@ -304,7 +304,7 @@ void Utils::destroyOgreRoot()
     ::Ogre::Image imageOgre;
 
     // If image is flipped, try to switch image
-    const data::Image::Size imageSize = imageFw->getSize2();
+    const data::Image::Size imageSize = imageFw->getSize();
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
     uint32_t height = 1, depth = 1;
@@ -348,15 +348,13 @@ void Utils::convertFromOgreTexture(::Ogre::TexturePtr _texture, const data::Imag
         }
     }
 
-    _imageFw->setSize2(imageSize);
-
-    Utils::setPixelFormatFromOgre(_imageFw, _texture->getFormat());
+    auto [type, format] = Utils::getPixelFormatFromOgre(_texture->getFormat());
     data::Image::Spacing spacing = {1., 1., 1.};
     data::Image::Origin origin   = {0., 0., 0.};
 
-    _imageFw->setSpacing2(spacing);
-    _imageFw->setOrigin2(origin);
-    _imageFw->resize();
+    _imageFw->setSpacing(spacing);
+    _imageFw->setOrigin(origin);
+    _imageFw->resize(imageSize, type, format);
 
     // Get the pixel buffer
     ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
@@ -504,10 +502,8 @@ void Utils::convertFromOgreTexture(::Ogre::TexturePtr _texture, const data::Imag
 
 //------------------------------------------------------------------------------
 
-void Utils::setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat _format)
+std::pair<core::tools::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(::Ogre::PixelFormat _format)
 {
-    // Set the number of components;
-    size_t numComponents;
     data::Image::PixelFormat pixelFormat = data::Image::PixelFormat::UNDEFINED;
 
     switch(_format)
@@ -517,13 +513,12 @@ void Utils::setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat
         case ::Ogre::PF_R16_UINT:
         case ::Ogre::PF_R32_SINT:
         case ::Ogre::PF_FLOAT32_R:
-            numComponents = 1;
-            pixelFormat   = data::Image::PixelFormat::GRAY_SCALE;
+            pixelFormat = data::Image::PixelFormat::GRAY_SCALE;
             break;
 
         case ::Ogre::PF_RG8:
         case ::Ogre::PF_R8G8_SNORM:
-            numComponents = 2;
+            SIGHT_FATAL("Pixel format " << _format << " not found.");
             break;
 
         case ::Ogre::PF_BYTE_RGB:
@@ -535,8 +530,7 @@ void Utils::setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat
         case ::Ogre::PF_R32G32B32_SINT:
         case ::Ogre::PF_SHORT_RGB:
         case ::Ogre::PF_FLOAT32_RGB:
-            numComponents = 3;
-            pixelFormat   = data::Image::PixelFormat::RGB;
+            pixelFormat = data::Image::PixelFormat::RGB;
             break;
 
         case ::Ogre::PF_BYTE_RGBA:
@@ -552,19 +546,12 @@ void Utils::setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat
         case ::Ogre::PF_R32G32B32A32_SINT:
         case ::Ogre::PF_SHORT_RGBA:
         case ::Ogre::PF_FLOAT32_RGBA:
-            numComponents = 4;
-            pixelFormat   = data::Image::PixelFormat::RGBA;
+            pixelFormat = data::Image::PixelFormat::RGBA;
             break;
 
         default:
-            SIGHT_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
-            numComponents = 4;
+            SIGHT_FATAL("Pixel format " << _format << " not found.");
     }
-
-    _image->setNumberOfComponents(numComponents);
-    _image->setPixelFormat(pixelFormat);
-
-    // Set the pixel type
 
     core::tools::Type pixelType;
     switch(_format)
@@ -624,7 +611,7 @@ void Utils::setPixelFormatFromOgre(data::Image::sptr _image, ::Ogre::PixelFormat
             pixelType = core::tools::Type::s_UINT8;
     }
 
-    _image->setType(pixelType);
+    return std::make_pair(pixelType, pixelFormat);
 }
 
 //------------------------------------------------------------------------------
@@ -651,7 +638,7 @@ void Utils::loadOgreTexture(
            || _texture->getTextureType() != _texType
            || _texture->getFormat() != pixelFormat)
         {
-            const auto& size = _image->getSize2();
+            const auto& size = _image->getSize();
             SIGHT_ASSERT("Only handle 2D and 3D textures", _image->getNumberOfDimensions() >= 2);
             const size_t depth = _image->getNumberOfDimensions() == 2 ? 1 : size[2];
 
@@ -717,18 +704,18 @@ void copyNegatoImage(::Ogre::Texture* _texture, const data::Image::sptr& _image)
 void Utils::convertImageForNegato(::Ogre::Texture* _texture, const data::Image::sptr& _image)
 {
     // Allocate texture memory.
-    if(_texture->getWidth() != _image->getSize2()[0]
-       || _texture->getHeight() != _image->getSize2()[1]
-       || _texture->getDepth() != _image->getSize2()[2]
+    if(_texture->getWidth() != _image->getSize()[0]
+       || _texture->getHeight() != _image->getSize()[1]
+       || _texture->getDepth() != _image->getSize()[2]
        || _texture->getTextureType() != ::Ogre::TEX_TYPE_3D
        || _texture->getFormat() != ::Ogre::PF_L16
        || _texture->getUsage() != ::Ogre::TU_STATIC_WRITE_ONLY)
     {
         viz::scene3d::Utils::allocateTexture(
             _texture,
-            _image->getSize2()[0],
-            _image->getSize2()[1],
-            _image->getSize2()[2],
+            _image->getSize()[0],
+            _image->getSize()[1],
+            _image->getSize()[2],
             ::Ogre::PF_L16,
             ::Ogre::TEX_TYPE_3D,
             false
@@ -822,12 +809,12 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::Matrix4::sptr
 
 std::pair< ::Ogre::Vector3, ::Ogre::Vector3> Utils::convertSpacingAndOrigin(const data::Image::csptr& _img)
 {
-    const auto& imgOrigin = _img->getOrigin2();
+    const auto& imgOrigin = _img->getOrigin();
     const ::Ogre::Vector3 origin(static_cast<float>(imgOrigin[0]),
                                  static_cast<float>(imgOrigin[1]),
                                  static_cast<float>(imgOrigin[2]));
 
-    const auto& imgSpacing = _img->getSpacing2();
+    const auto& imgSpacing = _img->getSpacing();
     const ::Ogre::Vector3 spacing(static_cast<float>(imgSpacing[0]),
                                   static_cast<float>(imgSpacing[1]),
                                   static_cast<float>(imgSpacing[2]));

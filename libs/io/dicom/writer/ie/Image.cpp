@@ -90,7 +90,7 @@ void Image::writeImagePlaneModule()
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY Sight), but stuff like "Pixel Aspect Ratio"
     const std::size_t dimension = m_object->getNumberOfDimensions();
-    const auto& spacing         = m_object->getSpacing2();
+    const auto& spacing         = m_object->getSpacing();
     for(unsigned int i = 0 ; i < dimension ; ++i)
     {
         gdcmImage.SetSpacing(i, spacing[i]);
@@ -113,8 +113,8 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
-    const auto& origin  = m_object->getOrigin2();
-    const auto& spacing = m_object->getSpacing2();
+    const auto& origin  = m_object->getOrigin();
+    const auto& spacing = m_object->getSpacing();
     gdcmImage.SetOrigin(0, origin[0]);
     gdcmImage.SetOrigin(1, origin[1]);
     gdcmImage.SetOrigin(2, origin[2] + spacing[2] * instanceNumber);
@@ -134,7 +134,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetPhotometricInterpretation(photoInter);
 
     // Image's pixel type
-    ::gdcm::PixelFormat pixelFormat = io::dicom::helper::DicomDataTools::getPixelType(m_object);
+    ::gdcm::PixelFormat pixelFormat = io::dicom::helper::DicomDataTools::getPixelType(m_object->getType());
     gdcmImage.SetPixelFormat(pixelFormat);
 
     //Image's number of dimension
@@ -143,7 +143,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetNumberOfDimensions(dimension);
 
     // Image's dimension
-    const data::Image::Size& size = m_object->getSize2();
+    const data::Image::Size& size = m_object->getSize();
     for(unsigned int i = 0 ; i < dimension ; ++i)
     {
         gdcmImage.SetDimension(i, static_cast<unsigned int>(size[i]));
@@ -161,7 +161,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
-    const data::Image::Size& size = m_object->getSize2();
+    const data::Image::Size& size = m_object->getSize();
     std::size_t bufferLength      = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength * size[2]) : bufferLength;
 

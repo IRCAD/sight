@@ -139,7 +139,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     const ::gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize2()[2]) : 1;
+    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize()[2]) : 1;
 
     // Write specific tags according to frame number
     for(unsigned int i = 0 ; i < nbFrames ; ++i)

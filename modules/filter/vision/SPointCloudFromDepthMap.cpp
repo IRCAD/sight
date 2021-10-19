@@ -100,7 +100,7 @@ void SPointCloudFromDepthMap::updating()
     // Initialize mesh points memory one time in order to increase performances
     if(pointCloud->getNumberOfPoints() == 0)
     {
-        const auto size       = depthMap->getSize2();
+        const auto size       = depthMap->getSize();
         const size_t width    = size[0];
         const size_t height   = size[1];
         const size_t nbPoints = width * height;
@@ -206,7 +206,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
         return;
     }
 
-    const auto size     = depthMap->getSize2();
+    const auto size     = depthMap->getSize();
     const size_t width  = size[0];
     const size_t height = size[1];
 
@@ -266,7 +266,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size     = depthMap->getSize2();
+    const auto size     = depthMap->getSize();
     const size_t width  = size[0];
     const size_t height = size[1];
 
@@ -283,7 +283,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto rgbSize     = colorMap->getSize2();
+    const auto rgbSize     = colorMap->getSize();
     const size_t rgbWidth  = rgbSize[0];
     const size_t rgbHeight = rgbSize[1];
 

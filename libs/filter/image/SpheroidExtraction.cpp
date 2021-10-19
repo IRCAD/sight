@@ -57,7 +57,7 @@ struct SpheroidExtractor
         typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
         typedef typename ::itk::Image<std::uint16_t, 3> BinaryImageType;
 
-        typename ImageType::Pointer inputImage = io::itk::itkImageFactory<ImageType>(params.inputImage);
+        typename ImageType::Pointer inputImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
         typename ::itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::Pointer thresholdFilter =
             ::itk::BinaryThresholdImageFilter<ImageType, BinaryImageType>::New();

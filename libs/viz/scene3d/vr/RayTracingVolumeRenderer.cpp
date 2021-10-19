@@ -254,9 +254,9 @@ void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const 
         return;
     }
 
-    this->scaleTranslateCube(image->getSpacing2(), image->getOrigin2());
+    this->scaleTranslateCube(image->getSpacing(), image->getOrigin());
 
-    const data::Image::Size& newSize = image->getSize2();
+    const data::Image::Size& newSize = image->getSize();
 
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)

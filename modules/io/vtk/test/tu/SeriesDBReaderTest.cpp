@@ -136,9 +136,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     // Data read.
     data::Image::sptr image                = imageSeries->getImage();
-    const data::Image::Spacing spacingRead = image->getSpacing2();
-    const data::Image::Spacing originRead  = image->getOrigin2();
-    const data::Image::Size sizeRead       = image->getSize2();
+    const data::Image::Spacing spacingRead = image->getSpacing();
+    const data::Image::Spacing originRead  = image->getOrigin();
+    const data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());

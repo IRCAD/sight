@@ -211,14 +211,14 @@ void ImageDiffTest::undoRedoTest()
         const data::Image::IndexType index = indices[i];
 
         const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixelBuffer(index));
+            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
-        image->setPixelBuffer(index, newBufferValue);
+        image->setPixel(index, newBufferValue);
 
         CPPUNIT_ASSERT_EQUAL(size_t(i + 1), diff.getNumberOfElements());
         CPPUNIT_ASSERT_EQUAL(index, diff.getElementDiffIndex(i));
-        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(index)));
+        CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(index)));
     }
 
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
@@ -229,7 +229,7 @@ void ImageDiffTest::undoRedoTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "it: " + std::to_string(it),
             (int) std::uint8_t(0),
-            (int) *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(it))
+            (int) *reinterpret_cast<std::uint8_t*>(image->getPixel(it))
         );
     }
 
@@ -243,11 +243,11 @@ void ImageDiffTest::undoRedoTest()
 
         if(indexIt != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(NEWVALUE, *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
         else
         {
-            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixelBuffer(i)));
+            CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), *reinterpret_cast<std::uint8_t*>(image->getPixel(i)));
         }
     }
 }

@@ -209,9 +209,9 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     image->resize(size, frameTL->getType(), format);
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
     const data::Image::Spacing spacing = {1., 1., 1.};
-    image->setSpacing2(spacing);
+    image->setSpacing(spacing);
     image->setWindowWidth(100);
     image->setWindowCenter(0);
 

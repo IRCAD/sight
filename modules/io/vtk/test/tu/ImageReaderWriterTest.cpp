@@ -141,9 +141,9 @@ void ImageReaderWriterTest::testVtkImageReader()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -195,9 +195,9 @@ void ImageReaderWriterTest::testVtiImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -250,9 +250,9 @@ void ImageReaderWriterTest::testMhdImageReader()
     core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -351,9 +351,9 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         std::filesystem::remove(file);
 
         // Data read
-        data::Image::Spacing spacingRead = image->getSpacing2();
-        data::Image::Origin originRead   = image->getOrigin2();
-        data::Image::Size sizeRead       = image->getSize2();
+        data::Image::Spacing spacingRead = image->getSpacing();
+        data::Image::Origin originRead   = image->getOrigin();
+        data::Image::Size sizeRead       = image->getSize();
 
         CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
         CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -420,9 +420,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
     std::filesystem::remove(file);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -511,9 +511,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -575,9 +575,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
-    data::Image::Spacing spacingRead = image->getSpacing2();
-    data::Image::Origin originRead   = image->getOrigin2();
-    data::Image::Size sizeRead       = image->getSize2();
+    data::Image::Spacing spacingRead = image->getSpacing();
+    data::Image::Origin originRead   = image->getOrigin();
+    data::Image::Size sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());

@@ -76,10 +76,30 @@ static data::Image::sptr genImage(
         imageSize[2] = _d;
     }
 
-    image->setSize2(imageSize);
-    image->setType(imageType);
-    image->setNumberOfComponents(_numChannels);
-    image->resize();
+    data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+    switch(_numChannels)
+    {
+        case 1:
+            format = data::Image::PixelFormat::GRAY_SCALE;
+            break;
+
+        case 2:
+            format = data::Image::PixelFormat::RG;
+            break;
+
+        case 3:
+            format = data::Image::PixelFormat::RGB;
+            break;
+
+        case 4:
+            format = data::Image::PixelFormat::RGBA;
+            break;
+
+        default:
+            SIGHT_FATAL("Unhandled OpenCV format");
+    }
+
+    image->resize(imageSize, imageType, format);
 
     auto dstBuffer                = image->begin<std::uint8_t>();
     const std::uint8_t* srcBuffer = reinterpret_cast<const std::uint8_t*>(_imageBuffer.data());

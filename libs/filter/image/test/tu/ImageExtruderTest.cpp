@@ -38,12 +38,9 @@ void ImageExtruderTest::setUp()
 {
     m_image = data::Image::New();
     const auto dumpLock = m_image->lock();
-    m_image->setSpacing2(m_spacing);
-    m_image->setOrigin2(m_origin);
-    m_image->setSize2(m_size);
-    m_image->setType(m_type);
-    m_image->setPixelFormat(m_format);
-    m_image->resize();
+    m_image->setSpacing(m_spacing);
+    m_image->setOrigin(m_origin);
+    m_image->resize(m_size, m_type, m_format);
 
     const auto iterEnd = m_image->end<std::int8_t>();
     for(auto iter = m_image->begin<std::int8_t>() ; iter != iterEnd ; ++iter)

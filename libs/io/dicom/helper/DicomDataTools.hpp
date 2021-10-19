@@ -49,11 +49,11 @@ class IO_DICOM_CLASS_API DicomDataTools
 public:
 
     /**
-     * @brief Return the pixel type of a fwData Image.
-     * @param[in] image Image of fwData
+     * @brief Return the gdcm pixel type of a sight image.
+     * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static const ::gdcm::PixelFormat getPixelType(const data::Image::csptr& image);
+    IO_DICOM_API static const ::gdcm::PixelFormat getPixelType(const core::tools::Type& type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.

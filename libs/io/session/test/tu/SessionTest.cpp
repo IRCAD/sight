@@ -997,24 +997,24 @@ inline void _compare<data::Image>(const data::Image::csptr& actual, const std::s
     // Retrieve the expected variant
     const auto& expected = _expected<data::Image>(variant);
 
-    const auto& expectedSize = expected->getSize2();
-    const auto& actualSize   = actual->getSize2();
+    const auto& expectedSize = expected->getSize();
+    const auto& actualSize   = actual->getSize();
 
     for(std::size_t i = 0, end = expectedSize.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(expectedSize[i], actualSize[i]);
     }
 
-    const auto& expectedSpacing = expected->getSpacing2();
-    const auto& actualSpacing   = actual->getSpacing2();
+    const auto& expectedSpacing = expected->getSpacing();
+    const auto& actualSpacing   = actual->getSpacing();
 
     for(std::size_t i = 0, end = expectedSpacing.size() ; i < end ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedSpacing[i], actualSpacing[i], DOUBLE_EPSILON);
     }
 
-    const auto& expectedOrigin = expected->getOrigin2();
-    const auto& actualOrigin   = actual->getOrigin2();
+    const auto& expectedOrigin = expected->getOrigin();
+    const auto& actualOrigin   = actual->getOrigin();
 
     for(std::size_t i = 0, end = expectedOrigin.size() ; i < end ; ++i)
     {

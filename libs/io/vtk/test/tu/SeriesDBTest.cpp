@@ -134,68 +134,6 @@ bool isLoaded(core::memory::BufferObject::sptr bo)
 
 //------------------------------------------------------------------------------
 
-void SeriesDBTest::testLazyImportSeriesDB()
-{
-    core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
-    {
-        core::mt::WriteLock lock(manager->getMutex());
-        manager->setLoadingMode(core::memory::BufferManager::LAZY);
-    }
-
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
-    const std::filesystem::path imagePath(utestData::Data::dir() / "sight/image/vtk/img.vtk");
-    const std::filesystem::path meshPath(utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk");
-
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), std::filesystem::exists(imagePath));
-    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), std::filesystem::exists(meshPath));
-
-    std::vector<std::filesystem::path> paths;
-    paths.push_back(imagePath);
-    paths.push_back(meshPath);
-
-    io::vtk::SeriesDBReader::sptr reader = io::vtk::SeriesDBReader::New();
-    reader->setObject(seriesDB);
-    reader->setFiles(paths);
-    reader->setLazyMode(true);
-    reader->read();
-
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
-
-    //check ImageSeries
-    {
-        data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(seriesDB->at(0));
-        CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
-
-        core::memory::BufferObject::sptr bo = imgSeries->getImage()->getBufferObject();
-        CPPUNIT_ASSERT_MESSAGE("ImageSeries is not lazy-loaded", !isLoaded(bo));
-
-        core::memory::BufferObject::Lock lock = bo->lock();
-
-        CPPUNIT_ASSERT_MESSAGE("ImageSeries is still lazy-loaded", isLoaded(bo));
-    }
-
-    //check ModelSeries
-    {
-        data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(seriesDB->at(1));
-        CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
-
-        data::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
-        CPPUNIT_ASSERT_EQUAL(size_t(1), recVect.size());
-
-        data::Mesh::sptr mesh = recVect[0]->getMesh();
-
-        CPPUNIT_ASSERT_NO_THROW(auto lock = mesh->lock());
-    }
-
-    {
-        core::mt::WriteLock lock(manager->getMutex());
-        manager->setLoadingMode(core::memory::BufferManager::DIRECT);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace ut
 
 } // namespace sight::io::vtk

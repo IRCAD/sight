@@ -44,9 +44,9 @@ double tolerance(double num)
 
 void roundSpacing(data::Image::sptr image)
 {
-    data::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image->setSpacing2(spacing);
+    image->setSpacing(spacing);
 }
 
 //------------------------------------------------------------------------------

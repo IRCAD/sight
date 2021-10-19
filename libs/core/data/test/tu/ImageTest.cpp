@@ -54,9 +54,9 @@ static bool imagesEqual(const data::Image::sptr& _leftImg, const data::Image::sp
     bool result            = false;
     const bool equalFormat = _leftImg->getPixelFormat() == _rightImg->getPixelFormat()
                              && _leftImg->getNumberOfComponents() == _rightImg->getNumberOfComponents();
-    const bool equalDims = _leftImg->getSize2() == _rightImg->getSize2()
-                           && _leftImg->getSpacing2() == _rightImg->getSpacing2()
-                           && _leftImg->getOrigin2() == _rightImg->getOrigin2();
+    const bool equalDims = _leftImg->getSize() == _rightImg->getSize()
+                           && _leftImg->getSpacing() == _rightImg->getSpacing()
+                           && _leftImg->getOrigin() == _rightImg->getOrigin();
 
     if(equalFormat && equalDims)
     {
@@ -98,121 +98,56 @@ void ImageTest::tearDown()
 
 void ImageTest::testGetterSetter()
 {
-    const size_t DIMENSION                = 2;
-    const core::tools::Type TYPE          = core::tools::Type::create("int16");
-    const data::Image::Spacing SPACING    = {2.5, 2.6};
-    const data::Image::Origin ORIGIN      = {2.7, 2.8};
-    const data::Image::Size SIZE          = {42, 43};
-    const double WINDOWCENTER             = 10.10;
-    const double WINDOWWIDTH              = 11.34;
-    const data::Image::PixelFormat FORMAT = data::Image::PixelFormat::GRAY_SCALE;
-
-    // Old API
-    const data::Image::SpacingType VECTORSPACING = {2.5, 2.6};
-    const data::Image::OriginType VECTORORIGIN   = {2.7, 2.8};
-    const data::Image::SizeType VECTORSIZE       = {42, 43};
+    const data::Image::Spacing SPACING = {2.5, 2.6};
+    const data::Image::Origin ORIGIN   = {2.7, 2.8};
+    const double WINDOWCENTER          = 10.10;
+    const double WINDOWWIDTH           = 11.34;
 
     // process
     data::Image::sptr img1 = data::Image::New();
 
-    img1->setType(TYPE);
-    img1->setSpacing2(SPACING);
-    img1->setOrigin2(ORIGIN);
-    img1->setSize2(SIZE);
+    img1->setSpacing(SPACING);
+    img1->setOrigin(ORIGIN);
     img1->setWindowCenter(WINDOWCENTER);
     img1->setWindowWidth(WINDOWWIDTH);
-    img1->setPixelFormat(FORMAT);
 
     // check
-    CPPUNIT_ASSERT_EQUAL(DIMENSION, img1->getNumberOfDimensions());
-    CPPUNIT_ASSERT(img1->getType() == TYPE);
-    CPPUNIT_ASSERT(img1->getSpacing2() == SPACING);
-    CPPUNIT_ASSERT(img1->getOrigin2() == ORIGIN);
-    CPPUNIT_ASSERT(img1->getSize2() == SIZE);
+    CPPUNIT_ASSERT(img1->getSpacing() == SPACING);
+    CPPUNIT_ASSERT(img1->getOrigin() == ORIGIN);
     CPPUNIT_ASSERT_EQUAL(WINDOWCENTER, img1->getWindowCenter());
     CPPUNIT_ASSERT_EQUAL(WINDOWWIDTH, img1->getWindowWidth());
-    CPPUNIT_ASSERT_EQUAL(FORMAT, img1->getPixelFormat());
-
-    // old API begin --------------------------
-    data::Image::sptr img2 = data::Image::New();
-    img2->setType(TYPE);
-    img2->setSpacing(VECTORSPACING);
-    img2->setOrigin(VECTORORIGIN);
-    img2->setSize(VECTORSIZE);
-    img2->setWindowCenter(WINDOWCENTER);
-    img2->setWindowWidth(WINDOWWIDTH);
-
-    // check
-    CPPUNIT_ASSERT_EQUAL(DIMENSION, img2->getNumberOfDimensions());
-    CPPUNIT_ASSERT(img2->getType() == TYPE);
-    CPPUNIT_ASSERT(img2->getSpacing() == VECTORSPACING);
-    CPPUNIT_ASSERT(img2->getOrigin() == VECTORORIGIN);
-    CPPUNIT_ASSERT(img2->getSize() == VECTORSIZE);
-    // old API end --------------------------
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testAllocation()
 {
-    const core::tools::Type TYPE           = core::tools::Type::create("int16");
-    const data::Image::Size IMG_SIZE       = {14, 15, 26};
-    const data::Image::SizeType VECTORSIZE = {14, 15, 26};
-    const size_t NB_ELTS                   = 14 * 15 * 26;
-    const size_t SIZE                      = NB_ELTS * TYPE.sizeOf();
+    const core::tools::Type TYPE     = core::tools::Type::create("int16");
+    const data::Image::Size IMG_SIZE = {14, 15, 26};
+    const size_t NB_ELTS             = 14 * 15 * 26;
+    const size_t SIZE                = NB_ELTS * TYPE.sizeOf();
 
     // process
     data::Image::sptr img1 = data::Image::New();
 
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), img1->getNumElements());
 
-    img1->setType(TYPE);
-    img1->setSize2(IMG_SIZE);
-
-    img1->resize();
+    img1->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(NB_ELTS, img1->getNumElements());
     CPPUNIT_ASSERT(img1->getType() == TYPE);
-
-    // old API begin --------------------------
-    data::Array::sptr array = img1->getDataArray();
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
-    CPPUNIT_ASSERT(array->getType() == TYPE);
-    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    // old API end --------------------------
-
-    data::Image::sptr img2 = data::Image::New();
-    img2->resize(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE, data::Image::PixelFormat::GRAY_SCALE);
-
-    CPPUNIT_ASSERT_EQUAL(SIZE, img2->getSizeInBytes());
-    CPPUNIT_ASSERT(img1->getType() == TYPE);
-
-    // old API begin --------------------------
-    array = img2->getDataArray();
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
-    CPPUNIT_ASSERT(array->getType() == TYPE);
-    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    // old API end --------------------------
 
     data::Image::sptr img3 = data::Image::New();
     img3->resize(IMG_SIZE, TYPE, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(SIZE, img3->getSizeInBytes());
     CPPUNIT_ASSERT(img1->getType() == TYPE);
     CPPUNIT_ASSERT_EQUAL(data::Image::PixelFormat::GRAY_SCALE, img3->getPixelFormat());
-
-    // old API begin --------------------------
-    array = img3->getDataArray();
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE);
-    CPPUNIT_ASSERT(array->getType() == TYPE);
-    CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
-    // old API end --------------------------
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testReallocation()
 {
-    const std::uint8_t DIMENSION      = 3;
     const core::tools::Type TYPE1     = core::tools::Type::create("int16");
     const core::tools::Type TYPE2     = core::tools::Type::create("int64");
     const core::tools::Type TYPE3     = core::tools::Type::create("uint8");
@@ -221,50 +156,28 @@ void ImageTest::testReallocation()
     const data::Image::Size IMG_SIZE3 = {5, 5, 5};
     const data::Image::Size IMG_SIZE5 = {0, 0, 0};
     const data::Image::Size IMG_SIZE6 = {42, 20};
-    const data::Image::SizeType VECTORSIZE1(DIMENSION, 10);
-    const data::Image::SizeType VECTORSIZE2(DIMENSION, 20);
-    const data::Image::SizeType VECTORSIZE3(DIMENSION, 5);
-    const size_t SIZE1 = 10 * 10 * 10 * TYPE1.sizeOf();
-    const size_t SIZE2 = 20 * 20 * 20 * TYPE2.sizeOf();
-    const size_t SIZE3 = 5 * 5 * 5 * TYPE3.sizeOf();
-    const size_t SIZE4 = 5 * 5 * 5 * 4 * TYPE3.sizeOf();
-    const size_t SIZE5 = 0;
-    const size_t SIZE6 = 42 * 20;
-    const size_t SIZE7 = 42 * 20 * 3;
+    const size_t SIZE1                = 10 * 10 * 10 * TYPE1.sizeOf();
+    const size_t SIZE2                = 20 * 20 * 20 * TYPE2.sizeOf();
+    const size_t SIZE3                = 5 * 5 * 5 * TYPE3.sizeOf();
+    const size_t SIZE4                = 5 * 5 * 5 * 4 * TYPE3.sizeOf();
+    const size_t SIZE5                = 0;
+    const size_t SIZE6                = 42 * 20;
+    const size_t SIZE7                = 42 * 20 * 3;
 
     // process
-    data::Image::sptr img1  = data::Image::New();
-    data::Array::sptr array = img1->getDataArray();
+    data::Image::sptr img1 = data::Image::New();
 
     const size_t resized1 = img1->resize(IMG_SIZE1, TYPE1, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized1, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE1, img1->getSizeInBytes());
 
-    // old API begin --------------------------
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE1);
-    CPPUNIT_ASSERT_EQUAL(TYPE1, array->getType());
-    CPPUNIT_ASSERT_EQUAL(SIZE1, array->getSizeInBytes());
-    // old API end --------------------------
-
     const size_t resized2 = img1->resize(IMG_SIZE2, TYPE2, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized2, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE2, img1->getSizeInBytes());
 
-    // old API begin --------------------------
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE2);
-    CPPUNIT_ASSERT_EQUAL(TYPE2, array->getType());
-    CPPUNIT_ASSERT_EQUAL(SIZE2, array->getSizeInBytes());
-    // old API end --------------------------
-
     const size_t resized3 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(resized3, img1->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE3, img1->getSizeInBytes());
-
-    // old API begin --------------------------
-    CPPUNIT_ASSERT(array->getSize() == VECTORSIZE3);
-    CPPUNIT_ASSERT_EQUAL(TYPE3, array->getType());
-    CPPUNIT_ASSERT_EQUAL(SIZE3, array->getSizeInBytes());
-    // old API end --------------------------
 
     const size_t resized4 = img1->resize(IMG_SIZE3, TYPE3, data::Image::PixelFormat::RGBA);
     CPPUNIT_ASSERT_EQUAL(resized4, img1->getSizeInBytes());
@@ -320,8 +233,8 @@ void ImageTest::testSetGetPixel()
                 CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(x, y, z));
                 CPPUNIT_ASSERT_EQUAL(val, img->at<std::int16_t>(index));
                 CPPUNIT_ASSERT_EQUAL(val, constImg->at<std::int16_t>(index));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixelBuffer(index)));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(constImg->getPixelBuffer(index)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<std::int16_t*>(img->getPixel(index)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<const std::int16_t*>(constImg->getPixel(index)));
 
                 std::stringstream ss;
                 ss << val;
@@ -347,7 +260,7 @@ void ImageTest::testSetGetPixel()
                 else
                 {
                     std::int16_t val = static_cast<std::int16_t>(index * 2);
-                    img->setPixelBuffer(index, reinterpret_cast<data::Image::BufferType*>(&val));
+                    img->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
                 }
             }
         }
@@ -489,7 +402,7 @@ void ImageTest::testSetGetPixelRGBA()
                                            static_cast<std::uint8_t>((index * 4 + 2) * 2),
                                            static_cast<std::uint8_t>((index * 4 + 3) * 2)
                     };
-                    img->setPixelBuffer(index, reinterpret_cast<data::Image::BufferType*>(&val));
+                    img->setPixel(index, reinterpret_cast<data::Image::BufferType*>(&val));
                 }
             }
         }
@@ -868,7 +781,7 @@ void ImageTest::benchmarkIterator()
 
     data::Image::sptr img2 = data::Image::New();
     img2->copyInformation(img);
-    img2->resize();
+    img2->resize(img2->getSize(), img2->getType(), img2->getPixelFormat());
 
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4, img2->getNumElements());
     CPPUNIT_ASSERT_EQUAL(SIZE[0] * SIZE[1] * SIZE[2] * 4 * 2, img2->getSizeInBytes());
@@ -991,43 +904,6 @@ void ImageTest::imageDeepCopy()
         imgCopy->deepCopy(img);
 
         CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::setISStreamTest()
-{
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
-
-    const auto dumpLock              = image->lock();
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "ImageTest.raw";
-
-    std::ofstream ostr(PATH, std::ios::binary);
-    ostr.write(static_cast<const char*>(image->getBuffer()), static_cast<std::streamsize>(image->getSizeInBytes()));
-    ostr.close();
-
-    data::Image::sptr newImage = data::Image::New();
-    newImage->setSize2(image->getSize2());
-    newImage->setType(image->getType());
-    newImage->setPixelFormat(image->getPixelFormat());
-    newImage->setIStreamFactory(
-        std::make_shared<core::memory::stream::in::Raw>(PATH),
-        image->getSizeInBytes(),
-        PATH,
-        core::memory::RAW
-    );
-
-    const auto newDumpLock = newImage->lock();
-
-    auto itr       = image->begin<std::int16_t>();
-    const auto end = image->end<std::int16_t>();
-    auto newItr    = newImage->begin<std::int16_t>();
-
-    for( ; itr != end ; ++itr, ++newItr)
-    {
-        CPPUNIT_ASSERT_EQUAL(*itr, *newItr);
     }
 }
 

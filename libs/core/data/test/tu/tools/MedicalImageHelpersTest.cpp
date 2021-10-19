@@ -43,6 +43,57 @@ namespace ut
 
 using core::tools::random::safeRand;
 
+template<class P>
+struct typeToPixelFormat;
+
+template<>
+struct typeToPixelFormat<std::array<unsigned char, 1> >
+{
+    static constexpr sight::data::Image::PixelFormat value = sight::data::Image::PixelFormat::GRAY_SCALE;
+};
+
+template<>
+struct typeToPixelFormat<std::array<unsigned char, 3> >
+{
+    static const auto value = sight::data::Image::PixelFormat::RGB;
+};
+
+template<>
+struct typeToPixelFormat<std::array<unsigned int, 1> >
+{
+    static constexpr sight::data::Image::PixelFormat value = sight::data::Image::PixelFormat::GRAY_SCALE;
+};
+
+template<>
+struct typeToPixelFormat<std::array<unsigned int, 3> >
+{
+    static const auto value = sight::data::Image::PixelFormat::RGB;
+};
+
+template<>
+struct typeToPixelFormat<std::array<float, 1> >
+{
+    static constexpr sight::data::Image::PixelFormat value = sight::data::Image::PixelFormat::GRAY_SCALE;
+};
+
+template<>
+struct typeToPixelFormat<std::array<float, 3> >
+{
+    static const auto value = sight::data::Image::PixelFormat::RGB;
+};
+
+template<>
+struct typeToPixelFormat<std::array<double, 1> >
+{
+    static const auto value = sight::data::Image::PixelFormat::GRAY_SCALE;
+};
+
+template<>
+struct typeToPixelFormat<std::array<double, 3> >
+{
+    static const auto value = sight::data::Image::PixelFormat::RGB;
+};
+
 // ------------------------------------------------------------------------------
 
 void MedicalImageHelpersTest::setUp()
@@ -204,20 +255,14 @@ template<class P>
 data::Image::sptr createImageFromPixelBuffer()
 {
     constexpr size_t IMG_DIMENSIONS = 100;
-    constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
     using SubPixel = typename P::value_type;
-
-    static_assert(N_COMPONENTS != 0, "Cannot test 0-dimensional pixel types");
 
     // Create a new image
     auto image             = data::Image::New();
     data::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
-    image->setSize2(size);
-    image->setType(core::tools::Type::create<SubPixel>());
-    image->setNumberOfComponents(N_COMPONENTS);
-    image->resize();
-    image->setSpacing2({1., 1., 1.});
-    image->setOrigin2({0., 0., 0.});
+    image->resize(size, core::tools::Type::create<SubPixel>(), typeToPixelFormat<P>::value);
+    image->setSpacing({1., 1., 1.});
+    image->setOrigin({0., 0., 0.});
 
     // Zero the buffer
     const auto dumpLock = image->lock();
@@ -229,12 +274,12 @@ data::Image::sptr createImageFromPixelBuffer()
 //------------------------------------------------------------------------------
 
 template<class P>
-void getPixelBufferTestHelper(const P& pixelValue)
+void getPixelTestHelper(const P& pixelValue)
 {
     using SubPixel = typename P::value_type;
     constexpr size_t N_COMPONENTS = std::tuple_size<P>::value;
     data::Image::sptr image       = createImageFromPixelBuffer<P>();
-    const auto size               = image->getSize2();
+    const auto size               = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
@@ -270,49 +315,49 @@ void getPixelBufferTestHelper(const P& pixelValue)
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpersTest::getPixelBufferTest()
+void MedicalImageHelpersTest::getPixelTest()
 {
     {
         std::array<uint8_t, 1> pGray = {84};
         std::array<uint8_t, 3> pRGB  = {42, 24, 21};
-        getPixelBufferTestHelper(pGray);
-        getPixelBufferTestHelper(pRGB);
+        getPixelTestHelper(pGray);
+        getPixelTestHelper(pRGB);
     }
     {
         std::array<uint32_t, 1> pGray = {0xDEADBEEF};
         std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
-        getPixelBufferTestHelper(pGray);
-        getPixelBufferTestHelper(pRGB);
+        getPixelTestHelper(pGray);
+        getPixelTestHelper(pRGB);
     }
     {
         std::array<float, 1> pGray = {5423.2f};
         std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
-        getPixelBufferTestHelper(pGray);
-        getPixelBufferTestHelper(pRGB);
+        getPixelTestHelper(pGray);
+        getPixelTestHelper(pRGB);
     }
     {
         std::array<double, 1> pGray = {541.254981};
         std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
-        getPixelBufferTestHelper(pGray);
-        getPixelBufferTestHelper(pRGB);
+        getPixelTestHelper(pGray);
+        getPixelTestHelper(pRGB);
     }
 }
 
 // ------------------------------------------------------------------------------
 
 template<class P>
-void setPixelBufferTestHelper(P& pixelValue)
+void setPixelTestHelper(P& pixelValue)
 {
     using SubPixel = typename P::value_type;
     auto image      = createImageFromPixelBuffer<P>();
-    const auto size = image->getSize2();
+    const auto size = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
     std::generate_n(coords, 3, [&](){return static_cast<size_t>(safeRand()) % size[0];});
     const size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dumpLock     = image->lock();
-    image->setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
+    image->setPixel(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
     data::Image::csptr constImage = image;
@@ -340,31 +385,31 @@ void setPixelBufferTestHelper(P& pixelValue)
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpersTest::setPixelBufferTest()
+void MedicalImageHelpersTest::setPixelTest()
 {
     {
         std::array<uint8_t, 1> pGray = {84};
         std::array<uint8_t, 3> pRGB  = {42, 24, 21};
-        setPixelBufferTestHelper(pGray);
-        setPixelBufferTestHelper(pRGB);
+        setPixelTestHelper(pGray);
+        setPixelTestHelper(pRGB);
     }
     {
         std::array<uint32_t, 1> pGray = {0xDEADBEEF};
         std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
-        setPixelBufferTestHelper(pGray);
-        setPixelBufferTestHelper(pRGB);
+        setPixelTestHelper(pGray);
+        setPixelTestHelper(pRGB);
     }
     {
         std::array<float, 1> pGray = {5423.2f};
         std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
-        setPixelBufferTestHelper(pGray);
-        setPixelBufferTestHelper(pRGB);
+        setPixelTestHelper(pGray);
+        setPixelTestHelper(pRGB);
     }
     {
         std::array<double, 1> pGray = {541.254981};
         std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
-        setPixelBufferTestHelper(pGray);
-        setPixelBufferTestHelper(pRGB);
+        setPixelTestHelper(pGray);
+        setPixelTestHelper(pRGB);
     }
 }
 
@@ -377,7 +422,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
     {
         const auto dumpLock                   = image->lock();
         const data::Image::BufferType* pixBuf =
-            static_cast<data::Image::BufferType*>(image->getPixelBuffer(0));
+            static_cast<data::Image::BufferType*>(image->getPixel(0));
 
         bool isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
@@ -387,18 +432,18 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
 
         {
             std::array<float, 3> pixelValue = {42.0f, 1487.4f, 0.1445f};
-            image->setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
+            image->setPixel(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
             const data::Image::BufferType* pixBuf2 =
-                static_cast<data::Image::BufferType*>(image->getPixelBuffer(10));
+                static_cast<data::Image::BufferType*>(image->getPixel(10));
 
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
-            image->setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
+            image->setPixel(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 5 * 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
             isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 6 * 3);

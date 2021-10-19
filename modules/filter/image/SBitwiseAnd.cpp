@@ -27,8 +27,6 @@
 #include <core/tools/IntegerTypes.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/helper/ImageGetter.hpp>
-
 #include <io/itk/itk.hpp>
 
 #include <itkAndImageFilter.h>
@@ -66,8 +64,8 @@ struct AndImageFilter
         typedef typename ::itk::Image<MASK_PIXELTYPE, dimension> MaskImageType;
         typedef typename ::itk::Image<PIXELTYPE, dimension> OutputImageType;
 
-        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>(inputImage);
-        typename MaskImageType::Pointer itkMaskImage   = io::itk::itkImageFactory<MaskImageType>(mask);
+        typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(inputImage);
+        typename MaskImageType::Pointer itkMaskImage   = io::itk::moveToItk<MaskImageType>(mask);
         typename OutputImageType::Pointer itkOutputImage;
 
         // We assume that the mask pixel type has a lower size in bits than the image pixel type
@@ -94,7 +92,7 @@ struct AndImageFilter
         filter->Update();
 
         itkOutputImage->GetSource()->Update();
-        io::itk::dataImageFactory<OutputImageType>(itkOutputImage, outputImage);
+        io::itk::moveFromItk<OutputImageType>(itkOutputImage, outputImage);
     }
 };
 
@@ -145,9 +143,6 @@ void SBitwiseAnd::updating()
 
     const auto mask = m_mask.lock();
     SIGHT_ASSERT("mask does not exist.", mask);
-
-    data::helper::ImageGetter imageHelper(image.get_shared());
-    data::helper::ImageGetter maskHelper(mask.get_shared());
 
     data::Image::sptr outputImage = data::Image::New();
 

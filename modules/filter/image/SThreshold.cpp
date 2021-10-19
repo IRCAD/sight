@@ -55,6 +55,7 @@ void SThreshold::starting()
 
 void SThreshold::stopping()
 {
+    m_target.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -104,7 +105,9 @@ struct ThresholdFilter
         SIGHT_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
-        imageOut->resize();                 // Allocate the image buffer
+        imageOut->resize(imageOut->getSize(), imageOut->getType(), imageOut->getPixelFormat());
+        const auto lockin  = imageIn->lock();
+        const auto lockOut = imageOut->lock();
 
         // Get iterators on image buffers
         auto it1          = imageIn->begin<PIXELTYPE>();
@@ -179,10 +182,11 @@ void SThreshold::updating()
      *   - type: core::tools::Type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
+
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ThresholdFilter>::invoke(type, param);
 
     // register the output image to be accesible by the other service from the XML configuration
-    this->setOutput(s_IMAGE_OUT, output);
+    m_target = output;
 }
 
 //-----------------------------------------------------------------------------

@@ -342,7 +342,7 @@ void SNegato3D::newImage()
         this->createPlanes(spacing, origin);
 
         // Update Slice
-        const auto imgSize       = image->getSize2();
+        const auto imgSize       = image->getSize();
         const auto axialIdxField = image->getField<data::Integer>(
             data::fieldHelper::Image::m_axialSliceIndexId
         );
@@ -397,7 +397,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 {
     const auto image = m_image.lock();
 
-    auto imgSize = image->getSize2();
+    auto imgSize = image->getSize();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
@@ -640,7 +640,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 
             this->updatePickingCross(pickedPos.value(), origin);
 
-            const auto& imgSize = image->getSize2();
+            const auto& imgSize = image->getSize();
             data::Image::Size pickedVoxel;
             for(std::uint8_t i = 0 ; i < pickedVoxel.size() ; ++i)
             {

@@ -145,15 +145,15 @@ void MIPMatchingRegistration<PIX>::registerImage(
 )
 {
     const double fixedVoxelVolume = std::accumulate(
-        _fixed->getSpacing2().begin(),
-        _fixed->getSpacing2().end(),
+        _fixed->getSpacing().begin(),
+        _fixed->getSpacing().end(),
         1.,
         std::multiplies<double>()
     );
 
     const double movingVoxelVolume = std::accumulate(
-        _moving->getSpacing2().begin(),
-        _moving->getSpacing2().end(),
+        _moving->getSpacing().begin(),
+        _moving->getSpacing().end(),
         1.,
         std::multiplies<double>()
     );
@@ -167,11 +167,11 @@ void MIPMatchingRegistration<PIX>::registerImage(
         auto inverseTransform = data::Matrix4::New();
         geometry::data::invert(*_transform, *inverseTransform);
 
-        fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
+        fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing());
     }
     else
     {
-        moving = filter::image::Resampler::resample(_moving, _transform, _fixed->getSpacing2());
+        moving = filter::image::Resampler::resample(_moving, _transform, _fixed->getSpacing());
     }
 
     const Image3DPtrType itkMoving = castTo<PIX>(moving);

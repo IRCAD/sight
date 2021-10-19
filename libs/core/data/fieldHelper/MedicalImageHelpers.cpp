@@ -76,7 +76,7 @@ bool MedicalImageHelpers::checkImageValidity(const data::Image& _image)
 
         for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
         {
-            dataImageIsAllocated = dataImageIsAllocated && (_image.getSize2()[k] >= 1);
+            dataImageIsAllocated = dataImageIsAllocated && (_image.getSize()[k] >= 1);
         }
     }
 
@@ -91,7 +91,7 @@ bool MedicalImageHelpers::checkImageSliceIndex(data::Image::sptr _pImg)
 
     bool fieldIsModified = false;
 
-    const data::Image::Size& imageSize = _pImg->getSize2();
+    const data::Image::Size& imageSize = _pImg->getSize();
 
     data::Integer::sptr axialIdx = _pImg->getField<data::Integer>(
         data::fieldHelper::Image::m_axialSliceIndexId
@@ -186,34 +186,6 @@ bool MedicalImageHelpers::checkComment(data::Image::sptr _pImg)
     }
 
     return fieldIsModified;
-}
-
-//------------------------------------------------------------------------------
-
-data::Image::sptr MedicalImageHelpers::initialize(
-    data::Image::sptr imgSrc,
-    data::Image::sptr imgToInitialize
-)
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "22.0")
-    SIGHT_ASSERT("Image source must be initialized", imgSrc);
-    SIGHT_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
-
-    if(!imgToInitialize)
-    {
-        imgToInitialize = data::Image::New();
-    }
-
-    data::Array::sptr imgData = imgSrc->getDataArray();
-    imgSrc->setDataArray(data::Array::sptr(), false);
-
-    imgToInitialize = data::Object::copy(imgSrc);
-
-    imgSrc->setDataArray(imgData, false);
-
-    imgToInitialize->resize();
-
-    return imgToInitialize;
 }
 
 //------------------------------------------------------------------------------

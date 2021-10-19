@@ -139,7 +139,7 @@ void SNegato::updateBufferFromImage(QImage* qimg)
 
     // Window max
     auto image                   = m_image.lock();
-    const data::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize();
     const short* imgBuff         = static_cast<const short*>(image->getBuffer());
     const size_t imageZOffset    = size[0] * size[1];
 
@@ -252,9 +252,9 @@ QImage* SNegato::createQImage()
             return nullptr;
         }
 
-        size    = img->getSize2();
-        spacing = img->getSpacing2();
-        origin  = img->getOrigin2();
+        size    = img->getSize();
+        spacing = img->getSpacing();
+        origin  = img->getOrigin();
     }
 
     double qImageSpacing[2];

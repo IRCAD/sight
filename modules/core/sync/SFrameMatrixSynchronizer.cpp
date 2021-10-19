@@ -285,7 +285,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
             const data::Image::Size size = {frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
-            if(size != image->getSize2() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
+            if(size != image->getSize() || frameTL->getNumberOfComponents() != image->getNumberOfComponents())
             {
                 m_imagesInitialized = false;
             }
@@ -345,9 +345,9 @@ void SFrameMatrixSynchronizer::synchronize()
 
                 image->resize(size, frameTL->getType(), format);
                 const data::Image::Origin origin = {0., 0., 0.};
-                image->setOrigin2(origin);
+                image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 1.};
-                image->setSpacing2(spacing);
+                image->setSpacing(spacing);
                 image->setWindowWidth(1);
                 image->setWindowCenter(0);
 

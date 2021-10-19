@@ -184,14 +184,14 @@ void writerTest(const std::string& imagetype, const std::string& filename)
     );
 
     compareImageAttributes(
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions(),
 
-        image2->getSize2(),
-        image2->getSpacing2(),
-        image2->getOrigin2(),
+        image2->getSize(),
+        image2->getSpacing(),
+        image2->getOrigin(),
         image2->getNumberOfDimensions()
     );
 }
@@ -226,9 +226,9 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions()
     );
 
@@ -269,9 +269,9 @@ void testVtkReader(std::string imagetype)
     );
 
     compareImageAttributes(
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions(),
 
         vtkImage->GetDimensions(),
@@ -360,9 +360,9 @@ void ImageTest::testFromVtk()
         vtkImage->GetOrigin(),
         vtkImage->GetDataDimension(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions()
     );
     CPPUNIT_ASSERT_EQUAL_MESSAGE("test on <" + type + "> Failed ", core::tools::Type(type), image->getType());
@@ -393,9 +393,9 @@ void fromToTest(data::Image::PixelFormat format)
     data::Image::sptr image2 = data::Image::New();
     io::vtk::fromVTKImage(vtkImage, image2);
 
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[0], image2->getSize2()[0]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[1], image2->getSize2()[1]);
-    CPPUNIT_ASSERT_EQUAL(image->getSize2()[2], image2->getSize2()[2]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[0], image2->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[1], image2->getSize()[1]);
+    CPPUNIT_ASSERT_EQUAL(image->getSize()[2], image2->getSize()[2]);
     CPPUNIT_ASSERT_EQUAL(image->getType(), image2->getType());
     CPPUNIT_ASSERT_EQUAL(image->getNumberOfComponents(), image2->getNumberOfComponents());
     CPPUNIT_ASSERT_EQUAL(image->getPixelFormat(), image2->getPixelFormat());
@@ -468,9 +468,9 @@ void ImageTest::mhdReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions()
     );
 }
@@ -559,9 +559,9 @@ void ImageTest::vtiReaderTest()
         bostonTeapotOrigin,
         bostonTeapotSize.size(),
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions()
     );
 }
@@ -608,9 +608,9 @@ void ImageTest::vtkReaderTest()
         vtkOrigin,
         3,
 
-        image->getSize2(),
-        image->getSpacing2(),
-        image->getOrigin2(),
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin(),
         image->getNumberOfDimensions()
     );
 

@@ -246,8 +246,8 @@ void FlipTest::flipEmptyImageTest()
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->lock();
 
-    const data::Image::Size imageSize    = imageIn->getSize2();
-    const data::Image::Size imageOutSize = imageOut->getSize2();
+    const data::Image::Size imageSize    = imageIn->getSize();
+    const data::Image::Size imageOutSize = imageOut->getSize();
 
     CPPUNIT_ASSERT_EQUAL(imageSize[0], imageOutSize[0]);
     CPPUNIT_ASSERT_EQUAL(imageSize[1], imageOutSize[1]);

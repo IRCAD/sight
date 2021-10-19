@@ -135,7 +135,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     movingSpacing[1] = 1.3;
     data::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
     data::Image::sptr fixed  = data::Image::New();
-    moving->setOrigin2({107., 50., -30.});
+    moving->setOrigin({107., 50., -30.});
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{4., 19., 7.}};
@@ -145,8 +145,8 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(2, 3, vTrans[2]);
     sight::filter::image::Resampler::resample(moving, fixed, transform);
     auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}},
-         movingOrigin = moving->getOrigin2();
-    fixed->setOrigin2(fixedOrigin);
+         movingOrigin = moving->getOrigin();
+    fixed->setOrigin(fixedOrigin);
     std::array<float, 3> expected {
         {
             float(movingOrigin[0] + vTrans[0] - fixedOrigin[0]),
@@ -155,14 +155,14 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
         }
     };
 
-    auto itkFixed = io::itk::itkImageFactory<ImageType>(fixed, false);
+    auto itkFixed = io::itk::moveToItk<ImageType>(fixed);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize2()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
     }
 
     auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
@@ -172,7 +172,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
     auto resampled         = resample->GetOutput();
-    auto resampledF4sFixed = io::itk::dataImageFactory<ImageType>(resampled, true);
+    auto resampledF4sFixed = io::itk::moveFromItk<ImageType>(resampled, true);
 
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;

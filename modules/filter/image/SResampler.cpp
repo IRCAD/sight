@@ -73,7 +73,7 @@ void SResampler::updating()
         inImg.get_shared(),
         outImg.get_shared(),
         transform.get_shared(),
-        target.get_shared()
+        std::make_tuple(target->getSize(), target->getOrigin(), target->getSpacing())
     );
 
     m_sigComputed->asyncEmit();

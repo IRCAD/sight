@@ -211,7 +211,7 @@ void SOpenCVExtrinsic::updating()
         );
 
         data::Image::sptr img = calInfo1->getImageContainer().front();
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
+        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
             data::Camera::csptr cam1 = camSeries->getCamera(0);
             data::Camera::csptr cam2 = camSeries->getCamera(m_camIndex);

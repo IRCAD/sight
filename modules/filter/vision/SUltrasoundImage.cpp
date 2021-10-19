@@ -171,15 +171,12 @@ void SUltrasoundImage::updating()
 
     const data::Image::Size outputSize = {{m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
-    if(outputImage->getSize2() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8
+    if(outputImage->getSize() != outputSize || outputImage->getType() != core::tools::Type::s_UINT8
        || outputImage->getNumberOfComponents() != 1)
     {
-        outputImage->setSize2(outputSize);
-        outputImage->setSpacing2({{1., 1., 0.}});
-        outputImage->setOrigin2({{0., 0., 0.}});
-        outputImage->setType(core::tools::Type::s_UINT8);
-        outputImage->setNumberOfComponents(1);
-        outputImage->resize();
+        outputImage->setSpacing({{1., 1., 0.}});
+        outputImage->setOrigin({{0., 0., 0.}});
+        outputImage->resize(outputSize, core::tools::Type::s_UINT8, data::Image::PixelFormat::GRAY_SCALE);
     }
 
     cv::Mat remapResult = io::opencv::Image::moveToCv(outputImage.get_shared());

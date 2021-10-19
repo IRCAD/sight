@@ -25,8 +25,6 @@
 #include "filter/image/config.hpp"
 #include "filter/image/ImageDiff.hpp"
 
-#include <data/helper/Image.hpp>
-#include <data/helper/ImageGetter.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 

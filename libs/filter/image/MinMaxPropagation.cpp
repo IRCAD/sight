@@ -211,11 +211,11 @@ public:
     bool isInROI(const IndexType& index) const
     {
         const auto dumpLock = m_roi->lock();
-        const auto size     = m_roi->getSize2();
+        const auto size     = m_roi->getSize();
 
         data::Image::BufferType* roiVal =
             reinterpret_cast<data::Image::BufferType*>(
-                m_roi->getPixelBuffer(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
+                m_roi->getPixel(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
 
         return !data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roi->getType().sizeOf());
     }
@@ -262,7 +262,7 @@ struct MinMaxPropagator
         typedef typename ::itk::Image<PIXELTYPE, 3> ImageType;
         typedef MinMaxPropagCriterion<ImageType> CriterionType;
 
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.inputImage);
+        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.inputImage);
 
         std::vector<typename ImageType::IndexType> itkSeeds;
         for(const auto& seed : params.seeds)
@@ -296,12 +296,12 @@ struct MinMaxPropagator
             const size_t bufferIndex = static_cast<size_t>(itkImage->ComputeOffset(currentIndex));
 
             const data::Image::BufferType* pixBuf =
-                reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixelBuffer(bufferIndex));
+                reinterpret_cast<data::Image::BufferType*>(params.outputImage->getPixel(bufferIndex));
 
             if(!std::equal(pixBuf, pixBuf + outImgPixelSize, params.value))
             {
                 params.diff.addDiff(bufferIndex, pixBuf, params.value);
-                params.outputImage->setPixelBuffer(bufferIndex, params.value);
+                params.outputImage->setPixel(bufferIndex, params.value);
             }
         }
     }

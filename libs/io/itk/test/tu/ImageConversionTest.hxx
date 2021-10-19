@@ -22,28 +22,29 @@
 
 #pragma once
 
+#include <io/itk/itk.hpp>
+
 #include <utestData/generator/Image.hpp>
 #include <utestData/helper/compare.hpp>
 
-#include <io/itk/itk.hpp>
-
 namespace sight::io::itk
 {
+
 namespace ut
 {
 
 //-----------------------------------------------------------------------------
 
-template< class TYPE>
+template<class TYPE>
 void ImageConversionTest::stressTestForAType()
 {
-    for(unsigned char k = 0; k < 5; k++)
+    for(unsigned char k = 0 ; k < 5 ; k++)
     {
         data::Image::sptr image = data::Image::New();
         utestData::generator::Image::generateRandomImage(image, core::tools::Type::create<TYPE>());
 
-        typedef ::itk::Image< TYPE, 3 > ImageType;
-        typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>( image );
+        typedef ::itk::Image<TYPE, 3> ImageType;
+        typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
         utestData::helper::ExcludeSetType exclude;
         exclude.insert("array.isOwner");
@@ -52,14 +53,15 @@ void ImageConversionTest::stressTestForAType()
 
         data::Image::sptr image2    = data::Image::New();
         bool image2ManagesHisBuffer = false;
-        io::itk::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+        io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
         CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
 
         bool image3ManagesHisBuffer = false;
-        data::Image::sptr image3    = io::itk::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+        data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
         CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
     }
 }
 
 } //namespace ut
+
 } //namespace sight::io::itk

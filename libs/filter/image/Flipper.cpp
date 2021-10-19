@@ -51,7 +51,7 @@ struct Flipping
     void operator()(Parameters& params)
     {
         typedef typename ::itk::Image<PixelType, dimension> ImageType;
-        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory<ImageType>(params.i_image);
+        const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
         typename ::itk::FlipImageFilter<ImageType>::Pointer flipFilter =
             ::itk::FlipImageFilter<ImageType>::New();
@@ -67,7 +67,7 @@ struct Flipping
         flipFilter->Update();
 
         typename ImageType::Pointer outputImage = flipFilter->GetOutput();
-        io::itk::itkImageToFwDataImage(outputImage, params.o_image);
+        io::itk::moveFromItk(outputImage, params.o_image);
     }
 };
 
@@ -78,7 +78,7 @@ struct FlippingDimensionExtractor
     template<class PixelType>
     void operator()(Parameters& params)
     {
-        const data::Image::Size size = params.i_image->getSize2();
+        const data::Image::Size size = params.i_image->getSize();
         switch(size.size())
         {
             case 1:

@@ -27,6 +27,8 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
+#include <optional>
+
 namespace sight::filter::image
 {
 
@@ -48,21 +50,9 @@ public:
         const data::Image::csptr& _inImg,
         const data::Image::sptr& outImg,
         const data::Matrix4::csptr& _trf,
-        const data::Image::csptr& _targetImg = nullptr
-    );
-
-    /**
-     * @brief transforms and resamples the image into a new grid big enough so it won't crop the input image.
-     * @param _img image to resample.
-     * @param _trf transform applied to the image.
-     * @param _outputSpacing desired sampling rate.
-     * @return resampled image.
-     */
-    [[deprecated("Will be removed in sigth 22.0")]]
-    static FILTER_IMAGE_API data::Image::sptr resample(
-        const data::Image::csptr& _img,
-        const data::Matrix4::csptr& _trf,
-        const data::Image::SpacingType& _outputSpacing
+        std::optional<std::tuple<data::Image::Size,
+                                 data::Image::Origin,
+                                 data::Image::Spacing> > parameters = std::nullopt
     );
 
     /**

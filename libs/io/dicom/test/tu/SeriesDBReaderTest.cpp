@@ -499,19 +499,19 @@ void SeriesDBReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
 
     // Check size
-    const data::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize();
     CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(size_t(129), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.6), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
@@ -566,19 +566,19 @@ void SeriesDBReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
 
     // Check size
-    const data::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize();
     CPPUNIT_ASSERT_EQUAL(size_t(1), size[0]);
     CPPUNIT_ASSERT_EQUAL(size_t(1024), size[1]);
     CPPUNIT_ASSERT_EQUAL(size_t(1024), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = image->getSpacing2();
+    const data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = image->getOrigin2();
+    const data::Image::Origin origin = image->getOrigin();
     SIGHT_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-112.828), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-180.058), origin[1], delta);
@@ -634,19 +634,19 @@ void SeriesDBReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
 
     // Check size
-    data::Image::Size size = image->getSize2();
+    data::Image::Size size = image->getSize();
     CPPUNIT_ASSERT_EQUAL(size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(size_t(1), size[2]);
 
     // Check spacing
-    data::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[2], delta);
 
     // Check origin
-    data::Image::Origin origin = image->getOrigin2();
+    data::Image::Origin origin = image->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);

@@ -121,7 +121,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
             size[2] = 0;
 
             // Check if image dimensions has changed
-            if(size != image->getSize2())
+            if(size != image->getSize())
             {
                 m_imageInitialized = false;
             }
@@ -152,9 +152,9 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
 
                 image->resize(size, frameTL->getType(), format);
                 const data::Image::Origin origin = {0., 0., 0.};
-                image->setOrigin2(origin);
+                image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 0.};
-                image->setSpacing2(spacing);
+                image->setSpacing(spacing);
                 image->setWindowWidth(1);
                 image->setWindowCenter(0);
                 m_imageInitialized = true;

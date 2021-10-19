@@ -42,7 +42,7 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     SIGHT_ASSERT("Empty image buffer", _image->getBuffer());
 
-    const auto imageSize = _image->getSize2();
+    const auto imageSize = _image->getSize();
     std::vector<int> cvSize;
     for(size_t i = 0 ; i < _image->getNumberOfDimensions() ; ++i)
     {
@@ -123,14 +123,33 @@ void Image::copyFromCv(data::Image& _image, const ::cv::Mat& _cvImage)
         imageSize[2] = _cvImage.size[0];
     }
 
-    const auto prevImageSize = _image.getSize2();
+    const auto prevImageSize = _image.getSize();
     if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
-        // The pixel format is not changed here, we have no way to know the format from a ::cv::Mat
-        _image.setSize2(imageSize);
-        _image.setType(imageType);
-        _image.setNumberOfComponents(imageComp);
-        _image.resize();
+        data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+        switch(imageComp)
+        {
+            case 1:
+                format = data::Image::PixelFormat::GRAY_SCALE;
+                break;
+
+            case 2:
+                format = data::Image::PixelFormat::RG;
+                break;
+
+            case 3:
+                format = data::Image::PixelFormat::RGB;
+                break;
+
+            case 4:
+                format = data::Image::PixelFormat::RGBA;
+                break;
+
+            default:
+                SIGHT_FATAL("Unhandled OpenCV format");
+        }
+
+        _image.resize(imageSize, imageType, format);
     }
 
     const auto dumpLock = _image.lock();

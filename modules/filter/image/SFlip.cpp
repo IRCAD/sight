@@ -75,7 +75,7 @@ void SFlip::updating()
 
         sight::filter::image::Flipper::flip(inImg.get_shared(), outImg, m_flipAxes);
 
-        this->setOutput(s_IMAGE_OUT, outImg);
+        m_target = outImg;
 
         m_sigComputed->asyncEmit();
     }
@@ -89,6 +89,7 @@ void SFlip::updating()
 
 void SFlip::stopping()
 {
+    m_target.reset();
 }
 
 //------------------------------------------------------------------------------

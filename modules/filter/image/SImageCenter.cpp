@@ -83,9 +83,9 @@ void SImageCenter::updating()
     geometry::data::identity(*matrix);
 
     //compute the center
-    const data::Image::Size size       = image->getSize2();
-    const data::Image::Spacing spacing = image->getSpacing2();
-    const data::Image::Origin origin   = image->getOrigin2();
+    const data::Image::Size size       = image->getSize();
+    const data::Image::Spacing spacing = image->getSpacing();
+    const data::Image::Origin origin   = image->getOrigin();
 
     SIGHT_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
 

@@ -267,7 +267,7 @@ std::pair<bool, ::Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
     const ::Ogre::Real frontalIndex  = static_cast< ::Ogre::Real>(frontalIdx);
     const ::Ogre::Real sagittalIndex = static_cast< ::Ogre::Real>(sagittalIdx);
 
-    const auto size = _image->getSize2();
+    const auto size = _image->getSize();
 
     // Function to check if an intersection is inside an image.
     std::function<bool(OrientationMode, ::Ogre::Vector3)> isInsideImage =

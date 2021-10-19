@@ -290,9 +290,9 @@ data::Image::sptr SCharucoBoardDetector::createImage(
         const data::Image::Size size = {tl.getWidth(), tl.getHeight(), 1};
         image->resize(size, tl.getType(), format);
         const data::Image::Origin origin = {0., 0., 0.};
-        image->setOrigin2(origin);
+        image->setOrigin(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};
-        image->setSpacing2(spacing);
+        image->setSpacing(spacing);
         image->setWindowWidth(1);
         image->setWindowCenter(0);
 

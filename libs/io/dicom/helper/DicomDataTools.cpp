@@ -57,9 +57,9 @@ static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
 
 //------------------------------------------------------------------------------
 
-const ::gdcm::PixelFormat DicomDataTools::getPixelType(const data::Image::csptr& image)
+const ::gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& type)
 {
-    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(image->getType());
+    auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
     {
         return it->second;
@@ -153,10 +153,10 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
     const double zCoordinate = static_cast<double>(point->getCoord()[2]);
@@ -165,7 +165,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameNumber<1 || frameNumber> image->getSize2()[2]
+        frameNumber<1 || frameNumber> image->getSize()[2]
     );
 
     return frameNumber;
@@ -179,16 +179,16 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
 )
 {
     // Retrieve Z spacing
-    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing2()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin2()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Compute coordinate
     const std::size_t frameIndex = (frameNumber - 1);
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameIndex >= image->getSize2()[2]
+        frameIndex >= image->getSize()[2]
     );
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 

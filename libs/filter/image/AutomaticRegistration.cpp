@@ -383,8 +383,8 @@ void AutomaticRegistration::convertToF4sMatrix(
 
 double AutomaticRegistration::computeVolume(const data::Image::csptr& _img)
 {
-    const auto& spacing = _img->getSpacing2();
-    const auto& size    = _img->getSize2();
+    const auto& spacing = _img->getSpacing();
+    const auto& size    = _img->getSize();
 
     SIGHT_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
 

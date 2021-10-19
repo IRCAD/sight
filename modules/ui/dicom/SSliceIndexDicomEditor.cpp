@@ -328,7 +328,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     if(imageSeries)
     {
         data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize2();
+        const data::Image::Size newSize = newImage->getSize();
 
         newImage->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));

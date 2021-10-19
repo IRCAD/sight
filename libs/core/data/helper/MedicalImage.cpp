@@ -52,7 +52,7 @@ void MedicalImage::getImageSpacing(double spacing[3]) const
 {
     data::Image::sptr image = this->getImage();
 
-    const data::Image::Spacing& imSpacing = image->getSpacing2();
+    const data::Image::Spacing& imSpacing = image->getSpacing();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
 }
 
@@ -62,7 +62,7 @@ void MedicalImage::getImageOrigin(double origin[3]) const
 {
     data::Image::sptr image = this->getImage();
 
-    std::copy(image->getOrigin2().begin(), image->getOrigin2().end(), origin);
+    std::copy(image->getOrigin().begin(), image->getOrigin().end(), origin);
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void MedicalImage::getImageDataSize(size_t size[3]) const
 {
     data::Image::sptr image = this->getImage();
 
-    const data::Image::Size& imSize = image->getSize2();
+    const data::Image::Size& imSize = image->getSize();
     std::copy(imSize.begin(), imSize.end(), size);
 }
 
@@ -82,7 +82,7 @@ void MedicalImage::getImageSize(double size[3]) const
     data::Image::sptr image = this->getImage();
     double spacing[3];
 
-    const data::Image::Size& imSize = image->getSize2();
+    const data::Image::Size& imSize = image->getSize();
     std::transform(imSize.begin(), imSize.end(), size, boost::numeric_cast<double, size_t>);
     this->getImageSpacing(spacing);
 
@@ -151,11 +151,11 @@ void MedicalImage::getPlane(double points[4][3], int sliceNumber)
     for(unsigned char i = 0 ; i < 3 ; ++i)
     {
         extent[2 * i]     = 0;
-        extent[2 * i + 1] = static_cast<double>(image->getSize2()[i]) * image->getSpacing2()[i];
+        extent[2 * i + 1] = static_cast<double>(image->getSize()[i]) * image->getSpacing()[i];
     }
 
-    extent[2 * m_orientation]     = sliceNumber * image->getSpacing2()[m_orientation];
-    extent[2 * m_orientation + 1] = sliceNumber * image->getSpacing2()[m_orientation];
+    extent[2 * m_orientation]     = sliceNumber * image->getSpacing()[m_orientation];
+    extent[2 * m_orientation + 1] = sliceNumber * image->getSpacing()[m_orientation];
 
     const int* extentIndex = indexSet[m_orientation];
     for(int p = 0 ; p < 4 ; ++p)

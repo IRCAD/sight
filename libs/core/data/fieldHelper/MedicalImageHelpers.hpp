@@ -106,23 +106,6 @@ public:
     DATA_API static bool checkComment(data::Image::sptr _pImg);
 
     /**
-     * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
-     *
-     *
-     * @param[in]   imgSrc             image which gives information (field, pixel type, buffer size...).
-     * @param[in]   imgToInitialize    image to initialized (if not null).
-     *
-     * @return      Returns initialized image.
-     * @deprecated  This method is not longer supported
-     */
-    [[deprecated("will be removed in sight 22.0")]]
-    DATA_API static data::Image::sptr initialize(
-        data::Image::sptr imgSrc,
-        data::Image::sptr imgToInitialize =
-        data::Image::sptr()
-    );
-
-    /**
      * @brief       Return true if the pixel value is null.
      * @param[in] image : image containing the pixel
      * @param[in] point : the coordinate of the pixel in the image.
@@ -156,7 +139,7 @@ public:
      * @param[in] value : value to map
      */
     template<typename T>
-    static SPTR(data::Image::BufferType) getPixelBufferInImageSpace(data::Image::sptr image, T & value);
+    static SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & value);
 
     /**
      * @brief Return minimum and maximum values contained in image. If image
@@ -252,7 +235,7 @@ public:
     {
         IMAGE* buffer                 = static_cast<IMAGE*>(param.image->getBuffer());
         const INT_INDEX& p            = param.point;
-        const data::Image::Size& size = param.image->getSize2();
+        const data::Image::Size& size = param.image->getSize();
         const int& sx                 = size[0];
         const int& sy                 = size[1];
         const int& offset             = p[0] + sx * p[1] + p[2] * sx * sy;
@@ -287,7 +270,7 @@ void MedicalImageHelpers::setPixel(data::Image::sptr image, INT_INDEX& point, T&
 // ------------------------------------------------------------------------------
 
 template<typename T>
-SPTR(data::Image::BufferType) MedicalImageHelpers::getPixelBufferInImageSpace(
+SPTR(data::Image::BufferType) MedicalImageHelpers::getPixelInImageSpace(
     data::Image::sptr image,
     T & value
 )
@@ -331,7 +314,7 @@ public:
         const auto dumpLock = param.image->lock();
         IMAGE* buffer       = static_cast<IMAGE*>(param.image->getBuffer());
         const INT_INDEX& p  = param.point;
-        const auto& size    = param.image->getSize2();
+        const auto& size    = param.image->getSize();
         const int& sx       = size[0];
         const int& sy       = size[1];
         const int& offset   = p[0] + sx * p[1] + p[2] * sx * sy;
@@ -347,7 +330,7 @@ bool MedicalImageHelpers::isPixelNull(data::Image::sptr image, INT_INDEX& point)
     const auto dumpLock               = image->lock();
     const unsigned char imageTypeSize = image->getType().sizeOf();
     data::Image::BufferType* buf      =
-        static_cast<data::Image::BufferType*>(image->getPixelBuffer(point[0], point[1], point[2]));
+        static_cast<data::Image::BufferType*>(image->getPixel(point[0], point[1], point[2]));
 
     return isBufNull(buf, imageTypeSize);
 }

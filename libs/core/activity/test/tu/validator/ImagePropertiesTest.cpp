@@ -104,9 +104,9 @@ void ImagePropertiesTest::propertiesTest()
 
         utestData::generator::Image::generateImage(
             img2,
-            img1->getSize2(),
-            img1->getSpacing2(),
-            img1->getOrigin2(),
+            img1->getSize(),
+            img1->getSpacing(),
+            img1->getOrigin(),
             img1->getType(),
             data::Image::PixelFormat::GRAY_SCALE
         );

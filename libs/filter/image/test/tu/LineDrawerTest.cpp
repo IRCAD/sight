@@ -84,7 +84,7 @@ void LineDrawerTest::circleTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -125,7 +125,7 @@ void LineDrawerTest::circleTest()
         const auto dumpLock = image->lock();
 
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -268,7 +268,7 @@ void LineDrawerTest::ellipseTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -372,7 +372,7 @@ void LineDrawerTest::borderTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -466,7 +466,7 @@ void LineDrawerTest::roiTest()
         const std::int16_t ROI_VALUE      = 1;
 
         SPTR(data::Image::BufferType) roiVal =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(roiImage, ROI_VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(roiImage, ROI_VALUE);
 
         for(size_t i = ROI_BEGIN[0] ; i < ROI_END[0] ; ++i)
         {
@@ -475,14 +475,14 @@ void LineDrawerTest::roiTest()
                 for(size_t k = ROI_BEGIN[2] ; k < ROI_END[2] ; ++k)
                 {
                     data::Image::IndexType index = i + j * SIZE[0] + k * SIZE[0] * SIZE[1];
-                    roiImage->setPixelBuffer(index, roiVal.get());
+                    roiImage->setPixel(index, roiVal.get());
                 }
             }
         }
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, roiImage);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);

@@ -93,7 +93,7 @@ struct RoiApplyerCaller
 void applyRoi(data::Image::sptr image, data::Image::sptr roi)
 {
     SIGHT_ASSERT("Null image pointers", image && roi);
-    SIGHT_ASSERT("Images have different size", image->getSize2() == roi->getSize2());
+    SIGHT_ASSERT("Images have different size", image->getSize() == roi->getSize());
 
     using namespace boost;
 
@@ -178,7 +178,7 @@ bool isRoiApplyed(data::Image::sptr image, data::Image::sptr roi, data::Image::s
     SIGHT_ASSERT("Null image pointers", image && imgRoiApplyed && roi);
     SIGHT_ASSERT(
         "Images have different size",
-        image->getSize2() == imgRoiApplyed->getSize2() && image->getSize2() == roi->getSize2()
+        image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize()
     );
 
     RoiTesterParam param;

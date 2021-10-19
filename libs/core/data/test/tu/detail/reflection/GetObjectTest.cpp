@@ -82,8 +82,8 @@ void GetObjectTest::getTest()
     );
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img2->getSpacing2()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img2->getSpacing2()[2] + 0.001
+        img2->getSpacing()[2] - 0.001 < zspacing->value()
+        && zspacing->value() < img2->getSpacing()[2] + 0.001
     );
 
     // Visit 3
@@ -149,8 +149,8 @@ void GetObjectTest::invalidPathTest()
     data::Float::sptr zspacing = ::std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img->getSpacing2()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img->getSpacing2()[2] + 0.001
+        img->getSpacing()[2] - 0.001 < zspacing->value()
+        && zspacing->value() < img->getSpacing()[2] + 0.001
     );
 
     // with exception version
@@ -158,8 +158,8 @@ void GetObjectTest::invalidPathTest()
     zspacing = ::std::dynamic_pointer_cast<data::Float>(obj);
     CPPUNIT_ASSERT_MESSAGE(
         "spacing must be equal",
-        img->getSpacing2()[2] - 0.001 < zspacing->value()
-        && zspacing->value() < img->getSpacing2()[2] + 0.001
+        img->getSpacing()[2] - 0.001 < zspacing->value()
+        && zspacing->value() < img->getSpacing()[2] + 0.001
     );
 
     // out of bounds, no exception version

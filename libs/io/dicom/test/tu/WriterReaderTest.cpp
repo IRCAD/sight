@@ -73,9 +73,9 @@ double tolerance(double num)
 
 void roundSpacing(data::Image::sptr image)
 {
-    data::Image::Spacing spacing = image->getSpacing2();
+    data::Image::Spacing spacing = image->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image->setSpacing2(spacing);
+    image->setSpacing(spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -196,8 +196,8 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     data::PointList::sptr landmarks =
         image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
-    const data::Image::Spacing spacing = image->getSpacing2();
-    const data::Image::Origin origin   = image->getOrigin2();
+    const data::Image::Spacing spacing = image->getSpacing();
+    const data::Image::Origin origin   = image->getOrigin();
     const data::Point::sptr point      = data::Point::New(
         2.6 + origin[0],
         1.2 + origin[1],
@@ -212,7 +212,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     );
     point2->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label2"));
     landmarks->getPoints().push_back(point2);
-    const data::Image::Size size   = image->getSize2();
+    const data::Image::Size size   = image->getSize();
     const data::Point::sptr point3 = data::Point::New(
         1.2 + origin[0],
         2.4 + origin[1],

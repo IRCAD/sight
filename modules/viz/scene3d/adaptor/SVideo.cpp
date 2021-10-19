@@ -292,7 +292,7 @@ void SVideo::updating()
         m_previousType = type;
     }
 
-    const data::Image::Size size = imageSight->getSize2();
+    const data::Image::Size size = imageSight->getSize();
     sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, Ogre::TEX_TYPE_2D, true);
 
     const auto layer                     = this->getLayer();
@@ -437,8 +437,8 @@ void SVideo::updatePL()
         const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
         outPoints.push_back(
             data::Point::New(
-                point[0] - static_cast<double>(image->getSize2()[0]) * 0.5,
-                -(point[1] - static_cast<double>(image->getSize2()[1]) * 0.5),
+                point[0] - static_cast<double>(image->getSize()[0]) * 0.5,
+                -(point[1] - static_cast<double>(image->getSize()[1]) * 0.5),
                 point[2]
             )
         );

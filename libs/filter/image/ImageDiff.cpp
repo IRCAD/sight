@@ -234,7 +234,7 @@ void ImageDiff::applyDiffElt(const data::Image::sptr& img, size_t eltIndex) cons
 
     data::Image::BufferType* newValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
 
-    img->setPixelBuffer(index, newValue);
+    img->setPixel(index, newValue);
 }
 
 //------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ void ImageDiff::revertDiffElt(const data::Image::sptr& img, size_t eltIndex) con
 
     data::Image::BufferType* oldValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
 
-    img->setPixelBuffer(index, oldValue);
+    img->setPixel(index, oldValue);
 }
 
 } // namespace sight::filter::image

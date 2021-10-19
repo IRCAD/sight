@@ -172,7 +172,7 @@ void IoItkTest::testSaveLoadInr()
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
@@ -201,9 +201,9 @@ void IoItkTest::testSaveLoadInr()
         data::Access::inout
     );
 
-    data::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing2(spacing);
+    image2->setSpacing(spacing);
 
     // check Image
     utestData::helper::ExcludeSetType exclude;
@@ -225,7 +225,7 @@ void IoItkTest::ImageSeriesInrTest()
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
-    image->setOrigin2(origin);
+    image->setOrigin(origin);
 
     // save image in inr
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
@@ -254,9 +254,9 @@ void IoItkTest::ImageSeriesInrTest()
         data::Access::inout
     );
 
-    data::Image::Spacing spacing = image2->getSpacing2();
+    data::Image::Spacing spacing = image2->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
-    image2->setSpacing2(spacing);
+    image2->setSpacing(spacing);
 
     // check Image
     utestData::helper::ExcludeSetType exclude;
@@ -317,10 +317,10 @@ void IoItkTest::SeriesDBInrTest()
     data::Image::sptr image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize2());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
 
     imgSeries = data::ImageSeries::dynamicCast(sdb->getContainer()[1]);
     CPPUNIT_ASSERT(imgSeries);
@@ -330,10 +330,10 @@ void IoItkTest::SeriesDBInrTest()
     image = imgSeries->getImage();
     CPPUNIT_ASSERT(image);
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().string());
-    CPPUNIT_ASSERT(size == image->getSize2());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing2()[0], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing2()[1], EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing2()[2], EPSILON);
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------

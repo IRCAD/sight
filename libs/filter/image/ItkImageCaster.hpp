@@ -50,7 +50,7 @@ struct ItkImageCaster
         using InputImageType = ::itk::Image<INPUT_PIXELTYPE, 3>;
 
         // Convert to ITK.
-        typename InputImageType::Pointer tmp = sight::io::itk::itkImageFactory<InputImageType>(p.i_img);
+        typename InputImageType::Pointer tmp = sight::io::itk::moveToItk<InputImageType>(p.i_img);
 
         // Cast to the desired pixel type.
         auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();

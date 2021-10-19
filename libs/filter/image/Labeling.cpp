@@ -61,12 +61,12 @@ struct LabelingFilter
         typedef itk::Image<PIXELTYPE, 3> ImageType;
         typedef itk::Image<std::uint8_t, 3> BinaryImageType;
         typename ImageType::Pointer itkImage;
-        itkImage = io::itk::itkImageFactory<ImageType>(params.m_inputImage);
+        itkImage = io::itk::moveToItk<ImageType>(params.m_inputImage);
 
         BinaryImageType::Pointer out;
         out = filter::image::labeling<PIXELTYPE, 3>(itkImage, params.m_numLabels);
 
-        io::itk::dataImageFactory<BinaryImageType>(out, params.m_outputImage);
+        io::itk::moveFromItk<BinaryImageType>(out, params.m_outputImage);
     }
 };
 
@@ -112,7 +112,7 @@ struct LabelImageFilter
         const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
         typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
-        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>(image);
+        typename InputImageType::Pointer itkInputImage = io::itk::moveToItk<InputImageType>(image);
 
         typedef PIXELTYPE LabelType;
         typedef ::itk::Image<LabelType, dimension> OutputImageType;

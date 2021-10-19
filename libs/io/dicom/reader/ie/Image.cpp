@@ -145,7 +145,7 @@ void Image::readImagePlaneModule()
         std::copy(gdcmOrigin, gdcmOrigin + 3, origin.begin());
     }
 
-    m_object->setOrigin2(origin);
+    m_object->setOrigin(origin);
 
     // Pixel Spacing - Type 1
     // Image dimension
@@ -200,7 +200,7 @@ void Image::readImagePlaneModule()
         }
     }
 
-    m_object->setSpacing2(spacing);
+    m_object->setSpacing(spacing);
 }
 
 //------------------------------------------------------------------------------
@@ -279,9 +279,8 @@ void Image::readImagePixelModule()
     // Compute final image type
     data::dicom::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    core::tools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
-    m_object->setType(imageType);
-    ::gdcm::PixelFormat targetPixelFormat = io::dicom::helper::DicomDataTools::getPixelType(m_object);
+    core::tools::Type imageType           = imageHelper.findImageTypeFromMinMaxValues();
+    ::gdcm::PixelFormat targetPixelFormat = io::dicom::helper::DicomDataTools::getPixelType(imageType);
 
     if(targetPixelFormat == ::gdcm::PixelFormat::UNKNOWN)
     {
@@ -294,29 +293,6 @@ void Image::readImagePixelModule()
     const std::string pixelPresentation =
         io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x9205>(dataset);
 
-    if(photometricInterpretation == "MONOCHROME2")
-    {
-        m_object->setNumberOfComponents(1);
-    }
-    else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR")
-    {
-        m_object->setNumberOfComponents(3);
-    }
-    else if(photometricInterpretation == "ARGB" || photometricInterpretation == "CMYK")
-    {
-        m_object->setNumberOfComponents(4);
-    }
-    else if(photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
-    {
-        m_object->setNumberOfComponents(3);
-    }
-    else
-    {
-        const std::string msg = "The photometric interpretation \"" + photometricInterpretation
-                                + "\" is not supported.";
-        throw io::dicom::exception::Failed(msg);
-    }
-
     // Retrieve image dimensions
     std::vector<unsigned int> dimensions = ::gdcm::ImageHelper::GetDimensionsValue(imageReader->GetFile());
 
@@ -325,7 +301,6 @@ void Image::readImagePixelModule()
     const unsigned long frameBufferSize = gdcmImage.GetBufferLength();
     const unsigned long depth           = frameBufferSize / (dimensions[0] * dimensions[1] * (bitsAllocated / 8));
     dimensions[2] = static_cast<unsigned int>(m_dicomSeries->getDicomContainer().size() * depth);
-    m_object->setSize2({dimensions[0], dimensions[1], dimensions[2]});
 
     const unsigned long imageBufferSize =
         dimensions[0] * dimensions[1] * dimensions[2] * (bitsAllocated / 8);
@@ -336,6 +311,7 @@ void Image::readImagePixelModule()
     bool performRescale = (photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR");
     char* imageBuffer   = this->readImageBuffer(
         dimensions,
+        imageType,
         bitsAllocated,
         targetPixelFormat.GetBitsAllocated(),
         performRescale
@@ -374,14 +350,40 @@ void Image::readImagePixelModule()
         }
     }
 
-    // Set image buffer
-    m_object->setBuffer(imageBuffer, true, m_object->getType(), m_object->getSize2());
+    // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
+    sight::data::Image::PixelFormat format;
+    if(photometricInterpretation == "MONOCHROME2")
+    {
+        format = data::Image::PixelFormat::GRAY_SCALE;
+    }
+    else if(photometricInterpretation == "RGB" || photometricInterpretation == "YBR")
+    {
+        format = data::Image::PixelFormat::RGB;
+    }
+    else if(photometricInterpretation == "ARGB" || photometricInterpretation == "CMYK")
+    {
+        format = data::Image::PixelFormat::RGBA;
+    }
+    else if(photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
+    {
+        format = data::Image::PixelFormat::RGB;
+    }
+    else
+    {
+        const std::string msg = "The photometric interpretation \"" + photometricInterpretation
+                                + "\" is not supported.";
+        throw io::dicom::exception::Failed(msg);
+    }
+
+    // Last, set image buffer
+    m_object->setBuffer(imageBuffer, true, imageType, {dimensions[0], dimensions[1], dimensions[2]}, format);
 }
 
 //------------------------------------------------------------------------------
 
 char* Image::readImageBuffer(
     const std::vector<unsigned int>& dimensions,
+    const core::tools::Type imageType,
     const unsigned short bitsAllocated,
     const unsigned short newBitsAllocated,
     const bool performRescale
@@ -460,7 +462,7 @@ char* Image::readImageBuffer(
             ::gdcm::PixelFormat pixelFormat =
                 ::gdcm::ImageHelper::GetPixelFormatValue(frameReader.GetFile());
             ::gdcm::PixelFormat::ScalarType scalarType = pixelFormat.GetScalarType();
-            ::gdcm::PixelFormat targetPixelFormat      = io::dicom::helper::DicomDataTools::getPixelType(m_object);
+            ::gdcm::PixelFormat targetPixelFormat      = io::dicom::helper::DicomDataTools::getPixelType(imageType);
 
             if(targetPixelFormat == ::gdcm::PixelFormat::UNKNOWN)
             {
@@ -521,7 +523,7 @@ char* Image::readImageBuffer(
 
 char* Image::correctImageOrientation(
     char* buffer,
-    const std::vector<unsigned int>& dimensions,
+    std::vector<unsigned int>& dimensions,
     unsigned short bitsAllocated
 )
 {
@@ -696,11 +698,10 @@ char* Image::correctImageOrientation(
         result = newBuffer;
         delete[] buffer;
 
-        // Update image size
-        m_object->setSize2({newSizeX, newSizeY, newSizeZ});
+        dimensions = {newSizeX, newSizeY, newSizeZ};
 
         // Update image spacing
-        const data::Image::Spacing spacing = m_object->getSpacing2();
+        const data::Image::Spacing spacing = m_object->getSpacing();
         VectorType spacingVector(4);
         spacingVector(0) = spacing[0];
         spacingVector(1) = spacing[1];
@@ -710,10 +711,10 @@ char* Image::correctImageOrientation(
         newSpacing[0] = std::fabs(newSpacingVector[0]);
         newSpacing[1] = std::fabs(newSpacingVector[1]);
         newSpacing[2] = std::fabs(newSpacingVector[2]);
-        m_object->setSpacing2(newSpacing);
+        m_object->setSpacing(newSpacing);
 
         // Update image origin
-        const data::Image::Origin origin = m_object->getOrigin2();
+        const data::Image::Origin origin = m_object->getOrigin();
         VectorType originVector(4);
         originVector(0) = origin[0];
         originVector(1) = origin[1];
@@ -723,7 +724,7 @@ char* Image::correctImageOrientation(
         newOrigin[0] = newOriginVector[0];
         newOrigin[1] = newOriginVector[1];
         newOrigin[2] = newOriginVector[2];
-        m_object->setOrigin2(newOrigin);
+        m_object->setOrigin(newOrigin);
 
         m_logger->warning(
             "Image buffer has been rotated in order to match patient orientation: "

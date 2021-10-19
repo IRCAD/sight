@@ -130,9 +130,9 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto dumpLock = _param.m_image->lock();
 
     // Get image informations.
-    const data::Image::Origin& origin   = _param.m_image->getOrigin2();
-    const data::Image::Size& size       = _param.m_image->getSize2();
-    const data::Image::Spacing& spacing = _param.m_image->getSpacing2();
+    const data::Image::Origin& origin   = _param.m_image->getOrigin();
+    const data::Image::Size& size       = _param.m_image->getSize();
+    const data::Image::Spacing& spacing = _param.m_image->getSpacing();
 
     // Loop over the bounding box intersection of the mesh and the image to increase perfomance.
     std::int64_t indexXBeg = 0;

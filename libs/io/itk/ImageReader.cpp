@@ -105,7 +105,7 @@ struct ITKLoaderFunctor
 
         reader->Update();
         typename ImageType::Pointer itkimage = reader->GetOutput();
-        io::itk::dataImageFactory<ImageType>(itkimage, param.m_dataImage);
+        io::itk::moveFromItk<ImageType>(itkimage, param.m_dataImage);
     }
 
     //// get pixel type from Header

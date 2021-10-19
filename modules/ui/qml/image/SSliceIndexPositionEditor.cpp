@@ -161,7 +161,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
         int max = 0;
         if(image->getNumberOfDimensions() > m_orientation)
         {
-            max = static_cast<int>(image->getSize2()[m_orientation] - 1);
+            max = static_cast<int>(image->getSize()[m_orientation] - 1);
         }
 
         this->setSliceRange(0, max);

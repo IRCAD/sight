@@ -38,6 +38,22 @@ SIGHT_REGISTER_DATA(sight::data::Image);
 namespace sight::data
 {
 
+auto pixelFormatToNumComponents = [](Image::PixelFormat format)
+                                  {
+                                      static const std::array<size_t,
+                                                              Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
+                                      {
+                                          ~0ul,
+                                          3,
+                                          4,
+                                          3,
+                                          4,
+                                          1,
+                                          2
+                                      };
+                                      return s_pixelFormatToNumComponents[format];
+                                  };
+
 const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
 const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
 const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
@@ -119,83 +135,41 @@ void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
-size_t Image::resize()
+size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
 {
-    if(!m_dataArray)
-    {
-        m_dataArray = data::Array::New();
-    }
+    return this->_resize(size, type, format, true);
+}
 
-    SIGHT_ASSERT("NumberOfComponents must be > 0", m_numberOfComponents > 0);
+//------------------------------------------------------------------------------
 
-    const size_t imageDims = this->getNumberOfDimensions();
+size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc)
+{
+    m_size          = size;
+    m_type          = type;
+    m_pixelFormat   = format;
+    m_numComponents = pixelFormatToNumComponents(format);
 
+    SIGHT_ASSERT("Number of components must be > 0", m_numComponents > 0);
+    SIGHT_ASSERT("Number of components must be <= 4", m_numComponents <= 4);
+
+    const size_t imageDims = this->numDimensions();
     data::Array::SizeType arraySize(imageDims);
 
-    /*
-     * @todo replace the resizeTMP method by these line.
-     * Array m_numberOfComponents attribute is deprecated, but to support the old API, we need to use it temporary
-     *
-     * The component dimension must be the first dimentsion to be registered in the array like RGBARGBARGBA.
-     *
-     * size_t count = 0;
-     * if (m_numberOfComponents > 1)
-     * {
-     *     arraySize.resize(imageDims+1);
-     *     arraySize[0] = m_numberOfComponents;
-     *     count        = 1;
-     * }
-     * for (size_t i = 0; i < imageDims; ++i)
-     * {
-     *     arraySize[count] = m_size[i];
-     *     ++count;
-     * }
-     */
+    size_t count = 0;
+    if(m_numComponents > 1)
+    {
+        arraySize.resize(imageDims + 1);
+        arraySize[0] = m_numComponents;
+        count        = 1;
+    }
 
     for(size_t i = 0 ; i < imageDims ; ++i)
     {
-        arraySize[i] = m_size[i];
+        arraySize[count] = m_size[i];
+        ++count;
     }
 
-    return m_dataArray->resizeTMP(m_type, arraySize, m_numberOfComponents);
-}
-
-//------------------------------------------------------------------------------
-
-size_t Image::resize(IndexType x, IndexType y, IndexType z, const core::tools::Type& type, PixelFormat format)
-{
-    return resize({x, y, z}, type, format);
-}
-
-//------------------------------------------------------------------------------
-
-size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
-{
-    m_size        = size;
-    m_type        = type;
-    m_pixelFormat = format;
-
-    switch(format)
-    {
-        case PixelFormat::GRAY_SCALE:
-            m_numberOfComponents = 1;
-            break;
-
-        case PixelFormat::RGB:
-        case PixelFormat::BGR:
-            m_numberOfComponents = 3;
-            break;
-
-        case PixelFormat::RGBA:
-        case PixelFormat::BGRA:
-            m_numberOfComponents = 4;
-            break;
-
-        default:
-            m_numberOfComponents = 1;
-    }
-
-    return resize();
+    return m_dataArray->resize(arraySize, m_type, realloc);
 }
 
 //------------------------------------------------------------------------------
@@ -207,35 +181,21 @@ core::tools::Type Image::getType() const
 
 //------------------------------------------------------------------------------
 
-void Image::setType(core::tools::Type type)
-{
-    m_type = type;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setType(const std::string& type)
-{
-    m_type = core::tools::Type(type);
-}
-
-//------------------------------------------------------------------------------
-
 void Image::copyInformation(Image::csptr _source)
 {
-    m_size               = _source->m_size;
-    m_spacing            = _source->m_spacing;
-    m_origin             = _source->m_origin;
-    m_type               = _source->m_type;
-    m_windowCenter       = _source->m_windowCenter;
-    m_windowWidth        = _source->m_windowWidth;
-    m_numberOfComponents = _source->m_numberOfComponents;
-    m_pixelFormat        = _source->m_pixelFormat;
+    m_size          = _source->m_size;
+    m_spacing       = _source->m_spacing;
+    m_origin        = _source->m_origin;
+    m_type          = _source->m_type;
+    m_windowCenter  = _source->m_windowCenter;
+    m_windowWidth   = _source->m_windowWidth;
+    m_numComponents = _source->m_numComponents;
+    m_pixelFormat   = _source->m_pixelFormat;
 }
 
 //------------------------------------------------------------------------------
 
-size_t Image::getNumberOfDimensions() const
+size_t Image::numDimensions() const
 {
     size_t dims = 0;
 
@@ -316,7 +276,7 @@ void* Image::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer(IndexType index)
+void* Image::getPixel(IndexType index)
 {
     const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
     BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
@@ -326,7 +286,7 @@ void* Image::getPixelBuffer(IndexType index)
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer(IndexType index) const
+void* Image::getPixel(IndexType index) const
 {
     const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
     BufferType* buf             = static_cast<BufferType*>(this->getBuffer());
@@ -336,10 +296,10 @@ void* Image::getPixelBuffer(IndexType index) const
 
 //------------------------------------------------------------------------------
 
-void Image::setPixelBuffer(IndexType index, Image::BufferType* pixBuf)
+void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
 {
     const size_t imagePixelSize = m_type.sizeOf() * m_numberOfComponents;
-    BufferType* buf             = static_cast<BufferType*>(this->getPixelBuffer(index));
+    BufferType* buf             = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
 }
@@ -353,7 +313,7 @@ const std::string Image::getPixelAsString(
 ) const
 {
     const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
-    return m_type.toString(this->getPixelBuffer(offset));
+    return m_type.toString(this->getPixel(offset));
 }
 
 //------------------------------------------------------------------------------
@@ -419,12 +379,11 @@ void Image::setBuffer(
     bool takeOwnership,
     const core::tools::Type& type,
     const data::Image::Size& size,
+    PixelFormat format,
     core::memory::BufferAllocationPolicy::sptr policy
 )
 {
-    m_type = type;
-    m_size = size;
-    this->resize();
+    this->_resize(size, type, format, false);
     this->setBuffer(buf, takeOwnership, policy);
 }
 
@@ -462,225 +421,6 @@ core::memory::BufferObject::sptr Image::getBufferObject()
 core::memory::BufferObject::csptr Image::getBufferObject() const
 {
     return m_dataArray->getBufferObject();
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setIStreamFactory(
-    const SPTR(core::memory::stream::in::IFactory)& factory,
-    const size_t size,
-    const std::filesystem::path& sourceFile,
-    const core::memory::FileFormatType format,
-    const core::memory::BufferAllocationPolicy::sptr& policy
-)
-{
-    const auto imageDims = this->getNumberOfDimensions();
-    data::Array::SizeType arraySize(imageDims);
-    size_t count = 0;
-    if(m_numberOfComponents > 1)
-    {
-        arraySize.resize(imageDims + 1);
-        arraySize[0] = m_numberOfComponents;
-        count        = 1;
-    }
-
-    for(size_t i = 0 ; i < imageDims ; ++i)
-    {
-        arraySize[count] = m_size[i];
-        ++count;
-    }
-
-    m_dataArray->resize(arraySize, m_type, false);
-    m_dataArray->getBufferObject()->setIStreamFactory(factory, size, sourceFile, format, policy);
-}
-
-//------------------------------------------------------------------------------
-// Deprecated API
-//------------------------------------------------------------------------------
-
-data::Array::sptr Image::getDataArray() const
-{
-    return m_dataArray;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setDataArray(data::Array::sptr array, bool copyArrayInfo)
-{
-    if(!array)
-    {
-        array = data::Array::New();
-    }
-
-    m_dataArray = array;
-    if(copyArrayInfo)
-    {
-        SIGHT_THROW_EXCEPTION_IF(
-            data::Exception("Data array must have a maximum of 3 dimensions"),
-            array->getNumberOfDimensions() > 3
-        );
-
-        const data::Array::SizeType arraySize = array->getSize();
-        for(size_t i = 0 ; i < arraySize.size() ; ++i)
-        {
-            m_size[i] = arraySize[i];
-        }
-
-        m_type = array->getType();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-size_t Image::allocate()
-{
-    return this->resize();
-}
-
-//------------------------------------------------------------------------------
-
-size_t Image::allocate(
-    SizeType::value_type x,
-    SizeType::value_type y,
-    SizeType::value_type z,
-    const core::tools::Type& type,
-    size_t numberOfComponents
-)
-{
-    m_size               = {x, y, z};
-    m_type               = type;
-    m_numberOfComponents = numberOfComponents;
-    return this->resize();
-}
-
-//------------------------------------------------------------------------------
-
-size_t Image::allocate(const SizeType& size, const core::tools::Type& type, size_t numberOfComponents)
-{
-    this->setSize(size);
-    m_type               = type;
-    m_numberOfComponents = numberOfComponents;
-    return this->resize();
-}
-
-//------------------------------------------------------------------------------
-
-const Image::SpacingType& Image::getSpacing() const
-{
-    const size_t dims = this->getNumberOfDimensions();
-    if(m_oldSpacing.size() != dims)
-    {
-        m_oldSpacing.resize(dims);
-    }
-
-    for(size_t i = 0 ; i < dims ; ++i)
-    {
-        m_oldSpacing[i] = m_spacing[i];
-    }
-
-    return m_oldSpacing;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setSpacing(const SpacingType& spacing)
-{
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception("Spacing must have a maximum of 3 dimensions"),
-        spacing.size() > 3
-    );
-
-    for(size_t i = 0 ; i < 3 ; ++i)
-    {
-        if(i < spacing.size())
-        {
-            m_spacing[i] = spacing[i];
-        }
-        else
-        {
-            m_spacing[i] = 0.;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-const Image::OriginType& Image::getOrigin() const
-{
-    const size_t dims = this->getNumberOfDimensions();
-    if(m_oldOrigin.size() != dims)
-    {
-        m_oldOrigin.resize(dims);
-    }
-
-    for(size_t i = 0 ; i < dims ; ++i)
-    {
-        m_oldOrigin[i] = m_origin[i];
-    }
-
-    return m_oldOrigin;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setOrigin(const OriginType& origin)
-{
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception("Origin must have a maximum of 3 dimensions"),
-        origin.size() > 3
-    );
-
-    for(size_t i = 0 ; i < 3 ; ++i)
-    {
-        if(i < origin.size())
-        {
-            m_origin[i] = origin[i];
-        }
-        else
-        {
-            m_origin[i] = 0.;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-const Image::SizeType& Image::getSize() const
-{
-    const size_t dims = this->getNumberOfDimensions();
-    if(m_oldSize.size() != dims)
-    {
-        m_oldSize.resize(dims);
-    }
-
-    for(size_t i = 0 ; i < dims ; ++i)
-    {
-        m_oldSize[i] = m_size[i];
-    }
-
-    return m_oldSize;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setSize(const SizeType& size)
-{
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception("Origin must have a maximum of 3 dimensions"),
-        size.size() > 3
-    );
-
-    for(size_t i = 0 ; i < 3 ; ++i)
-    {
-        if(i < size.size())
-        {
-            m_size[i] = size[i];
-        }
-        else
-        {
-            m_size[i] = 0;
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

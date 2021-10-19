@@ -77,13 +77,13 @@ void CompareObjectsTest::compareImageTest()
 
     data::Image::sptr imgComp = data::Object::copy(img);
 
-    data::Image::Spacing spacing = imgComp->getSpacing2();
+    data::Image::Spacing spacing = imgComp->getSpacing();
     spacing[0] = 42;
-    imgComp->setSpacing2(spacing);
+    imgComp->setSpacing(spacing);
 
-    data::Image::Origin origin = imgComp->getOrigin2();
+    data::Image::Origin origin = imgComp->getOrigin();
     origin[2] = 1664;
-    imgComp->setOrigin2(origin);
+    imgComp->setOrigin(origin);
 
     data::reflection::visitor::CompareObjects visitor;
     visitor.compare(img, imgComp);

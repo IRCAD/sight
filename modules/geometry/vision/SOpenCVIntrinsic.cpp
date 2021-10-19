@@ -146,7 +146,7 @@ void SOpenCVIntrinsic::updating()
         std::vector<float> distCoeffs;
         std::vector<cv::Mat> rvecs;
         std::vector<cv::Mat> tvecs;
-        ::cv::Size2i imgsize(static_cast<int>(img->getSize2()[0]), static_cast<int>(img->getSize2()[1]));
+        ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
         double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
 
@@ -179,8 +179,8 @@ void SOpenCVIntrinsic::updating()
         cam->setCy(cameraMatrix.at<double>(1, 2));
         cam->setFx(cameraMatrix.at<double>(0, 0));
         cam->setFy(cameraMatrix.at<double>(1, 1));
-        cam->setWidth(img->getSize2()[0]);
-        cam->setHeight(img->getSize2()[1]);
+        cam->setWidth(img->getSize()[0]);
+        cam->setHeight(img->getSize()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
 
         cam->setIsCalibrated(true);

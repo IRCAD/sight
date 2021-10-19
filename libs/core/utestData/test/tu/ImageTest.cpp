@@ -83,9 +83,9 @@ void ImageTest::generator3DTest()
         data::Image::PixelFormat::GRAY_SCALE
     );
 
-    CPPUNIT_ASSERT(image->getSize2() == size);
-    CPPUNIT_ASSERT(image->getSpacing2() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin2() == origin);
+    CPPUNIT_ASSERT(image->getSize() == size);
+    CPPUNIT_ASSERT(image->getSpacing() == spacing);
+    CPPUNIT_ASSERT(image->getOrigin() == origin);
     CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
 }
 
@@ -107,9 +107,9 @@ void ImageTest::generator2DTest()
         type,
         data::Image::PixelFormat::GRAY_SCALE
     );
-    CPPUNIT_ASSERT(image->getSize2() == size);
-    CPPUNIT_ASSERT(image->getSpacing2() == spacing);
-    CPPUNIT_ASSERT(image->getOrigin2() == origin);
+    CPPUNIT_ASSERT(image->getSize() == size);
+    CPPUNIT_ASSERT(image->getSpacing() == spacing);
+    CPPUNIT_ASSERT(image->getOrigin() == origin);
     CPPUNIT_ASSERT_EQUAL(type.string(), image->getType().string());
 }
 

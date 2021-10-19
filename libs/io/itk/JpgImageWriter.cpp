@@ -110,7 +110,7 @@ struct JpgITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_directoryPath);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = io::itk::itkImageFactory<itkImageType>(image);
+        typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(image);
 
         typedef ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType> RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
@@ -153,7 +153,7 @@ struct JpgITKSaverFunctor
         format += "/%04d.jpg";
         nameGenerator->SetSeriesFormat(format.c_str());
         nameGenerator->SetStartIndex(1);
-        nameGenerator->SetEndIndex(image->getSize2()[2]);
+        nameGenerator->SetEndIndex(image->getSize()[2]);
         nameGenerator->SetIncrementIndex(1);
 
         writer->SetFileNames(nameGenerator->GetFileNames());

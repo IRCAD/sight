@@ -162,7 +162,7 @@ void SLabelImageToBinaryImage::updating()
             });
     }
 
-    typename ImageType::Pointer itkLabelImg = io::itk::itkImageFactory<ImageType>(labelImage.get_shared());
+    typename ImageType::Pointer itkLabelImg = io::itk::moveToItk<ImageType>(labelImage.get_shared());
 
     ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::Pointer labelToMaskFilter =
         ::itk::UnaryFunctorImageFilter<ImageType, ImageType, LambdaFunctor>::New();
@@ -173,7 +173,7 @@ void SLabelImageToBinaryImage::updating()
 
     typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
 
-    io::itk::itkImageToFwDataImage<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
+    io::itk::moveFromItk<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
     const auto modifiedSig = maskImage->signal<data::Object::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
 
     modifiedSig->asyncEmit();
