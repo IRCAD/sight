@@ -69,19 +69,19 @@ useful features of Sight.
 
 <div align=center style="text-align: center; display: flex; flex-flow: row wrap; justify-content: space-around;">
 <figure>
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/SightViewer01.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/SightViewer01.gif">
     <figcaption>
         <b><i>MPR view of a medical 3D image with additional volume rendering</i></b>
     </figcaption>
 </figure>
 <figure>
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/SightViewer02.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/SightViewer02.gif">
     <figcaption>
         <b><i>Volume rendering and transfer function tuning</i></b>
     </figcaption>
 </figure>
 <figure>
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/mixed_vr_reconstructions.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/mixed_vr_reconstructions.gif">
     <figcaption>
         <b><i>Volume rendering mixed with 3D surfacic meshes</i></b>
     </figcaption>
@@ -95,13 +95,13 @@ and MRI images.
 
 <div align=center style="text-align: center; display: flex; flex-flow: row wrap; justify-content: space-around;">
 <figure>
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/DicomXplorer01.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/DicomXplorer01.gif">
     <figcaption>
         <b><i>DICOM and medical image files navigation</i></b>
     </figcaption>
 </figure>
 <figure>
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/DicomXplorer02.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/DicomXplorer02.gif">
     <figcaption>
         <b><i>MPR view of a medical 3D image</i></b>
     </figcaption>
@@ -115,7 +115,7 @@ This software is a must-have since camera calibration is a mandatory step in any
 
 <div align=center style="text-align: center; display: flex; flex-flow: row wrap; justify-content: space-around;">
 <figure style="">
-    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/51-enh-doc-update-documentation-to-reflect-sight-21-0-changes/Introduction/media/SightCalibrator01.gif">
+    <img src="https://git.ircad.fr/sight/sight-doc/-/raw/dev/Introduction/media/SightCalibrator01.gif">
     <figcaption>
         <b><i>Intrinsic & extrinsic calibration of mono/stereo cameras with live reprojection error display</i></b>
     </figcaption>
