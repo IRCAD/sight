@@ -51,7 +51,7 @@ namespace sight::module::geometry::vision
             <in key="pointList3d" uid="..." />
             <in key="calibration" uid="..." />
             <inout key="matrix" uid="..." />
-            <config videoRef="center" inverse="false"/>
+            <config  inverse="false" shift="false"/>
        </service>
    @endcode
  * @subsection Input Input:
@@ -62,9 +62,10 @@ namespace sight::module::geometry::vision
  * - \b matrix [sight::data::Matrix4]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
- *      Values are "top_left" or "center" (default: "top_left")
- * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
+ * - \b inverse (optional): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
  *      object pose is computed otherwise.(default: "false").
+ * - \b shift (optional): shift back pointList2d with cx/cy, this can be used to compensate a "shifted" camera (that
+ * uses calibration matrix) in a 3dScene (default: "false").
  */
 class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::IRegisterer
 {
@@ -117,6 +118,9 @@ private:
 
     /// reverse or not output matrix (camera pose vs object pose)
     bool m_reverseMatrix = {false};
+
+    /// Shift back points using cx/cy
+    bool m_shiftPoints = {false};
 
     data::ptr<data::Camera, data::Access::in> m_calibration {this, "calibration"};
     data::ptr<data::PointList, data::Access::in> m_pointList2d {this, "pointList2d"};

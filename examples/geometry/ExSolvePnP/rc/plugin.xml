@@ -307,7 +307,7 @@
 
             <service uid="meshReaderSrv" type="sight::module::io::vtk::SMeshReader" >
                 <inout key="data" uid="cube" />
-                <resource>ExSolvePnP/plane.vtk</resource>
+                <resource>ExSolvePnP/plane.vtp</resource>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
@@ -332,7 +332,7 @@
                 <in key="pointList3d" uid="3dPoints" />
                 <in key="calibration" uid="camera" />
                 <inout key="matrix" uid="registrationMatrix" />
-                <config inverse="true" />
+                <config inverse="true" shift="true" />
             </service>
 
             <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker" >
