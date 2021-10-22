@@ -300,6 +300,7 @@
         </service>
 
         <service uid="startAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <confirmation value="true" message="Are you sure you want to Start ?"/>
             <slots>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/setExecutable</slot>
