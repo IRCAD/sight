@@ -6,10 +6,10 @@ cmake_minimum_required(VERSION 3.18)
 
 if(WIN32)
     set(SIGHT_DEPS_BASENAME "sight-vcpkg")
-    set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-9a2a3688")
+    set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-fcf22805")
     set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.zip")
-    set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/0BOiihqxtewTbAL/download")
-    set(SIGHT_DEPS_PACKAGE_HASH "146f463a2264d873028608145ae86817ec8f44c0f65a4459076eaa5b2cc8a144")
+    set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/cCHh9UtXttko6s9/download")
+    set(SIGHT_DEPS_PACKAGE_HASH "d09d7a0f17ca3e5d52c420455da6137faf692d0693d84a5bbaeeeb9228edf8d1")
                 
     # By default, we avoid to download binary packages inside the build tree on windows
     set(OUTPUT ".")

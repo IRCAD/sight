@@ -26,6 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
+#include <core/tools/Os.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -165,17 +166,26 @@ void SSequencer::starting()
         }
     }
 
-    // check if './qml' directory is in the local folder (used by installed application) or in the deps folder
-    const auto runtimePath = core::runtime::Runtime::getDefault()->getWorkingPath();
-    const auto qmlDir      = runtimePath / "qml";
-    if(std::filesystem::exists(qmlDir))
+#ifdef WIN32
+    // To get Qml initialized properly, we need to find its plugins
+    // This is difficult to do, especially because the location of the deps is different whether
+    // you are executing the application in the build tree or in the install tree
+    // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
+    // This work in all cases when we use VCPkg.
+    std::filesystem::path qt5LibDir              = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    const std::filesystem::path qt5QmlPluginsDir = (qt5LibDir.parent_path().parent_path()) / "qml";
+
+    QDir pluginDir(QString::fromStdString(qt5QmlPluginsDir.string()));
+    if(pluginDir.exists())
     {
-        engine->addImportPath(QString::fromStdString(qmlDir.string()));
+        SIGHT_INFO("Load Qml plugins from: " + qt5QmlPluginsDir.string());
+        engine->addImportPath(pluginDir.absolutePath());
     }
     else
     {
-        engine->addImportPath(QML_IMPORT_PATH);
+        SIGHT_ERROR("Could not determine Qml plugins path, tried with: " + qt5QmlPluginsDir.string());
     }
+#endif
 
     QStringList activitiesName;
 

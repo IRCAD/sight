@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::Tuto06GuiQml
+namespace Tuto06GuiQml
 {
 
 /**
@@ -53,4 +53,4 @@ public:
     TUTO06GUIQML_API void uninitialize() noexcept;
 };
 
-} // namespace sight::Tuto06GuiQml
+} // namespace Tuto06GuiQml

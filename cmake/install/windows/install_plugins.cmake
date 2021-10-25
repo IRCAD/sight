@@ -1,10 +1,13 @@
 cmake_policy(SET CMP0057 NEW)
 
 # install all Qt5 plugins
-message("${DEPENDS}")
 if(${DEPENDS} MATCHES "_qt")
     message(STATUS "Install Qt plugins from '${QT_PLUGINS_SOURCE_DIR}'")
     file(INSTALL DESTINATION ${CMAKE_INSTALL_PREFIX}/${QT_DESTINATION} TYPE DIRECTORY FILES ${QT_PLUGINS_SOURCE_DIR})
+endif()
+if(QML_SOURCE_DIR)
+    message(STATUS "Install Qml plugins from '${QML_SOURCE_DIR}'")
+    file(INSTALL DESTINATION ${CMAKE_INSTALL_PREFIX}/${QT_DESTINATION} TYPE DIRECTORY FILES ${QML_SOURCE_DIR})
 endif()
 
 if(${DEPENDS} MATCHES "viz_scene3d ")

@@ -13,13 +13,10 @@ target_include_directories(module_ui_qt SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
 
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 
-if(FW_BUILD_EXTERNAL)
-    set(FW_QT5_LOCATION "${Sight_LIBRARY_DIR}/../..")
-else()
-    set(FW_QT5_LOCATION "${CONAN_QT_ROOT}")
+if(MSVC)
+    set(FW_QT5_LOCATION "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>")
+    target_compile_definitions(module_ui_qt PRIVATE QML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")
 endif()
-
-target_compile_definitions(module_ui_qt PRIVATE QML_IMPORT_PATH="${FW_QT5_LOCATION}/qml")
 
 # Copy resources for styles
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt")

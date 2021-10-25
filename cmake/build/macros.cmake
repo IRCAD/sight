@@ -655,6 +655,15 @@ macro(fwModule SIGHT_TARGET TARGET_TYPE)
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_TARGET_TYPE "APP")
         set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "app")
 
+        # Install library if the app has one
+        get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
+        if(NOT "${TARGET_TYPE}" STREQUAL "INTERFACE_LIBRARY")
+            install(
+                TARGETS ${SIGHT_TARGET}
+                RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
+            )
+        endif()
+
         if(UNIX)
             # Install shortcut
             string(TOLOWER ${SIGHT_TARGET} APP_NAME)
@@ -1026,14 +1035,24 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 add_dependencies(${APP}_install ${DEP}_install) 
             endif()
         endforeach()
-        
+
+        # Determine if we need to copy Qml plugins
+        foreach(DEP ${DEPENDS})
+            get_target_property(DEPENDS ${DEP} LINK_LIBRARIES)
+            if("${DEPENDS}" MATCHES "Qml")
+                set(QML_SOURCE_DIR "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/qml")
+                break()
+            endif()
+        endforeach()
+
         # Add a fixup target for every app
         if(WIN32)
             list(APPEND DEPENDS ${IMPORTED_DEPENDS})
             add_custom_target(${APP}_install_plugins
                 ${CMAKE_COMMAND} -DDEPENDS="${DEPENDS}"
                                  -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
-                                 -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins" 
+                                 -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins"
+                                 -DQML_SOURCE_DIR="${QML_SOURCE_DIR}" 
                                  -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/.."
                                  -DOGRE_PLUGIN_DIR="${OGRE_PLUGIN_DIR}"
                                  -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"
