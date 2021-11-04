@@ -171,7 +171,7 @@ Ogre::Vector3 Camera::convertNDCToViewSpace(const ::Ogre::Camera& _camera, const
     ::Ogre::Vector4 clippingCoordinatePixel;
     if(_camera.getProjectionType() == ::Ogre::ProjectionType::PT_PERSPECTIVE)
     {
-        const float near = static_cast<const float>(_camera.getNearClipDistance());
+        const float near = static_cast<float>(_camera.getNearClipDistance());
         const float far  = static_cast<float>(_camera.getFarClipDistance());
         clippingCoordinatePixel.w = static_cast< ::Ogre::Real>(2.0 * near * far)
                                     / (near + far + _ndcPos.z * (near - far));

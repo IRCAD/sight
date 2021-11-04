@@ -1,4 +1,4 @@
-sight_add_target( filter_dicom TYPE LIBRARY PCH pchData)
+sight_add_target(filter_dicom TYPE LIBRARY PCH pchData)
 
 target_include_directories(filter_dicom SYSTEM PRIVATE ${DCMTK_INCLUDE_DIRS})
 target_link_libraries(filter_dicom PRIVATE ${DCMTK_LIBRARIES})

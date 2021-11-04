@@ -80,35 +80,35 @@ GenericScene::~GenericScene()
 
 //------------------------------------------------------------------------------
 
-Qt3DRender::QCamera* const GenericScene::getCamera() const
+Qt3DRender::QCamera* GenericScene::getCamera()
 {
     return m_camera;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DExtras::QAbstractCameraController* const GenericScene::getCameraController() const
+Qt3DExtras::QAbstractCameraController* GenericScene::getCameraController()
 {
     return m_cameraController;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DInput::QInputSettings* const GenericScene::getInputSettings() const
+Qt3DInput::QInputSettings* GenericScene::getInputSettings()
 {
     return m_inputSettings;
 }
 
 //------------------------------------------------------------------------------
 
-Qt3DRender::QRenderSettings* const GenericScene::getRenderSettings() const
+Qt3DRender::QRenderSettings* GenericScene::getRenderSettings()
 {
     return m_renderSettings;
 }
 
 //------------------------------------------------------------------------------
 
-FrameGraph* GenericScene::getFrameGraph() const
+FrameGraph* GenericScene::getFrameGraph()
 {
     return m_frameGraph;
 }

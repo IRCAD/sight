@@ -19,36 +19,18 @@ add_dependencies(
     module_viz_scene3d
 )
 
-moduleParam(
-    module_ui_qt
-    PARAM_LIST
-        resource
-        stylesheet
-    PARAM_VALUES
-        sight::module::ui::qt/flatdark.rcc
-        sight::module::ui::qt/flatdark.qss
-) # Allow dark theme via module_ui_qt
+# Allow dark theme via module_ui_qt
+module_param(
+    module_ui_qt PARAM_LIST resource stylesheet PARAM_VALUES sight::module::ui::qt/flatdark.rcc
+                                                             sight::module::ui::qt/flatdark.qss
+)
 
-moduleParam(
-    module_appXml
-    PARAM_LIST
-        config
-        parameters
-    PARAM_VALUES
-        ExActivities_Base_AppCfg
-        ExActivities_AppCfgParam
-) # Main application's configuration to launch
+# Main application's configuration to launch
+module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
 
-moduleParam(
-    module_ui_base
-    PARAM_LIST
-        preferences_enabled
-        preferences_password_policy
-        preferences_encryption_policy
-    PARAM_VALUES
-        true
-        once
-        salted
+module_param(
+    module_ui_base PARAM_LIST preferences_enabled preferences_password_policy preferences_encryption_policy
+    PARAM_VALUES true once salted
 )
 
 sight_generate_profile(ExActivities)

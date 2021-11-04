@@ -1,4 +1,9 @@
-sight_add_target( navigation_openvslamTest TYPE TEST PCH OFF WARNINGS_AS_ERRORS OFF)
+sight_add_target(
+    navigation_openvslamTest
+    TYPE TEST
+    PCH OFF
+    WARNINGS_AS_ERRORS OFF
+)
 
 # OpenMP is required for openvslam
 find_package(OpenMP REQUIRED)

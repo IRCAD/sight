@@ -10,13 +10,13 @@ Module containing the mechanism to parse xml configuration of an application
 
 ### CMake
 
-In the CMakeLists of your application you need to add the dependency, and provide the configuration files as parameters of this module as follow: 
+In the CMakeLists of your application you need to add the dependency, and provide the configuration files as parameters of this module as follow:
 
 ```cmake
 add_dependencies(myTarget module_appXml ... )
 
 
-moduleParam(
+module_param(
         sight::module_appXml
     PARAM_LIST
         config parameters

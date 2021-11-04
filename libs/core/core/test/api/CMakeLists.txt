@@ -1,4 +1,4 @@
-sight_add_target( coreTest TYPE TEST )
+sight_add_target(coreTest TYPE TEST)
 
 if(UNIX)
     target_compile_definitions(coreTest PRIVATE CAMP_LIB_DIR="/lib/x86_64-linux-gnu")

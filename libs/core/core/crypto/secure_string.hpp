@@ -48,8 +48,7 @@ struct allocator
     using propagate_on_container_move_assignment =
         typename std::allocator_traits<std::allocator<T> >::propagate_on_container_move_assignment;
 
-    inline constexpr allocator()                 = default;
-    inline constexpr allocator(const allocator&) = default;
+    inline constexpr allocator() = default;
 
     template<class U>
     inline constexpr allocator(const allocator<U>&) noexcept

@@ -1,4 +1,4 @@
-
+# Compute project requirement and generate service registration code
 function(plugin_setup PROJECT)
 
     # set variables used in the configure_file command
@@ -9,22 +9,21 @@ function(plugin_setup PROJECT)
     foreach(CURRENT_REQUIREMENT ${${PROJECT}_REQUIREMENTS})
         # to only consider modules and app
         get_target_property(TARGET_TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
+        if("${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             list(APPEND PROJECT_REQUIREMENTS ${CURRENT_REQUIREMENT})
-         endif()
+        endif()
     endforeach()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml")
-        set(PLUGIN_CONFIG_COMMAND   ${CMAKE_COMMAND}
-                                    -DPROJECT="${PROJECT}"
-                                    -DPROJECT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-                                    -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
-                                    -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_CURRENT_BINARY_DIR}"
-                                    -DPROJECT_NAME="${PROJECT_NAME}"
-                                    -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
+        set(PLUGIN_CONFIG_COMMAND
+            ${CMAKE_COMMAND} -DPROJECT="${PROJECT}" -DPROJECT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+            -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
+            -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_CURRENT_BINARY_DIR}" -DPROJECT_NAME="${PROJECT_NAME}" -P
+            "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
         )
         list(APPEND PLUGIN_CONFIG_COMMAND_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/plugin_config.cmake"
-                                                  "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake")
+             "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
+        )
 
         add_custom_command(
             OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/registerServices.cpp"
@@ -32,7 +31,7 @@ function(plugin_setup PROJECT)
             MAIN_DEPENDENCY "${FWCMAKE_BUILD_FILES_DIR}/registerServices.cpp.in"
             DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml"
             COMMENT "Generating service registration file for ${PROJECT}"
-            )
+        )
     endif()
 
 endfunction()

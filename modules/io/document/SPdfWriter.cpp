@@ -128,7 +128,7 @@ void SPdfWriter::updating()
         pdfWriter.setPageSize(QPagedPaintDevice::A4);
 
         // Scale value to fit the images to a PDF page
-        const int scale          = static_cast<const int>(pdfWriter.logicalDpiX() * 8);
+        const int scale          = static_cast<int>(pdfWriter.logicalDpiX() * 8);
         core::thread::Pool& pool = core::thread::getDefaultPool();
 
         // Adding fwImage from generic scene to the list of images to scale

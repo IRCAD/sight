@@ -1,4 +1,4 @@
-sight_add_target( module_filter_image TYPE MODULE WARNINGS_AS_ERRORS OFF)
+sight_add_target(module_filter_image TYPE MODULE WARNINGS_AS_ERRORS OFF)
 
 # Necessary only because of SPlaneSlicer, can be removed if rewritten as a visualisation adaptor
 find_package(VTK QUIET REQUIRED COMPONENTS vtkImagingCore)
@@ -10,11 +10,4 @@ else()
     target_link_libraries(module_filter_image PUBLIC VTK::ImagingCore)
 endif()
 
-target_link_libraries(module_filter_image PUBLIC 
-                      data
-                      service
-                      filter_image
-                      io_vtk
-                      ui_base
-                      ui_history
-)
+target_link_libraries(module_filter_image PUBLIC data service filter_image io_vtk ui_base ui_history)

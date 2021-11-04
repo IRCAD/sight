@@ -1,6 +1,7 @@
 # This script is used in two different ways:
 # On Linux, it is directly included in the main CMakeLists.txt
-# On Windows, it is invoked from the command with cmake -P and optionnaly with arguments: -DOUTPUT and -DGET_ARCHIVE_FOLDER
+# On Windows, it is invoked from the command with cmake -P and optionnaly with arguments: -DOUTPUT and
+# -DGET_ARCHIVE_FOLDER
 
 cmake_minimum_required(VERSION 3.18)
 
@@ -10,7 +11,7 @@ if(WIN32)
     set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.zip")
     set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/cCHh9UtXttko6s9/download")
     set(SIGHT_DEPS_PACKAGE_HASH "d09d7a0f17ca3e5d52c420455da6137faf692d0693d84a5bbaeeeb9228edf8d1")
-                
+
     # By default, we avoid to download binary packages inside the build tree on windows
     set(OUTPUT ".")
 else()
@@ -19,9 +20,11 @@ else()
     execute_process(COMMAND lsb_release -r -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_VERSION)
     execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
 
-    set(SIGHT_DEPS_PACKAGE "sight-deps-19-0-0-19-g59a1b24-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}")
-    set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.tar.zst")    
-    
+    set(SIGHT_DEPS_PACKAGE
+        "sight-deps-19-0-0-19-g59a1b24-${LINUX_NAME}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE}"
+    )
+    set(SIGHT_DEPS_ARCHIVE "${SIGHT_DEPS_PACKAGE}.tar.zst")
+
     if("${LINUX_VERSION}" STREQUAL "20.10")
         if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
             set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/caCCGDZMZZMg7uG/download")
@@ -33,7 +36,7 @@ else()
             # RelWithDebInfo (DEFAULT)
             set(SIGHT_DEPS_PUBLIC_URL "https://owncloud.ircad.fr/index.php/s/huQEEPbJ0Hxs733/download")
             set(SIGHT_DEPS_PACKAGE_HASH "998ffc99799b36c9cb266a19ab98fcc51da800a16544320e0bd5cceedddffffa")
-        endif()        
+        endif()
     else()
         # 21.04 (DEFAULT)
         if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
@@ -59,36 +62,34 @@ if(GET_ARCHIVE_FOLDER)
     return()
 endif()
 
-# Set sight deps root directory (where the sight deps packages will be installed ) 
+# Set sight deps root directory (where the sight deps packages will be installed )
 set(SIGHT_DEPS_ROOT_DIRECTORY "${OUTPUT}" CACHE PATH "Sight deps root directory")
 mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
 
 # Download and install package, if needed
 get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
-    
+
 if(NOT EXISTS "${SIGHT_DEPS_PACKAGE_DIRECTORY}")
 
     # Download the sight deps archive
-    file(
-        DOWNLOAD "${SIGHT_DEPS_PUBLIC_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}"
-        SHOW_PROGRESS
-        EXPECTED_HASH SHA256=${SIGHT_DEPS_PACKAGE_HASH}
+    file(DOWNLOAD "${SIGHT_DEPS_PUBLIC_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}" SHOW_PROGRESS
+         EXPECTED_HASH SHA256=${SIGHT_DEPS_PACKAGE_HASH}
     )
 
     # Extract it
-    file(
-        ARCHIVE_EXTRACT 
-        INPUT "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}"
-        DESTINATION "${SIGHT_DEPS_ROOT_DIRECTORY}"
-        VERBOSE
+    # cmake-lint: disable=E1126
+    file(ARCHIVE_EXTRACT INPUT "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}" DESTINATION
+         "${SIGHT_DEPS_ROOT_DIRECTORY}" VERBOSE
     )
 
     # Cleanup
     file(REMOVE "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_ARCHIVE}")
 
     if(SIGHT_DEPS_BASENAME)
-        # Rename the extracted directory to ${SIGHT_DEPS_PACKAGE}, so we can discredit commit hash, os version, build type.
-        file(RENAME "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_BASENAME}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}")
+        # Rename the extracted directory to ${SIGHT_DEPS_PACKAGE} to include commit hash, os version, build type.
+        file(RENAME "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_BASENAME}"
+             "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}"
+        )
     endif()
 else()
     message(STATUS "Download of ${SIGHT_DEPS_PACKAGE_ARCHIVE} skipped, already present.")

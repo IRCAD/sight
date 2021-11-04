@@ -25,6 +25,7 @@
 #include "core/config.hpp"
 #include "core/memory/BufferAllocationPolicy.hpp"
 #include "core/memory/BufferManager.hpp"
+
 #include <core/reflection/macros.hpp>
 
 #include <filesystem>
@@ -284,7 +285,7 @@ public:
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const core::memory::BufferManager::ConstBufferPtrType getBufferPointer() const
+    core::memory::BufferManager::ConstBufferPtrType getBufferPointer() const
     {
         return &m_buffer;
     }

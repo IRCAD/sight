@@ -70,5 +70,4 @@ if(REGISTER_SERVICES)
     string(REPLACE ";" "\n" REGISTER_INCLUDE "${REGISTER_INCLUDE}")
 endif()
 
-configure_file( "${CMAKE_SCRIPTS_DIR}/registerServices.cpp.in"
-                "${REGISTERSERVICE_OUTPUT_PATH}/registerServices.cpp")
+configure_file("${CMAKE_SCRIPTS_DIR}/registerServices.cpp.in" "${REGISTERSERVICE_OUTPUT_PATH}/registerServices.cpp")

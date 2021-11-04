@@ -6,10 +6,11 @@ elseif(UNIX)
     include(${FWCMAKE_INSTALL_FILES_DIR}/linux/package.cmake)
 endif()
 
+# Call the correct packaging function
 function(generic_install)
 
     get_property(SIGHT_APPS GLOBAL PROPERTY SIGHT_APPS)
-    set_property(GLOBAL PROPERTY SIGHT_APPS ${SIGHT_APPS};${SIGHT_TARGET} )
+    set_property(GLOBAL PROPERTY SIGHT_APPS ${SIGHT_APPS};${SIGHT_TARGET})
 
     if(WIN32)
         win_package(${SIGHT_TARGET})
@@ -19,12 +20,13 @@ function(generic_install)
 
 endfunction()
 
+# Returns the platform suffix to select the suitable binaries
 function(get_platform_package_suffix)
 
     if(UNIX)
         execute_process(COMMAND lsb_release -i -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_DISTRIBUTION)
         execute_process(COMMAND lsb_release -r -s COMMAND tr -d '\n' OUTPUT_VARIABLE LINUX_VERSION)
-        execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+        execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
 
         set(PLATFORM_SUFFIX ${LINUX_DISTRIBUTION}-${LINUX_VERSION}-${CMAKE_BUILD_TYPE}-${ARCHITECTURE})
     else()

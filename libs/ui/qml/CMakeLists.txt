@@ -1,5 +1,4 @@
-sight_add_target( ui_qml TYPE LIBRARY PCH pchService)
-
+sight_add_target(ui_qml TYPE LIBRARY PCH pchService)
 
 target_compile_definitions(ui_qml PUBLIC "-DQT_NO_KEYWORDS")
 
@@ -12,9 +11,4 @@ set_target_properties(ui_qml PROPERTIES AUTOMOC TRUE)
 # On windows, Qml classes are entirely exported but IService class is not exported only its methods.
 target_compile_options(ui_qml PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4275>)
 
-target_link_libraries(ui_qml PUBLIC 
-                      core
-                      data
-                      ui_base
-                      service
-)
+target_link_libraries(ui_qml PUBLIC core data ui_base service)

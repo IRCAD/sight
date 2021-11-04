@@ -1,6 +1,10 @@
 # Replace export macros like the preprocessor would do to avoid conflicts with client repositories
-# Indeed, if two targets have the same name (i.e. data), the macro (here DATA_API) would be defined twice with different values (__declspec(dllimport)/__declspec(dllexport))
-file(GLOB_RECURSE INSTALLED_HEADERS FOLLOW_SYMLINKS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.hpp" "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.h" "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.hxx")
+# Indeed, if two targets have the same name (i.e. data), the macro (here DATA_API) would be defined twice with different
+# values (__declspec(dllimport)/__declspec(dllexport))
+file(GLOB_RECURSE INSTALLED_HEADERS FOLLOW_SYMLINKS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.hpp"
+     "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.h"
+     "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/*.hxx"
+)
 
 message(STATUS "Post-processing header files for export macros...")
 

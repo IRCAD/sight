@@ -1,5 +1,4 @@
-sight_add_target( module_viz_scene3dQt TYPE MODULE START ON )
-
+sight_add_target(module_viz_scene3dQt TYPE MODULE START ON)
 
 add_definitions("-DQT_NO_KEYWORDS")
 

@@ -58,6 +58,9 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::ImageSeries::sptr& series)
     bool ok               = true;
     bool notReallyChecked = true;
 
+    // Ignore unused-but-set-variable
+    std::ignore = notReallyChecked;
+
     data::Patient::sptr patient     = series->getPatient();
     data::Study::sptr study         = series->getStudy();
     data::Equipment::sptr equipment = series->getEquipment();
@@ -268,6 +271,9 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::ImageSeries::sptr& 
 {
     bool ok               = true;
     bool notReallyChecked = true;
+
+    // Ignore unused-but-set-variable
+    std::ignore = notReallyChecked;
 
     data::Patient::sptr patient     = series->getPatient();
     data::Study::sptr study         = series->getStudy();

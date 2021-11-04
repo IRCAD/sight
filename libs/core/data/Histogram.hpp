@@ -90,7 +90,7 @@ public:
     DATA_API void initialize(float min, float max, float binsWidth);
 
     /**
-     * @brief Return true if the given pixel value is set within histogram's boudaries.
+     * @brief Return true if the given pixel value is set within histogram's boundaries.
      *
      * @param _pixel the pixel value
      *
@@ -102,7 +102,7 @@ public:
      *  @brief Get/Set bins width
      *  @{
      */
-    const float getBinsWidth() const;
+    float getBinsWidth() const;
     void setBinsWidth(float _binsWidth);
     /// @}
 
@@ -150,7 +150,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const float Histogram::getBinsWidth() const
+inline float Histogram::getBinsWidth() const
 {
     return m_binsWidth;
 }
