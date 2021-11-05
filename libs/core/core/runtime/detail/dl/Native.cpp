@@ -57,7 +57,34 @@ Native::~Native() noexcept
 const std::filesystem::path Native::getFullPath() const
 {
 #if defined(linux) || defined(__linux)
-    const std::filesystem::path result = m_searchPath / ("lib" + this->getName() + ".so");
+    // Cache the list of all libraries for each location to speed-up searches
+    // { <searchPath>: { <library name>: <library_location>}, ... }, ...}
+    //
+    // With a library folder of 5,000 elements, this takes around 10ms the first time and then few microseconds
+    static std::map<std::filesystem::path, std::unordered_map<std::string, std::filesystem::path> > s_cache;
+
+    if(auto it = s_cache.find(m_searchPath); it == s_cache.end())
+    {
+        static const std::regex libraryRegex("lib(.*).so\\.?[0-9\\.]*");
+
+        auto& map = s_cache[m_searchPath];
+        for(const auto& p : std::filesystem::directory_iterator(m_searchPath))
+        {
+            // Skip the symlinks, this speedups the process, avoid duplicates, and make unit-testing more consistent
+            if(!std::filesystem::is_symlink(p.path()))
+            {
+                const std::filesystem::path filename = p.path().filename();
+                const std::string filename_str       = filename.string();
+
+                if(std::smatch match; std::regex_match(filename_str, match, libraryRegex))
+                {
+                    map[match[1].str()] = filename;
+                }
+            }
+        }
+    }
+
+    const std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
 #elif defined(WIN32)
     const std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
 #elif defined(__APPLE__)
