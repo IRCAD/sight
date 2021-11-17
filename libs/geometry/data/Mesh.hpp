@@ -25,10 +25,10 @@
 #include "geometry/data/config.hpp"
 #include "geometry/data/Vector.hxx"
 
-#include <data/Matrix4.hpp>
-
 #include <core/base.hpp>
-#include <core/data/Mesh.hpp>
+
+#include <data/Matrix4.hpp>
+#include <data/Mesh.hpp>
 
 namespace sight::geometry::data
 {
