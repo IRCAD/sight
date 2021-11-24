@@ -18,7 +18,7 @@ cmake_policy(SET CMP0106 OLD)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.20.0")
     # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
-    cmake_policy(SET CMP0116 NEW)
+    cmake_policy(SET CMP0116 OLD)
 endif()
 
 # On Windows, if the user doesn't specify a value,
