@@ -75,6 +75,20 @@ add_link_options(
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Release,RelWithDebInfo,MinSizeRel>>:-Wl,-O2>"
 )
 
+# Coverage (only supported for GCC and Clang)
+if(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+    option(SIGHT_ENABLE_COVERAGE "Enable coverage information generation" OFF)
+    mark_as_advanced(SIGHT_ENABLE_COVERAGE)
+endif()
+
+if(SIGHT_ENABLE_COVERAGE)
+    add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:--coverage>")
+
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        link_libraries(gcov)
+    endif()
+endif()
+
 # MSVC need special treatment
 if(MSVC)
     # Remove Command-Line Warning D9025

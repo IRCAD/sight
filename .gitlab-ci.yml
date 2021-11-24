@@ -81,6 +81,7 @@ lint:sheldon:
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
       -DSIGHT_ENABLE_REALSENSE=ON
+      -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
@@ -103,14 +104,22 @@ lint:sheldon:
         ninja install
         ninja package
       fi
+    - >
+      if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
+        mkdir -p coverage
+        gcovr -j$(nproc) -kr .. --filter ../libs --filter ../modules --exclude ".*test.*" . | grep TOTAL
+        gcovr -j$(nproc) -gkr .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details -o coverage/index.html .
+        gcovr -j$(nproc) -gr .. --filter ../libs --filter ../modules --exclude ".*test.*" --xml -o coverage/cobertura-coverage.xml .
+      fi
 
-  artifacts:
+  artifacts: &linux_build_artifacts
     when: always
     paths:
       - .build/ctest.log
       - .build/Documentation/Doxygen/
       - .build/SightViewer*.tar.zst
       - .build/packages/sight-*.tar.zst
+      - .build/coverage
 
 build:linux-21.04-debug-gcc:
   extends: .linux_build
@@ -126,14 +135,15 @@ build:linux-21.04-release-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
-    SIGHT_BUILD_DOC: "ON"
+    SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGE: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.04-RelWithDebInfo-clang:
+build:linux-21.10-RelWithDebInfo-clang:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_BUILD_DOC: "OFF"
@@ -142,15 +152,22 @@ build:linux-21.04-RelWithDebInfo-clang:
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 
-build:linux-21.04-debug-clang:
+build:linux-21.10-coverage-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   variables:
     BUILD_TYPE: "Debug"
-    SIGHT_BUILD_DOC: "OFF"
+    SIGHT_BUILD_DOC: "ON"
     SIGHT_BUILD_PACKAGE: "OFF"
+    SIGHT_ENABLE_COVERAGE: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "/usr/lib/ccache/clang"
-    CXX: "/usr/lib/ccache/clang++"
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
+  coverage: /^TOTAL.*\s+(\d+\%)$/
+  artifacts:
+    <<: *linux_build_artifacts
+    reports:
+      cobertura: .build/coverage/cobertura-coverage.xml
 
 .linux_deploy:
   image: "${SIGHT_CI_UBUNTU21_04}:dev"
@@ -392,12 +409,13 @@ deploy_manual:windows-release:
   when: manual
 
 deploy:pages:
-  image: "${SIGHT_CI_UBUNTU21_04}:dev"
+  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   stage: deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-coverage-gcc
   script:
     - mv .build/Documentation/Doxygen/html/ public/
+    - mv .build/coverage/ public/coverage
   artifacts:
     paths:
       - public
