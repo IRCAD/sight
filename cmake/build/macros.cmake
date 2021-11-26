@@ -267,9 +267,9 @@ macro(fw_exec SIGHT_TARGET)
 
         # Use the right path separator on unix
         if(SIGHT_EXTERNAL_LIBRARIES)
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${SIGHT_EXTERNAL_LIBRARIES}/lib")
+            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
         else()
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
+            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         endif()
 
         # Build the shell script from template_exe.sh.in
@@ -279,7 +279,7 @@ macro(fw_exec SIGHT_TARGET)
         )
 
         # Cleanup
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIRS)
+        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
 
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -302,7 +302,7 @@ macro(fw_exec SIGHT_TARGET)
             ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIRS)
+        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
             DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -393,9 +393,9 @@ macro(fw_cppunit_test SIGHT_TARGET)
     if(UNIX)
         # Use the right path separator on unix
         if(SIGHT_EXTERNAL_LIBRARIES)
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${SIGHT_EXTERNAL_LIBRARIES}/lib")
+            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
         else()
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
+            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         endif()
 
         # Build the shell script from template_test.sh.in
@@ -405,7 +405,7 @@ macro(fw_cppunit_test SIGHT_TARGET)
         )
 
         # Cleanup
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIRS)
+        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
     else()
         # Build the bat script from template_exe.bat.in
         configure_file(
@@ -717,15 +717,15 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE)
             # Configure launcher script
             # Replace all ';' path separator to unix style path separator ':'
             if(SIGHT_EXTERNAL_LIBRARIES)
-                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${SIGHT_EXTERNAL_LIBRARIES}/lib")
+                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
             else()
-                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
+                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
             endif()
 
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY
             )
-            unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIRS)
+            unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
 
             file(
                 COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
