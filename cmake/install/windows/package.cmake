@@ -42,6 +42,7 @@ macro(win_package PRJ_NAME)
     set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
     set(CPACK_PACKAGE_VERSION "${SIGHT_VERSION}")
     set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
 
     # Look inside install dir for packaging
