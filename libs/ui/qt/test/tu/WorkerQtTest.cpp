@@ -94,13 +94,13 @@ void WorkerQtTest::setUp()
     // Set up context before running a test.
     static char arg1[] = "WorkerQtTest";
 #if defined(__linux)
-    static char arg2[]  = "-platform";
-    static char arg3[]  = "offscreen";
-    static char* argv[] = {arg1, arg2, arg3, nullptr};
-    static int argc     = 3;
+    static char arg2[] = "-platform";
+    static char arg3[] = "offscreen";
+    char* argv[]       = {arg1, arg2, arg3, nullptr};
+    int argc           = 3;
 #else
-    static char* argv[] = {arg1, 0};
-    static int argc     = 1;
+    char* argv[] = {arg1, 0};
+    int argc     = 1;
 #endif
 
     CPPUNIT_ASSERT(qApp == NULL);

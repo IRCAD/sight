@@ -28,8 +28,24 @@ fi
 
 export LD_LIBRARY_PATH
 
-if xprop -root &> /dev/null || ! xvfb-run --help &>/dev/null ; then
-    exec "$bindir/@PROJECT_EXECUTABLE@" $@
+require_x="@FWCPPUNITTEST_REQUIRE_X@"
+
+if [ "$require_x" = "ON" ]; then
+    if xprop -root &> /dev/null ; then
+        xvfb_run=""
+    elif xvfb-run --help &>/dev/null ; then
+        xvfb_run="$bindir/safe-xvfb-run"
+    else
+        echo "Warning: This test requires some kind of graphical environment to run, but none was found or could be created. The test will probably fail." >&2
+        xvfb_run=""
+    fi
 else
-    exec "$bindir/safe-xvfb-run" "$bindir/@PROJECT_EXECUTABLE@" $@
+    xvfb_run=""
+    export QT_QPA_PLATFORM="offscreen"
+fi
+
+if [ -n "$xvfb_run" ]; then
+    exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $@
+else
+    exec "$bindir/@PROJECT_EXECUTABLE@" $@
 fi

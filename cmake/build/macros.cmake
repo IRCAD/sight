@@ -326,7 +326,7 @@ endmacro()
 # Create a test target
 macro(fw_cppunit_test SIGHT_TARGET)
     set(options)
-    set(oneValueArgs)
+    set(oneValueArgs REQUIRE_X)
     set(multiValueArgs)
     cmake_parse_arguments(FWCPPUNITTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -854,6 +854,7 @@ macro(sight_add_target)
         WARNINGS_AS_ERRORS
         UNIQUE
         FAST_DEBUG
+        REQUIRE_X
     )
     set(multiValueArgs)
     cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -892,7 +893,7 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
-        fw_cppunit_test(${SIGHT_TARGET} "${OPTIONS}")
+        fw_cppunit_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE})
     endif()
