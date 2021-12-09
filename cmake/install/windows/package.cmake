@@ -34,6 +34,7 @@ macro(win_package PRJ_NAME)
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/IRCAD/sight")
     set(CPACK_NSIS_CONTACT "https://gitter.im/IRCAD-IHU/sight-support")
 
+    get_last_git_tag(${PRJ_NAME})
     get_platform_package_suffix()
 
     set(CPACK_GENERATOR NSIS)

@@ -53,12 +53,14 @@ macro(linux_package PRJ_NAME)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
+    get_last_git_tag(${PRJ_NAME})
     get_platform_package_suffix()
 
     set(CPACK_GENERATOR TZST)
     set(CPACK_SOURCE_GENERATOR TZST)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
+
     set(CPACK_PACKAGE_VENDOR "IRCAD")
     set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")

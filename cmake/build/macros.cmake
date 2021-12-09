@@ -1171,7 +1171,9 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     endforeach()
 
+    get_last_git_tag("")
     get_platform_package_suffix()
+
     if(UNIX)
         set(CPACK_GENERATOR TZST)
         set(CPACK_SOURCE_GENERATOR TZST)
@@ -1187,6 +1189,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.")
 
     set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${PLATFORM_SUFFIX}")
+
     set(CPACK_PACKAGE_VENDOR "IRCAD")
     set(CPACK_PACKAGE_NAME "Sight")
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
