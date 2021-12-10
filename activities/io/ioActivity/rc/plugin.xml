@@ -95,7 +95,7 @@
         </config>
     </extension>
 
-    <!-- Service config used to read SeriesDB without using ioAtoms. -->
+    <!-- Service config used to read SeriesDB without using session. -->
     <extension implements="sight::service::extension::Config">
         <id>SDBReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
@@ -108,11 +108,11 @@
         </config>
     </extension>
 
-    <!-- Service config used to read seriesDB using ioAtoms. -->
+    <!-- Service config used to read seriesDB using Session. -->
     <extension implements="sight::service::extension::Config">
-        <id>SDBAtomsReaderIOSelectorConfig</id>
+        <id>SDBSessionReaderIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
-        <desc>Atoms seriesDB reader.</desc>
+        <desc>Session seriesDB reader.</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
@@ -121,11 +121,11 @@
         </config>
     </extension>
 
-    <!-- Service config used to write a seriesDB using ioAtoms. -->
+    <!-- Service config used to write a seriesDB using Session. -->
     <extension implements="sight::service::extension::Config">
-        <id>SDBAtomsWriterIOSelectorConfig</id>
+        <id>SDBSessionWriterIOSelectorConfig</id>
         <service>sight::module::ui::base::io::SSelector</service>
-        <desc>Atoms seriesDB writer.</desc>
+        <desc>Session seriesDB writer.</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
@@ -181,7 +181,7 @@
         </config>
     </extension>
 
-    <!-- Service config used for ioAtoms reader and writer to read landmarks -->
+    <!-- Service config used for reading / writing landmarks -->
     <extension implements="sight::service::extension::Config">
         <id>LandmarksConfig</id>
         <desc>Landmarks Reader/Writer</desc>

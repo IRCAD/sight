@@ -894,7 +894,7 @@ inline data::Image::sptr _generate<data::Image>(const std::size_t variant)
         {
             using T = decltype(type);
 
-            // Warning: generateImage use atoms that cannot deal with double value (truncated to float max precision),
+            // Warning: generateImage use reflection that cannot deal with double value (truncated to float precision),
             // thus the 0.1 + static_cast<double>(variant)
             utestData::generator::Image::generateImage(
                 object,

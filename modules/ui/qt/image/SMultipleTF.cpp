@@ -322,7 +322,7 @@ void SMultipleTF::initializePools()
         // Test if transfer function composite has few TF
         if(tfPools->size() <= 1)
         {
-            // Creates the TF atoms reader.
+            // Creates the TF reader.
             const auto tf       = data::TransferFunction::New();
             const auto tfReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
             tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
@@ -391,7 +391,7 @@ void SMultipleTF::initializePools()
             // Delete the reader.
             service::remove(tfReader);
 
-            // Creates the multiple TF atoms reader.
+            // Creates the multiple TF reader.
             const auto tfPool      = data::Composite::New();
             const auto mulTFReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
             mulTFReader->setInOut(tfPool, io::base::service::s_DATA_KEY);

@@ -18,7 +18,6 @@ add_dependencies(
     module_memory
     activity_viz_negato
     module_io_activity
-    atoms
     module_debug
     module_ui_debug
 )

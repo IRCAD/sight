@@ -21,7 +21,6 @@ add_dependencies(
     activity_viz_negato
     activity_viz_3d
     module_ui_icons
-    atoms
     module_ui_base
 )
 

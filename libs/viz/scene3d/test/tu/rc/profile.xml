@@ -1,4 +1,4 @@
-<profile name="IoAtomsTest" version="0.1">
+<profile name="VizScene3dTest" version="0.1">
 
     <activate id="sight::module::viz::scene3d::test" />
 

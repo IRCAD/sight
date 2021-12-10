@@ -165,7 +165,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="SDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <service uid="SDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
                 <inout key="data" uid="seriesDB" />
             </service>
 

@@ -10,7 +10,7 @@
 
         <service uid="action_open" type="sight::module::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="seriesDB" />
-            <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
+            <IOSelectorSrvConfig name="SDBSessionReaderIOSelectorConfig" />
         </service>
         <service uid="action_save" type="sight::module::ui::base::com::SStarter">
             <start uid="SDBWriter" />
