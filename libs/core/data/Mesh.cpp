@@ -337,6 +337,32 @@ Mesh::point_t Mesh::pushPoint(const position_t p[3])
     if(allocatedPts <= nbPoints)
     {
         positions->resize({3, allocatedPts + POINT_REALLOC_STEP}, core::tools::Type::create<position_t>(), true);
+        if(this->has<data::Mesh::Attributes::POINT_COLORS>())
+        {
+            m_points[static_cast<size_t>(PointAttribute::COLORS)]->resize(
+                {4, allocatedPts + POINT_REALLOC_STEP},
+                core::tools::Type::create<color_t>(),
+                true
+            );
+        }
+
+        if(this->has<data::Mesh::Attributes::POINT_NORMALS>())
+        {
+            m_points[static_cast<size_t>(PointAttribute::NORMALS)]->resize(
+                {3, allocatedPts + POINT_REALLOC_STEP},
+                core::tools::Type::create<normal_t>(),
+                true
+            );
+        }
+
+        if(this->has<data::Mesh::Attributes::POINT_TEX_COORDS>())
+        {
+            m_points[static_cast<size_t>(PointAttribute::TEX_COORDS)]->resize(
+                {2, allocatedPts + POINT_REALLOC_STEP},
+                core::tools::Type::create<texcoord_t>(),
+                true
+            );
+        }
     }
 
     this->setPoint(nbPoints, p);
@@ -415,10 +441,35 @@ Mesh::cell_t Mesh::pushCell(const point_t* pointIds, size_t nbPoints)
     auto& cells                  = m_cells[static_cast<size_t>(CellAttribute::INDEX)];
     const auto allocatedCellData = cells->empty() ? 0 : cells->getSize().at(1);
     const auto cellSize          = getCellSize();
-
     if(allocatedCellData <= m_numCells)
     {
         cells->resize({cellSize, allocatedCellData + CELLDATA_REALLOC_STEP}, core::tools::Type::create<cell_t>());
+        if(this->has<data::Mesh::Attributes::CELL_COLORS>())
+        {
+            m_cells[static_cast<size_t>(CellAttribute::COLORS)]->resize(
+                {4, allocatedCellData + CELLDATA_REALLOC_STEP},
+                core::tools::Type::create<color_t>(),
+                true
+            );
+        }
+
+        if(this->has<data::Mesh::Attributes::CELL_NORMALS>())
+        {
+            m_cells[static_cast<size_t>(CellAttribute::NORMALS)]->resize(
+                {3, allocatedCellData + CELLDATA_REALLOC_STEP},
+                core::tools::Type::create<normal_t>(),
+                true
+            );
+        }
+
+        if(this->has<data::Mesh::Attributes::CELL_TEX_COORDS>())
+        {
+            m_cells[static_cast<size_t>(CellAttribute::TEX_COORDS)]->resize(
+                {2, allocatedCellData + CELLDATA_REALLOC_STEP},
+                core::tools::Type::create<texcoord_t>(),
+                true
+            );
+        }
     }
 
     for(size_t i = 0 ; i < nbPoints ; ++i)
