@@ -504,6 +504,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     if(m_subMesh == nullptr)
     {
         const size_t pointType = static_cast<size_t>(data::Mesh::CellType::POINT);
+        m_cellType               = data::Mesh::CellType::POINT;
         m_subMesh                = m_ogreMesh->createSubMesh(std::to_string(pointType));
         m_subMesh->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
     }

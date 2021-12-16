@@ -126,7 +126,7 @@ private:
     data::Mesh::CellType m_cellType {data::Mesh::CellType::_SIZE};
     /// Pointers on submeshes need for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
-    ::Ogre::SubMesh* m_subMesh;
+    ::Ogre::SubMesh* m_subMesh {nullptr};
 
     /// Texture used to store per-primitive color
     ::Ogre::TexturePtr m_perPrimitiveColorTexture;

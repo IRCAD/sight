@@ -181,36 +181,37 @@ void SCalibrationInfoEditor::remove()
     {
         const size_t idx = static_cast<size_t>(row);
 
-        const auto calInfo1 = m_calibrationInfo1.lock();
-        SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
-
-        const auto calInfo2 = m_calibrationInfo2.lock();
-
-        calInfo1->removeRecord(idx);
-
-        //Notify
         {
-            auto sig = calInfo1->signal<data::CalibrationInfo::RemovedRecordSignalType>(
-                data::CalibrationInfo::s_REMOVED_RECORD_SIG
-            );
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
-        }
+            const auto calInfo1 = m_calibrationInfo1.lock();
+            SIGHT_ASSERT("Object " << s_CALIBRATION_INFO_1 << " is not a CalibrationInfo !", calInfo1);
 
-        if(calInfo2)
-        {
-            calInfo2->removeRecord(idx);
+            const auto calInfo2 = m_calibrationInfo2.lock();
+
+            calInfo1->removeRecord(idx);
 
             //Notify
             {
-                auto sig = calInfo2->signal<data::CalibrationInfo::RemovedRecordSignalType>(
+                auto sig = calInfo1->signal<data::CalibrationInfo::RemovedRecordSignalType>(
                     data::CalibrationInfo::s_REMOVED_RECORD_SIG
                 );
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
             }
-        }
 
+            if(calInfo2)
+            {
+                calInfo2->removeRecord(idx);
+
+                //Notify
+                {
+                    auto sig = calInfo2->signal<data::CalibrationInfo::RemovedRecordSignalType>(
+                        data::CalibrationInfo::s_REMOVED_RECORD_SIG
+                    );
+                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
+            }
+        }
         this->updating();
     }
 }
