@@ -43,6 +43,9 @@ namespace sight::module::ui::qt::calibration
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
 
+static const std::string s_SINGLE_IMAGE_CONFIG = "singleImageConfig";
+static const std::string s_TWO_IMAGE_CONFIG    = "twoImageConfig";
+
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
@@ -83,6 +86,10 @@ void SDisplayCalibrationInfo::stopping()
 
 void SDisplayCalibrationInfo::configuring()
 {
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    m_singleImageConfig = config.get<std::string>(s_SINGLE_IMAGE_CONFIG, m_singleImageConfig);
+    m_twoImageConfig    = config.get<std::string>(s_TWO_IMAGE_CONFIG, m_twoImageConfig);
 }
 
 //------------------------------------------------------------------------------
@@ -113,20 +120,21 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
         const auto calInfo2 = m_calibrationInfo2.lock();
 
-        std::string strConfig = "displayImageConfig";
+        std::string strConfig = m_singleImageConfig;
 
         // Prepare configuration
         service::FieldAdaptorType replaceMap;
 
         data::Image::sptr img1 = calInfo1->getImage(idx);
-        replaceMap["imageId1"] = img1->getID();
+        replaceMap["imageId1"]        = img1->getID();
+        replaceMap["calibrationData"] = calInfo1->getID();
         data::PointList::sptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"] = pointList1->getID();
 
         core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
-            strConfig = "displayTwoImagesConfig";
+            strConfig = m_twoImageConfig;
 
             data::Image::sptr img2 = calInfo2->getImage(idx);
             replaceMap["imageId2"] = img2->getID();

@@ -111,6 +111,9 @@ private:
     /// AppConfig manager, used to launch the config
     service::IAppConfigManager::sptr m_configMgr;
 
+    std::string m_singleImageConfig {"displayImageConfig"};
+    std::string m_twoImageConfig {"displayTwoImagesConfig"};
+
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 
     static constexpr std::string_view s_CALIBRATION_INFO_1 = "calInfo1";
