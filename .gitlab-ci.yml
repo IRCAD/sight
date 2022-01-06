@@ -5,12 +5,12 @@ stages:
   - deploy
 
 include:
-  - project: 'sight/sight-gitlab'
+  - project: "sight/sight-gitlab"
     ref: dev
-    file: '/.templates/deploy.yml'
-  - project: 'sight/sight-gitlab'
+    file: "/.templates/deploy.yml"
+  - project: "sight/sight-gitlab"
     ref: dev
-    file: '/.templates/build.yml'
+    file: "/.templates/build.yml"
 
 lint:sheldon:
   extends: .lint
@@ -24,6 +24,8 @@ lint:sheldon:
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
   script:
+    # Reset the modified time of all files to improve ccache performance
+    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
     # Print CCache statistics
     - ccache -s
     # Launch CMake
@@ -72,9 +74,7 @@ lint:sheldon:
     - >
       if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
         mkdir -p coverage
-        gcovr -j$(nproc) -kr .. --filter ../libs --filter ../modules --exclude ".*test.*" . | grep TOTAL
-        gcovr -j$(nproc) -gkr .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details -o coverage/index.html .
-        gcovr -j$(nproc) -gr .. --filter ../libs --filter ../modules --exclude ".*test.*" --xml -o coverage/cobertura-coverage.xml .
+        gcovr -j$(nproc) -r .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary .
       fi
 
   artifacts: &linux_build_artifacts
@@ -85,7 +85,7 @@ lint:sheldon:
       - .build/packages/*.tar.zst
       - .build/coverage
 
-build:linux-21.04-debug-gcc:
+build:linux-21.10-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
@@ -94,7 +94,7 @@ build:linux-21.04-debug-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.04-release-gcc:
+build:linux-21.10-release-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
@@ -106,7 +106,6 @@ build:linux-21.04-release-gcc:
 
 build:linux-21.10-RelWithDebInfo-clang:
   extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -115,15 +114,14 @@ build:linux-21.10-RelWithDebInfo-clang:
 
 build:linux-21.10-coverage-gcc:
   extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU21_10}:dev"
   variables:
-    BUILD_TYPE: "Debug"
+    BUILD_TYPE: "RelWithDebInfo"
     SIGHT_BUILD_DOC: "ON"
     SIGHT_ENABLE_COVERAGE: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
-  coverage: /^TOTAL.*\s+(\d+\%)$/
+  coverage: /^lines:\s+(\d+\.*\d*\%).*$/
   artifacts:
     <<: *linux_build_artifacts
     reports:
@@ -132,7 +130,7 @@ build:linux-21.10-coverage-gcc:
 deploy:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-debug-gcc
+    - build:linux-21.10-debug-gcc
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -144,7 +142,7 @@ deploy:linux-debug:
 deploy_manual:linux-debug:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-debug-gcc
+    - build:linux-21.10-debug-gcc
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -153,7 +151,7 @@ deploy_manual:linux-debug:
 deploy:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -165,7 +163,7 @@ deploy:linux-release:
 deploy_manual:linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -174,7 +172,7 @@ deploy_manual:linux-release:
 deploy:apps-linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -186,7 +184,7 @@ deploy:apps-linux-release:
 deploy_manual:apps-linux-release:
   extends: .linux_deploy
   dependencies:
-    - build:linux-21.04-release-gcc
+    - build:linux-21.10-release-gcc
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
