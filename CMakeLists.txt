@@ -117,8 +117,11 @@ set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 # Make openvslam optional
 option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
 
-# Make Realsense optional ()
+# Make Realsense optional
 option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
+
+# Make samples/tutorials build optional
+option(SIGHT_BUILD_EXAMPLES "Build examples and tutorials" ON)
 
 ########################################################################################################################
 # Warn user of install dir isn't empty
@@ -205,8 +208,10 @@ add_subdirectory(configs)
 add_subdirectory(activities)
 add_subdirectory(utils)
 add_subdirectory(apps)
-add_subdirectory(tutorials)
-add_subdirectory(examples)
+if(SIGHT_BUILD_EXAMPLES)
+    add_subdirectory(tutorials)
+    add_subdirectory(examples)
+endif()
 
 ########################################################################################################################
 # Export and install targets
