@@ -20,8 +20,9 @@
  *
  ***********************************************************************/
 
-#include "io/dicom/helper/CsvIO.hpp"
+#include "io/base/reader/CsvReader.hpp"
 
+#include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
 #include <boost/tokenizer.hpp>
@@ -29,22 +30,26 @@
 #include <fstream>
 #include <string>
 
-namespace sight::io::dicom
+namespace sight::io::base
 {
 
-namespace helper
+namespace reader
 {
 
 //------------------------------------------------------------------------------
 
-CsvIO::CsvIO(std::istream& csvStream) :
-    m_stream(csvStream)
+CsvReader::CsvReader(const std::filesystem::path& csvPath) :
+    m_stream(csvPath)
 {
+    SIGHT_THROW_IF(
+        "CSV File Path Directory can not be Found",
+        !std::filesystem::exists(csvPath)
+    );
 }
 
 //------------------------------------------------------------------------------
 
-CsvIO::~CsvIO()
+CsvReader::~CsvReader()
 {
 }
 
@@ -55,7 +60,7 @@ typedef ::boost::tokenizer<CharSeparatorType> TokenizerType;
 
 //------------------------------------------------------------------------------
 
-CsvIO::TokenContainerType CsvIO::getLine(const std::string& separator)
+CsvReader::TokenContainerType CsvReader::getLine(const std::string& separator)
 {
     std::string line;
     TokenContainerType tokens;
@@ -63,6 +68,16 @@ CsvIO::TokenContainerType CsvIO::getLine(const std::string& separator)
 
     if(std::getline(m_stream, line))
     {
+        if(!line.empty() && line.back() == '\n')
+        {
+            line.pop_back();
+        }
+
+        if(!line.empty() && line.back() == '\r')
+        {
+            line.pop_back();
+        }
+
         TokenizerType tokenizer(line, sep);
         tokens.assign(tokenizer.begin(), tokenizer.end());
     }
@@ -72,6 +87,6 @@ CsvIO::TokenContainerType CsvIO::getLine(const std::string& separator)
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
+} // namespace reader
 
-} // namespace sight::io::dicom
+} // namespace sight::io::base

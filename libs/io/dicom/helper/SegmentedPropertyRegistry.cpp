@@ -22,7 +22,7 @@
 
 #include "io/dicom/helper/SegmentedPropertyRegistry.hpp"
 
-#include "io/dicom/helper/CsvIO.hpp"
+#include "io/base/reader/CsvReader.hpp"
 #include "io/dicom/helper/DicomCodedAttribute.hpp"
 
 #include <core/log/Logger.hpp>
@@ -128,90 +128,81 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
     const core::log::Logger::sptr& logger
 )
 {
-    const std::string filepathStr = filepath.string();
     if(std::filesystem::exists(filepath))
     {
-        std::ifstream csvStream(filepathStr);
-        return readSegmentedPropertyRegistryFile(csvStream, omitFirstLine, logger);
+        bool result = true;
+
+        // Read CSV
+        io::base::reader::CsvReader reader(filepath);
+
+        const std::string separator = "|";
+        auto tokens                 = reader.getLine(separator);
+
+        if(omitFirstLine)
+        {
+            // First line is omitted (titles)
+            tokens = reader.getLine(separator);
+        }
+
+        while(!tokens.empty())
+        {
+            const std::string& structureType = tokens[0];
+
+            // Each lines of valid csv file shall contain at least 6 elements.
+            if(tokens.size() >= 6)
+            {
+                EntryType entry;
+
+                // First element is skipped because it contains the title of csv file.
+                std::copy_n(tokens.begin() + 1, 5, entry.begin());
+
+                if(checkAndFormatEntry(structureType, entry, logger))
+                {
+                    m_registry[structureType] = entry;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+            else if(logger)
+            {
+                logger->critical("Entry badly formatted for structure '" + structureType + "'.");
+                result = false;
+            }
+
+            tokens = reader.getLine(separator);
+        }
+
+        // Check uniqueness of entries
+        std::set<EntryType> uniquenessSet;
+        for(const auto& entry : m_registry)
+        {
+            if(uniquenessSet.find(entry.second) != uniquenessSet.end())
+            {
+                const std::string msg = "Several structure types have the same attribute combination : {"
+                                        + entry.second[0] + ";"
+                                        + entry.second[1] + ";"
+                                        + entry.second[2] + ";"
+                                        + entry.second[3] + ";"
+                                        + entry.second[4] + "}";
+
+                SIGHT_ERROR_IF(msg, !logger);
+                if(logger)
+                {
+                    logger->critical(msg);
+                }
+
+                result = false;
+            }
+
+            uniquenessSet.insert(entry.second);
+        }
+
+        return result;
     }
 
     return false;
-}
-
-//------------------------------------------------------------------------------
-
-bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
-    std::istream& csvStream,
-    bool omitFirstLine,
-    const core::log::Logger::sptr& logger
-)
-{
-    bool result = true;
-
-    // Read CSV
-    io::dicom::helper::CsvIO reader(csvStream);
-
-    const std::string separator = "|";
-    auto tokens                 = reader.getLine(separator);
-
-    if(omitFirstLine)
-    {
-        // First line is omitted (titles)
-        tokens = reader.getLine(separator);
-    }
-
-    while(!tokens.empty())
-    {
-        const std::string structureType = tokens[0];
-
-        if(tokens.size() >= 6)
-        {
-            EntryType entry;
-            std::copy_n(tokens.begin() + 1, 5, entry.begin());
-            if(checkAndFormatEntry(structureType, entry, logger))
-            {
-                m_registry[structureType] = entry;
-            }
-            else
-            {
-                result = false;
-            }
-        }
-        else if(logger)
-        {
-            logger->critical("Entry badly formatted for structure '" + structureType + "'.");
-            result = false;
-        }
-
-        tokens = reader.getLine(separator);
-    }
-
-    // Check uniqueness of entries
-    std::set<EntryType> uniquenessSet;
-    for(const auto& entry : m_registry)
-    {
-        if(uniquenessSet.find(entry.second) != uniquenessSet.end())
-        {
-            const std::string msg = "Several structure types have the same attribute combination : {"
-                                    + entry.second[0] + ";"
-                                    + entry.second[1] + ";"
-                                    + entry.second[2] + ";"
-                                    + entry.second[3] + ";"
-                                    + entry.second[4] + "}";
-
-            SIGHT_ERROR_IF(msg, !logger);
-            if(logger)
-            {
-                logger->critical(msg);
-            }
-
-            result = false;
-        }
-
-        uniquenessSet.insert(entry.second);
-    }
-
-    return result;
 }
 
 //------------------------------------------------------------------------------

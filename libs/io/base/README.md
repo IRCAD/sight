@@ -11,6 +11,7 @@ This module contains services that can write sight data to files, and read them 
 
 - **new**: internal mechanism: generic constructor with restrictions on objects construction.
 - **detail**:  internal mechanism: provides the instances of the factory registry.
+- **CsvReader**:  reads CSV file and returns parsed tokens.
 - **ArrayReader**: reads `.raw` files and converts them into a `sight::data::Array`.
 - **DictionaryReader**: reads `.dic` files and converts them into a `sight::data::StructureTraitsDictionary`.
 - **GenericObjectReader**: generic reader which reads an object.

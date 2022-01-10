@@ -22,23 +22,25 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include "io/base/config.hpp"
 
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
-namespace sight::io::dicom
+namespace sight::io::base
 {
 
-namespace helper
+namespace reader
 {
 
 /**
  * @brief Read CSV file and returns parsed tokens.
  * The input file is supposed to use comma separator, but another separator can be used when reading file.
  */
-class IO_DICOM_CLASS_API CsvIO
+class IO_BASE_CLASS_API CsvReader
 {
 public:
 
@@ -47,10 +49,10 @@ public:
      *
      * @param csvStream the stream to read
      */
-    IO_DICOM_API CsvIO(std::istream& csvStream);
+    IO_BASE_API CsvReader(const std::filesystem::path& csvPath);
 
-    /// Desctructor
-    IO_DICOM_API virtual ~CsvIO();
+    /// Destructor
+    IO_BASE_API virtual ~CsvReader();
 
     /// Containers to store parsed tokens.
     typedef std::vector<std::string> TokenContainerType;
@@ -58,19 +60,19 @@ public:
     /**
      * @brief Returns tokens on next line to read, using comma separator
      *
-     * Other sperators can be used
-     * @param separator torken separator
+     * Other separators can be used
+     * @param separator token separator
      *
      * @return tokens found on next line separated with given characters
      */
-    IO_DICOM_API TokenContainerType getLine(const std::string& separator = ",");
+    IO_BASE_API TokenContainerType getLine(const std::string& separator = ",");
 
 private:
 
     /// Associated stream
-    std::istream& m_stream;
+    std::ifstream m_stream;
 };
 
-} // namespace helper
+} // namespace reader
 
-} // namespace sight::io::dicom
+} // namespace sight::io::base

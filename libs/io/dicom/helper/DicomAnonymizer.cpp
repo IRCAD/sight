@@ -22,8 +22,8 @@
 
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 
+#include "io/base/reader/CsvReader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
-#include "io/dicom/helper/CsvIO.hpp"
 #include "io/dicom/helper/DicomSearch.hpp"
 #include "io/dicom/helper/tags.hpp"
 
@@ -65,18 +65,15 @@ DicomAnonymizer::DicomAnonymizer() :
     m_fileIndex(0),
     m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const std::filesystem::path tagsPathStr = core::runtime::getLibraryResourceFilePath(
+    const std::filesystem::path tagsPath = core::runtime::getLibraryResourceFilePath(
         "io_dicom/tags.csv"
     );
-    std::filesystem::path tagsPath = tagsPathStr;
     SIGHT_ASSERT(
         "File '" + tagsPath.string() + "' must exists",
         std::filesystem::is_regular_file(tagsPath)
     );
-
-    auto csvStream = std::ifstream(tagsPath.string());
-    io::dicom::helper::CsvIO csvReader(csvStream);
-    io::dicom::helper::CsvIO::TokenContainerType tagVec = csvReader.getLine();
+    io::base::reader::CsvReader csvReader(tagsPath);
+    io::base::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
 
     while(!tagVec.empty())
     {

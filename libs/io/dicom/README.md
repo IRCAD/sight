@@ -23,7 +23,6 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **DicomSurface**: defines one surface mesh item in order to transform into DICOM/Sight form.
 
 ### helper
-- **CsvIO**:  reads CSV file and returns parsed tokens.
 - **DicomAnonymizer**: contains helpers to anonymize dicom files on filesystem.
 - **DicomCodedAttribute**: manages DICOM coded attributes.
 - **DicomDataReader**: handles GDCM data reading.
