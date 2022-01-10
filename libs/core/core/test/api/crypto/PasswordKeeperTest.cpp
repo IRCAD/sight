@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ void PasswordKeeperTest::tearDown()
 {
     // Clean up after the test run.
     // Reset global static password
-    core::crypto::PasswordKeeper::setGlobalPassword("");
+    core::crypto::PasswordKeeper::set_global_password("");
 }
 
 //------------------------------------------------------------------------------
@@ -56,20 +56,20 @@ void PasswordKeeperTest::globalTest()
     {
         // Set a dummy "abc" global password
         const core::crypto::PasswordKeeper globalKeeper;
-        globalKeeper.setGlobalPassword("abc");
+        globalKeeper.set_global_password("abc");
 
         // Verify the hash as "abc" have a well known sha256 hash (so never use abc as a password..)
         const core::crypto::secure_string sha256_abc("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
-        CPPUNIT_ASSERT_EQUAL(sha256_abc, globalKeeper.getGlobalPasswordHash());
-        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), globalKeeper.getGlobalPassword());
-        CPPUNIT_ASSERT(globalKeeper.checkGlobalPassword("abc"));
+        CPPUNIT_ASSERT_EQUAL(sha256_abc, globalKeeper.get_global_password_hash());
+        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), globalKeeper.get_global_password());
+        CPPUNIT_ASSERT(globalKeeper.check_global_password("abc"));
     }
 
     {
         // Test that we can get the "abc" password back, even with an other PasswordKeeper
         const core::crypto::PasswordKeeper globalKeeper;
-        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), globalKeeper.getGlobalPassword());
-        CPPUNIT_ASSERT(globalKeeper.checkGlobalPassword("abc"));
+        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), globalKeeper.get_global_password());
+        CPPUNIT_ASSERT(globalKeeper.check_global_password("abc"));
     }
 }
 
@@ -80,19 +80,19 @@ void PasswordKeeperTest::localTest()
     {
         // Set a dummy "abc" global password
         core::crypto::PasswordKeeper localKeeper;
-        localKeeper.setPassword("abc");
+        localKeeper.set_password("abc");
 
         // Verify the hash as "abc" have a well known sha256 hash (so never use abc as a password..)
         const core::crypto::secure_string sha256_abc("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
-        CPPUNIT_ASSERT_EQUAL(sha256_abc, localKeeper.getPasswordHash());
-        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), localKeeper.getPassword());
-        CPPUNIT_ASSERT(localKeeper.checkPassword("abc"));
+        CPPUNIT_ASSERT_EQUAL(sha256_abc, localKeeper.get_password_hash());
+        CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), localKeeper.get_password());
+        CPPUNIT_ASSERT(localKeeper.check_password("abc"));
     }
 
     {
         // Test that we can NOT get the "abc" password back with an other PasswordKeeper
         const core::crypto::PasswordKeeper localKeeper;
-        CPPUNIT_ASSERT(!localKeeper.checkPassword("abc"));
+        CPPUNIT_ASSERT(!localKeeper.check_password("abc"));
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -136,7 +136,7 @@ public:
  * The preferences are enabled by default, without encryption. An example of configuration would be:
  *
  * @code {.cmake}
-    moduleParam(
+    module_param(
         module_ui_base
         PARAM_LIST
             preferences_enabled

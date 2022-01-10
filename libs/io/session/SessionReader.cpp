@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ public:
         m_object = m_sessionDeserializer.deserialize(
             m_sessionReader->getFile(),
             m_archiveFormat,
-            m_password->getPassword(),
+            m_password->get_password(),
             m_encryptionPolicy
         );
     }
@@ -117,9 +117,9 @@ std::string SessionReader::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setPassword(const secure_string& password)
+void SessionReader::set_password(const secure_string& password)
 {
-    m_pimpl->m_password->setPassword(password);
+    m_pimpl->m_password->set_password(password);
 }
 
 //------------------------------------------------------------------------------

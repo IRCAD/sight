@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 #include "ui/base/dialog/InputDialog.hpp"
 #include "ui/base/dialog/MessageDialog.hpp"
 
+#include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/SHA256.hpp>
 #include <core/runtime/profile/Profile.hpp>
@@ -38,26 +39,19 @@
 namespace sight::ui::base
 {
 
+using core::crypto::obfuscated_string;
 using core::crypto::secure_string;
 using core::crypto::PasswordKeeper;
-
-// Generate a pseudo random password. Do not move this function has we use __FILE__ and __LINE__ macros
-inline static secure_string pseudo_random_password()
-{
-    const auto profile = core::runtime::getCurrentProfile();
-    const auto& salt   = profile ? profile->getName() : "";
-    return SIGHT_PSEUDO_RANDOM_HASH(salt);
-}
 
 // The default preference file name
 static constexpr auto s_preferences_file = "preferences.json";
 static constexpr auto s_encrypted_file   = "preferences.sight";
 
 // Keep a password
-static std::unique_ptr<PasswordKeeper> s_password;
+static std::unique_ptr<PasswordKeeper> s_password_keeper;
 
 // Password policy to use
-static PasswordKeeper::PasswordPolicy s_password_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
+static PasswordKeeper::PasswordPolicy s_password_keeper_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
 
 // Encryption policy to use
 static PasswordKeeper::EncryptionPolicy s_encryption_policy {PasswordKeeper::EncryptionPolicy::DEFAULT};
@@ -78,7 +72,7 @@ bool Preferences::s_is_enabled {false};
 
 inline static bool must_encrypt()
 {
-    return (s_password && !s_password->getPassword().empty())
+    return (s_password_keeper && !s_password_keeper->get_password().empty())
            || s_encryption_policy == PasswordKeeper::EncryptionPolicy::FORCED;
 }
 
@@ -118,17 +112,26 @@ inline static std::filesystem::path compute_preferences_filepath()
 inline static secure_string compute_password()
 {
     if(s_encryption_policy == PasswordKeeper::EncryptionPolicy::FORCED
-       && (!s_password || s_password->getPassword().empty()))
+       && (!s_password_keeper || s_password_keeper->get_password().empty()))
     {
-        return pseudo_random_password();
+        if constexpr(PasswordKeeper::has_default_password())
+        {
+            return PasswordKeeper::get_default_password();
+        }
+        else
+        {
+            return PasswordKeeper::get_pseudo_password_hash(core::runtime::getCurrentProfile()->getName().c_str());
+        }
     }
     else if(s_encryption_policy == PasswordKeeper::EncryptionPolicy::SALTED)
     {
-        return s_password->getPassword() + pseudo_random_password();
+        return PasswordKeeper::get_pseudo_password_hash(
+            s_password_keeper->get_password() + core::runtime::getCurrentProfile()->getName().c_str()
+        );
     }
     else
     {
-        return s_password->getPassword();
+        return s_password_keeper->get_password();
     }
 }
 
@@ -139,18 +142,18 @@ inline static void set_password_nolock(const core::crypto::secure_string& passwo
     if(password.empty())
     {
         // No password, we disable encryption
-        s_password.reset();
+        s_password_keeper.reset();
     }
     else
     {
         // If the PasswordKeeper is not there, create it
-        if(!s_password)
+        if(!s_password_keeper)
         {
-            s_password = std::make_unique<PasswordKeeper>();
+            s_password_keeper = std::make_unique<PasswordKeeper>();
         }
 
         // Store the password
-        s_password->setPassword(password);
+        s_password_keeper->set_password(password);
     }
 }
 
@@ -172,16 +175,16 @@ Preferences::Preferences()
             {
                 // Set the password to use
                 // NEVER policy means we never ask for a password and only rely on manually set
-                if(s_password_policy != PasswordKeeper::PasswordPolicy::NEVER)
+                if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                 {
                     const secure_string& password =
-                        s_password
-                        ? s_password->getPassword()
-                        : PasswordKeeper::getGlobalPassword();
+                        s_password_keeper
+                        ? s_password_keeper->get_password()
+                        : PasswordKeeper::get_global_password();
 
                     if(password_retry > 0
-                       || (s_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                       || (s_password_policy == PasswordKeeper::PasswordPolicy::ONCE
+                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
+                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ONCE
                            && password.empty()))
                     {
                         sight::ui::base::dialog::InputDialog inputDialog;
@@ -195,9 +198,9 @@ Preferences::Preferences()
                         );
 
                         set_password_nolock(new_password);
-                        PasswordKeeper::setGlobalPassword(new_password);
+                        PasswordKeeper::set_global_password(new_password);
                     }
-                    else if(!s_password)
+                    else if(!s_password_keeper)
                     {
                         set_password_nolock(password);
                     }
@@ -245,7 +248,7 @@ Preferences::Preferences()
                     s_preferences.reset();
 
                     // NEVER policy means we never ask for a password, so there is no point to retry
-                    if(s_password_policy != PasswordKeeper::PasswordPolicy::NEVER)
+                    if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                     {
                         sight::ui::base::dialog::MessageDialog messageDialog;
                         messageDialog.setTitle("Wrong password");
@@ -413,7 +416,7 @@ void Preferences::set_password(const core::crypto::secure_string& password)
 void Preferences::set_password_policy(const core::crypto::PasswordKeeper::PasswordPolicy policy)
 {
     std::unique_lock guard(s_preferences_mutex);
-    s_password_policy = policy;
+    s_password_keeper_policy = policy;
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto imageSeries = Helper::safeCast<data::ImageSeries>(object);
@@ -64,26 +64,21 @@ inline static void serialize(
     Helper::writeVersion<data::ImageSeries>(tree, 1);
 
     // Since ImageSeries inherits from Series, we could use SeriesSerializer
-    Series::serialize(archive, tree, imageSeries, children, password);
+    Series::serialize(archive, tree, imageSeries, children);
 
     // Serialize other attributes
-    Helper::writeString(tree, s_ContrastAgent, imageSeries->getContrastAgent(), password);
-    Helper::writeString(tree, s_ContrastRoute, imageSeries->getContrastRoute(), password);
-    Helper::writeString(tree, s_ContrastVolume, imageSeries->getContrastVolume(), password);
-    Helper::writeString(tree, s_ContrastStartTime, imageSeries->getContrastStartTime(), password);
-    Helper::writeString(tree, s_ContrastStopTime, imageSeries->getContrastStopTime(), password);
-    Helper::writeString(tree, s_ContrastTotalDose, imageSeries->getContrastTotalDose(), password);
-    Helper::writeString(tree, s_ContrastFlowRate, imageSeries->getContrastFlowRate(), password);
-    Helper::writeString(tree, s_ContrastFlowDuration, imageSeries->getContrastFlowDuration(), password);
-    Helper::writeString(tree, s_ContrastIngredient, imageSeries->getContrastIngredient(), password);
-    Helper::writeString(
-        tree,
-        s_ContrastIngredientConcentration,
-        imageSeries->getContrastIngredientConcentration(),
-        password
-    );
-    Helper::writeString(tree, s_AcquisitionDate, imageSeries->getAcquisitionDate(), password);
-    Helper::writeString(tree, s_AcquisitionTime, imageSeries->getAcquisitionTime(), password);
+    Helper::writeString(tree, s_ContrastAgent, imageSeries->getContrastAgent());
+    Helper::writeString(tree, s_ContrastRoute, imageSeries->getContrastRoute());
+    Helper::writeString(tree, s_ContrastVolume, imageSeries->getContrastVolume());
+    Helper::writeString(tree, s_ContrastStartTime, imageSeries->getContrastStartTime());
+    Helper::writeString(tree, s_ContrastStopTime, imageSeries->getContrastStopTime());
+    Helper::writeString(tree, s_ContrastTotalDose, imageSeries->getContrastTotalDose());
+    Helper::writeString(tree, s_ContrastFlowRate, imageSeries->getContrastFlowRate());
+    Helper::writeString(tree, s_ContrastFlowDuration, imageSeries->getContrastFlowDuration());
+    Helper::writeString(tree, s_ContrastIngredient, imageSeries->getContrastIngredient());
+    Helper::writeString(tree, s_ContrastIngredientConcentration, imageSeries->getContrastIngredientConcentration());
+    Helper::writeString(tree, s_AcquisitionDate, imageSeries->getAcquisitionDate());
+    Helper::writeString(tree, s_AcquisitionTime, imageSeries->getAcquisitionTime());
 
     children[s_Image]          = imageSeries->getImage();
     children[s_DicomReference] = imageSeries->getDicomReference();
@@ -96,7 +91,7 @@ inline static data::ImageSeries::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -106,27 +101,21 @@ inline static data::ImageSeries::sptr deserialize(
     Helper::readVersion<data::ImageSeries>(tree, 0, 1);
 
     // Since ImageSeries inherits from Series, we could use SeriesDeserializer
-    Series::deserialize(archive, tree, children, imageSeries, password);
+    Series::deserialize(archive, tree, children, imageSeries);
 
     // Deserialize other attributes
-    imageSeries->setContrastAgent(Helper::readString(tree, s_ContrastAgent, password));
-    imageSeries->setContrastRoute(Helper::readString(tree, s_ContrastRoute, password));
-    imageSeries->setContrastVolume(Helper::readString(tree, s_ContrastVolume, password));
-    imageSeries->setContrastStartTime(Helper::readString(tree, s_ContrastStartTime, password));
-    imageSeries->setContrastStopTime(Helper::readString(tree, s_ContrastStopTime, password));
-    imageSeries->setContrastTotalDose(Helper::readString(tree, s_ContrastTotalDose, password));
-    imageSeries->setContrastFlowRate(Helper::readString(tree, s_ContrastFlowRate, password));
-    imageSeries->setContrastFlowDuration(Helper::readString(tree, s_ContrastFlowDuration, password));
-    imageSeries->setContrastIngredient(Helper::readString(tree, s_ContrastIngredient, password));
-    imageSeries->setContrastIngredientConcentration(
-        Helper::readString(
-            tree,
-            s_ContrastIngredientConcentration,
-            password
-        )
-    );
-    imageSeries->setAcquisitionDate(Helper::readString(tree, s_AcquisitionDate, password));
-    imageSeries->setAcquisitionTime(Helper::readString(tree, s_AcquisitionTime, password));
+    imageSeries->setContrastAgent(Helper::readString(tree, s_ContrastAgent));
+    imageSeries->setContrastRoute(Helper::readString(tree, s_ContrastRoute));
+    imageSeries->setContrastVolume(Helper::readString(tree, s_ContrastVolume));
+    imageSeries->setContrastStartTime(Helper::readString(tree, s_ContrastStartTime));
+    imageSeries->setContrastStopTime(Helper::readString(tree, s_ContrastStopTime));
+    imageSeries->setContrastTotalDose(Helper::readString(tree, s_ContrastTotalDose));
+    imageSeries->setContrastFlowRate(Helper::readString(tree, s_ContrastFlowRate));
+    imageSeries->setContrastFlowDuration(Helper::readString(tree, s_ContrastFlowDuration));
+    imageSeries->setContrastIngredient(Helper::readString(tree, s_ContrastIngredient));
+    imageSeries->setContrastIngredientConcentration(Helper::readString(tree, s_ContrastIngredientConcentration));
+    imageSeries->setAcquisitionDate(Helper::readString(tree, s_AcquisitionDate));
+    imageSeries->setAcquisitionTime(Helper::readString(tree, s_AcquisitionTime));
 
     imageSeries->setImage(std::dynamic_pointer_cast<data::Image>(children.at(s_Image)));
     imageSeries->setDicomReference(std::dynamic_pointer_cast<data::DicomSeries>(children.at(s_DicomReference)));

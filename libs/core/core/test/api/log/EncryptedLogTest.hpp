@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,19 +23,20 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <sstream>
-
-namespace sight::core
+namespace sight::core::log
 {
 
 namespace ut
 {
 
-class SpyLogTest : public CPPUNIT_NS::TestFixture
+class EncryptedLogTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(SpyLogTest);
-CPPUNIT_TEST(logMessageTest);
-CPPUNIT_TEST(threadSafetyTest);
+CPPUNIT_TEST_SUITE(EncryptedLogTest);
+CPPUNIT_TEST(log_without_sink_test);
+CPPUNIT_TEST(nominal_test);
+CPPUNIT_TEST(bad_path_test);
+CPPUNIT_TEST(basic_decryption_test);
+CPPUNIT_TEST(password_change_decryption_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,17 +45,13 @@ public:
     void setUp();
     void tearDown();
 
-    void logMessageTest();
-    void threadSafetyTest();
-
-private:
-
-    std::vector<std::string> logToVector(const std::stringstream& logsStream);
-    void checkLog(const std::vector<std::string>& logMessagesRef, const std::vector<std::string>& logMessages);
-
-    std::stringstream m_ostream;
+    void log_without_sink_test();
+    void nominal_test();
+    void bad_path_test();
+    void basic_decryption_test();
+    void password_change_decryption_test();
 };
 
-} //namespace ut
+} // namespace ut
 
-} //namespace sight::core
+} //namespace sight::core::log

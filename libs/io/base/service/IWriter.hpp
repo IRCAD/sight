@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(IWriter, sight::service::IService);
 
-    /// Enum to define a password policy
+    /// Enum to define a dialog policy
     enum class DialogPolicy : uint8_t
     {
         NEVER   = 0,     /// Never use show the dialog
@@ -162,7 +162,7 @@ public:
     /// Returns if reading has been cancelled by user
     IO_BASE_API bool hasFailed() const;
 
-    /// Convenience function to convert from dialogPolicy enum value to string
+    /// Convenience function to convert from DialogPolicy enum value to string
     constexpr static std::string_view dialogPolicyToString(DialogPolicy policy) noexcept
     {
         switch(policy)
@@ -181,7 +181,7 @@ public:
         }
     }
 
-    /// Convenience function to convert from string to PasswordPolicy enum value
+    /// Convenience function to convert from string to DialogPolicy enum value
     constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
     {
         if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER); policy == NEVER)

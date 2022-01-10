@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,8 +73,6 @@ public:
         [[maybe_unused]] const core::crypto::secure_string& password = ""
     ) override
     {
-        // Creating a ZipSource also lock the archive mutex.
-        // Due to its design, minizip only allows one archive with the same path with one file operation.
         return std::make_unique<std::ifstream>(m_root / filePath.relative_path(), std::ios::in | std::ios::binary);
     }
 
@@ -105,12 +103,12 @@ public:
     inline ZipHandle(const std::filesystem::path& archive_path) :
         m_archive_path(archive_path.string())
     {
-        // Create zip writer instance
+        // Create zip reader instance
         mz_zip_reader_create(&m_zip_reader);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
-                "Cannot create zip writer instance",
+                "Cannot create zip reader instance",
                 MZ_MEM_ERROR
             ),
             m_zip_reader == nullptr
@@ -171,10 +169,11 @@ public:
         const core::crypto::secure_string& password = ""
     ) :
         m_file_path(file_path.string()),
+        m_password(password),
         m_zip_handle(zip_handle)
     {
         // Set encryption
-        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, password.empty() ? nullptr : password.c_str());
+        mz_zip_reader_set_password(m_zip_handle->m_zip_reader, m_password.empty() ? nullptr : m_password.c_str());
 
         auto result = mz_zip_reader_locate_entry(m_zip_handle->m_zip_reader, m_file_path.c_str(), 0);
 
@@ -195,9 +194,9 @@ public:
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
-                "Cannot create file '"
+                "Cannot open file '"
                 + m_file_path
-                + "' in archive '"
+                + "' from archive '"
                 + m_zip_handle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(result),
@@ -218,7 +217,7 @@ public:
             exception::Read(
                 "Cannot close file '"
                 + m_file_path
-                + "' in archive '"
+                + "' from archive '"
                 + m_zip_handle->m_archive_path
                 + "'. Error code: "
                 + std::to_string(result),
@@ -234,6 +233,9 @@ private:
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_path;
+
+    // The password must be kept alive since minizip doesn't copy it
+    const core::crypto::secure_string m_password;
 
     // Zip handles pack which contains the zip writer
     const std::shared_ptr<ZipHandle> m_zip_handle;

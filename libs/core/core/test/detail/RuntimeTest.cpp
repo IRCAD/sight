@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void RuntimeTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
 void RuntimeTest::testPosix()
 {
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;

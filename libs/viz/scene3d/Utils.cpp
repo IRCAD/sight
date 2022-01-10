@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,9 +46,7 @@
 #include <cctype> // Needed for isspace()
 #include <filesystem>
 
-#ifdef __APPLE__
-#define PLUGIN_PATH "plugins_osx.cfg"
-#elif _WIN32
+#if _WIN32
 #define PLUGIN_PATH "plugins_win32.cfg"
 #else
 #define PLUGIN_PATH "plugins.cfg"
@@ -235,9 +233,7 @@ void Utils::addResourcesPath(const std::string& moduleName)
 
         rs->setConfigOption("Full Screen", "false");
         rs->setConfigOption("VSync", "false");
-#ifndef __APPLE__
         rs->setConfigOption("Display Frequency", "60");
-#endif
 
         root->setRenderSystem(rs);
 

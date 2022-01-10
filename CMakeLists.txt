@@ -110,6 +110,20 @@ if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
 endif()
 
+# Allow to use an encrypted log
+option(SIGHT_ENABLE_ENCRYPTED_LOG "Allow log encryption" OFF)
+
+# Defines the default hardcoded password. The password itself will be obfuscated during build process, it will not
+# appear in "clear" text in the final binary.
+set(SIGHT_DEFAULT_PASSWORD "" CACHE STRING "Default password to use for encryption (log, preferences, session, ...).")
+mark_as_advanced(SIGHT_DEFAULT_PASSWORD)
+
+# Add global compile definitions because of precompiled headers
+if(SIGHT_ENABLE_ENCRYPTED_LOG)
+    add_compile_definitions(SIGHT_ENABLE_ENCRYPTED_LOG)
+endif()
+add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
+
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)

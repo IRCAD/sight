@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -222,7 +222,7 @@ inline void _test(const bool encrypt, const bool raw)
         }
         else if(encrypt)
         {
-            sessionWriter->setPassword(password);
+            sessionWriter->set_password(password);
         }
 
         // Write the session
@@ -245,7 +245,7 @@ inline void _test(const bool encrypt, const bool raw)
         }
         else if(encrypt)
         {
-            sessionReader->setPassword(password);
+            sessionReader->set_password(password);
         }
 
         // Read the session
@@ -2154,7 +2154,7 @@ inline void _compare<data::Reconstruction>(const data::Reconstruction::csptr& ac
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Reconstruction>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getIsVisible(), actual->getIsVisible());
@@ -2242,7 +2242,7 @@ inline void _compare<data::StructureTraits>(const data::StructureTraits::csptr& 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::StructureTraits>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
@@ -2319,7 +2319,7 @@ inline void _compare<data::StructureTraitsDictionary>(
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::StructureTraitsDictionary>(variant);
 
     for(const auto& name : expected->getStructureTypeNames())
@@ -2395,7 +2395,7 @@ inline void _compare<data::ReconstructionTraits>(
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::ReconstructionTraits>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getIdentifier(), actual->getIdentifier());
@@ -2447,7 +2447,7 @@ inline void _compare<data::Resection>(const data::Resection::csptr& actual, cons
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Resection>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getName(), actual->getName());
@@ -2612,7 +2612,7 @@ inline void _compare<data::Tag>(const data::Tag::csptr& actual, const std::size_
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::Tag>(variant);
 
     CPPUNIT_ASSERT_EQUAL(expected->getType(), actual->getType());
@@ -2676,7 +2676,7 @@ inline void _compare<data::TransferFunction>(const data::TransferFunction::csptr
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::TransferFunction>(variant);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected->getLevel(), actual->getLevel(), DOUBLE_EPSILON);
@@ -2768,7 +2768,7 @@ inline void _compare<data::DicomSeries>(const data::DicomSeries::csptr& actual, 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::DicomSeries>(variant);
 
     // Test inherited attributes
@@ -2832,7 +2832,7 @@ inline void _compare<data::ImageSeries>(const data::ImageSeries::csptr& actual, 
 {
     CPPUNIT_ASSERT(actual);
 
-// Retrieve the expected variant
+    // Retrieve the expected variant
     const auto& expected = _expected<data::ImageSeries>(variant);
 
     // Test inherited attributes
@@ -2932,7 +2932,7 @@ inline static void customSerialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Cast to the right type
@@ -2941,7 +2941,7 @@ inline static void customSerialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::String>(tree, 666);
 
-    Helper::writeString(tree, "custom", string->getValue(), password);
+    Helper::writeString(tree, "custom", string->getValue());
 }
 
 //------------------------------------------------------------------------------
@@ -2951,7 +2951,7 @@ inline static data::String::sptr customDeserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -2961,7 +2961,7 @@ inline static data::String::sptr customDeserialize(
     Helper::readVersion<data::String>(tree, 0, 666);
 
     // Assign the value
-    string->setValue(Helper::readString(tree, "custom", password));
+    string->setValue(Helper::readString(tree, "custom"));
 
     return string;
 }

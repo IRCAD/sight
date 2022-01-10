@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,6 @@
 #ifdef _WIN32
 #define MEMORYTOOLIMPL Win32MemoryMonitorTools
 #include "core/memory/tools/Win32MemoryMonitorTools.hpp"
-#elif defined(__APPLE__)
-#define MEMORYTOOLIMPL DarwinMemoryMonitorTools
-#include "core/memory/tools/DarwinMemoryMonitorTools.hpp"
 #else
 #define MEMORYTOOLIMPL PosixMemoryMonitorTools
 #include "core/memory/tools/PosixMemoryMonitorTools.hpp"

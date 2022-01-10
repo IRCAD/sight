@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto study = Helper::safeCast<data::Study>(object);
@@ -59,17 +59,17 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Study>(tree, 1);
 
-    Helper::writeString(tree, s_InstanceUID, study->getInstanceUID(), password);
-    Helper::writeString(tree, s_StudyID, study->getStudyID(), password);
-    Helper::writeString(tree, s_Date, study->getDate(), password);
-    Helper::writeString(tree, s_Time, study->getTime(), password);
-    Helper::writeString(tree, s_ReferringPhysicianName, study->getReferringPhysicianName(), password);
-    Helper::writeString(tree, s_ConsultingPhysicianName, study->getConsultingPhysicianName(), password);
-    Helper::writeString(tree, s_Description, study->getDescription(), password);
-    Helper::writeString(tree, s_PatientAge, study->getPatientAge(), password);
-    Helper::writeString(tree, s_PatientSize, study->getPatientSize(), password);
-    Helper::writeString(tree, s_PatientWeight, study->getPatientWeight(), password);
-    Helper::writeString(tree, s_PatientBodyMassIndex, study->getPatientBodyMassIndex(), password);
+    Helper::writeString(tree, s_InstanceUID, study->getInstanceUID());
+    Helper::writeString(tree, s_StudyID, study->getStudyID());
+    Helper::writeString(tree, s_Date, study->getDate());
+    Helper::writeString(tree, s_Time, study->getTime());
+    Helper::writeString(tree, s_ReferringPhysicianName, study->getReferringPhysicianName());
+    Helper::writeString(tree, s_ConsultingPhysicianName, study->getConsultingPhysicianName());
+    Helper::writeString(tree, s_Description, study->getDescription());
+    Helper::writeString(tree, s_PatientAge, study->getPatientAge());
+    Helper::writeString(tree, s_PatientSize, study->getPatientSize());
+    Helper::writeString(tree, s_PatientWeight, study->getPatientWeight());
+    Helper::writeString(tree, s_PatientBodyMassIndex, study->getPatientBodyMassIndex());
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ inline static data::Study::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -88,17 +88,17 @@ inline static data::Study::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Study>(tree, 0, 1);
 
-    study->setInstanceUID(Helper::readString(tree, s_InstanceUID, password));
-    study->setStudyID(Helper::readString(tree, s_StudyID, password));
-    study->setDate(Helper::readString(tree, s_Date, password));
-    study->setTime(Helper::readString(tree, s_Time, password));
-    study->setReferringPhysicianName(Helper::readString(tree, s_ReferringPhysicianName, password));
-    study->setConsultingPhysicianName(Helper::readString(tree, s_ConsultingPhysicianName, password));
-    study->setDescription(Helper::readString(tree, s_Description, password));
-    study->setPatientAge(Helper::readString(tree, s_PatientAge, password));
-    study->setPatientSize(Helper::readString(tree, s_PatientSize, password));
-    study->setPatientWeight(Helper::readString(tree, s_PatientWeight, password));
-    study->setPatientBodyMassIndex(Helper::readString(tree, s_PatientBodyMassIndex, password));
+    study->setInstanceUID(Helper::readString(tree, s_InstanceUID));
+    study->setStudyID(Helper::readString(tree, s_StudyID));
+    study->setDate(Helper::readString(tree, s_Date));
+    study->setTime(Helper::readString(tree, s_Time));
+    study->setReferringPhysicianName(Helper::readString(tree, s_ReferringPhysicianName));
+    study->setConsultingPhysicianName(Helper::readString(tree, s_ConsultingPhysicianName));
+    study->setDescription(Helper::readString(tree, s_Description));
+    study->setPatientAge(Helper::readString(tree, s_PatientAge));
+    study->setPatientSize(Helper::readString(tree, s_PatientSize));
+    study->setPatientWeight(Helper::readString(tree, s_PatientWeight));
+    study->setPatientBodyMassIndex(Helper::readString(tree, s_PatientBodyMassIndex));
 
     return study;
 }

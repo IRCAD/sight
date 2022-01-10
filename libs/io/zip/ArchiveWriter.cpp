@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -145,7 +145,11 @@ public:
     {
         // Create the sub directories if needed
         const std::filesystem::path& fullPath = m_root / file_path.relative_path();
-        std::filesystem::create_directories(fullPath.parent_path());
+
+        if(fullPath.has_parent_path())
+        {
+            std::filesystem::create_directories(fullPath.parent_path());
+        }
 
         return std::make_unique<std::ofstream>(fullPath, std::ios::out | std::ios::binary | std::ios::trunc);
     }
@@ -179,7 +183,10 @@ public:
         m_format(format)
     {
         // Create the sub directories if needed
-        std::filesystem::create_directories(archive_path.parent_path());
+        if(archive_path.has_parent_path())
+        {
+            std::filesystem::create_directories(archive_path.parent_path());
+        }
 
         // Create zip writer instance
         mz_zip_writer_create(&m_zip_writer);
@@ -266,6 +273,7 @@ public:
         const Level level                           = Level::DEFAULT
     ) :
         m_file_name(file_path.string()),
+        m_password(password),
         m_zip_handle(zip_handle)
     {
         // Translate to minizip dialect
@@ -285,9 +293,9 @@ public:
         mz_zip_writer_set_compress_level(m_zip_handle->m_zip_writer, minizipLevel);
 
         // Set encryption
-        const bool use_encryption = !password.empty();
+        const bool use_encryption = !m_password.empty();
         mz_zip_writer_set_aes(m_zip_handle->m_zip_writer, use_encryption ? 1 : 0);
-        mz_zip_writer_set_password(m_zip_handle->m_zip_writer, use_encryption ? password.c_str() : nullptr);
+        mz_zip_writer_set_password(m_zip_handle->m_zip_writer, use_encryption ? m_password.c_str() : nullptr);
 
         const auto now = time(nullptr);
 
@@ -302,11 +310,17 @@ public:
         zip_file.creation_date      = now;
         zip_file.filename           = m_file_name.c_str();
 
+        if(use_encryption)
+        {
+            zip_file.aes_version         = MZ_AES_VERSION;
+            zip_file.aes_encryption_mode = MZ_AES_ENCRYPTION_MODE_256;
+        }
+
         const auto result = mz_zip_writer_entry_open(m_zip_handle->m_zip_writer, &zip_file);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Write(
-                "Cannot create file '"
+                "Cannot write file '"
                 + m_file_name
                 + "' in archive '"
                 + m_zip_handle->m_archive_path
@@ -348,6 +362,9 @@ private:
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_name;
+
+    // The password must be kept alive since minizip doesn't copy it
+    const core::crypto::secure_string m_password;
 
     // Zip handles pack which contains the zip writer
     const std::shared_ptr<ZipHandle> m_zip_handle;

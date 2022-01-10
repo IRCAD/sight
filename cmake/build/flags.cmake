@@ -27,11 +27,21 @@ endif()
 
 mark_as_advanced(SIGHT_ARCH)
 
+# Add a global definition to silence a windows warning when using boost, saying _WIN32_WINNT is not defined.
+if(MSVC)
+    add_compile_definitions(WINVER=0x0A00)
+    add_compile_definitions(_WIN32_WINNT=0x0A00)
+endif()
+
+# Add a global compile definition to help strip __FILE__ to show a relative file path
+add_compile_definitions(SIGHT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+
 # We simply use CMAKE one plus some very basic stuff
+# On MSVC, we also use absolute path for __FILE__ macro (/FC), otherwise paths in log are not stripped.
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU,Clang>:-march=${SIGHT_ARCH};-mtune=generic;-mfpmath=sse>"
     "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>" # Needed to debug STL classes
-    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/MP;/bigobj>"
+    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/MP;/bigobj;/FC>"
     "$<$<CONFIG:Debug>:-DDEBUG;-D_DEBUG>"
 )
 

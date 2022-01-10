@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,7 @@
 #include <filesystem>
 #include <regex>
 
-#if defined(__APPLE__)
-#   include <mach-o/dyld.h>
-#elif defined(WIN32)
+#if defined(WIN32)
 #   include <windows.h>
 #else
 #   include <link.h>
@@ -166,47 +164,6 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
 
     return path;
 }
-#elif defined(__APPLE__)
-//------------------------------------------------------------------------------
-
-static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
-{
-    const std::regex matchLib(std::string("lib") + _libName);
-    const std::regex matchFramework(_libName);
-    std::string path;
-    for(std::uint32_t i = 0 ; i < _dyld_image_count() ; ++i)
-    {
-        const char* const image_name = _dyld_get_image_name(i);
-        if(image_name)
-        {
-            const std::string libName(image_name);
-            if(std::regex_search(libName, matchLib))
-            {
-                path = libName;
-                break;
-            }
-            else if(std::regex_search(libName, matchFramework))
-            {
-                // get the path of the .framework folder
-                const auto cut = libName.find(".framework");
-                path = libName.substr(0, cut + 10); // cut after .framework
-                break;
-            }
-        }
-    }
-
-    if(path.empty())
-    {
-        SIGHT_THROW_EXCEPTION(
-            core::tools::Exception(
-                std::string("Could not find shared library path for ")
-                + _libName
-            )
-        );
-    }
-
-    return path;
-}
 #else // if defined(WIN32)
 struct FindModuleFunctor
 {
@@ -239,8 +196,6 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
 {
 #if defined(WIN32)
     return _getWin32SharedLibraryPath(_libName);
-#elif defined(__APPLE__)
-    return _getMacOsSharedLibraryPath(_libName);
 #else
     FindModuleFunctor functor;
     FindModuleFunctor::s_location.clear();

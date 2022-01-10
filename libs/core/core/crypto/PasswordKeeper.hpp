@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,10 @@
 #pragma once
 
 #include "core/config.hpp"
+
+#include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/secure_string.hpp>
+#include <core/crypto/SHA256.hpp>
 #include <core/macros.hpp>
 
 namespace sight::core::crypto
@@ -68,41 +71,41 @@ public:
     CORE_API ~PasswordKeeper() noexcept;
 
     /// Gets the global password hash
-    CORE_API static core::crypto::secure_string getGlobalPasswordHash();
+    CORE_API static core::crypto::secure_string get_global_password_hash();
 
     /// Gets the global password
-    CORE_API static core::crypto::secure_string getGlobalPassword();
+    CORE_API static core::crypto::secure_string get_global_password();
 
     /// Sets the global password
     /// @param password the new global password
-    CORE_API static void setGlobalPassword(const core::crypto::secure_string& password);
+    CORE_API static void set_global_password(const core::crypto::secure_string& password, bool restart_logger = true);
 
     /// Returns true if the password matches
     /// @param password the password to verify against global stored password
-    CORE_API static bool checkGlobalPassword(const core::crypto::secure_string& password);
+    CORE_API static bool check_global_password(const core::crypto::secure_string& password);
 
     /// Reset the global password
-    CORE_API static void resetGlobalPassword();
+    CORE_API static void reset_global_password();
 
     /// Gets the password
-    CORE_API core::crypto::secure_string getPasswordHash() const;
+    CORE_API core::crypto::secure_string get_password_hash() const;
 
     /// Gets the password
-    CORE_API core::crypto::secure_string getPassword() const;
+    CORE_API core::crypto::secure_string get_password() const;
 
     /// Reset the password
-    CORE_API void resetPassword();
+    CORE_API void reset_password();
 
     /// Sets the password
     /// @param password the new password
-    CORE_API void setPassword(const core::crypto::secure_string& password);
+    CORE_API void set_password(const core::crypto::secure_string& password);
 
     /// Returns true if the password matches
     /// @param password the password to verify against stored password
-    CORE_API bool checkPassword(const core::crypto::secure_string& password) const;
+    CORE_API bool check_password(const core::crypto::secure_string& password) const;
 
     /// Convenience function to convert from PasswordPolicy enum value to string
-    constexpr static std::string_view passwordPolicyToString(PasswordPolicy policy) noexcept
+    constexpr static std::string_view password_policy_to_string(PasswordPolicy policy) noexcept
     {
         switch(policy)
         {
@@ -121,17 +124,17 @@ public:
     }
 
     /// Convenience function to convert from string to PasswordPolicy enum value
-    constexpr static PasswordPolicy stringToPasswordPolicy(std::string_view policy) noexcept
+    constexpr static PasswordPolicy string_to_password_policy(std::string_view policy) noexcept
     {
-        if(constexpr auto NEVER = passwordPolicyToString(PasswordPolicy::NEVER); policy == NEVER)
+        if(constexpr auto NEVER = password_policy_to_string(PasswordPolicy::NEVER); policy == NEVER)
         {
             return PasswordPolicy::NEVER;
         }
-        else if(constexpr auto ONCE = passwordPolicyToString(PasswordPolicy::ONCE); policy == ONCE)
+        else if(constexpr auto ONCE = password_policy_to_string(PasswordPolicy::ONCE); policy == ONCE)
         {
             return PasswordPolicy::ONCE;
         }
-        else if(constexpr auto ALWAYS = passwordPolicyToString(PasswordPolicy::ALWAYS); policy == ALWAYS)
+        else if(constexpr auto ALWAYS = password_policy_to_string(PasswordPolicy::ALWAYS); policy == ALWAYS)
         {
             return PasswordPolicy::ALWAYS;
         }
@@ -147,7 +150,7 @@ public:
     }
 
     /// Convenience function to convert from EncryptionPolicy enum value to string
-    constexpr static std::string_view encryptionPolicyToString(EncryptionPolicy policy) noexcept
+    constexpr static std::string_view encryption_policy_to_string(EncryptionPolicy policy) noexcept
     {
         switch(policy)
         {
@@ -166,17 +169,17 @@ public:
     }
 
     /// Convenience function to convert from string to EncryptionPolicy enum value
-    constexpr static EncryptionPolicy stringToEncryptionPolicy(std::string_view policy) noexcept
+    constexpr static EncryptionPolicy string_to_encryption_policy(std::string_view policy) noexcept
     {
-        if(constexpr auto PASSWORD = encryptionPolicyToString(EncryptionPolicy::PASSWORD); policy == PASSWORD)
+        if(constexpr auto PASSWORD = encryption_policy_to_string(EncryptionPolicy::PASSWORD); policy == PASSWORD)
         {
             return EncryptionPolicy::PASSWORD;
         }
-        else if(constexpr auto SALTED = encryptionPolicyToString(EncryptionPolicy::SALTED); policy == SALTED)
+        else if(constexpr auto SALTED = encryption_policy_to_string(EncryptionPolicy::SALTED); policy == SALTED)
         {
             return EncryptionPolicy::SALTED;
         }
-        else if(constexpr auto FORCED = encryptionPolicyToString(EncryptionPolicy::FORCED); policy == FORCED)
+        else if(constexpr auto FORCED = encryption_policy_to_string(EncryptionPolicy::FORCED); policy == FORCED)
         {
             return EncryptionPolicy::FORCED;
         }
@@ -190,6 +193,39 @@ public:
             return EncryptionPolicy::INVALID;
         }
     }
+
+    //------------------------------------------------------------------------------
+
+    constexpr static bool has_default_password() noexcept
+    {
+#if defined(SIGHT_DEFAULT_PASSWORD)
+        if constexpr(SIGHT_DEFAULT_PASSWORD[0] != '\0')
+        {
+            return true;
+        }
+        else
+#endif
+        {
+            return false;
+        }
+    }
+
+    /// Returns the compile-time hardcoded password
+    FINLINE static secure_string get_default_password()
+    {
+        if constexpr(has_default_password())
+        {
+            constexpr auto obfuscated_password = OBFUSCATED_STR((SIGHT_DEFAULT_PASSWORD));
+            return secure_string(obfuscated_password);
+        }
+        else
+        {
+            throw std::runtime_error("No default password");
+        }
+    }
+
+    /// Returns a pseudo-random password
+    CORE_API static secure_string get_pseudo_password_hash(const secure_string& salt) noexcept;
 
 private:
 

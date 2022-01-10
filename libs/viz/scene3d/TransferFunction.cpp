@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,15 +25,12 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
 
-#if defined(__APPLE__)
-    #include <OpenGL/gl.h>
-#else
 #ifdef WIN32
 // OpenGL on windows requires some types defined by the windows API such as WINGDIAPI and APIENTRY.
-    #include <windows.h>
+#include <windows.h>
 #endif
-    #include <GL/gl.h>
-#endif
+
+#include <GL/gl.h>
 
 #include <OGRE/OgreTextureManager.h>
 

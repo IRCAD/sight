@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,39 +20,42 @@
  *
  ***********************************************************************/
 
-#include "core/runtime/detail/dl/Library.hpp"
+#pragma once
 
-#include "core/runtime/detail/dl/Posix.hpp"
-#include "core/runtime/detail/dl/Win32.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::runtime
+#include <sstream>
+
+namespace sight::core::log
 {
 
-namespace detail
+namespace ut
 {
 
-namespace dl
+class SpyLogTest : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(SpyLogTest);
+CPPUNIT_TEST(logMessageTest);
+CPPUNIT_TEST(threadSafetyTest);
+CPPUNIT_TEST_SUITE_END();
 
-//------------------------------------------------------------------------------
+public:
 
-#if defined(__unix__)
-typedef Posix LibraryImplType;
-#else
-typedef Win32 LibraryImplType;
-#endif
+    // interface
+    void setUp();
+    void tearDown();
 
-//------------------------------------------------------------------------------
+    void logMessageTest();
+    void threadSafetyTest();
 
-Library::Library(const std::filesystem::path& modulePath) noexcept :
-    m_implementor(std::make_unique<LibraryImplType>(modulePath))
-{
-}
+private:
 
-//------------------------------------------------------------------------------
+    std::vector<std::string> logToVector(const std::stringstream& logsStream);
+    void checkLog(const std::vector<std::string>& logMessagesRef, const std::vector<std::string>& logMessages);
 
-} // namespace dl
+    std::stringstream m_ostream;
+};
 
-} // namespace detail
+} //namespace ut
 
-} // namespace sight::core::runtime
+} //namespace sight::core::log

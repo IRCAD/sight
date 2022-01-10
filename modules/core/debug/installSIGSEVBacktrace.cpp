@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,9 +21,6 @@
  ***********************************************************************/
 
 #include <core/base.hpp>
-#ifdef __APPLE__
-#define _XOPEN_SOURCE
-#endif
 
 #include "installSIGSEVBacktrace.hpp"
 
@@ -43,11 +40,8 @@
 
 /* get REG_EIP from ucontext.h */
 //#define __USE_GNU // already defined
-#if !defined(__APPLE__) || (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ - 1060) <= 0
 #include <ucontext.h>
-#else
-#include <sys/ucontext.h>
-#endif
+
 //VAG hack :
 #define REG_EIP 14
 //VAG : ucontext.h define REG_EIP but compiler doesn't see it ... I simulate its value
@@ -124,18 +118,14 @@ void bt_sighandler(
     if(sig == SIGSEGV)
     {
         ss << " faulty address is " << info->si_addr;
-#ifndef __APPLE__
         ss << " from " << uc->uc_mcontext.gregs[REG_EIP];
-#endif
     }
 
     ss << std::endl;
 
     trace_size = backtrace(trace, 16);
     /* overwrite sigaction with caller's address */
-#ifndef __APPLE__
     trace[1] = reinterpret_cast<void*>(uc->uc_mcontext.gregs[REG_EIP]);
-#endif
 
     char** messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */

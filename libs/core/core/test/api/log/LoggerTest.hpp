@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::log
+namespace sight::core::log
 {
 
 namespace ut
@@ -47,4 +47,4 @@ public:
 
 } // namespace ut
 
-} // namespace sight::log
+} // namespace sight::core::log

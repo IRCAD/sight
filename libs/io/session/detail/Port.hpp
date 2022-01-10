@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto port = Helper::safeCast<data::Port>(object);
@@ -50,8 +50,8 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Port>(tree, 1);
 
-    Helper::writeString(tree, s_Identifier, port->getIdentifier(), password);
-    Helper::writeString(tree, s_Type, port->getType(), password);
+    Helper::writeString(tree, s_Identifier, port->getIdentifier());
+    Helper::writeString(tree, s_Type, port->getType());
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ inline static data::Port::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -70,8 +70,8 @@ inline static data::Port::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Port>(tree, 0, 1);
 
-    port->setIdentifier(Helper::readString(tree, s_Identifier, password));
-    port->setType(Helper::readString(tree, s_Type, password));
+    port->setIdentifier(Helper::readString(tree, s_Identifier));
+    port->setType(Helper::readString(tree, s_Type));
 
     return port;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,8 +87,6 @@ const std::filesystem::path Native::getFullPath() const
     const std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
 #elif defined(WIN32)
     const std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
-#elif defined(__APPLE__)
-    const std::filesystem::path result = m_searchPath / ("lib" + this->getName() + ".dylib");
 #endif
 
     // Test that the result path exists.

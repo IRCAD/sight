@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -47,7 +47,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto resection = Helper::safeCast<data::Resection>(object);
@@ -56,7 +56,7 @@ inline static void serialize(
     Helper::writeVersion<data::Resection>(tree, 1);
 
     // Serialize attributes
-    Helper::writeString(tree, s_Name, resection->getName(), password);
+    Helper::writeString(tree, s_Name, resection->getName());
     tree.put(s_IsSafePart, resection->getIsSafePart());
     tree.put(s_IsValid, resection->getIsValid());
     tree.put(s_IsVisible, resection->getIsVisible());
@@ -85,7 +85,7 @@ inline static data::Resection::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -95,7 +95,7 @@ inline static data::Resection::sptr deserialize(
     Helper::readVersion<data::Resection>(tree, 0, 1);
 
     // Deserialize attributes
-    resection->setName(Helper::readString(tree, s_Name, password));
+    resection->setName(Helper::readString(tree, s_Name));
     resection->setIsSafePart(tree.get<bool>(s_IsSafePart));
     resection->setIsValid(tree.get<bool>(s_IsValid));
     resection->setIsVisible(tree.get<bool>(s_IsVisible));

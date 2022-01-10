@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto reconstructionTraits = Helper::safeCast<data::ReconstructionTraits>(object);
@@ -55,7 +55,7 @@ inline static void serialize(
     Helper::writeVersion<data::ReconstructionTraits>(tree, 1);
 
     // Serialize attributes
-    Helper::writeString(tree, s_Identifier, reconstructionTraits->getIdentifier(), password);
+    Helper::writeString(tree, s_Identifier, reconstructionTraits->getIdentifier());
     children[s_MaskOpNode]      = reconstructionTraits->getMaskOpNode();
     children[s_MeshOpNode]      = reconstructionTraits->getMeshOpNode();
     children[s_StructureTraits] = reconstructionTraits->getStructureTraits();
@@ -68,7 +68,7 @@ inline static data::ReconstructionTraits::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -78,7 +78,7 @@ inline static data::ReconstructionTraits::sptr deserialize(
     Helper::readVersion<data::ReconstructionTraits>(tree, 0, 1);
 
     // Deserialize attributes
-    reconstructionTraits->setIdentifier(Helper::readString(tree, s_Identifier, password));
+    reconstructionTraits->setIdentifier(Helper::readString(tree, s_Identifier));
     reconstructionTraits->setMaskOpNode(std::dynamic_pointer_cast<data::Node>(children.at(s_MaskOpNode)));
     reconstructionTraits->setMeshOpNode(std::dynamic_pointer_cast<data::Node>(children.at(s_MeshOpNode)));
     reconstructionTraits->setStructureTraits(

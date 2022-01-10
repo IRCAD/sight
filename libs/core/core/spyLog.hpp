@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,34 +49,85 @@
 
 #pragma once
 
-# define SPYLOG_ABORT() std::abort()
+#ifdef _DEBUG
+    #ifdef WIN32
+        #define DEBUG_BREAK() __debugbreak()
+    #else
+        #include <csignal>
+        #define DEBUG_BREAK() std::raise(SIGTRAP)
+    #endif
 
-# ifdef _DEBUG
-
-#  ifdef WIN32
-#   define DEBUG_BREAK() __debugbreak()
-#  else
-#   include <csignal>
-#   define DEBUG_BREAK() std::raise(SIGTRAP)
-#  endif
-
-#  ifdef SPYLOG_ABORT
-#   undef SPYLOG_ABORT
-#  endif
-#  define SPYLOG_ABORT() DEBUG_BREAK()
-
-# endif
-
-# include <cassert>
-# include <sstream>
+    #define SPYLOG_ABORT() DEBUG_BREAK()
+#else
+    #define SPYLOG_ABORT() std::abort()
+#endif
 
 #include <boost/preprocessor/comparison/greater_equal.hpp>
 #include <boost/preprocessor/control/expr_iif.hpp>
+
+#include <cassert>
+#include <cstring>
+#include <sstream>
 
 # include <core/log/SpyLogger.hpp>
 # include <core/log/ScopedMessage.hpp>
 
 // -----------------------------------------------------------------------------
+constexpr static const char* strip_source_path(const char* const path)
+{
+#ifndef SIGHT_SOURCE_DIR
+    return path;
+#else
+    if(path[0] == '.')
+    {
+        // If the path is relative, we return the path since it's a nightmare to deal with paths relative to the working
+        // directory of the currently running compiler..
+        // This is maybe doable by passing the working directory of the currently running compiler as a define and
+        // resolve by hand the relative path ...in pure constexpr ! Good luck...
+        return path;
+    }
+
+    // Otherwise, we assume the path is absolute
+    // We check if the path belongs to sight source
+    constexpr std::size_t sight_source_length = sizeof(SIGHT_SOURCE_DIR) - 1;
+
+    // If the path does not start with the sight source directory, we return the path
+    for(std::size_t i = 0 ; i < sight_source_length ; ++i)
+    {
+        const auto path_c   = path[i];
+        const auto source_c = SIGHT_SOURCE_DIR[i];
+
+        if(path_c == '\0')
+        {
+            // If the path is shorter than the sight source directory, we return the path
+            return path;
+        }
+        else if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
+        {
+            // If current path character is a path deliminator and the current source character is not, we return path
+            return path;
+        }
+        else if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
+        {
+            // If path character is not a path deliminator and the current source character is one, we return path
+            return path;
+        }
+        else if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
+        {
+            // If path character is not a path deliminator and the current source character is also not, we return path
+            // if they are different
+            return path;
+        }
+    }
+
+    // Otherwise, we strip the sight source directory from the path
+    // /home/user/sight/libs/core/log/spyLog.hpp => libs/core/log/spyLog.hpp
+    return path + sight_source_length + 1;
+#endif
+}
+
+// This force to evaluate the constexpr at compile time, even on windows without optimization
+#define SIGHT_SOURCE_FILE [] () constexpr {constexpr auto stripped = strip_source_path(__FILE__); return stripped;} ()
 
 /**
  * @cond
@@ -93,7 +144,7 @@
 # define SL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK( \
         std::stringstream oslStr; \
         oslStr << message; \
-        log.loglevel(oslStr.str(), __FILE__, __LINE__); \
+        log.loglevel(oslStr.str(), SIGHT_SOURCE_FILE, __LINE__); \
 )
 
 // -----------------------------------------------------------------------------
@@ -113,8 +164,7 @@
 #define SL_ERROR(log, message) SL_LOG(log, error, message);
 #define SL_ERROR_IF(log, message, cond) __FWCORE_IF(cond, SL_LOG(log, error, message); )
 
-#define SL_FATAL(log, message) SL_LOG(log, fatal, message); \
-    SPYLOG_ABORT();
+#define SL_FATAL(log, message) SL_LOG(log, fatal, message); SPYLOG_ABORT();
 #define SL_FATAL_IF(log, message, cond) __FWCORE_IF(cond, SL_FATAL(log, message); )
 
 // -----------------------------------------------------------------------------
@@ -127,7 +177,7 @@
             std::stringstream oslStr1; \
             oslStr1 << "Assertion '" \
             <<#cond << "' failed.\n" << message; \
-            log.fatal(oslStr1.str(), __FILE__, __LINE__); \
+            log.fatal(oslStr1.str(), SIGHT_SOURCE_FILE, __LINE__); \
             _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", oslStr1.str().c_str()); \
             __debugbreak(); \
         ) \
@@ -139,7 +189,7 @@
             std::stringstream oslStr1; \
             oslStr1 << "Assertion '" \
             <<#cond << "' failed: " << message; \
-            log.fatal(oslStr1.str(), __FILE__, __LINE__); \
+            log.fatal(oslStr1.str(), SIGHT_SOURCE_FILE, __LINE__); \
             SPYLOG_ABORT(); \
         ) \
 )
@@ -160,7 +210,7 @@
 // -----------------------------------------------------------------------------
 
 #  define _SPYLOG_SPYLOGGER_ \
-    sight::core::log::SpyLogger::getSpyLogger()
+    sight::core::log::SpyLogger::get()
 
 // Empty function to trigger deprecation warnings
 [[deprecated("OSIGHT_* macros removed in Sight 22.0, use SIGHT_* macros instead.")]]
@@ -298,7 +348,7 @@ void SIGHT_TRACE_DEPRECATED();
     SIGHT_ERROR_IF( \
         "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
         << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
-        ondition \
+        condition \
     );
 
 /**
@@ -312,9 +362,10 @@ void SIGHT_TRACE_DEPRECATED();
  */
 #define FW_DEPRECATED_KEY(newKey, access, version) \
     SIGHT_ERROR( \
-        "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
-                                              "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
-                                                                                                   "in '" << version << "'." \
+        "[DEPRECATED] The key '" \
+        << newKey << "' is not correctly set. Please correct the configuration to set an '" \
+        << access << "' key named '" << newKey << "'. The support of the old key will be removed in '" \
+        << version << "'." \
     );
 
 //------------------------------------------------------------------------------

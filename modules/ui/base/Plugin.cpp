@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void Plugin::start()
     const PasswordKeeper::PasswordPolicy password_policy =
         !module->hasParameter(s_PREFERENCES_PASSWORD_POLICY)
         ? PasswordKeeper::PasswordPolicy::DEFAULT
-        : PasswordKeeper::stringToPasswordPolicy(module->getParameterValue(s_PREFERENCES_PASSWORD_POLICY));
+        : PasswordKeeper::string_to_password_policy(module->getParameterValue(s_PREFERENCES_PASSWORD_POLICY));
 
     SIGHT_THROW_IF("Invalid password policy.", password_policy == PasswordKeeper::PasswordPolicy::INVALID);
     Preferences::set_password_policy(password_policy);
@@ -75,7 +75,7 @@ void Plugin::start()
     const PasswordKeeper::EncryptionPolicy encryption_policy =
         !module->hasParameter(s_PREFERENCES_ENCRYPTION_POLICY)
         ? PasswordKeeper::EncryptionPolicy::DEFAULT
-        : PasswordKeeper::stringToEncryptionPolicy(module->getParameterValue(s_PREFERENCES_ENCRYPTION_POLICY));
+        : PasswordKeeper::string_to_encryption_policy(module->getParameterValue(s_PREFERENCES_ENCRYPTION_POLICY));
 
     SIGHT_THROW_IF("Invalid encryption policy.", encryption_policy == PasswordKeeper::EncryptionPolicy::INVALID);
     Preferences::set_encryption_policy(encryption_policy);

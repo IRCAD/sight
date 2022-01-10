@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/regex_find_format.hpp>
+#include <boost/log/core.hpp>
 
 #include <exception>
 #include <iostream>
@@ -39,9 +40,9 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::SpyLogTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::log::ut::SpyLogTest);
 
-namespace sight::core
+namespace sight::core::log
 {
 
 namespace ut
@@ -53,23 +54,23 @@ static utest::Exception e("");
 
 void SpyLogTest::setUp()
 {
-    core::log::SpyLogger& log = core::log::SpyLogger::getSpyLogger();
-    log.addStreamAppender(m_ostream);
+    core::log::SpyLogger& log = core::log::SpyLogger::get();
+    log.add_console_log(m_ostream);
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogTest::tearDown()
 {
+    boost::log::core::get()->remove_all_sinks();
+    m_ostream.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogTest::logMessageTest()
 {
-    m_ostream.clear();
-    core::log::SpyLogger& log = core::log::SpyLogger::getSpyLogger();
-
+    core::log::SpyLogger& log = core::log::SpyLogger::get();
     std::vector<std::string> logs;
 
     logs.push_back("trace message");
@@ -112,7 +113,7 @@ struct LogProducerThread
 
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {
-        core::log::SpyLogger& log = core::log::SpyLogger::getSpyLogger();
+        core::log::SpyLogger& log = core::log::SpyLogger::get();
         for(size_t i = offset ; i < nbLogs + offset ; ++i)
         {
             std::stringstream ss;
@@ -153,7 +154,6 @@ struct RegexLogCompare
 
 void SpyLogTest::threadSafetyTest()
 {
-    m_ostream.clear();
     const size_t NB_THREAD(20);
     const size_t NB_LOG(20);
     LogProducerThread::LogContainerType logs(NB_THREAD * NB_LOG, "test");
@@ -232,4 +232,4 @@ void SpyLogTest::checkLog(const std::vector<std::string>& logMessagesRef, const 
 
 } //namespace ut
 
-} //namespace sight::core
+} //namespace sight::core::log

@@ -7,3 +7,7 @@ find_package(Boost QUIET COMPONENTS program_options REQUIRED)
 target_link_libraries(sightrun PRIVATE Boost::program_options)
 
 target_link_libraries(sightrun PUBLIC core)
+
+if(SIGHT_ENABLE_ENCRYPTED_LOG)
+    add_dependencies(sightrun sightlog)
+endif()

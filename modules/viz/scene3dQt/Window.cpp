@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -517,7 +517,7 @@ void Window::ogreResize(const QSize& _newSize)
 
     this->makeCurrent();
 
-#if defined(linux) || defined(__linux) || defined(__APPLE__)
+#if defined(__unix__)
     m_ogreRenderWindow->resize(static_cast<unsigned int>(newWidth), static_cast<unsigned int>(newHeight));
 #endif
     m_ogreRenderWindow->windowMovedOrResized();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ public:
 
     /// Sets the password
     /// @param password the new password
-    IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
+    IO_SESSION_API void set_password(const core::crypto::secure_string& password);
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,11 +70,7 @@ inline static void serialize(
     boost::property_tree::ptree sopClassUIDsTree;
     for(const auto& sopClassUID : dicomSeries->getSOPClassUIDs())
     {
-        const auto& encrypted = password.empty()
-                                ? sopClassUID
-                                : core::crypto::encrypt(sopClassUID, password + s_SOPClassUID);
-
-        sopClassUIDsTree.add(s_SOPClassUID, core::crypto::to_base64(encrypted));
+        sopClassUIDsTree.add(s_SOPClassUID, core::crypto::to_base64(sopClassUID));
     }
 
     tree.add_child(s_SOPClassUIDs, sopClassUIDsTree);
@@ -83,9 +79,7 @@ inline static void serialize(
     boost::property_tree::ptree computedTagValuesTree;
     for(const auto& [tag, value] : dicomSeries->getComputedTagValues())
     {
-        const auto& encrypted = password.empty() ? value : core::crypto::encrypt(value, password + tag.c_str());
-
-        computedTagValuesTree.add(tag, core::crypto::to_base64(encrypted));
+        computedTagValuesTree.add(tag, core::crypto::to_base64(value));
     }
 
     tree.add_child(s_ComputedTagValues, computedTagValuesTree);
@@ -148,11 +142,7 @@ inline static data::DicomSeries::sptr deserialize(
     std::set<std::string> sopClassUIDs;
     for(const auto& [key, value] : tree.get_child(s_SOPClassUIDs))
     {
-        const auto& encrypted = core::crypto::from_base64(value.get_value<std::string>());
-
-        sopClassUIDs.insert(
-            password.empty() ? encrypted : core::crypto::decrypt(encrypted, password + s_SOPClassUID)
-        );
+        sopClassUIDs.insert(core::crypto::from_base64(value.get_value<std::string>()));
     }
 
     dicomSeries->setSOPClassUIDs(sopClassUIDs);
@@ -162,10 +152,7 @@ inline static data::DicomSeries::sptr deserialize(
 
     for(const auto& [tag, value] : tree.get_child(s_ComputedTagValues))
     {
-        const auto& encrypted = core::crypto::from_base64(value.get_value<std::string>());
-
-        computedTagValues[tag] =
-            password.empty() ? encrypted : core::crypto::decrypt(encrypted, password + tag.c_str());
+        computedTagValues[tag] = core::crypto::from_base64(value.get_value<std::string>());
     }
 
     dicomSeries->setComputedTagValues(computedTagValues);

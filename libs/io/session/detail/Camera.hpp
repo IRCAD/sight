@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -61,7 +61,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto camera = Helper::safeCast<data::Camera>(object);
@@ -87,12 +87,12 @@ inline static void serialize(
     tree.put(s_Skew, camera->getSkew());
 
     tree.put(s_IsCalibrated, camera->getIsCalibrated());
-    Helper::writeString(tree, s_Description, camera->getDescription(), password);
-    Helper::writeString(tree, s_CameraID, camera->getCameraID(), password);
+    Helper::writeString(tree, s_Description, camera->getDescription());
+    Helper::writeString(tree, s_CameraID, camera->getCameraID());
     tree.put(s_MaximumFrameRate, camera->getMaximumFrameRate());
     tree.put(s_PixelFormat, camera->getPixelFormat());
-    Helper::writeString(tree, s_VideoFile, camera->getVideoFile().string(), password);
-    Helper::writeString(tree, s_StreamUrl, camera->getStreamUrl(), password);
+    Helper::writeString(tree, s_VideoFile, camera->getVideoFile().string());
+    Helper::writeString(tree, s_StreamUrl, camera->getStreamUrl());
     tree.put(s_CameraSource, camera->getCameraSource());
     tree.put(s_Scale, camera->getScale());
 }
@@ -104,7 +104,7 @@ inline static data::Camera::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -132,12 +132,12 @@ inline static data::Camera::sptr deserialize(
     camera->setSkew(tree.get<double>(s_Skew));
 
     camera->setIsCalibrated(tree.get<bool>(s_IsCalibrated));
-    camera->setDescription(Helper::readString(tree, s_Description, password));
-    camera->setCameraID(Helper::readString(tree, s_CameraID, password));
+    camera->setDescription(Helper::readString(tree, s_Description));
+    camera->setCameraID(Helper::readString(tree, s_CameraID));
     camera->setMaximumFrameRate(tree.get<float>(s_MaximumFrameRate));
     camera->setPixelFormat(static_cast<data::Camera::PixelFormat>(tree.get<int>(s_PixelFormat)));
-    camera->setVideoFile(Helper::readString(tree, s_VideoFile, password));
-    camera->setStreamUrl(Helper::readString(tree, s_StreamUrl, password));
+    camera->setVideoFile(Helper::readString(tree, s_VideoFile));
+    camera->setStreamUrl(Helper::readString(tree, s_StreamUrl));
     camera->setCameraSource(static_cast<data::Camera::SourceType>(tree.get<int>(s_CameraSource)));
     camera->setScale(tree.get<double>(s_Scale));
 

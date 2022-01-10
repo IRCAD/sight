@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -142,7 +142,7 @@ void SReader::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_password_policy = PasswordKeeper::stringToPasswordPolicy(
+        m_pimpl->m_password_policy = PasswordKeeper::string_to_password_policy(
             password->get<std::string>("policy", "default")
         );
 
@@ -152,7 +152,7 @@ void SReader::configuring()
         );
 
         // Encryption policy
-        m_pimpl->m_encryption_policy = PasswordKeeper::stringToEncryptionPolicy(
+        m_pimpl->m_encryption_policy = PasswordKeeper::string_to_encryption_policy(
             password->get<std::string>("encryption", "default")
         );
 
@@ -218,7 +218,7 @@ void SReader::updating()
             }
             else
             {
-                const secure_string& globalPassword = PasswordKeeper::getGlobalPassword();
+                const secure_string& globalPassword = PasswordKeeper::get_global_password();
 
                 if(m_pimpl->m_password_retry > 0
                    || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
@@ -237,7 +237,7 @@ void SReader::updating()
 
                     if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
                     {
-                        PasswordKeeper::setGlobalPassword(newPassword);
+                        PasswordKeeper::set_global_password(newPassword);
                     }
 
                     return newPassword;
@@ -256,7 +256,7 @@ void SReader::updating()
             // Create the session reader
             auto reader = sight::io::session::SessionReader::New();
             reader->setFile(filepath);
-            reader->setPassword(password);
+            reader->set_password(password);
             reader->setEncryptionPolicy(m_pimpl->m_encryption_policy);
             reader->setArchiveFormat(m_pimpl->m_archive_format);
 
@@ -320,7 +320,7 @@ void SReader::updating()
             // Reset old wrong password
             if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
             {
-                PasswordKeeper::resetGlobalPassword();
+                PasswordKeeper::reset_global_password();
             }
         }
     }

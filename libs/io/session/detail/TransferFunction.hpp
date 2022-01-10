@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto transferFunction = Helper::safeCast<data::TransferFunction>(object);
@@ -61,7 +61,7 @@ inline static void serialize(
     // Serialize attributes
     tree.put(s_Level, transferFunction->getLevel());
     tree.put(s_Window, transferFunction->getWindow());
-    Helper::writeString(tree, s_Name, transferFunction->getName(), password);
+    Helper::writeString(tree, s_Name, transferFunction->getName());
     tree.put(s_InterpolationMode, transferFunction->getInterpolationMode());
     tree.put(s_IsClamped, transferFunction->getIsClamped());
 
@@ -99,7 +99,7 @@ inline static data::TransferFunction::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>&,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -111,7 +111,7 @@ inline static data::TransferFunction::sptr deserialize(
     // Deserialize attributes
     transferFunction->setLevel(tree.get<double>(s_Level));
     transferFunction->setWindow(tree.get<double>(s_Window));
-    transferFunction->setName(Helper::readString(tree, s_Name, password));
+    transferFunction->setName(Helper::readString(tree, s_Name));
     transferFunction->setInterpolationMode(
         static_cast<data::TransferFunction::InterpolationMode>(tree.get<int>(s_InterpolationMode))
     );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto series = Helper::safeCast<data::Series>(object);
@@ -80,46 +80,30 @@ inline static void serialize(
     children[s_Equipment] = series->getEquipment();
 
     // Serialize patient data
-    Helper::writeString(tree, s_Modality, series->getModality(), password);
-    Helper::writeString(tree, s_InstanceUID, series->getInstanceUID(), password);
-    Helper::writeString(tree, s_Number, series->getNumber(), password);
-    Helper::writeString(tree, s_Laterality, series->getLaterality(), password);
-    Helper::writeString(tree, s_Date, series->getDate(), password);
-    Helper::writeString(tree, s_Time, series->getTime(), password);
-    Helper::writeString(tree, s_ProtocolName, series->getProtocolName(), password);
-    Helper::writeString(tree, s_Description, series->getDescription(), password);
-    Helper::writeString(tree, s_BodyPartExamined, series->getBodyPartExamined(), password);
-    Helper::writeString(tree, s_PatientPosition, series->getPatientPosition(), password);
-    Helper::writeString(tree, s_AnatomicalOrientationType, series->getAnatomicalOrientationType(), password);
-    Helper::writeString(tree, s_PerformedProcedureStepID, series->getPerformedProcedureStepID(), password);
-    Helper::writeString(
-        tree,
-        s_PerformedProcedureStepStartDate,
-        series->getPerformedProcedureStepStartDate(),
-        password
-    );
-    Helper::writeString(
-        tree,
-        s_PerformedProcedureStepStartTime,
-        series->getPerformedProcedureStepStartTime(),
-        password
-    );
-    Helper::writeString(tree, s_PerformedProcedureStepEndDate, series->getPerformedProcedureStepEndDate(), password);
-    Helper::writeString(tree, s_PerformedProcedureStepEndTime, series->getPerformedProcedureStepEndTime(), password);
-    Helper::writeString(
-        tree,
-        s_PerformedProcedureStepDescription,
-        series->getPerformedProcedureStepDescription(),
-        password
-    );
-    Helper::writeString(tree, s_PerformedProcedureComments, series->getPerformedProcedureComments(), password);
+    Helper::writeString(tree, s_Modality, series->getModality());
+    Helper::writeString(tree, s_InstanceUID, series->getInstanceUID());
+    Helper::writeString(tree, s_Number, series->getNumber());
+    Helper::writeString(tree, s_Laterality, series->getLaterality());
+    Helper::writeString(tree, s_Date, series->getDate());
+    Helper::writeString(tree, s_Time, series->getTime());
+    Helper::writeString(tree, s_ProtocolName, series->getProtocolName());
+    Helper::writeString(tree, s_Description, series->getDescription());
+    Helper::writeString(tree, s_BodyPartExamined, series->getBodyPartExamined());
+    Helper::writeString(tree, s_PatientPosition, series->getPatientPosition());
+    Helper::writeString(tree, s_AnatomicalOrientationType, series->getAnatomicalOrientationType());
+    Helper::writeString(tree, s_PerformedProcedureStepID, series->getPerformedProcedureStepID());
+    Helper::writeString(tree, s_PerformedProcedureStepStartDate, series->getPerformedProcedureStepStartDate());
+    Helper::writeString(tree, s_PerformedProcedureStepStartTime, series->getPerformedProcedureStepStartTime());
+    Helper::writeString(tree, s_PerformedProcedureStepEndDate, series->getPerformedProcedureStepEndDate());
+    Helper::writeString(tree, s_PerformedProcedureStepEndTime, series->getPerformedProcedureStepEndTime());
+    Helper::writeString(tree, s_PerformedProcedureStepDescription, series->getPerformedProcedureStepDescription());
+    Helper::writeString(tree, s_PerformedProcedureComments, series->getPerformedProcedureComments());
 
     boost::property_tree::ptree namesTree;
 
     for(const auto& name : series->getPerformingPhysiciansName())
     {
-        const auto& raw = password.empty() ? name : core::crypto::encrypt(name, password + s_PerformingPhysiciansName);
-        namesTree.add(s_PerformingPhysiciansName, core::crypto::to_base64(raw));
+        namesTree.add(s_PerformingPhysiciansName, core::crypto::to_base64(name));
     }
 
     tree.add_child(s_PerformingPhysiciansNames, namesTree);
@@ -132,7 +116,7 @@ inline static data::Series::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -147,38 +131,31 @@ inline static data::Series::sptr deserialize(
     series->setEquipment(std::dynamic_pointer_cast<data::Equipment>(children.at(s_Equipment)));
 
     // Deserialize patient data
-    series->setModality(Helper::readString(tree, s_Modality, password));
-    series->setInstanceUID(Helper::readString(tree, s_InstanceUID, password));
-    series->setNumber(Helper::readString(tree, s_Number, password));
-    series->setLaterality(Helper::readString(tree, s_Laterality, password));
-    series->setDate(Helper::readString(tree, s_Date, password));
-    series->setTime(Helper::readString(tree, s_Time, password));
-    series->setProtocolName(Helper::readString(tree, s_ProtocolName, password));
-    series->setDescription(Helper::readString(tree, s_Description, password));
-    series->setBodyPartExamined(Helper::readString(tree, s_BodyPartExamined, password));
-    series->setPatientPosition(Helper::readString(tree, s_PatientPosition, password));
-    series->setAnatomicalOrientationType(Helper::readString(tree, s_AnatomicalOrientationType, password));
-    series->setPerformedProcedureStepID(Helper::readString(tree, s_PerformedProcedureStepID, password));
-    series->setPerformedProcedureStepStartDate(Helper::readString(tree, s_PerformedProcedureStepStartDate, password));
-    series->setPerformedProcedureStepStartTime(Helper::readString(tree, s_PerformedProcedureStepStartTime, password));
-    series->setPerformedProcedureStepEndDate(Helper::readString(tree, s_PerformedProcedureStepEndDate, password));
-    series->setPerformedProcedureStepEndTime(Helper::readString(tree, s_PerformedProcedureStepEndTime, password));
-    series->setPerformedProcedureStepDescription(
-        Helper::readString(
-            tree,
-            s_PerformedProcedureStepDescription,
-            password
-        )
-    );
-    series->setPerformedProcedureComments(Helper::readString(tree, s_PerformedProcedureComments, password));
+    series->setModality(Helper::readString(tree, s_Modality));
+    series->setInstanceUID(Helper::readString(tree, s_InstanceUID));
+    series->setNumber(Helper::readString(tree, s_Number));
+    series->setLaterality(Helper::readString(tree, s_Laterality));
+    series->setDate(Helper::readString(tree, s_Date));
+    series->setTime(Helper::readString(tree, s_Time));
+    series->setProtocolName(Helper::readString(tree, s_ProtocolName));
+    series->setDescription(Helper::readString(tree, s_Description));
+    series->setBodyPartExamined(Helper::readString(tree, s_BodyPartExamined));
+    series->setPatientPosition(Helper::readString(tree, s_PatientPosition));
+    series->setAnatomicalOrientationType(Helper::readString(tree, s_AnatomicalOrientationType));
+    series->setPerformedProcedureStepID(Helper::readString(tree, s_PerformedProcedureStepID));
+    series->setPerformedProcedureStepStartDate(Helper::readString(tree, s_PerformedProcedureStepStartDate));
+    series->setPerformedProcedureStepStartTime(Helper::readString(tree, s_PerformedProcedureStepStartTime));
+    series->setPerformedProcedureStepEndDate(Helper::readString(tree, s_PerformedProcedureStepEndDate));
+    series->setPerformedProcedureStepEndTime(Helper::readString(tree, s_PerformedProcedureStepEndTime));
+    series->setPerformedProcedureStepDescription(Helper::readString(tree, s_PerformedProcedureStepDescription));
+    series->setPerformedProcedureComments(Helper::readString(tree, s_PerformedProcedureComments));
 
     // Iterate on performingPhysiciansName
     std::vector<std::string> names;
 
     for(const auto& nameTree : tree.get_child(s_PerformingPhysiciansNames))
     {
-        const auto& raw  = core::crypto::from_base64(nameTree.second.get_value<std::string>());
-        const auto& name = password.empty() ? raw : core::crypto::decrypt(raw, password + s_PerformingPhysiciansName);
+        const auto& name = core::crypto::from_base64(nameTree.second.get_value<std::string>());
         names.push_back(name);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include "io/session/config.hpp"
 
-#include <core/crypto/AES256.hpp>
 #include <core/crypto/Base64.hpp>
 
 #include <io/zip/ArchiveReader.hpp>
@@ -76,40 +75,26 @@ inline static void writeVersion(boost::property_tree::ptree& tree, const int ver
 /// Convenience function to safely read strings from a tree
 /// @param[in] tree boost property tree where string data are stored
 /// @param[in] key the string data key
-/// @param[in] password (optional) password used for encryption
 inline static std::string readString(
     const boost::property_tree::ptree& tree,
-    const std::string& key,
-    const core::crypto::secure_string& password
+    const std::string& key
 )
 {
-    const auto& base64    = tree.get<std::string>(key);
-    const auto& encrypted = core::crypto::from_base64(base64);
-
-    if(password.empty())
-    {
-        return encrypted;
-    }
-    else
-    {
-        return core::crypto::decrypt(encrypted, password);
-    }
+    const auto& base64 = tree.get<std::string>(key);
+    return core::crypto::from_base64(base64);
 }
 
 /// Convenience function to safely put strings into a tree
 /// @param[inout] tree boost property tree where string data must be stored
 /// @param[in] key the string data key
 /// @param[in] value the string data
-/// @param[in] password (optional) password used for encryption
 inline static void writeString(
     boost::property_tree::ptree& tree,
     const std::string& key,
-    const std::string& value,
-    const core::crypto::secure_string& password
+    const std::string& value
 )
 {
-    const auto& raw    = password.empty() ? value : core::crypto::encrypt(value, password);
-    const auto& base64 = core::crypto::to_base64(raw);
+    const auto& base64 = core::crypto::to_base64(value);
     tree.put(key, base64);
 }
 

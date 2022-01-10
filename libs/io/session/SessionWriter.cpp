@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,7 @@ public:
             m_sessionWriter->getFile(),
             root_object,
             m_archiveFormat,
-            m_password->getPassword(),
+            m_password->get_password(),
             m_encryptionPolicy
         );
     }
@@ -115,9 +115,9 @@ std::string SessionWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setPassword(const secure_string& password)
+void SessionWriter::set_password(const secure_string& password)
 {
-    m_pimpl->m_password->setPassword(password);
+    m_pimpl->m_password->set_password(password);
 }
 
 //------------------------------------------------------------------------------

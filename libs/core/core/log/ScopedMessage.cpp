@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ ScopedMessage::ScopedMessage(const char* _file, int _line, std::string enterMess
 
     std::stringstream oslStr;
     oslStr << "[ENTERING SCOPE] " << m_baseMsg << "'entermessage':'" << enterMessage << "'}";
-    core::log::SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
+    core::log::SpyLogger::get().trace(oslStr.str(), m_file, m_line);
     m_timer.start();
 }
 
@@ -60,7 +60,7 @@ ScopedMessage::~ScopedMessage()
     std::stringstream oslStr;
     oslStr << "[LEAVING SCOPE] " << m_baseMsg << "'leavemessage':'" << m_leave << "','elapsed':"
     << m_timer.getElapsedTimeInMilliSec() << "}";
-    SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
+    SpyLogger::get().trace(oslStr.str(), m_file, m_line);
 }
 
 } // namespace log

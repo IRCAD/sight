@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto roiTraits = Helper::safeCast<data::ROITraits>(object);
@@ -55,8 +55,8 @@ inline static void serialize(
     Helper::writeVersion<data::ROITraits>(tree, 1);
 
     // Serialize attributes
-    Helper::writeString(tree, s_Identifier, roiTraits->getIdentifier(), password);
-    Helper::writeString(tree, s_EvaluatedExp, roiTraits->getEvaluatedExp(), password);
+    Helper::writeString(tree, s_Identifier, roiTraits->getIdentifier());
+    Helper::writeString(tree, s_EvaluatedExp, roiTraits->getEvaluatedExp());
     children[s_MaskOpNode]      = roiTraits->getMaskOpNode();
     children[s_StructureTraits] = roiTraits->getStructureTraits();
 }
@@ -68,7 +68,7 @@ inline static data::ROITraits::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -78,8 +78,8 @@ inline static data::ROITraits::sptr deserialize(
     Helper::readVersion<data::ROITraits>(tree, 0, 1);
 
     // Deserialize attributes
-    roiTraits->setIdentifier(Helper::readString(tree, s_Identifier, password));
-    roiTraits->setEvaluatedExp(Helper::readString(tree, s_EvaluatedExp, password));
+    roiTraits->setIdentifier(Helper::readString(tree, s_Identifier));
+    roiTraits->setEvaluatedExp(Helper::readString(tree, s_EvaluatedExp));
     roiTraits->setMaskOpNode(std::dynamic_pointer_cast<data::Node>(children.at(s_MaskOpNode)));
     roiTraits->setStructureTraits(std::dynamic_pointer_cast<data::StructureTraits>(children.at(s_StructureTraits)));
 

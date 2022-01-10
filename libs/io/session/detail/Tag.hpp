@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,7 @@ inline static void serialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     const auto tag = Helper::safeCast<data::Tag>(object);
@@ -52,7 +52,7 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Tag>(tree, 1);
 
-    Helper::writeString(tree, s_Type, tag->getType(), password);
+    Helper::writeString(tree, s_Type, tag->getType());
     tree.put(s_Size, tag->getSize());
     children[s_PointList] = tag->getPointList();
 }
@@ -64,7 +64,7 @@ inline static data::Tag::sptr deserialize(
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& password = ""
+    const core::crypto::secure_string& = ""
 )
 {
     // Create or reuse the object
@@ -73,7 +73,7 @@ inline static data::Tag::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Tag>(tree, 0, 1);
 
-    tag->setType(Helper::readString(tree, s_Type, password));
+    tag->setType(Helper::readString(tree, s_Type));
     tag->setSize(tree.get<double>(s_Size));
     tag->setPointList(std::dynamic_pointer_cast<data::PointList>(children.at(s_PointList)));
 
