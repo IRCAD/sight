@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
@@ -66,12 +66,12 @@ SpatialFiducials::~SpatialFiducials()
 
 void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 {
-    data::PointList::sptr pointList =
-        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+
     if(!pointList)
     {
         pointList = data::PointList::New();
-        m_object->setField(data::fieldHelper::Image::m_imageLandmarksId, pointList);
+        data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 
     const ::gdcm::DataElement& graphicCoordinatesDataElement =
@@ -110,7 +110,7 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
             static_cast<double>(pointValues[1]),
             zCoordinate
         );
-        point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
+        point->setLabel(label);
         pointList->getPoints().push_back(point);
     }
 }

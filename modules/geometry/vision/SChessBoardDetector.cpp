@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -209,7 +209,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
     const auto img = m_image[_imageIndex].lock();
     SIGHT_ASSERT("Missing 'image' input.", img);
 
-    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
+    const bool isValid = data::helper::MedicalImage::checkImageValidity(img.get_shared());
 
     if(isValid)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -173,7 +173,7 @@ protected:
 
 private:
 
-    using Orientation = data::helper::MedicalImage::Orientation;
+    using Orientation = data::helper::MedicalImage::orientation_t;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();
@@ -195,7 +195,7 @@ private:
     bool m_isInteracting {false};
 
     /// Defines the image current orientation.
-    Orientation m_currentNegatoOrientation {data::helper::MedicalImage::Orientation::Z_AXIS};
+    Orientation m_currentNegatoOrientation {data::helper::MedicalImage::orientation_t::Z_AXIS};
 
     /// Defines the interaction priority.
     int m_priority {0};

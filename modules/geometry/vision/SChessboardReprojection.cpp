@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -160,7 +160,7 @@ void SChessboardReprojection::updating()
         int reprojRadius = static_cast<int>(std::floor(0.003 * imgSize.height));
         reprojRadius = std::max(reprojRadius, 1);
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(videoImage.get_shared()))
         {
             return;
         }

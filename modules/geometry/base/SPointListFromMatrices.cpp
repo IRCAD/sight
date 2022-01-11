@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/fieldHelper/Image.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
@@ -101,8 +100,7 @@ void SPointListFromMatrices::updating()
             label = std::to_string(j);
         }
 
-        data::String::sptr fwLabel = data::String::New(label);
-        p->setField(data::fieldHelper::Image::m_labelId, fwLabel);
+        p->setLabel(label);
         pointList->pushBack(p);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/TransferFunction.hpp>
@@ -117,8 +116,8 @@ struct JpgITKSaverFunctor
 
         double min, max;
         data::Composite::sptr poolTF;
-        poolTF =
-            image->getField<data::Composite>(data::fieldHelper::Image::m_transferFunctionCompositeId);
+        poolTF = data::helper::MedicalImage::getTransferFunction(*image);
+
         if(poolTF)
         {
             data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
@@ -132,7 +131,7 @@ struct JpgITKSaverFunctor
         }
         else
         {
-            data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::helper::MedicalImage::getMinMax(image, min, max);
         }
 
         rescaleFilter->SetWindowMinimum(min);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
@@ -284,11 +283,10 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
     std::string labelNumber = std::to_string(i);
     for(auto& point : _pointList->getPoints())
     {
-        data::String::sptr strField =
-            point->getField<data::String>(data::fieldHelper::Image::m_labelId);
-        if(strField)
+        const auto label = point->getLabel();
+        if(!label.empty())
         {
-            labelNumber = strField->value();
+            labelNumber = label;
         }
         else
         {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -97,7 +97,7 @@ void ImageInfo::updating()
 {
     const auto image = m_image.lock();
     SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     m_valueText->setEnabled(imageIsValid);
 }
 
@@ -110,7 +110,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         const auto image = m_image.lock();
         SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", image);
 
-        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
         m_valueText->setEnabled(imageIsValid);
         if(imageIsValid)
         {

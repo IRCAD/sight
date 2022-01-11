@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 
@@ -386,9 +386,21 @@ void SSliceIndexDicomEditor::readSlice(
         data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize()[0] / 2);
         data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize()[1] / 2);
 
-        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
-        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
-        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            axialIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::FRONTAL,
+            frontalIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *image,
+            data::helper::MedicalImage::orientation_t::SAGITTAL,
+            sagittalIndex->value()
+        );
 
         // Send the signal
         const auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/ImageDiff.hpp>
@@ -126,8 +125,8 @@ void SPropagator::starting()
     const auto imgOutLock = m_imageOut.lock();
     SIGHT_ASSERT("No " << s_IMAGE_INOUT << " found.", imgOutLock);
 
-    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgInLock.get_shared())
-                   && data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOutLock.get_shared());
+    bool isValid = data::helper::MedicalImage::checkImageValidity(imgInLock.get_shared())
+                   && data::helper::MedicalImage::checkImageValidity(imgOutLock.get_shared());
 
     SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize() != imgOutLock->getSize());
     SIGHT_WARN_IF(
@@ -253,7 +252,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOutLock);
 
     SPTR(data::Image::BufferType) val =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imgOutLock.get_shared(), m_value);
+        data::helper::MedicalImage::getPixelInImageSpace(imgOutLock.get_shared(), m_value);
 
     const data::Image::Spacing imgSpacing = imgOutLock->getSpacing();
     // Draw lines as thick as a single voxel.

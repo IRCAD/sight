@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
@@ -146,19 +146,18 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
     data::Point::sptr point = data::Point::New(x, y, z);
-    point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
+    point->setLabel(label);
 
-    data::PointList::sptr pointList =
-        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
 
     if(!pointList)
     {
         pointList = data::PointList::New();
-        m_object->setField(data::fieldHelper::Image::m_imageLandmarksId, pointList);
+        data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 
     pointList->getPoints().push_back(point);
-    m_object->setField("ShowLandmarks", data::Boolean::New(true));
+    data::helper::MedicalImage::setLandmarksVisibility(*m_object, true);
 }
 
 //------------------------------------------------------------------------------

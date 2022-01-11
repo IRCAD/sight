@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,8 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/helper/SeriesDB.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
@@ -330,11 +330,24 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         data::Image::sptr newImage      = imageSeries->getImage();
         const data::Image::Size newSize = newImage->getSize();
 
-        newImage->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
-        newImage->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
-        newImage->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::AXIAL,
+            m_axialIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::FRONTAL,
+            m_frontalIndex->value()
+        );
+        data::helper::MedicalImage::setSliceIndex(
+            *newImage,
+            data::helper::MedicalImage::orientation_t::SAGITTAL,
+            m_sagittalIndex->value()
+        );
 
         this->setOutput(s_IMAGE, newImage);
     }

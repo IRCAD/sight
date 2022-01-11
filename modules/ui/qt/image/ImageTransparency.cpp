@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -128,7 +128,7 @@ void ImageTransparency::updating()
     const auto img = m_image.lock();
     SIGHT_ASSERT("The input '" << s_IMAGE << "' is not defined", img);
 
-    bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img.get_shared());
+    bool imageIsValid = data::helper::MedicalImage::checkImageValidity(img.get_shared());
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if(imageIsValid)

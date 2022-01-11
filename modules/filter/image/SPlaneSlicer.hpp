@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,13 +114,13 @@ private:
     void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const;
 
     /// Slot: called when the extent image orientation.
-    void updateSliceOrientation(int from, int to);
+    void updateorientation_t(int from, int to);
 
     /// Slot: sets the reslicer default value which is the minimum value of the input image.
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::MedicalImage::Orientation m_orientation;
+    data::helper::MedicalImage::orientation_t m_orientation;
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato3D final :
 {
 public:
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(SNegato3D, sight::viz::scene3d::IAdaptor);

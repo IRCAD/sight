@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,22 @@
 
 #include "data/helper/MedicalImage.hpp"
 
-#include "data/fieldHelper/Image.hpp"
-#include "data/fieldHelper/MedicalImageHelpers.hpp"
 #include "data/helper/Composite.hpp"
+#include "data/helper/Field.hpp"
+
+#include <data/Boolean.hpp>
+#include <data/Composite.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
+#include <data/String.hpp>
+#include <data/TransferFunction.hpp>
+#include <data/Vector.hpp>
+
+#include <numeric>
+#include <utility> // std::pair
 
 namespace sight::data
 {
@@ -33,255 +45,491 @@ namespace sight::data
 namespace helper
 {
 
-//------------------------------------------------------------------------------
-
-MedicalImage::MedicalImage() :
-    m_orientation(Z_AXIS)
+namespace id
 {
+
+// Note: keeping old name to preserve compatibility, should be harmonized in the future.
+static constexpr std::string_view axial_slice_count    = "Axial Slice Count";
+static constexpr std::string_view frontal_slice_count  = "Frontal Slice Count";
+static constexpr std::string_view sagittal_slice_count = "Sagittal Slice Count";
+static constexpr std::string_view axial_slice_index    = "Axial Slice Index";
+static constexpr std::string_view frontal_slice_index  = "Frontal Slice Index";
+static constexpr std::string_view sagittal_slice_index = "Sagittal Slice Index";
+static constexpr std::string_view landmarks            = "m_imageLandmarksId";
+static constexpr std::string_view distances            = "m_imageDistancesId";
+static constexpr std::string_view distance_visibility  = "ShowDistances";
+static constexpr std::string_view comment              = "m_commentId";
+static constexpr std::string_view label                = "m_labelId";
+static constexpr std::string_view transferFunction     = "m_transferFunctionCompositeId";
+static constexpr std::string_view landmarks_visibility = "ShowLandmarks";
+
 }
 
-//------------------------------------------------------------------------------
-
-MedicalImage::~MedicalImage()
+namespace MedicalImage
 {
-}
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::getImageSpacing(double spacing[3]) const
+bool checkLandmarks(data::Image::sptr _pImg)
 {
-    data::Image::sptr image = this->getImage();
+    bool fieldIsModified = false;
 
-    const data::Image::Spacing& imSpacing = image->getSpacing();
-    std::copy(imSpacing.begin(), imSpacing.end(), spacing);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::getImageOrigin(double origin[3]) const
-{
-    data::Image::sptr image = this->getImage();
-
-    std::copy(image->getOrigin().begin(), image->getOrigin().end(), origin);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::getImageDataSize(size_t size[3]) const
-{
-    data::Image::sptr image = this->getImage();
-
-    const data::Image::Size& imSize = image->getSize();
-    std::copy(imSize.begin(), imSize.end(), size);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::getImageSize(double size[3]) const
-{
-    data::Image::sptr image = this->getImage();
-    double spacing[3];
-
-    const data::Image::Size& imSize = image->getSize();
-    std::transform(imSize.begin(), imSize.end(), size, boost::numeric_cast<double, size_t>);
-    this->getImageSpacing(spacing);
-
-    size[0] *= spacing[0];
-    size[1] *= spacing[1];
-    size[2] *= spacing[2];
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::getCurrentSliceCenter(double center[3])
-{
-    data::Image::sptr image = this->getImage();
-    double imageSize[3];
-    this->getImageSize(imageSize);
-    double origin[3];
-    this->getImageOrigin(origin);
-
-    data::Integer::sptr sliceIndex[3];
-    this->getSliceIndex(sliceIndex);
-    double index[3] = {
-        static_cast<double>(sliceIndex[0]->value()),
-        static_cast<double>(sliceIndex[1]->value()),
-        static_cast<double>(sliceIndex[2]->value())
-    };
-
-    center[0] = origin[0] + (imageSize[0] - 1.) / 2.;
-    center[1] = origin[1] + (imageSize[1] - 1.) / 2.;
-    center[2] = origin[2] + (imageSize[2] - 1.) / 2.;
-
-    double spacing[3];
-    this->getImageSpacing(spacing);
-    center[m_orientation] = origin[m_orientation] + index[m_orientation] * spacing[m_orientation];
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::setOrientation(MedicalImage::Orientation orientation)
-{
-    m_orientation = orientation;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImage::setOrientation(int orientation)
-{
-    SIGHT_ASSERT(
-        "orientation value must be  0,1 or 2 (value = " << orientation << ")",
-        orientation == 0 || orientation == 1 || orientation == 2
-    );
-    this->setOrientation(static_cast<data::helper::MedicalImage::Orientation>(orientation));
-}
-
-//------------------------------------------------------------------------------
-
-static const int indexZ[12]   = {0, 2, 4, 1, 2, 4, 1, 3, 4, 0, 3, 4};
-static const int indexY[12]   = {0, 2, 4, 1, 2, 4, 1, 2, 5, 0, 2, 5};
-static const int indexX[12]   = {0, 2, 4, 0, 2, 5, 0, 3, 5, 0, 3, 4};
-static const int* indexSet[3] = {indexX, indexY, indexZ};
-//------------------------------------------------------------------------------
-
-void MedicalImage::getPlane(double points[4][3], int sliceNumber)
-{
-    data::Image::sptr image = this->getImage();
-    double extent[6];
-    for(unsigned char i = 0 ; i < 3 ; ++i)
+    // Manage image landmarks
+    if(!_pImg->getField(std::string(id::landmarks)))
     {
-        extent[2 * i]     = 0;
-        extent[2 * i + 1] = static_cast<double>(image->getSize()[i]) * image->getSpacing()[i];
+        data::PointList::sptr pl = data::PointList::New();
+        setLandmarks(*_pImg, pl);
+        fieldIsModified = true;
     }
 
-    extent[2 * m_orientation]     = sliceNumber * image->getSpacing()[m_orientation];
-    extent[2 * m_orientation + 1] = sliceNumber * image->getSpacing()[m_orientation];
+    return fieldIsModified;
+}
 
-    const int* extentIndex = indexSet[m_orientation];
-    for(int p = 0 ; p < 4 ; ++p)
+//------------------------------------------------------------------------------
+
+bool checkImageValidity(data::Image::csptr _pImg)
+{
+    return _pImg ? checkImageValidity(*_pImg) : false;
+}
+
+//------------------------------------------------------------------------------
+
+bool checkImageValidity(const data::Image& _image)
+{
+    // Test if the image is allocated
+    bool dataImageIsAllocated = (_image.getAllocatedSizeInBytes() > 0);
+
+    if(dataImageIsAllocated)
     {
-        for(int i = 0 ; i < 3 ; ++i)
+        size_t nbDim = _image.numDimensions();
+        dataImageIsAllocated &= nbDim > 1;
+
+        for(size_t k = 0 ; dataImageIsAllocated && k < nbDim ; ++k)
         {
-            points[p][i] = extent[*(extentIndex++)];
+            dataImageIsAllocated = dataImageIsAllocated && (_image.getSize()[k] >= 1);
         }
     }
+
+    return dataImageIsAllocated;
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::sliceIndexToWorld(const int index[3], double world[3])
+bool checkImageSliceIndex(data::Image::sptr _pImg)
 {
-    double spacing[3];
-    this->getImageSpacing(spacing);
-    double origin[3];
-    this->getImageOrigin(origin);
-    for(int i = 0 ; i < 3 ; ++i)
+    SIGHT_ASSERT("_pImg pointer null", _pImg);
+
+    bool fieldIsModified = false;
+
+    const data::Image::Size& imageSize = _pImg->getSize();
+
+    auto axialIdx    = getSliceIndex(*_pImg, orientation_t::AXIAL);
+    auto frontalIdx  = getSliceIndex(*_pImg, orientation_t::FRONTAL);
+    auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
+
+    // Check if values are out of bounds
+    if(axialIdx < 0 || imageSize[2] < static_cast<size_t>(axialIdx))
     {
-        world[i] = static_cast<int>((index[i] * spacing[i]) + 0.5 * spacing[i] + origin[i]);
+        axialIdx        = static_cast<std::int64_t>(imageSize[2] / 2);
+        fieldIsModified = true;
     }
-}
 
-//------------------------------------------------------------------------------
-
-void MedicalImage::worldToSliceIndex(const double world[3], int index[3])
-{
-    double spacing[3];
-    this->getImageSpacing(spacing);
-    double origin[3];
-    this->getImageOrigin(origin);
-    for(int i = 0 ; i < 3 ; ++i)
+    if(frontalIdx < 0 || imageSize[1] < static_cast<size_t>(frontalIdx))
     {
-        // nearest integer
-        index[i] =
-            static_cast<int>(((world[i] - origin[i]) / spacing[i])
-                             + (((world[i] - origin[i]) / spacing[i]) >= 0 ? 0.5 : -0.5));
+        frontalIdx      = static_cast<std::int64_t>(imageSize[1] / 2);
+        fieldIsModified = true;
     }
+
+    if(sagittalIdx < 0 || imageSize[0] < static_cast<size_t>(sagittalIdx))
+    {
+        sagittalIdx     = static_cast<std::int64_t>(imageSize[0] / 2);
+        fieldIsModified = true;
+    }
+
+    // Update or create fields.
+    if(fieldIsModified)
+    {
+        setSliceIndex(*_pImg, orientation_t::AXIAL, axialIdx);
+        setSliceIndex(*_pImg, orientation_t::FRONTAL, frontalIdx);
+        setSliceIndex(*_pImg, orientation_t::SAGITTAL, sagittalIdx);
+    }
+
+    return fieldIsModified;
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::worldToImageSliceIndex(const double world[3], int index[3])
+bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 {
-    size_t imageSize[3];
-    this->getImageDataSize(imageSize);
-    this->worldToSliceIndex(world, index);
+    bool isNull;
+    const data::Image::BufferType* ucbuf = static_cast<const data::Image::BufferType*>(buf);
+    isNull = 0 == std::accumulate(
+        ucbuf,
+        ucbuf + len,
+        0,
+        std::bit_or<data::Image::BufferType>()
+    );
+    return isNull;
+}
 
-    int idval;
-    for(int i = 0 ; i < 3 ; i++)
+//------------------------------------------------------------------------------
+
+bool checkTransferFunctionPool(const data::Image::sptr& image)
+{
+    bool fieldIsCreated = false;
+    const std::string poolFieldName(id::transferFunction);
+    data::Composite::sptr tfPool;
+
+    tfPool = image->getField<data::Composite>(poolFieldName);
+    // Transfer functions
+    if(!tfPool)
     {
-        int max = static_cast<int>(imageSize[i]) - 1;
-        idval = index[i];
-        if(idval < 0)
+        tfPool = data::Composite::New();
+
+        // Set in selected image
+        data::helper::Field fieldHelper(image);
+        fieldHelper.setField(poolFieldName, tfPool);
+        fieldHelper.notify();
+
+        // TF pool is modified
+        fieldIsCreated = true;
+    }
+
+    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
+    if(tfPool->find(defaultTFName) == tfPool->end())
+    {
+        data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
+        if(image->getWindowWidth() != 0.)
         {
-            index[i] = 0;
+            tf->setWindow(image->getWindowWidth());
+            tf->setLevel(image->getWindowCenter());
         }
-        else if(idval > max)
+        else if(checkImageValidity(image))
         {
-            index[i] = max;
+            double min, max;
+            getMinMax(image, min, max);
+            data::TransferFunction::TFValuePairType wlMinMax(min, max);
+            tf->setWLMinMax(wlMinMax);
+        }
+
+        // Set in TFPool
+        data::helper::Composite compositeHelper(tfPool);
+        compositeHelper.add(defaultTFName, tf);
+        compositeHelper.notify();
+    }
+
+    return fieldIsCreated;
+}
+
+//------------------------------------------------------------------------------
+
+std::int64_t getSliceCount(
+    const data::Image& _image,
+    const orientation_t& _orientation
+)
+{
+    std::int64_t count = -1;
+    std::string orientation_count;
+    switch(_orientation)
+    {
+        case orientation_t::AXIAL:
+            orientation_count = std::string(id::axial_slice_count);
+            break;
+
+        case orientation_t::SAGITTAL:
+            orientation_count = std::string(id::sagittal_slice_count);
+            break;
+
+        case orientation_t::FRONTAL:
+            orientation_count = std::string(id::frontal_slice_count);
+            break;
+
+        default:
+            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            break;
+    }
+
+    const auto field = _image.getField(orientation_count);
+    if(field)
+    {
+        const auto field_int = _image.getField<data::Integer>(orientation_count);
+        if(field_int)
+        {
+            count = field_int->value();
         }
     }
+
+    return count;
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::getSliceIndex(data::Integer::sptr index[3])
+void setSliceCount(
+    data::Image& _image,
+    const orientation_t& _orientation,
+    std::int64_t _sliceCount
+)
 {
-    index[0] = m_sagittalIndex;
-    index[1] = m_frontalIndex;
-    index[2] = m_axialIndex;
-}
+    data::Integer::sptr value = data::Integer::New();
+    value->setValue(_sliceCount);
 
-//------------------------------------------------------------------------------
-
-bool MedicalImage::setSliceIndex(const int index[3])
-{
-    bool isModified = false;
-
-    data::Integer::sptr sliceIndex[3];
-
-    this->getSliceIndex(sliceIndex);
-
-    if(index[0] != m_sagittalIndex->value()
-       || index[1] != m_frontalIndex->value()
-       || index[2] != m_axialIndex->value())
+    std::string orientation_count;
+    switch(_orientation)
     {
-        m_sagittalIndex->value() = index[0];
-        m_frontalIndex->value()  = index[1];
-        m_axialIndex->value()    = index[2];
-        isModified               = true;
+        case orientation_t::AXIAL:
+            orientation_count = std::string(id::axial_slice_count);
+            break;
+
+        case orientation_t::SAGITTAL:
+            orientation_count = std::string(id::sagittal_slice_count);
+            break;
+
+        case orientation_t::FRONTAL:
+            orientation_count = std::string(id::frontal_slice_count);
+            break;
+
+        default:
+            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            break;
     }
 
-    return isModified;
+    _image.setField(orientation_count, value);
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImage::updateImageInfos(data::Image::sptr image)
+std::int64_t getSliceIndex(
+    const data::Image& _image,
+    const orientation_t& _orientation
+)
 {
-    m_weakImage  = image;
-    m_axialIndex = image->setDefaultField(
-        data::fieldHelper::Image::m_axialSliceIndexId,
-        data::Integer::New(0)
-    );
-    m_frontalIndex = image->setDefaultField(
-        data::fieldHelper::Image::m_frontalSliceIndexId,
-        data::Integer::New(0)
-    );
-    m_sagittalIndex = image->setDefaultField(
-        data::fieldHelper::Image::m_sagittalSliceIndexId,
-        data::Integer::New(0)
-    );
+    // Initialize index to -1
+    std::int64_t index = -1;
+    std::string orientation_index;
+    switch(_orientation)
+    {
+        case orientation_t::AXIAL:
+            orientation_index = std::string(id::axial_slice_index);
+            break;
+
+        case orientation_t::SAGITTAL:
+            orientation_index = std::string(id::sagittal_slice_index);
+            break;
+
+        case orientation_t::FRONTAL:
+            orientation_index = std::string(id::frontal_slice_index);
+            break;
+
+        default:
+            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            break;
+    }
+
+    // Test if field exists
+    const auto field = _image.getField(orientation_index);
+    if(field)
+    {
+        // Test if the type is data::Integer.
+        const auto field_int = _image.getField<data::Integer>(orientation_index);
+        if(field_int)
+        {
+            // Get value.
+            index = field_int->value();
+        }
+    }
+
+    return index;
 }
 
 //------------------------------------------------------------------------------
 
-data::Image::sptr MedicalImage::getImage() const
+void setSliceIndex(
+    data::Image& _image,
+    const orientation_t& _orientation,
+    std::int64_t _sliceIdx
+)
 {
-    SIGHT_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
-    return m_weakImage.lock();
+    data::Integer::sptr value = data::Integer::New();
+    value->setValue(_sliceIdx);
+
+    std::string orientation_index;
+    switch(_orientation)
+    {
+        case orientation_t::AXIAL:
+            orientation_index = std::string(id::axial_slice_index);
+            break;
+
+        case orientation_t::SAGITTAL:
+            orientation_index = std::string(id::sagittal_slice_index);
+            break;
+
+        case orientation_t::FRONTAL:
+            orientation_index = std::string(id::frontal_slice_index);
+            break;
+
+        default:
+            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            break;
+    }
+
+    _image.setField(orientation_index, value);
 }
 
 //------------------------------------------------------------------------------
+
+data::PointList::sptr getLandmarks(const data::Image& _image)
+{
+    return _image.getField<data::PointList>(std::string(id::landmarks));
+}
+
+//------------------------------------------------------------------------------
+
+void setLandmarks(data::Image& _image, const data::PointList::sptr& _landmarks)
+{
+    if(_landmarks)
+    {
+        _image.setField(std::string(id::landmarks), _landmarks);
+    }
+    else
+    {
+        SIGHT_THROW_EXCEPTION(data::Exception("Trying to set nullptr as landmark field."));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+data::Vector::sptr getDistances(const data::Image& _image)
+{
+    return _image.getField<data::Vector>(std::string(id::distances));
+}
+
+//------------------------------------------------------------------------------
+
+void setDistances(data::Image& _image, const data::Vector::sptr& _distances)
+{
+    if(_distances)
+    {
+        _image.setField(std::string(id::distances), _distances);
+    }
+    else
+    {
+        SIGHT_ERROR("Trying to set nullptr to distances field.");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool getDistanceVisibility(const data::Image& _image)
+{
+    const auto visibility = _image.getField<Boolean>(std::string(id::distance_visibility));
+
+    if(visibility)
+    {
+        return visibility->value();
+    }
+
+    // default value is true.
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+void setDistanceVisibility(data::Image& _image, bool _visibility)
+{
+    _image.setField(std::string(id::distance_visibility), data::Boolean::New(_visibility));
+}
+
+//------------------------------------------------------------------------------
+
+bool getLandmarksVisibility(const data::Image& _image)
+{
+    const auto visibility = _image.getField<Boolean>(std::string(id::landmarks_visibility));
+
+    if(visibility)
+    {
+        return visibility->value();
+    }
+
+    // default value is true.
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+void setLandmarksVisibility(data::Image& _image, bool _visibility)
+{
+    _image.setField(std::string(id::landmarks_visibility), data::Boolean::New(_visibility));
+}
+
+//------------------------------------------------------------------------------
+
+std::string getComment(const data::Image& _image)
+{
+    const auto comment = _image.getField<data::String>(std::string(id::comment));
+
+    if(comment)
+    {
+        return comment->value();
+    }
+
+    return std::string();
+}
+
+//------------------------------------------------------------------------------
+
+void setComment(data::Image& _image, const std::string& _comment)
+{
+    _image.setField(std::string(id::comment), data::String::New(_comment));
+}
+
+//------------------------------------------------------------------------------
+
+std::string getLabel(const data::Image& _image)
+{
+    const auto label = _image.getField<data::String>(std::string(id::label));
+
+    if(label)
+    {
+        return label->value();
+    }
+
+    return std::string();
+}
+
+//------------------------------------------------------------------------------
+
+void setLabel(data::Image& _image, const std::string& _label)
+{
+    _image.setField(std::string(id::label), data::String::New(_label));
+}
+
+//------------------------------------------------------------------------------
+
+data::Composite::sptr getTransferFunction(const data::Image& _image)
+{
+    const auto field = _image.getField(std::string(id::transferFunction));
+    if(field)
+    {
+        const auto composite = _image.getField<data::Composite>(std::string(id::transferFunction));
+        if(composite)
+        {
+            return composite;
+        }
+    }
+
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp)
+{
+    _image.setField(std::string(id::transferFunction), _cmp);
+}
+
+//------------------------------------------------------------------------------
+
+} //namespace MedicalImage
 
 } //namespace helper
 

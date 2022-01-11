@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ class VIZ_SCENE3D_CLASS_API Plane
 {
 public:
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Defines the texture filtering mode.
     typedef enum FilteringEnum

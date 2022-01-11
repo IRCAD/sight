@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/String.hpp>
 
 #include <service/IService.hpp>
@@ -120,8 +120,7 @@ void Distance::onDistanceButton()
     SIGHT_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
-    image->setField(data::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(true));
-
+    data::helper::MedicalImage::setDistanceVisibility(*image, true);
     m_sigDistanceRequested->asyncEmit();
 }
 

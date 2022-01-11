@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "MedicalImageSrv.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/Image.hpp>
-
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+
+#include <data/helper/MedicalImage.hpp>
+#include <data/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -53,12 +53,12 @@ void MedicalImageSrv::convertImage()
 {
     auto pImg = m_image.lock();
 
-    if(sight::data::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg.get_shared()))
+    if(sight::data::helper::MedicalImage::checkImageValidity(pImg.get_shared()))
     {
         bool isModified = false;
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg.get_shared());
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg.get_shared());
-        isModified |= sight::data::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg.get_shared());
+        isModified |= sight::data::helper::MedicalImage::checkLandmarks(pImg.get_shared());
+        isModified |= sight::data::helper::MedicalImage::checkTransferFunctionPool(pImg.get_shared());
+        isModified |= sight::data::helper::MedicalImage::checkImageSliceIndex(pImg.get_shared());
 
         if(isModified)
         {

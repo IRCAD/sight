@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include "io/dicom/writer/tid/Fiducial.hpp"
 #include "io/dicom/writer/tid/Measurement.hpp"
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
@@ -117,7 +117,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId))
+    if(data::helper::MedicalImage::getLandmarks(*m_object))
     {
         // Create Fiducial Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) fiducialNode =
@@ -132,7 +132,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
     }
 
     // Add distances
-    if(m_object->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId))
+    if(data::helper::MedicalImage::getDistances(*m_object))
     {
         // Create Imaging Measurements Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) imagingMeasurementsNode =

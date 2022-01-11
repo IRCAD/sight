@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <core/Profiling.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <service/macros.hpp>
 
@@ -127,7 +127,7 @@ void SUltrasoundImage::updating()
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SIGHT_ASSERT("Missing input frame.", inputImage);
 
-    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
+    const bool isValid = data::helper::MedicalImage::checkImageValidity(inputImage);
     if(!isValid)
     {
         return;

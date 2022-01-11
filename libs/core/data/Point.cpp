@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
+#include "data/String.hpp"
 
 #include <core/base.hpp>
 
@@ -32,6 +33,8 @@ SIGHT_REGISTER_DATA(sight::data::Point);
 namespace sight::data
 {
 
+// Note: for compatibility, use the same name as in MedicalImageHelper, to be changed in the future.
+static constexpr std::string_view field_label_id = "m_labelId";
 //------------------------------------------------------------------------------
 
 Point::Point(data::Object::Key)
@@ -119,6 +122,28 @@ void Point::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     );
     this->fieldDeepCopy(_source, cache);
     m_vCoord = other->m_vCoord;
+}
+
+//------------------------------------------------------------------------------
+
+std::string Point::getLabel() const
+{
+    //TODO: In the future label should be an attribute of Point class, and should be serialized.
+    std::string label;
+    if(this->getField(std::string(field_label_id)))
+    {
+        label = this->getField<data::String>(std::string(field_label_id))->value();
+    }
+
+    return label;
+}
+
+//------------------------------------------------------------------------------
+
+void Point::setLabel(const std::string& _label)
+{
+    //TODO: In the future label should be an attribute of Point class, and should be serialized.
+    this->setField(std::string(field_label_id), data::String::New(_label));
 }
 
 //------------------------------------------------------------------------------

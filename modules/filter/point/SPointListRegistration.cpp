@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
@@ -130,19 +129,16 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField<data::String>(data::fieldHelper::Image::m_labelId) != nullptr
-           && firstPointReg->getField<data::String>(data::fieldHelper::Image::m_labelId) != nullptr)
+        if(!firstPoint->getLabel().empty() && !firstPointReg->getLabel().empty())
         {
             // ... Then match them according to that label.
             for(data::Point::sptr pointRef : referencePL->getPoints())
             {
-                const std::string& labelRef =
-                    pointRef->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+                const std::string labelRef = pointRef->getLabel();
 
                 for(data::Point::sptr pointReg : registeredPL->getPoints())
                 {
-                    const std::string& labelReg =
-                        pointReg->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+                    const std::string labelReg = pointRef->getLabel();
 
                     if(labelRef == labelReg)
                     {

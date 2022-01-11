@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/String.hpp>
 
@@ -171,7 +170,6 @@ struct LabelImageFilter
                         std::stringstream labelName;
                         labelName << n;
                         data::String::sptr label = data::String::New(labelName.str());
-                        //newPoint->setField( data::fieldHelper::Image::m_labelId, label );
 
                         planePointList->getPoints().push_back(newPoint);
                     }
@@ -182,9 +180,8 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
-            data::PointList::sptr landmarks =
-                image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+            data::helper::MedicalImage::checkLandmarks(image);
+            data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
 
             SIGHT_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
@@ -204,11 +201,10 @@ struct LabelImageFilter
                 // append to point the label
                 std::stringstream labelName;
                 labelName << n;
-                data::String::sptr label = data::String::New(labelName.str());
-                newPoint->setField(data::fieldHelper::Image::m_labelId, label);
+                newPoint->setLabel(labelName.str());
             }
 
-            image->setField("ShowLandmarks", data::Boolean::New(true));
+            data::helper::MedicalImage::setLandmarksVisibility(*image, true);
         }
     }
 };

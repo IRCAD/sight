@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <geometry/data/Matrix4.hpp>
@@ -225,7 +225,7 @@ void SVolumeRender::starting()
     bool isValid = false;
     {
         const auto image = m_image.lock();
-        isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     }
     if(isValid)
     {
@@ -844,7 +844,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
     bool isValid = false;
     {
         const auto image = m_image.lock();
-        isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::helper::MedicalImage::checkImageValidity(image.get_shared());
     }
 
     // Volume illumination is only implemented for raycasting rendering

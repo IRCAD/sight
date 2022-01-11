@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Point.hpp>
@@ -75,10 +74,9 @@ void SRemoveDistance::updating()
 {
     const auto image = m_image.lock();
 
-    data::Vector::sptr vectDist =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
        && vectDist)
     {
         bool requestAll;
@@ -99,11 +97,9 @@ void SRemoveDistance::updating()
 
         if(requestAll)
         {
-            data::PointList::sptr backupDistance = image->getField<data::PointList>(
-                data::fieldHelper::Image::m_imageDistancesId
-            );
+            data::PointList::sptr backupDistance = image->getField<data::PointList>("m_imageDistancesId");
 
-            image->removeField(data::fieldHelper::Image::m_imageDistancesId);
+            image->removeField("m_imageDistancesId");
             const auto sig = image->signal<data::Image::DistanceAddedSignalType>(
                 data::Image::s_DISTANCE_ADDED_SIG
             );
@@ -135,8 +131,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
 {
     data::PointList::sptr distToRemove;
     _removeAll = false;
-    data::Vector::sptr vectDist =
-        _image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*_image);
 
     if(vectDist)
     {
@@ -209,10 +204,9 @@ void SRemoveDistance::removeLastDistance()
 {
     const auto image = m_image.lock();
 
-    const data::Vector::sptr vectDist =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    const data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared())
        && vectDist)
     {
         const data::PointList::sptr distToRemove = data::PointList::dynamicCast(*(*vectDist).rbegin());

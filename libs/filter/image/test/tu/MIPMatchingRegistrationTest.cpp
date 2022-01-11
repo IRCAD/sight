@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,21 +27,21 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Matrix4.hpp>
 
 #include <filter/image/Metric.hpp>
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
 
+#include <io/itk/itk.hpp>
+
+#include <utestData/generator/Image.hpp>
+
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
-
-#include <io/itk/itk.hpp>
-
-#include <utestData/generator/Image.hpp>
 
 #include <itkImage.h>
 #include <itkRegionOfInterestImageFilter.h>

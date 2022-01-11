@@ -32,7 +32,7 @@
 #include <core/spyLog.hpp>
 #include <core/tools/System.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 
@@ -619,7 +619,7 @@ void Utils::loadOgreTexture(
     bool _dynamic
 )
 {
-    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    const bool imageIsValid = data::helper::MedicalImage::checkImageValidity(_image);
 
     if(imageIsValid)
     {

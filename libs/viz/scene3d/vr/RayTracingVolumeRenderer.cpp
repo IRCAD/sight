@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 
 #include <core/Profiling.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
@@ -249,7 +249,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const data::TransferFunction::sptr tf)
 {
-    if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(!data::helper::MedicalImage::checkImageValidity(image))
     {
         return;
     }

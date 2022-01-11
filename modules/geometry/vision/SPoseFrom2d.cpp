@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-
-#include <data/fieldHelper/Image.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -96,10 +94,9 @@ void SPoseFrom2d::starting()
     {
         for(size_t i = 0 ; i < m_3dModel.size() ; ++i)
         {
-            const cv::Point3f cvPoint      = m_3dModel.at(i);
-            const data::Point::sptr point  = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
-            const data::String::sptr label = data::String::New(std::to_string(i));
-            point->setField(data::fieldHelper::Image::m_labelId, label);
+            const cv::Point3f cvPoint     = m_3dModel.at(i);
+            const data::Point::sptr point = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
+            point->setLabel(std::to_string(i));
             pl->pushBack(point);
         }
 

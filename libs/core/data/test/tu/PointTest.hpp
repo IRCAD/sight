@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
- * Copyright (C) 2018-2021 IHU Strasbourg
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,37 +21,44 @@
 
 #pragma once
 
-#include "filter/image//config.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
+namespace sight::data
+{
 
-namespace sight::filter::image
+namespace ut
 {
 
 /**
- * @brief Static class to compute Bresenham lines in 3D images.
- *
+ * This class is used to test data::Point
  */
-class FILTER_IMAGE_CLASS_API BresenhamLine
+class PointTest : public CPPUNIT_NS::TestFixture
 {
+private:
+
+    CPPUNIT_TEST_SUITE(PointTest);
+    CPPUNIT_TEST(copyTest);
+    CPPUNIT_TEST(getterTest);
+    CPPUNIT_TEST(setterTest);
+    CPPUNIT_TEST(labelTest);
+    CPPUNIT_TEST_SUITE_END();
+
 public:
 
-    /// Image orientation.
-    typedef data::helper::MedicalImage::orientation_t Orientation;
+    /// Does nothing
+    void setUp();
+    void tearDown();
 
-    /// Voxel coordinate type.
-    typedef std::array<data::Image::IndexType, 3> CoordinatesType;
-
-    /// Series of coordinates making up a line.
-    typedef std::vector<CoordinatesType> PathType;
-
-    /// Computes a Bresenham line in a 3D image slice.
-    FILTER_IMAGE_API static PathType draw(
-        const Orientation orientation,
-        const CoordinatesType& startCoord,
-        const CoordinatesType& endCoord
-    );
+    /// Tests copies
+    void copyTest();
+    /// Tests getter
+    void getterTest();
+    ///Tests setter
+    void setterTest();
+    /// Tests labels of data::Point
+    void labelTest();
 };
 
-}
+} // namespace ut
+
+} // namespace sight::data

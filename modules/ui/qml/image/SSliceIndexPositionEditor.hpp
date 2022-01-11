@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,8 +83,7 @@ namespace sight::module::ui::qml::image
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
-class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor,
-                                                          public data::helper::MedicalImage
+class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
@@ -98,6 +97,9 @@ public:
 
     /// Destructor. Do nothing.
     MODULE_UI_QML_API virtual ~SSliceIndexPositionEditor() noexcept;
+
+    /// To handle orientation of slices.
+    using orientation_t = data::helper::MedicalImage::orientation_t;
 
 Q_SIGNALS:
 
@@ -114,9 +116,6 @@ public Q_SLOTS:
     MODULE_UI_QML_API void onSliceType(int type);
 
 protected:
-
-    /// @brief The slice type: axial, frontal, sagittal.
-    using data::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
     MODULE_UI_QML_API void starting() override;
@@ -145,7 +144,7 @@ protected:
     MODULE_UI_QML_API void updateSliceIndexFromImg();
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QML_API void updateSliceTypeFromImg(Orientation type);
+    MODULE_UI_QML_API void updateSliceTypeFromImg(const orientation_t& type);
 
 private:
 
@@ -166,12 +165,15 @@ private:
     void setSliceIndex(int sliceIndex);
     int getSliceIndex() const;
 
-    /// @brief The field IDs for the slice index.
-    static const std::string* SLICE_INDEX_FIELDID[3];
-
     /// Image data
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
+
+    std::int64_t m_axialIndex {-1};
+    std::int64_t m_frontalIndex {-1};
+    std::int64_t m_sagittalIndex {-1};
+
+    orientation_t m_orientation {orientation_t::Z_AXIS};
 };
 
 } // uiImageQml

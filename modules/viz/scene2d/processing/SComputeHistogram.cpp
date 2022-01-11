@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void SComputeHistogram::updating()
 {
     const auto image = m_image.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
         auto histogram = m_histogram.lock();
 

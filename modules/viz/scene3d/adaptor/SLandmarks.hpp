@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -218,7 +218,7 @@ private:
         bool m_show {false};
     };
 
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /**
      * @brief Gets the normalized camera direction vector.

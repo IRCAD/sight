@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
@@ -100,9 +99,9 @@ void SLabelGeometryImage::updating()
     if(m_lPointListCentroids.empty())
     {
         //get landmarks
-        data::fieldHelper::MedicalImageHelpers::checkLandmarks(image.get_shared());
-        data::PointList::sptr landmarks =
-            image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+        data::helper::MedicalImage::checkLandmarks(image.get_shared());
+        data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
+
         SIGHT_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
@@ -145,8 +144,7 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
 
     for(size_t idPoint = 0 ; idPoint < selectedPointList->getPoints().size() ; ++idPoint)
     {
-        data::String::sptr label = data::String::New(std::to_string(idPoint));
-        selectedPointList->getPoints().at(idPoint)->setField(data::fieldHelper::Image::m_labelId, label);
+        selectedPointList->getPoints().at(idPoint)->setLabel(std::to_string(idPoint));
     }
 
     this->setOutput("pointList", m_lPointListCentroids.at(indexPlane));

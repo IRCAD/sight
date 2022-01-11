@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,7 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
@@ -66,7 +65,7 @@ void SAddDistance::updating()
 {
     const auto image = m_image.lock();
 
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
         const data::Point::sptr pt1 = data::Point::New();
         std::copy(image->getOrigin().begin(), image->getOrigin().begin() + 3, pt1->getCoord().begin());
@@ -99,8 +98,12 @@ void SAddDistance::updating()
         pl->getPoints().push_back(pt1);
         pl->getPoints().push_back(pt2);
 
-        const data::Vector::sptr vectDist =
-            image->setDefaultField(data::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
+        data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
+        if(!vectDist)
+        {
+            vectDist = data::Vector::New();
+            data::helper::MedicalImage::setDistances(*image, vectDist);
+        }
 
         vectDist->getContainer().push_back(pl);
 

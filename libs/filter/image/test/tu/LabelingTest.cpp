@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,7 @@
 #include "LabelingTest.hpp"
 
 #include <data/Array.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
@@ -121,9 +120,8 @@ void LabelingTest::computeCentroids()
     // Call the ITK operator
     filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
 
-    data::fieldHelper::MedicalImageHelpers::checkLandmarks(img);
-    data::PointList::sptr landmarks =
-        img->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::helper::MedicalImage::checkLandmarks(img);
+    data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*img);
 
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);

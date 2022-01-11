@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 #include "filter/image/config.hpp"
 #include "filter/image/ImageDiff.hpp"
 
-#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <array>
@@ -43,8 +42,6 @@ public:
 
     typedef BresenhamLine::CoordinatesType CoordinatesType;
 
-    typedef data::helper::MedicalImage::Orientation OrientationType;
-
     /// Constructor, instantiates a drawer with an image and a region of interest.
     FILTER_IMAGE_API LineDrawer(const data::Image::sptr& img, const data::Image::csptr& roi);
 
@@ -59,7 +56,7 @@ public:
      * @return The differences in the image before and after drawing.
      */
     FILTER_IMAGE_API ImageDiff draw(
-        const OrientationType orientation,
+        const BresenhamLine::Orientation orientation,
         const CoordinatesType& startCoord,
         const CoordinatesType& endCoord,
         data::Image::BufferType* value,

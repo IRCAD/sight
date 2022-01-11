@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <data/Color.hpp>
 #include <data/DicomSeries.hpp>
 #include <data/Equipment.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
@@ -747,13 +747,11 @@ void SeriesDBReaderTest::readSFSeries()
     const auto dumpLock            = image->lock();
 
     // Retrieve landmarks
-    data::PointList::sptr pointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*image);
 
     // Verify first landmark
     const data::Point::sptr& pointA = pointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -761,8 +759,7 @@ void SeriesDBReaderTest::readSFSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = pointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
@@ -802,13 +799,11 @@ void SeriesDBReaderTest::readSRSeries()
     const auto dumpLock     = image->lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
 
     // Verify first landmark
     const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -816,16 +811,14 @@ void SeriesDBReaderTest::readSRSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
     data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);
@@ -871,13 +864,10 @@ void SeriesDBReaderTest::read3DSRSeries()
     const auto dumpLock            = image->lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
-
+    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*image);
     // Verify first landmark
     const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
-    const std::string labelA        =
-        pointA->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), pointA->getCoord()[1], delta);
@@ -885,16 +875,14 @@ void SeriesDBReaderTest::read3DSRSeries()
 
     // Verify second landmark
     const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
-    const std::string labelB        =
-        pointB->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), pointB->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*image);
 
     // Verify first distance
     data::PointList::sptr distancePointList = data::PointList::dynamicCast(distanceVector->getContainer()[0]);

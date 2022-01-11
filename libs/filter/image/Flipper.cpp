@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -117,7 +117,7 @@ void Flipper::flip(
 )
 {
     // If the image is valid, process it, otherwise copy it in the output image
-    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(_inImage))
+    if(data::helper::MedicalImage::checkImageValidity(_inImage))
     {
         Parameters params;
         params.i_image    = _inImage;

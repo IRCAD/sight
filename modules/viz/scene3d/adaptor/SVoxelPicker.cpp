@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -256,12 +256,10 @@ std::pair<bool, ::Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
     const Ogre::Vector3& _spacing
 )
 {
-    const auto axialIdx =
-        _image->getField<data::Integer>(data::fieldHelper::Image::m_axialSliceIndexId)->getValue();
-    const auto frontalIdx =
-        _image->getField<data::Integer>(data::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
-    const auto sagittalIdx =
-        _image->getField<data::Integer>(data::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+    namespace imHelper = data::helper::MedicalImage;
+    const auto axialIdx    = imHelper::getSliceIndex(*_image, imHelper::orientation_t::AXIAL);
+    const auto frontalIdx  = imHelper::getSliceIndex(*_image, imHelper::orientation_t::FRONTAL);
+    const auto sagittalIdx = imHelper::getSliceIndex(*_image, imHelper::orientation_t::SAGITTAL);
 
     const ::Ogre::Real axialIndex    = static_cast< ::Ogre::Real>(axialIdx);
     const ::Ogre::Real frontalIndex  = static_cast< ::Ogre::Real>(frontalIdx);

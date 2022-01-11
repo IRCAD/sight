@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 namespace sight::filter::image
 {
@@ -35,7 +35,7 @@ LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& r
     m_image(img),
     m_roiImage(roi)
 {
-    m_useROI = data::fieldHelper::MedicalImageHelpers::checkImageValidity(m_roiImage);
+    m_useROI = data::helper::MedicalImage::checkImageValidity(m_roiImage);
 
     m_imageTypeSize = m_image->getType().sizeOf();
     m_roiTypeSize   = m_useROI ? m_roiImage->getType().sizeOf() : 0;
@@ -112,7 +112,7 @@ bool LineDrawer::drawPixel(
     {
         data::Image::BufferType* roiVal =
             reinterpret_cast<data::Image::BufferType*>(m_roiImage->getPixel(index));
-        if(data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
+        if(data::helper::MedicalImage::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;
         }
@@ -123,7 +123,7 @@ bool LineDrawer::drawPixel(
         return false;
     }
 
-    if(!overwrite && !data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize))
+    if(!overwrite && !data::helper::MedicalImage::isBufNull(pixBuf, m_imageTypeSize))
     {
         return false;
     }
@@ -137,7 +137,7 @@ bool LineDrawer::drawPixel(
 //-----------------------------------------------------------------------------
 
 ImageDiff LineDrawer::draw(
-    const OrientationType orientation,
+    const BresenhamLine::Orientation orientation,
     const CoordinatesType& startCoord,
     const CoordinatesType& endCoord,
     data::Image::BufferType* value,
@@ -151,17 +151,17 @@ ImageDiff LineDrawer::draw(
 
     switch(orientation)
     {
-        case data::helper::MedicalImage::Z_AXIS:
+        case BresenhamLine::Orientation::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;
 
-        case data::helper::MedicalImage::Y_AXIS:
+        case BresenhamLine::Orientation::Y_AXIS:
             dim0 = 2;
             dim1 = 0;
             break;
 
-        case data::helper::MedicalImage::X_AXIS:
+        case BresenhamLine::Orientation::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;

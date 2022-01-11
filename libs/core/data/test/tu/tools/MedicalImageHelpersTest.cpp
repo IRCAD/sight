@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/tools/random/Generator.hpp>
 
 #include <data/Array.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <utestData/generator/Image.hpp>
@@ -34,7 +34,7 @@
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::MedicalImageHelpersTest);
-
+namespace medImHelper = sight::data::helper::MedicalImage;
 namespace sight::data::tools
 {
 
@@ -94,6 +94,29 @@ struct typeToPixelFormat<std::array<double, 3> >
     static const auto value = sight::data::Image::PixelFormat::RGB;
 };
 
+//------------------------------------------------------------------------------
+
+sight::data::Image::sptr generateImage()
+{
+    typedef std::uint8_t Type;
+
+    data::Image::sptr image = data::Image::New();
+
+    const data::Image::Size size       = {256, 150, 100};
+    const data::Image::Spacing spacing = {1., 1., 0.5};
+    const data::Image::Origin origin   = {0., 0., 0.};
+    utestData::generator::Image::generateImage(
+        image,
+        size,
+        spacing,
+        origin,
+        core::tools::Type::create<Type>(),
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+
+    return image;
+}
+
 // ------------------------------------------------------------------------------
 
 void MedicalImageHelpersTest::setUp()
@@ -149,7 +172,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(156) = MIN;
         image->at<Type>(245) = MAX;
 
-        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        medImHelper::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
@@ -190,7 +213,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(16)  = MIN;
         image->at<Type>(286) = MAX;
 
-        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        medImHelper::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "min values are not equal",
             static_cast<double>(MIN),
@@ -243,7 +266,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(5)    = MIN;
         image->at<Type>(2155) = MAX;
 
-        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        medImHelper::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
@@ -424,32 +447,322 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         const data::Image::BufferType* pixBuf =
             static_cast<data::Image::BufferType*>(image->getPixel(0));
 
-        bool isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+        bool isNull = medImHelper::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
-        isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 100);
+        isNull = medImHelper::isBufNull(pixBuf, 100);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
             std::array<float, 3> pixelValue = {42.0f, 1487.4f, 0.1445f};
             image->setPixel(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            isNull = medImHelper::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
             const data::Image::BufferType* pixBuf2 =
                 static_cast<data::Image::BufferType*>(image->getPixel(10));
 
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 3);
+            isNull = medImHelper::isBufNull(pixBuf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
             image->setPixel(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 5 * 3);
+            isNull = medImHelper::isBufNull(pixBuf2, 5 * 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
-            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf2, 6 * 3);
+            isNull = medImHelper::isBufNull(pixBuf2, 6 * 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testLandmarks()
+{
+    data::Image::sptr image = generateImage();
+
+    // get landmarks (should be nullptr)
+    const auto landmarksNull = medImHelper::getLandmarks(*image);
+    CPPUNIT_ASSERT(!landmarksNull);
+
+    // check landmarks (should create the field and return true)
+    const bool landmarks_added = medImHelper::checkLandmarks(image);
+    CPPUNIT_ASSERT_EQUAL(true, landmarks_added);
+
+    // get landrmaks (should NOT be nullptr)
+    const auto landmarksNotNull = medImHelper::getLandmarks(*image);
+    CPPUNIT_ASSERT(landmarksNotNull);
+
+    /// Set landmarks
+    data::Point::sptr p      = data::Point::New(1., 2., 3.);
+    data::PointList::sptr pt = data::PointList::New();
+    pt->pushBack(p);
+    medImHelper::setLandmarks(*image, pt);
+
+    // get landmarks (should NOT be nullptr)
+    const auto landmarks = medImHelper::getLandmarks(*image);
+    CPPUNIT_ASSERT(landmarks);
+
+    const auto points = landmarks->getPoints();
+
+    CPPUNIT_ASSERT_EQUAL(size_t(1), points.size());
+
+    const auto point = points[0];
+
+    for(size_t i = 0 ; i < 3 ; ++i)
+    {
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(p->getCoord()[i], point->getCoord()[i], std::numeric_limits<double>::epsilon());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testImageValidity()
+{
+    // Valid image
+    const auto valid_image = generateImage();
+    // Invalid image (no buffer)
+    const auto invalid_image = data::Image::New();
+
+    // Check validity of each
+    auto validity = medImHelper::checkImageValidity(*valid_image);
+
+    CPPUNIT_ASSERT_EQUAL(true, validity);
+
+    validity = medImHelper::checkImageValidity(*invalid_image);
+
+    CPPUNIT_ASSERT_EQUAL(false, validity);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testSliceCount()
+{
+    const auto image = generateImage();
+    // AXIAL
+    {
+        auto orientation = medImHelper::orientation_t::AXIAL;
+
+        auto count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
+
+        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[0]));
+
+        count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(256), count);
+    }
+
+    // SAGITTAL
+    {
+        auto orientation = medImHelper::orientation_t::SAGITTAL;
+
+        auto count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
+
+        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[1]));
+
+        count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(150), count);
+    }
+
+    // FRONTAL
+    {
+        auto orientation = medImHelper::orientation_t::FRONTAL;
+
+        auto count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), count);
+
+        medImHelper::setSliceCount(*image, orientation, std::int64_t(image->getSize()[2]));
+
+        count = medImHelper::getSliceCount(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(100), count);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testSliceIndex()
+{
+    const auto image = generateImage();
+
+    // AXIAL
+    {
+        auto orientation = medImHelper::orientation_t::AXIAL;
+
+        auto index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+
+        medImHelper::setSliceIndex(*image, orientation, std::int64_t(35));
+
+        index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(35), index);
+    }
+
+    // SAGITTAL
+    {
+        auto orientation = medImHelper::orientation_t::SAGITTAL;
+
+        auto index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+
+        medImHelper::setSliceIndex(*image, orientation, std::int64_t(0));
+
+        index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(0), index);
+    }
+
+    // FRONTAL
+    {
+        auto orientation = medImHelper::orientation_t::FRONTAL;
+
+        auto index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-1), index);
+
+        medImHelper::setSliceIndex(*image, orientation, std::int64_t(17));
+
+        index = medImHelper::getSliceIndex(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(17), index);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testDistances()
+{
+    const auto image = generateImage();
+
+    const auto distances_null = medImHelper::getDistances(*image);
+
+    CPPUNIT_ASSERT(!distances_null);
+
+    data::Vector::sptr distances    = data::Vector::New();
+    data::PointList::sptr pointList = data::PointList::New();
+    pointList->getPoints().push_back(data::Point::New(0., 1., 2.));
+    pointList->getPoints().push_back(data::Point::New(10., 11., 12.));
+
+    distances->getContainer().push_back(pointList);
+
+    medImHelper::setDistances(*image, distances);
+
+    const auto distances_not_null = medImHelper::getDistances(*image);
+
+    CPPUNIT_ASSERT(distances_not_null);
+
+    // TODO: compare values ?
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testDistanceVisibility()
+{
+    const auto image = generateImage();
+
+    auto distance_visibility = medImHelper::getDistanceVisibility(*image);
+
+    CPPUNIT_ASSERT_EQUAL(true, distance_visibility);
+
+    medImHelper::setDistanceVisibility(*image, false);
+
+    distance_visibility = medImHelper::getDistanceVisibility(*image);
+
+    CPPUNIT_ASSERT_EQUAL(false, distance_visibility);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testLandmarksVisibility()
+{
+    const auto image = generateImage();
+
+    auto lm_visibility = medImHelper::getLandmarksVisibility(*image);
+
+    CPPUNIT_ASSERT_EQUAL(true, lm_visibility);
+
+    medImHelper::setLandmarksVisibility(*image, false);
+
+    lm_visibility = medImHelper::getLandmarksVisibility(*image);
+
+    CPPUNIT_ASSERT_EQUAL(false, lm_visibility);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testComment()
+{
+    const auto image = generateImage();
+
+    auto comment = medImHelper::getComment(*image);
+
+    CPPUNIT_ASSERT(comment.empty());
+
+    medImHelper::setComment(*image, "useful comment, isn't it ?");
+
+    comment = medImHelper::getComment(*image);
+
+    CPPUNIT_ASSERT(!comment.empty());
+
+    CPPUNIT_ASSERT_EQUAL(comment.compare("useful comment, isn't it ?"), 0);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testLabels()
+{
+    const auto image = generateImage();
+
+    auto label = medImHelper::getLabel(*image);
+
+    CPPUNIT_ASSERT(label.empty());
+
+    medImHelper::setComment(*image, "myLabel5");
+
+    label = medImHelper::getComment(*image);
+
+    CPPUNIT_ASSERT(!label.empty());
+
+    CPPUNIT_ASSERT_EQUAL(label.compare("myLabel5"), 0);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageHelpersTest::testTransferFunction()
+{
+    data::Image::sptr image = generateImage();
+
+    // get transfer function composite (should be nullptr)
+    const auto tfpool_null = medImHelper::getTransferFunction(*image);
+    CPPUNIT_ASSERT(!tfpool_null);
+
+    // check transfer function composite (should create the field and return true)
+    const bool tf_pool_added = medImHelper::checkTransferFunctionPool(image);
+    CPPUNIT_ASSERT_EQUAL(true, tf_pool_added);
+
+    // get transfer function composite (should NOT be nullptr)
+    const auto tfpool_not_null = medImHelper::getTransferFunction(*image);
+    CPPUNIT_ASSERT(tfpool_not_null);
+
+    // set transfer function composite
+
+    data::Composite::sptr tfPool = data::Composite::New();
+
+    medImHelper::setTransferFunction(*image, tfPool);
+
+    const auto new_tf_pool = medImHelper::getTransferFunction(*image);
+    CPPUNIT_ASSERT(new_tf_pool);
+
+    CPPUNIT_ASSERT_EQUAL(tfPool, new_tf_pool);
 }
 
 //------------------------------------------------------------------------------

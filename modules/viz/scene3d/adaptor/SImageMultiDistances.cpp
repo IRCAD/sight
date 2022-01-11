@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/helper/Vector.hpp>
 #include <data/Image.hpp>
 #include <data/Material.hpp>
@@ -312,9 +312,8 @@ void SImageMultiDistances::addDistances()
 
     const auto image = m_image.lock();
 
-    const data::Vector::sptr distanceField = image->getField<data::Vector>(
-        data::fieldHelper::Image::m_imageDistancesId
-    );
+    const data::Vector::sptr distanceField = data::helper::MedicalImage::getDistances(*image);
+
     if(distanceField)
     {
         for(const auto& object : *distanceField)
@@ -355,8 +354,7 @@ void SImageMultiDistances::removeDistances()
 
     const auto image = m_image.lock();
 
-    const data::Vector::csptr distanceField =
-        image->getField<data::Vector>(data::fieldHelper::Image::m_imageDistancesId);
+    const data::Vector::csptr distanceField = data::helper::MedicalImage::getDistances(*image);
 
     std::vector<core::tools::fwID::IDType> foundId;
     if(distanceField)
@@ -392,13 +390,7 @@ void SImageMultiDistances::updateVisibilityFromField()
 
     const auto image = m_image.lock();
 
-    const bool visibility = image->getField(
-        data::fieldHelper::Image::m_distanceVisibility,
-        data::Boolean::New(
-            true
-        )
-    )->value();
-    m_isVisible = visibility;
+    m_isVisible = data::helper::MedicalImage::getDistanceVisibility(*image);
 
     for(const auto& distance : m_distances)
     {

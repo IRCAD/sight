@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ private:
     void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    typedef data::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /**
      * @brief SLOT: updates the image slice type.

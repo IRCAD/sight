@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/tools/Color.hpp>
@@ -331,7 +330,7 @@ void SNegato3D::newImage()
         const auto tf    = m_tf.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+        if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
         {
             return;
         }
@@ -342,27 +341,32 @@ void SNegato3D::newImage()
         this->createPlanes(spacing, origin);
 
         // Update Slice
-        const auto imgSize       = image->getSize();
-        const auto axialIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_axialSliceIndexId
-        );
-        SIGHT_INFO_IF("Axial Idx field missing", !axialIdxField);
-        axialIdx = axialIdxField
-                   ? static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2] / 2);
+        const auto imgSize = image->getSize();
+        namespace imHelper = data::helper::MedicalImage;
 
-        const auto frontalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_frontalSliceIndexId
-        );
-        SIGHT_INFO_IF("Frontal Idx field missing", !frontalIdxField);
-        frontalIdx = frontalIdxField
-                     ? static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1] / 2);
+        auto axialIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL);
+        // -1 means that the field is missing.
+        if(axialIdx <= -1)
+        {
+            SIGHT_INFO("Axial Idx field missing");
+            axialIdx = static_cast<std::int64_t>(imgSize[2] / 2);
+        }
 
-        const auto sagittalIdxField = image->getField<data::Integer>(
-            data::fieldHelper::Image::m_sagittalSliceIndexId
-        );
-        SIGHT_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
-        sagittalIdx = sagittalIdxField
-                      ? static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0] / 2);
+        auto frontalIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL);
+        // -1 means that the field is missing.
+        if(frontalIdx <= -1)
+        {
+            SIGHT_INFO("Axial Idx field missing");
+            frontalIdx = static_cast<std::int64_t>(imgSize[1] / 2);
+        }
+
+        auto sagittalIdx = imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL);
+        // -1 means that the field is missing.
+        if(sagittalIdx <= -1)
+        {
+            SIGHT_INFO("Axial Idx field missing");
+            sagittalIdx = static_cast<std::int64_t>(imgSize[0] / 2);
+        }
     }
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
@@ -628,7 +632,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
         {
             const auto image = m_image.lock();
 
-            if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+            if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
             {
                 return;
             }

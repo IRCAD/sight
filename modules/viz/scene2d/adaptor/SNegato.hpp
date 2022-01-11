@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -158,8 +158,10 @@ private:
 
     QGraphicsItemGroup* m_layer;
 
+    using orientation_t = data::helper::MedicalImage::orientation_t;
+
     /// The current orientation of the negato
-    data::helper::MedicalImage::Orientation m_orientation;
+    orientation_t m_orientation;
 
     /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;
@@ -172,13 +174,16 @@ private:
 
     data::helper::TransferFunction m_helperTF;
 
-    data::helper::MedicalImage m_helperImg;
-
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";
 
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
     sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+
+    /// Stores current slice index on each orientation.
+    std::int64_t m_axialIndex {-1};
+    std::int64_t m_frontalIndex {-1};
+    std::int64_t m_sagittalIndex {-1};
 };
 
 } // namespace adaptor

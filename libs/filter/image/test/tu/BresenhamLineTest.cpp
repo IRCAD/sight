@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,11 +55,8 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{0, 0, 0}};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{0, 0, 1024}};
 
-        const data::helper::MedicalImage::Orientation SAGITAL =
-            data::helper::MedicalImage::X_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(SAGITAL, START_POINT, END_POINT);
+            filter::image::BresenhamLine::draw(BresenhamLine::Orientation::X_AXIS, START_POINT, END_POINT);
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(size_t(END_POINT[2] - START_POINT[2] + 1), result.size());
@@ -80,11 +77,12 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{25, 2057, 3}};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{25, 1313, 3}};
 
-        const data::helper::MedicalImage::Orientation AXIAL =
-            data::helper::MedicalImage::Z_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(AXIAL, START_POINT, END_POINT);
+            filter::image::BresenhamLine::draw(
+                filter::image::BresenhamLine::Orientation::Z_AXIS,
+                START_POINT,
+                END_POINT
+            );
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(size_t(START_POINT[1] - END_POINT[1] + 1), result.size());
@@ -105,11 +103,12 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{90, 67, 68}};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{90, 67, 54}};
 
-        const data::helper::MedicalImage::Orientation FRONTAL =
-            data::helper::MedicalImage::Y_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(FRONTAL, START_POINT, END_POINT);
+            filter::image::BresenhamLine::draw(
+                filter::image::BresenhamLine::Orientation::Y_AXIS,
+                START_POINT,
+                END_POINT
+            );
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(size_t(START_POINT[2] - END_POINT[2] + 1), result.size());
@@ -128,11 +127,12 @@ void BresenhamLineTest::straightLineTest()
     {
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{90, 67, 68}};
 
-        const data::helper::MedicalImage::Orientation FRONTAL =
-            data::helper::MedicalImage::Y_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(FRONTAL, START_POINT, START_POINT);
+            filter::image::BresenhamLine::draw(
+                filter::image::BresenhamLine::Orientation::Y_AXIS,
+                START_POINT,
+                START_POINT
+            );
 
         CPPUNIT_ASSERT(!result.empty());
         CPPUNIT_ASSERT_EQUAL(size_t(1), result.size());
@@ -149,11 +149,12 @@ void BresenhamLineTest::obliqueLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{1, 1, 42}};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{11, 5, 42}};
 
-        const data::helper::MedicalImage::Orientation AXIAL =
-            data::helper::MedicalImage::Z_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(AXIAL, START_POINT, END_POINT);
+            filter::image::BresenhamLine::draw(
+                filter::image::BresenhamLine::Orientation::Z_AXIS,
+                START_POINT,
+                END_POINT
+            );
 
         CPPUNIT_ASSERT(!result.empty());
 
@@ -186,11 +187,12 @@ void BresenhamLineTest::obliqueLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{1, 4, 1}};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{1, 2, 5}};
 
-        const data::helper::MedicalImage::Orientation SAGITAL =
-            data::helper::MedicalImage::X_AXIS;
-
         const filter::image::BresenhamLine::PathType result =
-            filter::image::BresenhamLine::draw(SAGITAL, START_POINT, END_POINT);
+            filter::image::BresenhamLine::draw(
+                filter::image::BresenhamLine::Orientation::X_AXIS,
+                START_POINT,
+                END_POINT
+            );
 
         CPPUNIT_ASSERT(!result.empty());
 

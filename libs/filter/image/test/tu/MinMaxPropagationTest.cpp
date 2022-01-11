@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "MinMaxPropagationTest.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/MinMaxPropagation.hpp>
 
@@ -52,7 +52,7 @@ static void drawCube(data::Image::sptr image, const std::uint8_t value)
     const auto dumpLock = image->lock();
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(image, value);
+        data::helper::MedicalImage::getPixelInImageSpace(image, value);
 
     for(size_t x = 10 ; x < 20 ; ++x)
     {
@@ -105,7 +105,7 @@ void MinMaxPropagationTest::minPropagTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
@@ -127,7 +127,7 @@ void MinMaxPropagationTest::minPropagTest()
     value = 3;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
@@ -152,7 +152,7 @@ void MinMaxPropagationTest::minPropagTest()
     value = 4;
 
     bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MIN);
 
@@ -191,7 +191,7 @@ void MinMaxPropagationTest::maxPropagTest()
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
@@ -209,7 +209,7 @@ void MinMaxPropagationTest::maxPropagTest()
     seed  = {{{0, 0, 0}}};
     value = 2;
 
-    bufferValue = data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+    bufferValue = data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 500, true, MinMaxPropagation::MAX);
 
@@ -255,7 +255,7 @@ void MinMaxPropagationTest::radiusTest()
     std::uint8_t value = 3;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::fieldHelper::MedicalImageHelpers::getPixelInImageSpace(imageIn, value);
+        data::helper::MedicalImage::getPixelInImageSpace(imageIn, value);
 
     propagator.propagate(seed, bufferValue.get(), 3.5, true, MinMaxPropagation::MIN);
 

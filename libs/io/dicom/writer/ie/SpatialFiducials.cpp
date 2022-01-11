@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 
 #include <core/tools/dateAndTime.hpp>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
@@ -160,8 +160,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 
 void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems> sequence)
 {
-    data::PointList::sptr pointList =
-        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
     if(pointList)
     {
         unsigned int index = 0;
@@ -177,8 +176,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
             io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x0310>(ssIdentifier.str(), fiducialItemDataset);
 
             // Fiducial Description - Type 3
-            std::string label =
-                point->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+            std::string label = point->getLabel();
             io::dicom::helper::DicomDataWriter::setTagValue<0x0070, 0x030F>(label, fiducialItemDataset);
 
             // Shape Type - Type 1

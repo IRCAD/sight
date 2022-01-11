@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -187,12 +187,12 @@ void Plane::initializeMaterial()
 
         m_borderMaterial = ::Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", RESOURCE_GROUP);
         m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
-        if(m_orientation == data::helper::MedicalImage::Orientation::X_AXIS)
+        if(m_orientation == OrientationMode::X_AXIS)
         {
             m_borderMaterial->setAmbient(::Ogre::ColourValue::Blue);
             m_borderMaterial->setDiffuse(::Ogre::ColourValue::Blue);
         }
-        else if(m_orientation == data::helper::MedicalImage::Orientation::Y_AXIS)
+        else if(m_orientation == OrientationMode::Y_AXIS)
         {
             m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
             m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);
@@ -236,7 +236,7 @@ void Plane::initializePlane()
     // Mesh plane instanciation:
     // Y is the default upVector,
     // so if we want a plane which normal is the Y unit vector we have to create it differently.
-    if(m_orientation == data::helper::MedicalImage::Orientation::Y_AXIS)
+    if(m_orientation == OrientationMode::Y_AXIS)
     {
         m_slicePlane = meshManager.createPlane(
             m_slicePlaneName,
@@ -282,7 +282,7 @@ void Plane::initializePlane()
         m_border->estimateVertexCount(5);
         m_border->begin(m_borderMaterial, ::Ogre::RenderOperation::OT_LINE_STRIP);
 
-        if(m_orientation == data::helper::MedicalImage::Orientation::X_AXIS)
+        if(m_orientation == OrientationMode::X_AXIS)
         {
             m_border->position(::Ogre::Vector3(0.f, -m_height / 2.f, -m_width / 2.f));
             m_border->position(::Ogre::Vector3(0.f, m_height / 2.f, -m_width / 2.f));
@@ -296,7 +296,7 @@ void Plane::initializePlane()
                 )
             );
         }
-        else if(m_orientation == data::helper::MedicalImage::Orientation::Y_AXIS)
+        else if(m_orientation == OrientationMode::Y_AXIS)
         {
             m_border->position(::Ogre::Vector3(-m_width / 2.f, 0.f, -m_height / 2.f));
             m_border->position(::Ogre::Vector3(m_width / 2.f, 0.f, -m_height / 2.f));
@@ -491,12 +491,12 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
     if(m_displayBorder)
     {
-        if(m_orientation == data::helper::MedicalImage::Orientation::X_AXIS)
+        if(m_orientation == OrientationMode::X_AXIS)
         {
             m_borderMaterial->setAmbient(::Ogre::ColourValue::Red);
             m_borderMaterial->setDiffuse(::Ogre::ColourValue::Red);
         }
-        else if(m_orientation == data::helper::MedicalImage::Orientation::Y_AXIS)
+        else if(m_orientation == OrientationMode::Y_AXIS)
         {
             m_borderMaterial->setAmbient(::Ogre::ColourValue::Green);
             m_borderMaterial->setDiffuse(::Ogre::ColourValue::Green);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,11 @@
 
 #include "modules/viz/scene2d/processing/SComputeHistogram.hpp"
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 namespace sight::module::viz::scene2d
 {
+
 namespace processing
 {
 
@@ -57,24 +58,27 @@ struct ComputeHistogramFunctor
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
 
-        data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        data::helper::MedicalImage::getMinMax(image, min, max);
         SIGHT_ASSERT("Wrong image", max > min);
-        if( max > min )
+        if(max > min)
         {
-            histogram->initialize( static_cast<float>(min), static_cast<float>(max),
-                                   static_cast<float>(param.binsWidth) );
+            histogram->initialize(
+                static_cast<float>(min),
+                static_cast<float>(max),
+                static_cast<float>(param.binsWidth)
+            );
 
             auto itr          = image->begin<IMAGETYPE>();
             const auto itrEnd = image->end<IMAGETYPE>();
 
-            for(; itr != itrEnd; ++itr)
+            for( ; itr != itrEnd ; ++itr)
             {
-                histogram->addPixel( static_cast< float >( *itr ) );
+                histogram->addPixel(static_cast<float>(*itr));
             }
         }
-
     }
 };
 
-}   // namespace processing
-}   // namespace sight::module::viz::scene2d
+} // namespace processing
+
+} // namespace sight::module::viz::scene2d

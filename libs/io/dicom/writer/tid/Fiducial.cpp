@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 
 #include <core/tools/Stringizer.hpp>
 
-#include <data/fieldHelper/Image.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
@@ -79,8 +79,7 @@ void Fiducial::createNodes(
     bool useSCoord3D
 )
 {
-    data::PointList::sptr pointList =
-        m_object->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
     if(pointList)
     {
         unsigned int id = 1;
@@ -134,8 +133,7 @@ void Fiducial::createFiducial(
     rootNode->addSubNode(uidNode);
 
     // Create Fiducial intent node
-    const std::string label =
-        point->getField<data::String>(data::fieldHelper::Image::m_labelId)->value();
+    const std::string label = point->getLabel();
     SPTR(io::dicom::container::sr::DicomSRTextNode) intentNode =
         std::make_shared<io::dicom::container::sr::DicomSRTextNode>(
             io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"),

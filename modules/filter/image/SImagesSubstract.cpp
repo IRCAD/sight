@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,6 @@
 #include <core/com/Signal.hxx>
 
 #include <core/spyLog.hpp>
-
-#include <data/fieldHelper/Image.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 

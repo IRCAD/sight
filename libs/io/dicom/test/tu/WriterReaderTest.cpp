@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,7 @@
 #include <core/tools/System.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
@@ -193,9 +192,8 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     data::Image::sptr image = imgSeries->getImage();
 
     // Add landmarks
-    data::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
-    data::PointList::sptr landmarks =
-        image->getField<data::PointList>(data::fieldHelper::Image::m_imageLandmarksId);
+    data::helper::MedicalImage::checkLandmarks(image);
+    data::PointList::sptr landmarks    = data::helper::MedicalImage::getLandmarks(*image);
     const data::Image::Spacing spacing = image->getSpacing();
     const data::Image::Origin origin   = image->getOrigin();
     const data::Point::sptr point      = data::Point::New(
@@ -203,14 +201,14 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
         1.2 + origin[1],
         4.5 + origin[2]
     );
-    point->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label1"));
+    point->setLabel("Label1");
     landmarks->getPoints().push_back(point);
     data::Point::sptr point2 = data::Point::New(
         1.2 + origin[0],
         2.4 + origin[1],
         0.3 + origin[2]
     );
-    point2->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label2"));
+    point2->setLabel("Label2");
     landmarks->getPoints().push_back(point2);
     const data::Image::Size size   = image->getSize();
     const data::Point::sptr point3 = data::Point::New(
@@ -218,7 +216,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
         2.4 + origin[1],
         static_cast<double>(size[2] - 1) * spacing[2] + origin[2]
     );
-    point3->setField(data::fieldHelper::Image::m_labelId, data::String::New("Label3"));
+    point3->setLabel("Label3");
     landmarks->getPoints().push_back(point3);
 
     // Add distance
@@ -232,16 +230,18 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     pl->getPoints().push_back(pt1);
     pl->getPoints().push_back(pt2);
 
-    data::Vector::sptr vectDist;
-    vectDist = image->setDefaultField<data::Vector>(
-        data::fieldHelper::Image::m_imageDistancesId,
-        data::Vector::New()
-    );
+    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
+
+    if(!vectDist)
+    {
+        vectDist = data::Vector::New();
+        data::helper::MedicalImage::setDistances(*image, vectDist);
+    }
+
     vectDist->getContainer().push_back(pl);
 
-    image->setField("ShowLandmarks", data::Boolean::New(true));
-    image->setField("ShowDistances", data::Boolean::New(true));
-
+    data::helper::MedicalImage::setDistanceVisibility(*image, true);
+    data::helper::MedicalImage::setLandmarksVisibility(*image, true);
     // Update Reconstruction
     data::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
     data::Mesh::sptr mesh          = rec->getMesh();

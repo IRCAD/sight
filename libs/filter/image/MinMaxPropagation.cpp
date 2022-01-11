@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <io/itk/itk.hpp>
@@ -217,7 +217,7 @@ public:
             reinterpret_cast<data::Image::BufferType*>(
                 m_roi->getPixel(index[0] + index[1] * size[0] + index[2] * size[0] * size[1]));
 
-        return !data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roi->getType().sizeOf());
+        return !data::helper::MedicalImage::isBufNull(roiVal, m_roi->getType().sizeOf());
     }
 
 private:

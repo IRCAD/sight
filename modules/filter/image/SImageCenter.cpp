@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
@@ -68,7 +68,7 @@ void SImageCenter::updating()
 
     SIGHT_ASSERT("Missing image '" << s_IMAGE_IN << "'", image);
 
-    const bool imageValidity = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+    const bool imageValidity = data::helper::MedicalImage::checkImageValidity(image.get_shared());
 
     if(!imageValidity)
     {
