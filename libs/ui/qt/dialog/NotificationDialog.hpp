@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2020-2022 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -61,6 +61,17 @@ public:
     /// Destroys the Container.
     virtual ~Container()
     {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setPosition(std::function<QPoint(QWidget*)> _position, QWidget* _parent)
+    {
+        QPropertyAnimation* a = new QPropertyAnimation(this, "pos");
+        a->setDuration(500);
+        a->setEndValue(m_position(this->parentWidget()));
+        a->setEasingCurve(QEasingCurve::OutBack);
+        a->start(QPropertyAnimation::DeleteWhenStopped);
     }
 
     /**
@@ -214,10 +225,17 @@ public:
     /// Closes the popup (use a fadeout effect).
     UI_QT_API void close() const override;
 
+    /// Move the notification to the lower index
+    UI_QT_API void moveDown() override;
+
 private:
+
+    std::function<QPoint(QWidget*)> computePosition();
 
     /// Pointer to the Popup QLabel.
     QPointer<ClickableQLabel> m_msgBox {nullptr};
+    QPointer<Container> m_msgContainer {nullptr};
+    QPointer<QWidget> m_parent {nullptr};
 };
 
 } // namespace dialog.

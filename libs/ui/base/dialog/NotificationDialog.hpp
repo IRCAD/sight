@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -123,11 +123,17 @@ public:
     /// Closes the notification.
     UI_BASE_API void close() const override;
 
+    /// Move the notification to the lower index
+    UI_BASE_API void moveDown() override;
+
     /**
      * @brief Sets the parent container.
      * @param _container const pointer to a ui::base::container::fwContainer.
      */
     UI_BASE_API void setContainer(ui::base::container::fwContainer::csptr _container) override;
+
+    /// Define the callback called when the dialog is closed
+    UI_BASE_API void setClosedCallback(std::function<void()> f) override;
 
 protected:
 

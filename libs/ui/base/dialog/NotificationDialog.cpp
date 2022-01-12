@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -245,6 +245,18 @@ void NotificationDialog::close() const
 
 //-----------------------------------------------------------------------------
 
+void NotificationDialog::moveDown()
+{
+    if(m_implementation)
+    {
+        std::function<void()> func = std::bind(&INotificationDialog::moveDown, m_implementation);
+        std::shared_future<void> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
+        f.wait();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 {
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
@@ -254,6 +266,22 @@ void NotificationDialog::setContainer(container::fwContainer::csptr _container)
                 if(m_implementation)
                 {
                     m_implementation->setContainer(_container);
+                }
+            })
+    ).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void NotificationDialog::setClosedCallback(std::function<void()> f)
+{
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        std::function<void()>(
+            [&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setClosedCallback(f);
                 }
             })
     ).wait();

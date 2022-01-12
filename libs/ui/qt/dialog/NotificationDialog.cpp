@@ -99,12 +99,12 @@ NotificationDialog::~NotificationDialog()
 void NotificationDialog::show()
 {
     // Checks if we have a Parent widget.
-    QWidget* parent = qApp->activeWindow();
+    m_parent = qApp->activeWindow();
 
     // If the activie window is a slide bar, we need to retrieve the native parent.
-    if(parent && parent->objectName() == "SlideBar")
+    if(m_parent && m_parent->objectName() == "SlideBar")
     {
-        parent = parent->nativeParentWidget();
+        m_parent = m_parent->nativeParentWidget();
     }
 
     ui::qt::container::QtContainer::csptr parentContainer =
@@ -113,11 +113,11 @@ void NotificationDialog::show()
     // Replaces the activeWindow by the parentContainer if exists.
     if(parentContainer)
     {
-        parent = parentContainer->getQtContainer();
+        m_parent = parentContainer->getQtContainer();
     }
 
     // If there is no parent here, we get the top one.
-    if(!parent)
+    if(!m_parent)
     {
         SIGHT_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
         return;
@@ -199,8 +199,115 @@ void NotificationDialog::show()
 
     // Creates the getPosition function
     std::function<QPoint(QWidget*)> position;
-    const int margin = 5;
 
+    position = this->computePosition();
+
+    // Creates the main translucent auto-movable container.
+    m_msgContainer = new Container(position, m_parent);
+    m_msgContainer->setGraphicsEffect(effect);
+    m_msgContainer->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+    m_msgContainer->setAttribute(Qt::WA_TranslucentBackground);
+    m_msgContainer->setContentsMargins(0, 0, 0, 0);
+    m_msgContainer->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
+    m_msgContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+
+    // Moves the container when the main window is moved or is resized.
+    m_parent->installEventFilter(m_msgContainer);
+
+    // Gives it a layout with the clickable label.
+    QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    m_msgContainer->setLayout(layout);
+    layout->addWidget(m_msgBox);
+
+    if(display_show_more)
+    {
+        QMessageBox::Icon icon = QMessageBox::NoIcon;
+        if(m_notificationType == INotificationDialog::Type::FAILURE)
+        {
+            icon = QMessageBox::Critical;
+        }
+        else if(m_notificationType == INotificationDialog::Type::INFO)
+        {
+            icon = QMessageBox::Information;
+        }
+
+        QMessageBox* full_message_box = new QMessageBox(
+            icon,
+            "Read more ...",
+            QString::fromStdString(m_fullMessage),
+            QMessageBox::Ok,
+            qApp->activeWindow()
+        );
+
+        QObject::connect(m_msgBox, &ClickableQLabel::clicked, full_message_box, &QMessageBox::exec);
+    }
+
+    // Fadeout when  double clicked.
+    QObject::connect(m_msgBox, &ClickableQLabel::doubleClicked, m_msgBox, &ClickableQLabel::fadeout);
+    QObject::connect(
+        m_msgBox,
+        &ClickableQLabel::destroyed,
+        [ = ]()
+            {
+                if(m_closedCallBack)
+                {
+                    m_closedCallBack();
+                }
+            });
+
+    // Displays it.
+    m_msgContainer->show();
+
+    if(m_duration > 0)
+    {
+        // Launchs a timer and fadeout before closing.
+        QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool NotificationDialog::isVisible() const
+{
+    if(!m_msgBox)
+    {
+        return false;
+    }
+
+    return m_msgBox->isVisible();
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::close() const
+{
+    if(m_msgBox)
+    {
+        // Closing after a fade out effect.
+        m_msgBox->fadeout();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::moveDown()
+{
+    if(m_msgContainer && m_index > 0)
+    {
+        --m_index;
+        auto position = this->computePosition();
+        m_msgContainer->setPosition(position, m_parent);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
+{
+    std::function<QPoint(QWidget*)> position;
+    const int margin = 5;
     if(m_position == Position::CENTERED)
     {
         position = [ = ](QWidget* _parent) -> QPoint
@@ -302,79 +409,7 @@ void NotificationDialog::show()
                    };
     }
 
-    // Creates the main translucent auto-movable container.
-    Container* const container = new Container(position, parent);
-    container->setGraphicsEffect(effect);
-    container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-    container->setAttribute(Qt::WA_TranslucentBackground);
-    container->setContentsMargins(0, 0, 0, 0);
-    container->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
-    container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-
-    // Moves the container when the main window is moved or is resized.
-    parent->installEventFilter(container);
-
-    // Gives it a layout with the clickable label.
-    QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    container->setLayout(layout);
-    layout->addWidget(m_msgBox);
-
-    if(display_show_more)
-    {
-        QMessageBox::Icon icon = QMessageBox::NoIcon;
-        if(m_notificationType == INotificationDialog::Type::FAILURE)
-        {
-            icon = QMessageBox::Critical;
-        }
-        else if(m_notificationType == INotificationDialog::Type::INFO)
-        {
-            icon = QMessageBox::Information;
-        }
-
-        QMessageBox* full_message_box = new QMessageBox(
-            icon,
-            "Read more ...",
-            QString::fromStdString(m_fullMessage),
-            QMessageBox::Ok,
-            qApp->activeWindow()
-        );
-
-        QObject::connect(m_msgBox, &ClickableQLabel::clicked, full_message_box, &QMessageBox::exec);
-    }
-
-    // Fadeout when clicked.
-    QObject::connect(m_msgBox, &ClickableQLabel::doubleClicked, m_msgBox, &ClickableQLabel::fadeout);
-
-    // Displays it.
-    container->show();
-
-    // Launchs a timer and fadeout before closing.
-    QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
-}
-
-//------------------------------------------------------------------------------
-
-bool NotificationDialog::isVisible() const
-{
-    if(!m_msgBox)
-    {
-        return false;
-    }
-
-    return m_msgBox->isVisible();
-}
-
-//------------------------------------------------------------------------------
-
-void NotificationDialog::close() const
-{
-    if(m_msgBox)
-    {
-        // Closing after a fade out effect.
-        m_msgBox->fadeout();
-    }
+    return position;
 }
 
 //------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -115,19 +115,19 @@ private:
     void setEnumParameter(std::string _val, std::string _key);
 
     /**
-     * @brief Slot pop info notification
+     * @brief Slot: pop info notification
      * @param _message text of the notification
      */
     void popInfo(std::string _message);
 
     /**
-     * @brief Slot pop success notification
+     * @brief Slot: pop success notification
      * @param _message text of the notification
      */
     void popSuccess(std::string _message);
 
     /**
-     * @brief Slot pop failure notification
+     * @brief Slot: pop failure notification
      * @param _message text of the notification
      */
     void popFailure(std::string _message);
@@ -137,7 +137,13 @@ private:
      * @param _message message to display.
      * @param _type type of the notification.
      */
-    void showNotification(const std::string& _message, sight::ui::base::dialog::NotificationDialog::Type _type);
+    void showNotification(
+        const std::string& _message,
+        sight::ui::base::dialog::NotificationDialog::Type _type
+    );
+
+    /// Called when a notification is closed
+    void onNotificationClosed(const sight::ui::base::dialog::NotificationDialog::sptr& notif);
 
     /// Max number of displayed notifications.
     std::uint8_t m_maxStackedNotifs {3};
@@ -156,10 +162,7 @@ private:
     std::string m_defaultMessage = "Notification";
 
     /// Vector of displayed NotificationDialog, resized with "m_maxStackedNotifs" at start.
-    std::vector<sight::ui::base::dialog::NotificationDialog::sptr> m_popups {};
-
-    /// Queue of index in m_popups to remove oldest if m_maxStackedNotifs is reached.
-    std::queue<size_t> m_indexQueue;
+    std::list<sight::ui::base::dialog::NotificationDialog::sptr> m_popups {};
 
     /// fwContainer where notifications will be displayed in, nullptr by default.
     sight::ui::base::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};

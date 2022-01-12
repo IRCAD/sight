@@ -122,6 +122,9 @@ public:
     /// Closes the notification, needs to be reimplemented.
     UI_BASE_API virtual void close() const = 0;
 
+    /// Move the notification to the lower index
+    UI_BASE_API virtual void moveDown() = 0;
+
     /**
      * @brief Attaches a parent container to the notification.
      * @param _container the parent container, nullptr is handled.
@@ -129,6 +132,12 @@ public:
     UI_BASE_API virtual void setContainer(ui::base::container::fwContainer::csptr _container)
     {
         m_parentContainer = _container;
+    }
+
+    /// Define the callback called when the dialog is closed
+    UI_BASE_API virtual void setClosedCallback(std::function<void()> f)
+    {
+        m_closedCallBack = f;
     }
 
 protected:
@@ -157,6 +166,8 @@ protected:
 
     /// Pointer to the parent container, default nullptr.
     ui::base::container::fwContainer::csptr m_parentContainer {nullptr};
+
+    std::function<void()> m_closedCallBack;
 };
 
 } //namespace dialog
