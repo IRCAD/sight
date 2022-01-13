@@ -213,12 +213,14 @@ public:
     /// Returns the compile-time hardcoded password
     FINLINE static secure_string get_default_password()
     {
+#if defined(SIGHT_DEFAULT_PASSWORD)
         if constexpr(has_default_password())
         {
             constexpr auto obfuscated_password = OBFUSCATED_STR((SIGHT_DEFAULT_PASSWORD));
             return secure_string(obfuscated_password);
         }
         else
+#endif
         {
             throw std::runtime_error("No default password");
         }

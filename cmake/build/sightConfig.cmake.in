@@ -54,6 +54,9 @@ if(NOT SIGHT_CONFIGURED)
         endif()
         list(APPEND SIGHT_COMPONENTS sight::${sight_comp})
     endforeach()
+    
+    set(SIGHT_DEFAULT_PASSWORD "@SIGHT_DEFAULT_PASSWORD@")
+    add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
 endif()
 
 foreach(sight_comp ${sight_FIND_COMPONENTS})
