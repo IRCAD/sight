@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
 
+#include <QApplication>
 #include <QDir>
 #include <QEvent>
 #include <QPointer>
@@ -207,6 +208,8 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init(int& argc, char** argv)
 {
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
 #ifdef WIN32
     // To get Qt initialized properly, we need to find its plugins
     // This is difficult to do, especially because the location of the deps is different whether
