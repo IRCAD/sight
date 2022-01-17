@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 
 #include <QApplication>
 #include <QBoxLayout>
+#include <QMessageBox>
 #include <QTimer>
 
 namespace sight::ui::qt
@@ -35,6 +36,53 @@ namespace sight::ui::qt
 
 namespace dialog
 {
+
+//------------------------------------------------------------------------------
+
+// Checks if bounding rectange of a message fit into _acceptable_size.
+bool checkSizeOfMessage(const QString& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
+{
+    const auto rect = _fm.boundingRect(
+        QRect(0, 0, _acceptable_size.width(), _acceptable_size.height()),
+        Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignVCenter,
+        _message
+    );
+
+    if(rect.width() >= _acceptable_size.width() || rect.height() >= _acceptable_size.height())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+// Find where to trunc a message, to fit _acceptable_size. Calls checkSizeOfMessage.
+size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
+{
+    // if size is > 100, start trunc at 100 to be faster.
+    const auto initial_size = _message.size() < 100 ? _message.size() : 100;
+
+    bool fit = false;
+
+    // initialize trunc_size to initial_size + 1
+    size_t trunc_size = initial_size + 1;
+    do
+    {
+        // first time == initial_size
+        --trunc_size;
+        // trunc _message
+        const auto trunc_msg = _message.substr(0, trunc_size);
+        // check if it fits.
+        fit = checkSizeOfMessage(QString::fromStdString(trunc_msg), _fm, _acceptable_size);
+    }
+    while(!fit);
+
+    return trunc_size;
+}
+
+//------------------------------------------------------------------------------
 
 NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key)
 {
@@ -53,7 +101,7 @@ void NotificationDialog::show()
     // Checks if we have a Parent widget.
     QWidget* parent = qApp->activeWindow();
 
-    // If the activie window is a slide bar, we need to retrieve the nativ parent.
+    // If the activie window is a slide bar, we need to retrieve the native parent.
     if(parent && parent->objectName() == "SlideBar")
     {
         parent = parent->nativeParentWidget();
@@ -75,12 +123,32 @@ void NotificationDialog::show()
         return;
     }
 
-    // Creates the clikable label.
+    // Creates the clickable label.
     m_msgBox = new ClickableQLabel();
     m_msgBox->setWordWrap(true);
     m_msgBox->setScaledContents(true);
-    m_msgBox->setText(QString::fromStdString(m_message));
     m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    m_fullMessage = m_message;
+    bool display_show_more = false;
+
+    const int w = static_cast<int>(m_size[0]);
+    const int h = static_cast<int>(m_size[1]);
+
+    // Acceptable size is w, h with 10% margin removal.
+    const QSize acceptable_size = {w - static_cast<int>(0.1 * w), h - static_cast<int>(0.1 * h)};
+
+    const auto trunc_size = truncMessageToFit(m_fullMessage, QFontMetrics(m_msgBox->font()), acceptable_size);
+
+    if(trunc_size != m_fullMessage.size())
+    {
+        display_show_more = true;
+        const std::string read_more = "...";
+        const std::string msg       = m_fullMessage.substr(0, trunc_size - read_more.size());
+        m_message = msg + read_more;
+    }
+
+    m_msgBox->setText(QString::fromStdString(m_message));
 
     // If no styleSheet is used.
     if(qApp->styleSheet().isEmpty())
@@ -155,7 +223,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX - static_cast<int>(m_size[0] / 2),
-                           parentY + margin + (height * m_index)
+                           parentY + margin + (height * static_cast<int>(m_index))
                        );
                    };
     }
@@ -169,7 +237,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX - static_cast<int>(m_size[0] / 2),
-                           parentY - margin - (height * (m_index + 1))
+                           parentY - margin - (height * (static_cast<int>(m_index) + 1))
                        );
                    };
     }
@@ -184,7 +252,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX + margin,
-                           parentY + margin + (height * m_index)
+                           parentY + margin + (height * static_cast<int>(m_index))
                        );
                    };
     }
@@ -199,7 +267,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX - margin - static_cast<int>(m_size[0]),
-                           parentY + margin + (height * m_index)
+                           parentY + margin + (height * static_cast<int>(m_index))
                        );
                    };
     }
@@ -214,7 +282,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX + margin,
-                           parentY - (height * (m_index + 1))
+                           parentY - (height * (static_cast<int>(m_index) + 1))
                        );
                    };
     }
@@ -229,7 +297,7 @@ void NotificationDialog::show()
 
                        return QPoint(
                            parentX - margin - static_cast<int>(m_size[0]),
-                           parentY - (height * (m_index + 1))
+                           parentY - (height * (static_cast<int>(m_index) + 1))
                        );
                    };
     }
@@ -253,8 +321,31 @@ void NotificationDialog::show()
     container->setLayout(layout);
     layout->addWidget(m_msgBox);
 
+    if(display_show_more)
+    {
+        QMessageBox::Icon icon = QMessageBox::NoIcon;
+        if(m_notificationType == INotificationDialog::Type::FAILURE)
+        {
+            icon = QMessageBox::Critical;
+        }
+        else if(m_notificationType == INotificationDialog::Type::INFO)
+        {
+            icon = QMessageBox::Information;
+        }
+
+        QMessageBox* full_message_box = new QMessageBox(
+            icon,
+            "Read more ...",
+            QString::fromStdString(m_fullMessage),
+            QMessageBox::Ok,
+            qApp->activeWindow()
+        );
+
+        QObject::connect(m_msgBox, &ClickableQLabel::clicked, full_message_box, &QMessageBox::exec);
+    }
+
     // Fadeout when clicked.
-    QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
+    QObject::connect(m_msgBox, &ClickableQLabel::doubleClicked, m_msgBox, &ClickableQLabel::fadeout);
 
     // Displays it.
     container->show();

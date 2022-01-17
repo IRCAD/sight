@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,6 +126,10 @@ void SDisplayTestNotifications::setBoolParameter(bool _val, std::string _key)
     {
         m_useSNotifier = _val;
     }
+    else if(_key == "reachMaxCharacters")
+    {
+        m_reachMaxCharacters = _val;
+    }
     else
     {
         SIGHT_ERROR("Key '" + _key + "' is not handled.");
@@ -150,6 +154,9 @@ void SDisplayTestNotifications::configuring()
 
 void SDisplayTestNotifications::updating()
 {
+    static std::uint64_t count = 1;
+
+    std::string message = "Notification Test " + std::to_string(count) + " !";
     if(m_useSNotifier)
     {
         // Mode 1: You use the SNotifier service that will display for you the notifications, you need to emit the
@@ -157,7 +164,19 @@ void SDisplayTestNotifications::updating()
         // Notification will always be displayed at the same place,
         // and will be queued if several notifications are displayed at the same time.
 
-        const std::string message = "Notification Test !";
+        if(m_reachMaxCharacters)
+        {
+            message = "This notification " + std::to_string(count) + " will exceeds the maximum allowed characters ! " \
+                                                                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
+                                                                     "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " \
+                                                                     "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " \
+                                                                     "nisi ut aliquip ex ea commodo consequat. " \
+                                                                     "Duis aute irure dolor in reprehenderit in voluptate " \
+                                                                     "velit esse cillum dolore eu fugiat nulla pariatur. " \
+                                                                     "Excepteur sint occaecat cupidatat non proident, " \
+                                                                     "sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        }
+
         if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
         {
             this->notify(NotificationType::SUCCESS, message);
@@ -177,46 +196,54 @@ void SDisplayTestNotifications::updating()
         if(m_displayAll)
         {
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::TOP_LEFT
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::TOP_RIGHT
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::CENTERED_TOP
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::CENTERED
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::BOTTOM_LEFT
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::BOTTOM_RIGHT
             );
             ::dial::NotificationDialog::show(
-                "Notification Test !",
+                message,
                 m_type,
                 ::dial::NotificationDialog::Position::CENTERED_BOTTOM
             );
         }
         else
         {
-            ::dial::NotificationDialog::show("Notification Test !", m_type, m_position);
+            ::dial::NotificationDialog::show(message, m_type, m_position);
         }
     }
+
+    // Good luck to reach this one, if it is the case return to 0.
+    if(count == std::numeric_limits<std::uint64_t>::max())
+    {
+        count = 0;
+    }
+
+    ++count;
 }
 
 //------------------------------------------------------------------------------

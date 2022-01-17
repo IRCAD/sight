@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,6 +90,8 @@ private:
     bool m_displayAll {false};
     /// Use centralized Mode.
     bool m_useSNotifier {true};
+    /// To test the "Read more..." option on Notification.
+    bool m_reachMaxCharacters {false};
 };
 
 } // namespace ExNotifications

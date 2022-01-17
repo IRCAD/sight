@@ -48,6 +48,7 @@ are already displayed and where they are displayed on screen.
                         <editor/>
                         <editor/>
                         <editor/>
+                        <editor/>
                         <separator/>
                         <menuItem name="NOTIFY" />
                         <spacer />
@@ -57,6 +58,7 @@ are already displayed and where they are displayed on screen.
                 </gui>
                 <registry>
                     <editor sid="useNotifierAct" start="true" />
+                    <editor sid="maxChar" start="true" />
                     <editor sid="typeAct" start="true" />
                     <editor sid="positionAct" start="true" />
                     <menuItem sid="notifyAct" start="true" />
@@ -79,6 +81,12 @@ are already displayed and where they are displayed on screen.
             <service uid="useNotifierAct" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
+                </parameters>
+            </service>
+
+            <service uid="maxChar" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="bool" name="Reach max. characters" key="reachMaxCharacters" defaultValue="false" />
                 </parameters>
             </service>
 
@@ -158,7 +166,8 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <connect>
-                <signal>useNotifierSrv/boolChanged</signal>
+                <signal>useNotifierAct/boolChanged</signal>
+                <signal>maxChar/boolChanged</signal>
                 <slot>testNotifierSrv/setBoolParameter</slot>
             </connect>
 

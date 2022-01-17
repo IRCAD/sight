@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,6 +138,9 @@ protected:
 
     /// Message to display.
     std::string m_message;
+
+    /// Full message if doesn't fit in size of the notification popup.
+    std::string m_fullMessage;
 
     /// Type of notification (may change the background color).
     Type m_notificationType {Type::DEFAULT};

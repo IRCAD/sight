@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,8 +122,11 @@ public Q_SLOTS:
 
 Q_SIGNALS:
 
-    /// Clicked signal, emited when mousePressEvent occurs.
+    /// Clicked signal, emitted when a mouse press event (simple click) occurs.
     void clicked();
+
+    /// Double clicked signal, emitted when a mouse double click event occurs.
+    void doubleClicked();
 
 private:
 
@@ -135,6 +138,16 @@ private:
     void mousePressEvent(QMouseEvent*) override
     {
         Q_EMIT clicked();
+    }
+
+    /**
+     * @brief Handles event related to the mouse buttons.
+     *
+     * Send the signal @ref doubleClicked().
+     */
+    void mouseDoubleClickEvent(QMouseEvent*) override
+    {
+        Q_EMIT doubleClicked();
     }
 };
 
