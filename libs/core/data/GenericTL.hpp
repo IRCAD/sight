@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,20 +38,17 @@ class GenericTL : public BufferTL
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, data::Object);
+    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, Object);
 
-    typedef data::timeline::GenericObject<BUFFER_TYPE> BufferType;
+    typedef timeline::GenericObject<BUFFER_TYPE> BufferType;
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    GenericTL(data::Object::Key key);
+    GenericTL(Object::Key key);
 
     /// Destructor
     virtual ~GenericTL();
-
-    /// Defines deep copy
-    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Returns the closest buffer to the given timestamp
@@ -70,11 +67,11 @@ public:
     virtual void initPoolSize(unsigned int maxElementNum);
 
     /**
-     * @brief Returns a new data::timeline::Object with the given timestamp.
+     * @brief Returns a new timeline::Object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(data::timeline::Object) createObject(core::HiResClock::HiResClockType timestamp) override;
+    SPTR(timeline::Object) createObject(core::HiResClock::HiResClockType timestamp) override;
 
     /**
      * @brief Returns a new BufferType with the given timestamp.
@@ -84,12 +81,21 @@ public:
     SPTR(BufferType) createBuffer(core::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
+    bool isObjectValid(const CSPTR(timeline::Object)& obj) const override;
 
     /// Get/set the maximum number of objects inside a single buffer
     unsigned int getMaxElementNum() const;
 
+    /// Equality comparison operators
+    /// @{
+    bool operator==(const GenericTL& other) const noexcept;
+    bool operator!=(const GenericTL& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// maximum number of elements inside a single buffer
     unsigned int m_maxElementNum;

@@ -22,7 +22,6 @@
 #include "io/vtk/vtk.hpp"
 
 #include <data/Image.hpp>
-#include <data/ObjectLock.hpp>
 
 #include <geometry/data/MeshFunctions.hpp>
 

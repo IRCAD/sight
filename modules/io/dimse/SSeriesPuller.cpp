@@ -368,7 +368,7 @@ void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
     // Find which series to delete
     if(!m_localSeries.empty())
     {
-        for(const auto series : _removedSeries)
+        for(const auto& series : _removedSeries)
         {
             const auto it = std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID());
             if(it != m_localSeries.end())

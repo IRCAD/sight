@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,6 +57,26 @@ void EquipmentTest::institutionNameTest()
     CPPUNIT_ASSERT(m_equipment);
     m_equipment->setInstitutionName(institutionName);
     CPPUNIT_ASSERT_EQUAL(institutionName, m_equipment->getInstitutionName());
+}
+
+//------------------------------------------------------------------------------
+
+void EquipmentTest::equalityTest()
+{
+    auto equipment1 = data::Equipment::New();
+    auto equipment2 = data::Equipment::New();
+
+    CPPUNIT_ASSERT(*equipment1 == *equipment2);
+
+    equipment1->setInstitutionName("Ircad");
+    CPPUNIT_ASSERT(*equipment1 != *equipment2);
+    equipment2->setInstitutionName(equipment1->getInstitutionName());
+    CPPUNIT_ASSERT(*equipment1 == *equipment2);
+
+    // Test also deepcopy, just for fun
+    auto dicomSeries3 = data::Equipment::New();
+    dicomSeries3->deepCopy(equipment1);
+    CPPUNIT_ASSERT(*equipment1 == *dicomSeries3);
 }
 
 //------------------------------------------------------------------------------

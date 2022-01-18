@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class DATA_CLASS_API Float : public GenericField<float>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Float, data::Object);
+    SIGHT_DECLARE_CLASS(Float, Object);
 
     //------------------------------------------------------------------------------
 
@@ -56,22 +56,22 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Float(data::Object::Key key) noexcept;
+    DATA_API Float(Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~Float() noexcept;
+    DATA_API virtual ~Float() noexcept = default;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
 protected:
 
-    DATA_API Float() noexcept;
+    DATA_API Float() noexcept = default;
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 };
 
 } // namespace sight::data

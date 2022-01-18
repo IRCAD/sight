@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 #include <core/tools/Type.hpp>
 
 #include <data/Image.hpp>
-
-#include <geometry/data/Compare.hpp>
 
 // Contains helper to generate and compare images.
 namespace sight::filter::image
@@ -66,11 +64,11 @@ void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask,
     SIGHT_ASSERT("Images have not the same size", imgDest->getSize() == mask->getSize());
     SIGHT_ASSERT(
         "Images have not the same spacing",
-        geometry::data::isContainerEqual(imgDest->getSpacing(), mask->getSpacing())
+        core::tools::is_equal(imgDest->getSpacing(), mask->getSpacing())
     );
     SIGHT_ASSERT(
         "Images have not the same origin",
-        geometry::data::isContainerEqual(imgDest->getOrigin(), mask->getOrigin())
+        core::tools::is_equal(imgDest->getOrigin(), mask->getOrigin())
     );
 
     const auto imgDumpLock  = imgDest->lock();

@@ -44,6 +44,7 @@
 #include <core/mt/types.hpp>
 
 #include <core/tools/Object.hpp>
+#include <core/tools/compare.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -65,7 +66,7 @@ class DATA_CLASS_API Object : public core::tools::Object,
 {
 public:
 
-    typedef data::factory::Key Key;
+    typedef factory::Key Key;
 
     SIGHT_DECLARE_CLASS(Object, core::tools::Object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
@@ -84,7 +85,7 @@ public:
 
         Registry()
         {
-            data::registry::get()->addFactory(T::classname(), &sight::data::factory::New<T>);
+            registry::get()->addFactory(T::classname(), &factory::New<T>);
         }
     };
 
@@ -98,7 +99,7 @@ public:
     /// Key in m_signals map of signal m_sigModified
     DATA_API static const core::com::Signals::SignalKeyType s_MODIFIED_SIG;
 
-    typedef std::map<std::string, data::Object::sptr> FieldsContainerType;
+    typedef std::map<std::string, Object::sptr> FieldsContainerType;
     /// Type of signal when objects are added
     typedef core::com::Signal<void (FieldsContainerType)> AddedFieldsSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_FIELDS_SIG;
@@ -116,9 +117,9 @@ public:
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;
-    typedef std::unordered_map<FieldNameType, data::Object::sptr> FieldMapType;
+    typedef std::unordered_map<FieldNameType, Object::sptr> FieldMapType;
 
-    typedef std::unordered_map<data::Object::csptr, data::Object::sptr> DeepCopyCacheType;
+    typedef std::unordered_map<Object::csptr, Object::sptr> DeepCopyCacheType;
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -126,9 +127,9 @@ public:
      * @param[in] defaultValue Default value
      * @return defaultValue if field is not found
      */
-    DATA_API data::Object::sptr getField(
+    DATA_API Object::sptr getField(
         const FieldNameType& name,
-        data::Object::sptr defaultValue = data::Object::sptr()
+        Object::sptr defaultValue = Object::sptr()
     ) const;
 
     /**
@@ -163,7 +164,7 @@ public:
      * @param[in] name Field name
      * @return null sptr if field is not found
      */
-    DATA_API data::Object::csptr getConstField(const FieldNameType& name) const;
+    DATA_API Object::csptr getConstField(const FieldNameType& name) const;
 
     /**
      * @brief Returns fields map.
@@ -180,7 +181,7 @@ public:
      * @param[in] name Field name
      * @param[in] obj  Field
      */
-    DATA_API void setField(const FieldNameType& name, data::Object::sptr obj);
+    DATA_API void setField(const FieldNameType& name, Object::sptr obj);
 
     /**
      * @brief Replace the field map content.
@@ -197,20 +198,20 @@ public:
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    DATA_API virtual void shallowCopy(const data::Object::csptr& source);
+    DATA_API virtual void shallowCopy(const Object::csptr& source);
 
     /**
      * @brief Make a deep copy from the source
      * Calling this method may invalidate any DumpLock, RescursiveLock or helper
-     * on the object. Prefer using data::Object::copy instead.
+     * on the object. Prefer using Object::copy instead.
      */
-    DATA_API void deepCopy(const data::Object::csptr& source);
+    DATA_API void deepCopy(const Object::csptr& source);
 
     /**
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
-    DATA_API static data::Object::sptr copy(const data::Object::csptr& source);
+    DATA_API static Object::sptr copy(const Object::csptr& source);
     template<typename DATA_TYPE>
     static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) & source);
     template<typename DATA_TYPE>
@@ -221,23 +222,29 @@ public:
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    DATA_API void fieldShallowCopy(const data::Object::csptr& source);
+    DATA_API void fieldShallowCopy(const Object::csptr& source);
 
     /**
      * @brief A deep copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    DATA_API void fieldDeepCopy(const data::Object::csptr& source);
+    DATA_API void fieldDeepCopy(const Object::csptr& source);
 
     //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
-    core::mt::ReadWriteMutex& getMutex() const
+    inline core::mt::ReadWriteMutex& getMutex() const
     {
         return m_mutex;
     }
 
     DATA_API virtual ~Object();
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Object& other) const noexcept;
+    DATA_API bool operator!=(const Object& other) const noexcept;
+    /// @}
 
 protected:
 
@@ -247,9 +254,9 @@ protected:
      * @brief Internal-use methods to implement Object's deepCopy
      * @{
      */
-    DATA_API static data::Object::sptr copy(const data::Object::csptr& source, DeepCopyCacheType& cache);
-    DATA_API void fieldDeepCopy(const data::Object::csptr& source, DeepCopyCacheType& cache);
-    DATA_API virtual void cachedDeepCopy(const data::Object::csptr& source, DeepCopyCacheType& cache) = 0;
+    DATA_API static Object::sptr copy(const Object::csptr& source, DeepCopyCacheType& cache);
+    DATA_API void fieldDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache);
+    DATA_API virtual void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) = 0;
     template<typename DATA_TYPE>
     static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) & source, DeepCopyCacheType & cache);
     template<typename DATA_TYPE>
@@ -266,25 +273,25 @@ protected:
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) & source, DeepCopyCacheType & cache)
 {
-    return DATA_TYPE::dynamicCast(data::Object::copy(data::Object::csptr(source), cache));
+    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source), cache));
 }
 
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source, DeepCopyCacheType & cache)
 {
-    return DATA_TYPE::dynamicCast(data::Object::copy(data::Object::csptr(source), cache));
+    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source), cache));
 }
 
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) & source)
 {
-    return DATA_TYPE::dynamicCast(data::Object::copy(data::Object::csptr(source)));
+    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source)));
 }
 
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source)
 {
-    return DATA_TYPE::dynamicCast(data::Object::copy(data::Object::csptr(source)));
+    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source)));
 }
 
 //-----------------------------------------------------------------------------
@@ -292,7 +299,7 @@ SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source)
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::getField(const FieldNameType& name) const
 {
-    data::Object::sptr field;
+    Object::sptr field;
     field                  = this->getField(name, field);
     SPTR(DATA_TYPE) result = DATA_TYPE::dynamicCast(field);
     return result;
@@ -303,7 +310,7 @@ SPTR(DATA_TYPE) Object::getField(const FieldNameType& name) const
 template<typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::getField(const FieldNameType& name, SPTR(DATA_TYPE) defaultValue) const
 {
-    data::Object::sptr field = defaultValue;
+    Object::sptr field = defaultValue;
     field                  = this->getField(name, field);
     SPTR(DATA_TYPE) result = DATA_TYPE::dynamicCast(field);
     return result;

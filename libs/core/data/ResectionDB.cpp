@@ -111,4 +111,23 @@ void ResectionDB::addResection(const data::Resection::sptr& resection)
 
 //------------------------------------------------------------------------------
 
+bool ResectionDB::operator==(const ResectionDB& other) const noexcept
+{
+    if(!core::tools::is_equal(m_safeResection, other.m_safeResection)
+       || !core::tools::is_equal(m_resections, other.m_resections))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ResectionDB::operator!=(const ResectionDB& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // end namespace sight::data

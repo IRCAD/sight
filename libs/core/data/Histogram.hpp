@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ class DATA_CLASS_API Histogram : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Histogram, data::Object, data::factory::New<Histogram>);
+    SIGHT_DECLARE_CLASS(Histogram, Object, factory::New<Histogram>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Histogram));
 
@@ -48,16 +48,13 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Histogram(data::Object::Key key);
+    DATA_API Histogram(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Histogram();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Add the given pixel value into the histogram.
@@ -133,7 +130,16 @@ public:
     void setMaxValue(float _maxValue);
     /// @}
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Histogram& other) const noexcept;
+    DATA_API bool operator!=(const Histogram& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Histogram values.
     fwHistogramValues m_values;

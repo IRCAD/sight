@@ -46,13 +46,13 @@ namespace sight::data
 /**
  * @brief This class defines a vector of objects.
  *
- * Vector contains a vector of data::Object.
+ * Vector contains a vector of Object.
  */
 class DATA_CLASS_API Vector : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Vector, data::Object, data::factory::New<Vector>);
+    SIGHT_DECLARE_CLASS(Vector, Object, factory::New<Vector>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Vector));
 
     typedef std::vector<Object::sptr> ContainerType;
@@ -70,7 +70,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Vector(data::Object::Key key);
+    DATA_API Vector(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Vector();
@@ -109,7 +109,7 @@ public:
     ConstReferenceType at(SizeType n) const;
     /// @}
 
-    /// @brief get/set the vector of data::Object
+    /// @brief get/set the vector of Object
     /// @{
     ContainerType& getContainer();
     const ContainerType& getContainer() const;
@@ -119,14 +119,11 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
-    /// Method to initialize a data::Vector from a std::vector
+    /// Method to initialize a Vector from a std::vector
     template<class DATATYPE>
     void setDataContainer(const std::vector<SPTR(DATATYPE)>& vec);
 
-    /// Method to get a std::vector from data::Vector
+    /// Method to get a std::vector from Vector
     template<class DATATYPE>
     std::vector<SPTR(DATATYPE)> getDataContainer() const;
 
@@ -145,7 +142,16 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Vector& other) const noexcept;
+    DATA_API bool operator!=(const Vector& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     ContainerType m_container;
 };
@@ -300,7 +306,7 @@ inline std::vector<SPTR(DATATYPE)> Vector::getDataContainer() const
     std::vector<SPTR(DATATYPE)> vec;
     vec.reserve(this->size());
     SPTR(DATATYPE) castedData;
-    for(const data::Object::sptr& data : this->getContainer())
+    for(const Object::sptr& data : this->getContainer())
     {
         castedData = std::dynamic_pointer_cast<DATATYPE>(data);
         SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", castedData);

@@ -25,6 +25,7 @@
 #include "data/config.hpp"
 #include "data/Exception.hpp"
 #include "data/factory/new.hpp"
+#include "data/iterator.hpp"
 #include "data/Object.hpp"
 
 #include <core/memory/BufferObject.hpp>
@@ -117,7 +118,7 @@ namespace sight::data
 /* *INDENT-OFF* */
 /**
  * @code{.cpp}
-    data::Array::sptr array = data::Array::New();
+    Array::sptr array = Array::New();
     array->resize({1920, 1080}, core::tools::Type::s_INT16);
     auto iter          = array->begin<std::int16_t>();
     const auto iterEnd = array->end<std::int16_t>();
@@ -149,12 +150,12 @@ namespace sight::data
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API Array : public data::Object,
+class DATA_CLASS_API Array : public Object,
                              public core::memory::IBuffered
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Array, data::Object, data::factory::New<Array>);
+    SIGHT_DECLARE_CLASS(Array, Object, factory::New<Array>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Array))
 
@@ -175,7 +176,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Array(data::Object::Key key);
+    DATA_API Array(Object::Key key);
 
     DATA_API ~Array() override;
 
@@ -199,7 +200,7 @@ public:
      *
      * @return return the size of the array view
      *
-     * @throw data::Exception
+     * @throw Exception
      */
     DATA_API std::size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
 
@@ -221,7 +222,7 @@ public:
      *
      * @return return the size of the array view
      *
-     * @throw data::Exception
+     * @throw Exception
      */
     DATA_API std::size_t resize(const SizeType& size, bool reallocate = true);
 
@@ -344,11 +345,11 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception Index out of bounds
      */
     template<typename T>
-    T& at(const data::Array::IndexType& id);
+    T& at(const Array::IndexType& id);
 
     /**
      * @brief Get the value of an element
@@ -358,11 +359,11 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception Index out of bounds
      */
     template<typename T>
-    const T& at(const data::Array::IndexType& id) const;
+    const T& at(const Array::IndexType& id) const;
 
     /**
      * @brief Get the value of an element
@@ -372,8 +373,8 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception Index out of bounds
      */
     template<typename T>
     T& at(const std::size_t& offset);
@@ -386,8 +387,8 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception Index out of bounds
      */
     template<typename T>
     const T& at(const std::size_t& offset) const;
@@ -396,7 +397,7 @@ public:
      * @brief Getter for the array buffer
      *
      * @return Array's buffer, if exists, else NULL
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
      * @{
      */
     DATA_API void* getBuffer();
@@ -413,12 +414,12 @@ public:
      * @param size           Size of the array view
      * @param type           Type of the array view
      * @param policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock()).
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock()).
      */
     DATA_API void setBuffer(
         void* buf,
         bool takeOwnership,
-        const data::Array::SizeType& size,
+        const Array::SizeType& size,
         const core::tools::Type& type,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
     );
@@ -477,7 +478,7 @@ public:
      *
      * Example :
      * @code{.cpp}
-        data::Array::sptr array = data::Array::New();
+        Array::sptr array = Array::New();
         array->resize({1920, 1080}, core::tools::Type::s_INT16);
         auto iter          = array->begin<std::int16_t>();
         const auto iterEnd = array->end<std::int16_t>();
@@ -496,6 +497,12 @@ public:
     DATA_API iterator<char> end();
     DATA_API const_iterator<char> begin() const;
     DATA_API const_iterator<char> end() const;
+    /// @}
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Array& other) const noexcept;
+    DATA_API bool operator!=(const Array& other) const noexcept;
     /// @}
 
 protected:
@@ -517,7 +524,7 @@ protected:
 
     // To allow locked_ptr to access protected lockBuffer()
     template<class DATATYPE>
-    friend class data::mt::locked_ptr;
+    friend class mt::locked_ptr;
 
     /**
      * @brief Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
@@ -533,8 +540,8 @@ protected:
      * @return buffer item pointer
      * @{
      */
-    DATA_API char* getBufferPtr(const data::Array::IndexType& id);
-    DATA_API const char* getBufferPtr(const data::Array::IndexType& id) const;
+    DATA_API char* getBufferPtr(const Array::IndexType& id);
+    DATA_API const char* getBufferPtr(const Array::IndexType& id) const;
     ///@}
 
     /**
@@ -542,7 +549,7 @@ protected:
      * @param id Item array index
      * @return buffer offset
      */
-    DATA_API std::size_t getBufferOffset(const data::Array::IndexType& id) const;
+    DATA_API std::size_t getBufferOffset(const Array::IndexType& id) const;
 
     /// Not implemented
     Array(const Array&);
@@ -575,7 +582,7 @@ inline void Array::setBufferObject(const core::memory::BufferObject::sptr& buffe
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T& Array::at(const data::Array::IndexType& id)
+inline T& Array::at(const Array::IndexType& id)
 {
     const bool isIndexInBounds =
         std::equal(
@@ -586,18 +593,18 @@ inline T& Array::at(const data::Array::IndexType& id)
         {
             return a < b;
         });
-    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
+    SIGHT_THROW_EXCEPTION_IF(Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const T& Array::at(const data::Array::IndexType& id) const
+inline const T& Array::at(const Array::IndexType& id) const
 {
     const bool isIndexInBounds =
         std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
-    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
+    SIGHT_THROW_EXCEPTION_IF(Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }
 
@@ -607,7 +614,7 @@ template<typename T>
 inline T& Array::at(const std::size_t& offset)
 {
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
+        Exception(
             "Index out of bounds, " + std::to_string(offset) + " is not in [0-"
             + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
         ),
@@ -622,7 +629,7 @@ template<typename T>
 inline const T& Array::at(const std::size_t& offset) const
 {
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
+        Exception(
             "Index out of bounds, " + std::to_string(offset) + " is not in [0-"
             + std::to_string(this->getSizeInBytes() / sizeof(T) - 1) + "]"
         ),

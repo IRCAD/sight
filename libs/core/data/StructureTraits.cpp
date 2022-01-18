@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,6 +99,35 @@ void StructureTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCop
     m_anatomicRegion     = other->m_anatomicRegion;
     m_propertyCategory   = other->m_propertyCategory;
     m_propertyType       = other->m_propertyType;
+}
+
+//------------------------------------------------------------------------------
+
+bool StructureTraits::operator==(const StructureTraits& other) const noexcept
+{
+    if(m_type != other.m_type
+       || m_class != other.m_class
+       || m_nativeExp != other.m_nativeExp
+       || m_nativeGeometricExp != other.m_nativeGeometricExp
+       || m_attachmentType != other.m_attachmentType
+       || m_anatomicRegion != other.m_anatomicRegion
+       || m_propertyCategory != other.m_propertyCategory
+       || m_propertyType != other.m_propertyType
+       || !core::tools::is_equal(m_categories, other.m_categories)
+       || !core::tools::is_equal(m_color, other.m_color))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool StructureTraits::operator!=(const StructureTraits& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

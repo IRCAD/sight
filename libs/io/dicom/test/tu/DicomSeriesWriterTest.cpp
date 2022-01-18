@@ -25,7 +25,6 @@
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
 #include <io/dicom/helper/DicomAnonymizer.hpp>
@@ -36,7 +35,6 @@
 #include <utest/Filter.hpp>
 
 #include <utestData/Data.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
@@ -110,22 +108,16 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
         data::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
 
     // Compare Source and Destination Series
-    ExcludeSetType excludeSetPrefix;
-    excludeSetPrefix.insert("dicom_container");
-
-    ExcludeSetType excludeSet;
     if(anonymized)
     {
-        excludeSet.insert("instance_uid");
-        excludeSet.insert("study.instance_uid");
-        excludeSet.insert("study.date");
-        excludeSet.insert("patient.birth_date");
+        destDicomSeries->setInstanceUID(m_srcDicomSeries->getInstanceUID());
+        destDicomSeries->setStudy(m_srcDicomSeries->getStudy());
+        destDicomSeries->setPatient(m_srcDicomSeries->getPatient());
     }
 
-    CPPUNIT_ASSERT_MESSAGE(
-        "Series not equal",
-        utestData::helper::compare(m_srcDicomSeries, destDicomSeries, excludeSet, excludeSetPrefix)
-    );
+    destDicomSeries->setDicomContainer(m_srcDicomSeries->getDicomContainer());
+
+    CPPUNIT_ASSERT_MESSAGE("Series not equal", *m_srcDicomSeries == *destDicomSeries);
 }
 
 // TODO: This test is disabled as DicomSeries doesn't store Binaries anymore.

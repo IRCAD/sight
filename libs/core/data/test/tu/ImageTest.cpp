@@ -49,39 +49,6 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-static bool imagesEqual(const data::Image::sptr& _leftImg, const data::Image::sptr& _rightImg)
-{
-    bool result            = false;
-    const bool equalFormat = _leftImg->getPixelFormat() == _rightImg->getPixelFormat()
-                             && _leftImg->numComponents() == _rightImg->numComponents();
-    const bool equalDims = _leftImg->getSize() == _rightImg->getSize()
-                           && _leftImg->getSpacing() == _rightImg->getSpacing()
-                           && _leftImg->getOrigin() == _rightImg->getOrigin();
-
-    if(equalFormat && equalDims)
-    {
-        // Compare images bytewise.
-        const auto leftLock  = _leftImg->lock();
-        const auto rightLock = _rightImg->lock();
-        auto leftIt          = _leftImg->begin();
-        auto rightIt         = _rightImg->begin();
-        const auto leftEnd   = _leftImg->end();
-        const auto rightEnd  = _rightImg->end();
-        bool bytesEqual      = true;
-
-        for( ; leftIt != leftEnd && rightIt != rightEnd && bytesEqual ; ++leftIt, ++rightIt)
-        {
-            bytesEqual = (*leftIt == *rightIt);
-        }
-
-        result = bytesEqual;
-    }
-
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTest::setUp()
 {
     // Set up context before running a test.
@@ -879,9 +846,15 @@ void ImageTest::imageDeepCopy()
         // `core::memory::BufferManager::unregisterBufferImpl()`.
         const auto imgCopyLock = imgCopy->lock();
 
+        // Test a bit more image equality operator, which ensure the copy test is really working
+        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
+        utestData::generator::Image::randomizeImage(imgCopy, 1);
+
+        CPPUNIT_ASSERT(*img != *imgCopy);
+
         imgCopy->deepCopy(img);
 
-        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+        CPPUNIT_ASSERT(*img == *imgCopy);
     }
 
     {
@@ -899,11 +872,20 @@ void ImageTest::imageDeepCopy()
         }
 
         const data::Image::sptr imgCopy = data::Image::New();
-        const auto imgCopyLock          = imgCopy->lock();
+
+        CPPUNIT_ASSERT(*img != *imgCopy);
+
+        const auto imgCopyLock = imgCopy->lock();
+
+        // Test a bit more image equality operator, which ensure the copy test is really working
+        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
+        utestData::generator::Image::randomizeImage(imgCopy, 1);
+
+        CPPUNIT_ASSERT(*img != *imgCopy);
 
         imgCopy->deepCopy(img);
 
-        CPPUNIT_ASSERT_EQUAL(true, imagesEqual(img, imgCopy));
+        CPPUNIT_ASSERT(*img == *imgCopy);
     }
 }
 

@@ -181,4 +181,28 @@ void FrameTL::initPoolSize(unsigned int)
     SIGHT_ERROR("This function should not be called");
 }
 
+//------------------------------------------------------------------------------
+
+bool FrameTL::operator==(const FrameTL& other) const noexcept
+{
+    if(m_width != other.m_width
+       || m_height != other.m_height
+       || m_numberOfComponents != other.m_numberOfComponents
+       || m_type != other.m_type
+       || m_pixelFormat != other.m_pixelFormat)
+    {
+        return false;
+    }
+
+    // Super class last
+    return GenericTL<uint8_t>::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FrameTL::operator!=(const FrameTL& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

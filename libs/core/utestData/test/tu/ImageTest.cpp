@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <data/reflection/visitor/CompareObjects.hpp>
+#include <data/Image.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -36,21 +36,6 @@ namespace sight::utestData
 
 namespace ut
 {
-
-//-----------------------------------------------------------------------------
-
-void compare(data::Object::sptr objRef, data::Object::sptr objComp)
-{
-    data::reflection::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
-    {
-        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
-}
 
 //------------------------------------------------------------------------------
 
@@ -123,47 +108,12 @@ void ImageTest::deepCopyTest()
     utestData::generator::Image::generateRandomImage(image, type);
 
     image2 = data::Object::copy(image);
-    compare(image, image2);
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageTest::stressTest()
-{
-    core::tools::Type type = core::tools::Type::create<std::int8_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::uint8_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::int16_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::uint16_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::int32_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::uint32_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::int64_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<std::uint64_t>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<float>();
-    this->stressTestWithType(type, 10);
-
-    type = core::tools::Type::create<double>();
-    this->stressTestWithType(type, 10);
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::stressTestWithType(core::tools::Type type, int nbTest)
+inline static void stressTestWithType(core::tools::Type type, int nbTest)
 {
     for(int nb = 0 ; nb < nbTest ; ++nb)
     {
@@ -172,8 +122,43 @@ void ImageTest::stressTestWithType(core::tools::Type type, int nbTest)
 
         data::Image::sptr image2;
         image2 = data::Object::copy(image);
-        compare(image, image2);
+        CPPUNIT_ASSERT(*image == *image2);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTest::stressTest()
+{
+    core::tools::Type type = core::tools::Type::create<std::int8_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::uint8_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::int16_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::uint16_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::int32_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::uint32_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::int64_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<std::uint64_t>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<float>();
+    stressTestWithType(type, 10);
+
+    type = core::tools::Type::create<double>();
+    stressTestWithType(type, 10);
 }
 
 //------------------------------------------------------------------------------

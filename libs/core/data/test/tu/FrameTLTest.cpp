@@ -73,6 +73,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         // deprecated
@@ -91,6 +93,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         // deprecated
@@ -109,6 +113,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         // deprecated
@@ -127,6 +133,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
@@ -144,6 +152,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
@@ -161,6 +171,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
@@ -178,6 +190,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
@@ -195,6 +209,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
@@ -212,6 +228,8 @@ void FrameTLTest::initTest()
         CPPUNIT_ASSERT_EQUAL(timeline->numComponents(), timeline2->numComponents());
         CPPUNIT_ASSERT_EQUAL(timeline->getType(), timeline2->getType());
         CPPUNIT_ASSERT_EQUAL(timeline->getPixelFormat(), timeline->getPixelFormat());
+
+        CPPUNIT_ASSERT(*timeline == *timeline2);
     }
 }
 

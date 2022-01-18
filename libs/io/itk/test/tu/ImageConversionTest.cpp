@@ -32,7 +32,6 @@
 #include <io/itk/itk.hpp>
 
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageConversionTest);
@@ -69,23 +68,22 @@ void ImageConversionTest::testConversion()
     typedef ::itk::Image<std::int16_t, 3> ImageType;
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-    data::Image::sptr image2    = data::Image::New();
-    bool image2ManagesHisBuffer = false;
-    io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
+    data::Image::sptr image2 = data::Image::New();
+    io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
     io::itk::ut::helper::roundSpacing(image);
     io::itk::ut::helper::roundSpacing(image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("array.isOwner");
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 
-    bool image3ManagesHisBuffer = false;
-    data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
+    data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    image3->setWindowCenter(image->getWindowCenter());
+    image3->setWindowWidth(image->getWindowWidth());
+
+    CPPUNIT_ASSERT(*image == *image3);
 }
 
 //------------------------------------------------------------------------------
@@ -135,16 +133,16 @@ void ImageConversionTest::testConversion2D()
     io::itk::ut::helper::roundSpacing(image);
     io::itk::ut::helper::roundSpacing(image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("array.isOwner");
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 
-    bool image3ManagesHisBuffer = false;
-    data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
+    data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    image3->setWindowCenter(image->getWindowCenter());
+    image3->setWindowWidth(image->getWindowWidth());
+
+    CPPUNIT_ASSERT(*image == *image3);
 }
 
 //------------------------------------------------------------------------------

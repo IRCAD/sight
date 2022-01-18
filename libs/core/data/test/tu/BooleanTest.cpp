@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,8 +54,8 @@ void BooleanTest::methode1()
     const bool TRUE_VALUE  = true;
     const bool FALSE_VALUE = !TRUE_VALUE;
 
-    data::Boolean::sptr p1 = data::Boolean::New(TRUE_VALUE);
-    data::Boolean::sptr p2 = data::Boolean::New(FALSE_VALUE);
+    auto p1 = data::Boolean::New(TRUE_VALUE);
+    auto p2 = data::Boolean::New(FALSE_VALUE);
 
     // check
     CPPUNIT_ASSERT_EQUAL(TRUE_VALUE, data::Boolean::New(TRUE_VALUE)->value());
@@ -63,6 +63,12 @@ void BooleanTest::methode1()
 
     CPPUNIT_ASSERT_EQUAL(TRUE_VALUE, p1->value());
     CPPUNIT_ASSERT_EQUAL(FALSE_VALUE, p2->value());
+
+    CPPUNIT_ASSERT(*p1 != *p2);
+
+    p2->setValue(TRUE_VALUE);
+
+    CPPUNIT_ASSERT(*p1 == *p2);
 }
 
 } //namespace ut

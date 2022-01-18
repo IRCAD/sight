@@ -23,6 +23,7 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
 
@@ -40,11 +41,11 @@ namespace sight::data
 /**
  * @brief Holds DICOM series.
  */
-class DATA_CLASS_API DicomSeries : public data::Series
+class DATA_CLASS_API DicomSeries : public Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New<DicomSeries>);
+    SIGHT_DECLARE_CLASS(DicomSeries, Object, factory::New<DicomSeries>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (DicomSeries))
 
@@ -58,7 +59,7 @@ public:
      * @brief Creates the DICOM series.
      * @param _key private construction key.
      */
-    DATA_API DicomSeries(data::Object::Key _key);
+    DATA_API DicomSeries(Object::Key _key);
 
     /// Destroys the DICOM series.
     DATA_API ~DicomSeries() override;
@@ -67,14 +68,14 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /**
      * @brief Adds a DICOM path.
@@ -193,6 +194,12 @@ public:
         m_firstInstanceNumber = _firstInstanceNumber;
     }
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const DicomSeries& other) const noexcept;
+    DATA_API bool operator!=(const DicomSeries& other) const noexcept;
+    /// @}
+
 protected:
 
     /// Defines the number of instances in the series.
@@ -211,4 +218,4 @@ protected:
     std::size_t m_firstInstanceNumber;
 };
 
-} // Namespace fwMedData.
+} // Namespace sight::data

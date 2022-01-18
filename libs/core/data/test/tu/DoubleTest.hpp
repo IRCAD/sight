@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,43 +26,26 @@
 namespace sight::data
 {
 
-namespace detail
-{
-
-namespace reflection
-{
-
 namespace ut
 {
 
-class CompareObjectsTest : public CPPUNIT_NS::TestFixture
+class DoubleTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(CompareObjectsTest);
-CPPUNIT_TEST(compareImageTest);
-CPPUNIT_TEST(compareReconstructionTest);
-CPPUNIT_TEST(compareBufferTest);
-CPPUNIT_TEST(compareEmpty);
-CPPUNIT_TEST(exceptionTest);
-CPPUNIT_TEST(compareSeriesDBTest);
-CPPUNIT_TEST_SUITE_END();
+private:
+
+    CPPUNIT_TEST_SUITE(DoubleTest);
+    CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
     void setUp();
     void tearDown();
-    void compareImageTest();
-    void compareReconstructionTest();
-    void compareBufferTest();
-    void compareEmpty();
-    void exceptionTest();
-    void compareSeriesDBTest();
+
+    void methode1();
 };
 
-} // namespace ut
+} //namespace ut
 
-} // namespace reflection
-
-} // namespace detail
-
-} // namespace sight::data
+} //namespace sight::data

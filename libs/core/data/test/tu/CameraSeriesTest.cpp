@@ -27,8 +27,6 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <utestData/helper/compare.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraSeriesTest);
 
@@ -123,7 +121,7 @@ void CameraSeriesTest::cameraTest()
     CPPUNIT_ASSERT_THROW(series->addCamera(camera2), core::Exception);
 
     CPPUNIT_ASSERT(series->getExtrinsicMatrix(0));
-    CPPUNIT_ASSERT(utestData::helper::compare(identity, series->getExtrinsicMatrix(0)));
+    CPPUNIT_ASSERT(*identity == *series->getExtrinsicMatrix(0));
     CPPUNIT_ASSERT(!series->getExtrinsicMatrix(1));
     CPPUNIT_ASSERT_NO_THROW(series->setExtrinsicMatrix(1, mat));
     CPPUNIT_ASSERT_THROW(series->setExtrinsicMatrix(2, mat), core::Exception);
@@ -174,7 +172,7 @@ void CameraSeriesTest::deepCopyTest()
     data::CameraSeries::sptr series2;
     series2 = data::Object::copy<data::CameraSeries>(series);
 
-    CPPUNIT_ASSERT(utestData::helper::compare(series, series2));
+    CPPUNIT_ASSERT(*series == *series2);
 }
 
 } //namespace ut

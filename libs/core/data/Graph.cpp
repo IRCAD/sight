@@ -405,4 +405,23 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
 
 //------------------------------------------------------------------------------
 
+bool Graph::operator==(const Graph& other) const noexcept
+{
+    if(!core::tools::is_equal(m_nodes, other.m_nodes)
+       || !core::tools::is_equal(m_connections, other.m_connections))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Graph::operator!=(const Graph& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

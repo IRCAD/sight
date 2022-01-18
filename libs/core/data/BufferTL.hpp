@@ -42,56 +42,56 @@ class DATA_CLASS_API BufferTL : public TimeLine
 {
 public:
 
-    SIGHT_DECLARE_CLASS(BufferTL, data::Object);
+    SIGHT_DECLARE_CLASS(BufferTL, Object);
 
     typedef core::HiResClock::HiResClockType TimestampType;
-    typedef std::map<TimestampType, SPTR(data::timeline::Buffer)> TimelineType;
-    typedef std::pair<TimestampType, SPTR(data::timeline::Buffer)> BufferPairType;
+    typedef std::map<TimestampType, SPTR(timeline::Buffer)> TimelineType;
+    typedef std::pair<TimestampType, SPTR(timeline::Buffer)> BufferPairType;
     typedef boost::pool<> PoolType;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API BufferTL(data::Object::Key key);
+    DATA_API BufferTL(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~BufferTL();
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API virtual bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const = 0;
+    DATA_API virtual bool isObjectValid(const CSPTR(timeline::Object)& obj) const = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param timestamp timestamp used to find the closest object
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(data::timeline::Object) getClosestObject(
+    DATA_API virtual CSPTR(timeline::Object) getClosestObject(
         core::HiResClock::HiResClockType timestamp,
         DirectionType direction = BOTH
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(data::timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
+    DATA_API virtual CSPTR(timeline::Object) getObject(core::HiResClock::HiResClockType timestamp)
     const override;
 
     /// Clear the timeline
     DATA_API virtual void clearTimeline();
 
     /// Push a buffer to the timeline
-    DATA_API void pushObject(const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void pushObject(const SPTR(timeline::Object)& obj) override;
 
     /// Remove a buffer to the timeline
-    DATA_API SPTR(data::timeline::Object) popObject(TimestampType timestamp) override;
+    DATA_API SPTR(timeline::Object) popObject(TimestampType timestamp) override;
 
     /// Change a buffer timestamp to the timeline
     DATA_API void modifyTime(TimestampType timestamp, TimestampType newTimestamp) override;
 
     /// Change a buffer object to the specified timestamp
-    DATA_API void setObject(TimestampType timestamp, const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void setObject(TimestampType timestamp, const SPTR(timeline::Object)& obj) override;
 
     /// Return the last object in the timeline
-    DATA_API CSPTR(data::timeline::Object) getNewerObject() const;
+    DATA_API CSPTR(timeline::Object) getNewerObject() const;
 
     /// Return the last timestamp in the timeline
     DATA_API core::HiResClock::HiResClockType getNewerTimestamp() const;
@@ -110,6 +110,12 @@ public:
     {
         return m_pool != nullptr;
     }
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const BufferTL& other) const noexcept;
+    DATA_API bool operator!=(const BufferTL& other) const noexcept;
+    /// @}
 
 protected:
 

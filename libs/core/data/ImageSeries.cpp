@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,5 +107,36 @@ void ImageSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
 }
 
 //------------------------------------------------------------------------------
+
+bool ImageSeries::operator==(const ImageSeries& other) const noexcept
+{
+    if(!core::tools::is_equal(m_image, other.m_image)
+       || !core::tools::is_equal(m_dicomReference, other.m_dicomReference)
+       || m_contrastBolusAgent != other.m_contrastBolusAgent
+       || m_contrastBolusRoute != other.m_contrastBolusRoute
+       || m_contrastBolusVolume != other.m_contrastBolusVolume
+       || m_contrastBolusStartTime != other.m_contrastBolusStartTime
+       || m_contrastBolusStopTime != other.m_contrastBolusStopTime
+       || m_contrastBolusTotalDose != other.m_contrastBolusTotalDose
+       || m_contrastBolusFlowRate != other.m_contrastBolusFlowRate
+       || m_contrastBolusFlowDuration != other.m_contrastBolusFlowDuration
+       || m_contrastBolusIngredient != other.m_contrastBolusIngredient
+       || m_contrastBolusIngredientConcentration != other.m_contrastBolusIngredientConcentration
+       || m_acquisitionDate != other.m_acquisitionDate
+       || m_acquisitionTime != other.m_acquisitionTime)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ImageSeries::operator!=(const ImageSeries& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

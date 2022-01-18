@@ -37,7 +37,7 @@ SIGHT_REGISTER_DATA(sight::data::Array);
 
 //------------------------------------------------------------------------------
 
-inline std::size_t computeSize(
+inline static std::size_t computeSize(
     std::size_t elementSize,
     const data::Array::SizeType& size
 )
@@ -421,5 +421,26 @@ Array::const_iterator<char> Array::end() const
 }
 
 //------------------------------------------------------------------------------
+
+bool Array::operator==(const Array& other) const noexcept
+{
+    if(m_strides != other.m_strides
+       || m_type != other.m_type
+       || m_size != other.m_size
+       || !core::tools::is_equal(m_bufferObject, other.m_bufferObject))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Array::operator!=(const Array& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } //namespace sight::data

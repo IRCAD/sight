@@ -24,6 +24,7 @@
 
 #include "data/Array.hpp"
 #include "data/factory/new.hpp"
+#include "data/iterator.hpp"
 #include "data/Object.hpp"
 
 #include <core/com/Signal.hpp>
@@ -99,7 +100,7 @@ class PointList;
  *
  * @subsection iterators iterators
  *
- * To parse the buffer from beginning to end, the iterator can be used (data::iterator::ImageiteratorBase).
+ * To parse the buffer from beginning to end, the iterator can be used (iterator::ImageiteratorBase).
  *
  * The iteration depends on the given format. The format can be the buffer type ([u]int[8|16|32|64], double, float), but
  * can also be a simple struct like:
@@ -122,8 +123,8 @@ class PointList;
  *
  * \b Example :
  * @code{.cpp}
-    data::Image::sptr img = data::Image::New();
-    img->resize(1920, 1080, 1, core::tools::Type::s_UINT8, data::Image::PixelFormat::RGBA);
+    Image::sptr img = Image::New();
+    img->resize(1920, 1080, 1, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -168,12 +169,12 @@ class PointList;
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API Image : public data::Object,
+class DATA_CLASS_API Image : public Object,
                              public core::memory::IBuffered
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Image, data::Object, data::factory::New<Image>);
+    SIGHT_DECLARE_CLASS(Image, Object, factory::New<Image>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Image))
 
@@ -205,7 +206,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Image(data::Object::Key key);
+    DATA_API Image(Object::Key key);
 
     /**
      * @brief Destructor
@@ -295,11 +296,11 @@ public:
     DATA_API static const core::com::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
-    typedef core::com::Signal<void (SPTR(data::Point))> LandmarkAddedSignalType;
+    typedef core::com::Signal<void (SPTR(Point))> LandmarkAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
-    typedef core::com::Signal<void (SPTR(data::Point))> LandmarkRemovedSignalType;
+    typedef core::com::Signal<void (SPTR(Point))> LandmarkRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
@@ -311,11 +312,11 @@ public:
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
-    typedef core::com::Signal<void (SPTR(data::PointList))> DistanceAddedSignalType;
+    typedef core::com::Signal<void (SPTR(PointList))> DistanceAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef core::com::Signal<void (CSPTR(data::PointList))> DistanceRemovedSignalType;
+    typedef core::com::Signal<void (CSPTR(PointList))> DistanceRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
@@ -363,14 +364,14 @@ public:
             std::uint8_t a;
         };
         @endcode
-     * @see data::iterator::rgba
+     * @see iterator::rgba
      *
      * Example:
      * @code{.cpp}
-        data::Image::sptr img = data::Image::New();
-        img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, data::Image::PixelFormat::RGBA);
-        data::Image::iterator< Color > iter    = img->begin< Color >();
-        const data::Image::iterator< Color > iterEnd = img->end< Color >();
+        Image::sptr img = Image::New();
+        img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
+        Image::iterator< Color > iter    = img->begin< Color >();
+        const Image::iterator< Color > iterEnd = img->end< Color >();
 
         for (; iter != iterEnd; ++iter)
         {
@@ -443,7 +444,7 @@ public:
         void* buf,
         bool takeOwnership,
         const core::tools::Type& type,
-        const data::Image::Size& size,
+        const Image::Size& size,
         PixelFormat format,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
     );
@@ -457,8 +458,8 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception Index out of bounds
      */
     template<typename T>
     T& at(IndexType id);
@@ -477,8 +478,8 @@ public:
      *
      * @return Buffer value cast to T
      * @warning This method is slow and should not be used intensively
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
-     * @throw data::Exception Index out of bounds
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception Index out of bounds
      */
     template<typename T>
     T& at(IndexType x, IndexType y, IndexType z, IndexType c = 0);
@@ -490,14 +491,14 @@ public:
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     DATA_API void* getPixel(IndexType index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param index offset of the pixel
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     DATA_API void* getPixel(IndexType index) const;
 
@@ -505,7 +506,7 @@ public:
      * @brief Set pixel value represented as a void* buffer
      * @param index offset of the pixel
      * @param pixBuf pixel value represented as a void* buffer
-     * @throw data::Exception The buffer cannot be accessed if the array is not locked (see lock())
+     * @throw Exception The buffer cannot be accessed if the array is not locked (see lock())
      */
     DATA_API void setPixel(IndexType index, BufferType* pixBuf);
 
@@ -533,11 +534,17 @@ public:
     /// Return the buffer object
     DATA_API core::memory::BufferObject::csptr getBufferObject() const;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Image& other) const noexcept;
+    DATA_API bool operator!=(const Image& other) const noexcept;
+    /// @}
+
 protected:
 
     // To allow locked_ptr to access protected lockBuffer()
     template<class DATATYPE>
-    friend class data::mt::locked_ptr;
+    friend class mt::locked_ptr;
 
     /**
      * @brief Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
@@ -607,7 +614,7 @@ private:
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
 
     //! image buffer
-    data::Array::sptr m_dataArray;
+    Array::sptr m_dataArray;
 };
 
 //-----------------------------------------------------------------------------
@@ -794,7 +801,5 @@ inline T Image::at(IndexType x, IndexType y, IndexType z, IndexType c) const
     const IndexType offset = x + m_size[0] * y + z * m_size[0] * m_size[1];
     return *(reinterpret_cast<T*>(this->getPixel(offset)) + c);
 }
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::data

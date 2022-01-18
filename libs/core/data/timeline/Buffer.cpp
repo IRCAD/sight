@@ -65,6 +65,31 @@ void Buffer::deepCopy(const data::timeline::Object& other)
     memcpy(m_buffer, otherObject.m_buffer, m_size);
 }
 
+//------------------------------------------------------------------------------
+
+bool Buffer::operator==(const Buffer& other) const noexcept
+{
+    if(m_size != other.m_size)
+    {
+        return false;
+    }
+
+    if(m_buffer != other.m_buffer && std::memcmp(m_buffer, other.m_buffer, m_size) != 0)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Buffer::operator!=(const Buffer& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace timeline
 
 } // namespace sight::data

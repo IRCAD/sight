@@ -33,7 +33,6 @@
 #include <data/ModelSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
@@ -48,7 +47,6 @@
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Object.hpp>
 #include <utestData/generator/SeriesDB.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 

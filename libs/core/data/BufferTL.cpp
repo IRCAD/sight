@@ -252,4 +252,25 @@ void BufferTL::clearTimeline()
     sig->asyncEmit();
 }
 
+//------------------------------------------------------------------------------
+
+bool BufferTL::operator==(const BufferTL& other) const noexcept
+{
+    if(m_maximumSize != other.m_maximumSize
+       || !core::tools::is_equal(m_timeline, other.m_timeline))
+    {
+        return false;
+    }
+
+    // Super class last
+    return TimeLine::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool BufferTL::operator!=(const BufferTL& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

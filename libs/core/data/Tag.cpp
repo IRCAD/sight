@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,6 +83,28 @@ void Tag::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
     m_sType     = other->m_sType;
     m_size      = other->m_size;
     m_pointList = data::Object::copy(other->m_pointList, cache);
+}
+
+//------------------------------------------------------------------------------
+
+bool Tag::operator==(const Tag& other) const noexcept
+{
+    if(m_sType != other.m_sType
+       || !core::tools::is_equal(m_size, other.m_size)
+       || !core::tools::is_equal(m_pointList, other.m_pointList))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Tag::operator!=(const Tag& other) const noexcept
+{
+    return !(*this == other);
 }
 
 } // namespace sight::data

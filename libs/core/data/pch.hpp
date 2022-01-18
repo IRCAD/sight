@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include <core/FactoryRegistry.hpp>
 #include <core/macros.hpp>
 #include <core/mt/types.hpp>
+#include <core/tools/compare.hpp>
 #include <core/tools/Object.hpp>
 
 #include <camp/userobject.hpp>

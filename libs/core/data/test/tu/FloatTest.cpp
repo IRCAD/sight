@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,9 +61,21 @@ void FloatTest::methode1()
 
     for(float VALUE : VALUES)
     {
-        data::Float::sptr f0 = data::Float::New();
+        auto f0 = data::Float::New();
         f0->value() = VALUE;
-        data::Float::sptr f1 = data::Float::New(VALUE);
+        auto f1 = data::Float::New(VALUE);
+        auto f2 = data::Float::New(VALUE + 0.1F);
+
+        CPPUNIT_ASSERT(*f0 == *f1);
+
+        if(std::isinf(VALUE))
+        {
+            CPPUNIT_ASSERT(*f0 == *f2);
+        }
+        else
+        {
+            CPPUNIT_ASSERT(*f0 != *f2);
+        }
 
         CPPUNIT_ASSERT_EQUAL(VALUE, f0->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, f1->value());
@@ -72,9 +84,12 @@ void FloatTest::methode1()
 
     for(float VALUE : NAN_VALUES)
     {
-        data::Float::sptr f0 = data::Float::New();
+        auto f0 = data::Float::New();
         f0->value() = VALUE;
-        data::Float::sptr f1 = data::Float::New(VALUE);
+        auto f1 = data::Float::New(VALUE);
+
+        // Our implementation of "==" operator for NaN is not the same as the one of the C++ standard
+        CPPUNIT_ASSERT(*f0 == *f1);
 
         CPPUNIT_ASSERT(!(VALUE == f0->value()));
         CPPUNIT_ASSERT(!(VALUE < f0->value()));

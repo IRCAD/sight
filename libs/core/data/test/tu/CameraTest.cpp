@@ -27,8 +27,6 @@
 
 #include <data/Camera.hpp>
 
-#include <utestData/helper/compare.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraTest);
 
@@ -181,7 +179,11 @@ void CameraTest::shallowCopyTest()
     data::Camera::sptr camera  = initCamera();
     data::Camera::sptr camera2 = data::Camera::New();
 
+    CPPUNIT_ASSERT(*camera != *camera2);
+
     camera2->shallowCopy(camera);
+
+    CPPUNIT_ASSERT(*camera == *camera2);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCx(), camera2->getCx(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCy(), camera2->getCy(), 0.00001);
@@ -217,7 +219,7 @@ void CameraTest::deepCopyTest()
     data::Camera::sptr camera = initCamera();
     data::Camera::sptr camera2;
     camera2 = data::Object::copy(camera);
-    CPPUNIT_ASSERT(utestData::helper::compare(camera, camera2));
+    CPPUNIT_ASSERT(*camera == *camera2);
 }
 
 } //namespace ut

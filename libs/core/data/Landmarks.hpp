@@ -54,7 +54,7 @@ public:
         CUBE
     };
 
-    struct LandmarksGroup
+    struct DATA_CLASS_API LandmarksGroup
     {
         LandmarksGroup(ColorType color, SizeType size, Shape shape, bool visibility) :
             m_color(color),
@@ -64,6 +64,12 @@ public:
         {
         }
 
+        /// Equality comparison operators
+        /// @{
+        DATA_API bool operator==(const LandmarksGroup& other) const noexcept;
+        DATA_API bool operator!=(const LandmarksGroup& other) const noexcept;
+        /// @}
+
         ColorType m_color;
         SizeType m_size;
         Shape m_shape;
@@ -71,7 +77,7 @@ public:
         PointContainer m_points;
     };
 
-    SIGHT_DECLARE_CLASS(Landmarks, data::Object, data::factory::New<Landmarks>);
+    SIGHT_DECLARE_CLASS(Landmarks, Object, factory::New<Landmarks>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Landmarks));
 
@@ -79,16 +85,13 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Landmarks(data::Object::Key key);
+    DATA_API Landmarks(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Landmarks();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Add a new landmark group
@@ -269,6 +272,17 @@ public:
 /**
  * @}
  */
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Landmarks& other) const noexcept;
+    DATA_API bool operator!=(const Landmarks& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 

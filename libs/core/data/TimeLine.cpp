@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,5 +47,18 @@ TimeLine::~TimeLine()
 }
 
 //------------------------------------------------------------------------------
+
+bool TimeLine::operator==(const TimeLine& other) const noexcept
+{
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool TimeLine::operator!=(const TimeLine& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

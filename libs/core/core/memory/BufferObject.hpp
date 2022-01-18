@@ -320,6 +320,13 @@ public:
         const core::memory::BufferAllocationPolicy::sptr& policy = core::memory::BufferMallocPolicy::New()
     );
 
+    /// Equality comparison operators
+    /// @{
+    CORE_API bool operator==(const BufferObject& other) const noexcept;
+    CORE_API bool operator!=(const BufferObject& other) const noexcept;
+
+    /// @}
+
 protected:
 
     core::memory::BufferManager::BufferType m_buffer;

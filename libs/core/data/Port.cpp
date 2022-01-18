@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,5 +81,24 @@ void Port::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 }
 
 //------------------------------------------------------------------------------
+
+bool Port::operator==(const Port& other) const noexcept
+{
+    if(m_identifier != other.m_identifier
+       || m_type != other.m_type)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Port::operator!=(const Port& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

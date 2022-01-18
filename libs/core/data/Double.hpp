@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,50 +21,53 @@
 
 #pragma once
 
+#include "data/config.hpp"
 #include "data/factory/new.hpp"
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (String));
+SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Double));
 
 namespace sight::data
 {
 
 /**
- * @brief This class contains an std::string value.
+ * @brief   This class contains an Double value.
  *
- * String object is essentially used as a field in other objects.
+ * Double object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API String : public GenericField<std::string>
+class DATA_CLASS_API Double : public GenericField<double>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(String, data::Object);
+    SIGHT_DECLARE_CLASS(Double, data::Object);
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::string val = "")
+    static sptr New(const double val = 0.0)
     {
-        return GenericFieldFactory<String>(val);
+        return GenericFieldFactory<Double>(val);
     }
 
-    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (String));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Double));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API String(data::Object::Key key) noexcept;
+    DATA_API Double(data::Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~String() noexcept;
+    DATA_API virtual ~Double() noexcept = default;
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
 protected:
+
+    DATA_API Double() noexcept = default;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

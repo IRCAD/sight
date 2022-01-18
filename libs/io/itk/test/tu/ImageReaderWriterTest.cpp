@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,6 @@
 #include <io/itk/ImageWriter.hpp>
 
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
@@ -138,12 +137,12 @@ void ImageReaderWriterTest::checkSaveLoadInr(data::Image::sptr image)
 
     io::itk::ut::helper::roundSpacing(image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------

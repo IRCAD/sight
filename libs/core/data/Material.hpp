@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,29 +34,26 @@ namespace sight::data
 
 /**
  * @brief This class defines a material. A material is represented by an ambient color and a diffuse color.
- * @see data::Color
+ * @see Color
  */
 class DATA_CLASS_API Material : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Material, data::Object, data::factory::New<Material>);
+    SIGHT_DECLARE_CLASS(Material, Object, factory::New<Material>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Material));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Material(data::Object::Key key);
+    DATA_API Material(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Material();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief returns editable ambient color
@@ -188,17 +185,26 @@ public:
      * @{
      */
     /// Type of signal when a texture is added
-    typedef core::com::Signal<void (data::Image::sptr)> AddedTextureSignalType;
+    typedef core::com::Signal<void (Image::sptr)> AddedTextureSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_ADDED_TEXTURE_SIG;
 
     /// Type of signal when a texture is removed
-    typedef core::com::Signal<void (data::Image::sptr)> RemovedTextureSignalType;
+    typedef core::com::Signal<void (Image::sptr)> RemovedTextureSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_REMOVED_TEXTURE_SIG;
 /**
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Material& other) const noexcept;
+    DATA_API bool operator!=(const Material& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Shading mode (flat, Phong)
     ShadingType m_shadingMode;

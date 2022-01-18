@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     typedef float ColorType;
     typedef std::array<ColorType, 4> ColorArray;
 
-    SIGHT_DECLARE_CLASS(Color, data::Object, data::factory::New<Color>);
+    SIGHT_DECLARE_CLASS(Color, Object, factory::New<Color>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Color));
 
@@ -54,16 +54,13 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Color(data::Object::Key key);
+    DATA_API Color(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Color();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name ColorArray accessor
@@ -106,7 +103,16 @@ public:
     DATA_API const ColorType& alpha() const;
     //@}
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Color& other) const noexcept;
+    DATA_API bool operator!=(const Color& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! RGBA of the image (in terms of points)
     ColorArray m_vRGBA;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,19 +47,19 @@ class DATA_CLASS_API ProcessObject : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ProcessObject, data::Object, data::factory::New<ProcessObject>);
+    SIGHT_DECLARE_CLASS(ProcessObject, Object, factory::New<ProcessObject>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ProcessObject));
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;
-    typedef std::map<ParamNameType, data::Object::sptr> ProcessObjectMapType;
+    typedef std::map<ParamNameType, Object::sptr> ProcessObjectMapType;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API ProcessObject(data::Object::Key key);
+    DATA_API ProcessObject(Object::Key key);
 
     /**
      * @brief   Destructor
@@ -71,8 +71,8 @@ public:
      * @param[in] name Input name
      * @return null sptr if input is not found
      */
-    DATA_API data::Object::sptr getInput(const ParamNameType& name);
-    DATA_API data::Object::csptr getInput(const ParamNameType& name) const;
+    DATA_API Object::sptr getInput(const ParamNameType& name);
+    DATA_API Object::csptr getInput(const ParamNameType& name) const;
 
     /**
      * @brief Retrieves the input data associated with specified name type OBJECTTYPE (null if non exist).
@@ -90,8 +90,8 @@ public:
      * @param[in] name Output name
      * @return null sptr if output is not found
      */
-    DATA_API data::Object::sptr getOutput(const ParamNameType& name);
-    DATA_API data::Object::csptr getOutput(const ParamNameType& name) const;
+    DATA_API Object::sptr getOutput(const ParamNameType& name);
+    DATA_API Object::csptr getOutput(const ParamNameType& name) const;
 
     /**
      * @brief Retrieves the output data associated with specified name type OBJECTTYPE (null if non exist).
@@ -128,7 +128,7 @@ public:
      * @param[in] name Input name
      * @param[in] object  Input value
      */
-    DATA_API void setInputValue(const ParamNameType& name, data::Object::sptr object);
+    DATA_API void setInputValue(const ParamNameType& name, Object::sptr object);
 
     /**
      * @brief Register output value with specified name.
@@ -136,7 +136,7 @@ public:
      * @param[in] name Output name
      * @param[in] object  Output value
      */
-    DATA_API void setOutputValue(const ParamNameType& name, data::Object::sptr object);
+    DATA_API void setOutputValue(const ParamNameType& name, Object::sptr object);
 
     /**
      * @brief Returns vector of input parameters names.
@@ -161,10 +161,16 @@ public:
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ProcessObject& other) const noexcept;
+    DATA_API bool operator!=(const ProcessObject& other) const noexcept;
+    /// @}
 
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Returns vector of parameters names from params map.
@@ -178,7 +184,7 @@ protected:
      * @param[in] object  Param
      * @param params parameters map to insert object
      */
-    DATA_API void setValue(const ParamNameType& name, data::Object::sptr object, ProcessObjectMapType& params);
+    DATA_API void setValue(const ParamNameType& name, Object::sptr object, ProcessObjectMapType& params);
 
     /**
      * @brief Retrieves data associated with specified name in params map (null if non exist).
@@ -186,8 +192,8 @@ protected:
      * @param params parameters map containing the data
      * @return null sptr if param is not found
      */
-    DATA_API data::Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
-    DATA_API data::Object::csptr getValue(const ParamNameType& name, const ProcessObjectMapType& params) const;
+    DATA_API Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);
+    DATA_API Object::csptr getValue(const ParamNameType& name, const ProcessObjectMapType& params) const;
 
     /**
      * @brief Unregister all parameters in params map.

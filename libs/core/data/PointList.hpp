@@ -39,23 +39,23 @@ namespace sight::data
 
 /**
  * @brief   This class defines a list of points.
- * @see     data::Point
+ * @see     Point
  */
 class DATA_CLASS_API PointList : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PointList, data::Object, data::factory::New<PointList>);
+    SIGHT_DECLARE_CLASS(PointList, Object, factory::New<PointList>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (PointList));
 
-    typedef std::vector<data::Point::sptr> PointListContainer;
+    typedef std::vector<Point::sptr> PointListContainer;
 
     /**
      * @brief Constructor
      * @param[in] _key Private construction key
      */
-    DATA_API PointList(data::Object::Key _key);
+    DATA_API PointList(Object::Key _key);
     /**
      * @brief Destructor
      */
@@ -64,10 +64,7 @@ public:
      * @brief Defines shallow copy
      */
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-    /**
-     * @brief Defines deep copy
-     */
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+
     /**
      * @brief Gets point vector
      * @return the vector of points
@@ -84,10 +81,10 @@ public:
      */
     void setPoints(const PointListContainer& _vPoints);
     /**
-     * @brief Adds a data::Point in the pointlist
+     * @brief Adds a Point in the pointlist
      * @param[in] _p The point to push
      */
-    void pushBack(const data::Point::sptr& _p);
+    void pushBack(const Point::sptr& _p);
     /**
      * @brief: Deletes a point at the specified index
      * @param[in] _index Index of point to delete
@@ -105,18 +102,29 @@ public:
     /**
      * @brief Signal emitted when a Point is added
      */
-    typedef core::com::Signal<void (data::Point::sptr)> PointAddedSignalType;
+    typedef core::com::Signal<void (Point::sptr)> PointAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_ADDED_SIG;
     /**
      * @brief Signal emitted when a Point is removed
      */
-    typedef core::com::Signal<void (data::Point::sptr)> PointRemovedSignalType;
+    typedef core::com::Signal<void (Point::sptr)> PointRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_POINT_REMOVED_SIG;
 /**
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const PointList& other) const noexcept;
+    DATA_API bool operator!=(const PointList& other) const noexcept;
+    /// @}
+
 protected:
+
+    /**
+     * @brief Defines deep copy
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Points container
@@ -147,7 +155,7 @@ inline void PointList::setPoints(const PointList::PointListContainer& _vPoints)
 
 //-----------------------------------------------------------------------------
 
-inline void PointList::pushBack(const data::Point::sptr& _p)
+inline void PointList::pushBack(const Point::sptr& _p)
 {
     this->m_vPoints.push_back(_p);
 }

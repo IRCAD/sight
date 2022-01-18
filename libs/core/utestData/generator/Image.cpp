@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,13 +43,13 @@ using core::tools::random::safeRand;
 // unsigned int, unsigned long, or unsigned long long, we need T2 template argument. Sorry
 
 template<typename T, typename T2 = T, typename I>
-inline static void randomize(I& iterable)
+inline static void randomize(I& iterable, std::uint32_t seed = 0)
 {
     using Distribution = typename std::conditional<std::is_floating_point<T>::value,
                                                    std::uniform_real_distribution<T>,
                                                    std::uniform_int_distribution<T2> >::type;
 
-    std::mt19937 random;
+    std::mt19937 random(seed);
     Distribution distribution(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
 
     for(auto it = iterable.template begin<T>(), end = iterable.template end<T>() ; it != end ; ++it)
@@ -61,50 +61,50 @@ inline static void randomize(I& iterable)
 //------------------------------------------------------------------------------
 
 template<typename I>
-inline static void randomizeIterable(I& iterable)
+inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
 {
     auto lock       = iterable.lock();
     const auto type = iterable.getType();
 
     if(type == core::tools::Type::s_UNSPECIFIED_TYPE || type == core::tools::Type::s_UINT8)
     {
-        randomize<std::uint8_t, std::uint16_t>(iterable);
+        randomize<std::uint8_t, std::uint16_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_UINT16)
     {
-        randomize<std::uint16_t>(iterable);
+        randomize<std::uint16_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_UINT32)
     {
-        randomize<std::uint32_t>(iterable);
+        randomize<std::uint32_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_UINT64)
     {
-        randomize<std::uint64_t>(iterable);
+        randomize<std::uint64_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_INT8)
     {
-        randomize<std::int8_t, std::int16_t>(iterable);
+        randomize<std::int8_t, std::int16_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_INT16)
     {
-        randomize<std::int16_t>(iterable);
+        randomize<std::int16_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_INT32)
     {
-        randomize<std::int32_t>(iterable);
+        randomize<std::int32_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_INT64)
     {
-        randomize<std::int64_t>(iterable);
+        randomize<std::int64_t>(iterable, seed);
     }
     else if(type == core::tools::Type::s_FLOAT)
     {
-        randomize<float>(iterable);
+        randomize<float>(iterable, seed);
     }
     else if(type == core::tools::Type::s_DOUBLE)
     {
-        randomize<double>(iterable);
+        randomize<double>(iterable, seed);
     }
     else
     {
@@ -133,7 +133,7 @@ void Image::generateImage(
 
 //------------------------------------------------------------------------------
 
-void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
+void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type, std::uint32_t seed)
 {
     constexpr int SIZE        = 50;
     constexpr int DOUBLE_SIZE = SIZE * 2;
@@ -157,7 +157,7 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
 
     image->resize(size, type, data::Image::GRAY_SCALE);
 
-    randomizeImage(image);
+    randomizeImage(image, seed);
 
     image->setWindowWidth((safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
     image->setWindowCenter((safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
@@ -165,27 +165,27 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type)
 
 //------------------------------------------------------------------------------
 
-void Image::randomizeImage(data::Image::sptr image)
+void Image::randomizeImage(data::Image::sptr image, std::uint32_t seed)
 {
-    randomizeIterable(*image);
+    randomizeIterable(*image, seed);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::randomizeArray(data::Array::sptr array)
+void Image::randomizeArray(data::Array::sptr array, std::uint32_t seed)
 {
-    randomizeIterable(*array);
+    randomizeIterable(*array, seed);
 }
 
 //------------------------------------------------------------------------------
 
-data::Array::sptr Image::createRandomizedArray(const std::string& type, data::Array::SizeType sizes)
+data::Array::sptr Image::createRandomizedArray(const std::string& type, data::Array::SizeType sizes, std::uint32_t seed)
 {
     data::Array::sptr array = data::Array::New();
 
     array->resize(sizes, core::tools::Type::create(type), true);
 
-    Image::randomizeArray(array);
+    Image::randomizeArray(array, seed);
 
     return array;
 }

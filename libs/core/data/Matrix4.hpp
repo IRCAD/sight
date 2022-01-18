@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "core/tools/compare.hpp"
+
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
@@ -40,7 +42,7 @@ class DATA_CLASS_API Matrix4 : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Matrix4, data::Object, data::factory::New<Matrix4>);
+    SIGHT_DECLARE_CLASS(Matrix4, Object, factory::New<Matrix4>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Matrix4));
 
@@ -57,7 +59,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Matrix4(data::Object::Key key);
+    DATA_API Matrix4(Object::Key key);
 
     //! @brief destructor
     DATA_API virtual ~Matrix4();
@@ -105,11 +107,18 @@ public:
      * @return 4x4 matrix (std::array< std::array< double, 4> 4>).
      */
     DATA_API MatrixType getMatrix4x4() const;
+
     /**
      * @brief Sets coeficients as a 4x4 matrix (Row major).
      * @param _matrix : matrix coeficients as std::array< std::array< double, 4 > 4 >.
      */
     DATA_API void setMatrix4x4(const MatrixType& _matrix);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Matrix4& other) const noexcept;
+    DATA_API bool operator!=(const Matrix4& other) const noexcept;
+    /// @}
 
 protected:
 
@@ -165,8 +174,7 @@ inline void Matrix4::setCoefficient(std::size_t l, std::size_t c, Matrix4::TM3DT
 inline Matrix4::MatrixType Matrix4::getMatrix4x4() const
 {
     // linear index to 2d.
-    const Matrix4::MatrixType
-        matrix4x4 {{
+    const Matrix4::MatrixType matrix4x4 {{
         {m_vCoefficients[0], m_vCoefficients[1], m_vCoefficients[2], m_vCoefficients[3]},
         {m_vCoefficients[4], m_vCoefficients[5], m_vCoefficients[6], m_vCoefficients[7]},
         {m_vCoefficients[8], m_vCoefficients[9], m_vCoefficients[10], m_vCoefficients[11]},
@@ -181,10 +189,11 @@ inline Matrix4::MatrixType Matrix4::getMatrix4x4() const
 inline void Matrix4::setMatrix4x4(const Matrix4::MatrixType& _matrix)
 {
     // 2d to linear index.
-    m_vCoefficients = {_matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
-                       _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
-                       _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
-                       _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]
+    m_vCoefficients = {
+        _matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
+        _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
+        _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
+        _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]
     };
 }
 

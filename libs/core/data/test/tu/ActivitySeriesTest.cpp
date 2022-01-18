@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,17 +57,32 @@ void ActivitySeriesTest::activityConfigIdTest()
     CPPUNIT_ASSERT(m_series);
     m_series->setActivityConfigId(activityConfigId);
     CPPUNIT_ASSERT_EQUAL(activityConfigId, m_series->getActivityConfigId());
+
+    auto series2 = data::ActivitySeries::New();
+    CPPUNIT_ASSERT(*series2 != *m_series);
+
+    series2->setData(m_series->getData());
+    series2->setActivityConfigId(m_series->getActivityConfigId());
+    CPPUNIT_ASSERT(*series2 == *m_series);
 }
 
 //------------------------------------------------------------------------------
 
 void ActivitySeriesTest::dataTest()
 {
-    data::Composite::sptr data = data::Composite::New();
+    auto data = data::Composite::New();
     CPPUNIT_ASSERT(m_series);
     CPPUNIT_ASSERT(data);
     m_series->setData(data);
     CPPUNIT_ASSERT_EQUAL(data, m_series->getData());
+
+    auto series2 = data::ActivitySeries::New();
+    // Both data are "empty"
+    CPPUNIT_ASSERT(*series2 == *m_series);
+
+    series2->setData(m_series->getData());
+    series2->setActivityConfigId(m_series->getActivityConfigId());
+    CPPUNIT_ASSERT(*series2 == *m_series);
 }
 
 //------------------------------------------------------------------------------

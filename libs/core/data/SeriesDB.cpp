@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,12 @@
 #include "data/SeriesDB.hpp"
 
 #include "data/Series.hpp"
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+
+#include <data/Exception.hpp>
+#include <data/registry/macros.hpp>
 
 SIGHT_REGISTER_DATA(sight::data::SeriesDB)
 
@@ -92,5 +93,23 @@ void SeriesDB::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheT
 }
 
 //------------------------------------------------------------------------------
+
+bool SeriesDB::operator==(const SeriesDB& other) const noexcept
+{
+    if(!core::tools::is_equal(m_container, other.m_container))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool SeriesDB::operator!=(const SeriesDB& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -321,7 +321,11 @@ void RawBufferTLTest::copyTest()
 
     // deepCopy test
     data::RawBufferTL::sptr deepTimeline = data::RawBufferTL::New();
+    CPPUNIT_ASSERT(*timeline != *deepTimeline);
+
     deepTimeline->deepCopy(timeline);
+    CPPUNIT_ASSERT(*timeline == *deepTimeline);
+
     CSPTR(data::timeline::Object) deepDataPushed1 = deepTimeline->getObject(time1);
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);

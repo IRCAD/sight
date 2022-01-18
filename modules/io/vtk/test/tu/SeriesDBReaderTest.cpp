@@ -30,7 +30,6 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
@@ -52,21 +51,6 @@ namespace sight::module::io::vtk
 
 namespace ut
 {
-
-//-----------------------------------------------------------------------------
-
-void compare(data::Object::sptr objRef, data::Object::sptr objComp)
-{
-    data::reflection::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
-    {
-        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
-}
 
 //------------------------------------------------------------------------------
 
@@ -166,7 +150,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 720, mesh1->numCells());
     CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 362, mesh1->numPoints());
 
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------

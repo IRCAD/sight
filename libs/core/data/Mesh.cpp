@@ -728,6 +728,31 @@ void Mesh::lockBuffer(std::vector<core::memory::BufferObject::Lock>& locks) cons
 
 //------------------------------------------------------------------------------
 
+bool Mesh::operator==(const Mesh& other) const noexcept
+{
+    if(m_numPoints != other.m_numPoints
+       || m_numCells != other.m_numCells
+       || m_cellType != other.m_cellType
+       || m_attributes != other.m_attributes
+       || !core::tools::is_equal(m_points, other.m_points)
+       || !core::tools::is_equal(m_cells, other.m_cells))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Mesh::operator!=(const Mesh& other) const noexcept
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
 template<>
 DATA_API data::Array::sptr Mesh::getArray<iterator::point::xyz>()
 {

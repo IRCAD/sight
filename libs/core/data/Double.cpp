@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,31 +19,27 @@
  *
  ***********************************************************************/
 
-#include "data/Patient.hpp"
+#include "data/Double.hpp"
 
-#include <data/Exception.hpp>
-#include <data/registry/macros.hpp>
+#include "data/Exception.hpp"
+#include "data/GenericField.hpp"
+#include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA(sight::data::Patient)
+SIGHT_REGISTER_DATA(sight::data::Double);
 
 namespace sight::data
 {
 
-Patient::Patient(data::Object::Key)
+//------------------------------------------------------------------------------
+
+Double::Double(data::Object::Key) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
-
-Patient::~Patient()
+void Double::shallowCopy(const Object::csptr& _source)
 {
-}
-
-//------------------------------------------------------------------------------
-
-void Patient::shallowCopy(const data::Object::csptr& _source)
-{
-    Patient::csptr other = Patient::dynamicConstCast(_source);
+    Double::csptr other = Double::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
@@ -52,19 +47,15 @@ void Patient::shallowCopy(const data::Object::csptr& _source)
         ),
         !bool(other)
     );
-
-    this->fieldShallowCopy(other);
-    m_name      = other->m_name;
-    m_birthdate = other->m_birthdate;
-    m_patientId = other->m_patientId;
-    m_sex       = other->m_sex;
+    this->fieldShallowCopy(_source);
+    m_value = other->m_value;
 }
 
 //------------------------------------------------------------------------------
 
-void Patient::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void Double::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
-    Patient::csptr other = Patient::dynamicConstCast(_source);
+    Double::csptr other = Double::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
@@ -72,35 +63,8 @@ void Patient::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheTy
         ),
         !bool(other)
     );
-
-    this->fieldDeepCopy(other, cache);
-    m_name      = other->m_name;
-    m_birthdate = other->m_birthdate;
-    m_patientId = other->m_patientId;
-    m_sex       = other->m_sex;
-}
-
-//------------------------------------------------------------------------------
-
-bool Patient::operator==(const Patient& other) const noexcept
-{
-    if(m_name != other.m_name
-       || m_patientId != other.m_patientId
-       || m_birthdate != other.m_birthdate
-       || m_sex != other.m_sex)
-    {
-        return false;
-    }
-
-    // Super class last
-    return Object::operator==(other);
-}
-
-//------------------------------------------------------------------------------
-
-bool Patient::operator!=(const Patient& other) const noexcept
-{
-    return !(*this == other);
+    this->fieldDeepCopy(_source, cache);
+    m_value = other->m_value;
 }
 
 } // namespace sight::data

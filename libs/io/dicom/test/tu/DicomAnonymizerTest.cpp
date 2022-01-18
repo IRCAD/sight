@@ -28,7 +28,6 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Patient.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,6 +72,16 @@ void ReconstructionTraitsTest::creation()
     CPPUNIT_ASSERT(structure == recTraits->getStructureTraits());
     CPPUNIT_ASSERT(opMaskNode == recTraits->getMaskOpNode());
     CPPUNIT_ASSERT(opMeskNode == recTraits->getMeshOpNode());
+
+    auto recTraits2 = data::ReconstructionTraits::New();
+    CPPUNIT_ASSERT(*recTraits != *recTraits2);
+
+    recTraits2->setIdentifier(ID);
+    recTraits2->setStructureTraits(structure);
+    recTraits2->setMaskOpNode(opMaskNode);
+    recTraits2->setMeshOpNode(opMeskNode);
+
+    CPPUNIT_ASSERT(*recTraits == *recTraits2);
 }
 
 } //namespace ut

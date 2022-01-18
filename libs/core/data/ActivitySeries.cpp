@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,6 +78,27 @@ void ActivitySeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopy
 
     m_activityConfigId = other->m_activityConfigId;
     m_data             = data::Object::copy(other->m_data, cache);
+}
+
+//------------------------------------------------------------------------------
+
+bool ActivitySeries::operator==(const ActivitySeries& other) const noexcept
+{
+    if(m_activityConfigId != other.m_activityConfigId
+       || !core::tools::is_equal(m_data, other.m_data))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool ActivitySeries::operator!=(const ActivitySeries& other) const noexcept
+{
+    return !(*this == other);
 }
 
 //------------------------------------------------------------------------------

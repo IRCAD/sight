@@ -23,8 +23,7 @@
 #pragma once
 
 #include "data/config.hpp"
-
-#include <data/Object.hpp>
+#include "data/Object.hpp"
 
 #include <array>
 
@@ -38,11 +37,11 @@ namespace sight::data
  * coherency checks between the markers, so you could have one marker with one point, another one with four points,
  * etc...
  */
-class DATA_CLASS_API MarkerMap : public data::Object
+class DATA_CLASS_API MarkerMap : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MarkerMap, data::Object, data::factory::New<MarkerMap>);
+    SIGHT_DECLARE_CLASS(MarkerMap, Object, factory::New<MarkerMap>);
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;
@@ -52,7 +51,7 @@ public:
      * @brief Constructor
      * @param[in] _key Private construction key
      */
-    DATA_API MarkerMap(data::Object::Key _key);
+    DATA_API MarkerMap(Object::Key _key);
     /**
      * @brief Destructor
      */
@@ -60,9 +59,6 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Returns a marker given its identifier, null_ptr if not found
     DATA_API const MarkerType* getMarker(const KeyType& _id) const;
@@ -81,6 +77,17 @@ public:
 
     /// Adds a new marker in the container
     DATA_API void setMarker(const KeyType& _id, const MarkerType& _marker);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const MarkerMap& other) const noexcept;
+    DATA_API bool operator!=(const MarkerMap& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 

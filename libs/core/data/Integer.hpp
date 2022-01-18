@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ class DATA_CLASS_API Integer : public GenericField<std::int64_t>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Integer, data::Object);
+    SIGHT_DECLARE_CLASS(Integer, Object);
 
     //------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Integer(data::Object::Key key) noexcept;
+    DATA_API Integer(Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
@@ -64,6 +64,8 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+protected:
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

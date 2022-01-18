@@ -296,4 +296,45 @@ std::size_t Landmarks::numPoints(const std::string& name) const
 
 //------------------------------------------------------------------------------
 
+bool Landmarks::LandmarksGroup::operator==(const LandmarksGroup& other) const noexcept
+{
+    if(!core::tools::is_equal(m_color, other.m_color)
+       || !core::tools::is_equal(m_size, other.m_size)
+       || m_shape != other.m_shape
+       || m_visibility != other.m_visibility
+       || !core::tools::is_equal(m_points, other.m_points))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::LandmarksGroup::operator!=(const LandmarksGroup& other) const noexcept
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::operator==(const Landmarks& other) const noexcept
+{
+    if(!core::tools::is_equal(m_landmarks, other.m_landmarks))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::operator!=(const Landmarks& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

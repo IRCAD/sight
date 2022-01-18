@@ -151,4 +151,24 @@ unsigned int GenericTL<BUFFER_TYPE>::getMaxElementNum() const
 
 //------------------------------------------------------------------------------
 
+template<class BUFFER_TYPE>
+bool GenericTL<BUFFER_TYPE>::operator==(const GenericTL& other) const noexcept
+{
+    if(m_maxElementNum != other.m_maxElementNum)
+    {
+        return false;
+    }
+
+    // Super class last
+    return BufferTL::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+template<class BUFFER_TYPE>
+bool GenericTL<BUFFER_TYPE>::operator!=(const GenericTL& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

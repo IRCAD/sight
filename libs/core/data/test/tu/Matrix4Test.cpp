@@ -51,10 +51,11 @@ void Matrix4Test::tearDown()
 
 void Matrix4Test::getterSetterByCoef()
 {
-    double identity[] = {1., 0., 0., 0.,
-                         0., 1., 0., 0.,
-                         0., 0., 1., 0.,
-                         0., 0., 0., 1.
+    const double identity[] = {
+        1., 0., 0., 0.,
+        0., 1., 0., 0.,
+        0., 0., 1., 0.,
+        0., 0., 0., 1.
     };
 
     data::Matrix4::sptr mat = data::Matrix4::New();
@@ -69,10 +70,11 @@ void Matrix4Test::getterSetterByCoef()
     }
 
     // Call setter and check getter
-    double coefs[] = {2, -2, .3, .12,
-                      4, 8.9, 4.2, 1.2,
-                      7.8, -12.1, 2.3, 1.2,
-                      .3, 1.21, -3.1, 1.2
+    const double coefs[] = {
+        2, -2, .3, .12,
+        4, 8.9, 4.2, 1.2,
+        7.8, -12.1, 2.3, 1.2,
+        .3, 1.21, -3.1, 1.2
     };
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
@@ -90,6 +92,20 @@ void Matrix4Test::getterSetterByCoef()
             CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs[i * 4 + j]);
         }
     }
+
+    // Test == operator
+    data::Matrix4::sptr mat2 = data::Matrix4::New();
+    CPPUNIT_ASSERT(*mat != *mat2);
+
+    for(size_t i = 0 ; i < 4 ; ++i)
+    {
+        for(size_t j = 0 ; j < 4 ; ++j)
+        {
+            mat2->setCoefficient(i, j, coefs[i * 4 + j]);
+        }
+    }
+
+    CPPUNIT_ASSERT(*mat == *mat2);
 }
 
 //------------------------------------------------------------------------------
@@ -141,12 +157,13 @@ void Matrix4Test::getterSetterByArray()
 
 void Matrix4Test::getterSetterByMatrix()
 {
-    data::Matrix4::MatrixType matrix4x4 = {{{0., 0., 1., 100.},
-        {0., 1., 0., 200.},
-        {1., 0., 0., 3000.},
-        {0., 0., 0., 1.
+    data::Matrix4::MatrixType matrix4x4 = {
+        {
+            {0., 0., 1., 100.},
+            {0., 1., 0., 200.},
+            {1., 0., 0., 3000.},
+            {0., 0., 0., 1.}
         }
-    }
     };
 
     data::Matrix4::sptr mat = data::Matrix4::New();
@@ -164,10 +181,11 @@ void Matrix4Test::getterSetterByMatrix()
         }
     }
 
-    data::Matrix4::TMCoefArray coefs = {1, -2, .3, .4,
-                                        5.5, 6, 7.77, 8.,
-                                        0.09, 10., -11., 1.2,
-                                        0, 0, 0, 1.
+    data::Matrix4::TMCoefArray coefs = {
+        1, -2, .3, .4,
+        5.5, 6, 7.77, 8.,
+        0.09, 10., -11., 1.2,
+        0, 0, 0, 1.
     };
 
     mat->setCoefficients(coefs);

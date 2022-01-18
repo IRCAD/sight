@@ -220,4 +220,25 @@ data::Image::sptr CalibrationInfo::getImage(std::size_t idx) const
 
 //------------------------------------------------------------------------------
 
+bool CalibrationInfo::operator==(const CalibrationInfo& other) const noexcept
+{
+    if(!core::tools::is_equal(m_imageContainer, other.m_imageContainer)
+       || !core::tools::is_equal(m_pointListContainer, other.m_pointListContainer))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool CalibrationInfo::operator!=(const CalibrationInfo& other) const noexcept
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace sight::data

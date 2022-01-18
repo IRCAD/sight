@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,5 +75,23 @@ void Equipment::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCache
 }
 
 //------------------------------------------------------------------------------
+
+bool Equipment::operator==(const Equipment& other) const noexcept
+{
+    if(m_institutionName != other.m_institutionName)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Equipment::operator!=(const Equipment& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,18 +94,29 @@ void SVTKMesher::configuring()
 
 void SVTKMesher::updating()
 {
-    auto imageSeries                    = m_image.lock();
-    data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
+    auto imageSeries = m_image.lock();
+    auto image       = imageSeries->getImage();
 
-    data::Object::DeepCopyCacheType cache;
-    modelSeries->data::Series::cachedDeepCopy(imageSeries.get_shared(), cache);
+    // If there is no image don't do anything, it will avoid a crash later...
+    if(!image)
+    {
+        SIGHT_WARN("The imageSeries has no image, the mesher will not be able to work.");
+        return;
+    }
+
+    // Protect the image...
+    data::mt::locked_ptr<data::Image> image_lock(image);
+
+    auto modelSeries = data::ModelSeries::New();
+
+    modelSeries->from_series(*imageSeries);
 
     // vtk img
-    vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(imageSeries->getImage(), vtkImage);
+    auto vtkImage = vtkSmartPointer<vtkImageData>::New();
+    io::vtk::toVTKImage(image, vtkImage);
 
     // contour filter
-    vtkSmartPointer<vtkDiscreteMarchingCubes> contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
+    auto contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contourFilter->SetInputData(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
@@ -113,8 +124,7 @@ void SVTKMesher::updating()
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer<vtkWindowedSincPolyDataFilter> smoothFilter =
-        vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
+    auto smoothFilter = vtkSmartPointer<vtkWindowedSincPolyDataFilter>::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations(50);
     smoothFilter->BoundarySmoothingOn();
@@ -126,12 +136,12 @@ void SVTKMesher::updating()
 
     // Get polyData
     vtkSmartPointer<vtkPolyData> polyData;
-    data::Mesh::sptr mesh = data::Mesh::New();
+    auto mesh = data::Mesh::New();
 
     // decimate filter
     if(m_reduction > 0)
     {
-        vtkSmartPointer<vtkDecimatePro> decimate = vtkSmartPointer<vtkDecimatePro>::New();
+        auto decimate = vtkSmartPointer<vtkDecimatePro>::New();
         decimate->SetInputConnection(smoothFilter->GetOutputPort());
         decimate->SetTargetReduction(m_reduction / 100.0);
         decimate->PreserveTopologyOff();
@@ -148,7 +158,7 @@ void SVTKMesher::updating()
         io::vtk::helper::Mesh::fromVTKMesh(polyData, mesh);
     }
 
-    data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
+    auto reconstruction = data::Reconstruction::New();
 
     static unsigned int organNumber = 0;
     ++organNumber;

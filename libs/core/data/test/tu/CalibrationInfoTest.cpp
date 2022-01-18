@@ -30,7 +30,6 @@
 #include <data/PointList.hpp>
 
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CalibrationInfoTest);
@@ -154,6 +153,10 @@ void CalibrationInfoTest::deepCopyTest()
     calInfo->addRecord(img, pl);
 
     data::CalibrationInfo::sptr calInfo2 = data::CalibrationInfo::New();
+
+    // == operator test
+    CPPUNIT_ASSERT(*calInfo != *calInfo2);
+
     calInfo2->deepCopy(calInfo);
 
     CPPUNIT_ASSERT_EQUAL(calInfo2->getImageContainer().size(), calInfo2->getPointListContainer().size());
@@ -174,8 +177,8 @@ void CalibrationInfoTest::deepCopyTest()
         CPPUNIT_ASSERT(*iterImg1 != *iterImg2);
         CPPUNIT_ASSERT(*iterPl1 != *iterPl2);
 
-        CPPUNIT_ASSERT(utestData::helper::compare(*iterImg1, *iterImg2));
-        CPPUNIT_ASSERT(utestData::helper::compare(*iterPl1, *iterPl2));
+        CPPUNIT_ASSERT(**iterImg1 == **iterImg2);
+        CPPUNIT_ASSERT(**iterPl1 == **iterPl2);
 
         ++iterPl1;
         ++iterPl2;
@@ -183,6 +186,9 @@ void CalibrationInfoTest::deepCopyTest()
         ++iterImg1;
         ++iterImg2;
     }
+
+    // == operator test
+    CPPUNIT_ASSERT(*calInfo == *calInfo2);
 }
 
 //------------------------------------------------------------------------------

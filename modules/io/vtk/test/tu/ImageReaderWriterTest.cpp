@@ -28,13 +28,11 @@
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 
 #include <service/base.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -461,14 +459,13 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    data::Image::sptr newImage = data::Image::New();
-    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), newImage);
+    data::Image::sptr image2 = data::Image::New();
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, newImage, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------

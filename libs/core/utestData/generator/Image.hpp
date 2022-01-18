@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,18 +61,23 @@ public:
     );
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
-    UTESTDATA_API static void generateRandomImage(data::Image::sptr image, core::tools::Type type);
+    UTESTDATA_API static void generateRandomImage(
+        data::Image::sptr image,
+        core::tools::Type type,
+        std::uint32_t seed = 0
+    );
 
     /// Fill image array with random value
-    UTESTDATA_API static void randomizeImage(data::Image::sptr image);
+    UTESTDATA_API static void randomizeImage(data::Image::sptr image, std::uint32_t seed = 0);
 
     /// Fill array with random value
-    UTESTDATA_API static void randomizeArray(data::Array::sptr array);
+    UTESTDATA_API static void randomizeArray(data::Array::sptr array, std::uint32_t seed = 0);
 
     /// Creates an Array with the given type and size and fills buffer with random values.
     UTESTDATA_API static data::Array::sptr createRandomizedArray(
         const std::string& type,
-        data::Array::SizeType sizes
+        data::Array::SizeType sizes,
+        std::uint32_t seed = 0
     );
 };
 

@@ -26,8 +26,6 @@
 #include <core/tools/random/Generator.hpp>
 #include <core/tools/System.hpp>
 
-#include <data/reflection/visitor/CompareObjects.hpp>
-
 #include <geometry/data/Mesh.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
@@ -63,21 +61,6 @@ namespace ut
 {
 
 using core::tools::random::safeRand;
-
-//-----------------------------------------------------------------------------
-
-void compare(data::Object::sptr objRef, data::Object::sptr objComp)
-{
-    data::reflection::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
-    {
-        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
-}
 
 //------------------------------------------------------------------------------
 
@@ -137,7 +120,7 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT(mesh2);
     io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
 
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +164,7 @@ void MeshTest::testMeshToGrid()
     CPPUNIT_ASSERT(mesh2);
     io::vtk::helper::Mesh::fromVTKGrid(vtkGrid, mesh2);
 
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +184,7 @@ void MeshTest::testSyntheticMesh()
         data::Mesh::sptr mesh2 = data::Mesh::New();
         io::vtk::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-        compare(mesh1, mesh2);
+        CPPUNIT_ASSERT(*mesh1 == *mesh2);
     }
     {
         const data::Mesh::sptr mesh1 = data::Mesh::New();
@@ -220,7 +203,7 @@ void MeshTest::testSyntheticMesh()
         data::Mesh::sptr mesh2 = data::Mesh::New();
         io::vtk::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-        compare(mesh1, mesh2);
+        CPPUNIT_ASSERT(*mesh1 == *mesh2);
     }
 }
 
@@ -253,7 +236,7 @@ void MeshTest::testExportImportSyntheticMesh()
     reader->setFile(testFile);
     reader->read();
 
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 
     const bool suppr = std::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
@@ -290,7 +273,7 @@ void MeshTest::testPointCloud()
 
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numPoints());
     CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->numCells());
-    compare(mesh1, mesh2);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------

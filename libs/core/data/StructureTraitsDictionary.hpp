@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,21 +37,21 @@ namespace sight::data
  * @note The dictionary cannot contain two structure with the same type.
  * @see StructureTraits
  */
-class DATA_CLASS_API StructureTraitsDictionary : public data::Object
+class DATA_CLASS_API StructureTraitsDictionary : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(StructureTraitsDictionary, data::Object, data::factory::New<StructureTraitsDictionary>);
+    SIGHT_DECLARE_CLASS(StructureTraitsDictionary, Object, factory::New<StructureTraitsDictionary>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraitsDictionary));
 
     typedef std::vector<std::string> StructureTypeNameContainer;
-    typedef std::map<std::string, data::StructureTraits::sptr> StructureTraitsMapType;
+    typedef std::map<std::string, StructureTraits::sptr> StructureTraitsMapType;
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API StructureTraitsDictionary(data::Object::Key key);
+    DATA_API StructureTraitsDictionary(Object::Key key);
 
     /// Destructor. Does nothing.
     DATA_API virtual ~StructureTraitsDictionary();
@@ -81,6 +81,14 @@ public:
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const StructureTraitsDictionary& other) const noexcept;
+    DATA_API bool operator!=(const StructureTraitsDictionary& other) const noexcept;
+    /// @}
+
+protected:
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

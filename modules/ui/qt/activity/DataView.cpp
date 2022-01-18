@@ -36,7 +36,6 @@
 #include <data/Matrix4.hpp>
 #include <data/Patient.hpp>
 #include <data/reflection/getObject.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>

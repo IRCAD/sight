@@ -43,11 +43,11 @@ namespace sight::data
 
  * @see     data::Edge, data::Node
  */
-class DATA_CLASS_API Graph : public data::Object
+class DATA_CLASS_API Graph : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Graph, data::Object, data::factory::New<Graph>);
+    SIGHT_DECLARE_CLASS(Graph, Object, data::factory::New<Graph>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Graph));
 
@@ -59,7 +59,7 @@ public:
                                                 // we use erase(it++)
 
     /// Type of signal m_sigUpdated
-    typedef std::vector<data::Object::sptr> UpdatedDataType;
+    typedef std::vector<Object::sptr> UpdatedDataType;
 
     /**
      * @brief Update signal type
@@ -71,7 +71,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Graph(data::Object::Key key);
+    DATA_API Graph(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Graph();
@@ -226,8 +226,6 @@ public:
 
     DATA_API void shallowCopy(const Object::csptr& _source) override;
 
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /**
      * @brief Check if an edge is connected to the node
      *
@@ -238,7 +236,15 @@ public:
     /// Updated signal key
     DATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Graph& other) const noexcept;
+    DATA_API bool operator!=(const Graph& other) const noexcept;
+    /// @}
+
 protected:
+
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

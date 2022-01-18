@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,9 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
 
 SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (Equipment))
 
@@ -35,11 +35,11 @@ namespace sight::data
 /**
  * @brief Holds an equipment information.
  */
-class DATA_CLASS_API Equipment : public data::Object
+class DATA_CLASS_API Equipment : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Equipment, data::Object, data::factory::New<Equipment>);
+    SIGHT_DECLARE_CLASS(Equipment, Object, factory::New<Equipment>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Equipment))
 
@@ -47,7 +47,7 @@ public:
      * @brief Creates the equipement.
      * @param _key private construction key.
      */
-    DATA_API Equipment(data::Object::Key _key);
+    DATA_API Equipment(Object::Key _key);
 
     /// Destroys the equipement.
     DATA_API virtual ~Equipment();
@@ -56,20 +56,27 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object to copy into this one.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Gets the institution where the equipment that produced the composite instances is located.
     const DicomValueType& getInstitutionName() const;
 
     /// Sets the institution where the equipment that produced the composite instances is located.
     void setInstitutionName(const DicomValueType& _val);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Equipment& other) const noexcept;
+    DATA_API bool operator!=(const Equipment& other) const noexcept;
+
+    /// @}
 
 protected:
 
@@ -91,6 +98,4 @@ inline void Equipment::setInstitutionName(const DicomValueType& _val)
     m_institutionName = _val;
 }
 
-//-----------------------------------------------------------------------------
-
-} // Namespace fwMedData.
+} // Namespace sight::data

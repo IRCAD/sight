@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/DicomSeries.hpp"
+#include "data/factory/new.hpp"
+#include "data/Reconstruction.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -38,23 +39,16 @@ SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ModelSeries))
 namespace sight::data
 {
 
-class Reconstruction;
-
-}
-
-namespace sight::data
-{
-
 /**
  * @brief Holds models series.
  */
-class DATA_CLASS_API ModelSeries : public data::Series
+class DATA_CLASS_API ModelSeries : public Series
 {
 public:
 
-    typedef std::vector<SPTR(data::Reconstruction)> ReconstructionVectorType;
+    using ReconstructionVectorType = std::vector<Reconstruction::sptr>;
 
-    SIGHT_DECLARE_CLASS(ModelSeries, data::Object, data::factory::New<ModelSeries>);
+    SIGHT_DECLARE_CLASS(ModelSeries, Object, factory::New<ModelSeries>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ModelSeries))
 
@@ -62,7 +56,7 @@ public:
      * @brief Creates the models series.
      * @param _key private construction key.
      */
-    DATA_API ModelSeries(data::Object::Key _key);
+    DATA_API ModelSeries(Object::Key _key);
 
     /// Destroys the models series.
     DATA_API ~ModelSeries() override;
@@ -71,14 +65,7 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
     const ReconstructionVectorType& getReconstructionDB() const;
@@ -87,10 +74,10 @@ public:
     void setReconstructionDB(const ReconstructionVectorType& _val);
 
     /// Gets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    data::DicomSeries::csptr getDicomReference() const;
+    DicomSeries::csptr getDicomReference() const;
 
     /// Sets the DICOM reference use to generate valid DICOM Segmentation Surface.
-    void setDicomReference(const data::DicomSeries::csptr& _reference);
+    void setDicomReference(const DicomSeries::csptr& _reference);
 
     /**
      * @name Signals
@@ -107,13 +94,26 @@ public:
  * @}
  */
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ModelSeries& other) const noexcept;
+    DATA_API bool operator!=(const ModelSeries& other) const noexcept;
+    /// @}
+
 protected:
+
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
     /// Stores models.
     ReconstructionVectorType m_reconstructionDB;
 
     /// Stores the DICOM reference used to generate a valid DICOM Segmentation Surface.
-    data::DicomSeries::sptr m_dicomReference;
+    DicomSeries::sptr m_dicomReference;
 
 private:
 
@@ -140,16 +140,16 @@ inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVe
 
 //-----------------------------------------------------------------------------
 
-inline data::DicomSeries::csptr ModelSeries::getDicomReference() const
+inline DicomSeries::csptr ModelSeries::getDicomReference() const
 {
     return m_dicomReference;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ModelSeries::setDicomReference(const data::DicomSeries::csptr& _reference)
+inline void ModelSeries::setDicomReference(const DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast<data::DicomSeries>(_reference);
+    m_dicomReference = std::const_pointer_cast<DicomSeries>(_reference);
 }
 
 //-----------------------------------------------------------------------------

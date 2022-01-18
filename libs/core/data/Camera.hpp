@@ -23,12 +23,11 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/factory/new.hpp"
+#include "data/Object.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
-
-#include <data/factory/new.hpp>
-#include <data/Object.hpp>
 
 #include <array>
 #include <filesystem>
@@ -43,12 +42,12 @@ namespace sight::data
 /**
  * @brief   This class defines a camera object.
  */
-class DATA_CLASS_API Camera : public data::Object
+class DATA_CLASS_API Camera : public Object
 {
 public:
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (Camera));
-    SIGHT_DECLARE_CLASS(Camera, data::Object, data::factory::New<Camera>);
+    SIGHT_DECLARE_CLASS(Camera, Object, factory::New<Camera>);
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;
@@ -103,13 +102,13 @@ public:
     /// Default constructor.
     DATA_API Camera();
 
-    DATA_API Camera(const data::Camera& _cam);
+    DATA_API Camera(const Camera& _cam);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Camera(data::Object::Key key);
+    DATA_API Camera(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Camera() noexcept;
@@ -119,10 +118,7 @@ public:
     DATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /**@name Signals API
      * @{
@@ -368,7 +364,16 @@ public:
      */
     int getIndex() const;
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Camera& other) const noexcept;
+    DATA_API bool operator!=(const Camera& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     //! Width video resolution
     std::size_t m_width;
@@ -390,10 +395,13 @@ protected:
 
     //! Human-readable description of the camera.
     std::string m_description;
+
     //! Device name of the camera, unique ID to identify the camera and may not be human-readable.
     std::string m_cameraID;
+
     //! Maximum frame rate in frames per second.
     float m_maxFrameRate;
+
     //! Color format of a video frame.
     PixelFormat m_pixelFormat;
 

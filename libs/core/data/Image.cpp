@@ -38,21 +38,21 @@ SIGHT_REGISTER_DATA(sight::data::Image);
 namespace sight::data
 {
 
-auto pixelFormatToNumComponents = [](Image::PixelFormat format)
-                                  {
-                                      static const std::array<std::size_t,
-                                                              Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
-                                      {
-                                          ~0ul,
-                                          3,
-                                          4,
-                                          3,
-                                          4,
-                                          1,
-                                          2
-                                      };
-                                      return s_pixelFormatToNumComponents[format];
-                                  };
+auto pixelFormatToNumComponents =
+    [](Image::PixelFormat format)
+    {
+        static const std::array<std::size_t, Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
+        {
+            ~0ul,
+            3,
+            4,
+            3,
+            4,
+            1,
+            2
+        };
+        return s_pixelFormatToNumComponents[format];
+    };
 
 const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
 const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
@@ -424,5 +424,31 @@ core::memory::BufferObject::csptr Image::getBufferObject() const
 }
 
 //------------------------------------------------------------------------------
+
+bool Image::operator==(const Image& other) const noexcept
+{
+    if(!core::tools::is_equal(m_size, other.m_size)
+       || !core::tools::is_equal(m_spacing, other.m_spacing)
+       || !core::tools::is_equal(m_origin, other.m_origin)
+       || m_type != other.m_type
+       || !core::tools::is_equal(m_windowCenter, other.m_windowCenter)
+       || !core::tools::is_equal(m_windowWidth, other.m_windowWidth)
+       || m_numComponents != other.m_numComponents
+       || m_pixelFormat != other.m_pixelFormat
+       || !core::tools::is_equal(m_dataArray, other.m_dataArray))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Image::operator!=(const Image& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

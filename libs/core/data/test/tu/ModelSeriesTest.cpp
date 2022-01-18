@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,8 +92,8 @@ void ModelSeriesTest::deepCopyTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
-    data::Mesh::sptr mesh1          = data::Mesh::New();
+    auto rec1  = data::Reconstruction::New();
+    auto mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateQuadMesh(mesh1);
 
     rec1->setMesh(mesh1);
@@ -101,9 +101,13 @@ void ModelSeriesTest::deepCopyTest()
     recs.push_back(rec1);
     m_series->setReconstructionDB(recs);
 
-    data::ModelSeries::sptr secondSeries = data::ModelSeries::New();
+    auto secondSeries = data::ModelSeries::New();
+
+    CPPUNIT_ASSERT(*m_series != *secondSeries);
 
     secondSeries->deepCopy(m_series);
+
+    CPPUNIT_ASSERT(*m_series == *secondSeries);
 
     CPPUNIT_ASSERT_EQUAL(1, (int) m_series->getReconstructionDB().size());
     CPPUNIT_ASSERT_EQUAL(1, (int) secondSeries->getReconstructionDB().size());
@@ -116,17 +120,21 @@ void ModelSeriesTest::shallowCopyTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    data::Reconstruction::sptr rec1 = data::Reconstruction::New();
-    data::Mesh::sptr mesh1          = data::Mesh::New();
+    auto rec1  = data::Reconstruction::New();
+    auto mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateQuadMesh(mesh1);
     rec1->setMesh(mesh1);
     ModelSeries::ReconstructionVectorType recs;
     recs.push_back(rec1);
     m_series->setReconstructionDB(recs);
 
-    data::ModelSeries::sptr secondSeries = data::ModelSeries::New();
+    auto secondSeries = data::ModelSeries::New();
+
+    CPPUNIT_ASSERT(*m_series != *secondSeries);
 
     secondSeries->shallowCopy(m_series);
+
+    CPPUNIT_ASSERT(*m_series == *secondSeries);
 
     CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == secondSeries->getReconstructionDB()[0]);
     CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], secondSeries->getReconstructionDB()[0]);

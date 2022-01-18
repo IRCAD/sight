@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,5 +92,23 @@ void PointList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& 
 }
 
 //------------------------------------------------------------------------------
+
+bool PointList::operator==(const PointList& other) const noexcept
+{
+    if(!core::tools::is_equal(m_vPoints, other.m_vPoints))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool PointList::operator!=(const PointList& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -154,4 +154,27 @@ bool Histogram::isInRange(float _pixel)
     return _pixel >= m_minValue && _pixel <= m_maxValue;
 }
 
+//------------------------------------------------------------------------------
+
+bool Histogram::operator==(const Histogram& other) const noexcept
+{
+    if(!core::tools::is_equal(m_binsWidth, other.m_binsWidth)
+       || !core::tools::is_equal(m_minValue, other.m_minValue)
+       || !core::tools::is_equal(m_maxValue, other.m_maxValue)
+       || !core::tools::is_equal(m_values, other.m_values))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Histogram::operator!=(const Histogram& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

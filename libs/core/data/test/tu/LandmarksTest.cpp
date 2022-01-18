@@ -107,11 +107,15 @@ void LandmarksTest::copyTest()
             CPPUNIT_ASSERT_EQUAL(int(group.m_shape), int(groupCopy.m_shape));
             CPPUNIT_ASSERT_EQUAL(group.m_visibility, groupCopy.m_visibility);
         }
+
+        CPPUNIT_ASSERT(*landmarksCopy == *landmarks);
     }
 
     {
         // Check shallow copy
         data::Landmarks::sptr landmarksCopy = data::Landmarks::New();
+        CPPUNIT_ASSERT(*landmarksCopy != *landmarks);
+
         landmarksCopy->shallowCopy(landmarks);
         CPPUNIT_ASSERT(landmarksCopy);
 
@@ -133,6 +137,8 @@ void LandmarksTest::copyTest()
             CPPUNIT_ASSERT_EQUAL(int(group.m_shape), int(groupCopy.m_shape));
             CPPUNIT_ASSERT_EQUAL(group.m_visibility, groupCopy.m_visibility);
         }
+
+        CPPUNIT_ASSERT(*landmarksCopy == *landmarks);
     }
 }
 

@@ -148,4 +148,22 @@ void Point::setLabel(const std::string& _label)
 
 //------------------------------------------------------------------------------
 
+bool Point::operator==(const Point& other) const noexcept
+{
+    if(!core::tools::is_equal(m_vCoord, other.m_vCoord))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Point::operator!=(const Point& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

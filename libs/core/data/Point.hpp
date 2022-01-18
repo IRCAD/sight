@@ -43,7 +43,7 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    SIGHT_DECLARE_CLASS(Point, data::Object, data::factory::New<Point>);
+    SIGHT_DECLARE_CLASS(Point, Object, factory::New<Point>);
 
     /// Point factory
     DATA_API static Point::sptr New(float x, float y   = 0.f, float z = 0.f);
@@ -57,16 +57,13 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API Point(data::Object::Key key);
+    DATA_API Point(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~Point();
 
     /// Defines shallow copy
     DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get/set point coordinates
     /// @{
@@ -79,7 +76,16 @@ public:
 
     DATA_API void setLabel(const std::string& _label);
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Point& other) const noexcept;
+    DATA_API bool operator!=(const Point& other) const noexcept;
+    /// @}
+
 protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// point coordinates
     PointCoordArrayType m_vCoord;

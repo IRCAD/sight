@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -152,5 +152,31 @@ void Material::setDiffuseTexture(const Image::sptr& diffuseTexture)
 }
 
 //------------------------------------------------------------------------------
+
+bool Material::operator==(const Material& other) const noexcept
+{
+    // If the attributes are different, then it is not equal
+    if(m_shadingMode != other.m_shadingMode
+       || m_representationMode != other.m_representationMode
+       || m_optionsMode != other.m_optionsMode
+       || !core::tools::is_equal(m_ambient, other.m_ambient)
+       || !core::tools::is_equal(m_diffuse, other.m_diffuse)
+       || !core::tools::is_equal(m_diffuseTexture, other.m_diffuseTexture)
+       || m_diffuseTextureFiltering != other.m_diffuseTextureFiltering
+       || m_diffuseTextureWrapping != other.m_diffuseTextureWrapping)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Material::operator!=(const Material& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } //namespace sight::data

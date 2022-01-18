@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,5 +135,25 @@ void Edge::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache
 }
 
 //------------------------------------------------------------------------------
+
+bool Edge::operator==(const Edge& other) const noexcept
+{
+    if(m_fromPortIdentifier != other.m_fromPortIdentifier
+       || m_toPortIdentifier != other.m_toPortIdentifier
+       || m_nature != other.m_nature)
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Edge::operator!=(const Edge& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

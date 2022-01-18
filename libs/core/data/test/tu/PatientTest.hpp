@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,7 @@ CPPUNIT_TEST(nameTest);
 CPPUNIT_TEST(idTest);
 CPPUNIT_TEST(birthdateTest);
 CPPUNIT_TEST(sexTest);
+CPPUNIT_TEST(equalityTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -51,6 +52,7 @@ public:
     void idTest();
     void birthdateTest();
     void sexTest();
+    void equalityTest();
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,10 @@
 
 #include "data/config.hpp"
 #include "data/DicomSeries.hpp"
+#include "data/factory/new.hpp"
+#include "data/Image.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
-#include <data/factory/new.hpp>
 
 SIGHT_DECLARE_DATA_REFLECTION((sight) (data) (ImageSeries))
 
@@ -43,11 +44,11 @@ namespace sight::data
 /**
  * @brief Holds a medical images data.
  */
-class DATA_CLASS_API ImageSeries : public data::Series
+class DATA_CLASS_API ImageSeries : public Series
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ImageSeries, data::Object, data::factory::New<ImageSeries>);
+    SIGHT_DECLARE_CLASS(ImageSeries, Object, factory::New<ImageSeries>);
 
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ImageSeries))
 
@@ -55,7 +56,7 @@ public:
      * @brief Creates the series.
      * @param _key private construction key.
      */
-    DATA_API ImageSeries(data::Object::Key _key);
+    DATA_API ImageSeries(Object::Key _key);
 
     /// Destroys the series.
     DATA_API ~ImageSeries() override;
@@ -64,26 +65,19 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object to copy into this one.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
-
-    /**
-     * @brief Defines deep copy.
-     * @param _source the source object to copy into this one.
-     * @param _cache contains all copied objects to avoid duplication.
-     */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
 
     /// Gets the image container.
-    SPTR(data::Image) getImage() const;
+    Image::sptr getImage() const;
 
     /// Sets the image data.
-    void setImage(const SPTR(data::Image)& _image);
+    void setImage(const Image::sptr& _image);
 
     /// Gets the DICOM reference used to generate valid Dicom Segmentation.
-    data::DicomSeries::csptr getDicomReference() const;
+    DicomSeries::csptr getDicomReference() const;
 
     /// Sets the DICOM reference used to generate valid Dicom Segmentation.
-    void setDicomReference(const data::DicomSeries::csptr& _reference);
+    void setDicomReference(const DicomSeries::csptr& _reference);
 
     /// Gets the contrast/bolus agent.
     const DicomValueType& getContrastAgent() const;
@@ -157,13 +151,26 @@ public:
     /// Sets the acquisition time of data that resulted in this image started.
     void setAcquisitionTime(const DicomValueType& _val);
 
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ImageSeries& other) const noexcept;
+    DATA_API bool operator!=(const ImageSeries& other) const noexcept;
+    /// @}
+
 protected:
 
+    /**
+     * @brief Defines deep copy.
+     * @param _source the source object to copy into this one.
+     * @param _cache contains all copied objects to avoid duplication.
+     */
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+
     /// Contains the image.
-    SPTR(data::Image) m_image;
+    Image::sptr m_image;
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
-    data::DicomSeries::sptr m_dicomReference;
+    DicomSeries::sptr m_dicomReference;
 
     /// Defines the contrast/bolus agent.
     DicomValueType m_contrastBolusAgent;
@@ -204,30 +211,30 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(data::Image) ImageSeries::getImage() const
+inline Image::sptr ImageSeries::getImage() const
 {
     return m_image;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ImageSeries::setImage(const SPTR(data::Image)& _image)
+inline void ImageSeries::setImage(const Image::sptr& _image)
 {
     m_image = _image;
 }
 
 //-----------------------------------------------------------------------------
 
-inline data::DicomSeries::csptr ImageSeries::getDicomReference() const
+inline DicomSeries::csptr ImageSeries::getDicomReference() const
 {
     return m_dicomReference;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ImageSeries::setDicomReference(const data::DicomSeries::csptr& _reference)
+inline void ImageSeries::setDicomReference(const DicomSeries::csptr& _reference)
 {
-    m_dicomReference = std::const_pointer_cast<data::DicomSeries>(_reference);
+    m_dicomReference = std::const_pointer_cast<DicomSeries>(_reference);
 }
 
 //-----------------------------------------------------------------------------

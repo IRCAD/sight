@@ -171,4 +171,23 @@ data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(std::size_t index) const
 
 //------------------------------------------------------------------------------
 
+bool CameraSeries::operator==(const CameraSeries& other) const noexcept
+{
+    if(!core::tools::is_equal(m_cameras, other.m_cameras)
+       || !core::tools::is_equal(m_extrinsicMatrices, other.m_extrinsicMatrices))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Series::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool CameraSeries::operator!=(const CameraSeries& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } //namespace sight::data

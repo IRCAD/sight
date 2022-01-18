@@ -30,7 +30,6 @@
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 
 #include <io/vtk/SeriesDBReader.hpp>
@@ -107,15 +106,7 @@ void SeriesDBTest::testImportSeriesDB()
     CPPUNIT_ASSERT_EQUAL(mesh1->numCells(), (data::Mesh::size_t) 720);
     CPPUNIT_ASSERT_EQUAL(mesh1->numPoints(), (data::Mesh::size_t) 362);
 
-    data::reflection::visitor::CompareObjects visitor;
-    visitor.compare(mesh1, mesh2);
-    SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop : (*props))
-    {
-        SIGHT_ERROR("new object difference found : " << prop.first << " '" << prop.second << "'");
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0);
+    CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
 
 //------------------------------------------------------------------------------

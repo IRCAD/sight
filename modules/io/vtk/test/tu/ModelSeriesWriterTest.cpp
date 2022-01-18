@@ -34,7 +34,6 @@
 #include <service/base.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <boost/functional/hash.hpp>
 

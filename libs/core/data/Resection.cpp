@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,5 +115,29 @@ void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& 
 }
 
 //------------------------------------------------------------------------------
+
+bool Resection::operator==(const Resection& other) const noexcept
+{
+    if(m_name != other.m_name
+       || m_isSafePart != other.m_isSafePart
+       || m_isValid != other.m_isValid
+       || m_isVisible != other.m_isVisible
+       || !core::tools::is_equal(m_planeList, other.m_planeList)
+       || !core::tools::is_equal(m_vInputs, other.m_vInputs)
+       || !core::tools::is_equal(m_vOutputs, other.m_vOutputs))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Resection::operator!=(const Resection& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

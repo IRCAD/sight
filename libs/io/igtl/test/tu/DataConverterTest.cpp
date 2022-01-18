@@ -41,7 +41,6 @@
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Mesh.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <igtlImageMessage.h>
 #include <igtlPointMessage.h>
@@ -193,17 +192,6 @@ void DataConverterTest::imageConverterTest()
 
     CPPUNIT_ASSERT_MESSAGE("Image is null", image2);
 
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("array.isOwner");
-    exclude.insert("window_center");
-    exclude.insert("window_width");
-    exclude.insert("spacing.0");
-    exclude.insert("origin.0");
-    exclude.insert("spacing.1");
-    exclude.insert("origin.1");
-    exclude.insert("spacing.2");
-    exclude.insert("origin.2");
-
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], epsilon);
@@ -212,7 +200,12 @@ void DataConverterTest::imageConverterTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1], image2->getOrigin()[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2], image2->getOrigin()[2], epsilon);
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+    image2->setSpacing(image->getSpacing());
+    image2->setOrigin(image->getOrigin());
+
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------

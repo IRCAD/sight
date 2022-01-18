@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,10 +23,11 @@
 #pragma once
 
 #include "data/config.hpp"
-#include <data/Object.hpp>
 
 #include <core/HiResClock.hpp>
 #include <core/mt/types.hpp>
+
+#include <data/Object.hpp>
 
 namespace sight::data
 {
@@ -56,6 +57,12 @@ public:
     {
         return m_timestamp;
     }
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Object& other) const noexcept;
+    DATA_API bool operator!=(const Object& other) const noexcept;
+    /// @}
 
 protected:
 

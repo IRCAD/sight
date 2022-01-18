@@ -140,7 +140,9 @@ void MarkerMapTest::shallowCopyTest()
     markerMap1->setMarker("102", marker102);
 
     data::MarkerMap::sptr markerMap2 = data::MarkerMap::New();
+    CPPUNIT_ASSERT(*markerMap1 != *markerMap2);
     markerMap2->shallowCopy(markerMap1);
+    CPPUNIT_ASSERT(*markerMap1 == *markerMap2);
 
     CPPUNIT_ASSERT(markerMap1->getMarker("101") != markerMap2->getMarker("101"));
     CPPUNIT_ASSERT(*markerMap1->getMarker("101") == *markerMap2->getMarker("101"));
@@ -156,7 +158,9 @@ void MarkerMapTest::deepCopyTest()
     markerMap1->setMarker("102", marker102);
 
     data::MarkerMap::sptr markerMap2 = data::MarkerMap::New();
+    CPPUNIT_ASSERT(*markerMap1 != *markerMap2);
     markerMap2->deepCopy(markerMap1);
+    CPPUNIT_ASSERT(*markerMap1 == *markerMap2);
 
     CPPUNIT_ASSERT(markerMap1->getMarker("101") != markerMap2->getMarker("101"));
     CPPUNIT_ASSERT(*markerMap1->getMarker("101") == *markerMap2->getMarker("101"));

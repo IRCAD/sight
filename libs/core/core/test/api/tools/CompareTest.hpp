@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
+namespace sight::core::tools
 {
 
 namespace ut
@@ -32,12 +31,16 @@ namespace ut
 
 class CompareTest : public CPPUNIT_NS::TestFixture
 {
-private:
-
-    CPPUNIT_TEST_SUITE(CompareTest);
-    CPPUNIT_TEST(checkEquality);
-    CPPUNIT_TEST(checkContainerEquality);
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE(CompareTest);
+CPPUNIT_TEST(doubleContainerTest);
+CPPUNIT_TEST(floatContainerTest);
+CPPUNIT_TEST(mixedContainerTest);
+CPPUNIT_TEST(sandboxTest);
+CPPUNIT_TEST(infiniteTest);
+CPPUNIT_TEST(nanTest);
+CPPUNIT_TEST(pointerTest);
+CPPUNIT_TEST(mapTest);
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -45,10 +48,18 @@ public:
     void setUp();
     void tearDown();
 
-    void checkEquality();
-    void checkContainerEquality();
+    void doubleContainerTest();
+    void floatContainerTest();
+    void mixedContainerTest();
+
+    void sandboxTest();
+    void infiniteTest();
+    void nanTest();
+
+    void pointerTest();
+    void mapTest();
 };
 
 } //namespace ut
 
-} //namespace sight::geometry::data
+} //namespace sight::core::tools

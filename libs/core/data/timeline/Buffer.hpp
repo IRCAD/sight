@@ -34,7 +34,7 @@ namespace timeline
 /**
  * @brief   This class defines a TimeLine object buffer.
  */
-class DATA_CLASS_API Buffer : public data::timeline::Object
+class DATA_CLASS_API Buffer : public Object
 {
 public:
 
@@ -53,13 +53,19 @@ public:
     DATA_API virtual ~Buffer();
 
     /// Makes a copy of this buffer
-    DATA_API virtual void deepCopy(const data::timeline::Object& other);
+    DATA_API virtual void deepCopy(const Object& other);
 
     /// Returns size
     std::size_t getSize() const
     {
         return m_size;
     }
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const Buffer& other) const noexcept;
+    DATA_API bool operator!=(const Buffer& other) const noexcept;
+    /// @}
 
 protected:
 

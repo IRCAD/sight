@@ -25,7 +25,6 @@
 #include <core/Profiling.hpp>
 
 #include <data/Mesh.hpp>
-#include <data/ObjectLock.hpp>
 
 #include <utestData/generator/Mesh.hpp>
 
@@ -404,6 +403,7 @@ void MeshTest::copy()
 {
     data::Mesh::sptr mesh            = data::Mesh::New();
     data::Mesh::sptr shallowCopyMesh = data::Mesh::New();
+    CPPUNIT_ASSERT(*mesh == *shallowCopyMesh);
 
     const auto dumpLock = mesh->lock();
 
@@ -440,9 +440,10 @@ void MeshTest::copy()
 
     // check deep copy
     {
-        data::Mesh::sptr deepCopyMesh;
-        deepCopyMesh = data::Object::copy(mesh);
-        const auto copyDumpLock = deepCopyMesh->lock();
+        data::Mesh::sptr deepCopyMesh = data::Object::copy(mesh);
+        const auto copyDumpLock       = deepCopyMesh->lock();
+
+        CPPUNIT_ASSERT(*mesh == *deepCopyMesh);
 
         CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), deepCopyMesh->numPoints());
         CPPUNIT_ASSERT_EQUAL(mesh->numCells(), deepCopyMesh->numCells());
@@ -476,6 +477,7 @@ void MeshTest::copy()
     //check shallow copy
     {
         shallowCopyMesh->shallowCopy(mesh);
+        CPPUNIT_ASSERT(*mesh == *shallowCopyMesh);
         CPPUNIT_ASSERT_EQUAL(mesh->numPoints(), shallowCopyMesh->numPoints());
         CPPUNIT_ASSERT_EQUAL(mesh->numCells(), shallowCopyMesh->numCells());
         CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), shallowCopyMesh->getDataSizeInBytes());
@@ -1120,6 +1122,8 @@ void MeshTest::iteratorCopyTest()
     }
 
     data::Mesh::sptr copiedMesh = data::Mesh::New();
+    CPPUNIT_ASSERT(*mesh != *copiedMesh);
+
     copiedMesh->resize(
         10,
         10,
@@ -1141,6 +1145,8 @@ void MeshTest::iteratorCopyTest()
 
         std::copy(range.begin(), range.end(), rangeCopy.begin());
     }
+
+    CPPUNIT_ASSERT(*mesh == *copiedMesh);
 
     {
         // check the copied mesh

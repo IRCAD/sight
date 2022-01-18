@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,18 +42,18 @@ namespace sight::data
  *
  * @see StructureTraits
  */
-class DATA_CLASS_API ReconstructionTraits : public data::Object
+class DATA_CLASS_API ReconstructionTraits : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ReconstructionTraits, data::Object, data::factory::New<ReconstructionTraits>);
+    SIGHT_DECLARE_CLASS(ReconstructionTraits, Object, factory::New<ReconstructionTraits>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (ReconstructionTraits));
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API ReconstructionTraits(data::Object::Key key);
+    DATA_API ReconstructionTraits(Object::Key key);
 
     /**
      * @brief destructor
@@ -70,37 +70,37 @@ public:
     /// @}
 
     /// Set the reconstruction operator mask node
-    DATA_API void setMaskOpNode(const data::Node::sptr& maskOpNode);
+    DATA_API void setMaskOpNode(const Node::sptr& maskOpNode);
 
     /// Get the reconstruction operator mask node. Return a null pointer if the mask node is not defined.
-    DATA_API data::Node::sptr getMaskOpNode();
+    DATA_API Node::sptr getMaskOpNode();
     //------------------------------------------------------------------------------
 
-    DATA_API data::Node::csptr getMaskOpNode() const
+    DATA_API Node::csptr getMaskOpNode() const
     {
         return m_maskOpNode;
     }
 
     /// Set the reconstruction operator mesh node.
-    DATA_API void setMeshOpNode(const data::Node::sptr& meshOpNode);
+    DATA_API void setMeshOpNode(const Node::sptr& meshOpNode);
 
     /// Get the reconstruction operator mesh node. Return a null pointer if the mesh node is not defined.
-    DATA_API data::Node::sptr getMeshOpNode();
+    DATA_API Node::sptr getMeshOpNode();
     //------------------------------------------------------------------------------
 
-    DATA_API data::Node::csptr getMeshOpNode() const
+    DATA_API Node::csptr getMeshOpNode() const
     {
         return m_meshOpNode;
     }
 
     /// Set the associated structure traits
-    DATA_API void setStructureTraits(const data::StructureTraits::sptr& structureTraits);
+    DATA_API void setStructureTraits(const StructureTraits::sptr& structureTraits);
 
     /// Get the associated structure traits
-    DATA_API data::StructureTraits::sptr getStructureTraits();
+    DATA_API StructureTraits::sptr getStructureTraits();
     //------------------------------------------------------------------------------
 
-    DATA_API data::StructureTraits::csptr getStructureTraits() const
+    DATA_API StructureTraits::csptr getStructureTraits() const
     {
         return m_structureTraits;
     }
@@ -109,14 +109,22 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object where find data.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const ReconstructionTraits& other) const noexcept;
+    DATA_API bool operator!=(const ReconstructionTraits& other) const noexcept;
+    /// @}
+
+protected:
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object where find data.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 
@@ -124,13 +132,13 @@ private:
     std::string m_identifier;
 
     /// reconstruction mask operator node
-    data::Node::sptr m_maskOpNode;
+    Node::sptr m_maskOpNode;
 
     /// reconstruction mesh operator node
-    data::Node::sptr m_meshOpNode;
+    Node::sptr m_meshOpNode;
 
     /// associated structure traits
-    data::StructureTraits::sptr m_structureTraits;
+    StructureTraits::sptr m_structureTraits;
 };
 
 //-----------------------------------------------------------------------------

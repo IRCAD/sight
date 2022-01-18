@@ -142,4 +142,22 @@ void MarkerMap::setMarker(const KeyType& _id, const MarkerMap::MarkerType& _mark
 
 //------------------------------------------------------------------------------
 
+bool MarkerMap::operator==(const MarkerMap& other) const noexcept
+{
+    if(!core::tools::is_equal(m_markers, other.m_markers))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool MarkerMap::operator!=(const MarkerMap& other) const noexcept
+{
+    return !(*this == other);
+}
+
 } // namespace sight::data

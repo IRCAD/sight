@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <io/itk/itk.hpp>
 
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 namespace sight::io::itk
 {
@@ -46,19 +45,19 @@ void ImageConversionTest::stressTestForAType()
         typedef ::itk::Image<TYPE, 3> ImageType;
         typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-        utestData::helper::ExcludeSetType exclude;
-        exclude.insert("array.isOwner");
-        exclude.insert("window_center");
-        exclude.insert("window_width");
+        data::Image::sptr image2 = data::Image::New();
+        io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
-        data::Image::sptr image2    = data::Image::New();
-        bool image2ManagesHisBuffer = false;
-        io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
-        CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+        image2->setWindowCenter(image->getWindowCenter());
+        image2->setWindowWidth(image->getWindowWidth());
 
-        bool image3ManagesHisBuffer = false;
-        data::Image::sptr image3    = io::itk::moveFromItk<ImageType>(itkImage, image3ManagesHisBuffer);
-        CPPUNIT_ASSERT(utestData::helper::compare(image, image3, exclude));
+        CPPUNIT_ASSERT(*image == *image2);
+
+        data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+        image3->setWindowCenter(image->getWindowCenter());
+        image3->setWindowWidth(image->getWindowWidth());
+
+        CPPUNIT_ASSERT(*image == *image3);
     }
 }
 

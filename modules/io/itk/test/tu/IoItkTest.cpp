@@ -37,7 +37,6 @@
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
-#include <utestData/helper/compare.hpp>
 
 #include <filesystem>
 
@@ -200,11 +199,10 @@ void IoItkTest::testSaveLoadInr()
     image2->setSpacing(spacing);
 
     // check Image
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------
@@ -253,11 +251,10 @@ void IoItkTest::ImageSeriesInrTest()
     image2->setSpacing(spacing);
 
     // check Image
-    utestData::helper::ExcludeSetType exclude;
-    exclude.insert("window_center");
-    exclude.insert("window_width");
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
 
-    CPPUNIT_ASSERT(utestData::helper::compare(image, image2, exclude));
+    CPPUNIT_ASSERT(*image == *image2);
 }
 
 //------------------------------------------------------------------------------

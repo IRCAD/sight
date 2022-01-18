@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -197,5 +197,24 @@ const Color::ColorType& Color::alpha() const
 }
 
 //------------------------------------------------------------------------------
+
+bool Color::operator==(const Color& other) const noexcept
+{
+    // If the attributes are different, then it is not equal
+    if(!core::tools::is_equal(m_vRGBA, other.m_vRGBA))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Color::operator!=(const Color& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,11 +43,11 @@ namespace sight::data
  *  - [optional] a native ROI expression : ex. inter(world(type(Skin)),not(class(Organ)))
  *  - [optional] a native geometric ROI expression
  */
-class DATA_CLASS_API StructureTraits : public data::Object
+class DATA_CLASS_API StructureTraits : public Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(StructureTraits, data::Object, data::factory::New<StructureTraits>);
+    SIGHT_DECLARE_CLASS(StructureTraits, Object, factory::New<StructureTraits>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (StructureTraits));
 
     /// Defines structure categories
@@ -84,7 +84,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API StructureTraits(data::Object::Key key);
+    DATA_API StructureTraits(Object::Key key);
 
     /// Destructor. Does nothing.
     DATA_API virtual ~StructureTraits();
@@ -147,9 +147,9 @@ public:
      * @{
      * @brief Get/Set value of the color.
      */
-    data::Color::sptr& getColor();
-    const data::Color::sptr& getColor() const;
-    void setColor(const data::Color::sptr& _color);
+    Color::sptr& getColor();
+    const Color::sptr& getColor() const;
+    void setColor(const Color::sptr& _color);
     /// @}
 
     /**
@@ -184,14 +184,22 @@ public:
      * @brief Defines shallow copy.
      * @param _source the source object where find data.
      */
-    DATA_API void shallowCopy(const data::Object::csptr& _source) override;
+    DATA_API void shallowCopy(const Object::csptr& _source) override;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const StructureTraits& other) const noexcept;
+    DATA_API bool operator!=(const StructureTraits& other) const noexcept;
+    /// @}
+
+protected:
 
     /**
      * @brief Defines deep copy.
      * @param _source the source object where find data.
      * @param _cache contains all copied objects to avoid duplication.
      */
-    DATA_API void cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
 
 private:
 
@@ -202,7 +210,7 @@ private:
     CategoryContainer m_categories;
 
     /// structure default color
-    data::Color::sptr m_color;
+    Color::sptr m_color;
 
     /// structure class (TOOL, ENVIRONMENT, VESSEL, LESION, ORGAN, FUNCTIONAL, NO_CONSTRAINT)
     StructureClass m_class;
@@ -354,21 +362,21 @@ inline void StructureTraits::setAttachmentType(const std::string& _attachmentTyp
 
 //-----------------------------------------------------------------------------
 
-inline data::Color::sptr& StructureTraits::getColor()
+inline Color::sptr& StructureTraits::getColor()
 {
     return m_color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const data::Color::sptr& StructureTraits::getColor() const
+inline const Color::sptr& StructureTraits::getColor() const
 {
     return m_color;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void StructureTraits::setColor(const data::Color::sptr& _color)
+inline void StructureTraits::setColor(const Color::sptr& _color)
 {
     m_color = _color;
 }

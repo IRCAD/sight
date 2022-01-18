@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,5 +114,29 @@ void Reconstruction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheT
 }
 
 //------------------------------------------------------------------------------
+
+bool Reconstruction::operator==(const Reconstruction& other) const noexcept
+{
+    if(m_bIsVisible != other.m_bIsVisible
+       || m_sOrganName != other.m_sOrganName
+       || m_sStructureType != other.m_sStructureType
+       || m_computedMaskVolume != other.m_computedMaskVolume
+       || !core::tools::is_equal(m_material, other.m_material)
+       || !core::tools::is_equal(m_image, other.m_image)
+       || !core::tools::is_equal(m_mesh, other.m_mesh))
+    {
+        return false;
+    }
+
+    // Super class last
+    return Object::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool Reconstruction::operator!=(const Reconstruction& other) const noexcept
+{
+    return !(*this == other);
+}
 
 } // end namespace sight::data

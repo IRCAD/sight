@@ -581,6 +581,55 @@ void ArrayTest::emptyIteratorTest()
     CPPUNIT_ASSERT_EQUAL(*maxIter, count - 1);
 }
 
+//------------------------------------------------------------------------------
+
+void ArrayTest::equalityTest()
+{
+    auto array1 = data::Array::New();
+    auto array2 = data::Array::New();
+
+    CPPUNIT_ASSERT(*array1 == *array2);
+
+    // Fill array1
+    const data::Array::SizeType size {10, 10};
+
+    array1->resize(size, core::tools::Type::s_UINT32, true);
+    auto lock = array1->lock();
+
+    std::uint32_t count = 0;
+    for(auto it = array1->begin<std::uint32_t>(), end = array1->end<std::uint32_t>() ; it != end ; ++it)
+    {
+        *it = count++;
+    }
+
+    CPPUNIT_ASSERT(*array1 != *array2);
+
+    // Fill array2
+    array2->resize(size, core::tools::Type::s_UINT32, true);
+    auto lock2 = array2->lock();
+
+    count = 666;
+    for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it)
+    {
+        *it = count++;
+    }
+
+    CPPUNIT_ASSERT(*array1 != *array2);
+
+    count = 0;
+    for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it)
+    {
+        *it = count++;
+    }
+
+    CPPUNIT_ASSERT(*array1 == *array2);
+
+    // Test also deepcopy, just for fun
+    auto array3 = data::Array::New();
+    array3->deepCopy(array1);
+    CPPUNIT_ASSERT(*array1 == *array3);
+}
+
 //-----------------------------------------------------------------------------
 
 } //namespace ut

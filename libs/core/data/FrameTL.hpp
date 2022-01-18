@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "data/factory/new.hpp"
 #include "data/GenericTL.hpp"
 #include "data/GenericTL.hxx"
 #include "data/timeline/GenericObject.hpp"
@@ -43,7 +44,7 @@ class DATA_CLASS_API FrameTL : public GenericTL<uint8_t>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(FrameTL, data::TimeLine, data::factory::New<FrameTL>);
+    SIGHT_DECLARE_CLASS(FrameTL, TimeLine, factory::New<FrameTL>);
     SIGHT_MAKE_FRIEND_REFLECTION((sight) (data) (FrameTL))
 
     /// Frame format
@@ -61,13 +62,10 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    DATA_API FrameTL(data::Object::Key key);
+    DATA_API FrameTL(Object::Key key);
 
     /// Destructor
     DATA_API virtual ~FrameTL();
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Initializes the size of the pool buffer.
@@ -123,6 +121,17 @@ public:
 
     /// Set the frame pixel format
     void setPixelFormat(PixelFormat format);
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const FrameTL& other) const noexcept;
+    DATA_API bool operator!=(const FrameTL& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Defines deep copy
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 
