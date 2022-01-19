@@ -44,8 +44,18 @@ else
     export QT_QPA_PLATFORM="offscreen"
 fi
 
+gdb="@GDB@"
+
 if [ -n "$xvfb_run" ]; then
-    exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $@
+    if [ -n "$gdb" ]; then
+        exec $xvfb_run $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+    else
+        exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $@
+    fi
 else
-    exec "$bindir/@PROJECT_EXECUTABLE@" $@
+    if [ -n "$gdb" ]; then
+        exec $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+    else
+        exec "$bindir/@PROJECT_EXECUTABLE@" $@
+    fi
 fi

@@ -43,6 +43,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_OPENVSLAM=ON
       -DSIGHT_ENABLE_REALSENSE=ON
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
+      -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
@@ -84,6 +85,7 @@ lint:sheldon:
       - .build/Documentation/Doxygen/
       - .build/packages/*.tar.zst
       - .build/coverage
+      - .build/bin/*.core
 
 build:linux-21.10-debug-gcc:
   extends: .linux_build

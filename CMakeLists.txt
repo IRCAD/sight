@@ -81,6 +81,17 @@ mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
 set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
 mark_as_advanced(SIGHT_TESTS_FILTER)
 
+if(UNIX AND (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
+    option(SIGHT_ENABLE_GDB
+           "Test scripts will attach GDB, allowing to generate core file and print backtrace in case of crash." OFF
+    )
+    mark_as_advanced(SIGHT_ENABLE_GDB)
+
+    if(SIGHT_ENABLE_GDB)
+        find_program(GDB NAMES "gdb" REQUIRED)
+    endif()
+endif()
+
 # Use clang-tidy linter
 option(SIGHT_ENABLE_CLANG_TIDY "Enable Clang Tidy checks" OFF)
 mark_as_advanced(SIGHT_TESTS_FILTER)
