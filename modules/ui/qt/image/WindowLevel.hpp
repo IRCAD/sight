@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,6 @@ class QLineEdit;
 class QMenu;
 class QSlider;
 class QToolButton;
-class QSignalMapper;
 
 namespace sight::ui::qt
 {
@@ -178,7 +177,6 @@ private:
     QPointer<QToolButton> m_toggleAutoButton;
     QPointer<QToolButton> m_dynamicRangeSelection;
     QPointer<QMenu> m_dynamicRangeMenu;
-    QPointer<QSignalMapper> m_dynamicRangeSignalMapper;
 
     QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
 

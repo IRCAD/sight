@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1020,7 +1020,7 @@ void SParameters::createColorWidget(
 
     layout.addWidget(colourButton, row, 2);
 
-    QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
+    QObject::connect(colourButton, &QPushButton::clicked, this, &SParameters::onColorButton);
 
     // Reset button
     if(resetButton)
@@ -1804,7 +1804,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
     }
 
     const double valueRange = max - min;
-    maxSliderValue *= valueRange;
+    maxSliderValue = int(maxSliderValue * valueRange);
 
     // The slider's maximum internal range is [0; 2 147 483 647]
     // We could technically extend this range by setting the minimum to std::numeric_limits<int>::min()

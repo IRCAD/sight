@@ -48,7 +48,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
-#include <QSignalMapper>
 #include <QToolButton>
 #include <QWidget>
 
@@ -182,8 +181,6 @@ void WindowLevel::starting()
         layout->addWidget(m_valueTextMax, 1, 4);
 
         qtContainer->setLayout(layout);
-
-        m_dynamicRangeSignalMapper = new QSignalMapper(this);
 
         // Set the visibility after the layout is created so it doesn't open its own window.
         m_toggleTFButton->setVisible(m_enableSquareTF);

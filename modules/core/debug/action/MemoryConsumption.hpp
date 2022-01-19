@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ protected:
      *
      * @code{.xml}
          <service uid="myIncMemConsum"  type="ui::base::IAction"
-            implementation="sight::module::core::debug::action::MemoryConsumption" autoComChannel="false" >
+            implementation="sight::module::debug::action::MemoryConsumption" autoComChannel="false" >
             <config mode="increase" value="256" />
         </service>
        @endcode

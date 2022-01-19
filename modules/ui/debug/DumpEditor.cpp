@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ public:
 
 QWidget* PolicyComboBoxDelegate::createEditor(
     QWidget* parent,
-    const QStyleOptionViewItem& option,
+    const QStyleOptionViewItem&,
     const QModelIndex& index
 ) const
 {
@@ -141,7 +141,7 @@ void PolicyComboBoxDelegate::setModelData(QWidget* editor, QAbstractItemModel* m
 void PolicyComboBoxDelegate::updateEditorGeometry(
     QWidget* editor,
     const QStyleOptionViewItem& option,
-    const QModelIndex& index
+    const QModelIndex&
 ) const
 {
     editor->setGeometry(option.rect);
@@ -211,7 +211,7 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
     core::mt::ReadLock lock(m_buffManager->getMutex());
     core::memory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
 
-    if(index.row() > (s_EXTRA_INFO_NB + currentPolicy->getParamNames().size()) || index.row() < 0)
+    if(index.row() > int((s_EXTRA_INFO_NB + currentPolicy->getParamNames().size())) || index.row() < 0)
     {
         return QVariant();
     }
@@ -472,8 +472,7 @@ void DumpEditor::starting()
     m_updateTimer->setInterval(300);
     m_updateTimer->setSingleShot(true);
 
-    m_list   = new QTableWidget();
-    m_mapper = new QSignalMapper();
+    m_list = new QTableWidget();
 
     m_list->setColumnCount(5);
     QStringList header;
@@ -520,11 +519,14 @@ void DumpEditor::starting()
 
     qtContainer->setLayout(sizer);
 
-    QObject::connect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton()));
-    QObject::connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
-
-    QObject::connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onRefreshButton()));
-    QObject::connect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
+    QObject::connect(m_refresh, &QPushButton::clicked, this, &DumpEditor::onRefreshButton);
+    QObject::connect(m_updateTimer, &QTimer::timeout, this, &DumpEditor::onRefreshButton);
+    QObject::connect(
+        &m_watcher,
+        &QFutureWatcher<core::memory::BufferManager::BufferInfoMapType>::finished,
+        this,
+        &DumpEditor::onBufferInfo
+    );
 
     core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
     if(buffManager)
@@ -543,9 +545,7 @@ void DumpEditor::starting()
 void DumpEditor::stopping()
 {
     m_connection.disconnect();
-    QObject::disconnect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton()));
-    QObject::disconnect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
-    QObject::disconnect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
+    m_watcher.disconnect();
 
     this->destroy();
 }
@@ -612,13 +612,7 @@ void DumpEditor::onBufferInfo()
     m_bufferInfos = m_watcher.result();
     m_bufferStats = core::memory::BufferManager::computeBufferStats(m_bufferInfos);
 
-    m_mapper->blockSignals(true);
     core::com::Connection::Blocker block(m_connection);
-
-    for(int row = 0 ; row < m_list->rowCount() ; row++)
-    {
-        m_mapper->removeMappings(m_list->cellWidget(row, 4));
-    }
 
     m_list->clearContents();
     m_objectsUID.clear();
@@ -664,36 +658,33 @@ void DumpEditor::onBufferInfo()
         QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem(getHumanReadableSize(dumpBuffInfo.size));
         currentSizeItem->setData(Qt::UserRole, (qulonglong) dumpBuffInfo.size);
         currentSizeItem->setFlags(Qt::ItemIsEnabled);
-        currentSizeItem->setBackgroundColor(backColor);
+        currentSizeItem->setBackground(backColor);
         m_list->setItem(itemCount, 0, currentSizeItem);
 
         QTableWidgetItem* statusItem = new QTableWidgetItem(QString::fromStdString(status));
         statusItem->setFlags(Qt::ItemIsEnabled);
-        statusItem->setBackgroundColor(backColor);
+        statusItem->setBackground(backColor);
         m_list->setItem(itemCount, 1, statusItem);
 
         QTableWidgetItem* dateItem = new QTableWidgetItem(QString::fromStdString(date));
         dateItem->setFlags(Qt::ItemIsEnabled);
-        dateItem->setBackgroundColor(backColor);
+        dateItem->setBackground(backColor);
         m_list->setItem(itemCount, 2, dateItem);
 
         QTableWidgetItem* lockStatusItem = new QTableWidgetItem(QString::fromStdString(lockStatus));
         lockStatusItem->setFlags(Qt::ItemIsEnabled);
-        lockStatusItem->setBackgroundColor(backColor);
+        lockStatusItem->setBackground(backColor);
         m_list->setItem(itemCount, 3, lockStatusItem);
 
         QPushButton* actionItem = new QPushButton(QString::fromStdString((loaded) ? "Dump" : "Restore"), m_list);
         actionItem->setEnabled(!isLock && (dumpBuffInfo.size > 0));
         m_list->setCellWidget(itemCount, 4, actionItem);
-        QObject::connect(actionItem, SIGNAL(pressed()), m_mapper, SLOT(map()));
-        m_mapper->setMapping(actionItem, itemCount);
 
+        QObject::connect(actionItem, &QPushButton::pressed, this, [this, itemCount](){changeStatus(itemCount);});
         ++itemCount;
     }
 
     m_list->setSortingEnabled(true);
-
-    m_mapper->blockSignals(false);
 
     m_infoEditor->reset();
     m_infoEditor->resizeColumnsToContents();
