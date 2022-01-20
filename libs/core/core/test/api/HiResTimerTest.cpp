@@ -44,138 +44,83 @@ void HiResTimerTest::tearDown()
 {
 }
 
+enum class Comparison
+{
+    EQ,
+    GE
+};
+
+struct TestData
+{
+    double time;
+    bool start;
+    bool wait;
+    bool stop;
+    Comparison comp;
+    int reset;
+    core::HiResClock::HiResClockType (HiResTimer::* getElapsedTimeInX)();
+};
+
 //------------------------------------------------------------------------------
 
 void HiResTimerTest::getTimeTest()
 {
-    // Start the timer, stop the timer and get the time
+    const TestData data[] = {
+        // Start the timer, stop the timer and get the time
+        {1, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
+        {1000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
+        {1000000, true, true, true, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
+
+        // Start the timer, reset it in the middle, stop it and get the time
+        {1, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInSec},
+        {1000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMilliSec},
+        {1000000, true, true, true, Comparison::GE, 0, &HiResTimer::getElapsedTimeInMicroSec},
+
+        // Start the timer and get the time
+        {1, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInSec},
+        {1000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMilliSec},
+        {1000000, true, true, false, Comparison::GE, -1, &HiResTimer::getElapsedTimeInMicroSec},
+
+        // Reset the timer and get the time
+        {1, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInSec},
+        {1000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMilliSec},
+        {1000000, false, false, false, Comparison::EQ, 1000000, &HiResTimer::getElapsedTimeInMicroSec}
+    };
+
+    for(size_t i = 0 ; i < sizeof(data) / sizeof(data[0]) ; i++)
     {
-        const unsigned short time = 1;
+        const TestData& d = data[i];
+        const double time = d.time;
         HiResTimer timer;
 
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::seconds(time));
-        timer.stop();
+        if(d.start)
+        {
+            timer.start();
+        }
 
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInSec());
-    }
+        if(d.reset > -1)
+        {
+            timer.reset(d.reset);
+        }
 
-    {
-        const unsigned short time = 1000;
-        HiResTimer timer;
+        if(d.wait)
+        {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
 
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        timer.stop();
+        if(d.stop)
+        {
+            timer.stop();
+        }
 
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMilliSec());
-    }
-
-    {
-        const unsigned time = 1000000;
-        HiResTimer timer;
-
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::microseconds(time));
-        timer.stop();
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMicroSec());
-    }
-
-    // Start the timer, reset it in the middle, stop it and get the time
-    {
-        const unsigned short time = 1;
-        HiResTimer timer;
-
-        timer.start();
-        timer.reset();
-        std::this_thread::sleep_for(std::chrono::seconds(time));
-        timer.stop();
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInSec());
-    }
-
-    {
-        const unsigned short time = 1000;
-        HiResTimer timer;
-
-        timer.start();
-        timer.reset();
-        std::this_thread::sleep_for(std::chrono::milliseconds(time));
-        timer.stop();
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMilliSec());
-    }
-
-    {
-        const unsigned time = 1000000;
-        HiResTimer timer;
-
-        timer.start();
-        timer.reset();
-        std::this_thread::sleep_for(std::chrono::microseconds(time));
-        timer.stop();
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMicroSec());
-    }
-
-    // Start the timer and get the time
-    {
-        const unsigned short time = 1;
-        HiResTimer timer;
-
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::seconds(time));
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInSec());
-    }
-
-    {
-        const unsigned short time = 1000;
-        HiResTimer timer;
-
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::milliseconds(time));
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMilliSec());
-    }
-
-    {
-        const unsigned time = 1000000;
-        HiResTimer timer;
-
-        timer.start();
-        std::this_thread::sleep_for(std::chrono::microseconds(time));
-
-        CPPUNIT_ASSERT_GREATEREQUAL(static_cast<double>(time), timer.getElapsedTimeInMicroSec());
-    }
-
-    // Reset the timer and get the time
-    {
-        const unsigned short time = 1;
-        HiResTimer timer;
-
-        timer.reset(time * 1000000);
-
-        CPPUNIT_ASSERT_EQUAL(static_cast<double>(time), timer.getElapsedTimeInSec());
-    }
-
-    {
-        const unsigned short time = 1000;
-        HiResTimer timer;
-
-        timer.reset(time * 1000);
-
-        CPPUNIT_ASSERT_EQUAL(static_cast<double>(time), timer.getElapsedTimeInMilliSec());
-    }
-
-    {
-        const unsigned time = 1000000;
-        HiResTimer timer;
-
-        timer.reset(time);
-
-        CPPUNIT_ASSERT_EQUAL(static_cast<double>(time), timer.getElapsedTimeInMicroSec());
+        if(d.comp == Comparison::EQ)
+        {
+            CPPUNIT_ASSERT_EQUAL(time, (timer.*d.getElapsedTimeInX)());
+        }
+        else if(d.comp == Comparison::GE)
+        {
+            CPPUNIT_ASSERT_GREATEREQUAL(time, (timer.*d.getElapsedTimeInX)());
+        }
     }
 }
 
